@@ -37,9 +37,15 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+$media_options = $this->getVar('media_options') ?? [];
+
+$media_options = array_merge($media_options, [
+	'id' => 'mediaviewer'
+]);
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
+	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 <?php
 if($show_nav){
@@ -52,13 +58,7 @@ if($show_nav){
 <?php
 }
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
-		<div class="col-md-12">
-			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
-			<hr class="mb-0">
-		</div>
-	</div>
+
 <?php
 	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
@@ -85,17 +85,22 @@ if($show_nav){
 	}
 ?>
 
-	<div class="row">
-{{{<ifdef code="ca_object_representations.media.large">
-		<div class="col-md-6 justify-content-center">
-			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
+	<div class="row mt-3">
+
+		<div class="col-md-6">
+			{{{media_viewer}}}
 		</div>
-</ifdef>}}}
+
 		<div class="col-md-6">
 			<div class="bg-body-tertiary py-3 px-4 mb-3">
 				<div class="row">
 					<div class="col">				
 						{{{<dl class="mb-0">
+
+							<H1 class="fs-3">^ca_objects.preferred_labels.name</H1>
+							<hr class="mb-3">
+
+							<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
 
 							<if rule="^ca_objects.creation_date_display !~ /-/">
 								<ifdef code="ca_objects.creation_date_display">
@@ -105,28 +110,13 @@ if($show_nav){
 							</if>
 		
 							<ifdef code="ca_objects.medium_container.display_medium_support">
-								<dt><?= _t('Medium and Support'); ?></dt>
+								<dt><?= _t('Medium'); ?></dt>
 								<dd>^ca_objects.medium_container.display_medium_support</dd>
 							</ifdef>
 
 							<ifdef code="ca_objects.dimensions.display_dimensions">
 								<dt><?= _t('Dimensions'); ?></dt>
-								<dd><unit delimiter="<br>">^ca_objects.dimensions.display_dimensions</unit></dd>
-							</ifdef>
-
-							<ifdef code="ca_objects.duration">
-								<dt><?= _t('Duration'); ?></dt>
-								<dd><unit delimiter="<br>">^ca_objects.duration</unit></dd>
-							</ifdef>
-
-							<ifdef code="ca_objects.description">
-								<dt><?= _t('Description'); ?></dt>
-								<dd>^ca_objects.description</dd>
-							</ifdef>
-
-							<ifdef code="ca_objects.specific_subject.subject_AAT">
-								<dt><?= _t('Subject'); ?></dt>
-								<dd><unit delimiter=", ">^ca_objects.specific_subject.subject_AAT</unit></dd>
+								<dd><unit delimiter="<br>">^ca_objects.dimensions.display_dimensions (^ca_objects.dimensions.Type)</unit></dd>
 							</ifdef>
 
 							<ifdef code="ca_objects.credit_line.credit_text">
@@ -134,44 +124,91 @@ if($show_nav){
 								<dd>^ca_objects.credit_line.credit_text</dd>
 							</ifdef>
 
-							<ifdef code="ca_objects.on_view.on_view_type">
-								<dt><?= _t('On View/Off View'); ?></dt>
-								<dd>^ca_objects.on_view.on_view_type</dd>
+							<ifdef code="ca_objects.idno">
+								<dt><?= _t('Accession Number'); ?></dt>
+								<dd>^ca_objects.idno</dd>
 							</ifdef>
 
-							<ifdef code="ca_objects.related_resources.resource_url">
+							<hr>
+
+							<?php
+									if($t_object->get("ca_objects.on_view.on_view_type")){
+										if($links = caGetBrowseLinks($t_object, 'ca_objects.on_view.on_view_type', ['template' => '<l>^ca_objects.on_view.on_view_type</l>', 'linkTemplate' => '^LINK'])) {
+							?>
+											<dt><?= _t('On View/Off View'); ?></dt>
+											<dd><?= join(" ", $links); ?></dd>
+							<?php
+										}
+									}
+							?>
+
+							<ifdef code="ca_objects.on_view.view_location">
+								<dt><?= _t('View Location'); ?></dt>
+								<dd>^ca_objects.on_view.view_location</dd>
+							</ifdef>
+
+							<ifdef code="ca_objects.copyright_text">
+								<dt><?= _t('Copyright'); ?></dt>
+								<dd>^ca_objects.copyright_type ^ca_objects.copyright_text</dd>
+							</ifdef>
+
+							<?php
+								if($t_object->get("ca_objects.academic_tags")){
+									if($acc_links = caGetBrowseLinks($t_object, 'ca_objects.academic_tags', ['template' => '<l>^ca_objects.academic_tags</l>', 'linkTemplate' => '^LINK'])) {
+							?>
+										<dt><?= _t('Academic Tags'); ?></dt>
+										<dd><?= join(" ", $acc_links); ?></dd>
+							<?php
+									}
+								}
+							?>
+
+							<?php
+								if($t_object->get("ca_objects.object_classification")){
+									if($class_links = caGetBrowseLinks($t_object, 'ca_objects.object_classification', ['template' => '<l>^ca_objects.object_classification.hierarchy.preferred_labels.name_plural%delimiter=_➜_</l>', 'linkTemplate' => '^LINK'])) {
+							?>
+										<dt><?= _t('Object Classification'); ?></dt>
+										<dd><?= join("<br>", $class_links); ?></dd>
+							<?php
+									}
+								}
+							?>
+
+							<?php
+								if($t_object->get("ca_objects.specific_subject.subject_AAT")){
+									if($sub_links = caGetBrowseLinks($t_object, 'ca_objects.specific_subject.subject_AAT', ['template' => '<l>^ca_objects.specific_subject.subject_AAT</l>', 'linkTemplate' => '^LINK'])) {
+							?>
+										<dt><?= _t('Subject'); ?></dt>
+										<dd><?= join("<br>", $sub_links); ?></dd>
+							<?php
+									}
+								}
+							?>
+
+							<ifdef code="ca_objects.marks_inscription.marks_text">
+								<dt><?= _t('Marks/Inscription'); ?></dt>
+								<dd>^ca_objects.marks_inscription.marks_text</dd>
+							</ifdef>
+
+							<ifdef code="ca_objects.related_resources.resource_citation | ca_objects.related_resources.resource_url">
 								<dt><?= _t('Related Resources'); ?></dt>
-								<dd>^ca_objects.related_resources.resource_url</dd>
+								<dd><unit delimiter="<br>">^ca_objects.related_resources.resource_citation, <a href="^ca_objects.related_resources.resource_url" target="_blank" rel="noopener noreferrer">^ca_objects.related_resources.resource_url</a></unit></dd>
+							</ifdef>
+
+							<ifdef code="ca_objects.label_copy.label_copy_text">
+								<dt><?= _t('Label'); ?></dt>
+								<dd>^ca_objects.label_copy.label_copy_text</dd>
 							</ifdef>
 
 						</dl>}}}
-						
-						<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
 
 						{{{<dl class="mb-0">
 							<ifcount code="ca_collections" min="1">
 								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
 								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 							</ifcount>
-				
-							<!-- <ifcount code="ca_entities" min="1">
-								<dt>
-									<ifcount code="ca_entities" min="1" max="1" restrictToRelationshipType="artist"><?= _t('Artist'); ?></ifcount>
-									<ifcount code="ca_entities" min="2" restrictToRelationshipType="artist"><?= _t('Artists'); ?></ifcount>
-								</dt>
-								<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipType="artist">
-									<dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd>
-								</unit>
-							</ifcount> -->
-
-							<ifcount code="ca_occurrences" min="1">
-								<div class="unit">
-									<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToType="outside, samek"><?= _t('Related Exhibition'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToType="outside, samek"><?= _t('Related Exhibitions'); ?></ifcount></dt>
-									<unit relativeTo="ca_occurrences" delimiter="" restrictToType="outside, samek"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-								</div>
-							</ifcount>
-
 						</dl>}}}
+						
 						
 					</div>
 				</div>
@@ -179,24 +216,3 @@ if($show_nav){
 			<div id="map" class="py-3">{{{map}}}</div>
 		</div>
 	</div>
-
-	<!-- {{{<ifcount code="ca_entities" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br/>^relationship_typename</l></dd></unit>		
-		</dl>
-	</ifcount>}}} -->
-
-	<!-- {{{<ifcount code="ca_occurrences" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br/>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}} -->
-
-	<!-- {{{<ifcount code="ca_places" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-			<unit relativeTo="ca_places" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br/>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}} -->

@@ -65,12 +65,6 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
 		<div class="col-md-12">
 			<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_collections.type_id|ca_collections.idno">
-				<div class="fw-medium mb-3 text-capitalize">
-					<!-- <ifdef code="ca_collections.type_id">^ca_collections.type_id</ifdef> -->
-					<!-- <ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef> -->
-				</div>
-			</ifdef>}}}
 			<hr class="mb-0">
 		</div>
 	</div>
@@ -109,44 +103,13 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	<div class="row row-cols-1 row-cols-md-2">
 		<div class="col">				
 			{{{<dl class="mb-0">
-				<!-- <ifdef code="ca_collections.parent_id">
-					<dt>Part of</dt>
-					<dd><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt;"><l>^ca_collections.preferred_labels.name</l></unit></dd>
-				</ifdef>
-
-				<ifdef code="ca_collections.idno">
-					<dt><?= _t('Identifier'); ?></dt>
-					<dd>^ca_collections.idno</dd>
-				</ifdef> -->
-
 				<ifdef code="ca_collections.description">
 					<dt><?= _t('Description'); ?></dt>
 					<dd>^ca_collections.description</dd>
 				</ifdef>
 			</dl>}}}
 		</div>
-		<div class="col">
-			<!-- {{{<dl class="mb-0">
-				<ifcount code="ca_collections.related" min="1">
-					<dt><ifcount code="ca_collections.related" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections.related" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-					<unit relativeTo="ca_collections.related" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
-				</ifcount>
-				<ifcount code="ca_entities" min="1">
-					<dt><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
-					<unit relativeTo="ca_entities" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-
-				<ifcount code="ca_occurrences" min="1">
-						<dt><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-						<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-
-				<ifcount code="ca_places" min="1">
-						<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-						<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-			</dl>}}}					 -->
-		</div>
+		
 	</div>
 <?php
 			if ($show_hierarchy_viewer) {	
@@ -155,25 +118,6 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php				
 			}									
 ?>				
-
-	<!-- {{{<ifcount code="ca_entities" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br>^relationship_typename</l></dd></unit>		
-		</dl>
-	</ifcount>}}}
-	{{{<ifcount code="ca_occurrences" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
-	{{{<ifcount code="ca_places" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-			<unit relativeTo="ca_places" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}} -->
 
 
 {{{<ifcount code="ca_objects" min="1">
