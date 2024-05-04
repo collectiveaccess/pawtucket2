@@ -415,7 +415,7 @@ class SearchController extends FindController {
 		if(isset($va_criteria['_search']) && is_array($va_criteria['_search'])) {
 			foreach($va_criteria['_search'] as $k => $v) {
 				unset($va_criteria['_search'][$k]);
-				$va_criteria['_search'][$k] = caGetDisplayStringForSearch($k);
+				$va_criteria['_search'][$k] = ($ds = caGetDisplayStringForSearch($k)) ? $ds : $v;
 			}
 		}
 		
@@ -430,7 +430,7 @@ class SearchController extends FindController {
 		foreach($va_criteria as $vs_facet_name => $va_criterion) {
 			$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
 			foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
-				$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $this->purifier->purify($vs_criterion), 'id' => $vn_criterion_id);
+				$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'] ?? _t('Search'), 'facet_name' => $vs_facet_name, 'value' => $this->purifier->purify($vs_criterion), 'id' => $vn_criterion_id);
 			}
 		}
 		$this->view->setVar('criteria', $va_criteria_for_display);
