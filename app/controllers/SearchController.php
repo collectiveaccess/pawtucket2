@@ -414,8 +414,9 @@ class SearchController extends FindController {
 		}
 		if(isset($va_criteria['_search']) && is_array($va_criteria['_search'])) {
 			foreach($va_criteria['_search'] as $k => $v) {
-				unset($va_criteria['_search'][$k]);
-				$va_criteria['_search'][$k] = ($ds = caGetDisplayStringForSearch($k)) ? $ds : $v;
+				if(strlen($ds = caGetDisplayStringForSearch($k))) {
+					$va_criteria['_search'][$k] = $ds;
+				}
 			}
 		}
 		
