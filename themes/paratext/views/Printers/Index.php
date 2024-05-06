@@ -47,7 +47,7 @@
             <tr><td data-label='Printers name'>Herederos de la Viuda Plan</td><td data-label='Address'>calle de los Algodoneros</td><td data-label=City>Barcelona</td></tr>
             <tr><td data-label='Printers name'>Oficina de la viuda de Comes</td><td data-label='Address'></td><td data-label=City>Cádiz</td></tr>
             <tr><td data-label='Printers name'>Oficina de Francisco Periu</td><td data-label='Address'></td><td data-label=City>Isla de León</td></tr>
-            <tr><td data-label='Printers name'>Andres Ramirez</td><td data-label='Address'>Calle de lost tres peces</td><td data-label=City>Madrid</td></tr>
+            <tr><td data-label='Printers name'>Andres Ramirez</td><td data-label='Address'>Calle de los tres peces</td><td data-label=City>Madrid</td></tr>
             <tr><td data-label='Printers name'>Antonio Sanz</td><td data-label='Address'>Plazuela de la calle de la Paz</td><td data-label=City>Madrid</td></tr>
             <tr><td data-label='Printers name'>Libreria de los Herederos de Gabriel de Leon</td><td data-label='Address'>La Puerta del Sol</td><td data-label=City>Madrid</td></tr>
             <tr><td data-label='Printers name'>Teresa de Guzmán</td><td data-label='Address'>Hallaràse en su Lonja de Comedias de la Puerta del Sol</td><td data-label=City>Madrid</td></tr>
