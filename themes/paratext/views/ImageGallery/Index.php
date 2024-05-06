@@ -67,7 +67,8 @@ $images = array(
     array(
         'image'         => 'rehersal.jpg',
         'thumbnail'     => 'rehersal_S.jpg',
-        'caption'       => '',
+        'caption'       => '<p>There was a long-standing tradition in Spain of attending afternoon theatrical performances. When theaters were closed for extended periods due to plagues or religious prohibition, people resorted to amateur performances in their homes. Households of means held <i>tertulias</i> (gatherings) where family and guests provided the entertainment by reading and acting the parts on the <i>sueltas</i> bought in multiple copies. Many <i>saynetes</i> (one-act plays) had the number of speaking parts printed on the title page as a clear indication that the play was being offered for an amateur performance by matching the number of speaking parts and the number of people invited to perform.</p>
+		<p>This painting by Luis Paret depicts a moment when the performers are preparing to rehearse. They are wearing a variety of costumes of different cultures and periods which would be hard to match up with the subject of any <i>saynete</i>. Perhaps he is trying to convey a panoramic view of this practice.</p>',
     ),
     array(
         'image'         => 'papirvm.png',
