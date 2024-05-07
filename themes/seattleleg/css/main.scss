@@ -1,0 +1,489 @@
+
+@import  "_bs_variables";
+@import "~bootstrap/scss/bootstrap";
+
+a {
+	text-underline-offset: .25rem;
+}
+
+.img-fluid img {
+	width: 100%;
+	height: auto;
+}
+
+.object-fit-contain img {
+	object-fit: contain !important;
+}
+
+.dropdown-menu {
+	box-shadow: 0 .35rem .25rem rgba(#000, .075);
+}
+
+a.bg-body-tertiary:hover,
+a.bg-body-tertiary:focus,
+a.bg-body-tertiary:active {
+	filter: brightness(95%);
+}
+
+.btn-white {
+	color: $primary;
+	background-color: #FFF;
+}
+
+.btn-white:hover {
+	text-decoration: underline;
+}
+
+
+/* ------------------------- Seattle General ------------------------- */
+
+@font-face {
+	font-family: 'Seattle Regular';
+	src: url('/data/seattleleg/themes/seattleleg/assets/fonts/SeattleText-Regular-V3.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Seattle Bold';
+	src: url('/data/seattleleg/themes/seattleleg/assets/fonts/SeattleText-Bold-V3.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@media (min-width: 1292px) {
+	.container {
+		padding-right: 15px;
+		padding-left: 15px;
+		margin-right: auto;
+		margin-left: auto;
+		max-width: 1292px !important;
+		width: 1292px !important;
+	}
+}
+
+@media (min-width: 992px) and (max-width: 1291px) {
+	.container {
+		width: 970px;
+		max-width: 970px;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 991px){
+	.container {
+		width: 750px;
+		max-width: 750px;
+	}
+}
+
+@media (max-width: 767px){
+
+}
+
+hr{
+	margin: 20px 0px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Seattle Bold", Arial;
+}
+
+h2{
+	font-size: 30px;
+}
+h4 {
+	font-size: 18px;
+}
+
+label {
+	font-weight: bold !important;
+}
+
+a:hover {
+	color: #FFF !important;
+	background-color: $primary !important;
+}
+
+/* ------------------------- Header ------------------------- */
+
+.navbar{
+
+	background-color: #003DA5;
+	max-height: 60px;
+
+	.navbar-brand {
+		padding: 1px 7px;
+		color: #FFF;
+
+		.logohome img {
+			height: 42px;
+			width: 42px;
+			border-radius: 25px;
+			border: 1px solid #fff;
+		}
+		
+		.logo-text{
+			color: #FFF;
+			font-family: "Seattle Bold" !important;
+			font-size: 21px;
+			margin-left: 4px;
+			margin-top: 18px;
+		}
+	}
+	
+	.bi::before{
+		font-weight: bold !important;
+		font-size: 28px !important;
+	}
+}
+
+
+/* ------------------------- Sub-Header ------------------------- */
+
+.titleTopNavBreadcrumbWrapper{
+
+	.deptTitle{
+		margin-top: 15px;
+		line-height: 1.1; 
+	}
+	
+	.deptTitle a {
+		font-family: "Seattle Bold";
+		// font-weight: bold;
+		font-size: 36px;
+		color: #000;
+		text-decoration: none;
+		text-transform: none;
+	}
+	
+	.deptTitle a:hover {
+		color: #000;
+		text-decoration: underline;
+	}
+	
+	.deptTitle .director {
+		font-family: "Open Sans", Arial;
+		font-size: 16px;
+		color: #565656;
+		display: block;
+	}
+
+	#deptTopNav ul li a {
+		display: table-cell;
+		text-align: center;
+		vertical-align: middle;
+		max-width: 130px;
+		padding: 0px 15px;
+		height: 90px;
+		color: #666;
+		// border-bottom: 5px solid #fff;
+		text-decoration: none;
+	}
+	
+	#deptTopNav ul li a.activePage,
+	#deptTopNav ul li a:hover {
+		color: #000 !important;
+		border-bottom: 5px solid #003da5;
+		text-decoration: none;
+		background-color: unset !important;
+	}
+	
+	#deptBreadcrumbs a {
+		color: #000;
+		text-decoration: underline;
+		font-weight: bold;
+		font-size: 14px;
+	}
+
+	#deptBreadcrumbs.left {
+		margin-bottom: 15px;
+	}
+
+}
+
+/* ------------------------- Mobile Menu ------------------------- */ 
+
+@media (max-width: 991px){
+	// .mobile-nav-collapse{
+	// 	display: block;
+	// }
+	// .desktop-nav-collapse{
+	// 	display: none;
+	// }
+} 
+@media (min-width: 992px){
+	// .mobile-nav-collapse{
+	// 	display: none;
+	// }
+	// .desktop-nav-collapse {
+	// 	display: block;
+	// }
+} 
+
+
+#seagovMenuMobile {
+
+	a{
+		text-decoration: none !important;
+		color: #000 !important;
+		font-size: 14px;
+		padding: 15px 20px;
+	}
+
+	button#seagovMenuMobile {
+		background: #000;
+		color: #fff;
+		border: none;
+		height: 46px;
+		width: 56px;
+	}
+
+	#googleSearch_M .input-group input[type="text"] {
+		display: block;
+		margin: 10px 10px 10px 20px;
+		width: 220px !important;
+		height: 40px;
+		background-color: rgba(0, 0, 0, 0);
+		border: 1px solid #666;
+		color: #fff;
+		font-size: 18px;
+	}
+
+	#activeMobileHeading {
+		border: 0px;
+		border-bottom: 1px solid #d1d1d1;
+		margin-bottom: 0px;
+	}
+	#activeMobileHeading a{
+		font-weight: bold;
+	}
+
+	.navItem.list-group-item {
+		border: 0px;
+		border-bottom: 1px solid #d1d1d1;
+		margin-bottom: 0px;
+	}
+
+	.list-group-item.active {
+		background-color: #fff !important;
+	}
+
+
+}
+
+
+
+
+/* ------------------------- Footer ------------------------- */ 
+
+.footer-logo img{
+	height: 72px;
+	width: 72px;
+}
+
+#seagovMenuDesktop a.list-group-item {
+	font-size: 20px;
+	font-weight: bold;
+	padding: 20px 30px;
+	background-color: #fff;
+	color: #000;
+	text-decoration: none;
+}
+
+#seaFooter18Col1, #seaFooter18Col2, #seaFooter18Col3{
+	padding: 0 10px;
+}
+
+#seaFooter18Col2 ul, #seaFooter18Col3 ol{
+	line-height: 40px;
+}
+
+.slidemenu-right.slidemenu-open {
+	top: 0px;
+	right: 0px;
+}
+
+.slidemenu-right {
+	width: 320px;
+	top: 0px;
+	z-index: 2000;
+	position: fixed;
+	-webkit-transition: all 0.4s ease;
+	-moz-transition: all 0.3s ease;
+	transition: all 0.4s ease;
+	right: -100%;
+}
+
+footer a{
+	color: #fff !important;
+	text-decoration: none !important;
+}
+
+
+
+
+/* ------------------------- ADV Search Pages ------------------------- */
+.advancedSearch {
+
+	.advSearchContainer{
+		padding: 66px 32px;
+	}
+
+	a {
+		text-decoration: none !important;
+		font-weight: bold !important;
+	}
+
+	h1.pageTitle {
+		background: #000;
+		color: #fff;
+		display: inline-block;
+		padding: 3px 20px 7px 20px;
+		font-size: 36px;
+		line-height: 40px;
+		margin-bottom: 40px;
+		margin-top: 0px;
+		max-width: 95%;
+	}
+
+	#leftNav:before,
+	#rightCol:before {
+		display: block;
+		content: "";
+		width: 75%;
+		height: 2px;
+		border-top: 8px solid #000;
+	}
+
+	#leftNav ul li,
+	#leftNav a {
+		color: #000;
+		font-size: 16px !important;
+		padding: 0px 5px 20px 0px !important;
+		max-width: 75%;
+	}
+
+	img {
+		height: auto;
+		max-width: 100%;
+	}
+
+	.well{
+		padding: 30px;
+		border: 1px solid #ccc;
+		border-bottom: 5px solid #000;
+		margin-bottom: 30px;
+	}
+
+}
+
+
+
+
+
+/* ------------------------- Details ------------------------- */
+
+#detail{
+
+	padding: 32px;
+
+	#top-search-nav a, #bottom-search-nav a{
+		text-decoration: none !important;
+		font-size: 24px;
+		margin-right: 5px;
+	}
+
+	.record-number {
+		background: #000;
+		color: #fff;
+		display: inline-block;
+		padding: 10px 20px 0px 20px;
+		line-height: 40px;
+		margin-top: 0px;
+		max-width: 95%;
+	}
+
+	table.record {
+		margin: 30px 0;
+		border: 1px solid #ddd;
+	}
+
+}
+
+.detail{
+	.detailPrimaryImage{
+		img{
+			height:450px;
+			width:100%;
+		}
+	}
+	#map{
+		height:250px;
+	}
+}
+
+
+/* ------------------------- browse results ------------------------- */
+
+#search_results{
+	padding: 32px;
+
+	#top-search-nav a, #bottom-search-nav a {
+		text-decoration: none !important;
+		font-size: 24px;
+		margin-right: 5px;
+	}
+}
+
+#browseResultsContainer{
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img, .ca-placeholder{
+			height:200px;
+			width:100%
+		}
+	}
+}
+#bRefine{
+	z-index:999;
+}
+@media(max-width:767px) {
+	#bRefine{
+		position:fixed;
+		top: 0px;
+		width: 100%;
+		left: 0px;
+		display:none;
+	}	
+	#bRefine.show{
+		display:block !important;
+	}
+}
+@media(min-width:768px) {
+	#bRefine{
+		display:block !important;
+	}
+}
+
+/* ------------------------- Collections ------------------------- */
+.collections{
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img{
+			height:200px;
+			width:100%
+		}
+	}
+}
+#collectionsWrapper{
+	height:300px;
+}
