@@ -33,7 +33,7 @@
 	if(is_array($va_sets) && sizeof($va_sets)){
 		if($vb_landing_page_show_featured_gallery){
 ?>
-		<div class="bg-body-tertiary mb-5 py-3">
+		<div id="galleryLandingFeatured" class="bg-body-tertiary mb-5 py-3">
 			<div class="row justify-content-center pt-3 pb-4 px-5">
 				<div class="col">
 					
@@ -45,7 +45,8 @@
 						$t_set = new ca_sets();
 						$va_first_item = array_shift($va_first_items_from_set[$vn_featured_set_id]);
 						$t_set->load($vn_featured_set_id);
-						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_featured_set_id)."</div>";
+						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-cover w-100'>", "", "", "Gallery", $vn_featured_set_id)."</div>";
+						
 						print "<div class='col-sm-6'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", $vn_featured_set_id);
 						if($vs_desc = $t_set->get("ca_sets.".$vs_description_element_code)){
 							if(mb_strlen($vs_desc) > 400){
@@ -64,7 +65,7 @@
 		</div>		
 		<div class="row">
 			<div class='col-12'>
-				<h3 class="text-capitalize"><?php print _t("More ").$o_gallery_config->get("gallery_section_item_name_plural"); ?>
+				<h3 class="text-capitalize"><?php print _t("More ").$o_gallery_config->get("gallery_section_item_name_plural"); ?></h3>
 			</div>
 		</div>
 <?php

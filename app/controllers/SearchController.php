@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2023 Whirl-i-Gig
+ * Copyright 2014-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -49,85 +49,81 @@ class SearchController extends FindController {
 	/**
 	 *
 	 */
-	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+	public function __construct(&$request, &$response, $pa_view_paths=null) {
+		$this->config = caGetBrowseConfig();
 		$this->view_class = 'AdvancedSearchView';
 		
-		parent::__construct($po_request, $po_response, $pa_view_paths);
+		parent::__construct($request, $response, $pa_view_paths);
 
 		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
 			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
 		}
-		if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-			throw new ApplicationException(_t("You do not have access to view this page"));
-		}	
-		
-		$this->opo_config = caGetBrowseConfig();
 		
 		$this->view->setVar("find_type", $this->ops_find_type);
-		caSetPageCSSClasses(array("search", "results"));
+		caSetPageCSSClasses(["search", "results"]);
 	}
 	# -------------------------------------------------------
 	/**
 	 *
 	 */ 
-	public function __call($ps_function, $pa_args) {
+	public function __call($function, $args) {
 		$o_search_config = caGetSearchConfig();
-		$pa_options = array_shift($pa_args);
+		$options = array_shift($args);
 		
-		$this->view->setVar("config", $this->opo_config);
-		$ps_function = strtolower($ps_function);
-		$ps_type = $this->request->getActionExtra();
+		$this->view->setVar("config", $this->config);
+		$function = strtolower($function);
+		$type = $this->request->getActionExtra();
 		
 		// Try to load browse info assuming advanced, then basic search to get the current table.
-		if(!($va_browse_info = caGetInfoForAdvancedSearchType($ps_function))) {
-			if(!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
-				throw new ApplicationException("Invalid browse type $ps_function");
+		if(!($va_browse_info = caGetInfoForAdvancedSearchType($function))) {
+			if(!($va_browse_info = caGetInfoForBrowseType($function))) {
+				throw new ApplicationException("Invalid browse type $function");
 			}
 		}
 		// Once we have the current table we can figure out if we're really advanced or not
 		$vs_class = $this->ops_tablename = $va_browse_info['table'];
 		
-		$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (is_null($this->request->parameterExists('_advanced')) && (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false)));
-		$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
+		$is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (is_null($this->request->parameterExists('_advanced')) && (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false)));
+		$vs_find_type = $is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
 		
 		// Reload browse info once we're sure we're advanced or not
-		if($vb_is_advanced) {
-			$va_browse_info = caGetInfoForAdvancedSearchType($ps_function);
+		if($is_advanced) {
+			$va_browse_info = caGetInfoForAdvancedSearchType($function);
 		} else {
-			$va_browse_info = caGetInfoForBrowseType($ps_function);
+			$va_browse_info = caGetInfoForBrowseType($function);
 		}
 		
-		$this->view->setVar('is_advanced', $vb_is_advanced);
-		$this->view->setVar("browse_type", $ps_function);
+		$this->view->setVar('is_advanced', $is_advanced);
+		$this->view->setVar("browse_type", $function);
 		
-		if ($vb_is_advanced) {
-			if (!($va_browse_info = caGetInfoForAdvancedSearchType($ps_function))) {
+		if ($is_advanced) {
+			if (!($va_browse_info = caGetInfoForAdvancedSearchType($function))) {
 				// invalid browse type – throw error
-				throw new ApplicationException("Invalid advanced search type $ps_function");
+				throw new ApplicationException("Invalid advanced search type $function");
 			}
-		} elseif (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
+		} elseif (!($va_browse_info = caGetInfoForBrowseType($function))) {
 			// invalid browse type – throw error
-			throw new ApplicationException("Invalid browse type $ps_function");
+			throw new ApplicationException("Invalid browse type $function");
 		}
 		
 		// Now that table name is known we can set standard view vars
 		parent::setTableSpecificViewVars($va_browse_info);
 		
-		$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
+		$va_types = caGetOption('restrictToTypes', $va_browse_info, [], array('castTo' => 'array'));
 		
 		# --- row id passed when click back button on detail page - used to load results to and jump to last viewed item
 		$this->view->setVar('row_id', $pn_row_id = $this->request->getParameter('row_id', pInteger));
 		
-		$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
+		$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $function);
 		
 		
 		// Allow plugins to rewrite search prior to execution
 		$qr_res = null;
-		$this->opo_app_plugin_manager->hookReplaceSearch(['search' => $ps_function, 'browseInfo' => &$va_browse_info, 'searchExpression' => &$vs_search_expression, 'result' => &$qr_res]);
-		$vb_search_was_replaced = ($qr_res) ? true : false;
+		$this->opo_app_plugin_manager->hookReplaceSearch(['search' => $function, 'browseInfo' => &$va_browse_info, 'searchExpression' => &$vs_search_expression, 'result' => &$qr_res]);
+		$search_was_replaced = ($qr_res) ? true : false;
 		
-		$ps_view = $this->request->getParameter('view', pString, ['forcePurify' => true]);
-		if ($ps_view == 'jsonData') {
+		$view = $this->request->getParameter('view', pString, ['forcePurify' => true]);
+		if ($view == 'jsonData') {
 			$this->view->setVar('context', $this->opo_result_context);
 			$this->render("Browse/browse_results_data_json.php");
 			return;
@@ -136,8 +132,8 @@ class SearchController extends FindController {
 		
 		$vs_search_expression = $this->opo_result_context->getSearchExpression();
 		if(!$this->request->isAjax()) {
-			if ($ps_label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
-				$this->opo_result_context->setSearchExpressionForDisplay("{$ps_label}: {$vs_search_expression}"); 
+			if ($label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
+				$this->opo_result_context->setSearchExpressionForDisplay("{$label}: {$vs_search_expression}"); 
 				$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
 			} elseif($vs_named_search=caGetNamedSearch($vs_search_expression, $this->request->getParameter('values', pString, ['forcePurify' => true]))) {
 				$vs_search_expression_for_display = caGetNamedSearchForDisplay($vs_search_expression, $this->request->getParameter('values', pString));
@@ -156,7 +152,7 @@ class SearchController extends FindController {
 		//
 		// Handle advanced search form submissions
 		//
-		if($vb_is_advanced) { 
+		if($is_advanced) { 
 			if (!$this->request->isAjax()) {
 				$this->opo_result_context->setSearchExpression(
 					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])
@@ -171,52 +167,52 @@ class SearchController extends FindController {
 		$this->view->setVar('browseInfo', $va_browse_info);
 		$this->view->setVar('paging', in_array(strtolower($va_browse_info['paging']), array('continuous', 'nextprevious', 'letter')) ? strtolower($va_browse_info['paging']) : 'continuous');
 		
-		$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
+		$this->view->setVar('options', caGetOption('options', $va_browse_info, [], array('castTo' => 'array')));
 		
-		$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
+		$va_views = caGetOption('views', $va_browse_info, [], array('castTo' => 'array'));
 		if(!is_array($va_views) || (sizeof($va_views) == 0)){
-			$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
+			$va_views = array('list' => [], 'images' => [], 'timeline' => [], 'map' => [], 'timelineData' => [], 'pdf' => [], 'xlsx' => [], 'pptx' => []);
 		} else {
-			$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
+			$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = [];
 		}
 		
-		if (!$ps_view) {
-			$ps_view = $this->opo_result_context->getCurrentView();
+		if (!$view) {
+			$view = $this->opo_result_context->getCurrentView();
 		}
-		if(!in_array($ps_view, array_keys($va_views))) {
-			$ps_view = array_shift(array_keys($va_views));
+		if(!in_array($view, array_keys($va_views))) {
+			$view = array_shift(array_keys($va_views));
 		}
 		# --- only set the current view if it's not an export format
-		if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData"))){
-			$this->opo_result_context->setCurrentView($ps_view);
+		if(!in_array($view, array("pdf", "xlsx", "pptx", "timelineData"))){
+			$this->opo_result_context->setCurrentView($view);
 		}
 		
-		$va_view_info = $va_views[$ps_view];
+		$va_view_info = $va_views[$view];
 
-		$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
+		$vs_format = ($view == 'timelineData') ? 'json' : 'html';
 		
-		caAddPageCSSClasses(array($vs_class, $ps_function));
+		caAddPageCSSClasses(array($vs_class, $function));
 		
 		$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
 		
 		$t_instance = Datamodel::getInstance($vs_class, true);
-		if($ps_type){
-			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
+		if($type){
+			$vn_type_id = $t_instance->getTypeIDForCode($type);
 		}
 		$this->view->setVar('t_instance', $t_instance);
 		$this->view->setVar('table', $va_browse_info['table']);
 		$this->view->setVar('primaryKey', $t_instance->primaryKey());
 	
 		$this->view->setVar('browse', $o_browse = caGetBrowseInstance($vs_class));
-		$this->view->setVar('views', caGetOption('views', $va_browse_info, array(), array('castTo' => 'array')));
-		$this->view->setVar('view', $ps_view);
-		$this->view->setVar('viewIcons', $this->opo_config->getAssoc("views"));
+		$this->view->setVar('views', caGetOption('views', $va_browse_info, [], array('castTo' => 'array')));
+		$this->view->setVar('view', $view);
+		$this->view->setVar('viewIcons', $this->config->getAssoc("views"));
 	
 		//
 		// Load existing browse if key is specified
 		//
-		if ($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
-			$o_browse->reload($ps_cache_key);
+		if ($cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
+			$o_browse->reload($cache_key);
 		}
 	
 		if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $va_browse_info, false))); }
@@ -253,7 +249,7 @@ class SearchController extends FindController {
 				case "alphabetical":
 				case "list":
 				default:
-					$content = !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array('checkAccess' => $this->opa_access_values, 'request' => $this->request)) : [];
+					$content = !$search_was_replaced ? $o_browse->getFacetContent($vs_facet, array('checkAccess' => $this->opa_access_values, 'request' => $this->request)) : [];
 					$this->view->setVar('facet_content', is_array($content) ? $content : []);
 					$this->render("Browse/list_facet_html.php");
 					break;
@@ -299,59 +295,59 @@ class SearchController extends FindController {
 		//
 		// Sorting
 		//
-		$vb_sort_changed = false;
+		$sort_changed = false;
 		$o_block_result_context = null;
 		
 		$va_sort_by = caGetOption('sortBy', $va_browse_info, null);
 		
-		if (!($ps_sort = urldecode($this->request->getParameter("sort", pString, ['forcePurify' => true])))) {
+		if (!($sort = urldecode($this->request->getParameter("sort", pString, ['forcePurify' => true])))) {
 			// inherit sort setting from multisearch? (used when linking to full results from multisearch result)
 			if ($this->request->getParameter("source", pString, ['forcePurify' => true]) === 'multisearch') {
-				$o_block_result_context = new ResultContext($this->request, $va_browse_info['table'], 'multisearch', $ps_function);
-				if (($ps_sort !== $o_block_result_context->getCurrentSort()) && $o_block_result_context->getCurrentSort()) {
-					$ps_sort = $o_block_result_context->getCurrentSort();
-					$vb_sort_changed = true;
+				$o_block_result_context = new ResultContext($this->request, $va_browse_info['table'], 'multisearch', $function);
+				if (($sort !== $o_block_result_context->getCurrentSort()) && $o_block_result_context->getCurrentSort()) {
+					$sort = $o_block_result_context->getCurrentSort();
+					$sort_changed = true;
 				}
 			}
 			
-			if (!$ps_sort){ $ps_sort = $this->opo_result_context->getCurrentSort(); }
-		} elseif($ps_sort != $this->opo_result_context->getCurrentSort()){ 
-			$vb_sort_changed = true; 
+			if (!$sort){ $sort = $this->opo_result_context->getCurrentSort(); }
+		} elseif($sort != $this->opo_result_context->getCurrentSort()){ 
+			$sort_changed = true; 
 		}
 		
-		if(preg_match("!^ca_set_items.rank:[\d]+$!", $ps_sort)) {
-			$ps_sort = str_replace(":", "/", $ps_sort);
-			$va_sort_by[$ps_sort] = $ps_sort;
+		if(preg_match("!^ca_set_items.rank:[\d]+$!", $sort)) {
+			$sort = str_replace(":", "/", $sort);
+			$va_sort_by[$sort] = $sort;
 		} elseif(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
-			if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
-				$ps_sort = array_shift(array_keys($va_sorts));
-				$vb_sort_changed = true;
+			if (!$sort || (!in_array($sort, array_keys($va_sorts)))) {
+				$sort = array_shift(array_keys($va_sorts));
+				$sort_changed = true;
 			}
 		}
 		
-		if($vb_sort_changed){
+		if($sort_changed){
 			# --- set the default sortDirection if available
 			$va_sort_direction = caGetOption('sortDirection', $va_browse_info, null);
-			if($ps_sort_direction = $va_sort_direction[$ps_sort]){
-				$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
+			if($sort_direction = $va_sort_direction[$sort]){
+				$this->opo_result_context->setCurrentSortDirection($sort_direction);
 			} 			
 		}
-		if (!($ps_sort_direction = strtolower($this->request->getParameter("direction", pString, ['forcePurify' => true])))) {
-			if (!($ps_sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
-				$ps_sort_direction = 'asc';
+		if (!($sort_direction = strtolower($this->request->getParameter("direction", pString, ['forcePurify' => true])))) {
+			if (!($sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
+				$sort_direction = 'asc';
 			}
 		}
-		if(!in_array($ps_sort_direction, ['asc', 'desc'])) {  $ps_sort_direction = 'asc'; }
+		if(!in_array($sort_direction, ['asc', 'desc'])) {  $sort_direction = 'asc'; }
 		
 		
-		$this->opo_result_context->setCurrentSort($ps_sort);
-		$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
+		$this->opo_result_context->setCurrentSort($sort);
+		$this->opo_result_context->setCurrentSortDirection($sort_direction);
 		
 		$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
-		$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
+		$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $sort)) : ''));
 		$this->view->setVar('sortControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');
-		$this->view->setVar('sort', $ps_sort);
-		$this->view->setVar('sort_direction', $ps_sort_direction);
+		$this->view->setVar('sort', $sort);
+		$this->view->setVar('sort_direction', $sort_direction);
 		
 		$va_options = array('checkAccess' => $this->opa_access_values);
 		if ($va_restrict_to_fields = caGetOption('restrictSearchToFields', $va_browse_info, null)) {
@@ -366,10 +362,10 @@ class SearchController extends FindController {
 			$o_browse->addResultFilter($va_browse_info['table'].'.parent_id', 'is', 'null');	
 		}
 		
-		$vb_root_records_only = caGetOption('omitChildRecords', $va_browse_info, array(), array('castTo' => 'bool'));
+		$root_records_only = caGetOption('omitChildRecords', $va_browse_info, [], array('castTo' => 'bool'));
 		
-		$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
-		if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced || (bool)$o_search_config->get('use_strict_phrase_searching_for_advanced_searches'), 'rootRecordsOnly' => $vb_root_records_only))); }
+		$expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, [], array('castTo' => 'bool'));
+		if (!$search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandResultsHierarchically' => $expand_results_hierarchically, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$is_advanced || (bool)$o_search_config->get('use_strict_phrase_searching_for_advanced_searches'), 'rootRecordsOnly' => $root_records_only))); }
 	
 		// Set highlight text
 		MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $vs_search_expression, ['persist' => !RequestHTTP::isAjax()]); 
@@ -390,7 +386,7 @@ class SearchController extends FindController {
 			}
 		} 
 	
-		if (!$vb_search_was_replaced) {
+		if (!$search_was_replaced) {
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
 				// Enforce role-restricted facets here
 				if (isset($va_facet_info['require_roles']) && is_array($va_facet_info['require_roles']) && sizeof($va_facet_info['require_roles'])) {
@@ -403,7 +399,7 @@ class SearchController extends FindController {
 		$this->view->setVar('facets', $va_facets);
 	
 		$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
-		Session::setVar($ps_function.'_last_browse_id', $vs_key);
+		Session::setVar($function.'_last_browse_id', $vs_key);
 		
 	
 		//
@@ -420,7 +416,7 @@ class SearchController extends FindController {
 				unset($va_criteria[$vs_base_facet]);
 			}
 		}
-		$va_criteria_for_display = array();
+		$va_criteria_for_display = [];
 		foreach($va_criteria as $vs_facet_name => $va_criterion) {
 			$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
 			foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
@@ -440,14 +436,14 @@ class SearchController extends FindController {
 		// 
 		// Results
 		//
-		if (!$vb_search_was_replaced) { $qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction)); }
+		if (!$search_was_replaced) { $qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$sort], 'sort_direction' => $sort_direction)); }
 	
 		$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 		$this->view->setVar('result', $qr_res);
 		
 		if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
 			if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
-				$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
+				$pn_hits_per_block = $this->config->get("defaultHitsPerBlock");
 			}
 		}
 		$this->opo_result_context->getItemsPerPage($pn_hits_per_block);
@@ -481,18 +477,18 @@ class SearchController extends FindController {
 		$this->opo_result_context->saveContext();
 		
 		if ($vn_type_id) {
-			if ($this->render("Browse/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
+			if ($this->render("Browse/{$vs_class}_{$vs_type}_{$view}_{$vs_format}.php")) { return; }
 		} 
 		
 		// map
-		if ($ps_view === 'map') {
+		if ($view === 'map') {
 			$va_opts = array(
 				'renderLabelAsLink' => false, 
 				'request' => $this->request, 
 				'color' => '#cc0000', 
 				'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
 				'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
-				//'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view))
+				//'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $function,'view' => $view))
 			);
 
 			$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
@@ -502,7 +498,7 @@ class SearchController extends FindController {
 		}
 		
 		
-		switch($ps_view) {
+		switch($view) {
 			case 'xlsx':
 			case 'pptx':
 			case 'pdf':
@@ -524,101 +520,102 @@ class SearchController extends FindController {
 	 * 
 	 */
 	public function advanced() {
-		$ps_function = strtolower($this->request->getActionExtra());
+		$function = strtolower($this->request->getActionExtra());
 		
-		if (!($va_search_info = caGetInfoForAdvancedSearchType($ps_function))) {
+		if (!($search_info = caGetInfoForAdvancedSearchType($function))) {
 			// invalid advanced search type – throw error
 			throw new ApplicationException("Invalid advanced search type");
 		}
+		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $search_info["displayName"]));
 		caSetPageCSSClasses(array("search results advancedSearch"));
 
-		$vs_class = $va_search_info['table'];
-		$va_types = caGetOption('restrictToTypes', $va_search_info, array(), array('castTo' => 'array'));
+		$types = caGetOption('restrictToTypes', $search_info, array(), array('castTo' => 'array'));
 		
-		$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced', $ps_function);
+		$this->opo_result_context = new ResultContext($this->request, $search_info['table'], $this->ops_find_type.'_advanced', $function);
 		$this->opo_result_context->setAsLastFind();
 		
-		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_search_info["displayName"]));
-		$this->view->setVar('searchInfo', $va_search_info);
-		$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
+		$this->view->setVar('searchInfo', $search_info);
+		$this->view->setVar('options', caGetOption('options', $search_info, [], ['castTo' => 'array']));
 		
 		$this->opo_result_context->saveContext();
 		
-		$this->render($va_search_info['view']);
+		$this->render($search_info['view']);
 	}
 	# ------------------------------------------------------- 
-	public function generalSearch($pa_options=null) {
-
-		$this->config = Configuration::load(__CA_THEME_DIR__.'/conf/browse.conf');
-		$va_search_blocks = $this->config->getList('generalSearchTargets');
-		$va_browse_blocks = $this->config->getAssoc('browseTypes');
-		$va_general_search_options = $this->config->getAssoc('generalSearchOptions');
-		foreach($va_search_blocks as $vs_block_name){
-			if($va_browse_blocks[$vs_block_name]){
-				$va_search_blocks[$vs_block_name] = $va_browse_blocks[$vs_block_name];
-			}
-		}
-		$vs_find_type = "generalsearch";
-		$va_result_contexts = array();
+	/**
+	 *
+	 */
+	public function generalSearch(?array $options=null) {
+		$search_targets = $this->config->getList('generalSearchTargets');
+		$browse_types = $this->config->getAssoc('browseTypes');
+		$dont_redirect_to_single_search_result = $this->config->get('dont_redirect_to_single_search_result');
 		
-		// Create result context for each block
-		$va_tables = array();
-		foreach($va_search_blocks as $vs_block => $va_block_info) {
-			$va_tables[$va_block_info['table']] = 1;
-			$va_result_contexts[$vs_block] = new ResultContext($this->request, $va_block_info['table'], $vs_find_type, $vs_block);
-			$va_result_contexts[$vs_block]->setAsLastFind(false);
-		}
+		$find_type = "generalsearch";
+		$tables = $result_contexts = [];
 		
-		// Create generic contexts for each table in generalsearch (no specific block); used to house search history and overall counts
-		// when there is more than one block for a given table
-		foreach(array_keys($va_tables) as $vs_table) {
-			$va_result_contexts["_generalsearch_{$vs_table}"] = new ResultContext($po_request, $vs_table, $vs_find_type);
+		// Create result context for each target
+		foreach($search_targets as $target) {
+			if(!isset($browse_types[$target])) { continue; }
+			if(!($table = $browse_types[$target]['table'] ?? null)) { continue; }
+			
+			$tables[$table] = 1;
+			$result_contexts[$target] = new ResultContext($this->request, $table, $find_type, $target);
+			$result_contexts[$target]->setAsLastFind(false);
 		}
 		
+		// Create generic contexts for each table in generalsearch (no specific target); used to house search history and overall counts
+		// when there is more than one target for a given table
+		foreach(array_keys($tables) as $table) {
+			$result_contexts["_generalsearch_{$table}"] = new ResultContext($request, $table, $find_type);
+		}
 		
-		if (!is_array($va_result_contexts) || !sizeof($va_result_contexts)) { 
+		if (!is_array($result_contexts) || !sizeof($result_contexts)) { 
 			// TODO: throw error - no searches are defined
 			return false;
 		}
 		
-		$o_first_result_context = array_shift(array_values($va_result_contexts));
+		$o_first_result_context = array_shift(array_values($result_contexts));
 		
-		$vs_search = $o_first_result_context->getSearchExpression();
+		$search = $o_first_result_context->getSearchExpression();
 		
-		if ($ps_label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
-			$o_first_result_context->setSearchExpressionForDisplay("{$ps_label}: ".caGetDisplayStringForSearch($vs_search, ['omitFieldNames' => true]));
+		if ($label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
+			$o_first_result_context->setSearchExpressionForDisplay("{$label}: ".caGetDisplayStringForSearch($search, ['omitFieldNames' => true]));
 		} else {
-			$o_first_result_context->setSearchExpressionForDisplay(caGetDisplayStringForSearch($vs_search)); 
+			$o_first_result_context->setSearchExpressionForDisplay(caGetDisplayStringForSearch($search)); 
 		}
-		$vs_search_display = $o_first_result_context->getSearchExpressionForDisplay();
+		$search_display = $o_first_result_context->getSearchExpressionForDisplay();
 		
-		$this->view->setVar('search', $vs_search);
-		$this->view->setVar('searchForDisplay', $vs_search_display);
-		$this->view->setVar("config", $this->config);
-		$this->view->setVar('blocks', $va_search_blocks);
-		$this->view->setVar('blockNames', array_keys($va_search_blocks));
-		$this->view->setVar('results', $va_results = caGeneralSearch($this->request, $vs_search, $va_search_blocks, array('access' => $this->opa_access_values, 'contexts' => $va_result_contexts, 'matchOnStem' => (bool)$this->config->get('matchOnStem'))));
-		$vn_result_count = 0;
-		$vs_redirect_to_only_result = null;
+		$this->view->setVar('search', $search);
+		$this->view->setVar('searchForDisplay', $search_display);
+		$this->view->setVar('config', $this->config);
+		$this->view->setVar('blocks', $search_targets);
+		$this->view->setVar('blockNames', $search_targets);
+		$this->view->setVar('results', $results = caGeneralSearch($this->request, $search, $search_targets, [
+			'access' => $this->opa_access_values, 
+			'contexts' => $result_contexts, 
+			'matchOnStem' => (bool)$this->config->get('matchOnStem')
+		]));
 		
-		$va_context_list = [];
-		foreach($va_result_contexts as $vs_block => $o_context) {
-			$o_context->setParameter('search', $vs_search);
-			$va_context_list[$o_context->tableName()][$o_context->findType()] = $vs_search;
-			if (!isset($va_results[$vs_block]['ids']) || !is_array($va_results[$vs_block]['ids'])) { continue; }
-			$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());
-			if($va_results[$vs_block]['sort']) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
-			if (isset($va_results[$vs_block]['sortDirection'])) { $o_context->setCurrentSortDirection($va_results[$vs_block]['sortDirection']); }
+		$result_count = 0;
+		$redirect_to_only_result = null;
+		
+		$context_list = [];
+		foreach($result_contexts as $target => $o_context) {
+			$o_context->setParameter('search', $search);
+			$context_list[$o_context->tableName()][$o_context->findType()] = $search;
+			if (!isset($results[$target]['ids']) || !is_array($results[$target]['ids'])) { continue; }
+			$o_context->setResultList(is_array($results[$target]['ids']) ? $results[$target]['ids'] : array());
+			if($results[$target]['sort']) { $o_context->setCurrentSort($results[$target]['sort']); }
+			if (isset($results[$target]['sortDirection'])) { $o_context->setCurrentSortDirection($results[$target]['sortDirection']); }
 			$o_context->saveContext();
 			
-			$vn_result_count += sizeof($va_results[$vs_block]['ids']);
-			
-			if ((sizeof($va_results[$vs_block]['ids']) == 1) && ($vn_result_count == 1) && (!$this->config->get('dont_redirect_to_single_search_result'))) {
-				$vs_redirect_to_only_result = caDetailUrl($this->request, $va_results[$vs_block]['table'], $va_results[$vs_block]['ids'][0], false);
+			$result_count += sizeof($results[$target]['ids']);
+			if ((sizeof($results[$target]['ids']) == 1) && ($result_count == 1) && (!$dont_redirect_to_single_search_result)) {
+				$redirect_to_only_result = caDetailUrl($this->request, $results[$target]['table'], $results[$target]['ids'][0], false);
 			}
 		}
 		
-		foreach($va_context_list as $table => $l) {
+		foreach($context_list as $table => $l) {
 			foreach($l as $type => $s) {
 				$o_context = new ResultContext($this->request, $table, $type);
 				$o_context->setParameter('search', $s);
@@ -626,8 +623,8 @@ class SearchController extends FindController {
 			}
 		}
 		
-		if (($vn_result_count == 1) && ($vs_redirect_to_only_result)) {
-			$this->response->setRedirect($vs_redirect_to_only_result);
+		if (($result_count == 1) && $redirect_to_only_result) {
+			$this->response->setRedirect($redirect_to_only_result);
 			return;
 		}		
 		$this->render('Search/general_results_html.php');
@@ -637,12 +634,12 @@ class SearchController extends FindController {
 	 * Generate the URL for the "back to results" link from a browse result item
 	 * as an array of path components.
 	 */
-	public static function getReturnToResultsUrl($po_request) {
-		$browse = $po_request->getAction();
+	public static function getReturnToResultsUrl($request) {
+		$browse = $request->getAction();
 		$browse_types = caGetBrowseConfig()->get('browseTypes');
 		if(is_array($browse_types[$browse])) {
 			$table = $browse_types[$browse]['table'] ?? null;
-			$find = ResultContext::getLastFind($po_request, $table);
+			$find = ResultContext::getLastFind($request, $table);
 			$tmp = explode('/', $find);
 			if((sizeof($tmp) > 1) && ($tmp[0] === 'search_advanced')) {
 				return array(
@@ -681,22 +678,22 @@ class SearchController extends FindController {
 	 *
 	 * @return string Summary of current browse criteria ready for display
 	 */
-	public function getCriteriaForDisplay($po_browse=null) {
-		$va_criteria = $po_browse->getCriteriaWithLabels();
-		if (!sizeof($va_criteria)) { return ''; }
-		$va_criteria_info = $po_browse->getInfoForFacets();
+	public function getCriteriaForDisplay($browse=null) {
+		$criteria = $browse->getCriteriaWithLabels();
+		if (!sizeof($criteria)) { return ''; }
+		$criteria_info = $browse->getInfoForFacets();
 		
-		$va_buf = array();
-		foreach($va_criteria as $vs_facet => $va_vals) {
-			foreach($va_vals as $vn_i => $vs_val) {
-				$va_vals[$vn_i] = preg_replace("![A-Za-z_\./]+[:]{1}!", "", $vs_val);
-				$va_vals[$vn_i] = trim(preg_replace("![\*].!", "", $va_vals[$vn_i]));
-				$va_vals[$vn_i] = trim(preg_replace("![\(\)]+!", " ", $va_vals[$vn_i]));
+		$buf = array();
+		foreach($criteria as $facet => $vals) {
+			foreach($vals as $i => $val) {
+				$vals[$i] = preg_replace("![A-Za-z_\./]+[:]{1}!", "", $val);
+				$vals[$i] = trim(preg_replace("![\*].!", "", $vals[$i]));
+				$vals[$i] = trim(preg_replace("![\(\)]+!", " ", $vals[$i]));
 			}
-			$va_buf[] = caUcFirstUTF8Safe($va_criteria_info[$vs_facet]['label_singular']).': '.join(", ", $va_vals);
+			$buf[] = caUcFirstUTF8Safe($criteria_info[$facet]['label_singular']).': '.join(", ", $vals);
 		}
 		
-		return join(" / ", $va_buf);
+		return join(" / ", $buf);
 	}
 	# -------------------------------------------------------
 }

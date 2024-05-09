@@ -1,0 +1,69 @@
+// Quickly modify global styling by enabling or disabling optional features.
+
+$primary:       $gray-900;
+$secondary: #808080;
+$light:         $gray-100;
+$dark:          #303335; /* used for .bg-dark style */
+
+$samek-accent: #FFA300;
+$samek-cool-gray: #D9D9D6;
+$samek-dark-cool-gray: #A7A8AA;
+
+$bucknell-blue: #003865;
+$bucknell-orange: #E87513;
+$bucknell-secondary-blue: #007AAE;
+$bucknell-secondary-blue-2: #59CBE8;
+
+
+/* font */
+$font-family-sans-serif: "Lato", "sans-serif";
+
+/* links */
+$link-color: $primary;
+
+// scss-docs-start headings-variables
+$headings-font-family: 'Merriweather', serif;
+$headings-font-weight:        400;
+$headings-line-height:        1;
+$headings-color:              #808080;
+
+// scss-docs-start display-font variables
+$display-font-family: 'Merriweather', serif;
+$display-font-weight: 400;
+$display-font-sizes: (
+  1: 4rem,
+  2: 3.5rem,
+  3: 3rem,
+  4: 2.5rem,
+  5: 2rem,
+  6: 1.111rem
+);
+
+/* nav bar */
+$navbar-light-hover-color: $primary;
+$navbar-light-active-color: $primary;
+
+// $dropdown-padding-x: .5rem !important;
+// $dropdown-padding-y: .15rem !important;
+$dropdown-link-hover-bg: none !important;
+// $dropdown-bg: none !important;
+
+$font-size-root:              18px;
+$font-size-base:              1rem; // Assumes the browser default, typically `16px`
+
+$spacer: 1rem !default;
+$spacers: (
+  0: 0,
+  1: $spacer * .25,
+  2: $spacer * .5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+) !default;
+
+$navbar-padding-y: $spacer * 1.45;
+$navbar-nav-link-padding-x: 		1.2rem;
+$navbar-nav-link-padding-y: 0px !important;
+$nav-link-padding-y: 		0px !important;
+$nav-link-font-size: 				$font-size-base * 1.19;
+$nav-link-font-weight: 				$font-weight-normal;

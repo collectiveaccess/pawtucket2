@@ -1,0 +1,26 @@
+<div class="row mb-5">
+	<div class="col-sm-12 col-md-10">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="pb-2">{{{title}}}</h1>
+<?php
+				if($this->getVar("subtitle")){
+?>
+				<h2 class="fw-normal mb-4">{{{subtitle}}}</h2>
+<?php
+				}
+?>
+			</div>
+		</div>
+		<div class="row mt-1">
+			<div class="col-sm-12">
+				<div class="img-fluid mb-5">{{{media:1:original}}}</div>
+			</div>
+		</div>
+		<div class="row justify-content-center text-left">
+			<div class="col-sm-12 col-md-8 mb-5 img-fluid">
+				{{{bodytext}}}
+			</div>
+		</div>
+	</div>
+</div>

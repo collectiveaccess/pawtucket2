@@ -6,6 +6,17 @@
 		</div>
 	</div>
 	<div class="row">
+		<div class="col mb-2">
+		<h2>Variables</h2>
+		$primary is used for the navbar hover and active color, link color and btn-primary background color.  You can set these individually using the following variables:
+		<br>$navbar-light-hover-color
+		<br/>$navbar-light-active-color
+		<br>$link-color
+		<br>
+		<hr/>
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-4">
 			<h2>Text</h2>
 			<hr/>
@@ -82,6 +93,15 @@
 					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person</a></dd>
 					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person</a></dd> 	
 			</dl>
+		</div>
+	</div>
+	<div class="row align-items-center mb-5">
+		<div class="col-md-6">
+			<H2>Vertically centered columns</H2>
+			Assign row class .align-items-center
+		</div>
+		<div class="col-md-6 img-fluid">
+			<?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("alt" => "example image")); ?>
 		</div>
 	</div>
 </div>

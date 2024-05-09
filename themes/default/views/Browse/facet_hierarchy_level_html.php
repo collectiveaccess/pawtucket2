@@ -69,7 +69,7 @@
 	if ($vb_is_nav) { print "</div>\n"; }
 	if($vs_link_to == "morePanel"){
 ?>
-<script type="text/javascript">
+<script>
 	jQuery(document).ready(function() {
 		jQuery(".caSubItem<?php print $vs_facet_name; ?>").on('click', function(e) {
 			jQuery('#bMorePanel').load('<?php print caNavUrl($this->request, '*', '*', $vs_browse_type); ?>', { getFacet: 1, facet: '<?php print $vs_facet_name; ?>', view: '<?php print $vs_view; ?>', key: '<?php print $vs_key; ?>', browseType: '<?php print $vs_browse_type; ?>', id: jQuery(this).data('item_id'), isNav: <?php print $vb_is_nav ? 1 : 0; ?>}, 

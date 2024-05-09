@@ -1,5 +1,5 @@
 <?php
-/* ----------------------------------------------------------------------
+/** ----------------------------------------------------------------------
  * views/pageFormat/pageHeader.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
@@ -54,13 +54,13 @@ if($this->request->isLoggedIn()){
 <html lang="en" class="h-100">
 	<head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 	
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
-	<script type="text/javascript">
+	<script>
 		let pawtucketUIApps = {};
 	</script>
 </head>
@@ -68,16 +68,12 @@ if($this->request->isLoggedIn()){
 	
 	<nav class="navbar navbar-expand-lg shadow-sm">
 		<div class="container-xl">
-			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'logo.svg', array("alt" => "Logo", "role" => "banner")), "navbar-brand", "", "", ""); ?>
+			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'logo.svg', array("alt" => "Site logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">
-<!--- set aria-current -> page for the current page -->						
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Home'), "nav-link".((strToLower($this->request->getController()) == "front") ? " active" : ""), "", "Front", "Index", "", ((strToLower($this->request->getController()) == "front") ? array("aria-current" => "page") : null)); ?>
-					</li>
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">				
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
@@ -92,26 +88,26 @@ if($this->request->isLoggedIn()){
 						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 					</li>
 <?php
-				if($user_links){
-					print $user_links;
-				}
+					if($user_links){
+						print $user_links;
+					}
 ?>
 				</ul>
 				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
 					<div class="input-group mt-4">
+						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search" aria-label="Search">
-						<button type="submit" class="btn rounded-0" id="nav-search-btn"><i class="bi bi-search"></i></button>
+						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
 					<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
-			
 				</form>
 			</div>
 		</div>
 	</nav>	
 
-	<main role="main" <?= caGetPageCSSClasses(); ?>>
+	<main <?= caGetPageCSSClasses(); ?>>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4'>";
 	}
-	
+?>

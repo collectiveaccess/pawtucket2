@@ -1,0 +1,219 @@
+/*a{
+	text-underline-offset: .25rem;
+}*/
+
+.img-fluid img{
+	width:100%;
+	height:auto;
+}
+.object-fit-contain img{
+	object-fit: contain !important;
+}
+
+.dropdown-menu{
+	box-shadow: 0 .35rem .25rem rgba(#000, .075);
+}
+a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
+    filter: brightness(95%);
+}
+.btn-white{
+	color: $primary;
+	background-color:#FFF;
+}
+.btn-white:hover, .btn-white:focus{
+	text-decoration:underline;
+}
+.btn.disabled{
+	border-color:transparent;
+}
+/* ------------------------- Navbar ------------------------- */
+.navbar-brand{
+	width:200px;
+}
+@media(max-width:575px){
+	.navbar-expand-sm .dropdown-menu{
+		box-shadow: none;
+		border:0px;
+	}
+}
+@media(min-width:576px){
+	.navbar-expand-sm .dropdown-menu{
+		top:4.3em;
+	}
+}
+@media(max-width:767px){
+	.navbar-expand-md .dropdown-menu{
+		box-shadow: none;
+		border:0px;
+	}
+}
+@media(min-width:768px){
+	.navbar-expand-md .dropdown-menu{
+		top:4.3em;
+	}
+}
+@media(max-width:991px){
+	.navbar-expand-lg .dropdown-menu{
+		box-shadow: none;
+		border:0px;
+	}
+}
+@media(min-width:992px){
+	.navbar-expand-lg .dropdown-menu{
+		top:4.3em;
+	}
+}
+@media(max-width:1199px){
+	.navbar-expand-xl .dropdown-menu{
+		box-shadow: none;
+		border:0px;
+	}
+}
+@media(min-width:1200px){
+	.navbar-expand-xl .dropdown-menu{
+		top:4.3em;
+	}
+}
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: url("../assets/graphics/hero_1.jpg");
+
+    /* Full height */
+    height: 100vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/hero_1.jpg");
+    }
+}
+.hpExplore{
+	img{
+		height:250px;
+	}
+}
+
+@media (max-device-width:1024px) {
+    /* ipad and mobile disable background-attachment: fixed; fallback to no parallax so at least see image */
+    .parallax {
+        background-attachment: scroll;
+    }
+}
+
+.fade-out {
+	opacity: 1;
+	animation-name: fade-out;
+	animation-duration: 3s;
+	animation-timing-function: linear;
+	animation-delay: 4s;
+	animation-iteration-count: 1;
+	animation-fill-mode: forwards;
+	animation-direction: forwards;
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    height: 0px;
+    padding:0px !important;
+  }
+}
+
+/* ------------------------- Details ------------------------- */
+.detail{
+	.detailPrimaryImage{
+		img{
+			height:450px;
+			width:100%;
+		}
+	}
+	.map{
+		height:300px;
+	}
+}
+
+/* ------------------------- browse results ------------------------- */
+#browseResultsContainer, .resultBlock{
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img, .ca-placeholder{
+			height:200px;
+			width:100%
+		}
+	}
+}
+#bRefine{
+	z-index:999;
+}
+@media(max-width:767px) {
+	#bRefine{
+		position:fixed;
+		top: 0px;
+		width: 100%;
+		left: 0px;
+		display:none;
+	}	
+	#bRefine.show{
+		display:block !important;
+	}
+}
+@media(min-width:768px) {
+	#bRefine{
+		display:block !important;
+	}
+}
+
+/* ------------------------- Collections ------------------------- */
+.collections{
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img{
+			height:200px;
+			width:100%
+		}
+	}
+}
+#collectionsWrapper{
+	height:400px;
+}
+/* ------------------------- Gallery ------------------------- */
+.gallery{
+	#galleryLandingFeatured{
+		img{
+			height:400px;
+		}
+	}
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img{
+			height:200px;
+			width:100%
+		}
+	}
+	#galleryDetailItemInfo{
+		min-height:450px;
+		#galleryDetailImageWrapper{
+			img{
+				height:450px;
+				width:100%;
+			}
+		}
+	}
+}

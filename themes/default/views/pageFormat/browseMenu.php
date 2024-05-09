@@ -33,8 +33,8 @@
 		if(sizeof($va_browse_types) > 1){
 ?>
 			<li class="nav-item dropdown">
-				<a class="nav-link<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-					<?= _t('Browse'); ?> <i class="bi bi-chevron-down ms-1 fs-6"></i>
+				<a class="text-nowrap nav-link<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<?= _t('Browse'); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
 				</a>
 				<ul class="dropdown-menu">
 <?php

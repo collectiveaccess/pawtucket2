@@ -56,7 +56,7 @@
 		<div id="timeline-embed"></div>
 	</div>
 	
-	<script type="text/javascript">
+	<script>
 		jQuery(document).ready(function() {
 			createStoryJS({
 				type:       'timeline',
