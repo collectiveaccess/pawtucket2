@@ -95,15 +95,19 @@ if (!$vb_ajax) {	// !ajax
 		<div class="nav-icons">
 			<a name="h0"></a>
 
-			<a href="/search/">
+			<a href="/">
 				<i class="bi bi-house-door-fill"></i>
 			</a>
 
-			<a href="/search/combined">
+			<a href="/Search/advanced/combined">
 				<i class="bi bi-search"></i>
 			</a>
 
-			<a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=2&amp;u=%2Fsearch%2Fcombined&amp;r=0&amp;f=S">
+			<!-- TODO: Add pagination here -->
+			<a href="">
+				<i class="bi bi-chevron-double-left"></i>
+			</a>
+			<a href="">
 				<i class="bi bi-chevron-double-right"></i>
 			</a>
 
@@ -111,13 +115,13 @@ if (!$vb_ajax) {	// !ajax
 				<i class="bi bi-chevron-double-down"></i>
 			</a>
 
-			<a href="/search/help/">
+			<a href="https://clerk.seattle.gov/search/help/">
 				<i class="bi bi-question-lg"></i>
 			</a>
 		</div>
 
 		<div id="export-controls">
-			<button onclick="exportSearch('LEGI2', 'LEGCEXP', true);" class="btn btn-sm btn-primary">
+			<button onclick="" class="btn btn-sm btn-primary">
 				<i class="bi bi-download"></i>
 				EXPORT
 			</button>
@@ -129,120 +133,83 @@ if (!$vb_ajax) {	// !ajax
 
   <strong>Documents:</strong> 1 - 200 of 27602 &nbsp; <strong>Search String</strong> <span class="queries"> : 2=1 : 1=PARKS </span><br />
   <hr />
-  <table style="width: 100%;" class="table table-striped table-responsive">
-    <tbody>
-      <tr>
-        <th>Result</th>
-        <th>File Type</th>
-        <th>Number</th>
-        <th>Filed</th>
-        <th>Title</th>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>Clerk File</td>
-        <td>323014</td>
-        <td>May 2, 2024</td>
-        <td>
-          <a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=1&amp;u=%2Fsearch%2Fcombined&amp;r=1&amp;f=G">
-            Seattle Department of Parks and Recreation Designation of official names for park facilities: Hoa Mai
-          </a>
-          ...
-        </td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Clerk File</td>
-        <td>323016</td>
-        <td>May 1, 2024</td>
-        <td>
-          <a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=1&amp;u=%2Fsearch%2Fcombined&amp;r=2&amp;f=G">
-            Unspent 2023 Capital Appropriations Not Subject to section 4(c) of 2023 Budget Adoption Ordinance
-          </a>
-          ...
-        </td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>Clerk File</td>
-        <td>323019</td>
-        <td>Apr 25, 2024</td>
-        <td>
-          <a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=1&amp;u=%2Fsearch%2Fcombined&amp;r=3&amp;f=G">
-            2024 Long-term Overnight Vehicle Assignments.
-          </a>
-          ...
-        </td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>Clerk File</td>
-        <td>323011</td>
-        <td>Apr 25, 2024</td>
-        <td>
-          <a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=1&amp;u=%2Fsearch%2Fcombined&amp;r=4&amp;f=G">
-            Seattle Department of Transportation (SDOT) Director's Rule 01-2024, Design Standards for Small Wireless Facilities
-          </a>
-          ...
-        </td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>Clerk File</td>
-        <td>323004</td>
-        <td>Apr 23, 2024</td>
-        <td>
-          <a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=1&amp;u=%2Fsearch%2Fcombined&amp;r=5&amp;f=G">
-            A Proclamation by Mayor Bruce A. Harrell and the Seattle City Council declaring May 2024
-          </a>
-          ...
-        </td>
-      </tr>
-      <tr>
-        <td>6</td>
-        <td>Ordinance</td>
-        <td>127013</td>
-        <td>Apr 19, 2024</td>
-        <td>
-          <a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=1&amp;u=%2Fsearch%2Fcombined&amp;r=6&amp;f=G">
-            AN ORDINANCE relating to surveillance technology implementation; authorizing approval of uses and accepting the 2023
-          </a>
-          ...
-        </td>
-      </tr>
-      <tr>
-        <td>7</td>
-        <td>Ordinance</td>
-        <td>127012</td>
-        <td>Apr 19, 2024</td>
-        <td>
-          <a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=1&amp;u=%2Fsearch%2Fcombined&amp;r=7&amp;f=G">
-            AN ORDINANCE relating to surveillance technology implementation; authorizing approval of uses and accepting the 2023
-          </a>
-          ...
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <hr />
+
+
+	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
+		<div class="row">
+			<div class="col-md-12 col-lg-5">
+				<H1 class="text-capitalize">
+					<?php
+							print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+					?>		
+				</H1>
+			</div>
+
+			<div id="browseResultsContainer">
+				<div class="row">
+
+					<table style="width: 100%;" class="table table-striped table-responsive">
+						<tbody>
+							<tr>
+								<th>Result</th>
+								<th>File Type</th>
+								<th>Number</th>
+								<th>Filed</th>
+								<th>Title</th>
+							</tr>
+
+							<?php
+								} // !ajax
+								# --- check if this result page has been cached
+								# --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
+								$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id.$vs_letter);
+								if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
+									print ExternalCache::fetch($vs_cache_key, 'browse_results');
+								}else{
+									$vs_result_page = $this->render("Browse/browse_results_list_html.php");
+									ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results', $o_config->get("cache_timeout"));
+									print $vs_result_page;
+								}		
+							
+							?>
+						</tbody>
+					</table>
+
+
+				</div><!-- end row -->
+			</div><!-- end browseResultsContainer -->
+	</div><!-- end col-8 -->
+
+
+
+
+
+	<hr />
   <strong>Documents:</strong> 1 - 200 of 27602 &nbsp; <strong>Search String</strong> <span class="queries"> : 2=1 : 1=PARKS </span><br />
   <br />
   <hr />
+
   <p id="bottom-search-nav">
-    <a href="/search/">
+    <a href="/">
       <i class="bi bi-house-door-fill"></i>
     </a>
-    <a href="/search/combined">
+    <a href="/Search/advanced/combined">
       <i class="bi bi-search"></i>
     </a>
-
-    <a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=2&amp;u=%2Fsearch%2Fcombined&amp;r=0&amp;f=S">
+		
+		<!-- TODO: Add pagination here -->
+		<a href="">
+			<i class="bi bi-chevron-double-left"></i>
+		</a>
+    <a href="">
       <i class="bi bi-chevron-double-right"></i>
     </a>
+
     <a href="#h0">
       <i class="bi bi-chevron-double-up"></i>
     </a>
-    <a href="/search/help/">
+
+    <a href="https://clerk.seattle.gov/search/help/">
       <i class="bi bi-question-lg"></i>
     </a>
   </p>
@@ -251,133 +218,5 @@ if (!$vb_ajax) {	// !ajax
 
 
 
-
-	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
-		<div class="row">
-			<div class="col-md-12 col-lg-5">
-				<H1 class="text-capitalize">
-<?php
-					print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
-?>		
-				</H1>
-			</div>
-			<div class="col-md-12 col-lg-7 text-lg-end">
-				<ul class="list-group list-group-horizontal justify-content-lg-end mt-2 small">
- 					
-
-<?php
-				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-					print "<li class='list-group-item border-0 px-0 pt-1'>\n";
-					print "<ul class='list-inline p-0 me-2'><li class='list-inline-item fw-medium text-uppercase me-1'>"._t("Sort by:")."</li>\n";
-					$i = 0;
-					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-						$i++;
-						if ($vs_current_sort === $vs_sort) {
-							print "<li class='list-inline-item me-1'>{$vs_sort}</li>\n";
-						} else {
-							print "<li class='list-inline-item me-1'>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
-						}
-						if($i < sizeof($va_sorts)){
-							print "<li class='list-inline-item me-2'>|</li>";
-						}
-					}
-					print "<li class='list-inline-item'>".caNavLink($this->request, '<i class=bi bi-sort-down'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction" role="button"></i>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-					print "</ul>\n";
-					print "</li>\n";
-				}
-
-				if(is_array($va_views) && (sizeof($va_views) > 1)){
-					print "<li class='list-group-item border-0 px-0 pt-0'>\n";
-					print "<ul class='list-inline p-0 me-2'>\n";
-					foreach($va_views as $vs_view => $va_view_info) {
-						print "<li class='list-inline-item me-1'>";
-						if ($vs_current_view === $vs_view) {
-							print '<button class="btn btn-dark btn-sm disabled" aria-label="'.$vs_view.'"  title="'.$vs_view.'"><i class="bi '.$va_view_icons[$vs_view]['icon'].'"></i></button>';
-						} else {
-							print caNavLink($this->request, '<i class="bi '.$va_view_icons[$vs_view]['icon'].'"></i>', 'btn btn-light btn-sm', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key), array("title" => $vs_view, "aria-label" => $vs_view, "role" => "button"));
-						}
-						print "</li>\n";
-					}
-					print "</ul>\n";
-					print "</li>\n";
-				}
-				if(is_array($va_export_formats) && sizeof($va_export_formats)){
-?>
-					<li class='list-group-item border-0 px-0 pt-0'>
-						<div class="dropdown inline w-auto">
-							<button class="btn btn-light btn-sm dropdown-toggle small" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="<?php print _t("Export Results"); ?>">
-								<i class="bi bi-download"></i>
-							</button>
-							<ul class="dropdown-menu">
-<?php
-							foreach($va_export_formats as $va_export_format){
-								print "<li class='dropdown-item' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
-							}
-?>
-							</ul>
-						</div>
-					</li>
-<?php
-				}
-
-				if(is_array($va_all_facets) && sizeof($va_all_facets)){
-?>
-					<li class='list-group-item border-0 px-0 pt-0 d-md-none'><button class="btn btn-light btn-sm small ms-1" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine" title="<?php print _t("Filter Results"); ?>"><i class="bi bi-sliders"></i></button></li>
-<?php
-				}
-?>
-				</ul>
-			</div>
-		</div>
-<?php				
-		if($vs_facet_description){
-			print "<div class='py-3'>".$vs_facet_description."</div>";
-		}
-
-		if($vb_showLetterBar){
-			print "<div id='bLetterBar'>";
-			foreach(array_keys($va_letter_bar) as $vs_l){
-				if(trim($vs_l)){
-					print caNavLink($this->request, $vs_l, ($vs_letter == $vs_l) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))." ";
-				}
-			}
-			print " | ".caNavLink($this->request, _t("All"), (!$vs_letter) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all')); 
-			print "</div>";
-		}
-?>
-			<div id="browseResultsContainer">
-				<div class="row">
-<?php
-} // !ajax
-
-# --- check if this result page has been cached
-# --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
-$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id.$vs_letter);
-if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
-	print ExternalCache::fetch($vs_cache_key, 'browse_results');
-}else{
-	$vs_result_page = $this->render("Browse/browse_results_{$vs_current_view}_html.php");
-	ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results', $o_config->get("cache_timeout"));
-	print $vs_result_page;
-}		
-
-if (!$vb_ajax) {	// !ajax
-?>
-			
-			</div><!-- end row -->
-		</div><!-- end browseResultsContainer -->
-	</div><!-- end col-8 -->
-	
-	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 offset-xl-1">
-<?php
-		// print $this->render("Browse/browse_refine_subview_html.php");
-?>			
-	</div><!-- end col-2 -->
-	
-	
+		
 </div><!-- end row -->
-
-<?php
-		// print $this->render('Browse/browse_panel_subview_html.php');
-} //!ajax
-?>

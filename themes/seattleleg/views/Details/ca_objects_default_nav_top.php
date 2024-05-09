@@ -44,25 +44,32 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
   <div id="top-search-nav" class="d-flex inline-block justify-content-between">
 		<div class="nav-icons">
-			<a href="/search/">
+			<a href="/">
 				<i class="bi bi-house-door-fill"></i>
 			</a>
-			<a href="/search/combined">
+			<a href="/index.php/Search/advanced/combined">
 				<i class="bi bi-search"></i>
 			</a>
-			<a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=1&amp;u=%2Fsearch%2Fcombined&amp;r=1&amp;f=S">
+			
+			<a href="">{{{resultsLink}}}</a>
+			<a href="">{{{previousLink}}}</a>
+			<a href="">{{{nextLink}}}</a>
+			
+			<!-- <a href="">
 				<i class="bi bi-justify-left"></i>
 			</a>
-			<a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=2&amp;u=%2Fsearch%2Fcombined&amp;r=1&amp;f=S">
+			<a href="">
 				<i class="bi bi-chevron-double-right"></i>
 			</a>
-			<a href="/search/results?s1=parks&amp;l=200&amp;Sect1=IMAGE&amp;Sect2=THESON&amp;Sect3=PLURON&amp;Sect4=AND&amp;Sect5=LEGI2&amp;Sect6=HITOFF&amp;d=LEGC&amp;p=1&amp;u=%2Fsearch%2Fcombined&amp;r=2&amp;f=G">
+			<a href="">
 				<i class="bi bi-chevron-right"></i>
-			</a>
+			</a> -->
+
 			<a href="#hb">
 				<i class="bi bi-chevron-double-down"></i>
 			</a>
-			<a href="/search/help/">
+			
+			<a href="https://clerk.seattle.gov/search/help/">
 				<i class="bi bi-question-lg"></i>
 			</a>
 		</div>

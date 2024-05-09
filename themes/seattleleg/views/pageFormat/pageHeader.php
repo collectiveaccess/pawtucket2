@@ -67,7 +67,7 @@ if($this->request->isLoggedIn()){
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 
 
-<nav class="navbar">
+<nav class="navbar sticky-top">
   <div class="container p-0">
 
 		<div class="navbar-brand">
@@ -119,11 +119,19 @@ if($this->request->isLoggedIn()){
         </div>
       </div>
 
-			<button class="btn border-0 desktop-nav-collapse" data-bs-toggle="collapse" data-bs-target="#mySidebar" aria-controls="mySidebar" aria-expanded="false" aria-label="Toggle sidebar">
+			<!-- <button class="btn border-0 desktop-nav-collapse" data-bs-toggle="collapse" data-bs-target="#mySidebar" aria-controls="mySidebar" aria-expanded="false" aria-label="Toggle sidebar">
 				<i class="bi bi-list text-white"></i>
 			</button>
 
 			<button class="btn border-0 mobile-nav-collapse" data-bs-toggle="collapse" data-bs-target="#seagovMenuMobile" aria-controls="seagovMenuMobile" aria-expanded="false" aria-label="Toggle mobile sidebar">
+				<i class="bi bi-list text-white"></i>
+			</button> -->
+
+			<button class="btn border-0 desktop-nav-collapse" id="openSlideMenuDesktop" aria-label="Toggle sidebar">
+				<i class="bi bi-list text-white"></i>
+			</button>
+
+			<button class="btn border-0 mobile-nav-collapse" id="openSlideMenuMobile" aria-label="Toggle mobile sidebar">
 				<i class="bi bi-list text-white"></i>
 			</button>
 
@@ -132,10 +140,9 @@ if($this->request->isLoggedIn()){
 </nav>
 
 
-<div class="collapse" id="mySidebar">
-	<ul id="seagovMenuDesktop" class="list-group slidemenu-right slidemenu-open" style="width: 320px;">
+	<ul id="seagovMenuDesktop" class="slidemenu-right list-group" style="width: 320px;">
 		<li class="list-group-item first">
-			<button class="btn text-black float-end" id="mySidebar" data-bs-toggle="collapse" data-bs-target="#mySidebar" aria-label="Close Sidebar"><i class="bi bi-x" style="font-size: 55px"></i></button>
+			<button class="btn text-black float-end" id="closeSlideMenuDesktop" aria-label="Close Sidebar"><i class="bi bi-x" style="font-size: 55px"></i></button>
 		</li>
 		<a href="https://www.seattle.gov/services-and-information" class="list-group-item" title="Main Menu — Services &amp; Information">Services &amp; Information</a>
 		<a href="https://www.seattle.gov/elected-officials" class="list-group-item" title="Main Menu — Elected Officials">Elected Officials</a>
@@ -145,32 +152,24 @@ if($this->request->isLoggedIn()){
 		<a href="https://www.seattle.gov/event-calendar" class="list-group-item" title="Main Menu — Event Calendar">Event Calendar</a>
 		<li class="list-group-item last" style="height: 100px;"></li>
 	</ul>
-</div>
-
-
 
 <!-------------------------------- Mobile Menu -------------------------------->
 
 
-<ul id="seagovMenuMobile" class="collapse list-group">
-  <!-- slidemenu-right slidemenu-open -->
+<ul id="seagovMenuMobile" class="list-group slidemenu-right">
 
   <li class="list-group-item first p-0">
-    <button id="seagovMenuMobile" class="float-end" data-bs-toggle="collapse" data-bs-target="#seagovMenuMobile" aria-label="Close Sidebar">
+
+    <button class="float-end" id="closeSlideMenuMobile" aria-label="Close Sidebar">
       <i class="bi bi-x" style="font-size: 30px"></i>
     </button>
     <form role="search" id="googleSearch_M" class="navbar-form p-1" style="background-color: #333;">
       <div class="input-group mb-2">
         <input type="text" class="bg-none" title="Search" id="searchInput_M"
         name="terms" maxlength="255" value="" placeholder="Search">
-        <!-- <span class="input-group-btn"> -->
           <button id="searchButton_M" type="submit" class="btn bg-none text-white">
 						<i class="bi bi-search"></i>
           </button>
-          <!-- <button id="searchCollectionMobileToggle" type="button" class="btn btn-primary btn-default">
-            <i class="bi bi-gear-fill"></i>
-          </button> -->
-        <!-- </span> -->
       </div>
 
       <div id="googleSearchToggle_M">
@@ -492,10 +491,6 @@ if($this->request->isLoggedIn()){
 
 
 
-
-
-
-
 <div class="titleTopNavBreadcrumbWrapper border-bottom border-black">
 	<div class="container">
 
@@ -538,6 +533,20 @@ if($this->request->isLoggedIn()){
 	</div>
 </div>
 
+<script>
+  document.getElementById('openSlideMenuDesktop').addEventListener('click', function() {
+    document.getElementById('seagovMenuDesktop').classList.toggle('slidemenu-open');
+  });
+  document.getElementById('closeSlideMenuDesktop').addEventListener('click', function() {
+    document.getElementById('seagovMenuDesktop').classList.toggle('slidemenu-open');
+  });
+  document.getElementById('openSlideMenuMobile').addEventListener('click', function() {
+    document.getElementById('seagovMenuMobile').classList.toggle('slidemenu-open');
+  });
+  document.getElementById('closeSlideMenuMobile').addEventListener('click', function() {
+    document.getElementById('seagovMenuMobile').classList.toggle('slidemenu-open');
+  });
+</script>
 
 <main role="main" <?= caGetPageCSSClasses(); ?>>
 

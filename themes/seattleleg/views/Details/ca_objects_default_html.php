@@ -88,15 +88,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.STAT">
-				<tr>
-					<td>Notes:</td>
-					<td><em>
-						<span class="insert-related-links">Clerk's Office Note: PDF updated 4/30/2024.</span>
-					</em></td>
-				</tr>
-			</ifdef>}}}
-
 			{{{<ifdef code="ca_objects.INDX">
 				<tr>
 					<td>Index Terms:</td>

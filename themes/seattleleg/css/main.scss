@@ -140,6 +140,44 @@ a:hover {
 		font-weight: bold !important;
 		font-size: 28px !important;
 	}
+	
+	@media (max-width: 991px) {
+		.mobile-nav-collapse {
+			display: inline;
+		}
+
+		.desktop-nav-collapse {
+			display: none;
+		}
+	}
+
+	@media (min-width: 992px) {
+		.mobile-nav-collapse {
+			display: none;
+		}
+
+		.desktop-nav-collapse {
+			display: inline;
+		}
+	}
+}
+
+
+.slidemenu-right.slidemenu-open {
+	top: 0px;
+	right: 0px;
+}
+
+.slidemenu-right {
+	width: 320px;
+	top: 0px;
+	z-index: 2000;
+	position: fixed;
+	transition: all 0.4s ease;
+	right: -100%;
+}
+#seagovMenuMobile {
+	width: 100% !important;
 }
 
 
@@ -207,23 +245,6 @@ a:hover {
 }
 
 /* ------------------------- Mobile Menu ------------------------- */ 
-
-@media (max-width: 991px){
-	// .mobile-nav-collapse{
-	// 	display: block;
-	// }
-	// .desktop-nav-collapse{
-	// 	display: none;
-	// }
-} 
-@media (min-width: 992px){
-	// .mobile-nav-collapse{
-	// 	display: none;
-	// }
-	// .desktop-nav-collapse {
-	// 	display: block;
-	// }
-} 
 
 
 #seagovMenuMobile {
@@ -301,22 +322,6 @@ a:hover {
 
 #seaFooter18Col2 ul, #seaFooter18Col3 ol{
 	line-height: 40px;
-}
-
-.slidemenu-right.slidemenu-open {
-	top: 0px;
-	right: 0px;
-}
-
-.slidemenu-right {
-	width: 320px;
-	top: 0px;
-	z-index: 2000;
-	position: fixed;
-	-webkit-transition: all 0.4s ease;
-	-moz-transition: all 0.3s ease;
-	transition: all 0.4s ease;
-	right: -100%;
 }
 
 footer a{

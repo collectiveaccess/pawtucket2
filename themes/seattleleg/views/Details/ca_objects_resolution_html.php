@@ -57,7 +57,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
   <h2 class="record-number">
 		<!-- Clerk File 323014  --> 
-		{{{ca_objects.type_id}}} {{{ca_objects.CFN}}}
+		{{{ca_objects.type_id}}} {{{ca_objects.RESN}}}
 	</h2>
 
   <table class="record table table-striped table-responsive">

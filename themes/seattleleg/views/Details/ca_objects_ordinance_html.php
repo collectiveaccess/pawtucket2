@@ -57,7 +57,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
   <h2 class="record-number">
 		<!-- Clerk File 323014  --> 
-		{{{ca_objects.type_id}}} {{{ca_objects.CFN}}}
+		{{{ca_objects.type_id}}} {{{ca_objects.ORDN}}}
 	</h2>
 
   <table class="record table table-striped table-responsive">
@@ -86,15 +86,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				<tr>
 					<td>Current Status:</td>
 					<td>^ca_objects.STAT</td>
-				</tr>
-			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.STAT">
-				<tr>
-					<td>Notes:</td>
-					<td><em>
-						<span class="insert-related-links">Clerk's Office Note: PDF updated 4/30/2024.</span>
-					</em></td>
 				</tr>
 			</ifdef>}}}
 
