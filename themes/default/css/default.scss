@@ -20,7 +20,7 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 	color: $primary;
 	background-color:#FFF;
 }
-.btn-white:hover{
+.btn-white:hover, .btn-white:focus{
 	text-decoration:underline;
 }
 .btn.disabled{

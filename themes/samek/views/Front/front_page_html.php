@@ -45,10 +45,11 @@
 <div class="container">
 	<form class="pb-3" role="search" action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>">
 		<label for="heroSearchInput" class="form-label display-5 text-secondary">Search the Collection</label>
-		<div class="input-group pb-2">
+		<div class="input-group">
 			<input name="search" type="text" class="form-control me-1" id="heroSearchInput" placeholder="Search" aria-label="Search" aria-label="Search Bar">
 			<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
 		</div>
+		<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
 	</form>
 
 	<div class="row">
@@ -60,7 +61,7 @@
 			?>
 				<div class="masonry-item">
 					<?= caDetailLink($this->request, $item['representation_tag'], 'link-text', 'ca_objects', $item['row_id']); ?>
-					<?= caDetailLink($this->request, $item['name'], 'item-overlay-text', 'ca_objects', $item['row_id']); ?>
+					<?= caDetailLink($this->request, $item['name'], 'item-overlay-text fs-4 text-center text-white', 'ca_objects', $item['row_id']); ?>
 				</div>
 			<?php
 				}

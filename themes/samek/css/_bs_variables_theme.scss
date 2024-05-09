@@ -43,6 +43,11 @@ $display-font-sizes: (
 $navbar-light-hover-color: $primary;
 $navbar-light-active-color: $primary;
 
+// $dropdown-padding-x: .5rem !important;
+// $dropdown-padding-y: .15rem !important;
+$dropdown-link-hover-bg: none !important;
+// $dropdown-bg: none !important;
+
 $font-size-root:              18px;
 $font-size-base:              1rem; // Assumes the browser default, typically `16px`
 

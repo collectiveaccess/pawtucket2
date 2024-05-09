@@ -1220,7 +1220,9 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 			];
 			
 			foreach($pa_versions as $vs_version) {
-				$va_media_tags['tags'][$vs_version] = $t->getMediaTag('ca_object_representations.media', $vs_version);
+				$alt = $alt_texts[$t->get($vs_pk)] ?? '';
+				
+				$va_media_tags['tags'][$vs_version] = $t->getMediaTag('ca_object_representations.media', $vs_version, ['alt' => $alt]);
 				$va_media_tags['info'][$vs_version] = $t->getMediaInfo('ca_object_representations.media', $vs_version);
 				$va_media_tags['urls'][$vs_version] = $t->getMediaUrl('ca_object_representations.media', $vs_version);
 				$va_media_tags['paths'][$vs_version] = $t->getMediaPath('ca_object_representations.media', $vs_version);

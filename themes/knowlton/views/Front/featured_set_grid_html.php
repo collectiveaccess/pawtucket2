@@ -32,24 +32,32 @@
 	$va_access_values = $this->getVar("access_values");
 	$qr_res = $this->getVar('featured_set_items_as_search_result');
 	$o_config = $this->getVar("config");
+	$t_set = $this->getVar("featured_set");
+	$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("checkAccess" => $this->opa_access_values)));
+	$va_set_items_by_row_id = array();
+	foreach($va_set_items as $vn_item_id => $va_set_item_info){
+		$va_set_items_by_row_id[$va_set_item_info["row_id"]] = $vn_item_id;
+	}
 	if($qr_res && $qr_res->numHits()){
 ?>   
-<div class="frontGrid mt-4">	
+<div class="frontGrid mt-4">
+	<H2 class="mb-3">Featured Student Work</H2>
+				
 <?php
 		$i = $vn_col = 0;
 		while($qr_res->nextHit()){
 			if($vs_media = $qr_res->get('ca_object_representations.media.page', array("checkAccess" => $va_access_values, "class" => "object-fit-cover w-100"))){
+				$vn_set_item_id = $va_set_items_by_row_id[$qr_res->get('ca_objects.object_id')];
+				$t_set_item = new ca_set_items($vn_set_item_id);
+				$vs_caption = $t_set_item->get("ca_set_items.preferred_labels");
+				if(!$vs_caption || ($vs_caption == "[BLANK]")){
+					$vs_caption = $qr_res->get('ca_objects.preferred_labels.name');
+				}
 				if($vn_col == 0){
 					print "<div class='row'>";
 				}
 				print "<div class='col-12 col-sm-6'>";
-				$vs_date = $qr_res->getWithTemplate("^ca_objects.dateSet.displayDate");
-				$vs_designer = $qr_res->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='designer' delimiter=', '>^ca_entities.preferred_labels.displayname</unit>");
-				$vs_desc = "";
-				if($vs_date || $vs_designer){
-					$vs_desc = "<div class='serif'>".$vs_designer.(($vs_designer && $vs_date) ? ", " : "").$vs_date."</div>";
-				}
-				print $qr_res->getWithTemplate("<div class='mb-4'><l class='text-decoration-none'>".$vs_media."<div class='fw-semibold pt-2'>^ca_objects.preferred_labels.name</div>".$vs_desc."</ifdef></l></div>");
+				print $qr_res->getWithTemplate("<div class='mb-4'><l class='text-decoration-none'>".$vs_media."<div class='fw-semibold pt-2'>".$vs_caption."</div></ifdef></l></div>");
 				print "</div>";
 				$vb_item_output = true;
 				$i++;
