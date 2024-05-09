@@ -56,7 +56,23 @@
 				</div>
 			</div>
 		</footer><!-- end footer -->
-		
+<?php
+# --- display lightbox alert
+if($this->request->getParameter("accept_terms", pInteger)){
+	Session::setVar('visited_time', time());
+}
+if((!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
+
+?>
+	<div class="disclaimerAlert position-fixed w-100 h-100 t-0 s-0 bg-dark z-3" style="--bs-bg-opacity: .8;">
+		<div class="disclaimerAlertBox bg-white p-2 p-md-5">
+			<div class="disclaimerAlertMessage text-center"><H1 class="mb-4">Appropriate Use</H1><div>{{{disclaimer_alert_message}}}</div><div class="mt-4"><?php print caNavLink($this->request, _t("Accept and Enter"), 'btn btn-primary', '', '*', '*', array('accept_terms' => 1)); ?></div></div>
+			
+		</div>
+	</div>
+<?php
+}
+?>		
 		<script>
 			window.initApp();
 		</script>

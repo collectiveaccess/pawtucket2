@@ -1,0 +1,31 @@
+<?php
+	$vs_download_links = "";
+	if ($t_site_page = $this->getVar("page")) {
+		if($t_site_page->getWithTemplate("^ca_site_page_media.media_id")){
+			$vs_download_links = $t_site_page->getWithTemplate("<unit relativeTo='ca_site_page_media' delimiter='<br/><br/>'><if rule='^ca_site_page_media.media.original.url =~ /pdf/'><a href='^ca_site_page_media.media.original.url' class='btn btn-primary mx-5'><i class='bi bi-download' aria-label='Download'></i> ^ca_site_page_media.title</a></if></unit>");
+			
+		}
+	}
+?>
+<div class="row">
+	<div class="col-sm-12">
+		<H1>{{{title}}}</H1>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-12 col-md-8 col-lg-7">
+		<div class="mb-5">
+			{{{bodytext}}}
+			<br><br/>
+<?php
+		if($vs_download_links){
+?>
+		<div class='mt-5 text-center'><?php print $vs_download_links; ?></div>
+<?php
+		}
+?>		</div>
+	</div>
+	<div class="col-sm-12 col-md-4 col-lg-5">
+		<div class="img-fluid mb-5">{{{media:1:page}}}</div>	
+	</div>
+</div>

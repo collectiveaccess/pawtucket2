@@ -100,3 +100,37 @@ $dark:          #0c3f55; /* dark blue */
 		font-weight:bold;
 	}
 }
+/* ------------------------- Disclaimer ----------------------- */
+.disclaimerAlert div.disclaimerAlertBox{
+	margin:25vh 25vw;
+	height:50vh;
+	position:relative;	
+}
+.disclaimerAlert div.disclaimerAlertMessage{
+	font-size: 18px;
+	overflow:scroll;
+}
+.disclaimerAlert div.disclaimerAlertBox{
+	margin:5vh 5vw;
+	height:90vh;
+}
+.disclaimerAlert div.disclaimerAlertMessage{
+	position: relative;
+	height: 100%;
+	font-size: 13px;
+}
+@media(min-width:768px){
+	.disclaimerAlert div.disclaimerAlertBox{
+		margin:10vh 15vw;
+		max-height:80vh;
+	}
+	.disclaimerAlert div.disclaimerAlertMessage{
+		font-size: 18px;
+	}
+}
+@media(min-width:1145px){
+	.disclaimerAlert div.disclaimerAlertBox{
+		margin:15vh 15vw;
+		height:70vh;
+	}
+}
