@@ -43,7 +43,7 @@
 				</div>
 				<div class="col-sm-12 col-md-6 col-lg-5 text-center">
 <?php
-					print "<div class='princetonLogo'><a href='https://www.princeton.edu' target='_blank'>".caGetThemeGraphic($this->request, 'PU1line.png', array("alt" => "Department of Art & Archaeology"))."</a></div>";
+					print "<div class='princetonLogo'><a href='https://www.princeton.edu' target='_blank'>".caGetThemeGraphic($this->request, 'PU1line.png', array("alt" => "Princeton University"))."</a></div>";
 ?>				
 				</div>
 			</div>

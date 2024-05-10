@@ -85,7 +85,7 @@
 									array(
 										'display' => 'detail',
 										'showAnnotations' => true,
-										'primaryOnly' => true, 
+										#'primaryOnly' => true, 
 										'dontShowPlaceholder' => true, 
 										'captionTemplate' => false,
 										'noToolBar' => true								

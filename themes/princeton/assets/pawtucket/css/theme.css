@@ -24,6 +24,9 @@ a{
 a:hover{
 	color:#E77500;
 }
+a:focus-visible {
+  outline: 2px solid;
+}
 .btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active {
 	background-color:#595959;
 	text-decoration: none;
@@ -34,6 +37,18 @@ a:hover{
 }
 .bgLightGray{
 	background-color:#f2f2f2;
+}
+#skipNavigationBrowse a {
+  position: absolute;
+  margin-left: -3000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+	#skipNavigationBrowse{
+		display:none;
+	}
 }
 /* header */
 .menuBar{
@@ -998,7 +1013,16 @@ a:hover .featuredObjectsCaption, a:focus .featuredObjectsCaption{
 .exploreMapBalloonContainer a.btn{
 	color:#FFF;
 }
-
+.detail .detailMediaToolbar, .gallery .detailMediaToolbar {
+  margin-top: 5px;
+  text-align: center;
+  background-color: #FFF;
+  display:block;
+  position:relative;
+}
+.detail .detailMediaToolbar > a{
+	padding:8px;
+}
 /* types */
 .typesIntro {
 	font-size: 16px;
