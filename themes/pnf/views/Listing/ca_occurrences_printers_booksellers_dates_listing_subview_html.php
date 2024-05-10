@@ -80,20 +80,20 @@
 	$va_letter_array = array();
 	print "<div class='row'><div class='col-sm-12' style='background-color:#dedede; padding:10px;'>";
 	print "<div class='row'>";
-	print "<div class='col-sm-4 col-md-3' style='padding:5px background-color:#FFF;'>NAME</div>";
-	print "<div class='col-sm-4 col-md-2' style='padding:5px background-color:#FFF;'>PLACE & DATES KNOWN TO HAVE BEEN ACTIVE</div>";
-	print "<div class='col-sm-4 col-md-2' style='padding:5px background-color:#FFF;'>DATES</div>";
-	print "<div class='col-sm-4 col-md-5' style='padding:5px background-color:#FFF;'>NOTES</div>";
+	print "<div class='col-sm-4 col-md-3' style='padding:5px; background-color:#FFF;'>NAME</div>";
+	print "<div class='col-sm-4 col-md-2' style='padding:5px; background-color:#FFF;'>PLACE & DATES KNOWN TO HAVE BEEN ACTIVE</div>";
+	print "<div class='col-sm-4 col-md-2' style='padding:5px; background-color:#FFF;'>DATES</div>";
+	print "<div class='col-sm-4 col-md-5' style='padding:5px; background-color:#FFF;'>NOTES</div>";
 	print "</div>";
 
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
 			print "<div class='row'>";
-			print "<div class='col-sm-4 col-md-3' style='padding:5px background-color:#FFF;'>".$qr_list->get('ca_occurrences.preferred_labels.name')."</div>";
-			print "<div class='col-sm-4 col-md-2' style='padding:5px background-color:#FFF;'>".$qr_list->get('ca_occurrences.printer_book_place_date')."</div>";
-			print "<div class='col-sm-4 col-md-2' style='padding:5px background-color:#FFF;'>".$qr_list->get('ca_occurrences.printer_book_date')."</div>";
-			print "<div class='col-sm-4 col-md-5' style='padding:5px background-color:#FFF;'>".$qr_list->get('ca_occurrences.printer_book_notes')."</div>";
+			print "<div class='col-sm-4 col-md-3' style='padding:5px; background-color:#FFF;'>".$qr_list->get('ca_occurrences.preferred_labels.name')."</div>";
+			print "<div class='col-sm-4 col-md-2' style='padding:5px; background-color:#FFF;'>".$qr_list->get('ca_occurrences.printer_book_place_date')."</div>";
+			print "<div class='col-sm-4 col-md-2' style='padding:5px; background-color:#FFF;'>".$qr_list->get('ca_occurrences.printer_book_date')."</div>";
+			print "<div class='col-sm-4 col-md-5' style='padding:5px; background-color:#FFF;'>".$qr_list->get('ca_occurrences.printer_book_notes')."</div>";
 			print "</div>";
 		}
 	}
