@@ -157,7 +157,7 @@ if($this->request->isLoggedIn()){
 							<?php
 if($this->request->isLoggedIn()){
 ?>
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Miscellanies'), '', '', 'Listing', 'miscellanies');?></li>							
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Miscellany'), '', '', 'Listing', 'miscellanies');?></li>							
 <?php
 }
 ?>
@@ -230,7 +230,7 @@ if($this->request->isLoggedIn()){
 ?>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'ESCUDOS Y MARCAS DE IMPRESORES', '', '', 'Pictorials', 'PrintersDevices');?></li>	
 
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'MISCELANEAS', '', '', 'Listing', 'miscellanies');?></li>							
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'MISCELANEA', '', '', 'Listing', 'miscellanies');?></li>							
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'ORNAMENTOS', '', '', 'Pictorials', 'ornaments');?></li>
 
 <?php
