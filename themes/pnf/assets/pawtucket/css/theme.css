@@ -1065,7 +1065,7 @@ div.caMediaOverlayControls {
 		padding-right:0px;
 	}						
 }
-.listingSubHeading
+.listingSubHeading {
 	margin-bottom: 25px;
 	line-height: 1.3em;
 	font-weight: bold;
