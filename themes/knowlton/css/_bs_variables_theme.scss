@@ -128,7 +128,7 @@ $body-tertiary-color: #858585;
 	$border-radius:	0 !default;
 
 	/* links */
-$link-color: $primary;
+$link-color: #000000;
 $link-decoration: underline solid 1px;
 	/* text-underline-offset: .25rem;
 	  text-decoration-thickness: .5px;*/
@@ -146,7 +146,7 @@ $line-height-base: 1.15;
 	$navbar-nav-link-padding-x: 		1rem !default;
 $nav-link-font-size: 				18px;
 	$nav-link-font-weight: 				$font-weight-medium !default;
-	$nav-link-color:                    $link-color !default;
+$nav-link-color:                    $link-color;
 	$nav-link-transition:               color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out !default;
 
 	$navbar-light-color: 				$body-color;

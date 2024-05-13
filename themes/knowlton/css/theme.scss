@@ -52,6 +52,7 @@
 $body-color: #0a0a0a;
 body{
 	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing:aliased;
 }
 @media (min-width: 1400px) {
 	.main-container {
@@ -72,11 +73,11 @@ body{
 	padding: 4px 0.75em 4px 0.75em;
 	background-color:transparent;
 }
-.btn-primary:hover, .btn-secondary:hover{
+.btn-primary:hover, .btn-secondary:hover, .btn-primary:focus, .btn-secondary:focus{
 	background-color: rgb(10, 10, 10);
 	color:#FFF;
 }
-.display-4{
+.display-4, .display-5{
 	letter-spacing: -0.5px;
 }
 H1{
@@ -151,6 +152,7 @@ H1{
   		padding-top: 1.5em;
 		background: rgba(255,255,255,0.95);
 		line-height:1.15;
+		z-index:2000;
 	}
 }
 @media (min-width: 1550px) {
@@ -179,8 +181,8 @@ nav{
 		}
 	}
 	#navbarSearch{
-		top:155px;
-		z-index:10;
+		top:148px;
+		z-index:1000;
 		input{
 			padding: 1rem;
 			font-size: 1em;
@@ -350,17 +352,23 @@ footer{
 		height:450px;
 	}
 }
+.blurb{
+	line-height:1.3em;
+	padding-top:12px;
+}
 /* --- Search / Browse ---*/
 .results{
 	a{
 		text-decoration:none;
 	}
 	H2, dl{
-		font-size:13px;
-		line-height:1.25;
 	}
 	dd{
-		margin:0px;
+	}
+}
+@media (min-width: 768px) {
+	#bRefine{
+		top: 150px;
 	}
 }
 /* --- detail ---*/
@@ -372,4 +380,10 @@ footer{
  		font-size:1.1rem !important;
 	}
 }
-		
+/* static page */
+.staticPage{
+	line-height:1.4;
+	H2{
+		letter-spacing: -0.84px
+	}
+}	
