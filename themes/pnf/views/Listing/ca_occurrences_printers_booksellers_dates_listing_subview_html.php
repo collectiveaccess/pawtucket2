@@ -38,15 +38,7 @@
  	$va_access_values = caGetUserAccessValues($this->request);
  	global $g_ui_locale;
 ?>
-	<nav class="navbar navbar-fixed-top" id="bibHeading">
-
-		<!--<form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'miscellanies'); ?>">
-			<div id="filterByNameContainer">
-				<div>
-					<input type="text" name="search" placeholder="<?php print _t('search');?>" value="" onfocus="this.value='';"/>  <button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
-				</div>
-			</div>
-		</form>-->
+	<div class="listing-content single-lists">
 <?php
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
@@ -54,38 +46,43 @@
 				print "<H2>Printers & Booksellers Dates</H2>\n";	
 			
 			}		
+			#if ($g_ui_locale == 'en_US'){			
 ?>
-	</nav><hr style="margin-top:-18px;"/>
-	<div class="listing-content single-lists"><div class="listing-searchable">
-		<div class='listing-searchable-intro'>
-<?php		
-			if ($g_ui_locale == 'en_US'){			
-?>
-				<!--<p class='trimText'>--><p>
+				<div class="listingSubHeading">
+					Introduction
+				</div>
+				<p class='trimText'>
 					{{{printersBooksellersDatesIntroEnglish}}}
 				</p>
-<?php
-			}else{
-?>
-				<!--<p class='trimText'>--><p>
-					{{{printersBooksellersDatesIntroSpanish}}}
+				<br/><br/>
+				<div class="listingSubHeading">
+					Bibliography
+				</div>
+				<p class='trimText'>
+					{{{printersBooksellersDatesBibEnglish}}}
 				</p>
 <?php
-			
-			}		
+			#}else{
+			#}		
 ?>
-		</div>
-<?php
-	$va_links_array = array();
-	$va_letter_array = array();
-	print "<div class='row'><div class='col-sm-12' style='background-color:#dedede; padding:10px;'>";
-	print "<div class='row'>";
-	print "<div class='col-sm-4 col-md-3' style='padding:5px; background-color:#FFF;'>NAME</div>";
-	print "<div class='col-sm-4 col-md-2' style='padding:5px; background-color:#FFF;'>PLACE & DATES KNOWN TO HAVE BEEN ACTIVE</div>";
-	print "<div class='col-sm-4 col-md-2' style='padding:5px; background-color:#FFF;'>DATES</div>";
-	print "<div class='col-sm-4 col-md-5' style='padding:5px; background-color:#FFF;'>NOTES</div>";
-	print "</div>";
 
+	<div class='container'>
+		<div class='row'>
+			<div class='col-sm-12'>
+				<div style='padding:10px;'>
+					<div class='row'>
+						<div class='col-sm-4 col-md-3 listingSubHeading' style='padding:5px; background-color:#FFF;'>NAME</div>
+						<div class='col-sm-4 col-md-2 listingSubHeading' style='padding:5px; background-color:#FFF;'>PLACE & DATES KNOWN TO HAVE BEEN ACTIVE</div>
+						<div class='col-sm-4 col-md-2 listingSubHeading' style='padding:5px; background-color:#FFF;'>DATES</div>
+						<div class='col-sm-4 col-md-5 listingSubHeading' style='padding:5px; background-color:#FFF;'>NOTES</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col-sm-12'>
+				<div style='background-color:#dedede; padding:10px;'>
+<?php
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
@@ -97,12 +94,16 @@
 			print "</div>";
 		}
 	}
-	print "</div>";
 ?>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	
 
 
-	</div></div>
+</div>
 	
 		<script type="text/javascript">
 			
