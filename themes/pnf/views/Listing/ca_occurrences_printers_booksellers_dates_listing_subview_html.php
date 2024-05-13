@@ -38,7 +38,7 @@
  	$va_access_values = caGetUserAccessValues($this->request);
  	global $g_ui_locale;
 ?>
-	<div class="listing-content single-lists">
+	<div class="listing-content single-lists printersBooksellersList">
 <?php
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
@@ -51,9 +51,9 @@
 				<div class="listingSubHeading">
 					Introduction
 				</div>
-				<p class='trimText'>
+				<div class='trimText'>
 					{{{printersBooksellersDatesIntroEnglish}}}
-				</p>
+				</div>
 				<br/><br/>
 				<div class="listingSubHeading">
 					Bibliography
@@ -66,39 +66,53 @@
 			#}		
 ?>
 
-	<div class='container'>
 		<div class='row'>
 			<div class='col-sm-12'>
-				<div style='padding:10px;'>
+				<div style='padding:20px 10px 0px 10px;'>
 					<div class='row'>
-						<div class='col-sm-4 col-md-3 listingSubHeading'><div style='padding:5px;'>Name</div></div>
-						<div class='col-sm-4 col-md-2 listingSubHeading'><div style='padding:5px;'>Places Active</div></div>
-						<div class='col-sm-4 col-md-2 listingSubHeading'><div style='padding:5px;'>Dates</div></div>
-						<div class='col-sm-4 col-md-5 listingSubHeading'><div style='padding:5px;'>Notes</div></div>
+						<div class='col-sm-4 col-md-3 listingSubHeading'>Name</div>
+						<div class='col-sm-4 col-md-2 listingSubHeading'>Places Active</div>
+						<div class='col-sm-4 col-md-3 listingSubHeading'>Dates</div>
+						<div class='col-sm-4 col-md-4 listingSubHeading'>Notes</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class='row'>
 			<div class='col-sm-12'>
-				<div style='background-color:#dedede; padding:10px;'>
+				<div style='background-color:#eeeded; padding:5px;'>
 <?php
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
+		$i = 0;
 		while($qr_list->nextHit()) {
-			print "<div class='row'>";
-			print "<div class='col-sm-4 col-md-3'><div style='padding:5px; background-color:#FFF;'>".$qr_list->get('ca_occurrences.preferred_labels.name')."</div></div>";
-			print "<div class='col-sm-4 col-md-2'><div style='padding:5px; background-color:#FFF;'>".$qr_list->get('ca_occurrences.printer_book_place_date')."</div></div>";
-			print "<div class='col-sm-4 col-md-2'><div style='padding:5px; background-color:#FFF;'>".$qr_list->get('ca_occurrences.printer_book_date')."</div></div>";
-			print "<div class='col-sm-4 col-md-5'><div style='padding:5px; background-color:#FFF;'>".$qr_list->get('ca_occurrences.printer_book_notes')."</div></div>";
-			print "</div>";
+			if($i == 1){
+				$bg = "#eeeded";
+			}else{
+				$bg = "#ffffff";
+			}
+			$i++;
+			if($i == 2){
+				$i = 0;
+			}
+			print "<div class='row'>
+						<div class='col-sm-12'>
+							<div style='margin-bottom:3px; padding:10px; background-color:".$bg."; line-height: 1.3em'>
+								<div class='row'>";
+									print "<div class='col-sm-4 col-md-3'>".$qr_list->get('ca_occurrences.preferred_labels.name')."</div>";
+									print "<div class='col-sm-4 col-md-2'>".$qr_list->get('ca_occurrences.printer_book_place_date')."</div>";
+									print "<div class='col-sm-4 col-md-3'>".$qr_list->get('ca_occurrences.printer_book_date')."</div>";
+									print "<div class='col-sm-4 col-md-4'>".$qr_list->get('ca_occurrences.printer_book_notes')."</div>";
+			print 				"</div>
+							</div>
+						</div>
+					</div>";
 		}
 	}
 ?>
 				</div>
 			</div>
 		</div>
-	</div>
 
 	
 
@@ -110,7 +124,7 @@
 			jQuery(document).ready(function() {
 				$(".trimText").readmore({
 				  speed: 75,
-				  maxHeight: 220,
+				  maxHeight: 120,
 				  moreLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ MORE" : "LEER MÁS"; ?></a>",
 				  lessLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ LESS" : "CERRAR"; ?></a>",
 		  
