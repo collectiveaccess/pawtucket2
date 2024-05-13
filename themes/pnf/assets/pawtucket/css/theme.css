@@ -1065,14 +1065,14 @@ div.caMediaOverlayControls {
 		padding-right:0px;
 	}						
 }
-.
+.listingSubHeading
 	margin-bottom: 25px;
 	line-height: 1.3em;
 	font-weight: bold;
 	font-size: 20px;
 	color: #7f4539;
 	font-family: 'Lusitana', serif;
-
+}
 .tl-timeline a {
 	color: #7f4539 !important;
 }
