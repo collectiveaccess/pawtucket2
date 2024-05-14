@@ -126,7 +126,7 @@
 				<div class="col-md-6">
 					<div class="row">
 						<div class="col-md-6">
-							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "2018-2-25-05_007.jpg", array("alt" => "Sound image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Sound</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "431")); ?>
+							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "hp_sound.jpg", array("alt" => "Sound image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Sound</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "431")); ?>
 						</div>
 						<div class="col-md-6">
 							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "2018-2-26-01_003.jpg", array("alt" => "Video image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Video</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "432")); ?>
