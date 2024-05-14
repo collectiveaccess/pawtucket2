@@ -43,7 +43,7 @@
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
 			}else{
-				print "<H2>Printers & Booksellers Dates</H2>\n";	
+				print "<H2>Dates of Printers & Booksellers </H2>\n";	
 			
 			}		
 			#if ($g_ui_locale == 'en_US'){			
@@ -55,12 +55,12 @@
 					{{{printersBooksellersDatesIntroEnglish}}}
 				</div>
 				<br/><br/>
-				<div class="listingSubHeading">
+				<!--<div class="listingSubHeading">
 					Bibliography
 				</div>
 				<p class='trimText'>
 					{{{printersBooksellersDatesBibEnglish}}}
-				</p>
+				</p>-->
 <?php
 			#}else{
 			#}		
@@ -80,7 +80,7 @@
 		</div>
 		<div class='row'>
 			<div class='col-sm-12'>
-				<div style='background-color:#eeeded; padding:5px;'>
+				<div style='background-color:#eeeded; padding:5px 5px 2px 5px;'>
 <?php
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }

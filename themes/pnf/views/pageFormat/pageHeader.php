@@ -178,6 +178,11 @@ if($this->request->isLoggedIn()){
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Ornaments'), '', '', 'Pictorials', 'ornaments');?></li>
 <?php
 }
+if($this->request->isLoggedIn()){
+?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Dates of Printers & Booksellers'), '', '', 'Listing', 'printers_booksellers_dates');?></li>
+<?php
+}
 ?>
 							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/"><?php print _t('Websites of Interest');?></a></li>
 						</ul>
@@ -232,7 +237,7 @@ if($this->request->isLoggedIn()){
 
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'MISCELANEA', '', '', 'Listing', 'miscellanies');?></li>							
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'ORNAMENTOS', '', '', 'Pictorials', 'ornaments');?></li>
-
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Dates of Printers & Booksellers'), '', '', 'Listing', 'printers_booksellers_dates');?></li>
 <?php
 }
 ?>
