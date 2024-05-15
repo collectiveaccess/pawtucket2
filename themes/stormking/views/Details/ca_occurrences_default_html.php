@@ -219,7 +219,7 @@
 						#if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_occurrences.external_link.url_entry"><unit relativeTo="ca_occurrences.external_link" delimiter=" "><ifdef code="ca_occurrences.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_occurrences.external_link.url_entry">^ca_occurrences.external_link.url_source</a></h6></div></ifdef></unit></ifcount>')) {
 						#	print $vs_ext_link;
 						#}
-						$va_event_links = $t_item->get("ca_occurrences.event_calendar_link", array("returnWithStructure" => true, "sort" => "ca_occurrences.event_calendar_link.event_link"));
+						$va_event_links = $t_item->get("ca_occurrences.event_calendar_link", array("returnWithStructure" => true, "sort" => "ca_occurrences.event_calendar_link.event_date"));
 						if(is_array($va_event_links) && sizeof($va_event_links)){
 							$va_event_links = array_pop($va_event_links);
 							$va_future_events = array();
