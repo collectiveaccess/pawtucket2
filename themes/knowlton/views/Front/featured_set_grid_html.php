@@ -49,15 +49,15 @@
 			if($vs_media = $qr_res->get('ca_object_representations.media.page', array("checkAccess" => $va_access_values, "class" => "object-fit-cover w-100"))){
 				$vn_set_item_id = $va_set_items_by_row_id[$qr_res->get('ca_objects.object_id')];
 				$t_set_item = new ca_set_items($vn_set_item_id);
-				$vs_caption = $t_set_item->get("ca_set_items.preferred_labels");
-				if(!$vs_caption || ($vs_caption == "[BLANK]")){
-					$vs_caption = $qr_res->get('ca_objects.preferred_labels.name');
+				$vs_caption = "";
+				if($t_set_item->get('ca_set_items.preferred_labels') && ($t_set_item->get('ca_set_items.preferred_labels') != "[BLANK]")){
+					$vs_caption = "<div class='fs-5 fw-noraml pt-1'>".$t_set_item->get('ca_set_items.preferred_labels')."</div>";
 				}
 				if($vn_col == 0){
 					print "<div class='row'>";
 				}
 				print "<div class='col-12 col-sm-6'>";
-				print $qr_res->getWithTemplate("<div class='mb-4'><l class='text-decoration-none'>".$vs_media."<div class='fw-semibold pt-2'>".$vs_caption."</div></ifdef></l></div>");
+				print $qr_res->getWithTemplate("<div class='mb-4'><l class='text-decoration-none'>".$vs_media."<div class='fw-semibold pt-2'>".$qr_res->get("ca_objects.preferred_labels.name")."</div>".$vs_caption."</ifdef></l></div>");
 				print "</div>";
 				$vb_item_output = true;
 				$i++;

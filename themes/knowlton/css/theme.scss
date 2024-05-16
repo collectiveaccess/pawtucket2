@@ -51,8 +51,8 @@
 }
 $body-color: #0a0a0a;
 body{
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing:aliased;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
 }
 @media (min-width: 1400px) {
 	.main-container {
