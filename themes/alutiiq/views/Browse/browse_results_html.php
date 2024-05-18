@@ -71,8 +71,25 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			
 			<div class="row" style="clear:both;">
+				<div class='col-sm-12 col-md-9 unit'>
+					<hr class="uk-divider-small">
+					<H2 class="uk-h1">Alutiiq Collections</H2>
+				</div>
+			</div>
+			<div class="row" style="clear:both;">
 				<div class='col-sm-12 unit'>
 					<p>{{{find_institutions_intro}}}</p>
+				</div>
+			</div>
+<?php
+		}
+		if(($vs_table == "ca_objects") && ($this->request->getAction() == "amutatObjects")){
+?>
+			
+			<div class="row" style="clear:both;">
+				<div class='col-sm-12 col-md-9 unit'>
+					<hr class="uk-divider-small">
+					<H2 class="uk-h1">Alutiiq Objects</H2>
 				</div>
 			</div>
 <?php
@@ -282,8 +299,7 @@ if (!$vb_ajax) {	// !ajax
 			<div>
 				<div class="bSearchWithinContainer">
 					<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within">
-						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search..." name="search" id="searchWithinSearchRefine" aria-label="Search Within">
 						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
 						<input type="hidden" name="l" value="all">
 					</form>

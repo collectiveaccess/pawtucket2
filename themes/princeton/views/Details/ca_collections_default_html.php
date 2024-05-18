@@ -95,13 +95,13 @@
 					{{{<ifdef code="ca_collections.idno"><div class="unit"><label>Identifier</label>^ca_collections.idno</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="contributor,creator">
 						<div class="unit"><label>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="contributor,creator">s</ifcount></label>
-						<unit relativeTo="ca_entities" restrictToRelationshipTypes="contributor,creator" delimiter="<br/>">
+						<unit relativeTo="ca_entities" restrictToRelationshipTypes="contributor,creator" delimiter="<br>">
 							<l>^ca_entities.preferred_labels.displayname</l>
 						</unit>
 					</div></ifcount>}}}
 					{{{<ifdef code="ca_collections.date.sort_date|ca_collections.date.display_date">
 						<div class="unit"><label>Date</label>
-							<unit relativeTo="ca_collections.date" delimiter="<br/>">
+							<unit relativeTo="ca_collections.date" delimiter="<br>">
 								<ifdef code="ca_collections.date.date_display">^ca_collections.date.date_display</ifdef><ifnotdef code="ca_collections.date.date_display">^ca_collections.date.sort_date</ifnotdef><ifdef code="ca_collections.date.date_note">, ^ca_collections.date.date_note</ifdef>
 							</unit>
 						</div>
@@ -113,7 +113,7 @@
 						</div>
 					</ifdef>}}}
 					{{{<ifdef code="ca_collections.rights_container.rights|ca_collections.rights_container.access_conditions|ca_collections.rights_container.use_reproduction|ca_collections.credit|ca_collections.exhibition_publication">
-						<hr/>
+						<hr>
 						<ifdef code="ca_collections.rights_container.rights"><div class="unit"><label>Rights Statement</label>^ca_collections.rights_container.rights</div></ifdef>
 						<ifdef code="ca_collections.rights_container.use_reproduction"><div class="unit"><label>Use and Reproduction Conditions</label>^ca_collections.rights_container.use_reproduction</div></ifdef>
 						<ifdef code="ca_collections.credit"><div class="unit"><label>Credit</label>^ca_collections.credit</div></ifdef>
@@ -121,18 +121,18 @@
 
 					</ifdef>}}}
 					{{{<ifcount code="ca_places" min="1">
-						<div class="unit"><label>Related Place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>
+						<div class="unit"><label>Related Place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br>"><l>^ca_places.preferred_labels.name</l></unit>
 						</div>
 					</ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="work">
 						<div class="unit"><label>Related Work<ifcount code="ca_occurrences" min="2" restrictToTypes="work">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter="<br/>">
+						<unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter="<br>">
 							<l>^ca_occurrences.preferred_labels.name</l>
 						</unit>
 					</div></ifcount>}}}
 					{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="creator,contributor">
 						<div class="unit"><label>Related <ifcount code="ca_entities" max="1" excludeRelationshipTypes="creator,contributor">Entity</ifcount><ifcount code="ca_entities" min="2" excludeRelationshipTypes="creator,contributor">Entities</ifcount></label>
-						<unit relativeTo="ca_entities" excludeRelationshipTypes="creator,contributor" delimiter="<br/>">
+						<unit relativeTo="ca_entities" excludeRelationshipTypes="creator,contributor" delimiter="<br>">
 							<l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)
 						</unit>
 					</div></ifcount>}}}
@@ -182,14 +182,14 @@
 ?>
 				<div class="row">
 					<div class="col-sm-12">
-						<br/><H2>Featured Object<ifcount code="ca_objects" min="2">s</ifcount></H2>
-						<hr/>
+						<br><H2>Featured Objects</H2>
+						<hr>
 					</div>
 				</div>
 				<div class="row featuredObjects">
 <?php
 				while($qr_objects->nextHit()){
-					print "<div class='col-sm-3'>".$qr_objects->getWithTemplate("<l><div class='featuredObject'><div class='featuredObjectImage'>^ca_object_representations.media.medium</div><div class='featuredObjectsCaption'><small>^ca_objects.idno</small><br/>^ca_objects.preferred_labels<ifdef code='ca_objects.date.date_display|ca_objects.date.sort_date'><br/><ifdef code='ca_objects.date.date_display'>^ca_objects.date.date_display</ifdef><ifnotdef code='ca_objects.date.date_display'>^ca_objects.date.sort_date</ifnotdef></ifdef></div></l></div>")."</div>";
+					print "<div class='col-sm-3'>".$qr_objects->getWithTemplate("<l><div class='featuredObject'><div class='featuredObjectImage'>^ca_object_representations.media.medium</div><div class='featuredObjectsCaption'><small>^ca_objects.idno</small><br>^ca_objects.preferred_labels<ifdef code='ca_objects.date.date_display|ca_objects.date.sort_date'><br><ifdef code='ca_objects.date.date_display'>^ca_objects.date.date_display</ifdef><ifnotdef code='ca_objects.date.date_display'>^ca_objects.date.sort_date</ifnotdef></ifdef></div></l></div>")."</div>";
 				}
 ?>					
 				</div>

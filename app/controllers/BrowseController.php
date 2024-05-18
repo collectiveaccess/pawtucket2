@@ -100,7 +100,7 @@
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString, ['forcePurify' => true]);
 			
-			$vs_type_key = caMakeCacheKeyFromOptions($va_types);
+			$vs_type_key = caMakeCacheKeyFromOptions($va_types, $this->request->isLoggedIn() ? '1' : '0');
 			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
 				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable{$vs_type_key}"));
 			} else {
@@ -418,7 +418,9 @@
 				    'color' => '#cc0000', 
 				    'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
 				    'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
-				    'ajaxContentUrl' => (caGetOption('title_template', $va_view_info['display'], null) || caGetOption('description_template', $va_view_info['display'], null)) ? caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view)) : null
+				    //'ajaxContentUrl' => (caGetOption('title_template', $va_view_info['display'], null) || caGetOption('description_template', $va_view_info['display'], null)) ? caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view)) : null,
+				    'excludeRelationshipTypes' => caGetOption('excludeRelationshipTypes', $va_view_info['display'], null),
+				    'ajaxContentUrl' => caGetOption('ajaxContentUrl', $va_view_info['display'], null),
 				);
 				
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));

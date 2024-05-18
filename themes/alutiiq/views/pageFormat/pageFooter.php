@@ -50,8 +50,8 @@
 				<div class="uk-width-1-2@s uk-width-1-4@m uk-first-column">
 					<div class="uk-margin uk-text-left@s uk-text-center">
         				<a class="el-link" href="#" uk-scroll=""><picture>
-						<source type="image/webp" srcset="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAlutiiq-Museum-Logo-Inverse.png%22%2C%22type%22%3A%22webp%2C100%22%2C%22thumbnail%22%3A%22%2C160%2C%22%7D&amp;hash=e891e825 218w, /wp-content/themes/yootheme/cache/4a/Alutiiq-Museum-Logo-Inverse-4a8641a6.webp 399w" sizes="(min-width: 218px) 218px">
-						<img src="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAlutiiq-Museum-Logo-Inverse.png%22%2C%22thumbnail%22%3A%22%2C160%2C%22%7D&amp;hash=5b5b0c99" width="218" height="160" class="el-image" alt="Alutiiq Museum Logo" loading="lazy">
+						<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-4a8641a6.webp 218w" sizes="(min-width: 218px) 218px">
+						<img src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-4a8641a6.webp" width="218" height="160" class="el-image" alt="Alutiiq Museum Logo" loading="lazy">
 						</picture></a>    
     				</div>
 				</div>
@@ -137,8 +137,8 @@
     			<div class="uk-panel uk-width-1-1">                                
 					<div class="uk-margin uk-text-left@l uk-text-center">
 						<picture>
-						<source type="image/webp" srcset="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAmerican-Alliance-of-Museums.png%22%2C%22type%22%3A%22webp%2C100%22%2C%22thumbnail%22%3A%22%2C140%2C%22%7D&amp;hash=78e9aaa7 171w, /wp-content/themes/yootheme/cache/d7/American-Alliance-of-Museums-d70b5677.webp 342w" sizes="(min-width: 171px) 171px">
-						<img src="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAmerican-Alliance-of-Museums.png%22%2C%22thumbnail%22%3A%22%2C140%2C%22%7D&amp;hash=6c2b8878" width="171" height="140" class="el-image" alt="American Alliance of Museums Accredited Museum" loading="lazy">
+						<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/American-Alliance-of-Museums-0dbe8149.png  171w" sizes="(min-width: 171px) 171px">
+						<img src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/American-Alliance-of-Museums-0dbe8149.png" width="171" height="140" class="el-image" alt="American Alliance of Museums Accredited Museum" loading="lazy">
 						</picture>        
 					</div>
                 </div>            

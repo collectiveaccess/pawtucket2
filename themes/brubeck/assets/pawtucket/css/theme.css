@@ -118,8 +118,12 @@ a:hover{
 }
 @media (min-width:768px){
 	.navbar-brand{
-		width: 200px;
+		/*width: 200px;*/
 		padding-top: 8px;
+		margin-left: 0px !important;
+	}
+	.navbar > .container .navbar-brand{
+	 	margin-left: 0px !important;
 	}
 }
 @media (min-width:768px){
@@ -810,7 +814,7 @@ body.frontContainer #footer{
 	background-image: url('../graphics/songs_landing.jpg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage3{
-	background-image: url('../graphics/collection_landing.jpg');
+	background-image: url('../graphics/collections.jpg');
 }
 .hpExploreBox .hpExploreBoxDetails {
 	padding: 16px 13px 15px;

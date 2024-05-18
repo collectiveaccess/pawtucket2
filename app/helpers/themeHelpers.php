@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2023 Whirl-i-Gig
+ * Copyright 2009-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -490,7 +490,7 @@ function caObjectRepresentationThumbnails($po_request, $pn_representation_id, $p
 	}
 	$va_links = array();
 	$vn_primary_id = "";
-	foreach($va_reps as $va_rep){
+	foreach($va_reps as $i => $va_rep){
 		if(!isset($va_rep['media']) || !strlen((string)$va_rep['media'])) { continue; }
 		$vn_rep_id = $va_rep["representation_id"];
 		$vs_class = "";
@@ -519,9 +519,13 @@ function caObjectRepresentationThumbnails($po_request, $pn_representation_id, $p
 				$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".{$ps_current_rep_class}\").removeClass(\"{$ps_current_rep_class}\"); $(this).parent().addClass(\"{$ps_current_rep_class}\"); $(this).addClass(\"{$ps_current_rep_class}\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb.$vs_rep_label."</a>\n";
 				break;
 			# -------------------------------
+			case "basic":
+				$va_links[$vn_rep_id] = "<a href='#' id='repThumb_{$i}' onclick='return setItem({$i});' class='repThumb' data-representation_id='{$vn_rep_id}'>".$vs_thumb.$vs_rep_label."</a>\n";
+				break;
+			# -------------------------------
 			default:
 			case "detail":
-				$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb.$vs_rep_label, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), array("representation_id" => $vn_rep_id));
+				$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb.$vs_rep_label, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), ["representation_id" => $vn_rep_id], ['data-representation_id' => $vn_rep_id]);
 				break;
 			# -------------------------------
 		}
@@ -1006,7 +1010,7 @@ function caGetDetailForType($pm_table, $pm_type=null, $pa_options=null) {
                     if($versions_set) {
 		        		foreach($versions as $v) {
 		        			$version_info = $qr_res->getMediaInfo("media", $v);
-		        			$va_res[$id][$v]['tag'] = $qr_res->getMediaTag("media", $v);
+		        			$va_res[$id][$v]['tag'] = $qr_res->getMediaTag("media", $v, ['alt' => $alt_text]);
 		        			$va_res[$id][$v]['url'] = $qr_res->getMediaUrl("media", $v);
 		        			$va_res[$id][$v]['path'] = $qr_res->getMediaPath("media", $v);
 		        			$va_res[$id][$v]['width'] = $version_info['WIDTH'];
@@ -1645,7 +1649,8 @@ function caGetBrowseLinks($t_instance, string $bundle, ?array $options=null) : ?
 						
 			switch($bundle_type) {
 				case 'attribute':
-					if(($facet_info['type'] === 'attribute') && ($facet_info['element_code'] === $b)) {
+					$tmp = array_pop(explode('.', $facet_info['element_code']));
+					if(($facet_info['type'] === 'attribute') && ($tmp === $b)) {
 						$facet = $k;
 						$fld = $bundle;
 						break(2);

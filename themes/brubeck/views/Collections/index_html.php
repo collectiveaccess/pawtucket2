@@ -12,7 +12,7 @@
 	<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 		<div class="row bgDarkBlue featuredCallOut">
 			<div class="col-sm-12 col-md-6 featuredHeaderImage">
-				<?php print caGetThemeGraphic($this->request, 'collection_landing.jpg', array("alt" => "Collections image")); ?>
+				<?php print caGetThemeGraphic($this->request, 'collections.jpg', array("alt" => "Collections image")); ?>
 			</div>
 			<div class="col-sm-12 col-md-6 text-center">
 				<div class="featuredIntro">{{{collection_intro_text}}}</div>

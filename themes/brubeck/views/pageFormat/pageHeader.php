@@ -119,7 +119,9 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, _t("<span>The</span><strong>BRUBECK</strong>Collection"), "navbar-brand", "", "","");
+				#print caNavLink($this->request, _t("<span>The</span><strong>BRUBECK</strong>Collection"), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'TBC_Reversed_Stacked.png', array("alt" => "The Brubeck Collection", "role" => "banner")), "navbar-brand", "", "","");
+				
 ?>
 			</div>
 
