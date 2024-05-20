@@ -121,12 +121,12 @@
 
 				<div class="row logos-row">
 					<a href="https://library.arlingtonva.us/" class="navbar-brand">
-						<img src="/themes/arlington/assets/pawtucket/graphics/apl_logo.png" alt="Arlington TEST System">
+						<img src="/themes/arlington/assets/pawtucket/graphics/apl_logo.png" alt="Arlington Public Library">
 					</a>
-					<div class="col" style="margin-left: 45px;">
+					<div class="col" style="margin-left: 20px;">
 						<a href="/index.php">
-							<H1>Center for Local History </H1>
-							<H2>Community Archives</H2>
+							<H1>The Charlie Clark <br> Center for Local History </H1>
+							<span style="color: #000; font-size: 16px;">Arlington Community Digital Collections</span>
 						</a>
 					</div>
 				</div>
@@ -182,8 +182,8 @@
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					
 					<li <?php print ($this->request->getController() == "Objects") ? 'class="active"' : ''; ?>>
-						<!-- <?php print caNavLink($this->request, _t("Objects"), "", "", "Objects", "index"); ?> -->
-						<?php print caNavLink($this->request, 'objects', '', '', 'Browse', 'objects', ''); ?>
+						<!-- <?php print caNavLink($this->request, _t("Items"), "", "", "Objects", "index"); ?> -->
+						<?php print caNavLink($this->request, 'Items', '', '', 'Browse', 'objects', ''); ?>
 					</li>
 
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>>
