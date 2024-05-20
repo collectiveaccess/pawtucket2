@@ -45,7 +45,7 @@
 					<H1>
 						<div class="line1">Welcome to the</div>
 						<div class="line2">
-							Arlington Public Library Community Archives
+							Arlington Community Digital Collections
 						</div>
 						<div class="line3">{{{hp_search_text}}}</div>
 					</H1>
@@ -88,14 +88,14 @@
 ?>
 	<div class="row hpExplore bgLightGray">
 		<div class="col-md-12 col-lg-8 col-lg-offset-2">
-		<H2 class="frontSubHeading text-center">Explore The Archive</H2>
+		<H2 class="frontSubHeading text-center">Explore By</H2>
 
 		<div class="row">
 				<div class="col-md-4">
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "browse", "objects"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, _t("objects"), "", "", "browse", "objects"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, _t("Items"), "", "", "browse", "objects"); ?></div>
 						</div>
 					</div>
 				</div>

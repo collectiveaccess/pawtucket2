@@ -68,7 +68,7 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6 {
 .navbar {
 	-webkit-box-shadow: none;
 	box-shadow: none;
-	margin-bottom: 65px;
+	margin-bottom: 50px;
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
     font-family: "sofia-pro";

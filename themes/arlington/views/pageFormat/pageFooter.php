@@ -32,39 +32,31 @@
 			<div class="row">
 				<div class="col-sm-12 text-center">
 					<p>
-						<!-- <a href="https://library.arlingtonva.us/" class="orgLink">
-							<img src="/themes/arlington/assets/pawtucket/graphics/apl_logo.png" alt="Arlington TEST System">
-						</a> -->
 						<div class="row logos-row">
 							<a href="https://library.arlingtonva.us/" class="navbar-brand">
 								<img src="/themes/arlington/assets/pawtucket/graphics/apl_logo.png" alt="Arlington TEST System">
 							</a>
 							<div class="col" style="margin-left: 45px;">
 								<a href="/index.php">
-									<H1>Center for Local History </H1>
-									<H2>Community Archives</H2>
+									<H1 style="text-align: left;">The Charlie Clark <br> Center for Local History </H1>
+									<span style="color: #000; font-size: 16px;">Arlington Community Digital Collections</span>
 								</a>
 							</div>
 						</div>
-						<!-- <div class="address">Address</div> -->
 						<div class="footer-text">
 							Online content in the Center for Local History's Community Archives may be printed or downloaded by individuals, school, or libraries for personal use, study, research, or classroom teaching under certain conditions of use. Unauthorized use of images is prohibited.
 						</div>
 					</p>
-					<ul class="list-inline social">
+					<!-- <ul class="list-inline social">
 						<li><a href="https://www.facebook.com/ArlingtonVAPublicLibrary" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
 						<li><a href="https://www.instagram.com/arlingtonvalib/" target="_blank"><i class="fa fa-instagram"></i></a></li>
 						<li><a href="https://twitter.com/ArlingtonVALib" target="_blank"><i class="fa fa-twitter-square"></i></a></li>
-					</ul>
+					</ul> -->
 					<ul class="list-inline">
 						<li><a href="http://library.arlingtonva.us/center-for-local-history/">Center for Local History Home</a></li>
 						<li><a href="http://library.arlingtonva.us/collections/local-history/arlingtons-story/arlingtons-story-conditions-of-use/">Conditions of Use</a></li>
 						<li><a href="http://library.arlingtonva.us/collections/local-history/historical-scans-and-prints/">Order Scans and Prints</a></li>
 						<li><a href="http://library.arlingtonva.us/center-for-local-history/arlington-community-archives/request-archival-material/">Request Research Use of Archival Material</a></li>
-
-						<!-- <li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Site Page"), "", "", "", ""); ?></li>
-						<li><?php print caNavLink($this->request, _t("Site Page"), "", "", "", ""); ?></li> -->
 					</ul>
 				</div>
 			</div>
