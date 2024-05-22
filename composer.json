@@ -57,7 +57,8 @@
     "phpmailer/phpmailer": "^6.8"
   },
   "suggest": {
-    "binaryoung/jieba-php": "^0.1.0"
+    "binaryoung/jieba-php": "^0.1.0",
+    "simplesamlphp/simplesamlphp": "^2.2: required for SAML SSO logins"
   },
   "config": {
     "discard-changes": true,
