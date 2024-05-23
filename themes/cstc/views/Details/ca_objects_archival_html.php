@@ -93,7 +93,15 @@ if($show_nav){
 
 	<div class="row">
 		<div class="col-md-6">
-			{{{media_viewer}}}
+<?php
+		if($media_viewer = $this->getVar("media_viewer")){
+			print $media_viewer;
+		}elseif($t_object->get("ca_object_representations.representation_id")){
+?>
+			{{{digitized_media_message}}}
+<?php
+		}
+?>
 		</div>
 		<div class="col-md-6">
 			<div class="bg-light py-3 px-4 mb-3 h-100">

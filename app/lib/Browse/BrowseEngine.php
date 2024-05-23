@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2023 Whirl-i-Gig
+ * Copyright 2009-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -170,7 +170,7 @@ class BrowseEngine extends BaseFindEngine {
 
 		$this->opo_ca_browse_cache = new BrowseCache();
 		if ($pn_browse_id) {
-			$this->opo_ca_browse_cache->setParameter('table_num', $this->opn_browse_table_num);
+			//$this->opo_ca_browse_cache->setParameter('table_num', $this->opn_browse_table_num);
 			$this->opo_ca_browse_cache->load($pn_browse_id);
 		} else {
 			$this->opo_ca_browse_cache->setParameter('table_num', $this->opn_browse_table_num);
@@ -575,6 +575,8 @@ class BrowseEngine extends BaseFindEngine {
 	 * @param string $ps_facet_name Optional name of facet for which to list criteria
 	 * @param array $options Options include:
 	 *		delimiter = delimiter between facet values. [Default is ';']
+	 *		sense = Sense of facet title to index criteria on. Set to 'singular' for singular sense; 'plural' for plural sense. [Default is singular]
+	 *		returnAs = Return value as delimited string or array. [Default is string]
 	 * @return array
 	 *
 	 * @see BrowseEngine::getCriteria
@@ -582,12 +584,13 @@ class BrowseEngine extends BaseFindEngine {
 	public function getCriteriaAsStrings(?string $ps_facet_name=null, ?array $options=null) {
 		$criteria = $this->getCriteriaWithLabels($ps_facet_name);
 		$delimiter = caGetOption('delimiter', $options, ';');
+		$return_as = caGetOption('returnAs', $options, 'string');
 		
 		$criteria_by_facet = [];
 		foreach($criteria as $facet => $criteria_list) {
 			$facet_info = $this->getInfoForFacet($facet);
 			
-			$criteria_by_facet[$facet_info['label_plural']] = join($delimiter, $criteria_list);
+			$criteria_by_facet[$facet_info[caGetOption('sense', $options, 'singular') ? 'label_singular' : 'label_plural']] = ($return_as == 'array') ? $criteria_list : join($delimiter, $criteria_list);
 		}
 		return $criteria_by_facet;
 	}
@@ -701,6 +704,18 @@ class BrowseEngine extends BaseFindEngine {
 				if (!($t_item = Datamodel::getInstanceByTableName($va_facet_info['relative_to'] ? $va_facet_info['relative_to'] : $this->ops_browse_table_name, true))) { break; }
 				if($vb_is_bit = ($t_item->getFieldInfo($va_facet_info['field'], 'FIELD_TYPE') == FT_BIT)) {
 					return ((bool)$pn_row_id) ? caGetOption('label_yes', $va_facet_info, _t('Yes')) : caGetOption('label_no', $va_facet_info, _t('No'));
+				}
+				
+				$rels = Datamodel::getManyToOneRelations($this->ops_browse_table_name, $va_facet_info['field']);
+				if(is_array($rels) && sizeof($rels) && ($va_facet_info['template'] ?? null)) {
+					$t_rel = Datamodel::getInstance($rels['one_table'], false, $pn_row_id);
+					$fields = caExtractTagsFromTemplate($va_facet_info['template']);
+					
+					$acc = [];
+					foreach($fields as $k => $f) {
+						if($t_rel->hasField($f)) { $acc[$f] = $t_rel->get($f); }
+					}
+					return caProcessTemplate($va_facet_info['template'], $acc);
 				}
 
 				return urldecode($pn_row_id);
@@ -2894,7 +2909,7 @@ class BrowseEngine extends BaseFindEngine {
 
 					$va_results = $vb_preserve_order ? array_intersect($va_possible_values, $qr_res->getAllFieldValues($t_item->primaryKey())) : $qr_res->getAllFieldValues($t_item->primaryKey());
 
-					if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $this->opo_config->get('perform_item_level_access_checking') && method_exists($t_item, "supportsACL") && $t_item->supportsACL()) {
+					if (caACLIsEnabled($t_item, $pa_options)) {
 						$va_results = $this->filterHitsByACL($va_results, $this->opn_browse_table_num, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
 					}
 
@@ -2986,7 +3001,7 @@ class BrowseEngine extends BaseFindEngine {
 				");
 				$va_results = $qr_res->getAllFieldValues($vs_pk);
 
-				if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $this->opo_config->get('perform_item_level_access_checking') && method_exists($t_item, "supportsACL") && $t_item->supportsACL()) {
+				if (caACLIsEnabled($t_item, $pa_options)) {
 					$va_results = array_keys($this->filterHitsByACL($va_results, $this->opn_browse_table_num, $vn_user_id, __CA_ACL_READONLY_ACCESS__));
 				}
 				$this->opo_ca_browse_cache->setResults($va_results);
@@ -3540,22 +3555,21 @@ class BrowseEngine extends BaseFindEngine {
 							}
 						}
 
-						if ($this->opo_config->get('perform_item_level_access_checking')) {
-							if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
-								// Join to limit what browse table items are used to generate facet
-								$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$vs_browse_table_pk.' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
-								$va_wheres[] = "(
-									((
-										(ca_acl.user_id = ".(int)$vn_user_id.")
-										".((sizeof($va_group_ids) > 0) ? "OR
-										(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
-										OR
-										(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
-									) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
-									".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
-								)";
-							}
+						if (($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) && caACLIsEnabled($t_item, $pa_options)) {
+							// Join to limit what browse table items are used to generate facet
+							$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$vs_browse_table_pk.' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
+							$va_wheres[] = "(
+								((
+									(ca_acl.user_id = ".(int)$vn_user_id.")
+									".((sizeof($va_group_ids) > 0) ? "OR
+									(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
+									OR
+									(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
+								) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
+								".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
+							)";
 						}
+
 						$vs_join_sql = join("\n", $va_joins);
 
 						$vs_where_sql = '';
@@ -3711,21 +3725,19 @@ class BrowseEngine extends BaseFindEngine {
 							}
 						}
 
-						if ($this->opo_config->get('perform_item_level_access_checking')) {
-							if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
-								// Join to limit what browse table items are used to generate facet
-								$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$vs_browse_table_pk.' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
-								$va_wheres[] = "(
-									((
-										(ca_acl.user_id = ".(int)$vn_user_id.")
-										".((sizeof($va_group_ids) > 0) ? "OR
-										(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
-										OR
-										(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
-									) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
-									".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
-								)";
-							}
+						if (($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) && caACLIsEnabled($t_item, $pa_options)) {
+							// Join to limit what browse table items are used to generate facet
+							$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$vs_browse_table_pk.' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
+							$va_wheres[] = "(
+								((
+									(ca_acl.user_id = ".(int)$vn_user_id.")
+									".((sizeof($va_group_ids) > 0) ? "OR
+									(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
+									OR
+									(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
+								) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
+								".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
+							)";
 						}
 						$vs_join_sql = join("\n", $va_joins);
 
@@ -3910,22 +3922,19 @@ class BrowseEngine extends BaseFindEngine {
 					}
 				}
 
-
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
-					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
-						// Join to limit what browse table items are used to generate facet
-						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
-						$va_where_sql[] = "(
-							((
-								(ca_acl.user_id = ".(int)$vn_user_id.")
-								".((sizeof($va_group_ids) > 0) ? "OR
-								(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
-								OR
-								(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
-							) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
-							".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
-						)";
-					}
+				if (($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) && caACLIsEnabled($t_item, $pa_options)) {
+					// Join to limit what browse table items are used to generate facet
+					$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
+					$va_where_sql[] = "(
+						((
+							(ca_acl.user_id = ".(int)$vn_user_id.")
+							".((sizeof($va_group_ids) > 0) ? "OR
+							(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
+							OR
+							(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
+						) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
+						".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
+					)";
 				}
 
 				$vs_join_sql = join("\n", $va_joins);
@@ -4140,21 +4149,19 @@ class BrowseEngine extends BaseFindEngine {
 					}
 				}
 				
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
-					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
-						// Join to limit what browse table items are used to generate facet
-						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
-						$va_where_sql[] = "(
-							((
-								(ca_acl.user_id = ".(int)$vn_user_id.")
-								".((sizeof($va_group_ids) > 0) ? "OR
-								(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
-								OR
-								(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
-							) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
-							".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
-						)";
-					}
+				if (($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) && caACLIsEnabled($t_item, $pa_options)) {
+					// Join to limit what browse table items are used to generate facet
+					$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
+					$va_where_sql[] = "(
+						((
+							(ca_acl.user_id = ".(int)$vn_user_id.")
+							".((sizeof($va_group_ids) > 0) ? "OR
+							(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
+							OR
+							(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
+						) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
+						".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
+					)";
 				}
 
 				$vs_join_sql = join("\n", $va_joins);
@@ -4284,21 +4291,19 @@ class BrowseEngine extends BaseFindEngine {
 					}
 				}
 
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
-					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
-						// Join to limit what browse table items are used to generate facet
-						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
-						$va_wheres[] = "(
-							((
-								(ca_acl.user_id = ".(int)$vn_user_id.")
-								".((sizeof($va_group_ids) > 0) ? "OR
-								(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
-								OR
-								(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
-							) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
-							".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
-						)";
-					}
+				if (($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) && caACLIsEnabled($t_item, $pa_options)) {
+					// Join to limit what browse table items are used to generate facet
+					$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
+					$va_wheres[] = "(
+						((
+							(ca_acl.user_id = ".(int)$vn_user_id.")
+							".((sizeof($va_group_ids) > 0) ? "OR
+							(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
+							OR
+							(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
+						) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
+						".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
+					)";
 				}
 				
 				if($filter_info = $this->_getFacetContainerFilterParams($va_facet_info)) {
@@ -4686,22 +4691,19 @@ class BrowseEngine extends BaseFindEngine {
 					$va_wheres[] = "(".$vs_browse_table_name.".deleted = 0)";
 				}
 				
-
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
-					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
-						// Join to limit what browse table items are used to generate facet
-						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
-						$va_wheres[] = "(
-							((
-								(ca_acl.user_id = ".(int)$vn_user_id.")
-								".((sizeof($va_group_ids) > 0) ? "OR
-								(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
-								OR
-								(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
-							) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
-							".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
-						)";
-					}
+				if (($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) && caACLIsEnabled($t_item, $pa_options)) {
+					// Join to limit what browse table items are used to generate facet
+					$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
+					$va_wheres[] = "(
+						((
+							(ca_acl.user_id = ".(int)$vn_user_id.")
+							".((sizeof($va_group_ids) > 0) ? "OR
+							(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
+							OR
+							(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
+						) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
+						".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
+					)";
 				}
 
 				$vs_join_sql = join("\n", $va_joins);
@@ -4964,21 +4966,19 @@ class BrowseEngine extends BaseFindEngine {
 						$va_wheres[] = "(li.item_id NOT IN (".join(",", caQuoteList(array_keys($va_criteria)))."))";
 					}
 
-					if ($this->opo_config->get('perform_item_level_access_checking')) {
-						if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
-							// Join to limit what browse table items are used to generate facet
-							$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
-							$va_wheres[] = "(
-								((
-									(ca_acl.user_id = ".(int)$vn_user_id.")
-									".((sizeof($va_group_ids) > 0) ? "OR
-									(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
-									OR
-									(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
-								) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
-								".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
-							)";
-						}
+					if (($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) && caACLIsEnabled($t_item, $pa_options)) {
+						// Join to limit what browse table items are used to generate facet
+						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
+						$va_wheres[] = "(
+							((
+								(ca_acl.user_id = ".(int)$vn_user_id.")
+								".((sizeof($va_group_ids) > 0) ? "OR
+								(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
+								OR
+								(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
+							) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
+							".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
+						)";
 					}
 
 					$vs_join_sql = join("\n", $va_joins);
@@ -5143,23 +5143,20 @@ class BrowseEngine extends BaseFindEngine {
 							}
 						}
 
-						if ($this->opo_config->get('perform_item_level_access_checking')) {
-							if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
-								// Join to limit what browse table items are used to generate facet
-								$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
-								$va_wheres[] = "(
-									((
-										(ca_acl.user_id = ".(int)$vn_user_id.")
-										".((sizeof($va_group_ids) > 0) ? "OR
-										(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
-										OR
-										(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
-									) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
-									".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
-								)";
-							}
+						if (($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) && caACLIsEnabled($t_item, $pa_options)) {
+							// Join to limit what browse table items are used to generate facet
+							$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
+							$va_wheres[] = "(
+								((
+									(ca_acl.user_id = ".(int)$vn_user_id.")
+									".((sizeof($va_group_ids) > 0) ? "OR
+									(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
+									OR
+									(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
+								) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
+								".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
+							)";
 						}
-
 
 						if (is_array($va_wheres) && sizeof($va_wheres) && ($vs_where_sql = join(' AND ', $va_wheres))) {
 							$vs_where_sql = '('.$vs_where_sql.')';
@@ -5252,21 +5249,19 @@ class BrowseEngine extends BaseFindEngine {
 								}
 							}
 
-							if ($this->opo_config->get('perform_item_level_access_checking')) {
-								if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
-									// Join to limit what browse table items are used to generate facet
-									$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
-									$va_wheres[] = "(
-										((
-											(ca_acl.user_id = ".(int)$vn_user_id.")
-											".((sizeof($va_group_ids) > 0) ? "OR
-											(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
-											OR
-											(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
-										) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
-										".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
-									)";
-								}
+							if (($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) && caACLIsEnabled($t_item, $pa_options)) {
+								// Join to limit what browse table items are used to generate facet
+								$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
+								$va_wheres[] = "(
+									((
+										(ca_acl.user_id = ".(int)$vn_user_id.")
+										".((sizeof($va_group_ids) > 0) ? "OR
+										(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
+										OR
+										(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
+									) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
+									".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
+								)";
 							}
 
 							$vs_join_sql = join("\n", $va_joins);
@@ -5336,6 +5331,8 @@ class BrowseEngine extends BaseFindEngine {
 				$va_restrict_to_types_expanded = $this->_convertTypeCodesToIDs($va_restrict_to_types, array('instance' => $t_item));
 
 				$vs_field_name = $va_facet_info['field'];
+				
+				$rels = Datamodel::getManyToOneRelations($vs_browse_table_name, $vs_field_name);
 				
 				// Map deaccession fields to deaccession bundle, which is used for access control on all
 				$bundle_name = (in_array($vs_field_name, ['is_deaccessioned', 'deaccession_date', 'deaccession_notes', 'deaccession_type_id', 'deaccession_disposal_date'])) ? 'ca_objects_deaccession' : $vs_field_name;
@@ -5407,8 +5404,20 @@ class BrowseEngine extends BaseFindEngine {
 						$va_wheres = array_merge($va_wheres, $va_relative_sql_data['wheres']);
 					}
 				}
+				
+				$many_one_flds = null;
+				if(is_array($rels) && sizeof($rels) && ($va_facet_info['template'] ?? null)) {
+					$va_joins[] = "INNER JOIN {$rels['one_table']} as x ON x.{$rels['one_table_field']} = {$rels['many_table']}.{$rels['many_table_field']}";
+					
+					$t_rel = Datamodel::getInstance($rels['one_table']);
+					$fields = caExtractTagsFromTemplate($va_facet_info['template']);
+					foreach($fields as $k => $f) {
+						if(!$t_rel->hasField($f)) { unset($fields[$k]); }
+					}
+					$many_one_flds = sizeof($fields) ? join(', ', array_map(function($v) { return "x.{$v}"; }, $fields)) : null;
+				}
 
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($t_item)) {
 					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
 						// Join to limit what browse table items are used to generate facet
 						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
@@ -5449,7 +5458,7 @@ class BrowseEngine extends BaseFindEngine {
 
 					$vs_pk = $t_item->primaryKey();
 					$vs_sql = "
-						SELECT COUNT(*) _count, {$vs_browse_table_name}.{$vs_field_name}
+						SELECT COUNT(*) _count, {$vs_browse_table_name}.{$vs_field_name}".($many_one_flds ? ", {$many_one_flds}" : '')."
 						FROM {$vs_browse_table_name}
 						{$vs_join_sql}
 						WHERE
@@ -5468,6 +5477,13 @@ class BrowseEngine extends BaseFindEngine {
 
 						if ($vb_is_bit && isset($va_facet_values[$vs_val])) {
 							$va_values[$vs_val] = $va_facet_values[$vs_val];
+						} elseif($va_facet_info['template'] ?? null) {
+							
+							$va_values[$vs_val] = array(
+								'id' => str_replace('/', '&#47;', $vs_val),
+								'label' => caProcessTemplate($va_facet_info['template'], $qr_res->getRow()),
+								'content_count' => $qr_res->get('_count')
+							);
 						} else {
 							$va_values[$vs_val] = array(
 								'id' => str_replace('/', '&#47;', $vs_val),
@@ -5529,7 +5545,7 @@ class BrowseEngine extends BaseFindEngine {
 					}
 				}
 
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($t_item)) {
 					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
 						// Join to limit what browse table items are used to generate facet
 						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
@@ -5659,7 +5675,7 @@ class BrowseEngine extends BaseFindEngine {
 					$va_wheres[] = (bool)$va_facet_info['moderated'] ? "(ca_items_x_tags.moderated_on > 0)" : "(ca_items_x_tags.moderated_on IS NULL)";
 				}
 
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($t_item)) {
 					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
 						// Join to limit what browse table items are used to generate facet
 						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
@@ -5811,7 +5827,7 @@ class BrowseEngine extends BaseFindEngine {
 					$va_joins[] = "INNER JOIN ca_users ON ca_object_checkouts.user_id = ca_users.user_id";
 				}
 
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($t_item)) {
 					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
 						// Join to limit what browse table items are used to generate facet
 						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
@@ -6027,7 +6043,7 @@ class BrowseEngine extends BaseFindEngine {
 						$va_wheres = array_merge($va_wheres, $va_relative_sql_data['wheres']);
 					}
 				}
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($t_item)) {
 					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
 						// Join to limit what browse table items are used to generate facet
 						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
@@ -6397,7 +6413,7 @@ class BrowseEngine extends BaseFindEngine {
 						$va_wheres = array_merge($va_wheres, $va_relative_sql_data['wheres']);
 					}
 				}
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($t_item)) {
 					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
 						// Join to limit what browse table items are used to generate facet
 						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
@@ -6586,7 +6602,7 @@ class BrowseEngine extends BaseFindEngine {
 						$va_wheres = array_merge($va_wheres, $va_relative_sql_data['wheres']);
 					}
 				}
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($t_item)) {
 					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
 						// Join to limit what browse table items are used to generate facet
 						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
@@ -6980,7 +6996,7 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 					$va_wheres[] = $vs_browse_source_limit_sql;
 				}
 
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($vs_rel_table_name)) {
 					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
 
 						// Join to limit what browse table items are used to generate facet
@@ -7186,7 +7202,7 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 						}
 					}
 
-					$natural_sort = caGetOption('natural_sort', $va_facet_info, true);
+					$natural_sort = caGetOption('natural_sort', $va_facet_info, $vs_rel_table_name !== 'ca_entities');
 					
 					// Get labels for facet items
 					if (sizeof($va_row_ids = array_keys($va_facet_items))) {
@@ -7336,7 +7352,7 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 					}
 				}
 
-				if ($this->opo_config->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($t_item)) {
 					if ($t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true)) {
 						// Join to limit what browse table items are used to generate facet
 						$va_joins[] = 'LEFT JOIN ca_acl ON '.$vs_browse_table_name.'.'.$t_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_item->tableNum()."\n";
