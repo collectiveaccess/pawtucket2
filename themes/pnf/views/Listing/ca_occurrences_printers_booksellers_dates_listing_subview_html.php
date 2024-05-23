@@ -55,13 +55,17 @@
 					{{{printersBooksellersDatesIntroEnglish}}}
 				</div>
 				<br/><br/>
-				<!--<div class="listingSubHeading">
+<?php
+			if($this->getVar("printersBooksellersDatesBibEnglish")){
+?>
+				<div class="listingSubHeading">
 					Bibliography
 				</div>
 				<p class='trimText'>
 					{{{printersBooksellersDatesBibEnglish}}}
-				</p>-->
+				</p>
 <?php
+			}
 			#}else{
 			#}		
 ?>
@@ -78,7 +82,7 @@
 				</div>
 			</div>
 		</div>
-		<div class='row'>
+		<div class='row' style='overflow-y:scroll;' id='tableContent'>
 			<div class='col-sm-12'>
 				<div style='background-color:#eeeded; padding:5px 5px 2px 5px;'>
 <?php
@@ -129,5 +133,9 @@
 				  lessLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ LESS" : "CERRAR"; ?></a>",
 		  
 				});
+				$("#tableContent").height((jQuery(window).height() - 200));
+				window.onresize = function() {
+					$("#tableContent").height((jQuery(window).height() - 200));
+				}
 			});
 		</script>

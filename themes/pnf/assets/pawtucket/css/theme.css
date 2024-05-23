@@ -1104,7 +1104,9 @@ a.readmore-js-toggle{
 	display: block;
 	position: relative;
 }
-
+.listing-content.printersBooksellersList{
+	padding-right:0px;
+}
 .listing-content.printersBooksellersList a.readmore-js-toggle{
 	top: 0px;
 	padding-top:10px;
