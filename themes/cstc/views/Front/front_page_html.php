@@ -121,23 +121,23 @@
 			<H2 class="mb-3">Explore</H2>
 			<div class="row">
 				<div class="col-md-6">
-					<?php print caNavLink($this->request, "<div class='hpExploreBox hpExploreBoxLg position-relative'>".caGetThemeGraphic($this->request, "ElderProcessingFish.jpeg", array("alt" => "Photo image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Photo</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "430")); ?>
+					<?php print caNavLink($this->request, "<div class='hpExploreBox hpExploreBoxLg position-relative'>".caGetThemeGraphic($this->request, "ElderProcessingFish.jpeg", array("alt" => "Woman with fish", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Photo</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "430")); ?>
 				</div>
 				<div class="col-md-6">
 					<div class="row">
 						<div class="col-md-6">
-							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "hp_sound.jpg", array("alt" => "Sound image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Sound</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "431")); ?>
+							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "hp_sound.jpg", array("alt" => "Person interviewing", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Sound</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "431")); ?>
 						</div>
 						<div class="col-md-6">
-							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "2018-2-26-01_003.jpg", array("alt" => "Video image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Video</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "432")); ?>
+							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "video.jpg", array("alt" => "Man using camera", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Video</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "432")); ?>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "CSTCPrincessSylviaThomas.jpg", array("alt" => "Maps image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Maps</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "427")); ?>
+							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "maps.jpg", array("alt" => "Man presenting with a map", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Maps</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "427")); ?>
 						</div>
 						<div class="col-md-6">
-							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "2018-2-14-03-036.jpeg", array("alt" => "Textual image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Textual</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "426")); ?>
+							<?php print caNavLink($this->request, "<div class='hpExploreBox position-relative'>".caGetThemeGraphic($this->request, "textual.jpg", array("alt" => "3 people reading a document", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Textual</div></div>", "", "", "Browse", "archives", array("facet" => "material_designations_facet", "id" => "426")); ?>
 						</div>
 					</div>
 				</div>

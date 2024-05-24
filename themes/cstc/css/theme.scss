@@ -45,6 +45,9 @@ $dark:          #0c3f55; /* dark blue */
 
 .hpBoxes{
 	.hpBox{
+		@media(max-width:768px){
+			margin-bottom:30px;
+		}
 		img{
 			height:350px;
 		}
@@ -53,6 +56,12 @@ $dark:          #0c3f55; /* dark blue */
 			padding-top:45%;
 			background: rgba(12, 63, 85, .5);
 			transition: all 300ms linear;
+			@media(max-width:1199px){
+				padding-top:55%;
+			}
+			@media(max-width:768px){
+				padding-top:30%;
+			}
 		}
 		div:hover{
 			background: rgba(12, 63, 85, .9);
@@ -70,6 +79,12 @@ $dark:          #0c3f55; /* dark blue */
 			padding-top:40%;
 			background: rgba(12, 63, 85, .5);
 			transition: all 300ms linear;
+			@media(max-width:1199px){
+				padding-top:55%;
+			}
+			@media(max-width:768px){
+				padding-top:30%;
+			}
 		}
 		div:hover{
 			background: rgba(12, 63, 85, .9);
@@ -79,8 +94,19 @@ $dark:          #0c3f55; /* dark blue */
 		img{
 			height:530px;
 		}
+		@media(max-width:767px){
+			img{
+				height:250px;
+			}
+		}
 		div{
 			padding-top:45%;
+			@media(max-width:1199px){
+				padding-top:55%;
+			}
+			@media(max-width:768px){
+				padding-top:30%;
+			}
 		}
 	}
 }
