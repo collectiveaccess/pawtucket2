@@ -27,6 +27,7 @@
  */
 $lightboxDisplayName = caGetLightboxDisplayName();
 $lightbox_sectionHeading = ucFirst($lightboxDisplayName["section_heading"]);
+$va_access_values = caGetUserAccessValues($this->request);
 
 # Collect the user links
 $user_links = "";
@@ -130,7 +131,7 @@ if($this->request->isLoggedIn()){
 						$entity_results = caMakeSearchResult('ca_entities', $search_terms_entity_ids);
 						if($entity_results->numHits()){
 ?>
-							<div class="col-12 col-md-6">
+							<div class="col-12 col-md-4">
 								<ul class="list-unstyled">
 									<li><div class="text-body-tertiary">Featured Faculty:</div></li>
 <?php
@@ -150,7 +151,24 @@ if($this->request->isLoggedIn()){
 						}
 					}
 				}
-		
+				# worktypes
+				$t_list = new ca_lists();
+				$va_list_items = $t_list->getItemsForList("work_type", array("checkAccess" => $va_access_values));
+				if(is_array($va_list_items) && sizeof($va_list_items)){
+?>
+							<div class="col-12 col-md-4">
+								<ul class="list-unstyled">
+									<li><div class="text-body-tertiary">Work Types:</div></li>
+<?php
+										foreach($va_list_items as $va_list_item){
+											$va_list_item = array_pop($va_list_item);
+											print "<li>&mdash; ".caNavlink($this->request, $va_list_item["name_singular"], "", "", "Browse", "objects", array("facet" => "work_type_facet", "id" => $va_list_item["item_id"]))."</li>";										
+										}
+?>
+								</ul>
+							</div>
+<?php
+				}		
 				# --- collections set - same as one shown on home page
 				if($search_terms_collection_set_code = $this->request->config->get("search_terms_collections_set")){
 					$search_terms_collection_ids =array();
@@ -162,7 +180,7 @@ if($this->request->isLoggedIn()){
 						$collection_results = caMakeSearchResult('ca_collections', $search_terms_collection_ids);
 						if($collection_results->numHits()){
 ?>
-							<div class="col-12 col-md-6">
+							<div class="col-12 col-md-4">
 								<ul class="list-unstyled">
 									<li><div class="text-body-tertiary">Collections:</div></li>
 <?php
@@ -177,14 +195,10 @@ if($this->request->isLoggedIn()){
 ?>
 								</ul>
 							</div>
-
 <?php				
 						}
 					}
 				}
-
-
-
 ?>
 				</div>
 			</div>

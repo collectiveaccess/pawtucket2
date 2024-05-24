@@ -1,0 +1,189 @@
+@font-face {
+	font-family:FuturaLTPro-Heavy;
+	src:url(fonts/337155_0_0.eot);
+	src:url(fonts/337155_0_0.eot?#iefix) format("embedded-opentype"),
+	url(fonts/337155_0_0.woff2) format("woff2"),
+	url(fonts/337155_0_0.woff) format("woff"),
+	url(fonts/337155_0_0.ttf) format("truetype")
+}
+@font-face {
+	font-family:FuturaPTBook;
+	src:url(fonts/FuturaPTBook.ttf) format("truetype")
+}
+@font-face {
+	font-family:GT-Sectra-Book;
+	src:url(fonts/GT-Sectra-Book.eot);
+	src:url(fonts/GT-Sectra-Book.eot?#iefix) format("embedded-opentype"),
+	url(fonts/GT-Sectra-Book.woff) format("woff"),
+	url(fonts/GT-Sectra-Book.otf) format("opentype"),
+	url(fonts/GT-Sectra-Book.ttf) format("truetype")
+}
+@font-face {
+	font-family:GT-Sectra-Book-Italic;
+	src:url(fonts/GT-Sectra-Book-Italic.eot);
+	src:url(fonts/GT-Sectra-Book-Italic.eot?#iefix) format("embedded-opentype"),
+	url(fonts/GT-Sectra-Book-Italic.woff) format("woff"),
+	url(fonts/GT-Sectra-Book-Italic.otf) format("opentype"),
+	url(fonts/GT-Sectra-Book-Italic.ttf) format("truetype")
+}
+@font-face {
+	font-family:GT-Sectra-Display-Medium;
+	src:url(fonts/GT-Sectra-Display-Medium.eot);
+	src:url(fonts/GT-Sectra-Display-Medium.eot?#iefix) format("embedded-opentype"),
+	url(fonts/GT-Sectra-Display-Medium.woff) format("woff"),
+	url(fonts/GT-Sectra-Display-Medium.otf) format("opentype"),
+	url(fonts/GT-Sectra-Display-Medium.ttf) format("truetype")
+}
+$serif:GT-Sectra-Book;
+$sansserif:FuturaLTPro-Heavy,sans-serif;
+.serif{
+	font-family: $serif;
+}
+.sansserif{
+	font-family: $sansserif;
+}
+.opacity-90{
+	opacity:.9;
+}
+.opacity-95{
+	opacity:.95;
+}
+.form-control{
+	background-color:#FFF;
+	opacity:1;
+	font-family: $serif;
+}
+.list-group, .accordion{
+	font-family: $sansserif;
+}
+.list-group-item{
+	background:transparent;
+}
+.accordion-button:focus{
+	background-color:#FFF;
+}
+.accordion {
+	.accordion-body{
+		font-family:$serif;
+	}
+}
+a{
+	text-underline-offset: .15rem;
+}
+a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
+    filter: brightness(97%);
+}
+/* ------------------------- header ------------------------- */
+.navbar{
+	font-family: $sansserif;
+	.navbar-brand{
+		font-family: GT-Sectra-Display-Medium;
+		.divide{
+			width:85px;
+		}
+		@media(max-width:1400px) {
+			span{
+				display:block;
+			}
+			.divide{
+				width:160px;
+			}
+		}
+		@media(max-width:576px) {
+			width: 230px;
+			display: inline-block;
+			text-wrap: wrap;
+		}
+	}
+	.nav-link:hover, .nav-link:focus, .navbar-nav .nav-link.active, .navbar-nav .nav-link.show{
+		background-color:#FFF;
+	}
+	.navbar-nav .nav-link{
+		margin-right:2px;
+	}
+}
+
+
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: url("../assets/graphics/homePage.jpg");
+
+    /* Full height */
+    height: 100vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/homePage.jpg");
+    }
+}
+
+.hpExplore{
+	img{
+		height: 650px;
+	}
+}
+
+/* ------------------------- browse ------------------------- */
+#bRefine .bg-light, #bRefine.bg-light{
+	background-color:#F3F3F0 !important;
+}
+/* ------------------------- Gallery ------------------------- */
+.gallery{
+	#galleryLandingFeatured{
+		img{
+			height:400px;
+		}
+	}
+	.card{
+		img{
+			height:300px;
+			width:100%
+		}
+	}
+}
+/* ------------------------- footer ------------------------- */
+footer{
+	.navbar-brand{
+		font-family: GT-Sectra-Display-Medium;
+		.divide{
+			width:85px;
+		}
+		@media(max-width:1400px) {
+			.divide{
+				width:160px;
+			}
+		}
+		
+	}
+	@media(max-width:700px) {
+		.navbar-brand{
+			width: 300px !important;
+    		white-space: wrap;
+    		display: inline-block;
+		}
+	}
+}
+/* ------------------------- footer ------------------------- */
+.detail{
+	H1{
+		font-size: 1.5rem;
+	}
+}
+/* ------------------------- Collections ------------------------- */
+.collections{
+	.card{
+		img.object-fit-cover{
+			object-position:top center;
+		}
+		img{
+			height:450px;
+			width:100%
+		}
+	}
+}

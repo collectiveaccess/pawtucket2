@@ -47,7 +47,7 @@
 							if($vn_rel_object_count){
 								$vs_record_count = "<br/><small class='ms-2 fw-normal'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 							}
-							if($vb_link_sublist){
+							if($vb_link_sublist || $o_collections_config->get("always_link_to_hierarchy_viewer_sublist")){
 								print "<a href='#' class='p-3 d-block bg-body-tertiary text-black fw-medium' hx-target='#collectionLoad' hx-get='".caNavUrl($this->request, '', 'Collections', 'childList', array('collection_id' => $qr_collection_children->get("ca_collections.collection_id")))."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</a>";
 							}else{
 								# --- there are no grandchildren to show in browser, so check if we should link to detail page instead
