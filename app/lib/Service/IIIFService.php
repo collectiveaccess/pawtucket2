@@ -816,13 +816,14 @@ class IIIFService {
 					case 'GET':
 					case 'POST':
 					case 'PUT':
+						//print_R($data);
 						if(($coords = $data['annotation']['target']['selector']['value'] ?? null)) {
 							$id = ($data['annotation']['id'] ?? null);
 							
 							$coords = preg_replace('!^xywh=!', '', $coords);
 							$coords = explode(',', $coords);
 							
-							$tmp = explode('-', $data['canvas']);
+							$tmp = explode('-', $data['annotation']['target']['source']['id'] ?? '');
 							
 							$page = $tmp[2] ?? 1;
 							$page_info = $files[$page - 1];
