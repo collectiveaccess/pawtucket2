@@ -38,6 +38,7 @@
 				</a>
 				<ul class="dropdown-menu">
 <?php
+					print "<li>".caNavLink($this->request, 'Collections', 'dropdown-item', '', 'Collections', 'Index')."</li>";
 					foreach($va_browse_types as $vs_browse_name => $va_browse_type){
 						if(!$va_browse_type["dontShowInBrowseMenu"]){
 							print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), 'dropdown-item', '', 'Browse', $vs_browse_name, '')."</li>";
