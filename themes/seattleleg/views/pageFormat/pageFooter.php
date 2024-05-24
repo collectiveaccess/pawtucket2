@@ -34,7 +34,7 @@
 ?>
 
 		<footer id="footer" class="text-center mt-auto text-white" style="background-color: #26272D;">
-			<div style="background-color: #f1f1f1; padding: 15px 0px; height: 75px;">
+			<div style="background-color: #f1f1f1; padding: 15px 0px; height: 80px;">
 				<div class="container">
 					<ul class="list-inline h-100">
 						<li class="list-inline-item float-start me-5">
@@ -54,10 +54,10 @@
             <h2 style="font-size: 34px; font-weight: bold; color: #fff;">Office of the City Clerk</h2>
 							<p style="font-size: 20px;">
 									<span class="address"><strong>Address:</strong></span>
-									<a href="https://www.google.com/maps/place/600 4th Ave, 3rd Floor, Seattle, WA, 98104" target="_blank" class="text-decoration-underline">600 4th Ave, 3rd Floor, Seattle, WA, 98104</a>
+									<a href="https://www.google.com/maps/place/600+4th+Ave+3rd+Floor,+Seattle,+WA+98104/@47.603843,-122.4098679,12z/data=!4m5!3m4!1s0x54906ab0a119aa15:0x4ffdaae08d1dcab0!8m2!3d47.603843!4d-122.3300454?entry=ttu" target="_blank" class="text-decoration-underline">600 4th Ave, 3rd Floor, Seattle, WA, 98104</a>
 									<br>
 									<span class="address"><strong>Mailing Address:</strong></span>
-									<a href="https://www.google.com/maps/place/PO Box 94728, Seattle, WA, 98124-4728" class="text-decoration-underline" target="_blank">PO Box 94728, Seattle, WA, 98124-4728</a>
+									<a href="https://www.google.com/maps/place//@40.7465366,-73.8536679,15z/data=!3m1!4b1?entry=ttu" class="text-decoration-underline" target="_blank">PO Box 94728, Seattle, WA, 98124-4728</a>
 									<br>
 									<span class="phone"><strong>Phone:</strong></span> 206-684-8344
 									<br>
@@ -67,7 +67,7 @@
           </div>
 
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 border-end border-white" id="seaFooter18Col2">
-            <h2 style="font-weight: bold; font-size: 28px; padding-left: 5px; margin-bottin: 7px;">City-Wide Information</h2>
+            <h2 style="font-weight: bold; font-size: 28px; padding-left: 5px; margin-bottom: 7px;">City-Wide Information</h2>
             <ul class="list-unstyled" style="font-size: 20px;">
               <li><a href="https://www.seattle.gov/city-departments-and-agencies">Departments &amp; Agencies List</a></li>
               <li><a href="https://www.seattle.gov/elected-officials">Elected Officials</a></li>
@@ -78,7 +78,7 @@
           </div>
 					
 					<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3" id="seaFooter18Col3">
-							<h2 style="font-weight: bold; font-size: 28px; padding-left: 5px; margin-bottin: 7px;">Top Requests</h2>
+							<h2 style="font-weight: bold; font-size: 28px; padding-left: 5px; margin-bottom: 7px;">Top Requests</h2>
 							<ol style="font-size: 20px;">
 									<li><a href="//www.seattle.gov/util/eBilling/index.htm" class="topRequest">Pay your utility bill</a></li>
 									<li><a href="https://www.governmentjobs.com/careers/seattle" class="topRequest">Find a city job</a></li>
@@ -112,7 +112,7 @@
 		</footer>
 		<!-- end footer -->
 		
-		<script type="text/javascript">
+		<script>
 			window.initApp();
 		</script>
 	</body>

@@ -105,8 +105,8 @@ label {
 }
 
 a:hover {
-	color: #FFF !important;
-	background-color: $primary !important;
+	// color: #FFF !important;
+	// background-color: $primary !important;
 }
 
 /* ------------------------- Header ------------------------- */
@@ -231,14 +231,14 @@ a:hover {
 		background-color: unset !important;
 	}
 	
-	#deptBreadcrumbs a {
+	.deptBreadcrumbs a {
 		color: #000;
 		text-decoration: underline;
 		font-weight: bold;
 		font-size: 14px;
 	}
 
-	#deptBreadcrumbs.left {
+	.deptBreadcrumbs.left {
 		margin-bottom: 15px;
 	}
 
@@ -393,9 +393,10 @@ footer a{
 
 /* ------------------------- Details ------------------------- */
 
+
 #detail{
 
-	padding: 32px;
+	padding: 62px;
 
 	#top-search-nav a, #bottom-search-nav a{
 		text-decoration: none !important;
@@ -418,6 +419,31 @@ footer a{
 		border: 1px solid #ddd;
 	}
 
+	table.record tr td:first-child {
+		font-weight: bold !important;
+		text-align: right !important;
+	}
+
+	table.record tr td.empty:first-child {
+		width: 1px !important;
+		min-width: 1px !important;
+		max-width: 1px !important;
+	}
+
+
+	@media screen and (min-width: 700px){
+		table.record tr td:first-child {
+			width: 275px;
+		}
+	}
+
+	@media screen and (max-width: 700px){ 
+		table.record tr td:first-child {
+			width: 150px;
+			min-width: 150px;
+		}
+	}
+
 }
 
 .detail{
@@ -437,6 +463,10 @@ footer a{
 
 #search_results{
 	padding: 32px;
+
+	a{
+		text-decoration: none !important;
+	}
 
 	#top-search-nav a, #bottom-search-nav a {
 		text-decoration: none !important;

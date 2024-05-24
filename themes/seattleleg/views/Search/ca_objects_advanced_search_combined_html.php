@@ -1,3 +1,4 @@
+<?= $this->formTag(['class' => 'row g-4']); ?>
 
 <div class="advSearchContainer">
 
@@ -5,7 +6,7 @@
 
 		<?= $this->render("/data/seattleleg/themes/seattleleg/views/Search/ca_objects_advanced_search_navLeft.php"); ?>
 
-		<div class="col-md-6">
+		<div class="col-md-12 col-lg-6">
 			<main role="main">
 				<h1 class="pageTitle">Combined Legislative Records Search</h1>
 
@@ -27,3 +28,6 @@
 
 	</div>
 </div>
+
+	<?= $this->formHiddenElements(); ?>
+</form>

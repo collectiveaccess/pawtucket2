@@ -42,46 +42,24 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 
-	<a id="h0"></a>
-  <h3>City of Seattle Combined Legislative Records Search</h3>
-  <em>Information modified on May 2, 2024;</em> <em>retrieved on May 6, 2024 10:07 AM</em>
-  <hr>
 
-  <div id="top-search-nav" class="d-flex inline-block justify-content-between">
-		<div class="nav-icons">
-			<a href="/" aria-label="home">
-				<i class="bi bi-house-door-fill"></i>
-			</a>
-			<a href="/index.php/Search/advanced/combined" aria-label="search">
-				<i class="bi bi-search"></i>
-			</a>
-			
-			<a href="" aria-label="results">{{{resultsLink}}}</a>
-			<a href="" aria-label="prev">{{{previousLink}}}</a>
-			<a href="" aria-label="next">{{{nextLink}}}</a>
-			
-			<a href="#hb" aria-label="page down">
-				<i class="bi bi-chevron-double-down"></i>
-			</a>
-			
-			<a href="https://clerk.seattle.gov/search/help/" aria-label="help">
-				<i class="bi bi-question-lg"></i>
-			</a>
-		</div>
+<div id="detail">
 
-		<div id="link-controls">
-			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-					<i class="bi bi-link-45deg"></i> LINK <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li><a class="dropdown-item" href="https://clerk.seattle.gov/search/clerk-files/323014">Visit Link</a></li>
-					<li><a class="dropdown-item" href="#">Copy Link</a></li>
-					<li><a class="dropdown-item" href="#">Email Link</a></li>
-				</ul>
-			</div>
-		</div>
+	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
 
-  </div>
+	<p>
+		<a href="{{{ca_objects.PDFLNK}}}" target="_blank">
+			<img src="http://clerk.seattle.gov/public/img/pdf.gif" height="40" alt="PDF">
+			Printable Version of this Agenda
+		</a>
+	</p>
 
 	<hr>
+
+	{{{ca_objects.TX}}}
+
+  <hr>
+
+  <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
+
+</div>

@@ -51,7 +51,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
 
   <h2 class="record-number">
-		<?= $type_idno; ?> {{{ca_objects.RESN}}}
+		<?= $type_idno; ?> {{{ca_objects.CBN}}}
 	</h2>
 
   <table class="record table table-striped table-responsive">
@@ -107,6 +107,9 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
     </tbody>
   </table>
 
+
+
+
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
@@ -141,10 +144,24 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.STAT">
+			{{{<ifdef code="ca_objects.CMR">
 				<tr>
-					<td>Committee Action:</td>
-					<td>^ca_objects.STAT</td>
+					<td>Committee Recommendation:</td>
+					<td>^ca_objects.CMR</td>
+				</tr>
+			</ifdef>}}}
+
+			{{{<ifdef code="ca_objects.CMV">
+				<tr>
+					<td>Committee Vote:</td>
+					<td>^ca_objects.CMV</td>
+				</tr>
+			</ifdef>}}}
+
+			{{{<ifdef code="ca_objects.DTSI">
+				<tr>
+					<td>City Council Action Date:</td>
+					<td>^ca_objects.DTSI</td>
 				</tr>
 			</ifdef>}}}
 
@@ -155,17 +172,48 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
+			{{{<ifdef code="ca_objects.DTMY">
+				<tr>
+					<td>Date Delivered to Mayor:</td>
+					<td>^ca_objects.DTMY</td>
+				</tr>
+			</ifdef>}}}
+
+			{{{<ifdef code="ca_objects.DTA">
+				<tr>
+					<td>
+						Date Signed by Mayor:<br>
+						<a href="#" data-bs-toggle="modal" data-bs-target="#MayorsSignatureApprovalDate"><small>(About the signature date)</small></a>
+					</td>
+					<td>^ca_objects.DTA</td>
+				</tr>
+			</ifdef>}}}
+
+			<div class="modal fade" id="MayorsSignatureApprovalDate">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<h3 class="centered">Mayor's signature / approval date</h3>
+							<p>The date displayed here is the ordinance approval date.</p>
+							<p>Approval date for an ordinance is ordinarily the date the bill was signed by the Mayor. There are certain exceptions:</p>
+							<ul>
+								<li>In a case where the Mayor returns a bill without signature, the approval date is the date it was returned to the City Clerk.</li>
+								<li>If a bill is not returned to the City Clerk by the Mayor, the effective approval date is fifteen days after its passage by the City Council.</li>
+								<li>In the case of a bill vetoed by the Mayor and subsequently reconsidered and passed over the Mayor's veto, approval date is the date of final passage by the City Council.</li>
+								<li>In the case of initiatives and referenda passed by the voters, approval date is the date of the Mayor's proclamation of the election results.</li>
+							</ul>
+							<p>City of Seattle Charter IV. 12.<br>Seattle Municipal Code 1.04.020</p>
+						</div>
+					<button class="btn btn-primary" data-bs-dismiss="modal">Close</button></div>
+				</div>
+			</div>
+
 			{{{<ifdef code="ca_objects.DTF">
 				<tr>
 					<td>Date Filed with Clerk:</td>
 					<td>^ca_objects.DTF</td>
 				</tr>
 			</ifdef>}}}
-
-			<tr>
-				<td>Signed Copy:</td>
-				????
-			</tr>
 
     </tbody>
   </table>
@@ -189,6 +237,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 		</table>
 	</ifdef>}}}
 
+	<!-- TODO: Add attachments -->
 	<table class="record table table-striped table-responsive">
 		<tbody>
 			<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
