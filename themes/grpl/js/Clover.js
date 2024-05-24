@@ -1,7 +1,7 @@
 
 import React, { useEffect, useContext, useState } from 'react'
 import { createRoot } from 'react-dom/client';
-import Viewer from "@samvera/cloverIIIF/viewer";
+import Viewer from "cloverIIIF/viewer";
 import * as Annotorious from '@recogito/annotorious-openseadragon';
 
 import '@recogito/annotorious-openseadragon/dist/annotorious.min.css';
@@ -92,10 +92,11 @@ export default function _init(appData) {
 			
 			options={{
 				informationPanel: {
-				  open: true, 
-				  renderAbout: false, 
+				  open: false, 
 				  renderToggle: true,
-				  renderAnnotation: true
+				  renderAnnotation: true,
+				  toggleLabel: "Tools",
+				  defaultTab: "manifest-content-search"
 				},
 				showIIIFBadge: false,
 				showTitle: true,
@@ -109,6 +110,13 @@ export default function _init(appData) {
 					clickToZoom: true
 				  },
 				  maxZoomPixelRatio: 4
+				},
+				localeText: {
+					contentSearch: {
+						tabLabel: "Search",
+						formPlaceholder: "Search",
+						noSearchResults: "No results found"
+					}
 				}
 			  }}
 		/>
