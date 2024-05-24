@@ -30,7 +30,8 @@
 						<div class="d-flex text-center">
 							<div class="input-group">
 								<label for="s3" class="me-1">Resolution No.</label>
-								<input type="text" id="s3" name="s3" style="width:70px" class="form-control"> &nbsp;
+								<!-- <input type="text" id="s3" name="s3" style="width:70px" class="form-control"> &nbsp; -->
+								<?= $this->formElement('ca_objects.RESN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
 							</div>
 
 							<input type="submit" value="Go" class="btn btn-primary">
