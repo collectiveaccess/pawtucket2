@@ -43,7 +43,7 @@
 				<ul class="list-inline pt-3">
   					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Facebook Link"><i class="bi bi-facebook"></i></a></li>
 					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Instagram Link"><i class="bi bi-instagram"></i></a></li>
-					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Twitter Link"><i class="bi bi-twitter"></i></a></li>
+					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Twitter Link"><i class="bi bi-twitter-x"></i></a></li>
 				</ul>
 			</div>
 		</footer><!-- end footer -->

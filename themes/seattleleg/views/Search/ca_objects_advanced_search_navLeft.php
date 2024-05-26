@@ -1,6 +1,6 @@
-<div class="col-md-3">
-	<nav style="">
-		<div id="leftNav" class="hidden-xs">
+<div class="col-lg-3 d-none d-lg-block">
+	<nav>
+		<div id="leftNav" >
 			<h2 style="margin-top:40px;">Legislation</h2>
 			<h4>Acted on by Council</h4>
 			<hr>

@@ -42,34 +42,29 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 
+	<a id="h0"></a>
+  <h3>City of Seattle Combined Legislative Records Search</h3>
+  <em>Information modified on May 2, 2024;</em> <em>retrieved on May 6, 2024 10:07 AM</em>
+  <hr>
+
   <div id="top-search-nav" class="d-flex inline-block justify-content-between">
 		<div class="nav-icons">
-			<a href="/">
+			<a href="/" aria-label="home">
 				<i class="bi bi-house-door-fill"></i>
 			</a>
-			<a href="/index.php/Search/advanced/combined">
+			<a href="/index.php/Search/advanced/combined" aria-label="search">
 				<i class="bi bi-search"></i>
 			</a>
 			
-			<a href="">{{{resultsLink}}}</a>
-			<a href="">{{{previousLink}}}</a>
-			<a href="">{{{nextLink}}}</a>
+			<a href="" aria-label="results">{{{resultsLink}}}</a>
+			<a href="" aria-label="prev">{{{previousLink}}}</a>
+			<a href="" aria-label="next">{{{nextLink}}}</a>
 			
-			<!-- <a href="">
-				<i class="bi bi-justify-left"></i>
-			</a>
-			<a href="">
-				<i class="bi bi-chevron-double-right"></i>
-			</a>
-			<a href="">
-				<i class="bi bi-chevron-right"></i>
-			</a> -->
-
-			<a href="#hb">
+			<a href="#hb" aria-label="page down">
 				<i class="bi bi-chevron-double-down"></i>
 			</a>
 			
-			<a href="https://clerk.seattle.gov/search/help/">
+			<a href="https://clerk.seattle.gov/search/help/" aria-label="help">
 				<i class="bi bi-question-lg"></i>
 			</a>
 		</div>
@@ -82,9 +77,11 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				<ul class="dropdown-menu">
 					<li><a class="dropdown-item" href="https://clerk.seattle.gov/search/clerk-files/323014">Visit Link</a></li>
 					<li><a class="dropdown-item" href="#">Copy Link</a></li>
-					<li><a class="dropdown-item" href="mailto:?subject=Clerk File 323014&amp;body=https://clerk.seattle.gov/search/clerk-files/323014">Email Link</a></li>
+					<li><a class="dropdown-item" href="#">Email Link</a></li>
 				</ul>
 			</div>
 		</div>
 
   </div>
+
+	<hr>

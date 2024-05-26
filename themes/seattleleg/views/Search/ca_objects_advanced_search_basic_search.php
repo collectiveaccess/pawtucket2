@@ -1,6 +1,3 @@
-<!-- <form class="my-5" action="" method="GET" class="form-horizontal" id="" onsubmit="">-->
-<?= $this->formTag(['class' => 'row g-4']); ?>
-
 	<div class="well">
 
 		<h4>Basic Search</h4><br>
@@ -44,7 +41,7 @@
 					<label for="s7target" class="col-sm-3 control-label">Search by Field:</label>
 
 					<div class="col-sm-3 me-1">
-						<select class="form-control s7target">
+						<select class="form-control s7target" aria-label="select">
 							<option value="">Select a Field</option>
 							<option value="TI" data-type="text">Title</option>
 							<option value="TX" data-type="text">Text</option>
@@ -126,7 +123,7 @@
 				<div class="input-group ">
 					<label for="s6range" class="col-sm-3 control-label">By Decade:</label>
 					<div class="col-sm-9">
-						<select id="s6range" class="form-control">
+						<select id="s6range" class="form-control" aria-label="select">
 							<option value="" selected="">No date limit, or custom range below</option>
 						<option value="2020-">2020 to Present</option><option value="2010-2019">2010-2019</option>
 						<option value="2000-2009">2000-2009</option><option value="1990-1999">1990-1999</option>
@@ -152,7 +149,7 @@
 
 						<div class="row row-cols-lg-auto">
 
-							<select id="s6month1" class="form-control w-auto">
+							<select id="s6month1" class="form-control w-auto" aria-label="select">
 								<option value="00" selected="">Month</option>
 								<option value="01">Jan</option>
 								<option value="02">Feb</option>
@@ -170,9 +167,9 @@
 
 							<input id="s6year1" type="number" step="1" maxlength="4" class="form-control w-auto" placeholder="Year" max="2024" min="1869">
 
-							<span class="w-auto px-1 d-flex align-items-center"> Ð </span>
+							<span class="w-auto px-1 d-flex align-items-center"> ï¿½ </span>
 
-							<select id="s6month2" class="form-control w-auto">
+							<select id="s6month2" class="form-control w-auto" aria-label="select">
 								<option value="00" selected="">Month</option>
 								<option value="01">Jan</option>
 								<option value="02">Feb</option>
@@ -241,7 +238,7 @@
 				<div class="input-group">
 					<label for="Sect4" class="col-sm-3 control-label">Default Operator:</label>
 					<div class="col-sm-9">
-						<select name="Sect4" class="form-control">
+						<select name="Sect4" class="form-control" aria-label="select">
 							<option value="OR">Or</option>
 							<option value="AND" selected="">And</option>
 							<option value="ADJ">Adjacent</option>
@@ -252,7 +249,7 @@
 				<div class="input-group">
 					<label for="l" class="col-sm-3 control-label">Results Per Page:</label>
 					<div class="col-sm-9">
-						<select name="l" class="form-control">
+						<select name="l" class="form-control" aria-label="select">
 							<option value="5">5</option>
 							<option value="10">10</option>
 							<option value="25">25</option>
@@ -296,6 +293,3 @@
 		</div>
 
 	</div>
-
-	<?= $this->formHiddenElements(); ?>
-</form>

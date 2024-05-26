@@ -1,13 +1,13 @@
-<?php
+<?php	
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ajax_map_item_html.php : 
+ * app/templates/header.php : standard PDF report header
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,10 +23,40 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name Header
+ * @type fragment
+ *
  * ----------------------------------------------------------------------
  */
- 	// other vars: 
- 	// 		ids = list of items associated with this map location
- 	//		table = primary table for results in current search
  
-	print $this->getVar('contentTemplate');
+ if($this->request->config->get('summary_header_enabled')) {
+	switch($this->getVar('PDFRenderer')) {
+		case 'wkhtmltopdf':
+?>
+			<!--BEGIN HEADER--><!DOCTYPE html>
+			<html>
+				<head>
+					<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+					<meta charset="utf-8" />
+					<meta charset="utf-8" />
+				</head>
+				<body>	
+					<div id='header'><?= caGetReportLogo(); ?></div>
+			</body>
+			</html><!--END HEADER-->
+<?php
+		break;
+		# ----------------------------------------
+		default:
+?>
+			<div id='headerdompdf'>
+				<?= caGetReportLogo(); ?>
+			</div>
+<?php
+		break;
+		# ----------------------------------------
+	}
+}
