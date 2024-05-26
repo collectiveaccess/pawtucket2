@@ -266,4 +266,34 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
 
 	protected $FIELDS;
  	# ------------------------------------------------------
+ 	
+ 	# ------------------------------------------------------
+ 	/**
+ 	 *
+ 	 */
+ 	public static function getAnnotations(?array $options) : array {
+ 		global $g_request;
+ 		$request = caGetOption('request', $options, $g_request);
+ 		$user_id = $request->getUserID();
+ 		$session_id = Session::getSessionID();
+ 		
+ 		$criteria = $user_id ? ['user_id' => $user_id] : ['session_id' => $session_id];
+ 	
+ 		$ret = [];
+ 		if($qr = ca_user_representation_annotations::find($criteria, ['returnAs' => 'searchResult'])) {
+			while($qr->nextHit()) {
+				$ret[$anno_id = $qr->get('ca_user_representation_annotations.annotation_id')] = [
+					'annotation_id' => $anno_id,
+					'label' => $qr->get('ca_user_representation_annotations.preferred_labels.name'),
+					'preview' => $qr->get('ca_user_representation_annotations.preview.thumbnail.tag'),
+					'representation_id' => $qr->get('ca_user_representation_annotations.representation_id'),
+					'object_id' => $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.object_id</unit>"),
+					'object_label' => $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.preferred_labels</unit>"),
+					'object_idno' => $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.idno</unit>"),
+				];
+			}
+		}
+		return $ret;
+ 	}
+ 	# ------------------------------------------------------
 }

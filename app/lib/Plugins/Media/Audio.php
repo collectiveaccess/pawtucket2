@@ -671,21 +671,24 @@ class WLPlugMediaAudio Extends BaseMediaPlugin Implements IWLPlugMedia {
 	/** 
 	 *
 	 */
-	public function writeClip($ps_filepath, $ps_start, $ps_end, $options=null) {
+	public function writeClip(string $filepath, ?array $options=null) : ?bool {
 		$o_tc = new TimecodeParser();
+
+		$start = caGetOption('start', $options, null);
+		$end = caGetOption('end', $options, null);
+		if (!$start || !$end) { return null; }
 		
-		$vn_start = $vn_end = 0;
-		if ($o_tc->parse($ps_start)) { $vn_start = (float)$o_tc->getSeconds(); }
-		if ($o_tc->parse($ps_end)) { $vn_end = (float)$o_tc->getSeconds(); }
+		if ($o_tc->parse($start)) { $start = (float)$o_tc->getSeconds(); }
+		if ($o_tc->parse($end)) { $end = (float)$o_tc->getSeconds(); }
 		
-		if ($vn_end == 0) { return null; }
-		if ($vn_start >= $vn_end) { return null; }
-		$vn_duration = $vn_end - $vn_start;
+		if ($end == 0) { return null; }
+		if ($start >= $end) { return null; }
+		$duration = $end - $start;
 		
-		caExec($this->ops_path_to_ffmpeg." -i ".caEscapeShellArg($this->filepath)." -f mp3 -t {$vn_duration}  -y -ss {$vn_start} ".caEscapeShellArg($ps_filepath).(caIsPOSIX() ? " 2>&1" : ""), $output, $vn_return);
-		if ($vn_return != 0) {
-			@unlink($ps_filepath);
-			$this->postError(1610, _t("Error extracting clip from %1 to %2: %3", $ps_start, $ps_end, join("; ", $output)), "WLPlugAudio->writeClip()");
+		caExec($this->ops_path_to_ffmpeg." -i ".caEscapeShellArg($this->filepath)." -f mp3 -t {$duration}  -y -ss {$start} ".caEscapeShellArg($filepath).(caIsPOSIX() ? " 2>&1" : ""), $output, $return);
+		if ($return != 0) {
+			@unlink($filepath);
+			$this->postError(1610, _t("Error extracting clip from %1 to %2: %3", $start, $end, join("; ", $output)), "WLPlugAudio->writeClip()");
 			return false;
 		}
 		

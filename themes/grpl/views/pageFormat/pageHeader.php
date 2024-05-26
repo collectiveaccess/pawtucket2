@@ -38,15 +38,13 @@ if($this->request->isLoggedIn()){
 	if(caDisplayLightbox($this->request)){
 		$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 	}
-	if(caDisplayClassroom($this->request)){
-		$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-	}
 	$va_user_links[] = "<li>".caNavLink($this->request, _t('User profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 	$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 } else {
 	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
 	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 }
+$va_user_links[] = "<li>".caNavLink($this->request, _t('My clippings'), '', '', 'Annotations', 'Index', [])."</li>";
 $vb_has_user_links = (sizeof($va_user_links) > 0);
 
 ?><!DOCTYPE html>

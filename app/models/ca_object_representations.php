@@ -894,7 +894,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		}
  		
  		$qr_annotations = $o_db->query("
- 			SELECT 	cra.annotation_id, cra.locale_id, cra.props, cra.representation_id, cra.user_id, cra.type_code, cra.access, cra.status
+ 			SELECT 	cra.annotation_id, cra.locale_id, cra.props, cra.representation_id, cra.user_id, cra.type_code, cra.access, cra.status, cra.preview
  			FROM {$vs_annotation_table} cra
  			WHERE
  				cra.representation_id = ? {$vs_access_sql} {$vs_limit_sql}
@@ -922,6 +922,12 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  				$va_tmp[$vs_property.'_vtt'] = $o_coder->getProperty($vs_property, false, ['vtt' => true]);
  			}
  			
+ 			if(is_array($versions = $qr_annotations->getMediaVersions('preview'))) {
+ 				foreach($versions as $v) {
+ 					$va_tmp["preview_url_{$v}"] = $qr_annotations->getMediaUrl('preview', $v);
+ 				}
+ 			}
+ 				
  			$va_tmp['timecodeOffset'] = $vn_timecode_offset;
  			
  			if (!($vs_sort_key = $va_tmp[$vs_sort_by_property])) {
@@ -1039,13 +1045,27 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		$t_annotation->set('type_code', $o_coder->getType());
  		$t_annotation->set('locale_id', $pn_locale_id);
  		$t_annotation->set('user_id', $pn_user_id);
+ 		if($t_annotation->hasField('session_id')) {
+ 			$t_annotation->set('session_id', Session::getSessionID());
+ 		}
+ 		
+ 		if($pa_values['source_info'] ?? null) {
+			$t_annotation->set('source_info', $pa_values['source_info'] ?? null);
+ 			unset($pa_values['source_info']);
+ 		}
+ 		
+ 		if($pa_values['idno'] ?? null) {
+			$t_annotation->set('idno', $pa_values['idno'] ?? null);
+ 			unset($pa_values['idno']);
+ 		}
  		
  		// TODO: verify that item_id exists and is accessible by user
  		$t_annotation->set('item_id', caGetOption('item_id', $options, null));
  		$t_annotation->set('status', $pn_status);
  		$t_annotation->set('access', $pn_access);
+ 		$t_annotation->set('props', $o_coder->getPropertyValues());
  		
- 		$t_annotation->insert();
+ 		$t_annotation->insert($options);
  		
  		if ($t_annotation->numErrors()) {
 			$this->errors = $t_annotation->errors;
@@ -1057,10 +1077,6 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		if ($t_annotation->numErrors()) {
 			$this->errors = $t_annotation->errors;
 			return false;
-		}
-		
-		foreach($o_coder->getPropertyList() as $vs_property) {
-			$t_annotation->setPropertyValue($vs_property, $o_coder->getProperty($vs_property));
 		}
 		
 		$t_annotation->update();
@@ -1144,6 +1160,21 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			if (isset($options['item_id'])) {
  				$t_annotation->set('item_id', caGetOption('item_id', $options, null));
  			}
+ 			
+ 			if($pa_values['source_info'] ?? null) {
+				$t_annotation->set('source_info', $pa_values['source_info']);
+				unset($pa_values['source_info']);
+			}
+						
+			if($t_annotation->hasField('idno') && ($pa_values['idno'] ?? null)) {
+				$t_annotation->set('idno', $pa_values['idno']);
+				unset($pa_values['idno']);
+			}
+					
+			if($t_annotation->hasField('session_id')) {
+				$t_annotation->set('session_id', Session::getSessionID());
+			}
+			
 			$t_annotation->set('status', $pn_status);
 			$t_annotation->set('access', $pn_access);
 			

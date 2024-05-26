@@ -802,21 +802,23 @@ class IIIFService {
 		$files = array_values($files);
 		
 		if(is_array($data)) {
-			
 			if(is_array($data) && sizeof($data)) {
 				switch(strtoupper($method)) {
 					case 'DELETE':
 						if($id = ($data['annotation']['id'] ?? null)) {
 							if($t_anno = ca_user_representation_annotations::findAsInstance(['representation_id' => $representation_id, 'annotation_id' => $id])) {
 								// TODO: check ownership
-								$t_anno->delete(true);
+								if($t_anno->delete(true)) {
+									$annotations = array_filter($annotations, function($v) use ($id) {
+										return ($id != $v['annotation_id']);
+									});
+								}
 							}
 						}
 						break;
 					case 'GET':
 					case 'POST':
 					case 'PUT':
-						//print_R($data);
 						if(($coords = $data['annotation']['target']['selector']['value'] ?? null)) {
 							$id = ($data['annotation']['id'] ?? null);
 							
@@ -837,19 +839,36 @@ class IIIFService {
 								'w' => $coords[2]/$page_width,
 								'h' => $coords[3]/$page_height
 							];
-							$title = $data['annotation']['body']['value'] ?? _t('Clipping');
+							if(!($title = $data['annotation']['body']['value'] ?? null) && is_array($data['annotation']['body'])) {
+								foreach($data['annotation']['body'] as $b) {
+									if($b['type'] === 'TextualBody') {
+										$title = $b['value'];
+										break;
+									}
+								}
+							}
+							if(!$title) { $title = _t('Clipping'); }
 							
-							if($id && is_numeric($id) && ($t_anno = $t_media->editAnnotation($id, 'en_US', $properties, 0, 0, [], ['returnAnnotation' => true]))) {
+							if($id && is_numeric($id) && 
+								(
+									$t_anno = $t_media->editAnnotation($id, 'en_US', $properties, 0, 0, [], ['returnAnnotation' => true])
+								)
+							) {
+								$t_anno->replaceLabel(['name' => $title], 'en_US', null, true);
+							} elseif(
+								$id && ($anno_id = ca_user_representation_annotations::find(['idno' => $id], ['returnAs' => 'firstId']))
+								&&
+								($t_anno = $t_media->editAnnotation($anno_id, 'en_US', $properties, 0, 0, [], ['returnAnnotation' => true]))
+							) {
 								$t_anno->replaceLabel(['name' => $title], 'en_US', null, true);
 							} else {
-								$t_media->addAnnotation($title, 'en_US', $request->getUserID(), $properties, 0, 0, [], []);
+								$t_media->addAnnotation($title, 'en_US', $request->getUserID(), $properties, 0, 0, ['idno' => $id], ['forcePreviewGeneration' => true]);
 							}
 						}
 						break;
 				}
 			}
 		}
-
 
   		$clip_list = [];
   		
@@ -880,6 +899,7 @@ class IIIFService {
 							'label' => $annotation['label'],
 							'identifier' => $annotation['annotation_id'],
 							'representation_id' => $annotation['representation_id'],
+							'preview' => $annotation['preview_url_thumbnail'],// TODO generalize version
 							'x' => $annotation['x'] * $page_width,
 							'y' => $annotation['y'] * $page_height,
 							'w' => $annotation['w'] * $page_width,

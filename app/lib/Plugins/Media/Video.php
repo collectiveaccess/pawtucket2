@@ -922,11 +922,14 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 	/** 
 	 *
 	 */
-	public function writeClip($filepath, $start, $end, $options=null) {
+	public function writeClip(string $filepath, ?array $options=null) : ?bool {
 		if (!caMediaPluginFFmpegInstalled()) return false;
 		$o_tc = new TimecodeParser();
 		
-		$start = $end = null;
+		$start = caGetOption('start', $options, null);
+		$end = caGetOption('end', $options, null);
+		if (!$start || !$end) { return null; }
+		
 		if ($o_tc->parse($start)) { $start = $o_tc->getSeconds(); }
 		if ($o_tc->parse($end)) { $end = $o_tc->getSeconds(); }
 		

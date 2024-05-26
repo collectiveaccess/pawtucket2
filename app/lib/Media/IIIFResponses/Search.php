@@ -55,7 +55,6 @@ class Search extends BaseIIIFResponse {
 			$reps = $media['instance']->getRepresentations(['original', 'page_preview', 'thumbnail', 'preview170', 'medium', 'h264_hi', 'mp3'], null, ['includeAnnotations' => true]);
 		
 			foreach($reps as $rep) {
-				// https://grpl.whirl-i-gig.com/service/IIIF/manifest/ca_object_representations:49050/render/Newspaper-49050-page-1"
 				if(!($t_rep = \ca_object_representations::findAsInstance(['representation_id' => $rep['representation_id']]))) {
 					continue;
 				}

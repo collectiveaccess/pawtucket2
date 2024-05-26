@@ -134,7 +134,7 @@ class Newspaper extends BaseIIIFManifest {
 					$base_iiif_id = $this->manifest_url.'-'.$rep['representation_id'];
 				
 					$media_url = $service_url.'/full/max/0/default.jpg';
-					$pages[] = [
+					$page =  [
 						'id' => "page-{$rep['representation_id']}-{$pagenum}",
 						'type' => 'Canvas',
 						'label' => [
@@ -168,8 +168,28 @@ class Newspaper extends BaseIIIFManifest {
 								]
 							]
 						],
-						//'annotations' => []
+						// 'annotations' => [
+// 							[
+// 								'id' => "{$base_iiif_id}-annotation-page-{$pagenum}-anno",
+// 								'type' => 'AnnotationPage',
+// 								'items' => [
+// 									[
+// 										'id' => "{$base_iiif_id}-annotation-page-painting-{$pagenum}-anno-1",
+// 										'type' => 'Annotation',
+// 										'motivation' => 'highlighting',
+// 										'body' => [
+// 											'type' => 'TextualBody',
+// 											'value' => 'testing',
+// 											'format' => 'text/plain'
+// 										],
+// 										'target' => "page-{$rep['representation_id']}-{$pagenum}#xywh=50,50,50,50"
+// 									]
+// 								]
+// 							]
+// 						]
 					];
+					
+					$pages[] = $page;
 				}
 			}
 			

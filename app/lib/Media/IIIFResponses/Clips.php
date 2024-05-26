@@ -54,11 +54,11 @@ class Clips extends BaseIIIFResponse {
 			$items[sprintf('%05d', (int)$clip['page']).$clip['label']] = [
 				'type' => 'Annotation',
 				'body' => [
-					// [
-// 						'value' => $aaa,
-// 						'type' => 'Image', 
-// 						'format' => $clip['mimetype']
-// 					],
+					 [
+						'value' => $clip['preview'],
+						'type' => 'Image', 
+						'format' => 'image/jpeg'
+					],
 					[
 						'type' => 'TextualBody',
           				'value' => $clip['label'] ?? '',

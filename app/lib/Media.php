@@ -400,11 +400,11 @@ class Media extends BaseObject {
 	/**
 	 *
 	 */
-	public function writeClip($ps_filename, $ps_start_, $ps_end, $options=null) {
+	public function writeClip(string $filename, ?array $options=null) : ?string {
 		if (!$this->instance) { return false; }
 		
 		if (method_exists($this->instance, "writeClip")) {
-			return $this->instance->writeClip($ps_filename, $ps_start_, $ps_end, $options);
+			return $this->instance->writeClip($filename, $options);
 		}
 		return null;
 	}

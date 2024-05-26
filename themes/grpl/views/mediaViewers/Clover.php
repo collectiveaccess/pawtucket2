@@ -39,7 +39,6 @@ $terms = array_map(function($v) {
 	$v = preg_replace('![^A-Za-z0-9]+[0-9]*!', '', $v);
 	return $v;
 }, $terms);
-
 ?>
 <div id="clover<?= $display_type; ?>"></div>
 
@@ -48,7 +47,7 @@ $terms = array_map(function($v) {
     	app: 'Clover',
     	id: 'clover<?= $display_type; ?>',
     	url: <?= json_encode($this->getVar('data_url').'/render/Newspaper'); ?>,
-    	searchUrl: <?= json_encode($this->getVar('search_url').'?q='.urlencode(join(' ', $terms))); ?>,
+    	searchUrl: <?= json_encode($this->getVar('search_url')); ?>,
     	clipUrl: <?= json_encode($this->getVar('clip_url').'/mode/iiif'); ?>,
     	renderAbout: false,
     	renderResources: false,
@@ -56,7 +55,8 @@ $terms = array_map(function($v) {
 		informationPanel: { open: false },
     	backgroundColor: '#000000',
     	canvasWidth: <?= json_encode(caGetOption('width', $display_info, '800').'px'); ?>,
-    	canvasHeight: <?= json_encode(caGetOption('height', $display_info, '800').'px'); ?>
+    	canvasHeight: <?= json_encode(caGetOption('height', $display_info, '800').'px'); ?>,
+    	initialSearch: <?= json_encode(join(' ', $terms ?? [])); ?>
     });
 </script>
 

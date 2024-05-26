@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2023 Whirl-i-Gig
+ * Copyright 2006-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,15 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- /**
-  *
-  */
-
-/**
- * Plugin for processing PDF documents
- */
-
 include_once(__CA_LIB_DIR__."/Plugins/Media/BaseMediaPlugin.php");
 include_once(__CA_LIB_DIR__."/Plugins/IWLPlugMedia.php");
 include_once(__CA_LIB_DIR__."/Configuration.php");
@@ -644,7 +635,6 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 	 *		outputDirectory
 	 *		force = ignore setting of "document_preview_generate_pages" app.conf directive and generate previews no matter what
 	 */
-	# This method must be implemented for plug-ins that can output preview frames for videos or pages for documents
 	public function &writePreviews($ps_filepath, $pa_options) {
 		if (!(bool)$this->opo_config->get("document_preview_generate_pages") && (!isset($pa_options['force']) || !$pa_options['force'])) { return false; }
 		if (!isset($pa_options['outputDirectory']) || !$pa_options['outputDirectory'] || !file_exists($pa_options['outputDirectory'])) {
@@ -773,6 +763,55 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 			if (!is_array($pa_properties)) { $pa_properties = array(); }
 			return caHTMLImage($ps_url, array_merge($pa_options, $pa_properties));
 		}
+	}
+	# ------------------------------------------------
+	/** 
+	 *
+	 */
+	public function writeClip(string $filepath, ?array $options=null) : ?string {
+		$page = caGetOption('page', $options, 1);
+		$t_rep = caGetOption('representation', $options, null);
+		
+		if($t_rep) { 
+			$previews = $t_rep->getFileList(null, $page - 1, 1, ['versions' => ['original']]);
+			$preview = array_shift($previews);
+			$files = [$preview['original_path']];
+			
+			$page_width = $preview['original_width'] ?? null;
+			$page_height = $preview['original_height'] ?? null;
+		} else {
+			$files = $this->writePreviews($filepath, ['startAtPage' => $page, 'numberOfPages' => 1, 'force' => true]);
+			$page_width = $media_info['INPUT']['WIDTH'] ?? null;
+			$page_height = $media_info['INPUT']['HEIGHT'] ?? null;
+		}
+		if(!is_array($files) || (sizeof($files) != 1)) {
+			return false;
+		}
+		
+		$m = new Media();
+		if(!$m->read($files[0])) {
+			return false;
+		}
+		$t_rep = caGetOption('representation', $options, null);
+		if(!$t_rep || !$t_rep->isLoaded()) { return null; }
+		
+		$w = caGetOption('w', $options, null);
+		$h = caGetOption('h', $options, null);
+		if(!$w || !$h) { return null; }
+		
+		$x = caGetOption('x', $options, null);
+		$y = caGetOption('y', $options, null);
+		if(($x < 0) || ($y < 0)) { return null; }
+		
+		$media_info = $t_rep->getMediaInfo('media',);	
+		if(!$page_width || !$page_height) { return null; }
+		
+		$m->transform('CROP', ['width' => $w * $page_width, 'height' => $h * $page_height, 'x' => $x * $page_width, 'y' => $y * $page_height]);
+	
+		if(!($output = $m->write($filepath, 'image/jpeg'))) {
+			return false;
+		}
+		return $output;
 	}
 	# ------------------------------------------------
 	#

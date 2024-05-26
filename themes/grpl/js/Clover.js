@@ -103,6 +103,7 @@ export default function _init(appData) {
 				annotationOverlays: {
 					zoomLevel: 5
 				},
+				initialSearch: appData.initialSearch,
 				canvasHeight: (jQuery(window).height() - 120) + "px",
 				openSeadragon: {
 				  gestureSettingsMouse: {

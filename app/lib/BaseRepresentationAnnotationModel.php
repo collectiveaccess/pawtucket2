@@ -34,6 +34,9 @@ require_once(__CA_LIB_DIR__."/BundlableLabelableBaseModelWithAttributes.php");
 
 class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithAttributes implements IBundleProvider {
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	public function __construct($id=null, ?array $options=null) {
 		parent::__construct($id, $options);
 		
@@ -41,6 +44,9 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
  		$this->opo_type_config = Configuration::load(__CA_CONF_DIR__.'/annotation_types.conf');
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	protected function initLabelDefinitions($pa_options=null) {
 		parent::initLabelDefinitions($pa_options);
 		$this->BUNDLES['ca_objects'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects'));
@@ -111,6 +117,9 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 		return parent::set($pm_fields, null, $pa_options);
 	}
  	# ------------------------------------------------------
+ 	/**
+	 *
+	 */
 	public function load($pm_id=null, $pb_use_cache=true) {
 		$vn_rc = parent::load($pm_id, $pb_use_cache);
 		
@@ -120,6 +129,9 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 		return $vn_rc;
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	public function insert($pa_options=null) {
 		$this->set('type_code', $vs_type = $this->getAnnotationType());
 		$this->opo_annotations_properties = $this->loadProperties($vs_type);
@@ -133,7 +145,10 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 			return false;
 		}
 		$this->set('props', $this->opo_annotations_properties->getPropertyValues());
-		$vn_rc = parent::insert($pa_options);
+
+		if($vn_rc = parent::insert($pa_options)) {
+			$vn_rc = $this->update($pa_options);	// update preview
+		}
 		return $vn_rc;
 	}
 	# ------------------------------------------------------
@@ -156,26 +171,10 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 			$this->errors = $this->opo_annotations_properties->errors;
 			return false;
 		}
-		$this->set('props', $this->opo_annotations_properties->getPropertyValues());
-		
-		if (!$this->getAppConfig()->get('dont_generate_annotation_previews') && $this->getPrimaryKey() && ($this->changed('props') || (isset($pa_options['forcePreviewGeneration']) && $pa_options['forcePreviewGeneration']))) {
-			$vs_start = $this->getPropertyValue('startTimecode');
-			$vs_end = $this->getPropertyValue('endTimecode');
-			
-			$va_data['start'] = $vs_start;
-			$va_data['end'] = $vs_end;
-			
-			$t_rep = new ca_object_representations($this->get('representation_id'));
-			if (($vs_file = $t_rep->getMediaPath('media', 'original')) && file_exists($vs_file)) {
-				$o_media = new Media();
-				if ($o_media->read($vs_file)) {
-					if ($o_media->writeClip($vs_file = tempnam(caGetTempDirPath(), 'annotationPreview'), $vs_start, $vs_end)) {
-						$this->set('preview', $vs_file);
-					}
-				}
-			}
-		}	
-		
+		$this->set('props', $x=$this->opo_annotations_properties->getPropertyValues());
+		$this->generatePreview($pa_options);
+	
+	
 		$vn_rc = parent::update($pa_options);
 		if (!$this->numErrors()) {
 			$this->opo_annotations_properties = $this->loadProperties($vs_type);
@@ -184,6 +183,45 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 		return $vn_rc;
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public function generatePreview(?array $options=null) {
+		if (!$this->getAppConfig()->get('dont_generate_annotation_previews') && $this->getPrimaryKey() && ($this->changed('props') || (isset($options['forcePreviewGeneration']) && $options['forcePreviewGeneration']))) {			
+			$type = $this->getAnnotationType();
+			
+			$data = [];
+			switch($type) {
+				case 'TimeBasedAudio':
+				case 'TimeBasedVideo':
+					$data['start'] = $this->opo_annotations_properties->getPropertyValue('startTimecode');
+					$data['end'] = $this->opo_annotations_properties->getPropertyValue('endTimecode');
+					break;
+				case 'Document';
+				case 'Image';
+					$data = $this->opo_annotations_properties->getPropertyValues();
+					break;
+				default:	
+					return null;
+			}
+			
+			$t_rep = ca_object_representations::findAsInstance(['representation_id' => $this->get('representation_id')]);
+			if ($t_rep && ($file = $t_rep->getMediaPath('media', 'original')) && file_exists($file)) {
+				$o_media = new Media();
+				if ($o_media->read($file)) {
+					$data['representation'] = $t_rep;
+					if ($ret = $o_media->writeClip($output_file = tempnam(caGetTempDirPath(), 'annotationPreview'), $data)) {
+						$this->set('preview', $ret);
+						$this->set('props', $data);
+					}
+				}
+			}
+		}	
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	public function delete($pb_delete_related=false, $pa_options=null, $pa_fields=null, $pa_table_list=null) {
 		$vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
 		
@@ -300,10 +338,16 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
  		}
  	}
  	# ------------------------------------------------------
+ 	/**
+	 *
+	 */
  	public function setPropertyValue($ps_property, $pm_value) {
  		return $this->opo_annotations_properties->setProperty($ps_property, $pm_value);
  	}
  	# ------------------------------------------------------
+ 	/**
+	 *
+	 */
  	public function getAnnotationType($pn_representation_id=null) {
  		if (!$pn_representation_id) {
 			if (!$vn_representation_id = $this->get('representation_id')) {
@@ -317,18 +361,23 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
  		return $t_rep->getAnnotationType($vn_representation_id);
  	}
  	# ------------------------------------------------------
+ 	/**
+	 *
+	 */
  	public function getPropertiesForType($ps_type) {
  		$va_types = $this->opo_type_config->getAssoc('types');
  		return array_keys($va_types[$ps_type]['properties']);
  	}
  	# ------------------------------------------------------
+ 	/**
+	 *
+	 */
  	public function loadProperties($ps_type, $pa_parameters=null) {
  		$vs_classname = $ps_type.'RepresentationAnnotationCoder';
  		if (!file_exists(__CA_LIB_DIR__.'/RepresentationAnnotationPropertyCoders/'.$vs_classname.'.php')) {
  			return false;
  		}
  		include_once(__CA_LIB_DIR__.'/RepresentationAnnotationPropertyCoders/'.$vs_classname.'.php');
- 		
  		$this->opo_annotations_properties = new $vs_classname;
  		$this->opo_annotations_properties->setPropertyValues(is_array($pa_parameters) ? $pa_parameters : $this->get('props'));
  		return $this->opo_annotations_properties;
@@ -449,6 +498,9 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 		return $this->opo_annotations_properties->useInEditor();
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	public function getTypeList($pa_options=null) {
 		$o_annotation_type_conf = Configuration::load(Configuration::load()->get('annotation_type_config'));
 		$va_type_list = array();
@@ -460,6 +512,9 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 		return $va_type_list;
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	public function getTypeID($pn_id=null) {
 		$o_annotation_type_conf = Configuration::load(Configuration::load()->get('annotation_type_config'));
 		$va_available_types = $o_annotation_type_conf->get('types');
@@ -472,6 +527,9 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
  	# ------------------------------------------------------
  	# STATIC
  	# ------------------------------------------------------
+ 	/**
+	 *
+	 */
  	static public function getPropertiesCoderInstance($ps_type) {
  		$vs_classname = $ps_type.'RepresentationAnnotationCoder';
  		if (!file_exists(__CA_LIB_DIR__.'/RepresentationAnnotationPropertyCoders/'.$vs_classname.'.php')) {
