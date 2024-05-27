@@ -861,6 +861,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		if (!is_array($options)) { $options = array(); }
  		
  		$pn_user_id = caGetOption('user_id', $options, null);
+ 		$session_id = caGetOption('session_id', $options, null);
  		$pn_item_id = caGetOption('item_id', $options, null);
  		$pb_ids_only = caGetOption('idsOnly', $options, false);
  		$pb_labels_only = caGetOption('labelsOnly', $options, false);
@@ -886,6 +887,9 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		if ($pn_user_id) {
 			$vs_limit_sql = ' AND cra.user_id = ?';
 			$va_params[] = $pn_user_id;
+		} elseif($session_id && Datamodel::getFieldNum($vs_annotation_table, 'session_id')) {
+			$vs_limit_sql = ' AND cra.session_id = ?';
+			$va_params[] = $session_id;
 		}
 		
  		if ($pn_item_id) {
