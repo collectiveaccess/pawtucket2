@@ -493,6 +493,22 @@ div.caMediaOverlayControls .close {
 	margin: -5px 10px 0px 20px
 }
 
+.detail .detailNavBgIssuePrevious{
+	position:absolute;
+	left: 5px;
+	top: 40vh;
+}
+.detail .detailNavBgIssueNext{
+	position:absolute;
+	right: 5px;
+	top: 40vh;
+}
+
+.issueNav {
+	font-size: 30px;
+	font-weight: bold;
+	text-decoration: none !important;
+}
 
 /* Clover viewer overrides */
 .c-YcJWa {

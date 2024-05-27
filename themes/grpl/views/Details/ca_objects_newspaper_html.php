@@ -42,16 +42,42 @@ $vo_rights = new ca_list_items($t_object->get("ca_objects.rights.copyright_logo"
 $vo_rights_idno = $vo_rights->get('idno');
 #	$vo_rights = $vo_rights_list->getItemFromList('rights_logos', 'public_domain'); #$t_object->get("ca_objects.rights.copyright_logo")); #caGetListItems('rights_logos', ['index' => 'id', 'value' => 'item_value']);
 
+// Find next/previous issues;
+$previous_id = $next_id = null;
+if(is_array($coll_ids = $t_object->get('ca_collections.collection_id', ['returnAsArray' => true])) && sizeof($coll_ids)) {
+	$coll_id = array_shift($coll_ids);
+	if($t_collection = ca_collections::findAsInstance($coll_id)) {
+		$object_ids = $t_collection->getRelatedItems('ca_objects', ['returnAs' => 'array', 'idsOnly' => true, 'sort' => 'ca_objects.date.date_value', 'sortDirection' => true]);
+		$object_ids = array_map('intval', $object_ids);
+		if(($index = array_search((int)$t_object->getPrimaryKey(), $object_ids, true)) !== false) {
+			$previous_id = $object_ids[$index-1] ?? null;
+			$next_id = $object_ids[$index+1] ?? null;
+		}
+
+	}
+}
 ?>
 <div class='navLeftRight'>
 	<div class="detailNavBgLeft">
 		{{{previousLink}}}{{{resultsLink}}}
 	</div><!-- end detailNavBgLeft -->
+	<div class="detailNavBgIssuePrevious">
+		<?php if($previous_id) { 
+			print caNavLink($this->request, _t('←'), 'issueNav issueNavPrevious', '*', '*', 'newspapers/'.$previous_id); 
+			TooltipManager::add('.issueNavPrevious', _t('Previous issue'));
+		} ?>
+	</div>
 </div><!-- end col -->
 <div class='navLeftRight'>
 	<div class="detailNavBgRight">
 		{{{nextLink}}}
 	</div><!-- end detailNavBgLeft -->
+	<div class="detailNavBgIssueNext">
+		<?php if($next_id) { 
+			print caNavLink($this->request, _t('→'), 'issueNav issueNavNext', '*', '*', 'newspapers/'.$next_id); 
+			TooltipManager::add('.issueNavNext', _t('Next issue'));
+		} ?>
+	</div>
 </div><!-- end col -->
 	
 <div class="row" id="newspaper-container">

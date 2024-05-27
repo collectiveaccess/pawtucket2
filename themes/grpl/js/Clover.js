@@ -92,7 +92,7 @@ export default function _init(appData) {
 			
 			options={{
 				informationPanel: {
-				  open: false, 
+				  open: true, 
 				  renderToggle: true,
 				  renderAnnotation: true,
 				  toggleLabel: "Tools",
