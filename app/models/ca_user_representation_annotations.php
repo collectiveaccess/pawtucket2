@@ -274,6 +274,7 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
  	public static function getAnnotations(?array $options) : array {
  		global $g_request;
  		$request = caGetOption('request', $options, $g_request);
+ 		$group_by = caGetOption('groupBy', $options, null);
  		$user_id = $request->getUserID();
  		$session_id = Session::getSessionID();
  		
@@ -282,15 +283,52 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
  		$ret = [];
  		if($qr = ca_user_representation_annotations::find($criteria, ['returnAs' => 'searchResult'])) {
 			while($qr->nextHit()) {
-				$ret[$anno_id = $qr->get('ca_user_representation_annotations.annotation_id')] = [
+				$anno_id = $qr->get('ca_user_representation_annotations.annotation_id');
+				$object_id = $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.object_id</unit>");
+				$representation_id = $qr->get('ca_user_representation_annotations.representation_id');
+				
+				$t_anno = $qr->getInstance();
+				$properties = $t_anno->getPropertyValues();
+				
+				$anno = [
 					'annotation_id' => $anno_id,
 					'label' => $qr->get('ca_user_representation_annotations.preferred_labels.name'),
 					'preview' => $qr->get('ca_user_representation_annotations.preview.thumbnail.tag'),
-					'representation_id' => $qr->get('ca_user_representation_annotations.representation_id'),
-					'object_id' => $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.object_id</unit>"),
+					'original' => $qr->get('ca_user_representation_annotations.preview.original.tag'),
+					'original_path' => $qr->get('ca_user_representation_annotations.preview.original.path'),
+					'original_width' => $qr->get('ca_user_representation_annotations.preview.original.width'),
+					'original_height' => $qr->get('ca_user_representation_annotations.preview.original.height'),
+					'representation_id' => $representation_id,
+					'object_id' => $object_id,
 					'object_label' => $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.preferred_labels</unit>"),
 					'object_idno' => $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.idno</unit>"),
+					'page' => $properties['page'] ?? null
 				];
+				switch($group_by) {
+					case 'ca_objects':
+						if(!isset($ret[$object_id])) {
+							$ret[$object_id] = [
+								'label' => $anno['object_label'],
+								'idno' => $anno['object_idno'],
+								'annotations' => []
+							];
+						}
+						$ret[$object_id]['annotations'][$anno_id] = $anno;
+						break;
+					case 'ca_object_representations':
+						if(!isset($ret[$representation_id])) {
+							$ret[$representation_id] = [
+								'label' => $qr->get('ca_object_representations.preferred_labels'),
+								'idno' => $qr->get('ca_object_representations.idno'),
+								'annotations' => []
+							];
+						}
+						$ret[$representation_id]['annotations'][$anno_id] = $anno;
+						break;
+					default:
+						$ret[$anno_id] = $anno;
+						break;
+				}
 			}
 		}
 		return $ret;
