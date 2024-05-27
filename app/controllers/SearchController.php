@@ -181,6 +181,7 @@ class SearchController extends FindController {
 		
 		if (!$ps_view) {
 			$ps_view = $this->opo_result_context->getCurrentView();
+			
 		}
 		if(!in_array($ps_view, array_keys($va_views))) {
 			$ps_view = array_shift(array_keys($va_views));
@@ -435,6 +436,7 @@ class SearchController extends FindController {
 			}
 		}
 		$this->view->setVar('criteria', $va_criteria_for_display);
+		$this->view->setVar('criteria_raw', $o_browse->getCriteria());
 		
 		
 		$x = [];
