@@ -96,7 +96,7 @@
 			
 			$t_list_item = new ca_list_items();
 
-			$count = 0;
+			$count = $vn_start;
 
 			while($qr_res->nextHit()) {
 				// var_dump($qr_res);
@@ -172,17 +172,29 @@
 						// 		 </div>	
 						// 	</div><!-- end col -->";
 
+							$id_field_codes = [
+								'ordinance' => 'ca_objects.ORDN',
+								'resolution' => 'ca_objects.RESN',
+								'clerk_file' => 'ca_objects.CFN',
+								'comptroller_file' => 'ca_objects.CFN',
+								'council_bill' => 'ca_objects.CBN',
+							];
+
+
 							$result = $count;
-							$file_type = $qr_res->get("type_id");
+							$file_type = $qr_res->get("type_id", ['convertCodesToDisplayText' => true]);
 							$number = $qr_res->get("idno");
 							$filed = $qr_res->get("DTF");
 							$title = $qr_res->get("preferred_labels");
-
+							
+							$type_idno = $qr_res->get("type_id", ['convertCodesToIdno' => true]);
+							$id_num = $qr_res->get($id_field_codes[$type_idno] ?? null);
+							
 							$vs_result_output = "
 								<tr>
 									<td>{$result}</td>
 									<td>{$file_type}</td>
-									<td>{$number}</td>
+									<td>{$id_num}</td>
 									<td>{$filed}</td>
 									<td>{$vs_caption}</td>
 								</tr>

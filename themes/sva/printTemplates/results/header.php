@@ -1,13 +1,13 @@
-<?php
+<?php	
 /* ----------------------------------------------------------------------
- * bundles/ca_search_form_attributes.php : bundle to render attributes for "advanced" (field-level) search forms
+ * app/templates/header.php : standard PDF report header
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2018 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,31 +23,41 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name Header
+ * @type fragment
+ *
  * ----------------------------------------------------------------------
  */
-	
-	$va_elements =			$this->getVar('elements');
-	$va_element_ids = 		$this->getVar('element_ids');
-	$vs_element_set_label = $this->getVar('element_set_label');
-	
+ 
+ if($this->request->config->get('summary_header_enabled')) {
+	switch($this->getVar('PDFRenderer')) {
+		case 'wkhtmltopdf':
 ?>
-		<div>				
+			<!--BEGIN HEADER--><!DOCTYPE html>
+			<html>
+				<head>
+					<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+					<meta charset="utf-8" />
+				</head>
+				<body><div id='header'>
+					<?= caGetReportLogo(); ?>
+				</div>
+				<br style="clear: both;"/>
+			</body>
+			</html><!--END HEADER-->
 <?php
-			foreach($va_elements as $vn_container_id => $va_element_list) {
-				if ($vn_container_id === '_locale_id') { continue; }
+		break;
+		# ----------------------------------------
+		default:
 ?>
-				<table class="attributeListItem" cellpadding="0px" cellspacing="0px">
+			<div id='headerdompdf'>
+				<?= caGetReportLogo(); ?>
+			</div>
 <?php
-						foreach($va_element_list as $vs_element) {
-							print '<tr><td class="attributeListItem"><div class="searchFormLineModeElementSubLabel">'.$vs_element."</div></td></tr>\n";
-						}
-?>
-				</table>
-<?php
-			}
-
-			if (isset($va_elements['_locale_id'])) {
-				print ($va_elements['_locale_id']['hidden']) ? $va_elements['_locale_id']['element'] : '<div class="formLabel">'._t('Locale ').$va_elements['_locale_id']['element'].'</div>';
-			}
-?>
-		</div>
+		break;
+		# ----------------------------------------
+	}
+}

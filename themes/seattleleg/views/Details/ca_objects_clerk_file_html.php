@@ -37,33 +37,26 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+
+$type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 ?>
+
 <script type="text/javascript">
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 
-
 <div id="detail">
-  <a name="h0"></a>
-  <h3>City of Seattle Combined Legislative Records Search</h3>
-  <em>Information modified on May 2, 2024;</em> <em>retrieved on May 6, 2024 10:07 AM</em>
-  <p></p>
-  <hr />
 
 	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
 
-  <hr />
-
-
   <h2 class="record-number">
-		<!-- Clerk File 323014  --> 
-		{{{ca_objects.type_id}}} {{{ca_objects.CFN}}}
+		<?= $type_idno; ?> {{{ca_objects.CFN}}}
 	</h2>
 
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><h3 style="margin: 5px 0 0;">Title</h3></th>
+        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Title</span></th>
       </tr>
       <tr>
         <td class="empty"></td>
@@ -79,7 +72,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><h3 style="margin: 5px 0 0;">Description and Background</h3></th>
+        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Description and Background</span></th>
       </tr>
 
 			{{{<ifdef code="ca_objects.STAT">
@@ -111,7 +104,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><h3 style="margin: 5px 0 0;">Legislative History</h3></th>
+        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Legislative History</span></th>
       </tr>
 			
 			{{{<ifdef code="ca_objects.SPON">
@@ -164,7 +157,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<table class="record table table-striped table-responsive">
 			<tbody>
 				<tr>
-					<th colspan="2"><h3 style="margin: 5px 0 0;">Text</h3></th>
+					<th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Text</span></th>
 				</tr>
 				<tr>
 					<td class="empty"></td>
@@ -180,7 +173,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 	<table class="record table table-striped table-responsive">
 		<tbody>
-			<tr><th colspan="2"><h3 style="margin: 5px 0 0;">Attachments</h3></th></tr>
+			<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
 			<tr>
 				<td class="empty"></td>
 				<td>
@@ -192,7 +185,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</tbody>
 	</table>
 
-  <hr />
+  <hr>
 
   <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
 
