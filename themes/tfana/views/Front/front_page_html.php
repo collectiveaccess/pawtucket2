@@ -102,10 +102,10 @@
 		<div class="col-lg-12 col-xl-10 my-5 hpBoxes">
 			<div class="row">
 				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "blank.jpg", array("alt" => "productions image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Productions</div></div>", "", "", "Collections", "Index"); ?>
+					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "blank.jpg", array("alt" => "productions image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Productions</div></div>", "", "", "Browse", "Collections"); ?>
 				</div>
 				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "blankjpg", array("alt" => "people image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>People</div></div>", "", "", "Browse", "entities"); ?>
+					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "blankjpg", array("alt" => "people image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>People</div></div>", "", "", "Browse", "People"); ?>
 				</div>
 				<div class="col-md-4">
 					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "blank.jpg", array("alt" => "archival items image", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bolder fs-3 text-white'>Archival items</div></div>", "", "", "Browse", "Objects"); ?>
