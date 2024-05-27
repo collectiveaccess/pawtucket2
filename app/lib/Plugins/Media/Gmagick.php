@@ -108,6 +108,7 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 			'SCALE' 			=> array('width', 'height', 'mode', 'antialiasing'),
 			'CROP' 				=> array('width', 'height', 'x', 'y'),
 			'ANNOTATE'			=> array('text', 'font', 'size', 'color', 'position', 'inset'),
+			'HIGHLIGHT'			=> array('width', 'height', 'x', 'y', 'color'),
 			'WATERMARK'			=> array('image', 'width', 'height', 'position', 'opacity'),
 			'ROTATE' 			=> array('angle'),
 			'SET' 				=> array('property', 'value'),
@@ -552,6 +553,20 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 		try {
 			switch($operation) {
 				# -----------------------
+				case 'HIGHLIGHT':
+					$d = new GmagickDraw();
+					
+					$size = (isset($parameters['size']) && ($parameters['size'] > 0)) ? $parameters['size'] : 18;
+					$d->rectangle($parameters['x'], $parameters['y'], $parameters['x'] + $parameters['width'], $parameters['y'] + $parameters['height']);
+				
+					$pw = new GmagickPixel();
+					$pw->setcolor(isset($parameters['color']) ? $parameters['color'] : "#cc0000");
+					$d->setfillopacity(0.5);
+					$d->setfillcolor($pw);
+					
+					$this->handle->drawimage($d);
+					break;
+				# -----------------------
 				case 'ANNOTATE':
 					$d = new GmagickDraw();
 					if ($parameters['font'] ?? null) { 
@@ -566,7 +581,7 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 					$d->setfontsize($size);
 				
 					$inset = (isset($parameters['inset']) && ($parameters['inset'] > 0)) ? $parameters['inset'] : 0;
-					$pw= new GmagickPixel();
+					$pw = new GmagickPixel();
 					$pw->setcolor(isset($parameters['color']) ? $parameters['color'] : "black");
 					$d->setfillcolor($pw);
 					
