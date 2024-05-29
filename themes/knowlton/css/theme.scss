@@ -164,9 +164,12 @@ H1{
 
 nav{
 	.navbar-brand {
-	  width: 308px;
+	  width: 250px;
 	}
 	@media (min-width: 768px) {
+		.navbar-brand {
+		  width: 308px;
+		}
 		.navbar-nav{
 			padding-bottom:28px;
 			.nav-item{
@@ -181,6 +184,9 @@ nav{
 		}
 	}
 	#navbarSearch{
+		@media(max-width:767px){
+			display:none;
+		}
 		top:148px;
 		z-index:1000;
 		input{
@@ -214,6 +220,9 @@ footer{
 	background-color: black;
 	color: #f3f3f3;
 	padding: 3em 3em 0.75em 3em;
+	@media(max-width:768px){
+		padding: 1em 1em 0.75em 1em;
+	}
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
@@ -231,6 +240,10 @@ footer{
 	.footerBrand{
 		font-size:14px;
 		width:35%;
+		@media(max-width:1099px){
+			width:100%;
+			padding-bottom:1.25em;
+		}
 		line-height:1.15em;
 		img{
 			width:300px;
@@ -245,11 +258,19 @@ footer{
 	nav.footerNav{
 		font-size: 1rem;
 		flex: 1 0 40%;
+		@media(max-width:768px){
+			flex: 1 0 100%;
+		}
+		@media(max-width:1099px){
+			padding-left:43px;
+		}
 		ul{
-			display: flex;
-			flex-wrap: wrap;
-			flex-direction: column;
-			height: 70px;
+			@media(min-width:400px){
+				display: flex;
+				flex-wrap: wrap;
+				flex-direction: column;
+				height: 70px;
+			}
 			list-style: none;
 			margin: 0 0 1.5rem 0;
 			padding:0px;
@@ -264,6 +285,12 @@ footer{
 		font-size: 1rem;
 		line-height: 1.3;
 		flex: 1 25%;
+		@media(max-width:768px){
+			flex: 1 0 100%;
+		}
+		@media(max-width:1099px){
+			padding-left:43px;
+		}
 		min-width: 8em;
 		ul{
 			list-style: none;
@@ -290,6 +317,9 @@ footer{
 				height: 1.25rem;
 				flex: 1 65%;
 				max-width:100%;
+				@media(max-width:940px){
+					max-width:50%;
+				}
 			}
 			#mc-embedded-subscribe{
 				flex: 0 1 auto;
@@ -358,6 +388,7 @@ footer{
 }
 /* --- Search / Browse ---*/
 .results{
+	min-height:80vh;
 	a{
 		text-decoration:none;
 	}

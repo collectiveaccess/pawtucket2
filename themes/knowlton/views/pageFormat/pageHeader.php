@@ -99,12 +99,21 @@ if($this->request->isLoggedIn()){
 						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "aboutcollection") ? " active" : ""), "", "AboutCollection", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="nav-item">
+					<li class="nav-item d-none d-md-block">
 						<button class="nav-link" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch,#navbarSearchClose" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search form">Search<span id="navbarSearchClose" class="collapse"> <i class="bi bi-x-lg"></i></span></button>
+					</li>
+					<li class="nav-item d-block d-md-none">
+						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>">
+							<div class="input-group mt-4">
+								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
+								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search...">
+								<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
+							</div>
+						</form>
 					</li>
 				</ul>
 			</div>
-			<div class="collapse position-absolute end-0 start-0 vh-100 bg-white px-5" id="navbarSearch">
+			<div class="collapse position-absolute end-0 start-0 vh-100 bg-white px-5 overflow-scroll" id="navbarSearch">
 				<div class="row">
 					<div class="col-12">
 						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>">

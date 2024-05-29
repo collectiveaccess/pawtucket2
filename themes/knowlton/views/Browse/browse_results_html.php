@@ -172,7 +172,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 
 		if($vs_criteria){
-			print "<div class='mt-n5 mb-3 pt-2'>".$vs_criteria."</div>";	
+			print "<div class='mt-md-n5 mb-3 pt-2'>".$vs_criteria."</div>";	
 		}
 				
 		if($vs_facet_description){
