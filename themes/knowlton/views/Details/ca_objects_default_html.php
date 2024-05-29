@@ -87,7 +87,7 @@ if($show_nav){
 				}
 				if($copy_link_enabled){
 ?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
+				<button class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
 <?php
 				}
 ?>
@@ -110,7 +110,7 @@ if($show_nav){
 					{{{<dl class="mb-3">
 <?php						
 						if($t_object->get("ca_objects.department")){
-							if($links = caGetBrowseLinks($t_object, 'ca_objects.department', ['template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.department</button></l>', 'linkTemplate' => '^LINK'])) {
+							if($links = caGetBrowseLinks($t_object, 'ca_objects.department', ['template' => '<l><div class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.department</div></l>', 'linkTemplate' => '^LINK'])) {
 ?>
 								<dt class="serif fw-medium pb-1">Discipline</dt>
 								<dd class="pb-4 fs-5 fw-semibold"><?= join(" ", $links); ?></dd>
@@ -118,7 +118,7 @@ if($show_nav){
 							}
 						}
 						if($t_object->get("ca_objects.semester")){
-							if($links = caGetBrowseLinks($t_object, 'ca_objects.semester', ['template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.semester</button></l>', 'linkTemplate' => '^LINK'])) {
+							if($links = caGetBrowseLinks($t_object, 'ca_objects.semester', ['template' => '<l><div class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.semester</div></l>', 'linkTemplate' => '^LINK'])) {
 ?>
 								<dt class="serif fw-medium pb-1">Semester</dt>
 								<dd class="pb-4 fs-5 fw-semibold"><?= join(" ", $links); ?></dd>
@@ -137,7 +137,7 @@ if($show_nav){
 						</ifcount>
 <?php						
 						if($t_object->get("ca_objects.work_type")){
-							if($links = caGetBrowseLinks($t_object, 'ca_objects.work_type', ['template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.work_type</button></l>', 'linkTemplate' => '^LINK'])) {
+							if($links = caGetBrowseLinks($t_object, 'ca_objects.work_type', ['template' => '<l><div class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.work_type</div></l>', 'linkTemplate' => '^LINK'])) {
 ?>
 								<dt class="serif fw-medium pb-1">Work Type</dt>
 								<dd class="pb-4 fs-5 fw-semibold"><?= join(" ", $links); ?></dd>
@@ -152,7 +152,7 @@ if($show_nav){
 <?php
 						print $this->render("Details/snippets/related_entities_by_rel_type_html.php");
 						if($t_object->get("ca_objects.geonames", array("checkAccess" => $access_values))){
-							if($links = caGetBrowseLinks($t_object, 'ca_objects.geonames', ['template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.geonames</button></l>', 'linkTemplate' => '^LINK'])) {
+							if($links = caGetBrowseLinks($t_object, 'ca_objects.geonames', ['template' => '<l><div class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.geonames</div></l>', 'linkTemplate' => '^LINK'])) {
 ?>
 								<dt class="serif fw-medium pb-1">Location<?= (sizeof($links) > 1 ) ? "s" : ""; ?></dt>
 								<dd class="pb-4 fs-5 fw-semibold"><?= join(" ", $links); ?></dd>

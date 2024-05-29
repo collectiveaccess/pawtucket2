@@ -67,7 +67,7 @@ if($this->request->isLoggedIn()){
 </head>
 <body id="pawtucketApp" class="d-flex flex-column">
 	<div role="navigation" id="osu_navbar" aria-labelledby="osu_navbar_heading" class="bg-black">
-		<div id="osu_navbar_heading" class="visually-hidden">Ohio State nav bar</div>
+		<div id="osu_navbar_heading" class="visually-hidden text-white">Ohio State nav bar</div>
 		<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 		<div class="container-fluid">
     		<div class="row">
@@ -107,10 +107,10 @@ if($this->request->isLoggedIn()){
 			<div class="collapse position-absolute end-0 start-0 vh-100 bg-white px-5" id="navbarSearch">
 				<div class="row">
 					<div class="col-12">
-						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>" role="search">
+						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>">
 							<div class="input-group mt-4">
 								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search..." aria-label="Search">
+								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search...">
 								<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 							</div>
 						</form>
