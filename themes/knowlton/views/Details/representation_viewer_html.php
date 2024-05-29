@@ -126,7 +126,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	if(sizeof($media_list) > 1) {
 		$media_icons = [];
 		foreach($media_list as $i => $m) {
-			$media_icons[] = "<div class='col-2 img-fluid mb-3'><a class='mediaviewer-selector-control' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".caHTMLImage($m['icon'], ['class' => 'mediaIcon border border-white border-2']).'</a></div>';
+			$media_icons[] = "<div class='col-2 img-fluid mb-3'><a class='mediaviewer-selector-control mediaIcon border border-white border-2' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".$m['icon_tag'].'</a></div>';
 		}
 ?>
 <div id="mediaviewer-selector" class='row my-3 gx-3 justify-content-center'><?= join(" ", $media_icons); ?></div>
