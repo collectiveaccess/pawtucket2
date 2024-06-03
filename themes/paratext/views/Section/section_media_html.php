@@ -79,7 +79,7 @@
 <?php
 				if($vn_case){
 ?>
-					<H2>Exhibit Case <?php print $vn_case; ?></H2>
+					<H2 class="exhibitH2">Exhibit Case <?php print $vn_case; ?></H2>
 <?php
 				}
 ?>					

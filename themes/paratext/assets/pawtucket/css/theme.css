@@ -1239,6 +1239,13 @@ ul.home_menu li a:hover {
 	color:#000;
 	text-decoration:none;
 }
+.exhibitH2 {
+	width: 100%;
+	text-align: center;
+	margin: 0 0 30px 0;
+	font-size: 18px;
+	font-weight: 500;
+}
 /* added for grid view */
 .image_nav{
 	text-align:center;
