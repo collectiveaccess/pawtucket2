@@ -14,13 +14,20 @@
 
 <p>In our collection we have raw news content in the newsfilm and videotape and in some cases recorded airchecks of news programs especially in the WSB Videotape Collection and the Peabody Awards Collection. The Peabody Awards Collection has news content from all over the United States.</p>
 
-	<h3>Newsfilm Collections</h3>
+	<h3>News Collections</h3>
 	<p>
 		<ul>
-		<li><a href="telenews">Telenews Collection</a></li>
-		<li><a href="walb">WALB-TV Newsfilm Collection</a></li>
-		<li><a href="wrdw">WRDW-TV Newsfilm Collection</a></li>
-		<li><a href="wsb">WSB-TV Newsfilm Collection</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/63">Telenews Collection</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/MultiSearch/Index?search=Southeast+Regional+Emmys&rows=20">Southeast Regional Emmys</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/157">WALB-TV Newsfilm Collection</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/3657">WALB-TV Videotape Collection</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/3422">WJBF-TV Film and Videotape Collection</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/3517">WRDW-TV News Videotape Collection</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/191">WRDW-TV Newsfilm Collection</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/146">WSB-TV Newsfilm Collection</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/226">WSB-TV Videotape Collection</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/3294">WTOC-TV Newsfilm and Videotape Collection</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/3341">WTVM-TV Columbus News Videotape</a></li>
 		</ul>
 	</p>
 	<H3>LICENSING</H3>	
