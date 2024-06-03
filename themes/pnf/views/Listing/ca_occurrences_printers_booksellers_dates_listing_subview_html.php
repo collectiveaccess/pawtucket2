@@ -61,9 +61,9 @@
 				<div class="listingSubHeading">
 					Bibliography
 				</div>
-				<p class='trimText'>
+				<div class='trimText'>
 					{{{printersBooksellersDatesBibEnglish}}}
-				</p>
+				</div>
 <?php
 			}
 			#}else{
