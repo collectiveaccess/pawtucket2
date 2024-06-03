@@ -75,7 +75,7 @@
 
 		<div class="text_content">
 			<div class="text_2_col">
-				
+				<div class="text">
 <?php
 				if($vn_case){
 ?>
@@ -83,8 +83,9 @@
 <?php
 				}
 ?>					
-				<div class="text">
-					<p><?php print $vs_text; ?></p>
+					<div>
+						<p><?php print $vs_text; ?></p>
+					</div>
 				</div>
 			</div>
    		
