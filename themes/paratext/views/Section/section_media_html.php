@@ -75,14 +75,16 @@
 
 		<div class="text_content">
 			<div class="text_2_col">
-				<div class="text">
+				
 <?php
 				if($vn_case){
 ?>
 					<H2>Exhibit Case <?php print $vn_case; ?></H2>
 <?php
 				}
-?>					<p><?php print $vs_text; ?></p>
+?>					
+				<div class="text">
+					<p><?php print $vs_text; ?></p>
 				</div>
 			</div>
    		
