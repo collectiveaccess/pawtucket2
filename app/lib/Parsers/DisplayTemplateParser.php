@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2023 Whirl-i-Gig
+ * Copyright 2015-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -477,7 +477,7 @@ class DisplayTemplateParser {
 					$filter_non_primary_reps = self::_setPrimaryRepresentationFiltering($pr_res, caGetOption('filterNonPrimaryRepresentations', $pa_options, $o_node->filterNonPrimaryRepresentations));
 
 					$va_get_options = [
-						'limit' => $vn_limit, 'returnAsCount' => true, 'checkAccess' => $check_access, 
+						'returnAsCount' => true, 'checkAccess' => $check_access, 
 						'restrictToTypes' => $va_restrict_to_types, 'excludeTypes' => $va_exclude_types, 
 						'restrictToRelationshipTypes' => $va_restrict_to_relationship_types, 
 						'excludeRelationshipTypes' => $va_exclude_to_relationship_types,
@@ -656,6 +656,14 @@ class DisplayTemplateParser {
 								$va_relative_ids = $pr_res->get($t_rel_instance->tableName().".children.".$t_rel_instance->primaryKey(), $va_get_options);
 								$va_relative_ids = array_values($va_relative_ids);
 								break;
+							case 'descendants':
+								$va_relative_ids = $pr_res->get($t_rel_instance->tableName().".descendants.".$t_rel_instance->primaryKey(), $va_get_options);
+								$va_relative_ids = array_values($va_relative_ids);
+								break;
+							case 'branch':
+								$va_relative_ids = $pr_res->get($t_rel_instance->tableName().".branch.".$t_rel_instance->primaryKey(), $va_get_options);
+								$va_relative_ids = array_values($va_relative_ids);
+								break;
 							case 'siblings':
 								$va_relative_ids = $pr_res->get($t_rel_instance->tableName().".siblings.".$t_rel_instance->primaryKey(), $va_get_options);
 								$va_relative_ids = array_values($va_relative_ids);
@@ -782,6 +790,14 @@ class DisplayTemplateParser {
 								break;
 							case 'children':
 								if (!is_array($va_relative_ids = $pr_res->get($t_rel_instance->tableName().".children.".$t_rel_instance->primaryKey(), $va_get_options))) { $va_relative_ids = []; }
+								$va_relative_ids = array_values($va_relative_ids);
+								break;
+							case 'descendants':
+								if (!is_array($va_relative_ids = $pr_res->get($t_rel_instance->tableName().".descendants.".$t_rel_instance->primaryKey(), $va_get_options))) { $va_relative_ids = []; }
+								$va_relative_ids = array_values($va_relative_ids);
+								break;
+							case 'branch':
+								if (!is_array($va_relative_ids = $pr_res->get($t_rel_instance->tableName().".branch.".$t_rel_instance->primaryKey(), $va_get_options))) { $va_relative_ids = []; }
 								$va_relative_ids = array_values($va_relative_ids);
 								break;
 							case 'siblings':
@@ -964,7 +980,6 @@ class DisplayTemplateParser {
 						$vs_linking_context = $ps_tablename;
 						$va_linking_ids = [$pr_res->getPrimaryKey()];
 						$relative_to = (string)$o_node->relativeTo;
-						
 						if ($t_instance->isRelationship() && ($relative_to || (is_array($va_tmp = caGetTemplateTags($o_node->html(), ['firstPartOnly' => true]))) && sizeof($va_tmp))) {
 							$vs_linking_context = $relative_to ? $relative_to : array_shift(explode('.', array_shift($va_tmp)));
 							if (in_array($vs_linking_context, [$t_instance->getLeftTableName(), $t_instance->getRightTableName()])) {
@@ -972,10 +987,12 @@ class DisplayTemplateParser {
 							}
 						}
 						
+						$link_attributes = $o_node->attributes ?? [];
+						unset($link_attributes['relativeTo']);
 						$va_proc_templates = caCreateLinksFromText(
 							["{$vs_proc_template}"], $vs_linking_context, $va_linking_ids,
 							null, caGetOption('linkTarget', $pa_options, null),
-							array_merge(['addRelParameter' => true, 'requireLinkTags' => false, 'bundle' => $o_node->bundle], $pa_options)
+							array_merge(['addRelParameter' => true, 'requireLinkTags' => false, 'bundle' => $o_node->bundle, 'attributes' => $link_attributes], $pa_options)
 						);
 						$vs_proc_template = array_shift($va_proc_templates);	
 					} elseif(strlen($vs_tag) && ($vs_tag[0] !=='~')) { 
@@ -1164,7 +1181,7 @@ class DisplayTemplateParser {
                             $va_rel_vs = $pr_res->get($vs_relative_to_container, array_merge($pa_options, $va_parsed_tag_opts['options'], ['filters' => $va_parsed_tag_opts['filters'], 'returnAsArray' => true, 'returnWithStructure' => true]));
                             foreach($va_rel_vs as $va_rel_v) {
                                 $va_rel_v = array_values($va_rel_v);
-                                $va_val_list[] = DisplayTemplateParser::processJoinTag($va_rel_v[$vn_c], $va_parsed_tag_opts);
+                                $va_val_list[] = DisplayTemplateParser::processJoinTag($va_rel_v[$vn_c], $va_parsed_tag_opts, $vs_relative_to_container);
                             }
                             $vb_val_is_set = true;
                         } else {
@@ -1777,7 +1794,7 @@ class DisplayTemplateParser {
 					}
 					break;
 				case 'expression':
-					$vs_acc .= $content = ExpressionParser::evaluate(DisplayTemplateParser::_processTemplateSubTemplates($o_node->children, $pa_values, array_merge($pa_options, ['quoteNonNumericValues' => true])), $pa_vals);
+					$vs_acc .= $content = ExpressionParser::evaluate(DisplayTemplateParser::_processTemplateSubTemplates($o_node->children, $pa_values, array_merge($pa_options, ['quoteNonNumericValues' => true])), $pa_values);
 					if ($pb_is_case && $content) { break(2); }
 					break;
 				default:
@@ -1902,7 +1919,7 @@ class DisplayTemplateParser {
                 
                     $i = $pa_options['tagIndex'] + 1;
                     foreach($t as $z) {
-                        if ($pa_values[$z]) { 
+                        if ($pa_values[$z] ?? null) { 
                             $next_unit = $pa_options['dimensionsUnitMap']['units'][$i] ?? null;  
                             break;
                         } 
@@ -1923,7 +1940,7 @@ class DisplayTemplateParser {
 	/**
 	 *
 	 */
-	static public function processJoinTag($pa_vals, $pa_parsed_tag_opts) {
+	static public function processJoinTag($pa_vals, $pa_parsed_tag_opts, $relative_to_container=null) {
         $va_elements = explode(";", caGetOption('elements', $pa_parsed_tag_opts['options'], '')); 
         $va_labels = explode(";", caGetOption('labels', $pa_parsed_tag_opts['options'], '')); 
         $vn_max_values_to_show_labels = caGetOption('maxValuesToShowLabels', $pa_parsed_tag_opts['options'], null);
@@ -1937,7 +1954,7 @@ class DisplayTemplateParser {
 	    
         $force_english_units = $force_metric_units = null;
 	    foreach(array_reverse($va_elements) as $vs_element) {
-            $vs_element = trim(str_replace($vs_relative_to_container, '', $vs_element), '.');
+            $vs_element = trim(str_replace($relative_to_container, '', $vs_element), '.');
             $va_directives = explode('~', $vs_element);
             $vs_spec = array_shift($va_directives);
             
@@ -1969,7 +1986,7 @@ class DisplayTemplateParser {
         
         $j = 1;
         foreach(array_reverse($va_elements) as $vs_element) {
-            $vs_element = trim(str_replace($vs_relative_to_container, '', $vs_element), '.');
+            $vs_element = trim(str_replace($relative_to_container, '', $vs_element), '.');
             $va_directives = explode('~', $vs_element);
             $vs_spec = array_shift($va_directives);
             $vs_val = caProcessTemplateTagDirectives($pa_vals[$vs_spec], $va_directives, ['forceEnglishUnits' => $force_english_units,  'forceMetricUnits' => $force_metric_units]);

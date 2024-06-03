@@ -1,3 +1,10 @@
+body{
+	font-family:inherit;
+}
+.container{
+	max-width:1010px;
+}
+
 /* red: #AC143A; gray blue #6C869E;*/
 .tm-navbar .tm-logo > * {
     max-height: 180px;
@@ -36,6 +43,10 @@
 	width:100%;
 	height:auto;
 }
+.fullWidthImg.maxWidth img{
+	max-width:400px;
+	height:auto;
+}
 .bg_sand{
 	background-color: #D9D4C2;
 }
@@ -60,11 +71,13 @@ h1, .front h1{
 	text-transform: uppercase;
 	padding-top:0px;
 }
+/*
 .front .content-area, .browse.institutions .content-area, .browse.words .content-area, .browse.ca_objects, .search.ca_objects, .content-area .subNav, .staticPage .content-area, .search .content-area {
 	max-width: 1000px;
 	margin-left: auto;
 	margin-right: auto;
 }
+*/
 @media(min-width:768px){
 	.flex{
 		display: flex;
@@ -78,7 +91,7 @@ h1, .front h1{
 	padding-top:12px;
 }
 .subNavJumpTo{
-	margin-bottom:20px;
+	margin-top:5px;
 }
 @media(min-width:600px) and (max-width:767px){
 	.subNavJumpTo{
@@ -91,7 +104,7 @@ h1, .front h1{
 	}
 }
 .subNavJumpTo a, .uk-breadcrumb a{
-	color: #ad655f;
+	color: #497b94;
 }
 /* home page */
 .hpIntroTop{
@@ -102,6 +115,11 @@ h1, .front h1{
 .hpIntroTopDesc{
 	padding-right:5px;
 	text-align:left;
+}
+@media(max-width:768px){
+	.hpIntroTopDesc{
+		margin-top:15px;
+	}
 }
 .hpIntroTopDescTitle{
 	font-weight:500;
@@ -158,17 +176,16 @@ a:hover .hpFindBox{
 	background-color:#999999;
 }
 /* browse */
-.results H1{
-	font-size: 24px;
-	line-height: 30px;
+.results .uk-divider-small{
+	padding-top:30px;
 }
 .browse .btn, .sets .btn, .search .btn {
     background-color: #000;
 }
-.bResultListItem .bResultListItemText a {
+.bResultListItem .bResultListItemText a, a .bResultListItem .bResultListItemText {
     line-height: 1.2em;
     color: #000;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 400;
 }
 #bRefine H2{
@@ -188,9 +205,11 @@ a:hover .hpFindBox{
 	margin-top:15px;
 	margin-bottom:10px;
 }
-.btnAboutWord{
+.browse .btnAboutWord{
 	width:100%;
 	margin:5px 0px 5px 0px !important;
+	text-transform: none;
+	background-color:#497b94;
 }
 .results .btn-search-refine{	
 	float: right;
@@ -225,21 +244,29 @@ a:hover .hpFindBox{
     background-color: transparent;
     margin: 0px 0px 0px 10px;
 }
+a.browseRemoveFacet .glyphicon {
+	color: #000 !important;
+	position:relative;
+	top:3px;
+}
 /* detail */
 .detail h1{
 	margin-bottom: 0px;
 }
 .detail h2{
 	color:#000;
-	font-family: 'Ubuntu', sans-serif;
 	font-weight: 500;
 	text-transform:none;
 }
 .detail h2 a{
 	text-decoration:underline;
+	color: #497b94;
+}
+.detail a{
+	color: #497b94;
 }
 .detail, .detail .unit{
-	font-size: 14px;
+	font-size: inherit;
 	line-height: 150%;
 	color:#000;
 }
@@ -254,8 +281,11 @@ a:hover .hpFindBox{
     font-size: 40px;
 }
 .detail label{
-	color:#000;
-	font-family: 'Ubuntu', sans-serif;
+	color: #000;
+	font-family: "mr-eaves-xl-modern",sans-serif;
+	font-size: 22px;
+	font-weight: 400;
+	text-transform: none;
 }
 .bResultItem .bResultItemText {
     font-size: 14px;
@@ -264,14 +294,22 @@ a:hover .hpFindBox{
 #bRefine.fixed {
     padding-top: 150px;
 }
-.navLeftRight{
-	margin-top:20px;
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+	margin-top: -30px;
+	background-color: #f2f4f5;
+	height:auto;
 }
-@media(min-width:1125px){
-	.navLeftRight{
-		margin-top:-55px;
-		padding-bottom:60px;
-	}
+.detail.external .detailNavBgLeft, .detail.external .detailNavBgRight, .detail.institution .detailNavBgLeft, .detail.institution .detailNavBgRight {
+	margin-top: -63px;
+}
+.detail .detailNavBgRight{
+	right:15px;
+}
+.detail .detailNavBgLeft{
+	left:15px;
+}
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a{
+	color:#000;
 }
 #playPronunciation{
 	color: #000;
@@ -279,8 +317,12 @@ a:hover .hpFindBox{
 	font-size: 18px;
 	margin-left: 5px;
 }
+.detail #playPronunciation{
+	position:relative;
+	top: -5px;
+}
 /* word */
-.word .btn-default{
+/*.word .btn-default{
 	background-color:#990000;
 	text-decoration:none;
 	color:#FFF;
@@ -321,35 +363,33 @@ a:hover .wordFindBox{
 	display:block;
 	margin-top:20px;
 }
-.wordCallout{
-	font-size:20px;
-	line-height: 1.4em;
-	text-align:left;
-}
+*/
 .wordFeaturedLesson{
-	background-color:#f2f2f2;
-	padding:20px;
+	padding:30px;
+	background-color: rgba(213,219,221,.3);
 }
-.wordFeaturedLessonTitle a{
-	letter-spacing: 0px;
-	font-family: 'Ubuntu', sans-serif;
-	font-weight: 700;
-	font-size: 24px;
-	line-height: 30px;
+.wordFeaturedLesson a{
 	color:#000;
 }
+.uk-link svg{
+	color: #497b94;
+}
 .word.front .unit{
-	margin-top:10px;
+	padding-top:10px;
+	padding-bottom:20px;
 }
-.front.word H2{
+.word.front .unitLarge{
+	padding-top:35px;
+	padding-bottom:35px;
+}
+.word.front .player{
 	margin-top:30px;
-	font-size: 22px;
+	margin-bottom:0px;
 }
-.front.word H3, .front.word H4{
-	margin-top:60px;
-	font-size: 22px;
+.word.front .uk-card{
+	margin-top:80px;
 }
-.front.word .hpIntroTopDescTitle{
+/*.front.word .hpIntroTopDescTitle{
 	font-weight:500;
 	font-size:20px;
 	margin-bottom:20px;	
@@ -362,18 +402,48 @@ a:hover .wordFindBox{
 	height:auto;
 	max-width:300px;
 }
-
-.words #bLetterBar a{
-	background-color:#000;
-	color:#FFF;
-	font-weight:bold;
+.front.word .formoutline{
+	border:0px;
+	position:relative;
 }
-.words #bLetterBar a:hover, .words #bLetterBar a.selectedLetter{
-	background-color:#990000;
-	color:#FFF;
-	font-weight:bold;
+.front.word #heroSearchInput{
+	border:1px solid #666;
+	border-radius:0px;
+	padding-right:40px;
+	font-size:16px;
 }
-.words .bCriteria{
+.front.word #heroSearchInput:focus{
+	border:1px solid #000;
+}
+.front.word #heroSearchButton{
+	position: absolute;
+	right: 20px;
+	top: 1px;
+	font-size: 16px;
+	background-color:transparent;
+}*/
+.results a .glyphicon, .results a .fa {
+  color: #000 !important;
+}
+#bViewButtons{
+	padding-top:10px;
+}
+@media(max-width:768px){
+	#bViewButtons{
+		text-align:left;
+	}
+}
+#bLetterBar a{
+	line-height:1.1em;
+	font-size:20px;
+	border-radius:10px;
+}
+#bLetterBar a:hover, #bLetterBar a.selectedLetter{
+	background-color:#497b94;
+	color:#FFF;
+	font-weight:normal;
+}
+.bCriteria{
 	margin-bottom:10px;
 }
 .a2a_kit{
@@ -383,31 +453,48 @@ a:hover .wordFindBox{
     color: #000;
     font-size: 14px;
 }
-@media(min-width:1024px){
-	.detailTools, .detailTool{
-		text-align:right;
-	}
+.detail h2{
+	font-size: 40px;
+	font-family: "mr-eaves-xl-modern",sans-serif;
+	text-transform: none;
+	color: #000;
 }
-.word.detail h2{
-	font-size:16px;
+.word.detail .sentence{
+	font-size:22px;
 }
 .word.detail .caAudioPlayer{
 	padding-top:0px;
 }
+.detail.institution h1{
+	font-size: 40px;
+	font-family: "mr-eaves-xl-modern",sans-serif;
+	text-transform: none;
+	color: #000;
+}
+.detail.institution h2{
+	font-size: 22px;
+}
+.detail .link{
+	font-size:22px;
+}
 .small{
-	font-size:.8em; 
+	font-size:.7em; 
+	line-height:1.1em;
 }
 .bResultListItemInstitution{
-	background-color:#BDBDBD;
+	background-color:rgba(213,219,221,.3);
 	height:72px;
 	margin-bottom:20px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	padding-left: 10px;
+	padding-right: 10px;
+	text-align: center;
 }
 a .bResultListItemInstitution{
 	color:#000000;
-	font-size: 17px;
+	font-size: 20px;
 	font-weight: 400;
 }
 a:hover .bResultListItemInstitution{
@@ -419,4 +506,7 @@ a:hover .bResultListItemInstitution{
 }
 a.readmore-js-toggle {
     color: #AC143A;
+}
+.staticPage .btn-default{
+	margin-bottom:25px;
 }

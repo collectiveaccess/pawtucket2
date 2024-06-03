@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2023 Whirl-i-Gig
+ * Copyright 2009-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,15 +29,10 @@
  *
  * ----------------------------------------------------------------------
  */
-
-/**
- *
- */
 require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/themeHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
 require_once(__CA_LIB_DIR__."/ResultContext.php");
-require_once(__CA_LIB_DIR__."/Logging/Eventlog.php");
 require_once(__CA_LIB_DIR__.'/Print/PDFRenderer.php');
 require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
 require_once(__CA_LIB_DIR__.'/Media/MediaViewerManager.php');
@@ -342,6 +337,7 @@ class BaseEditorController extends ActionController {
 				$this->_afterSave($t_subject, $vb_is_insert);
 			} elseif($t_subject->hasErrorNumInRange(3600, 3699) || $t_subject->hasErrorNumInRange(2592, 2599)) {
 				$vb_no_save_error = true;
+				$this->view->setVar('forced_values', $va_opts['ifv']);
 			}
 			if($t_subject->numErrors() > 0) {
 				$this->request->addActionErrors($t_subject->errors, 'saveBundlesForScreen');
@@ -378,7 +374,6 @@ class BaseEditorController extends ActionController {
 				// The newly created record's parent is already set to be the current parent of the "above_id"; the net effect of all of this
 				// is to insert the newly created record between the "above_id" record and its' current parent.
 				if ($vn_above_id && ($t_instance = Datamodel::getInstanceByTableName($this->ops_table_name, true)) && $t_instance->load($vn_above_id)) {
-					$t_instance->setMode(ACCESS_WRITE);
 					$t_instance->set('parent_id', $vn_subject_id);
 					$t_instance->update();
 
@@ -410,10 +405,12 @@ class BaseEditorController extends ActionController {
 		if(sizeof($va_errors) - sizeof($va_general_errors) > 0) {
 			$va_error_list = [];
 			foreach($va_errors as $o_e) {
+				$error_num = (int)$o_e->getErrorNumber();
+				if($error_num == 2592) { continue; } // don't show "relationship failed" error, as more specific errors will also be present
 				$bundle = array_shift(explode('/', $o_e->getErrorSource()));
 				$va_error_list[] = "<li><u>".$t_subject->getDisplayLabel($bundle).'</u>: '.$o_e->getErrorDescription()."</li>\n";
 
-				switch($error_num = (int)$o_e->getErrorNumber()) {
+				switch($error_num) {
 					case 1100:	// duplicate/invalid idno
 						if (!$vn_subject_id) {		// can't save new record if idno is not valid (when updating everything but idno is saved if it is invalid)
 							$vb_no_save_error = true;
@@ -596,7 +593,6 @@ class BaseEditorController extends ActionController {
 					$vn_child_count = 0;
 					foreach($va_children as $vn_child_id) {
 						$t_child->load($vn_child_id);
-						$t_child->setMode(ACCESS_WRITE);
 						$t_child->delete(true);
 						if ($t_child->numErrors() > 0) {
 							continue;
@@ -708,7 +704,7 @@ class BaseEditorController extends ActionController {
 		
 
 		$t_display = new ca_bundle_displays();
-		$va_displays = caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $t_subject->tableNum(), 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'restrictToTypes' => array($t_subject->getTypeID()))));
+		$va_displays = caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $t_subject->tableNum(), 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'restrictToTypes' => array($t_subject->getTypeID()), 'context' => 'editor_summary')));
 
 		if ((!($vn_display_id = (int)$this->request->getParameter('display_id', pString))) || !isset($va_displays[$vn_display_id])) {
 			$vn_display_id = $this->request->user->getVar($t_subject->tableName().'_summary_display_id');
@@ -780,7 +776,7 @@ class BaseEditorController extends ActionController {
 			]
 		);
 
-		$this->render('summary_html.php');
+		return $this->render('summary_html.php');
 	}
 	# -------------------------------------------------------
 	/**
@@ -803,11 +799,21 @@ class BaseEditorController extends ActionController {
         }
 
 		$table = $t_subject->tableName();
-		if(($this->request->getParameter('background', pInteger) === 1) && caProcessingQueueIsEnabled()) {
+		if(($this->request->getParameter('background', pInteger) === 1) && caTaskQueueIsEnabled()) {
 			$o_tq = new TaskQueue();
 			
 			$idno_fld = $t_subject->getProperty('ID_NUMBERING_ID_FIELD');
 			$exp_display = $t_subject->getWithTemplate("^{$table}.preferred_labels (^{$table}.{$idno_fld})");
+			
+			$t_download = new ca_user_export_downloads();
+			$t_download->set([
+				'created_on' => _t('now'),
+				'user_id' => $this->request->getUserID(),
+				'status' => 'QUEUED',
+				'download_type' => 'SUMMARY',
+				'metadata' => ['searchExpression' => $t_subject->primaryKey(true).":{$vn_subject_id}", 'searchExpressionForDisplay' => $exp_display, 'format' => caExportFormatForTemplate($table, $template), 'mode' => 'SUMMARY', 'table' => $table, 'findType' => 'summary']
+			]);
+			$download_id = $t_download->insert();
 			
 			if ($o_tq->addTask(
 				'dataExport',
@@ -822,7 +828,8 @@ class BaseEditorController extends ActionController {
 					'sortDirection' => null,
 					'searchExpression' => $t_subject->primaryKey(true).":{$vn_subject_id}",
 					'searchExpressionForDisplay' => $exp_display,
-					'user_id' => $this->request->getUserID()
+					'user_id' => $this->request->getUserID(),
+					'download_id' => $download_id
 				],
 				["priority" => 100, "entity_key" => join(':', [$table, $vn_subject_id]), "row_key" => null, 'user_id' => $this->request->getUserID()]))
 			{
@@ -1071,7 +1078,6 @@ class BaseEditorController extends ActionController {
 
 		// Set ACL-related intrinsic fields
 		if ($t_subject->hasField('acl_inherit_from_ca_collections') || $t_subject->hasField('acl_inherit_from_parent')) {
-			$t_subject->setMode(ACCESS_WRITE);
 			if ($t_subject->hasField('acl_inherit_from_ca_collections')) {
 				$t_subject->set('acl_inherit_from_ca_collections', $this->request->getParameter('acl_inherit_from_ca_collections', pInteger));
 			}
@@ -1532,11 +1538,6 @@ class BaseEditorController extends ActionController {
 
 		$pn_mapping_id = $this->request->getParameter('mapping_id', pInteger);
 
-		//$o_export = new DataExporter();
-		//$this->view->setVar('export_mimetype', $o_export->exportMimetype($pn_mapping_id));
-		//$this->view->setVar('export_data', $o_export->export($pn_mapping_id, $t_subject, null, array('returnOutput' => true, 'returnAsString' => true)));
-		//$this->view->setVar('export_filename', preg_replace('![\W]+!', '_', substr($t_subject->getLabelForDisplay(), 0, 40).'_'.$o_export->exportTarget($pn_mapping_id)).'.'.$o_export->exportFileExtension($pn_mapping_id));
-
 		$this->render('../generic/export_xml.php');
 	}
 	# ------------------------------------------------------------------
@@ -1562,7 +1563,6 @@ class BaseEditorController extends ActionController {
 
 		if ($t_watch_list->isItemWatched($vn_subject_id, $t_subject->tableNum(), $vn_user_id)) {
 			if($t_watch_list->load(array('row_id' => $vn_subject_id, 'user_id' => $vn_user_id, 'table_num' => $t_subject->tableNum()))){
-				$t_watch_list->setMode(ACCESS_WRITE);
 				$t_watch_list->delete();
 				if ($t_watch_list->numErrors()) {
 					$va_errors = $t_item->errors;
@@ -1572,7 +1572,6 @@ class BaseEditorController extends ActionController {
 				}
 			}
 		} else {
-			$t_watch_list->setMode(ACCESS_WRITE);
 			$t_watch_list->set('user_id', $vn_user_id);
 			$t_watch_list->set('table_num', $t_subject->tableNum());
 			$t_watch_list->set('row_id', $vn_subject_id);
@@ -1623,6 +1622,7 @@ class BaseEditorController extends ActionController {
 		$ps_sort = $this->request->getParameter("sort", pString);
 		$ps_sort_direction = $this->request->getParameter("sortDirection", pString);
 
+		$form_name = $this->request->getParameter("formName", pString);
 
 		switch($ps_bundle) {
 			case '__inspector__':
@@ -1647,7 +1647,8 @@ class BaseEditorController extends ActionController {
 				$bundle_sort_defaults["P{$pn_placement_id}"] = ['sort' => $ps_sort, 'sortDirection' => $ps_sort_direction];
 				$this->request->user->setVar('bundleSortDefaults', $bundle_sort_defaults);
 				
-				$this->response->addContent($t_subject->getBundleFormHTML($ps_bundle, "P{$pn_placement_id}", array_merge($t_placement->get('settings'), ['placement_id' => $pn_placement_id]), ['request' => $this->request, 'contentOnly' => true, 'sort' => $ps_sort, 'sortDirection' => $ps_sort_direction], $vs_label));
+				$bundle_label = null;
+				$this->response->addContent($t_subject->getBundleFormHTML($ps_bundle, "P{$pn_placement_id}", array_merge($t_placement->get('settings'), ['placement_id' => $pn_placement_id]), ['formName' => $form_name, 'request' => $this->request, 'contentOnly' => true, 'sort' => $ps_sort, 'sortDirection' => $ps_sort_direction, 'userSetSort' => true], $bundle_label));
 				break;
 		}
 	}
@@ -1673,7 +1674,7 @@ class BaseEditorController extends ActionController {
 		
 		$d = $t_subject->getBundleFormValues($ps_bundle_name, "{$pn_placement_id}", $t_placement->get('settings'), array('start' => $pn_start, 'limit' => $pn_limit, 'sort' => $sort, 'sortDirection' => $sort_direction, 'request' => $this->request, 'contentOnly' => true));
 
-		$this->response->addContent(json_encode(['sort' => array_keys($d), 'data' => $d]));
+		$this->response->addContent(json_encode(['sort' => array_keys($d ?? []), 'data' => $d]));
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -2211,7 +2212,7 @@ class BaseEditorController extends ActionController {
                 if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("media_overlay", $vs_mimetype = $t_instance->getMediaInfo('media', 'INPUT', 'MIMETYPE')))) {
                     throw new ApplicationException(_t('Invalid viewer'));
                 }
-                $this->response->addContent($vs_viewer_name::searchViewerData($this->request, $ps_identifier, ['request' => $this->request, 't_subject' => $t_subject, 't_instance' => $t_instance, 'display' => $va_display_info]));
+                $this->response->addContent($vs_viewer_name::searchViewerData($this->request, $ps_identifier, ['request' => $this->request, 't_subject' => $t_subject, 't_instance' => $t_instance, 'display' => null]));
                 return;
                 break;
 			case 'attribute':
@@ -2219,7 +2220,7 @@ class BaseEditorController extends ActionController {
                 if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("media_overlay", $vs_mimetype = $t_instance->getMediaInfo('media', 'INPUT', 'MIMETYPE')))) {
                     throw new ApplicationException(_t('Invalid viewer'));
                 }
-                $this->response->addContent($vs_viewer_name::searchViewerData($this->request, $ps_identifier, ['request' => $this->request, 't_subject' => $t_subject, 't_instance' => $t_instance, 'display' => $va_display_info]));
+                $this->response->addContent($vs_viewer_name::searchViewerData($this->request, $ps_identifier, ['request' => $this->request, 't_subject' => $t_subject, 't_instance' => $t_instance, 'display' => null]));
                 return;
                 break;
         }
@@ -2249,7 +2250,7 @@ class BaseEditorController extends ActionController {
                 if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("media_overlay", $vs_mimetype = $t_instance->getMediaInfo('media', 'INPUT', 'MIMETYPE')))) {
                     throw new ApplicationException(_t('Invalid viewer'));
                 }
-                $this->response->addContent($vs_viewer_name::autocomplete($this->request, $ps_identifier, ['request' => $this->request, 't_subject' => $t_subject, 't_instance' => $t_instance, 'display' => $va_display_info]));
+                $this->response->addContent($vs_viewer_name::autocomplete($this->request, $ps_identifier, ['request' => $this->request, 't_subject' => $t_subject, 't_instance' => $t_instance, 'display' => null]));
                 return;
                 break;
 			case 'attribute':
@@ -2257,7 +2258,7 @@ class BaseEditorController extends ActionController {
                 if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("media_overlay", $vs_mimetype = $t_instance->getMediaInfo('media', 'INPUT', 'MIMETYPE')))) {
                     throw new ApplicationException(_t('Invalid viewer'));
                 }
-                $this->response->addContent($vs_viewer_name::autocomplete($this->request, $ps_identifier, ['request' => $this->request, 't_subject' => $t_subject, 't_instance' => $t_instance, 'display' => $va_display_info]));
+                $this->response->addContent($vs_viewer_name::autocomplete($this->request, $ps_identifier, ['request' => $this->request, 't_subject' => $t_subject, 't_instance' => $t_instance, 'display' => null]));
                 return;
                 break;
         }
@@ -2728,7 +2729,7 @@ class BaseEditorController extends ActionController {
 	    }
 		list($vn_subject_id, $t_subject) = $this->_initView();
 		if (!$t_subject->isLoaded()) { 
-			throw new ApplicationException(_t('Invalid id '.$vn_su));
+			throw new ApplicationException(_t('Invalid id %1', $vn_subject_id));
 		}
 		if (!$this->_checkAccess($t_subject)) { 
 			throw new ApplicationException(_t('Access denied'));
@@ -2836,7 +2837,7 @@ class BaseEditorController extends ActionController {
 			} elseif(!is_array($policies = $target::getHistoryTrackingCurrentValuePolicies($target))) {
 				$resp = ['ok' => 0, 'message' => _t('No policies available'), 'updated' => [], 'errors' => [], 'timestamp' => time()];	
 			} else {
-				$policies = array_filter($policies, function($v) use ($table) { return array_key_exists('ca_storage_locations', $v['elements']); });
+				$policies = array_filter($policies, function($v) { return array_key_exists('ca_storage_locations', $v['elements']); });
 		
 				$updated = $already_home = $errors = [];
 				$msg = '';
@@ -2974,11 +2975,10 @@ class BaseEditorController extends ActionController {
 			$t_target->load($rel_id);
 		}
 
-		$rep_ids = $t_target->get('ca_object_representations.representation_id', ['returnAsArray' => true]);
-		if(!is_array($rep_ids) || !sizeof($rep_ids)) {
+		$selected_rep_id = $t_target->getPrimaryRepresentationID();
+		if(!$selected_rep_id) {
 			throw new ApplicationException(_t('ID has no associated media'));
 		}
-		$selected_rep_id = $rep_ids[0];
 		$existing_reps = $t_subject->getRepresentations() ?? [];
 		
 		if(sizeof($selected_reps = array_filter($existing_reps, function($v) use ($selected_rep_id) {
@@ -2988,9 +2988,9 @@ class BaseEditorController extends ActionController {
 			if($t_subject->removeRelationship('ca_object_representations', $selected_rep['relation_id'])) {
 				$resp = ['ok' => true, 'errors' => [], 'message' => _t('Removed media')];
 			} else {
-				$resp = ['ok' => false, 'errors' => $t_subject->getErrors(), 'message' => _t('Could not unlimk media')];;
+				$resp = ['ok' => false, 'errors' => $t_subject->getErrors(), 'message' => _t('Could not unlink media')];
 			}
-		} elseif($t_subject->addRelationship('ca_object_representations', $rep_ids[0], null)) {
+		} elseif($t_subject->addRelationship('ca_object_representations', $selected_rep_id, null)) {
 			$resp = ['ok' => true, 'errors' => [], 'message' => _t('Updated media')];
 		} else {
 			$resp = ['ok' => false, 'errors' => $t_subject->getErrors(),'message' => _t('Could not update media: %1', join('; ', $t_subject->getErrors()))];

@@ -102,7 +102,8 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print "<a href='https://www.amnh.org/research/anthropology/collections' class='navbar-brand'>".caGetThemeGraphic($this->request, 'AMNHlogos/150Y_2Line_Black-2208x513.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."<div>Anthropology Collections Database</div></a>";
+				// print "<a href='https://www.amnh.org/research/anthropology/collections' class='navbar-brand'>".caGetThemeGraphic($this->request, 'AMNHlogos/150Y_2Line_Black-2208x513.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."<div>Anthropology Collections Database</div></a>";
+				print "<a href='https://www.amnh.org/research/anthropology/collections' class='navbar-brand'>".caGetThemeGraphic($this->request, 'AMNH_Primary_BLACK.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."<div>Anthropology Collections Database</div></a>";
 ?>
 			</div>
 

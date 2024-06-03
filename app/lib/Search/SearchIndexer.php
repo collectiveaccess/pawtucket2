@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2022 Whirl-i-Gig
+ * Copyright 2008-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,17 +29,11 @@
  *
  * ----------------------------------------------------------------------
  */
-
-/**
- *
- */
-
 require_once(__CA_LIB_DIR__."/Search/SearchBase.php");
 require_once(__CA_LIB_DIR__.'/Utils/Graph.php');
 require_once(__CA_LIB_DIR__.'/Utils/Timer.php');
 require_once(__CA_LIB_DIR__.'/Utils/CLIProgressBar.php');
 require_once(__CA_APP_DIR__.'/helpers/utilityHelpers.php');
-require_once(__CA_MODELS_DIR__.'/ca_search_indexing_queue.php');
 
 class SearchIndexer extends SearchBase {
 	# ------------------------------------------------
@@ -55,6 +49,8 @@ class SearchIndexer extends SearchBase {
 
 	static $s_search_indexing_queue_inserts = [];
 	static $s_search_unindexing_queue_inserts = [];
+	
+	static $queued_entry_count = 0;
 	
 	/**
 	 *
@@ -79,7 +75,8 @@ class SearchIndexer extends SearchBase {
 	# -------------------------------------------------------
 	public function __destruct() {
 		$o_db = new Db();
-		if(sizeof(self::$s_search_indexing_queue_inserts) > 0) {
+		if(($c = sizeof(self::$s_search_indexing_queue_inserts)) > 0) {
+			SearchIndexer::$queued_entry_count += $c;
 			$va_insert_segments = array();
 			foreach (self::$s_search_indexing_queue_inserts as $va_insert_data) {
 				$va_insert_segments[] = "('" . join("','", $va_insert_data) . "')";
@@ -90,7 +87,8 @@ class SearchIndexer extends SearchBase {
             }
 		}
 
-		if(sizeof(self::$s_search_unindexing_queue_inserts) > 0) {
+		if(($c = sizeof(self::$s_search_unindexing_queue_inserts)) > 0) {
+			SearchIndexer::$queued_entry_count += $c;
 			$va_insert_segments = array();
 			foreach (self::$s_search_unindexing_queue_inserts as $va_insert_data) {
 				$va_insert_segments[] = "('" . join("','", $va_insert_data) . "')";
@@ -700,18 +698,21 @@ if (!$for_current_value_reindex) {
 					//
 					// Hierarchical indexing in primary table
 					//
+					$fld_init = false;
 					if (((isset($va_data['INDEX_ANCESTORS']) && $va_data['INDEX_ANCESTORS']) || in_array('INDEX_ANCESTORS', $va_data, true))) {
 						if ($t_subject && $t_subject->isHierarchical()) {
 							$vn_fld_num = $t_subject->fieldNum($vs_field);
 							if ($va_hier_values = $this->_genHierarchicalPath($pn_subject_row_id, $vs_field, $t_subject, $va_data)) {
-								$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, $va_hier_values['values'], $va_data);
-								$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, $va_hier_values['values'], $va_data);
+								$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, $va_hier_values['values'], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+								$fld_init = true;
+								
+								$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, $va_hier_values['values'], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
 								
 								if(caGetOption('INDEX_ANCESTORS_AS_PATH_WITH_DELIMITER', $va_data, false) !== false) {
-									$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('DONT_TOKENIZE' => 1)));
-									$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('TOKENIZE' => 1)));
-									$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('DONT_TOKENIZE' => 1)));
-									$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('TOKENIZE' => 1)));
+									$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('DONT_TOKENIZE' => 1, 'dontRemoveExistingIndexing' => $fld_init)));
+									$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('TOKENIZE' => 1, 'dontRemoveExistingIndexing' => $fld_init)));
+									$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('DONT_TOKENIZE' => 1, 'dontRemoveExistingIndexing' => $fld_init)));
+									$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('TOKENIZE' => 1, 'dontRemoveExistingIndexing' => $fld_init)));
 								}
 							}
 
@@ -737,8 +738,9 @@ if (!$for_current_value_reindex) {
 							$va_values = $o_idno->getIndexValues($pa_field_data[$vs_field], $va_data);
 						}
 						$vn_fld_num = $t_subject->fieldNum($vs_field);
-						$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, $va_values, $va_data);
-						$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, $va_values, $va_data);
+						$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, $va_values, array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+						$fld_init = true;
+						$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, $va_values, array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
 					}
 					// specialized mimetype processing
 					if (((isset($va_data['INDEX_AS_MIMETYPE']) && $va_data['INDEX_AS_MIMETYPE']) || in_array('INDEX_AS_MIMETYPE', $va_data, true))) {
@@ -749,10 +751,11 @@ if (!$for_current_value_reindex) {
 						$vn_fld_num = $t_subject->fieldNum($vs_field);
 						
 						// Index mimetype as-is
-						$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$pa_field_data[$vs_field]], array_merge($va_data, array('DONT_TOKENIZE' => true)));
-												
-						$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, $va_values, $va_data);
-						$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, $va_values, $va_data);
+						$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$pa_field_data[$vs_field]], array_merge($va_data, ['DONT_TOKENIZE' => true, 'dontRemoveExistingIndexing' => $fld_init]));
+						$fld_init = true;
+						
+						$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, $va_values, array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+						$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, $va_values, array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
 						continue;
 					}
 					
@@ -797,21 +800,26 @@ if (!$for_current_value_reindex) {
 							// is this field related to something?
 							if (is_array($va_rels = Datamodel::getManyToOneRelations($vs_subject_tablename)) && ($va_rels[$vs_field] ?? null)) {
 								if (isset($va_rels[$vs_field])) {
-									if ($pa_changed_fields[$vs_field] ?? null) {
+									if (($pa_changed_fields[$vs_field] ?? null) && ($va_rels[$vs_field]['one_table'] ?? null)) {
 										$pb_reindex_mode = true;	// trigger full reindex of record so it reflects text of related item (if so indexed)
+										$this->opo_engine->removeRowIndexing($pn_subject_table_num, $pn_subject_row_id, Datamodel::getTableNum($va_rels[$vs_field]['one_table']), ["I{$vn_fld_num}"]);
 									}
 								}
 							}
 						}
 						if($pa_field_data[$vs_field] ?? null)  { $va_content[$pa_field_data[$vs_field]] = true; }
 
-						$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, array_keys($va_content), $va_data);
-						$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, array_keys($va_content), $va_data);
+						$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, array_keys($va_content), array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+						$fld_init = true;
+						
+						$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, array_keys($va_content), array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
 						continue;
 					}
 
-					$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$pn_content], $va_data);
-					$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, [$pn_content], $va_data);
+					$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$pn_content], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+					$fld_init = true;
+					
+					$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, [$pn_content], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
 				}
 			}
 		}
@@ -1499,7 +1507,7 @@ if (!$for_current_value_reindex) {
 								}
 							}
 						}
-						
+						$rtable_num = $t_base->tableNum();
 						foreach($references as $row_id => $elements) {
 							$content = join('; ', array_keys($values ?? []));
 							$element_fields_to_index = $this->getFieldsToIndex($element_table_num, $rtable_num);
@@ -1561,6 +1569,8 @@ if (!$for_current_value_reindex) {
 				}
 			}
 		}
+		
+		return true;
 	}
 	# ------------------------------------------------
 	/**
@@ -2431,8 +2441,8 @@ if (!$for_current_value_reindex) {
 						
 						$vs_join = "INNER JOIN {$vs_right_table} AS {$vs_alias} ON ({$vs_alias}.{$va_key_spec['right_key']} = {$vs_prev_alias}.{$va_key_spec['left_key']}".$vs_rel_type_res_sql;
 
-						if ($va_key_spec['left_table_num'] || $va_key_spec['right_table_num']) {
-							if ($va_key_spec['right_table_num']) {
+						if (($va_key_spec['left_table_num'] ?? null) || ($va_key_spec['right_table_num'] ?? null)) {
+							if ($va_key_spec['right_table_num'] ?? null) {
 								$vs_join .= " AND {$vs_alias}.{$va_key_spec['right_table_num']} = ".Datamodel::getTableNum($vs_left_table);
 								$vs_t = $vs_right_table;
 							} else {

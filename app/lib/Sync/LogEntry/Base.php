@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2022 Whirl-i-Gig
+ * Copyright 2016-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,7 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
-
 namespace CA\Sync\LogEntry;
 
 require_once(__CA_LIB_DIR__.'/Sync/LogEntry/Attribute.php');
@@ -234,6 +233,10 @@ abstract class Base {
 					if(!isset($this->opa_log['snapshot'][$vs_f])) { $this->opa_log['snapshot'][$vs_f] = null; }
 				}
 			}
+			
+			unset($this->opa_log['snapshot']['source_id']);
+			unset($this->opa_log['snapshot']['source_code']);
+			
 			return $this->opa_log['snapshot'];
 		}
 
@@ -377,7 +380,7 @@ abstract class Base {
 							}
 						}
 					} elseif ($va_snapshot[$vs_field]) {
-						throw new InvalidLogEntryException("No parent_guid field found");
+						throw new InvalidLogEntryException(_t("No parent_guid for %1 field found: %2", $vs_field, print_R($va_snapshot, true)));
 					}
 				}
 			}
@@ -414,7 +417,7 @@ abstract class Base {
 					
 					if(isset($va_files[$va_snapshot[$vs_field]])) {
 						$vm_val = $va_files[$va_snapshot[$vs_field]];
-						$this->getModelInstance()->set($vs_field, $vm_val);
+						$this->getModelInstance()->set($vs_field, $vm_val, ['allowSettingOfTypeID' => true]);
 					}
 					
 					continue;

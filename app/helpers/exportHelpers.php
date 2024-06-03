@@ -29,10 +29,6 @@
  * 
  * ----------------------------------------------------------------------
  */
-
-/**
-*
-*/
 require_once(__CA_LIB_DIR__."/Print/PDFRenderer.php");
 
 # ----------------------------------------
@@ -77,6 +73,46 @@ function caExportFormatForTemplate(string $table, string $template) : ?string {
 }
 # ----------------------------------------
 /**
+ *
+ */
+function caExportFileInfoForTemplate(string $table, string $template) : ?string {
+	switch(substr($template, 0, 5)) {
+		case '_pdf_':
+			return ['mimetype' => 'application/pdf', 'format' => 'PDF', 'extension' => 'pdf'];
+		case '_tab_':
+			return ['mimetype' => 'text/tab-separated-values', 'format' => 'TAB', 'extension' => 'tab'];
+		case '_csv_':
+			return ['mimetype' => 'text/csv', 'format' => 'CSV', 'extension' => 'csv'];;
+	}
+	switch(substr($template, 0, 6)) {
+		case '_xlsx_':
+			return ['mimetype' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'format' => 'EXCEL', 'extension' => 'xlsx'];
+		case '_docx_':
+			return ['mimetype' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'format' => 'Word', 'extension' => 'docx'];
+	}
+
+	$config = Configuration::load();
+	$export_config = $config->getAssoc('export_formats');
+	
+	if (is_array($export_config) && is_array($export_config[$table]) && is_array($export_config[$table][$template])) {
+		
+		switch($export_config[$table][$template]['type']) {
+			case 'xlsx':
+				return ['mimetype' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'format' => 'EXCEL', 'extension' => 'xlsx'];
+				break;
+			case 'csv':
+				return ['mimetype' => 'text/csv', 'format' => 'CSV', 'extension' => 'csv'];;
+				break;
+			case 'tab':
+				return ['mimetype' => 'text/tab-separated-values', 'format' => 'TAB', 'extension' => 'tab'];
+				break;
+		}
+	}
+	return null;
+}
+
+# ----------------------------------------
+/**
  * Export instance as PDF using template
  * 
  * @param RequestHTTP $request
@@ -89,10 +125,11 @@ function caExportFormatForTemplate(string $table, string $template) : ?string {
  * @throws ApplicationException
  */
 function caExportItemAsPDF($request, $pt_subject, $ps_template, $ps_output_filename, $options=null) {
+	caIncrementExportCount();
+	
 	$view = new View($request, $request->getViewsDirectoryPath().'/');
 	
 	$pa_access_values = caGetOption('checkAccess', $options, null);
-	
 	$view->setVar('t_subject', $pt_subject);
 	
 	$vs_template_identifier = null;
@@ -182,6 +219,8 @@ function caExportItemAsPDF($request, $pt_subject, $ps_template, $ps_output_filen
  * @throws ApplicationException
  */
 function caExportViewAsPDF($view, $template_identifier, $output_filename, $options=null) {
+	caIncrementExportCount();
+	
 	if (is_array($template_identifier)) {
 		$template_info = $template_identifier;
 		$template_info['identifier'] = pathinfo($template_info['path'], PATHINFO_FILENAME);
@@ -234,7 +273,7 @@ function caExportViewAsPDF($view, $template_identifier, $output_filename, $optio
 		$vb_printed_properly = caExportContentAsPDF($vs_content, $template_info, $output_filename, $options);
 	} catch (Exception $e) {
 		$vb_printed_properly = false;
-		throw new ApplicationException(_t("Could not generate PDF"));
+		throw new ApplicationException(_t("Could not generate PDF: %1", $e->getMessage()));
 	}
 	
 	return $vb_printed_properly;
@@ -328,23 +367,30 @@ function caGenerateDownloadFileName(string $ps_template, ?array $options=null) :
  * @param string $output_filename
  * @param array $options Options include:
  *		output = where to output data. Values may be FILE (write to file) or STREAM. [Default is stream]
- *		display = ca_bundle_displays object loaded with currently selected displat. [Default is null]
+ *		display = ca_bundle_displays object loaded with currently selected display. [Default is null]
  *
  * @return ?array|bool If output is FILE, path to file or null if file could not be generated. If output is STREAM null returned on error; true returned on success
  *
  * @throws ApplicationException
  */
 function caExportResult(RequestHTTP $request, $result, string $template, string $output_filename, ?array $options=null) {
+	caIncrementExportCount();
+	
 	$output = caGetOption('output', $options, 'STREAM');
 	
 	$config = Configuration::load();
 	$view = new View($request, $request->getViewsDirectoryPath().'/');
 	
+	$criteria_summary = caGetOption('criteriaSummary', $options, '');
+	
+	if(method_exists($result, 'seek')) { $result->seek(0); }
 	$view->setVar('result', $result);
 	$view->setVar('t_set', caGetOption('set', $options, null));
-	$view->setVar('criteria_summary', caGetOption('criteriaSummary', $options, ''));
+	$view->setVar('criteria_summary', $criteria_summary);
 	
 	$table = $result->tableName();
+	
+	$template_type = caGetOption('printTemplateType', $options, 'results');
 	
 	$type = $display_id = null;
 	if($t_display = caGetOption('display', $options, null)) {
@@ -353,7 +399,7 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 	$export_config = $template_info = null;
 	
 	if (!(bool)$config->get('disable_pdf_output') && substr($template, 0, 5) === '_pdf_') {
-		$template_info = caGetPrintTemplateDetails(caGetOption('printTemplateType', $options, 'results'), substr($template, 5));
+		$template_info = caGetPrintTemplateDetails($template_type, substr($template, 5));
 		$type = 'pdf';
 	} elseif (!(bool)$config->get('disable_pdf_output') && (substr($template, 0, 9) === '_display_')) {
 		$display_id = substr($template, 9);
@@ -384,7 +430,7 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 		} else {
 			throw new ApplicationException(_t("Invalid format %1", $template));
 		}
-		$template_info = caGetPrintTemplateDetails(caGetOption('printTemplateType', $options, 'results'), 'display');
+		$template_info = caGetPrintTemplateDetails($template_type, 'display');
 		$type = 'pdf';
 	} elseif(!(bool)$config->get('disable_export_output') && preg_match('!^_([a-z]+)_!', $template, $m)) {
 		switch($m[1]) {
@@ -626,7 +672,7 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 	
 						$info = $result->getMediaInfo('ca_object_representations.media', $version);
 				
-						if($va_info['MIMETYPE'] == 'image/jpeg') { // don't try to insert anything non-jpeg into an Excel file
+						if($info['MIMETYPE'] == 'image/jpeg') { // don't try to insert anything non-jpeg into an Excel file
 							if (is_file($path = $result->getMediaPath('ca_object_representations.media', $version))) {
 								$image = "image".$supercol.$column.$line;
 								$drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
@@ -696,13 +742,12 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 					}
 					$objDrawing = new \PhpOffice\PhpSpreadsheet\Worksheet\HeaderFooterDrawing();
 					$objDrawing->setName('Image');
-					$objDrawing->setPath($vs_logo_path);
 					$objDrawing->setHeight(36);
 					$o_sheet->getHeaderFooter()->addImage($objDrawing, \PhpOffice\PhpSpreadsheet\Worksheet\HeaderFooter::IMAGE_HEADER_LEFT);
 					$criteria_summary = str_replace("&", "+", strip_tags(html_entity_decode($criteria_summary)));
-					$criteria_summary = (strlen($vs_criteria_summary) > 90) ? mb_substr($criteria_summary, 0, 90)."..." : $criteria_summary;
-					$criteria_summary = wordwrap($vs_criteria_summary, 50, "\n", true);
-					$o_sheet->getHeaderFooter()->setOddHeader('&L&G& '.(($config->get('excel_report_show_search_term')) ? '&R&B&12 '.$vs_criteria_summary : ''));
+					$criteria_summary = (strlen($criteria_summary) > 90) ? mb_substr($criteria_summary, 0, 90)."..." : $criteria_summary;
+					$criteria_summary = wordwrap($criteria_summary, 50, "\n", true);
+					$o_sheet->getHeaderFooter()->setOddHeader('&L&G& '.(($config->get('excel_report_show_search_term')) ? '&R&B&12 '.$criteria_summary : ''));
 			
 				}
 				if(!$request || $config->get('excel_report_footer_enabled')){
@@ -904,10 +949,10 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 			
 			if($output === 'STREAM') { 
 				$request->isDownload(true);
-				caExportViewAsPDF($view, $template_info, $filename, array_merge($options, ['printTemplateType' => 'results']));
+				caExportViewAsPDF($view, $template_info, $filename, array_merge($options, ['printTemplateType' => $template_type]));
 			} else {
 				$tmp_filename = caGetTempFileName('caExportResult', '');
-				if(!caExportViewAsPDF($view, $template_info, $filename, ['writeToFile' => $tmp_filename, 'printTemplateType' => 'results'])) {
+				if(!caExportViewAsPDF($view, $template_info, $filename, ['writeToFile' => $tmp_filename, 'printTemplateType' => $template_type])) {
 					return null;
 				}
 				return [
@@ -954,7 +999,7 @@ function caExportAsLabels($request, SearchResult $result, string $label_code, st
 				$view->setVar("param_{$n}", $values[$n] = $request->getParameter($n, pString));
 			}
 		}
-		Session::setVar("print_labels_options_{$m[2]}", $values);
+		Session::setVar("print_labels_options_{$label_code}", $values);
 	}
 	
 	$border = ($show_borders) ? "border: 1px dotted #000000; " : "";
@@ -1213,7 +1258,8 @@ function caExportSummary($request, BaseModel $t_instance, string $template, int 
 				if (!$filename_template = $config->get("{$table}_summary_file_naming")) {
 					$filename_template = $view->getVar('filename') ? $filename_template : caGetOption('filename', $template_info, 'print_summary');
 				}
-				if (!($filename = caProcessTemplateForIDs($filename_template, $table, [$subject_id]))) {
+				
+				if (!($filename = caProcessTemplateForIDs($filename_template, $table, [$t_instance->getPrimaryKey()]))) {
 					$filename = 'print_summary';
 				}
 				
@@ -1263,5 +1309,18 @@ function caExportSummary($request, BaseModel $t_instance, string $template, int 
 		$printed_properly = false;
 		return false;
 	}
+}
+# ----------------------------------------
+/**
+ * Log export counts for Pawtucket
+ */
+function caIncrementExportCount() : bool {
+	global $g_request, $g_set_export_count;
+	if(defined('__CA_APP_TYPE__') && (__CA_APP_TYPE__ === 'PAWTUCKET') && $g_request && !$g_set_export_count) {
+		BanHammer::verdict($g_request, ['usePlugin' => 'ExportFrequency']);
+		$g_set_export_count = true;
+		return true;
+	}
+	return false;
 }
 # ----------------------------------------

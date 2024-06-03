@@ -29,16 +29,11 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
-/**
- *
- */
 require_once(__CA_LIB_DIR__.'/BundlableLabelableBaseModelWithAttributes.php');
 require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
 require_once(__CA_MODELS_DIR__.'/ca_editor_uis.php');
 require_once(__CA_MODELS_DIR__.'/ca_editor_ui_bundle_placements.php');
 require_once(__CA_MODELS_DIR__.'/ca_editor_ui_screen_type_restrictions.php');
-
 
 BaseModel::$s_ca_models_definitions['ca_editor_ui_screens'] = array(
  	'NAME_SINGULAR' 	=> _t('editor UI screen'),
@@ -349,7 +344,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	                $t_p = new ca_editor_ui_bundle_placements($placement_id);
 	                $t_p->set('rank', $old_rank = $t_p->get('rank') + 1);
 	                if (!$t_p->update()) {
-	                    $this->errors = $t_o->errors;
+	                    $this->errors = $t_p->errors;
 	                    return false;
 	                }
 	            }
@@ -393,7 +388,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	                $t_p = new ca_editor_ui_bundle_placements($placement_id);
 	                $t_p->set('rank', $t_p->get('rank') + 2);
 	                if (!$t_p->update()) {
-	                    $this->errors = $t_o->errors;
+	                    $this->errors = $t_p->errors;
 	                    return false;
 	                }
 	            }
@@ -1017,6 +1012,15 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								'label' => _t('Last item color'),
 								'description' => _t('If set last item in list will use this color.')
 							),
+							'dontShowAddButton' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_CHECKBOXES,
+								'width' => 10, 'height' => 1,
+								'takesLocale' => false,
+								'default' => '0',
+								'label' => _t('Do not show add button'),
+								'description' => _t('If checked the add control will not be provided.')
+							),
 							'dontShowDeleteButton' => array(
 								'formatType' => FT_TEXT,
 								'displayType' => DT_CHECKBOXES,
@@ -1091,7 +1095,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								'displayType' => DT_SELECT,
 								'width' => "275px", 'height' => "40px",
 								'takesLocale' => false,
-								'default' => '0',
+								'default' => null,
 								'options' => [_t('Preferred label') => 'preferred_labels', _t('Identifier') => $t_rel->getProperty('ID_NUMBERING_ID_FIELD')],
 								'label' => _t('Prepopulate quick add fields with search text'),
 								'description' => _t('Select quickadd form fields to be pre-filled with the user-entered search value. If no fields are selected then the preferred label will be prepopulated by default.')
@@ -1516,6 +1520,18 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 						}
 					} else {
 						switch($bundle) {
+							case 'hierarchy_tools':
+								$va_additional_settings = [									
+									'numPerPage' => array(
+										'formatType' => FT_NUMBER,
+										'displayType' => DT_FIELD,
+										'default' => 100,
+										'width' => 5, 'height' => 1,
+										'label' => _t('Number of items to load per page'),
+										'description' => _t('Maximum number of items to render on initial load.')
+									),
+								];
+								break;
 							case 'authority_references_list':
 								$va_additional_settings = array(
 									'maxReferencesToDisplay' => array(
@@ -1624,6 +1640,14 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								break;
 							case 'generic':
 							case 'ca_objects_components_list':
+								$va_additional_settings['containerTemplate'] = [
+									'formatType' => FT_TEXT,
+									'displayType' => DT_FIELD,
+									'default' => '<div>',
+									'width' => "475px", 'height' => 5,
+									'label' => _t('Component display container template'),
+									'description' => _t('Markup to place components within. Markup wraps the series of components formatted using component display templates. Use the placeholder <em>^COMPONENTS</em> to place the component list within the container markup.')
+								];
 								$va_additional_settings['displayTemplate'] = [
 									'formatType' => FT_TEXT,
 									'displayType' => DT_FIELD,
@@ -2473,8 +2497,8 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	 *		user_id = if specified then placements are only returned if the user has at least read access to the screen
 	 * @return int Number of placements. 
 	 */
-	public function getPlacementCount($pa_options=null) {
-		return sizeof($this->getPlacementsInDisplay($pa_options));
+	public function getPlacementCount(?array $options=null) : int {
+		return sizeof($this->getPlacementsInScreen($options) ?? []);
 	}
 	# ------------------------------------------------------
 	/** 

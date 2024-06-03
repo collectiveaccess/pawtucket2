@@ -115,11 +115,11 @@
 				}else{
 				
 					if($vs_table == "ca_occurrences"){
-						$vs_idno_detail_link 	= "";
-						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("ca_occurrences.preferred_labels")." &mdash; ".$qr_res->get("ca_occurrences.alutiiq_word"), '', $vs_table, $vn_id);
+						$vs_idno 	= "";
+						$vs_label 	= $qr_res->get("ca_occurrences.preferred_labels")." &mdash; ".$qr_res->get("ca_occurrences.alutiiq_word");
 					}else{
-						$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+						$vs_idno 	= $qr_res->get("{$vs_table}.idno");
+						$vs_label 	= $qr_res->get("{$vs_table}.preferred_labels");
 					}
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
@@ -162,17 +162,18 @@
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 					if($vs_table != "ca_entities"){
-						$vs_result_output = "
+						$vs_tmp = "
 							<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 								<div class='bResultListItem' id='row{$vn_id}'>
 									<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-									<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+									<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_image}</div>
 										<div class='bResultListItemText'>
-											".(($vs_idno_detail_link) ? "<small>".$vs_idno_detail_link."</small><br/>" : "")."{$vs_label_detail_link}
+											".(($vs_idno) ? "<small>".$vs_idno."</small><br/>" : "")."{$vs_label}
 										</div><!-- end bResultListItemText -->
 									</div><!-- end bResultListItemContent -->
 								</div><!-- end bResultListItem -->
 							</div><!-- end col -->";
+						$vs_result_output = caDetailLink($this->request, $vs_tmp, '', $vs_table, $vn_id);
 					}else{
 						$vs_result_output = "
 							<div class='bResultListItemColInstitution col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>

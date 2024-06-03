@@ -29,11 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
-
-/**
- *
- */
-
 require_once(__CA_LIB_DIR__.'/Import/BaseDataReader.php');
 require_once(__CA_APP_DIR__.'/helpers/displayHelpers.php');
 
@@ -111,6 +106,21 @@ class BaseXMLDataReader extends BaseDataReader {
 	 * Root tag to use when basePath is set
 	 */
 	protected $ops_base_root_tag = null;
+	
+	/**
+	 *
+	 */
+	protected $ops_xml_namespace;
+	
+	/**
+	 *
+	 */
+	protected $ops_xml_namespace_prefix;
+	
+	/**
+	 *
+	 */
+	protected $ops_additional_xml_namespaces;
 	# -------------------------------------------------------
 	/**
 	 *
@@ -237,7 +247,8 @@ class BaseXMLDataReader extends BaseDataReader {
 	 * @return bool
 	 */
 	public function nextRow() {
-		if (!($o_row = $this->opo_handle->item($this->opn_current_row))) { return false; }
+		if(!$this->opo_handle) { return false; }
+		if(!($o_row = $this->opo_handle->item($this->opn_current_row))) { return false; }
 		
 		$this->opa_row_buf = array();
 		$this->_extractXMLValues($o_row);

@@ -65,14 +65,14 @@
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class="col-xs-3 col-sm-3 col-md-3  col-lg-3">
+	<div class="col-xs-0 col-sm-3 col-md-3  col-lg-3">
 		<div class=' mortonRefine'>
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>	
-	</div><!-- end mortonRefine -->		
+		</div><!-- end mortonRefine -->		
 	</div><!-- end col-2 -->
-	<div class='col-xs-8 col-sm-8 col-md-8 col-lg-8"'>
+	<div class='col-xs-12 col-sm-8 col-md-9 col-lg-9'>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -97,8 +97,17 @@ if (!$vb_ajax) {	// !ajax
 				
 			<div id="searchOptions" >
 <?php
-		print "<h3>".$va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span></h3>";	
+		print "<h1>".$va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span>";	
 
+			if(is_array($va_facets) && sizeof($va_facets)){
+?>
+			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-filter"></i></a>
+<?php
+			}
+			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
+			}
+		print "</h1>";
 ?>
 				<div class='row'>	
 					<div class='col-sm-3 col-md-3 col-lg-3 btn-group'>
@@ -135,7 +144,6 @@ if (!$vb_ajax) {	// !ajax
 	?>										
 						</ul>
 					</div><!-- end buttongrp -->
-					<div class='col-sm-4 col-md-4 col-lg-4 btn-group'>
 	<?php	
 						$vs_buf = "";		
 						
@@ -149,15 +157,19 @@ if (!$vb_ajax) {	// !ajax
 									break;
 								}
 							}
+	?>
+							<div class='col-sm-4 col-md-4 col-lg-4 btn-group'>
+			
+								<a href='#' data-toggle="dropdown">Recent Searches: <span class='btn'><?php print $va_search_info['display'];?><b class='caret'></b></span></a>
+								<ul class="dropdown-menu" role="menu">
+			<?php	
+									print $vs_buf;
+			?>										
+								</ul>
+							</div><!-- end buttongrp -->
+<?php
 						}
-	?>			
-						<a href='#' data-toggle="dropdown">Recent Searches <span class='btn'><?php print $va_search_info['display'];?><b class='caret'></b></span></a>
-						<ul class="dropdown-menu" role="menu">
-	<?php	
-							print $vs_buf;
-	?>										
-						</ul>
-					</div><!-- end buttongrp -->
+?>
 					<div class='col-sm-2 col-md-2 col-lg-2 btn-group'>
 		<?php
 				

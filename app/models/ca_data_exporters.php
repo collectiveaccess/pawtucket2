@@ -29,10 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
-
-/**
- *
- */
 require_once(__CA_LIB_DIR__.'/ModelSettings.php');
 require_once(__CA_LIB_DIR__.'/Export/BaseExportFormat.php');
 require_once(__CA_LIB_DIR__.'/ApplicationPluginManager.php');
@@ -293,6 +289,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 			'MARC' => 'MARC',
 			'CSV' => 'CSV',
 			'JSON' => 'JSON',
+			'CTDA' => 'CTDA'
 		);
 	}
 	# ------------------------------------------------------
@@ -406,7 +403,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 	 * @param array $pa_settings array of user settings
 	 * @return ca_data_exporter_items BaseModel representation of the new record
 	 */
-	public function addItem($pn_parent_id=null,$ps_element,$ps_source,$pa_settings=array()) {
+	public function addItem($pn_parent_id, $ps_element, $ps_source, $pa_settings=[]) {
 		if (!($vn_exporter_id = $this->getPrimaryKey())) { return null; }
 
 		$t_item = new ca_data_exporter_items();
@@ -455,12 +452,11 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 	 * Remove all items from this exporter
 	 * @return boolean success state
 	 */
-	public function removeAllItems() {
+	public function removeAllItems() : bool {
 		if (!($vn_exporter_id = $this->getPrimaryKey())) { return null; }
 
 		$va_items = $this->getItems(array('orderForDeleteCascade' => true));
 		$t_item = new ca_data_exporter_items();
-		$t_item->setMode(ACCESS_WRITE);
 
 		foreach($va_items as $vn_item_id => $va_item) {
 			$t_item->load($vn_item_id);
@@ -471,6 +467,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 				return false;
 			}
 		}
+		return true;
 	}
 	# ------------------------------------------------------
 	/**
@@ -570,7 +567,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 
 		$va_opts = array();
 		foreach($va_exporters as $va_importer_info) {
-			$va_opts[$va_importer_info['label']." (".$va_importer_info['exporter_code'].")"] = $va_importer_info['exporter_id'];
+			$va_opts[$va_importer_info['label']." (".$va_importer_info['exporter_code'].")"] = $va_importer_info['exporter_code'];
 		}
 		ksort($va_opts);
 		return caHTMLSelect($ps_name, $va_opts, $pa_attributes, $pa_options);
@@ -624,6 +621,9 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 			case 'JSON':
 				$o_export = new ExportJSON();
 				break;
+			case 'CTDA':
+				$o_export = new ExportCTDA();
+				break;
 			default:
 				return;
 		}
@@ -648,6 +648,9 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 				break;
 			case 'JSON':
 				$o_export = new ExportJSON();
+				break;
+			case 'CTDA':
+				$o_export = new ExportCTDA();
 				break;
 			default:
 				return;
@@ -733,7 +736,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 					}
 
 					$vs_parent_id = trim((string)$o_parent->getValue());
-					if(($vs_mode !== 'template') && $parent_id) {
+					if(($vs_mode !== 'template') && $vs_parent_id) {
 						if(!in_array($vs_parent_id, $va_ids) && ($vs_parent_id != $vs_id)) {
 							$pa_errors[] = $m = _t("Warning: skipped mapping at row %1 because parent id was invalid",$vn_row);
 							$o_log->logWarn($m);
@@ -778,6 +781,13 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 							$pa_errors[] = $m = _t("Warning: options for element %1 are not in proper JSON",$vs_element);
 							$o_log->logWarn($m);
 						}
+					}
+					
+					if(isset($va_options['original_values']) && ((is_array($va_options['original_values']) && sizeof($va_options['original_values'])) || strlen($va_options['original_values']))) {
+						$va_original_values = is_array($va_options['original_values']) ? $va_options['original_values'] : [$va_options['original_values']];
+					}
+					if(isset($va_options['replacement_values']) && ((is_array($va_options['replacement_values']) && sizeof($va_options['replacement_values'])) || strlen($va_options['replacement_values']))) {
+						$va_replacement_values = is_array($va_options['replacement_values']) ? $va_options['replacement_values'] : [$va_options['replacement_values']];
 					}
 
 					$va_options['_id'] = (string)$o_id->getValue();	// stash ID for future reference
@@ -1437,7 +1447,6 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 		ca_data_exporters::$s_exporter_cache = array();
 		ca_data_exporters::$s_exporter_item_cache = array();
 
-		require_once(__CA_LIB_DIR__.'/Search/SearchResult.php');
 		if(!($po_result instanceof SearchResult)) { return false; }
 		if(!($t_mapping = ca_data_exporters::loadExporterByCode($ps_exporter_code))) { return false; }
 		if(sizeof(ca_data_exporters::checkMapping($ps_exporter_code))>0) { return false; }
@@ -1508,6 +1517,9 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 					break;
 				case 'JSON':
 					$o_export = new ExportJSON();
+					break;
+				case 'CTDA':
+					$o_export = new ExportCTDA();
 					break;
 				default:
 					return array(_t("Invalid exporter format"));
@@ -1620,6 +1632,9 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 				break;
 			case 'JSON':
 				$o_export = new ExportJSON();
+				break;
+			case 'CTDA':
+				$o_export = new ExportCTDA();
 				break;
 			default:
 				return;
@@ -1933,6 +1948,9 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 		if($vs_template = $settings['template']) {
 			$va_get_options['template'] = $vs_template;
 		}
+		if($filter_non_primary_representations = $settings['filterNonPrimaryRepresentations']) {
+			$va_get_options['filterNonPrimaryRepresentations'] = $filter_non_primary_representations;
+		}
 
 		if(($vs_locale = $settings['locale']) || ($vs_locale = caGetOption('locale', $pa_options['settings'], null))) {
 			// the global UI locale for some reason has a higher priority
@@ -1948,6 +1966,8 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 			$va_get_options['returnAllLocales'] = true;
 		}
 		
+		
+		$va_get_options['filterNonPrimaryRepresentations'] = $settings['filterNonPrimaryRepresentations'] ?? 1;
 		
 		// AttributeValue settings that are simply passed through by the exporter
 	
@@ -2030,16 +2050,17 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 				}
 			} elseif($vs_source) { // trying to find the source only makes sense if the source is set
 				$va_values = $t_attr->getAttributeValues();
-
 				$va_src_tmp = explode('.', $vs_source);
 				$vs_modifier = null;
+				
+				if($t_attr->get('table_num') == Datamodel::getTableNum($va_src_tmp[0])) {
+					array_shift($va_src_tmp);
+				}
 				if(sizeof($va_src_tmp) == 2) {
-					if($t_attr->get('table_num') == Datamodel::getTableNum($va_src_tmp[0])) {
-						$vs_source = $va_src_tmp[1];
-					} else {
-					    $vs_source = $va_src_tmp[0];
-					    $vs_modifier = $va_src_tmp[1];
-					}
+					$vs_source = $va_src_tmp[0];
+					$vs_modifier = $va_src_tmp[1];
+				} elseif(sizeof($va_src_tmp) == 1) {
+					$vs_source = $va_src_tmp[0];
 				}
 
 				if(preg_match("/^_CONSTANT_:(.*)$/",$vs_source,$va_matches)) {
@@ -2059,7 +2080,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 					
 						$va_display_val_options = is_array($va_get_options) ? $va_get_options : []; 
 						switch($vo_val->getDatatype()) {
-							case __CA_ATTRIBUTE_VALUE_LIST__: //if ($vo_val instanceof ListAttributeValue) {
+							case __CA_ATTRIBUTE_VALUE_LIST__: 
 								// figure out list_id -- without it we can't pull display values
 								$t_element = new ca_metadata_elements($vo_val->getElementID());
 								$va_display_val_options = array('list_id' => $t_element->get('list_id'));
@@ -2069,7 +2090,12 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 								} elseif ($settings['convertCodesToDisplayText']) {
 									$va_display_val_options['output'] = 'text';
 								}
-								$vs_display_value = $vo_val->getDisplayValue($va_display_val_options);
+								if($vs_modifier) {
+									$t_item = ca_list_items::findAsInstance(['item_id' => $vo_val->getItemID()]);
+									$vs_display_value = $t_item->get('ca_list_items.'.$vs_modifier);
+								} else {
+									$vs_display_value = $vo_val->getDisplayValue($va_display_val_options);
+								}
 								$o_log->logDebug(_t("Found value %1.", $vs_display_value));
 
 								break;
@@ -2149,7 +2175,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 					$va_values = $t_instance->get($vs_source, array_merge($va_get_options, ['returnAsArray' => true]));
 					if($deduplicate) { $va_values = array_unique($va_values); } 
 
-					$vs_get = join(caGetOption('delimiter', $va_get_opts, ';', ['castTo' => 'string']), is_array($va_values) ? $va_values : [$va_values]);
+					$vs_get = join(caGetOption('delimiter', $va_get_options, ';', ['castTo' => 'string']), is_array($va_values) ? $va_values : [$va_values]);
 					$o_log->logDebug(_t("Source is a simple get() for some bundle. Value for this mapping is '%1'", $vs_get));
 					$o_log->logDebug(_t("get() options are: %1", print_r($va_get_options,true)));
 
@@ -2164,7 +2190,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 					if($deduplicate) { $va_values = array_unique($va_values); } 
 					
 					if($return_raw_data) { $va_values_raw = $t_instance->get($vs_source, ['returnAsArray' => true]); }
-					$o_log->logDebug(_t("Source is a get() that should be repeated for multiple values. Value for this mapping is '%1'. It includes the custom delimiter ';#;' that is later used to split the value into multiple values.", $vs_values));
+					$o_log->logDebug(_t("Source is a get() that should be repeated for multiple values. Value for this mapping is '%1'. It includes the custom delimiter ';#;' that is later used to split the value into multiple values.", $va_values));
 					$o_log->logDebug(_t("get() options are: %1", print_r($va_get_options,true)));
 
 					foreach($va_values as $vn_i => $vs_text) {

@@ -57,7 +57,7 @@
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
-		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+		$vs_default_placeholder = "<i class='fa fa-image fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 

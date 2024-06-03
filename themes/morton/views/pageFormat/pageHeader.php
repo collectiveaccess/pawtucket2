@@ -93,6 +93,7 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+	<link rel="icon" type="image/png" href="/ACORN_Favicon_64x64.png" sizes="64x64">
 </head> 
 
 <body class='<?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
@@ -118,7 +119,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo-white-trans-bg-small.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ACORN-logo-white-trans.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -172,10 +173,10 @@
 ?>	
 						<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Search"), "", "", "Search", "advanced/objects"); ?></li>
 						<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?></li>
-						<li <?php print ($this->request->getController() == "Collection") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "FindingAid", "Collection/Index"); ?></li>
+						<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "Index"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
-	<div class="container"><div class="row"><div class="col-xs-12">
+	<div class="container" <?php print (strtoLower($this->request->getController()) == "front") ? "style='max-width:3000px;'" : ""; ?>><div class="row"><div class="col-xs-12">
 		<div role="main" id="main"><div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

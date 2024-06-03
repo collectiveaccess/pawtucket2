@@ -30,7 +30,7 @@ $next_button = '<span class="arrow-link">
 
 ?>
 
-<div class="row justify-content-center my-5">
+<div class="row justify-content-center my-5 paging-row">
 	<div class="col-auto paging">
 <?php
 			$page_links = [];
@@ -52,25 +52,36 @@ $next_button = '<span class="arrow-link">
 				$startIndex = 0;
 				$endIndex = $totalPages - 1;
 
+				// if more than 8 pages
 				if ($totalPages > $pages_shown) {
+
+					// if the current page is 8 or greater
 					if ($currentPage >= $pages_shown) {
 						$startIndex = $currentPage - 2;
 						$endIndex = $totalPages - 1;
+						// $endIndex = min($pages_shown - 1, $totalPages - 1);
 					} else {
 						$endIndex = min($pages_shown - 1, $totalPages - 1);
 					}
 				}
 
-				$paginatedNumbers = array_slice($page_array, $startIndex, $endIndex - $startIndex + 1);
+				// $paginatedNumbers = array_slice($page_array, $startIndex, $endIndex - $startIndex + 1);
+				$paginatedNumbers = array_slice($page_array, $startIndex, $pages_shown);
 
 				if ($startIndex > 0) {
 					array_unshift($paginatedNumbers, '...');
 				}
 
-				if ($endIndex < $totalPages - 1) {
+				// if ($endIndex < $totalPages - 1) {
+				// 	$paginatedNumbers[] = '...';
+				// }
+
+				if ($startIndex + 7 < $totalPages) {
 					$paginatedNumbers[] = '...';
 				}
 
+				// print "<p> Start: " . $startIndex . "</p>";
+				// print "<p> End: " . $endIndex . "</p>";
 				return $paginatedNumbers;
 			}
 
@@ -83,10 +94,9 @@ $next_button = '<span class="arrow-link">
 				if($current_page < $num_pages) {
 					array_push($paginatedNumbers, caNavLink($this->request, $next_button, "pageLink", '*', '*', '*', ['s' => $current_page * $hits_per_block, 'key' => $browse_key, '_advanced' => $is_advanced]));
 				}
-			
-
 				print join(' ', $paginatedNumbers);
 			}
+
 		?>
 	</div>	
 </div>

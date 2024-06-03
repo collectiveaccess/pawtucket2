@@ -33,7 +33,6 @@ require_once(__CA_LIB_DIR__.'/ApplicationPluginManager.php');
 require_once(__CA_APP_DIR__."/controllers/FindController.php");
 require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
-require_once(__CA_MODELS_DIR__."/ca_objects.php");
 require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
 require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
 
@@ -231,7 +230,7 @@ class DetailController extends FindController {
 			}
 			// Get current display list
 			$t_display = new ca_bundle_displays();
-			foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $display) {
+			foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('restrictToTypes' => [$t_subject->getTypeCode()], 'table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $display) {
 				$export_options[$display['name']] = "_display_".$display['display_id'];
 			}
 			ksort($export_options);
@@ -379,7 +378,11 @@ class DetailController extends FindController {
 		$this->view->setVar("map", "");
 		if(is_array($map_attributes) && sizeof($map_attributes)) {
 			$o_map = new GeographicMap((($vn_width = caGetOption(['mapWidth', 'map_width'], $options, false)) ? $vn_width : 285), (($vn_height = caGetOption(['mapHeight', 'map_height'], $options, false)) ? $vn_height : 200), 'map');
-				
+			
+			$qr_relative_to = null;
+			if($map_relative_to = caGetOption('map_relative_to', $options, null)) {
+				$qr_relative_to = $t_subject->getRelatedItems($map_relative_to, ['returnAs' => 'searchResult']);
+			}
 			$vn_mapped_count = 0;	
 			foreach($map_attributes as $map_attribute) {
 				if ($t_subject->get($map_attribute)){
@@ -392,7 +395,7 @@ class DetailController extends FindController {
 					} else{
 						$map_fuzz_level = $map_fuzz_config;
 					}
-					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => (int)$map_fuzz_level));
+					$ret = $o_map->mapFrom($qr_relative_to ? $qr_relative_to : $t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => (int)$map_fuzz_level));
 					$vn_mapped_count += $ret['items'];
 				}
 			}
@@ -1427,7 +1430,7 @@ class DetailController extends FindController {
 	 *		display = The type of media_display.conf display configuration to be used (Eg. "detail", "media_overlay"). [Default is "media_overlay"]
 	 */
 	public function GetMediaOverlay($options=null) {
-		$context = $this->request->getParameter('context', pString);
+		$context = $context_str = $this->request->getParameter('context', pString);
 		
 		if ($context == 'gallery') {
 			$context_info = [
@@ -1448,7 +1451,7 @@ class DetailController extends FindController {
 		
 		if (!($display_type = $this->request->getParameter('display', pString))) { $display_type = 'media_overlay'; }
 		$options['display'] = $display_type;
-		$options['context'] = $this->request->getParameter('context', pString);
+		$options['context'] = $context_str;
 		
 		$local_options = (isset($this->opa_detail_types[$options['context']]['options']) && is_array($this->opa_detail_types[$options['context']]['options'])) ? $this->opa_detail_types[$options['context']]['options'] : array();
 		$options['captionTemplate'] = caGetOption('representationViewerCaptionTemplate', $local_options, false);
@@ -1478,7 +1481,7 @@ class DetailController extends FindController {
 	 * Return media viewer data via AJAX callback for viewers that require it.
 	 */
 	public function GetMediaData() {
-		$context = $this->request->getParameter('context', pString);
+		$context = $context_str = $this->request->getParameter('context', pString);
 		
 		if (!($display_type = $this->request->getParameter('display', pString))) { $display_type = 'media_overlay'; }
 	
@@ -1508,14 +1511,14 @@ class DetailController extends FindController {
 			throw new ApplicationException(_t('Cannot view media'));
 		}
 	
-		$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $context, 'checkAccess' => $this->opa_access_values]));
+		$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $context_str, 'checkAccess' => $this->opa_access_values]));
 	}
 	# -------------------------------------------------------
 	/**
 	 * Provide in-viewer search for those that support it (Eg. UniversalViewer)
 	 */
 	public function SearchMediaData() {
-	   $context = $this->request->getParameter('context', pString);
+	   $context = $context_str = $this->request->getParameter('context', pString);
 		
 		if (!($display_type = $this->request->getParameter('display', pString))) { $display_type = 'media_overlay'; }
 
@@ -1545,7 +1548,7 @@ class DetailController extends FindController {
 			throw new ApplicationException(_t('Cannot view media'));
 		}
 
-		$this->response->addContent(caSearchMediaData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $this->request->getParameter('context', pString)]));
+		$this->response->addContent(caSearchMediaData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $context_str]));
 	}
 	# -------------------------------------------------------
 	/**

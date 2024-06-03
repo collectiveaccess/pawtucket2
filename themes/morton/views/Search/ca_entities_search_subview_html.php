@@ -56,11 +56,11 @@
 <?php
 			if(in_array($vs_block, $va_browse_types)){
 ?>
-				<?php print "<H2 class='hasTooltip' data-toggle='tooltip' data-placement='bottom' title='&quot;People&quot; represent records related to specific individuals or organizations.'>".caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2>'; ?>
+				<?php print "<H2 class='hasTooltip' data-toggle='popover' data-content='&quot;People, Organizations, and Landmarks&quot; represents records related to specific individuals, organizations or Arboretum landscape features.'>".caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).' <span class="glyphicon glyphicon-info-sign"></span></H2>'; ?>
 <?php
 			}else{
 ?>
-				<H3 class='hasTooltip' data-toggle='tooltip' data-placement='bottom' title='&quot;People&quot; represent records related to specific individuals or organizations.'><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+				<H2 class='hasTooltip' data-toggle='popover' data-placement='bottom' data-content='&quot;People, Organizations, and Landmarks&quot; represents records related to specific individuals, organizations or Arboretum landscape features.'><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?> <span class="glyphicon glyphicon-info-sign"></span></H2>
 <?php
 			}
 ?>

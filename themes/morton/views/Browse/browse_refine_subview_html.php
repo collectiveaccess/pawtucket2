@@ -40,11 +40,14 @@
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
-		print "<H3 class='hasTooltip' data-toggle='tooltip' data-placement='bottom' title='Use the filters below to refine your search to results that match certain criteria.'>"._t("Filter by")."</H3>";
+		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
+		print "<H2><span class='hasTooltip hasTooltipFilterBy' data-toggle='popover' data-content=''>"._t("Filter by")." <span class='glyphicon glyphicon-info-sign'></span></span></H2>";
+		TooltipManager::add('.hasTooltipFilterBy', 'Use the filters below to refine your search to results that match certain criteria.');
+
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				print "<H3>".$va_facet_info['label_singular']."</H3>"; 
 ?>
 					<script type="text/javascript">
 						jQuery(document).ready(function() {
@@ -57,9 +60,12 @@
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 				
 				if($va_facet_info['description']) {
-					print "<H5 class='hasTooltip' data-toggle='tooltip' data-placement='bottom' title=".json_encode($va_facet_info['description']).">".$va_facet_info['label_singular']."</H5>"; 
+					print "<H3><span class='hasTooltip hasTooltip".$vs_facet_name."'>".$va_facet_info['label_singular']." <span class='glyphicon glyphicon-info-sign'></span></span></H3>"; 
+
+					TooltipManager::add('.hasTooltip'.$vs_facet_name, $va_facet_info['description']);
+
 				} else {
-					print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+					print "<H3>".$va_facet_info['label_singular']."</H3>"; 
 				}
 				switch($va_facet_info["group_mode"]){
 					case "alphabetical":
@@ -112,6 +118,17 @@
 					}
 				});
             }
+			var options = {
+				trigger: "hover",
+				html: "true"
+			};
+			$('[data-toggle="popover"]').each(function() {
+				if($(this).attr('data-content')){
+					$(this).popover(options).click(function(e) {
+						$(this).popover('toggle');
+					});
+				}
+			});
 		});
 	</script>
 <?php	

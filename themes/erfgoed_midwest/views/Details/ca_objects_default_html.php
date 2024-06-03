@@ -182,8 +182,40 @@
 						<span class="trimText">^ca_objects.content_description</span>
 					</div>
 				</ifdef>}}}
-				
-				
+<?php
+				$vs_copyright = "";
+				$vs_copy_status = $t_object->get("ca_objects.copyright_status", array("convertCodesToDisplayText" => true));
+				switch($vs_copy_status){
+					case "publiek domein":
+						$vs_copyright = "<a href='https://creativecommons.org/publicdomain/mark/1.0/' target='_blank'>".$vs_copy_status."</a>";
+						$vs_copyright .= "<br/><a href='https://creativecommons.org/publicdomain/mark/1.0/' target='_blank' class='copyrightLogo'>".caGetThemeGraphic($this->request, 'no_copyright_blue_x2.png')."</a>";
+					break;
+					# ------------------------
+					case "in copyright":
+						$vs_copyright = "<a href='https://rightsstatements.org/page/InC/1.0/' target='_blank'>".$vs_copy_status."</a>";
+						$vs_copyright .= "<br/><a href='https://rightsstatements.org/page/InC/1.0/' target='_blank' class='copyrightLogoBg'>".caGetThemeGraphic($this->request, 'InC.white.svg')."</a>";
+					break;
+					# ------------------------
+					case "in copyright – unknown rightsholder":
+						$vs_copyright = "<a href='https://rightsstatements.org/page/InC-RUU/1.0/' target='_blank'>".$vs_copy_status."</a>";
+						$vs_copyright .= "<br/><a href='https://rightsstatements.org/page/InC-RUU/1.0/' target='_blank' class='copyrightLogoBg'>".caGetThemeGraphic($this->request, 'InC-RUU.white.svg')."</a>";
+					break;
+					# ------------------------
+					case "in copyright – non-commercial use permitted":
+						$vs_copyright = "<a href='https://rightsstatements.org/page/InC-NC/1.0/' target='_blank'>".$vs_copy_status."</a>";
+						$vs_copyright .= "<br/><a href='https://rightsstatements.org/page/InC-NC/1.0/' target='_blank' class='copyrightLogoBg'>".caGetThemeGraphic($this->request, 'InC-NC.white.svg')."</a>";
+					break;
+					# ------------------------
+				}
+				if($vs_copyright){
+?>
+					<div class='unit'><h6>Auteursrecht</h6>
+						<?php print $vs_copyright; ?>
+						<br/>Lees meer over de rechtenstatus in de <?php print caNavLink($this->request, _t("disclaimer"), "", "", "About", "Disclaimer"); ?>
+					</div>
+<?php
+				}
+?>				
 							
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="depicts" min="1" max="1"><H6>Persoon </H6></ifcount>}}}
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="depicts" min="2"><H6>Mensen</H6></ifcount>}}}

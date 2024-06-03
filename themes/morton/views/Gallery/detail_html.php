@@ -19,7 +19,7 @@
 <div class="galleryDetailBottom"></div>
 
 
-	<div class="row">
+	<div class="container"><div class="row">
 <?php
 	if($ps_description){
 ?>
@@ -67,7 +67,7 @@
 ?>
 			</div><!-- end row -->
 		</div><!-- end col -->
-	</div><!-- end row -->
+	</div><!-- end row --></div><!-- end container -->
 <script type='text/javascript'>
 		jQuery(document).ready(function() {		
 			jQuery("#galleryDetailImageArea").load("<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => ($pn_set_item_id) ? $pn_set_item_id : $vn_first_item_id, 'set_id' => $pn_set_id)); ?>");

@@ -66,7 +66,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="front-feature-box">
-                        <a href="/Learn/Index">
+                        <a href="/Learn">
                         <?php print caGetThemeGraphic($this->request, 'learn_front.jpg'); ?>
                         <div class="front-feature-title">
                             <h3>Learn</h3>

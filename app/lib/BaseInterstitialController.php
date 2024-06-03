@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,17 +29,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- /**
-  *
-  */
-
 require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_MODELS_DIR__."/ca_editor_uis.php");
 require_once(__CA_MODELS_DIR__."/ca_editor_ui_bundle_placements.php");
 require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
 require_once(__CA_LIB_DIR__."/ResultContext.php");
-require_once(__CA_LIB_DIR__."/Logging/Eventlog.php");
 require_once(__CA_LIB_DIR__.'/Utils/DataMigrationUtils.php');
 require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
 
@@ -262,7 +256,7 @@ class BaseInterstitialController extends BaseEditorController {
 			'table' => $t_subject->tableName(),
 			'type_id' => method_exists($t_subject, "getTypeID") ? $t_subject->getTypeID() : null,
 			'display' => 'relation',
-			'bundleDisplay' => $va_bundle_values,
+			'bundleDisplay' => array_merge($va_bundle_values, ['n' => $vn_id]),
 			'errors' => $va_error_list,
 			'time' => time()
 		);

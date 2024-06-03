@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2023 Whirl-i-Gig
+ * Copyright 2008-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,21 +29,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- /**
-  *
-  */
-
-# ----------------------------------------------------------------------
-# --- Import classes
-# ----------------------------------------------------------------------
-include_once(__CA_LIB_DIR__."/BaseObject.php");
 include_once(__CA_LIB_DIR__."/Media/MediaInfoCoder.php");
 include_once(__CA_LIB_DIR__."/File/FileInfoCoder.php");
 include_once(__CA_LIB_DIR__."/Parsers/TimeExpressionParser.php");
 include_once(__CA_LIB_DIR__."/Parsers/TimecodeParser.php");
 include_once(__CA_LIB_DIR__."/ApplicationChangeLog.php");
-
 
 # ----------------------------------------------------------------------
 class SearchResult extends BaseObject {
@@ -55,6 +45,8 @@ class SearchResult extends BaseObject {
 	// ----
 	
 	private $opa_options;
+	
+	protected $ops_subject_pk;
 
 	/**
 	 * @var IWLPlugSearchEngineResult
@@ -607,7 +599,7 @@ class SearchResult extends BaseObject {
 		}
 		
 		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_instance->hasField('access')) {
-			$vs_access_sql = " AND ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
+			$vs_access_sql = " AND (p.access IN (".join(",", $pa_options['checkAccess']) ."))";	
 		}
 		
 		$vs_pk = $t_rel_instance->primaryKey();
@@ -877,19 +869,34 @@ class SearchResult extends BaseObject {
 	/**
 	 * 
 	 */
-	public function prefetchChangeLogData($ps_tablename, $pn_start, $pn_num_rows) {
+	public function prefetchCreatedOnChangeLogData($ps_tablename, $pn_start, $pn_num_rows) {
 		if (sizeof($va_row_ids = $this->getRowIDsToPrefetch($pn_start, $pn_num_rows)) == 0) { return false; }
 		$vs_key = caMakeCacheKeyFromOptions(array_merge($va_row_ids, array('_table' => $ps_tablename)));
-		if (self::$s_timestamp_cache['fetched'][$vs_key] ?? null) { return true; }
+		if (self::$s_timestamp_cache['fetchedCreatedOn'][$vs_key] ?? null) { return true; }
 		
 		$o_log = new ApplicationChangeLog();
 	
 		if (!is_array(self::$s_timestamp_cache['created_on'][$ps_tablename] ?? null)) { self::$s_timestamp_cache['created_on'][$ps_tablename] = array(); }
 		self::$s_timestamp_cache['created_on'][$ps_tablename] += $o_log->getCreatedOnTimestampsForIDs($ps_tablename, $va_row_ids);
+		
+		self::$s_timestamp_cache['fetchedCreatedOn'][$vs_key] = true;
+		return true;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function prefetchModifiedOnChangeLogData($ps_tablename, $pn_start, $pn_num_rows) {
+		if (sizeof($va_row_ids = $this->getRowIDsToPrefetch($pn_start, $pn_num_rows)) == 0) { return false; }
+		$vs_key = caMakeCacheKeyFromOptions(array_merge($va_row_ids, array('_table' => $ps_tablename)));
+		if (self::$s_timestamp_cache['fetchedModifiedOn'][$vs_key] ?? null) { return true; }
+		
+		$o_log = new ApplicationChangeLog();
+	
 		if (!is_array(self::$s_timestamp_cache['last_changed'][$ps_tablename] ?? null)) { self::$s_timestamp_cache['last_changed'][$ps_tablename] = array(); }
 		self::$s_timestamp_cache['last_changed'][$ps_tablename] += $o_log->getLastChangeTimestampsForIDs($ps_tablename, $va_row_ids);
 
-		self::$s_timestamp_cache['fetched'][$vs_key] = true;
+		self::$s_timestamp_cache['fetchedModifiedOn'][$vs_key] = true;
 		return true;
 	}
 	# ------------------------------------------------------------------
@@ -1039,6 +1046,7 @@ class SearchResult extends BaseObject {
 	 *			removeLastItems = Number of levels from bottom of hierarchy before returning. [Default is null]
 	 *			hierarchyDirection = Order in which to return hierarchical levels. Set to either "asc" or "desc". "Asc"ending returns hierarchy beginning with the root; "desc"ending begins with the child furthest from the root. [Default is asc]
  	 *			allDescendants = Return all items from the full depth of the hierarchy when fetching children. By default only immediate children are returned. [Default is false]
+	 *			includeSelf = Return current row when fetching children or descendants. By default only children or descendants are returned. [Default is false]
 	 * 			hierarchyDelimiter = Characters to place in between separate hiearchy levels. Defaults to the 'delimiter' option.
 	 *          filterTypes = A list of types. Only hierarchy items with specified types will be returned. [Default is null]
  	 *
@@ -1455,7 +1463,15 @@ class SearchResult extends BaseObject {
 					goto filter;
 					break;
 				case 'children':
+				case 'descendants':
+				case 'branch':
 					// grab children 
+					if($va_path_components['hierarchical_modifier'] === 'descendants') {
+						$pa_options['allDescendants'] = true;
+					} elseif($va_path_components['hierarchical_modifier'] === 'branch') {
+						$pa_options['allDescendants'] = true;
+						$pa_options['includeSelf'] = true;
+					}
 					$vs_opt_md5 = caMakeCacheKeyFromOptions($pa_options);
 					if ($va_path_components['related']) {
 						// [RELATED TABLE CHILDREN]
@@ -1483,9 +1499,18 @@ class SearchResult extends BaseObject {
 							||
 							!sizeof(SearchResult::$opa_hierarchy_children_prefetch_cache[$va_path_components['table_name']][$vn_id][$vs_opt_md5])
 						){ 
-							continue;
+							if($pa_options['includeSelf'] ?? false) {
+								SearchResult::$opa_hierarchy_children_prefetch_cache[$va_path_components['table_name']][$vn_id][$vs_opt_md5] = [];
+							} else {
+								continue;
+							}
 						}
-						$qr_hier = $t_instance->makeSearchResult($va_path_components['table_name'], SearchResult::$opa_hierarchy_children_prefetch_cache[$va_path_components['table_name']][$vn_id][$vs_opt_md5], $pa_options);
+						
+						$child_ids = SearchResult::$opa_hierarchy_children_prefetch_cache[$va_path_components['table_name']][$vn_id][$vs_opt_md5];
+						if(($pa_options['includeSelf'] ?? false) && !($va_path_components['related'] ?? false)) {
+							array_unshift($child_ids, $vn_id);
+						}
+						$qr_hier = $t_instance->makeSearchResult($va_path_components['table_name'], $child_ids, $pa_options);
 						
 						$va_tmp = array($va_path_components['table_name']);
 						if ($va_path_components['field_name']) { $va_tmp[] = $va_path_components['field_name']; }
@@ -1603,7 +1628,7 @@ class SearchResult extends BaseObject {
 //
 				if ($va_path_components['field_name'] == 'created') {
 					if (!isset(self::$s_timestamp_cache['created_on'][$this->ops_table_name][$vn_row_id])) {
-						$this->prefetchChangeLogData($this->ops_table_name, $this->opo_engine_result->currentRow(), $this->getOption('prefetch'));
+						$this->prefetchCreatedOnChangeLogData($this->ops_table_name, $this->opo_engine_result->currentRow(), $this->getOption('prefetch'));
 					}
 			
 					if ($vb_return_as_array) {
@@ -1647,7 +1672,7 @@ class SearchResult extends BaseObject {
 //		
 				if ($va_path_components['field_name'] == 'lastModified') {
 					if (!isset(self::$s_timestamp_cache['last_changed'][$this->ops_table_name][$vn_row_id])) {
-						$this->prefetchChangeLogData($this->ops_table_name, $this->opo_engine_result->currentRow(), $this->getOption('prefetch'));
+						$this->prefetchModifiedOnChangeLogData($this->ops_table_name, $this->opo_engine_result->currentRow(), $this->getOption('prefetch'));
 					}
 			
 					if ($vb_return_as_array) {
@@ -1719,7 +1744,7 @@ class SearchResult extends BaseObject {
 						$this->prefetch($va_path_components['table_name'], $this->opo_engine_result->currentRow(), $this->getOption('prefetch'), $pa_options);	
 					}
 					
-					$vm_val = $t_instance->renderBundleForDisplay($va_path_components['field_name'], $vn_row_id, self::$s_prefetch_cache[$va_path_components['table_name']][$vn_row_id][$vs_opt_md5], $va_val_opts);
+					$vm_val = $t_instance->renderBundleForDisplay($va_path_components['field_name'].($va_path_components['subfield_name'] ? '.'.$va_path_components['subfield_name'] : ''), $vn_row_id, self::$s_prefetch_cache[$va_path_components['table_name']][$vn_row_id][$vs_opt_md5], $va_val_opts);
 					
 					if ($pa_options['returnWithStructure'] ?? null) { 
 						if ($pa_options['returnAllLocales'] ?? null) { 
@@ -1878,11 +1903,11 @@ class SearchResult extends BaseObject {
 			if(is_array($vm_val)) {
 				foreach($vm_val as $i => $v) {
 					if(is_array($v)) { continue; }
-					if($v === strip_tags($v)) {
+					if($v === strip_tags($v, ['a', 'i', 'b', 'em', 'strong'])) {
 						$vm_val[$i] = nl2br($v);
 					}
 				}
-			} elseif($vm_val === strip_tags($vm_val)) {
+			} elseif($vm_val === strip_tags($vm_val, ['a', 'i', 'b', 'em', 'strong'])) {
 				$vm_val = nl2br($vm_val);
 			}
 		} elseif ($vb_convert_line_breaks) {
@@ -2025,6 +2050,7 @@ class SearchResult extends BaseObject {
 		// Make sure spec has a table name, otherwise we can get caught in an infinite loop when we pull using the spec
 		if ((substr($va_spec[0], 0, 3) !== 'ca_') || !Datamodel::tableExists($va_spec[0])) { array_unshift($va_spec, $va_path_components['table_name']); }
 		
+		$row_ids = [];
 		while($qr_rel->nextHit()) {
 			$vm_val = $qr_rel->get(join(".", $va_spec), $pa_options);
 			if (is_array($pa_check_access) && sizeof($pa_check_access) && $t_rel_instance->hasField('access') && !in_array($qr_rel->get($va_path_components['table_name'].".access"), $pa_check_access)) {
@@ -2060,10 +2086,6 @@ class SearchResult extends BaseObject {
 		
 		if ($pa_options['unserialize'] && !$pa_options['returnAsArray']) { return array_shift($va_return_values); }	
 		if ($pa_options['returnAsArray']) { return is_array($va_return_values) ? $va_return_values : array(); } 
-		
-		if ($vb_return_as_link) {
-			$va_return_values = caCreateLinksFromText($va_return_values, $t_rel_instance->tableName(), array($va_relation_info[$vs_pk]));
-		}
 		
 		return (sizeof($va_return_values) > 0) ? join($pa_options['delimiter'], $va_return_values) : null;
 	}
@@ -2271,7 +2293,7 @@ class SearchResult extends BaseObject {
 					$vb_dont_return_value = false;
 					$vs_element_code = $o_value->getElementCode();
 					
-					if ($vb_return_value_id) {
+					if ($vb_return_value_id && (!$va_path_components['subfield_name'] || ($va_path_components['subfield_name'] === $vs_element_code))) {
 						$va_return_values[(int)$vn_id][] = $o_value->getValueID();
 						continue;
 					}
@@ -2447,12 +2469,12 @@ class SearchResult extends BaseObject {
                                         if (preg_match("!\[([^\]]+)!", $vs_val_proc, $va_matches)) {
                                             $va_tmp = explode(',', $va_matches[1]);
                                             if ((sizeof($va_tmp) == 2) && (is_numeric($va_tmp[0])) && (is_numeric($va_tmp[1]))) {
-                                                $vs_val_proc = array('latitude' => trim($va_tmp[0]), 'longitude' => trim($va_tmp[1]), 'path' => trim($va_matches[1]), 'label' => $this->ops_text_value);
+                                                $vs_val_proc = array('latitude' => trim($va_tmp[0]), 'longitude' => trim($va_tmp[1]), 'path' => trim($va_matches[1]), 'label' => $vs_val_proc);
                                             } else {
-                                                $vs_val_proc = array('latitude' => null, 'longitude' => null, 'path' => null, 'label' => $this->ops_text_value);
+                                                $vs_val_proc = array('latitude' => null, 'longitude' => null, 'path' => null, 'label' => $vs_val_proc);
                                             }
                                         } else {
-                                            $vs_val_proc = array('latitude' => null, 'longitude' => null, 'path' => null, 'label' => $this->ops_text_value);
+                                            $vs_val_proc = array('latitude' => null, 'longitude' => null, 'path' => null, 'label' => $vs_val_proc);
                                         }
                                     }
 									$vb_dont_return_value = false;
@@ -2811,7 +2833,7 @@ class SearchResult extends BaseObject {
 							}
 						}
 						
-						$va_return_values[$vn_id][$vm_locale_id][] = $d;
+						$va_return_values[$vn_i][$vn_locale_id][] = $d;
 					}
 				}
 				break;
@@ -3115,11 +3137,14 @@ class SearchResult extends BaseObject {
 		if (method_exists($pt_instance, 'setLabelTypeList')) {
 			$pt_instance->setLabelTypeList($this->opo_subject_instance->getAppConfig()->get(($pa_path_components['field_name'] == 'nonpreferred_labels') ? "{$vs_table_name}_nonpreferred_label_type_list" : "{$vs_table_name}_preferred_label_type_list"));
 		}
-		if (isset($pa_options['convertCodesToIdno']) && $pa_options['convertCodesToIdno'] && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST_CODE"))) {
+		
+		$convert_codes_to_idno = caGetOption('convertCodesToIdno', $pa_options, false);
+		
+		if ($convert_codes_to_idno && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST_CODE"))) {
 			$vs_prop = caGetListItemIdno($vs_prop);
-		} elseif (isset($pa_options['convertCodesToIdno']) && $pa_options['convertCodesToIdno'] && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST"))) {
+		} elseif($convert_codes_to_idno && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST"))) {
 			$vs_prop = caGetListItemIdno(caGetListItemIDForValue($vs_list_code, $vs_prop));
-	    } elseif($vb_convert_codes_to_display_text && method_exists($pt_instance, "isRelationship") && $pt_instance->isRelationship() && ($vs_field_name == 'type_id')) {
+	    } elseif($convert_codes_to_idno && method_exists($pt_instance, "isRelationship") && $pt_instance->isRelationship() && ($vs_field_name == 'type_id')) {
 		    $t_rel_type = new ca_relationship_types($vs_prop);
 		    return $t_rel_type->get('type_code');
 		}
@@ -3134,14 +3159,17 @@ class SearchResult extends BaseObject {
 		$vs_field_name = $pa_path_components['subfield_name'] ? $pa_path_components['subfield_name'] : $pa_path_components['field_name'];
 		
 		$vs_table_name = $pa_path_components['table_name'];
+		
+		$convert_codes_to_value = caGetOption('convertCodesToValue', $pa_options, false);
+		
 		if (method_exists($pt_instance, 'setLabelTypeList')) {
 			$pt_instance->setLabelTypeList($this->opo_subject_instance->getAppConfig()->get(($pa_path_components['field_name'] == 'nonpreferred_labels') ? "{$vs_table_name}_nonpreferred_label_type_list" : "{$vs_table_name}_preferred_label_type_list"));
 		}
-		if (isset($pa_options['convertCodesToValue']) && $pa_options['convertCodesToValue'] && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST_CODE"))) {
+		if ($convert_codes_to_value && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST_CODE"))) {
 			$vs_prop = caGetListItemValueForID($vs_prop);
-		} elseif (isset($pa_options['convertCodesToValue']) && $pa_options['convertCodesToValue'] && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST"))) {
+		} elseif($convert_codes_to_value && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST"))) {
 			return $vs_prop;
-	    } elseif($vb_convert_codes_to_display_text && method_exists($pt_instance, "isRelationship") && $pt_instance->isRelationship() && ($vs_field_name == 'type_id')) {
+	    } elseif($convert_codes_to_value && method_exists($pt_instance, "isRelationship") && $pt_instance->isRelationship() && ($vs_field_name == 'type_id')) {
 		    $t_rel_type = new ca_relationship_types($vs_prop);
 		    return $t_rel_type->get('type_code');
 		}
@@ -3155,30 +3183,30 @@ class SearchResult extends BaseObject {
 		$vs_prop = $ps_prop;
 		
 		$vs_field_name = $pa_path_components['subfield_name'] ? $pa_path_components['subfield_name'] : $pa_path_components['field_name'];
-		$vb_convert_codes_to_display_text = ((isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText']) || ($pa_options['output'] == 'text'));
+		$convert_codes_to_display_text = (caGetOption('convertCodesToDisplayText', $pa_options, false) || ($pa_options['output'] == 'text'));
 		
 		$vs_table_name = $pa_path_components['table_name'];
 		if (method_exists($pt_instance, 'setLabelTypeList') && ($vs_label_list_name = $this->opo_subject_instance->getAppConfig()->get(($pa_path_components['field_name'] == 'nonpreferred_labels') ? "{$vs_table_name}_nonpreferred_label_type_list" : "{$vs_table_name}_preferred_label_type_list"))) {
 			$pt_instance->setLabelTypeList($vs_label_list_name);
 		}
 		
-		if ($vb_convert_codes_to_display_text && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST_CODE"))) {
+		if ($convert_codes_to_display_text && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST_CODE"))) {
 			$vs_prop = SearchResult::$opt_list->getItemFromListForDisplayByItemID($vs_list_code, $vs_prop);
-		} elseif ($vb_convert_codes_to_display_text && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST"))) {
+		} elseif ($convert_codes_to_display_text && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST"))) {
             $vs_prop = SearchResult::$opt_list->getItemFromListForDisplayByItemValue($vs_list_code, $vs_prop);
-		} elseif ($vb_convert_codes_to_display_text && is_array($options = $pt_instance->getFieldInfo($vs_field_name,"OPTIONS")) && (($k = array_search($vs_prop, $options)) !== false)) {
+		} elseif ($convert_codes_to_display_text && is_array($options = $pt_instance->getFieldInfo($vs_field_name,"OPTIONS")) && (($k = array_search($vs_prop, $options)) !== false)) {
 			$vs_prop = $k;
-        } elseif ($vb_convert_codes_to_display_text && ($vs_field_name === 'locale_id') && ((int)$vs_prop > 0)) {
+        } elseif ($convert_codes_to_display_text && ($vs_field_name === 'locale_id') && ((int)$vs_prop > 0)) {
             $t_locale = new ca_locales($vs_prop);
             $vs_prop = $t_locale->getName();
-        } elseif ($vb_convert_codes_to_display_text && (is_array($va_list = $pt_instance->getFieldInfo($vs_field_name,"BOUNDS_CHOICE_LIST")))) {
+        } elseif ($convert_codes_to_display_text && (is_array($va_list = $pt_instance->getFieldInfo($vs_field_name,"BOUNDS_CHOICE_LIST")))) {
             foreach($va_list as $vs_option => $vs_value) {
                 if ($vs_value == $vs_prop) {
                     $vs_prop = $vs_option;
                     break;
                 }
             }
-		} elseif($vb_convert_codes_to_display_text && method_exists($pt_instance, "isRelationship") && $pt_instance->isRelationship() && ($vs_field_name == 'type_id')) {
+		} elseif($convert_codes_to_display_text && method_exists($pt_instance, "isRelationship") && $pt_instance->isRelationship() && ($vs_field_name == 'type_id')) {
 		    $t_rel_type = new ca_relationship_types($vs_prop);
 		    return $t_rel_type->get('ca_relationship_types.preferred_labels');
 		}
@@ -3697,6 +3725,12 @@ class SearchResult extends BaseObject {
 		} elseif ($modifier == 'children') {
 			array_splice($va_tmp, 1, 1);
 			$vs_hierarchical_modifier = 'children';
+		} elseif ($modifier == 'descendants') {
+			array_splice($va_tmp, 1, 1);
+			$vs_hierarchical_modifier = 'descendants';
+		} elseif ($modifier == 'branch') {
+			array_splice($va_tmp, 1, 1);
+			$vs_hierarchical_modifier = 'branch';
 		} elseif ($modifier == 'siblings') {
 			array_splice($va_tmp, 1, 1);
 			$vs_hierarchical_modifier = 'siblings';
@@ -3852,7 +3886,7 @@ class SearchResult extends BaseObject {
 	 *
 	 */
 	static public function _isHierarchyModifier($pm_modifier) {
-		$va_hierarchy_modifiers = ['hierarchy', 'parent', 'children', 'siblings'];
+		$va_hierarchy_modifiers = ['hierarchy', 'parent', 'children', 'descendants', 'branch', 'siblings'];
 	
 		if (is_array($pm_modifier)) {
 			return (sizeof(array_intersect($va_hierarchy_modifiers, $pm_modifier)) > 0);
@@ -3911,7 +3945,7 @@ class SearchResult extends BaseObject {
 			return strlen($b) <=> strlen($a);
 		});
 		
-		$content = $g_highlight_cache[$content] = preg_replace("/(?<![A-Za-z0-9])(".join('|', $highlight_text).")/i", "<span class=\"highlightText\">\\1</span>", $content);
+		$content = $g_highlight_cache[$content] = preg_replace("/(?<![A-Za-z0-9\/=<])(".join('|', $highlight_text).")/i", "<span class=\"highlightText\">\\1</span>", $content);
 		
 		return $content;
 	}

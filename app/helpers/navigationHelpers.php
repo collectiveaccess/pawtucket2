@@ -190,7 +190,7 @@
 		
 		if (caGetOption('absolute', $pa_options, false)) {
 			$o_config = Configuration::load();
-			$vs_url = $o_config->get('site_host').$o_config->get('ca_url_root').$vs_url;
+			$vs_url = $o_config->get('site_host').$vs_url;
 		}
 		
 		return $vs_url;
@@ -859,7 +859,7 @@
  				$vs_fa_class = 'far fa-clock';	
  				break;				
  			case __CA_NAV_ICON_SPINNER__:
- 				$vs_fa_class = 'fas fa-cog far fa-spin';	
+ 				$vs_fa_class = 'fas fa-spinner fa-spin';	
  				break;								
  			case __CA_NAV_ICON_HIER__:
  				$vs_fa_class = 'fas fa-sitemap';

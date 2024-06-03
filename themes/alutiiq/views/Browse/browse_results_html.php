@@ -69,24 +69,54 @@
 if (!$vb_ajax) {	// !ajax
 		if($vs_table == "ca_entities"){
 ?>
+			
 			<div class="row" style="clear:both;">
-				<div class='col-sm-12'><p>{{{find_institutions_intro}}}</p></div>
+				<div class='col-sm-12 col-md-9 unit'>
+					<hr class="uk-divider-small">
+					<H2 class="uk-h1">Alutiiq Collections</H2>
+				</div>
+			</div>
+			<div class="row" style="clear:both;">
+				<div class='col-sm-12 unit'>
+					<p>{{{find_institutions_intro}}}</p>
+				</div>
+			</div>
+<?php
+		}
+		if(($vs_table == "ca_objects") && ($this->request->getAction() == "amutatObjects")){
+?>
+			
+			<div class="row" style="clear:both;">
+				<div class='col-sm-12 col-md-9 unit'>
+					<hr class="uk-divider-small">
+					<H2 class="uk-h1">Alutiiq Objects</H2>
+				</div>
 			</div>
 <?php
 		}
 		if($vs_table == "ca_occurrences"){
 ?>
 			<div class="row" style="clear:both;">
-				<div class='col-sm-12'>
-					<H1>Word of the Week Archive</H1>
+				<div class='col-sm-12 col-md-9 unit'>
+					<hr class="uk-divider-small">
+					<H2 class="uk-h1">Word of the Week Archive</H2>
+				</div>
+			</div>
+			<div class="row">
+				<div class='col-sm-12 col-md-9 unit'>
 					<p>{{{word_archive}}}</p>
+				</div>
+				<div class="col-sm-12 col-md-3 col-lg-3">
+<?php
+						print "<div class='text-center'>".caNavLink($this->request, _t("Notes About the Archive"), "uk-button uk-button-default uk-button-small", "", "About", "")."</div>";
+?>
 				</div>
 			</div>
 <?php
 		}
 ?>
 <div class="row" style="clear:both;">
-	<div class='col-sm-8 col-md-9 col-lg-9'>
+	<div class='col-sm-8'>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -108,7 +138,7 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 ?>
-		<H1>
+		<div class="uk-h2">
 <?php
 		print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? $va_browse_info["labelSingular"] : $va_browse_info["labelPlural"]);
 		
@@ -170,7 +200,7 @@ if (!$vb_ajax) {	// !ajax
 				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
 			}
 ?>
-		</H1>
+		</div>
 		<div class='bCriteria'>
 <?php
 		if (sizeof($va_criteria) > 0) {
@@ -178,7 +208,7 @@ if (!$vb_ajax) {	// !ajax
 			foreach($va_criteria as $va_criterion) {
 				#print "<strong>".$va_criterion['facet'].':</strong>';
 				#if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '', 'browse', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print caNavLink($this->request, '<button type="button" class="uk-button uk-button-default">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '', 'browse', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				#}else{
 				#	print ' '.$va_criterion['value'];
 				if ($va_criterion['facet_name'] == '_search') {
@@ -216,41 +246,20 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		
 	</div>
-	<div class="col-sm-4 col-md-3 col-lg-3">
+	<div class="col-sm-4">
 		<div id="bViewButtons">
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
 			foreach($va_views as $vs_view => $va_view_info) {
 				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
+					print '<a href="#" class="active uk-button uk-button-default uk-button-small"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span> &nbsp;View '.$vs_view.'</a> &nbsp;';
 				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span> &nbsp;View '.$vs_view, 'uk-button uk-button-default uk-button-small', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' &nbsp;';
 				}
 			}
 		}
 ?>
 		</div>
-<?php
-		if(in_array($vs_table, array("ca_objects", "ca_occurrences"))){
-?>
-			<div>
-				<div class="bSearchWithinContainer">
-					<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within">
-						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
-					</form>
-					<div style="clear:both"></div>
-				</div>
-<?php
-					if($vs_table == "ca_occurrences"){
-						print "<div class='text-center'>".caNavLink($this->request, _t("Notes About the Archive"), "btn btn-default btn-gray btnAboutWord", "", "About", "")."</div>";
-					}
-?>
-			</div>
-<?php
-		}
-?>
 
 	</div>
 </div><!-- end row -->
@@ -285,6 +294,20 @@ if (!$vb_ajax) {	// !ajax
 ?>
 	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-3"; ?>">
 <?php
+		if(in_array($vs_table, array("ca_objects", "ca_occurrences"))){
+?>
+			<div>
+				<div class="bSearchWithinContainer">
+					<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search..." name="search" id="searchWithinSearchRefine" aria-label="Search Within">
+						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
+						<input type="hidden" name="l" value="all">
+					</form>
+					<div style="clear:both"></div>
+				</div>
+			</div>
+<?php
+		}
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->

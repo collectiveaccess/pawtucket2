@@ -72,9 +72,9 @@
  		/**
  		 * 
  		 */
- 		protected function setTableSpecificViewVars() {
+ 		protected function setTableSpecificViewVars(?array $info=null) {
  			// merge displays with drop-in print templates
-			$va_export_options = (bool)$this->request->config->get('disable_pdf_output') ? array() : caGetAvailablePrintTemplates('results', array('table' => $this->ops_tablename)); 
+			$va_export_options = (bool)$this->request->config->get('disable_pdf_output') ? array() : caGetAvailablePrintTemplates('results', array('restrictToTypes' => $info['restrictToTypes'] ?? null, 'table' => $this->ops_tablename)); 
 			
 			// add Excel/PowerPoint export options configured in app.conf
 			$va_export_config = (bool)$this->request->config->get('disable_export_output') ? array() : $this->request->config->getAssoc('export_formats');
@@ -99,7 +99,7 @@
 			if(!$this->request->config->get('disable_display_based_exports')) {
 				// Get current display list
 				$t_display = new ca_bundle_displays();
-				foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $va_display) {
+				foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('restrictToTypes' => $info['restrictToTypes'] ?? null, 'table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $va_display) {
 					$va_options[$va_display['name']] = "_display_".$va_display['display_id'];
 				}
 			}

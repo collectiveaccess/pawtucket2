@@ -258,8 +258,8 @@ abstract class BaseRefinery {
 				$mval[0] = caProcessImportItemSettingsForValue($mval[0], $item['settings'] ?? []);
 			}
 			// delimiter?
-			if(!is_null($get_at_index)) {
-				$dvals = preg_split('!'.preg_quote(join('|', $delimiters), '!').'!', $mval[0]);
+			if(!is_null($get_at_index) && sizeof($delimiters)) {
+				$dvals = preg_split('!('.preg_quote(join('|', $delimiters), ')!').'!', $mval[0]);
 				return $dvals[$get_at_index] ?? null;
 			}
 			return ($return_as_string && is_array($mval)) ? trim(join($delimiter, $mval)) : $mval;

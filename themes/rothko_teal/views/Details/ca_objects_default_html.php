@@ -372,18 +372,20 @@
 					if ($t_prov_rel->get('ca_objects_x_collections.sold_yn') == 163) { 
 						$vs_buf[]= "(not sold)";
 					}	
+					if($vs_rem = $t_prov_rel->get('ca_objects_x_collections.transaction_remarks')) {
+						$vs_buf[]= $vs_rem;
+					}
 					if (is_array($vs_buf) && (sizeof($vs_buf) > 0)){
 						$vs_prov_line.= ", ".join(', ', $vs_buf);
 					}
-					#if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {
-					#	$vs_provenance.= ", ".$vs_remark;
-					#}
 				}
 				if ($t_prov_rel->get('ca_objects_x_collections.uncertain') == $yes_list_value_id) {
 					$vs_prov_line.= " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
 				}
-				$vs_prov_line.= "<i class='fa fa-chevron-right'></i><!-- end prov entry -->";
-				$vs_provenance.= "<div>".caNavLink($this->request, $vs_prov_line, '', '', 'Detail', 'collections/'.$va_provenance_id)."</div>";
+				
+				//$vs_provenance_remark = ($t_prov_rel && ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line'))) ? $vs_remark : null;
+				
+				$vs_provenance.= "<div>".caNavLink($this->request, $vs_prov_line, '', '', 'Detail', 'collections/'.$va_provenance_id)." {$vs_provenance_remark} <i class='fa fa-chevron-right'></i><!-- end prov entry --></div>";
 			}
 		}
 	}

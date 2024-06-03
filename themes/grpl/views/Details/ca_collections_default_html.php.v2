@@ -1,0 +1,245 @@
+<?php
+
+	$t_item = $this->getVar("item");
+	$va_comments = $this->getVar("comments");
+	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+
+	# [Added TG 5/2021] Additional variables needed to add browse faceting of resulting objects to this view
+#	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
+	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
+	$vn_row_id 			= $this->request->getParameter('row_id', pInteger);
+	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
+	$vs_current_view	= $this->getVar('view');
+	$vs_sort_dir		= $this->getVar('sort_direction');
+	$vs_current_sort	= $this->getVar('sort');
+	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
+	$va_facets 			= $this->getVar('facets');				// array of available browse facets
+	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
+	$o_config = $this->getVar("config");
+#	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+#	$va_browse_info = $this->getVar("browseInfo");
+
+	# --- get collections configuration
+	$o_collections_config = caGetCollectionsConfig();
+	$vb_show_hierarchy_viewer = true;
+	if($o_collections_config->get("do_not_display_collection_browser")){
+		$vb_show_hierarchy_viewer = false;
+	}
+	# --- get the collection hierarchy parent to use for exporting finding aid
+	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
+
+?>
+<div class="row">
+	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
+		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+	</div><!-- end detailTop -->
+	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+		<div class="detailNavBgLeft">
+			{{{previousLink}}}{{{resultsLink}}}
+		</div><!-- end detailNavBgLeft -->
+	</div><!-- end col -->
+	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+		<div class="container">
+			<div class="row">
+				<div class='col-md-12 col-lg-12'>
+					<H4>{{{^ca_collections.preferred_labels.name}}}</H4><br>
+<!-- Following removed by TG [b/c collections now = Digital collections only]
+					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6> -->
+					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+<?php
+					if ($vn_pdf_enabled) {
+						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
+					}
+?>
+				</div><!-- end col -->
+			</div><!-- end row -->
+			<div class="row">
+				<div class='col-sm-12'>
+<?php
+			if ($vb_show_hierarchy_viewer) {
+?>
+				<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+				<script>
+					$(document).ready(function(){
+						$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>");
+					})
+				</script>
+<?php
+			}
+?>
+				</div><!-- end col -->
+			</div><!-- end row -->
+			<div class="row">
+				<div class='col-md-12 col-lg-12'> <!-- This was col-__-6 -->
+					{{{<ifdef code="ca_collections.description"><br>^ca_collections.description<br/></ifdef>}}}
+					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
+<?php
+				# Comment and Share Tools
+				if ($vn_comments_enabled | $vn_share_enabled) {
+
+					print '<div id="detailTools">';
+					if ($vn_comments_enabled) {
+?>
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
+<?php
+					}
+					if ($vn_share_enabled) {
+						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+					}
+					print '</div><!-- end detailTools -->';
+				}
+?>
+
+				</div><!-- end col -->
+				<div class='col-md-12 col-lg-12'>
+					{{{<ifcount code="ca_collections.related" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
+					{{{<ifcount code="ca_collections.related" min="2"><H6>Related collections</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_collections_x_collections"><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.related.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
+
+					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_entities_x_collections"><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename)</unit>}}}
+
+					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_occurrences_x_collections"><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
+
+					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
+					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_places_x_collections"><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
+				</div><!-- end col -->
+			</div><!-- end row -->
+
+			<!-- TG added 5/2021 for browse functionality -->
+			<H1>
+				<?php
+					print _t('Items');
+					?>
+			<?php
+				if(is_array($va_facets) && sizeof($va_facets)){
+				?>
+			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
+			<?php
+				}
+				?>
+			</H1>
+			<div class='bCriteria'>
+				<?php
+						if (sizeof($va_criteria) > 0) {
+							$i = 0;
+							foreach($va_criteria as $va_criterion) {
+								print "<strong>".$va_criterion['facet'].':</strong>';
+								if ($va_criterion['facet_name'] != '_search') {
+									# If a TGM Subject heading, then display only the title (not the url)
+									if ($va_criterion['facet_name'] == 'subject_facet'){
+										$temp_cri = explode(" [",$va_criterion['value']);
+										$va_criterion['value'] = $temp_cri[0];
+									}
+									print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id'])));
+								}else{
+									print ' '.$va_criterion['value'];
+									$vs_search = $va_criterion['value'];
+								}
+								$i++;
+								if($i < sizeof($va_criteria)){
+									print " ";
+								}
+								$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
+							}
+						}
+				?>
+			</div>
+			<!-- end TG insert 1 -->
+
+{{{<ifcount code="ca_objects" min="2">
+			<div class="row">
+				<div class="col-sm-8 col-md-8 col-lg-8">
+					<div id="browseResultsContainer">
+						<?php # --- check if this result page has been cached
+						# --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
+#						$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
+#						if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
+#							print ExternalCache::fetch($vs_cache_key, 'browse_results');
+#						}else{
+							?>
+							<script type="text/javascript">
+								jQuery(document).ready(function() {
+									jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', $va_criteria, array('dontURLEncodeParameters' => true)); ?>", function() {
+										jQuery('#browseResultsContainer').jscroll({
+											autoTrigger: true,
+											loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+											padding: 20,
+											nextSelector: 'a.jscroll-next'
+										});
+									});
+								});
+							</script>
+							<?php
+#							$vs_result_page = print caNavUrl($this->request, '', 'Search', 'objects', $va_criteria, array('dontURLEncodeParameters' => true));
+#							ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results', $o_config->get("cache_timeout"));
+#							print $vs_result_page;
+#						} ?>
+					<?php #print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...'));
+					# --- check if this result page has been cached
+					# --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
+#					$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
+#					if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
+#						print ExternalCache::fetch($vs_cache_key, 'browse_results');
+#					}else{
+						#
+						#$vs_result_page = $this->render("Browse/browse_results_images_html.php");
+#						ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results', $o_config->get("cache_timeout"));
+						#print $vs_result_page;
+#					}
+					?>
+				</div><!-- end browseResultsContainer -->
+			</div>
+			<div class="col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1">
+			<?php
+					print $this->render("Browse/browse_refine_subview_html.php");
+			?>
+				</div><!-- end col-2 -->
+			</div><!-- end row -->
+
+			</div><!-- end row -->
+
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery('#browseResultsContainer').jscroll({
+						autoTrigger: true,
+						loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+						padding: 800,
+						nextSelector: 'a.jscroll-next'
+					});
+			<?php
+					if($vn_row_id){
+			?>
+						window.setTimeout(function() {
+							$("window,body,html").scrollTop( $("#row<?php print $vn_row_id; ?>").offset().top);
+						}, 0);
+			<?php
+					}
+					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+			?>
+
+			<?php
+					}
+			?>
+				});
+
+			</script>
+			<?php
+					print $this->render('Browse/browse_panel_subview_html.php');
+			?>
+		</ifcount>}}}
+		</div><!-- end container -->
+	</div><!-- end col -->
+	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+		<div class="detailNavBgRight">
+			{{{nextLink}}}
+		</div><!-- end detailNavBgLeft -->
+	</div><!-- end col -->
+</div><!-- end row -->

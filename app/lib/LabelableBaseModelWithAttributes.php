@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2022 Whirl-i-Gig
+ * Copyright 2008-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,21 +29,15 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- /**
-  *
-  */ 
-define('__CA_LABEL_TYPE_PREFERRED__', 0);
-define('__CA_LABEL_TYPE_NONPREFERRED__', 1);
-define('__CA_LABEL_TYPE_ANY__', 2);
-
 require_once(__CA_LIB_DIR__.'/BaseModelWithAttributes.php');
 require_once(__CA_LIB_DIR__.'/BaseModel.php');
 require_once(__CA_LIB_DIR__.'/ILabelable.php');
-require_once(__CA_APP_DIR__.'/models/ca_locales.php');
-require_once(__CA_APP_DIR__.'/models/ca_users.php');
 require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/displayHelpers.php');
+
+define('__CA_LABEL_TYPE_PREFERRED__', 0);
+define('__CA_LABEL_TYPE_NONPREFERRED__', 1);
+define('__CA_LABEL_TYPE_ANY__', 2);
 
 class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implements ILabelable {
 	# ------------------------------------------------------------------
@@ -1328,7 +1322,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		$force_to_lowercase = caGetOption('forceToLowercase', $options, false);
 		$mode = caGetOption('mode', $options, null);
 	
-		$table_name = $table_name ? $table_name : get_called_class();
+		$table_name = get_called_class();
 		if (!($t_instance = Datamodel::getInstanceByTableName($table_name, true))) { return null; }
 		
 		if ($restrict_to_types = caGetOption('restrictToTypes', $options, null)) {
@@ -2519,7 +2513,8 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		// generate list of inital form values; the label bundle Javascript call will
 		// use the template to generate the initial form
 		$va_inital_values = array();
-		$va_new_labels_to_force_due_to_error = array();
+		
+		$va_new_labels_to_force_due_to_error = [];
 		
 		if ($this->getPrimaryKey()) {
 			if (is_array($va_labels) && sizeof($va_labels)) {
@@ -2556,7 +2551,17 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		$o_view->setVar('batch', (bool)(isset($pa_options['batch']) && $pa_options['batch']));
 		
 		$forced_values = caGetOption('forcedValues', $pa_options, null);
-		$o_view->setVar('new_labels', array_merge($va_new_labels_to_force_due_to_error, $forced_values['preferred_labels'] ?? []));
+		
+		foreach($forced_values['preferred_labels'] ?? [] as $fpl) {
+			if(isset($fpl['label_id'])) {
+				$va_inital_values[$fpl['label_id']] = $fpl;
+				unset($fpl['label_id']);
+			} else {
+				$va_new_labels_to_force_due_to_error[] = $fpl;
+			}
+		}
+		
+		$o_view->setVar('new_labels', $va_new_labels_to_force_due_to_error);
 		$o_view->setVar('label_initial_values', $va_inital_values);
 		
 		$bundle_preview = '';
@@ -2655,12 +2660,22 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 			}
 		}
 		
+		$va_new_labels_to_force_due_to_error = [];
 		if (is_array($this->opa_failed_nonpreferred_label_inserts) && sizeof($this->opa_failed_nonpreferred_label_inserts)) {
 			$va_new_labels_to_force_due_to_error = $this->opa_failed_preferred_label_inserts;
 		}
 		
 		$forced_values = caGetOption('forcedValues', $pa_options, null);
-		$o_view->setVar('new_labels', array_merge($va_new_labels_to_force_due_to_error, $forced_values['nonpreferred_labels'] ?? []));
+		foreach($forced_values['nonpreferred_labels'] ?? [] as $fpl) {
+			if(isset($fpl['label_id'])) {
+				$va_inital_values[$fpl['label_id']] = $fpl;
+				unset($fpl['label_id']);
+			} else {
+				$va_new_labels_to_force_due_to_error[] = $fpl;
+			}
+		}
+		
+		$o_view->setVar('new_labels', $va_new_labels_to_force_due_to_error);
 		$o_view->setVar('label_initial_values', $va_inital_values);
 		$o_view->setVar('batch', (bool)(isset($pa_options['batch']) && $pa_options['batch']));
 		
@@ -3386,7 +3401,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 				r.{$vs_pk} = ?
 		", $vn_id);
 		
-		$va_roles = array();
+		$va_roles = [];
 		
 		while($qr_res->nextRow()) {
 			$va_row = array();
@@ -3395,7 +3410,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 			}
 			
 			if ($vb_return_for_bundle) {
-				$va_row['label'] = $va_role['name'];
+				$va_row['label'] = $va_row['name'];
 				$va_row['id'] = $va_row['role_id'];
 				$va_roles[(int)$qr_res->get('relation_id')] = $va_row;
 			} else {
