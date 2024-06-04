@@ -144,13 +144,9 @@ if($this->request->isLoggedIn()){
 								<ul class="list-unstyled">
 									<li><div class="text-body-tertiary">Featured Faculty:</div></li>
 <?php
-									$i = 0;
 									while($entity_results->nextHit()){
 										print "<li>&mdash; ".caNavlink($this->request, $entity_results->get("ca_entities.preferred_labels.displayname"), "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $entity_results->get("ca_entities.entity_id")))."</li>";
-										$i++;
-										if($i == 5){
-											break;
-										}
+										
 									}
 ?>
 								</ul>
