@@ -4295,6 +4295,7 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 			'original_url' => $qr->get("ca_object_representations.media.original.url"),
 			'url' => $qr->get("ca_object_representations.media.{$display_version}.url"),
 			'original_tag' => $qr->get("ca_object_representations.media.original.tag"),
+			'icon_tag' => $qr->get("ca_object_representations.media.iconlarge.tag"),
 			'tag' => $qr->get("ca_object_representations.media.{$display_version}.tag"),
 			'iiifUrl' => $iiif_url,
 			'no_overlay' => (bool)($display_info['no_overlay'] ?? false),

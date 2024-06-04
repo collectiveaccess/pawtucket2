@@ -138,7 +138,7 @@ if (!$vb_ajax) {	// !ajax
 
 				if(is_array($va_all_facets) && sizeof($va_all_facets)){
 ?>
-					<li class='list-group-item border-0 px-0 pt-0 d-md-none'><button class="btn btn-light btn-sm small ms-1" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine" title="<?php print _t("Filter Results"); ?>"><i class="bi bi-sliders"></i></button></li>
+					<li class='list-group-item border-0 px-0 pt-0 d-md-none'><button class="btn btn-light btn-sm small ms-1" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine" aria-label="<?php print _t("Filter Results"); ?>"><i class="bi bi-sliders"></i></button></li>
 <?php
 				}
 ?>

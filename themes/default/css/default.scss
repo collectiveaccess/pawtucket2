@@ -91,6 +91,9 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
     .hero1, .hero2, .hero3 {
         background-image: url("../assets/graphics/hero_1.jpg");
     }
+    .divide{
+    	width:170px;
+    }
 }
 .hpExplore{
 	img{
@@ -140,6 +143,9 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 	}
 	.map{
 		height:300px;
+	}
+	a{
+		cursor: pointer;
 	}
 }
 

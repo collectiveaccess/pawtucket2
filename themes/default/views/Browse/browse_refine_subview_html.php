@@ -42,12 +42,12 @@ if (sizeof($va_criteria) > 0) {
 	$i = 0;
 	$vb_start_over = false;
 	foreach($va_criteria as $va_criterion) {
-		$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-secondary btn-sm w-100 mb-2" aria-label="'._t("Remove Filter").'">'.$va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+		$vs_criteria .= caNavLink($this->request, $va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 		$vb_start_over = true;
 		$i++;
 	}
 	if($vb_start_over){
-		$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-secondary btn-sm w-100 mb-2">'._t("Start Over").'</button>', 'browseRemoveFacet', '', 'Browse', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0));
+		$vs_criteria .= caNavLink($this->request, _t("Start Over"), 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '', 'Browse', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0));
 	}
 }
 
@@ -55,7 +55,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 ?>		
 	<div id='bRefine' class='bg-light sticky-md-top vh-100 collapse overflow-y-auto'>
 		<div id='bMorePanel' class='position-absolute w-100 z-3 bg-light h-100 collapse'><!-- long lists of facets are loaded here --></div>
-		<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
+		<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php
 	if($qr_res->numHits() > 1){
 ?>
@@ -100,21 +100,21 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 				print "<div class='accordion-header' id='heading".$vs_facet_name."'><button class='accordion-button collapsed fw-medium text-capitalize ' type='button' data-bs-toggle='collapse' data-bs-target='#".$vs_facet_name."' aria-expanded='false' aria-controls='".$vs_facet_name."'>".$va_facet_info['label_singular']."</button></div>";
 
 				print "<div id='".$vs_facet_name."' class='accordion-collapse collapse' aria-labelledby='heading".$vs_facet_name."' data-bs-parent='#browseRefineFacets'>
-					<div class='accordion-body small'><dl>";
+					<div class='accordion-body small'><ul class='list-group'>";
 						$vn_facet_size = sizeof($va_facet_info['content']);
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {
 							$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-							print "<dd>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</dd>";
+							print "<li class='list-group-item border-0 bg-transparent px-0 py-1'>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</li>";
 							$vn_c++;
 					
 							if(($vn_c == $vn_facet_display_length_maximum) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
-								$vs_more_link = "<div><button class='btn btn-sm btn-secondary' hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' aria-label='"._t("View More")."' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</button></div>";
+								$vs_more_link = "<li class='list-group-item border-0 bg-transparent px-0 py-1'><button class='btn btn-sm btn-secondary' hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel' role='button'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</button></li>";
 								break;
 							}
 						}
 
-				print "</dl>".$vs_more_link."</div></div>";
+				print "</ul>".$vs_more_link."</div></div>";
 			}
 			print "</div><!-- end accordion-item -->";
 		}

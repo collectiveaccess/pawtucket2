@@ -37,6 +37,9 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+
+$type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
+
 ?>
 <script type="text/javascript">
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
@@ -44,26 +47,19 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 
 <div id="detail">
-  <a name="h0"></a>
-  <h3>City of Seattle Combined Legislative Records Search</h3>
-  <em>Information modified on May 2, 2024;</em> <em>retrieved on May 6, 2024 10:07 AM</em>
-  <p></p>
-  <hr />
 
 	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
 
-  <hr />
-
-
   <h2 class="record-number">
-		<!-- Clerk File 323014  --> 
-		{{{ca_objects.type_id}}} {{{ca_objects.ORDN}}}
+		<?= $type_idno; ?> {{{ca_objects.ORDN}}}
+	</h2>
+	<h2 class="record-number" style="font-size: 20px; line-height: 30px;">Introduced as Council Bill {{{ca_objects.CBN}}}
 	</h2>
 
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><h3 style="margin: 5px 0 0;">Title</h3></th>
+        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Title</span></th>
       </tr>
       <tr>
         <td class="empty"></td>
@@ -79,13 +75,20 @@ $map_options = $this->getVar('mapOptions') ?? [];
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><h3 style="margin: 5px 0 0;">Description and Background</h3></th>
+        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Description and Background</span></th>
       </tr>
 
 			{{{<ifdef code="ca_objects.STAT">
 				<tr>
 					<td>Current Status:</td>
 					<td>^ca_objects.STAT</td>
+				</tr>
+			</ifdef>}}}
+
+			{{{<ifdef code="ca_objects.FN">
+				<tr>
+					<td>Fiscal Note</td>
+					<td>^ca_objects.FN</td>
 				</tr>
 			</ifdef>}}}
 
@@ -96,13 +99,23 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</tr>
 			</ifdef>}}}
 
+			{{{<ifdef code="ca_objects.REF">
+				<tr>
+					<td>References:</td>
+					<td>^ca_objects.REF</td>
+				</tr>
+			</ifdef>}}}
+
     </tbody>
   </table>
+
+
+
 
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><h3 style="margin: 5px 0 0;">Legislative History</h3></th>
+        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Legislative History</span></th>
       </tr>
 			
 			{{{<ifdef code="ca_objects.SPON">
@@ -126,12 +139,76 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</tr>
 			</ifdef>}}}
 
+			{{{<ifdef code="ca_objects.DCMR">
+				<tr>
+					<td>Committee Action Date:</td>
+					<td>^ca_objects.DCMR</td>
+				</tr>
+			</ifdef>}}}
+
+			{{{<ifdef code="ca_objects.CMR">
+				<tr>
+					<td>Committee Recommendation:</td>
+					<td>^ca_objects.CMR</td>
+				</tr>
+			</ifdef>}}}
+
+			{{{<ifdef code="ca_objects.CMV">
+				<tr>
+					<td>Committee Vote:</td>
+					<td>^ca_objects.CMV</td>
+				</tr>
+			</ifdef>}}}
+
+			{{{<ifdef code="ca_objects.DTSI">
+				<tr>
+					<td>City Council Action Date:</td>
+					<td>^ca_objects.DTSI</td>
+				</tr>
+			</ifdef>}}}
+
 			{{{<ifdef code="ca_objects.VOTE">
 				<tr>
 					<td>City Council Vote:</td>
 					<td>^ca_objects.VOTE</td>
 				</tr>
 			</ifdef>}}}
+
+			{{{<ifdef code="ca_objects.DTMY">
+				<tr>
+					<td>Date Delivered to Mayor:</td>
+					<td>^ca_objects.DTMY</td>
+				</tr>
+			</ifdef>}}}
+
+			{{{<ifdef code="ca_objects.DTA">
+				<tr>
+					<td>
+						Date Signed by Mayor:<br>
+						<a href="#" data-bs-toggle="modal" data-bs-target="#MayorsSignatureApprovalDate"><small>(About the signature date)</small></a>
+					</td>
+					<td>^ca_objects.DTA</td>
+				</tr>
+			</ifdef>}}}
+
+			<div class="modal fade" id="MayorsSignatureApprovalDate">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<h3 class="centered">Mayor's signature / approval date</h3>
+							<p>The date displayed here is the ordinance approval date.</p>
+							<p>Approval date for an ordinance is ordinarily the date the bill was signed by the Mayor. There are certain exceptions:</p>
+							<ul>
+								<li>In a case where the Mayor returns a bill without signature, the approval date is the date it was returned to the City Clerk.</li>
+								<li>If a bill is not returned to the City Clerk by the Mayor, the effective approval date is fifteen days after its passage by the City Council.</li>
+								<li>In the case of a bill vetoed by the Mayor and subsequently reconsidered and passed over the Mayor's veto, approval date is the date of final passage by the City Council.</li>
+								<li>In the case of initiatives and referenda passed by the voters, approval date is the date of the Mayor's proclamation of the election results.</li>
+							</ul>
+							<p>City of Seattle Charter IV. 12.<br>Seattle Municipal Code 1.04.020</p>
+						</div>
+					<button class="btn btn-primary" data-bs-dismiss="modal">Close</button></div>
+				</div>
+			</div>
 
 			{{{<ifdef code="ca_objects.DTF">
 				<tr>
@@ -140,13 +217,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_object_representations">
-				<tr>
-					<td>PDF Copy:</td>
-					<!-- <td><a href="/~CFS/CF_323014.pdf">Clerk File 323014</a></td> -->
-					<!-- TODO: link to pdf -->
-				</tr>
-			</ifdef>}}}
+			<tr>
+				<td>Signed Copy:</td>
+				????
+				<!-- <td><a href="/~archives/Ordinances/Ord_126376.pdf">PDF scan of Ordinance No. 126376</a></td> -->
+			</tr>
+
     </tbody>
   </table>
 
@@ -155,7 +231,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<table class="record table table-striped table-responsive">
 			<tbody>
 				<tr>
-					<th colspan="2"><h3 style="margin: 5px 0 0;">Text</h3></th>
+					<th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Text</span></th>
 				</tr>
 				<tr>
 					<td class="empty"></td>
@@ -169,9 +245,10 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</table>
 	</ifdef>}}}
 
+	<!-- TODO: Add attachments -->
 	<table class="record table table-striped table-responsive">
 		<tbody>
-			<tr><th colspan="2"><h3 style="margin: 5px 0 0;">Attachments</h3></th></tr>
+			<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
 			<tr>
 				<td class="empty"></td>
 				<td>
@@ -183,7 +260,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</tbody>
 	</table>
 
-  <hr />
+  <hr>
 
   <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
 

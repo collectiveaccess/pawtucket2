@@ -111,12 +111,12 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 <!-- START: Media viewer controls -->
 <div class="row">
 	<div class="col-6">
-		<button class='btn btn-md btn-white ps-0 ms-0 pe-2 me-1 mediaviewer-control' id="mediaviewer-show-overlay" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();'><i class="bi bi-zoom-in"></i></button>
-		<button class='btn btn-md btn-white ps-0 ms-0 mediaviewer-control' id="mediaviewer-download"><i class="bi bi-download"></i></button>
+		<button class='btn btn-md btn-white ps-0 ms-0 pe-2 me-1 mediaviewer-control' id="mediaviewer-show-overlay" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();' aria-label="enlarge"><i class="bi bi-zoom-in"></i></button>
+		<button class='btn btn-md btn-white ps-0 ms-0 mediaviewer-control' id="mediaviewer-download" aria-label="download"><i class="bi bi-download"></i></button>
 	</div>
 	<div class="col-6 text-end">
-		<button class='btn btn-lg btn-white ms-0 ps-0 pe-1 me-0 mediaviewer-control' id="mediaviewer-previous" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59 40" width="25px" height="100%" style="transform: rotate(180deg);"><path fill="inherit" fill-rule="evenodd" d="M58.69 19.7l-3.7-3.7-16-16-3.7 3.7 13.39 13.38H0v5.24h48.68L35.29 35.7l3.7 3.7 16-16 3.7-3.7z"/></svg></button>
-		<button class='btn btn-lg btn-white ps-1 ms-0 pe-0 me-0 mediaviewer-control' id="mediaviewer-next" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext();'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59 40" width="25px" height="100%"><path fill="inherit" fill-rule="evenodd" d="M58.69 19.7l-3.7-3.7-16-16-3.7 3.7 13.39 13.38H0v5.24h48.68L35.29 35.7l3.7 3.7 16-16 3.7-3.7z"/></svg></button>
+		<button class='btn btn-lg btn-white ms-0 ps-0 pe-1 me-0 mediaviewer-control' id="mediaviewer-previous" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();' aria-label='previous'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59 40" width="25px" height="100%" style="transform: rotate(180deg);"><path fill="inherit" fill-rule="evenodd" d="M58.69 19.7l-3.7-3.7-16-16-3.7 3.7 13.39 13.38H0v5.24h48.68L35.29 35.7l3.7 3.7 16-16 3.7-3.7z"/></svg></button>
+		<button class='btn btn-lg btn-white ps-1 ms-0 pe-0 me-0 mediaviewer-control' id="mediaviewer-next" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext();' aria-label='next'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59 40" width="25px" height="100%"><path fill="inherit" fill-rule="evenodd" d="M58.69 19.7l-3.7-3.7-16-16-3.7 3.7 13.39 13.38H0v5.24h48.68L35.29 35.7l3.7 3.7 16-16 3.7-3.7z"/></svg></button>
 	</div>
 </div>
 <!-- END: Media viewer controls -->
@@ -126,7 +126,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	if(sizeof($media_list) > 1) {
 		$media_icons = [];
 		foreach($media_list as $i => $m) {
-			$media_icons[] = "<div class='col-2 img-fluid mb-3'><a class='mediaviewer-selector-control' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".caHTMLImage($m['icon'], ['class' => 'mediaIcon border border-white border-2']).'</a></div>';
+			$media_icons[] = "<div class='col-2 img-fluid mb-3'><a class='mediaviewer-selector-control mediaIcon border border-white border-2' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".$m['icon_tag'].'</a></div>';
 		}
 ?>
 <div id="mediaviewer-selector" class='row my-3 gx-3 justify-content-center'><?= join(" ", $media_icons); ?></div>
@@ -139,12 +139,12 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 <div id="mediaviewer-overlay" class="mediaviewer-overlay position-fixed w-100 h-100 top-0 start-0 bg-white bg-opacity-75">
 	<div class="mediaviewer-overlay-controls bg-dark">
 		<div class="mediaviewer-overlay-navigation">
-			<a href="#" id="mediaviewer-overlay-previous" class="text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);'><i class="bi bi-arrow-left"></i></a>
-			<a href="#" id="mediaviewer-overlay-next" class="text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);'><i class="bi bi-arrow-right"></i></a>
+			<a href="#" id="mediaviewer-overlay-previous" class="text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);' role='button' aria-label='previous'><i class="bi bi-arrow-left"></i></a>
+			<a href="#" id="mediaviewer-overlay-next" class="text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);' role='button' aria-label='next'><i class="bi bi-arrow-right"></i></a>
 		</div>
 		<div id="mediaviewer-overlay-caption" class="mediaviewer-caption"></div>
 		<div class="mediaviewer-overlay-close pt-1">
-			<a href="#" class="text-light" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();'><i class="bi bi-x-lg"></i></a>
+			<a href="#" class="text-light" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();' role='button' aria-label='close'><i class="bi bi-x-lg"></i></a>
 		</div>
 	</div>
 	<div id="mediaviewer-overlay-content" class="mediaviewer-overlay-content">

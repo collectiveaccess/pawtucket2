@@ -1,3 +1,4 @@
+<?= $this->formTag(['class' => 'row g-4']); ?>
 
 <div class="advSearchContainer">
 
@@ -5,7 +6,7 @@
 
 		<?= $this->render("/data/seattleleg/themes/seattleleg/views/Search/ca_objects_advanced_search_navLeft.php"); ?>
 
-		<div class="col-md-6">
+		<div class="col-md-12 col-lg-6">
 			<main role="main">
 				<h1 class="pageTitle">City Council Resolutions</h1>
 
@@ -22,7 +23,6 @@
 					<hr>
 				</div>
 
-				<form action="" method="GET" class="form-horizontal my-5" id="resolutionNumber" onsubmit="">
 					<div class="well">
 
 						<h4>Retrieve Resolution by Number</h4><br>
@@ -30,14 +30,14 @@
 						<div class="d-flex text-center">
 							<div class="input-group">
 								<label for="s3" class="me-1">Resolution No.</label>
-								<input type="text" id="s3" name="s3" style="width:70px" class="form-control"> &nbsp;
+								<!-- <input type="text" id="s3" name="s3" style="width:70px" class="form-control"> &nbsp; -->
+								<?= $this->formElement('ca_objects.RESN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
 							</div>
 
 							<input type="submit" value="Go" class="btn btn-primary">
 						</div>
 
 					</div>
-				</form>
 
 				<?= $this->render("/data/seattleleg/themes/seattleleg/views/Search/ca_objects_advanced_search_basic_search.php"); ?>
 				
@@ -48,3 +48,6 @@
 
 	</div>
 </div>
+
+	<?= $this->formHiddenElements(); ?>
+</form>
