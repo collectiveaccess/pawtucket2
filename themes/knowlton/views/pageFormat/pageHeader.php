@@ -136,7 +136,7 @@ if($this->request->isLoggedIn()){
 					$t_set->load(['set_code' => $search_terms_entity_set_code]);
 					// Enforce access control on set
 					if((sizeof($access_values) == 0) || (sizeof($access_values) && in_array($t_set->get("access"), $access_values))){
-						$search_terms_entity_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => true])) ? $tmp : []);
+						$search_terms_entity_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => false])) ? $tmp : []);
 						$entity_results = caMakeSearchResult('ca_entities', $search_terms_entity_ids);
 						if($entity_results->numHits()){
 ?>
@@ -181,7 +181,7 @@ if($this->request->isLoggedIn()){
 					$t_set->load(['set_code' => $search_terms_collection_set_code]);
 					// Enforce access control on set
 					if((sizeof($access_values) == 0) || (sizeof($access_values) && in_array($t_set->get("access"), $access_values))){
-						$search_terms_collection_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => true])) ? $tmp : []);
+						$search_terms_collection_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => false])) ? $tmp : []);
 						$collection_results = caMakeSearchResult('ca_collections', $search_terms_collection_ids);
 						if($collection_results->numHits()){
 ?>
