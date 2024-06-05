@@ -51,9 +51,9 @@ deploy_staging:
     - git pull
     - source .env
     - cp $SETUP_PHP_PAWTUCKET setup.php
-    - docker-compose build --build-arg LOCAL_UID=$LOCAL_UID --build-arg SERVERNAME=$SERVERNAME_STAGING
-    - docker-compose up -d
-    - docker-compose exec -T pawtucket /bin/bash -c "cd /app/apache2/htdocs && composer install"
+    - docker compose build --build-arg LOCAL_UID=$LOCAL_UID --build-arg SERVERNAME=$SERVERNAME_STAGING
+    - docker compose up -d
+    - docker compose exec -T pawtucket /bin/bash -c "cd /app/apache2/htdocs && composer install"
   after_script:
     - cd /app/pawtucket2-staging && rm .env
     - cd /app/pawtucket2-staging && chown gitlab-runner:daemon setup.php && chmod 640 setup.php
@@ -76,9 +76,9 @@ deploy_prod:
     - git pull
     - source .env
     - cp $SETUP_PHP_PAWTUCKET setup.php
-    - docker-compose build --build-arg LOCAL_UID=$LOCAL_UID --build-arg SERVERNAME=$SERVERNAME  
-    - docker-compose up -d
-    - docker-compose exec -T pawtucket /bin/bash -c "cd /app/apache2/htdocs && composer install"
+    - docker compose build --build-arg LOCAL_UID=$LOCAL_UID --build-arg SERVERNAME=$SERVERNAME  
+    - docker compose up -d
+    - docker compose exec -T pawtucket /bin/bash -c "cd /app/apache2/htdocs && composer install"
   after_script:
     - cd /app/pawtucket2 && rm .env
     - cd /app/pawtucket2 && chown gitlab-runner:daemon setup.php && chmod 640 setup.php
