@@ -201,9 +201,6 @@ class ActionController extends BaseObject {
 		return $this->opo_request;
 	}
 	# -------------------------------------------------------
-	/**
-	 *
-	 */
 	/*
 	 * Get response object (by reference)
 	 * @return ResponseHTTP
