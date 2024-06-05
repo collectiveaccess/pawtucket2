@@ -36,20 +36,20 @@
 		$va_user_links[] = '<li role="presentation" class="dropdown-header" role="none">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$va_user_links[] = '<li class="divider nav-divider" role="none"></li>';
 		if(caDisplayLightbox($this->request)){
-			$va_user_links[] = "<li role='none'>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array(), array("role" => "menuitem"))."</li>";
+			$va_user_links[] = "<li role='none'>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
 		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li role='none'>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array(), array("role" => "menuitem"))."</li>";
+			$va_user_links[] = "<li role='none'>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
 		}
-		$va_user_links[] = "<li role='none'>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array(), array("role" => "menuitem"))."</li>";
+		$va_user_links[] = "<li role='none'>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		
 		if ($this->request->config->get('use_submission_interface')) {
-			$va_user_links[] = "<li role='none'>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'List', array(), array("role" => "menuitem"))."</li>";
+			$va_user_links[] = "<li role='none'>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'List', array())."</li>";
 		}
-		$va_user_links[] = "<li role='none'>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array(), array("role" => "menuitem"))."</li>";
+		$va_user_links[] = "<li role='none'>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li role='none'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' role='menuitem'>"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li role='none'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' role='menuitem'>"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li role='none'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;'>"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li role='none'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;'>"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 	$va_access_values = caGetUserAccessValues($this->request);
@@ -104,14 +104,14 @@
 <?php
 	if ($vb_has_user_links) {
 ?>
-				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
+				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle" aria-controls="user-navbar-toggle">
 					<span class="sr-only">User Options</span>
 					<span class="glyphicon glyphicon-user"></span>
 				</button>
 <?php
 	}
 ?>
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1" aria-controls="bs-main-navbar-collapse-1">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
@@ -129,7 +129,7 @@
 	if ($vb_has_user_links) {
 ?>
 			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav" role="menu" aria-label="<?php print _t("Mobile User Navigation"); ?>">
+				<ul class="nav navbar-nav" aria-label="<?php print _t("Mobile User Navigation"); ?>">
 					<?php print join("\n", $va_user_links); ?>
 				</ul>
 			</div>
@@ -142,8 +142,8 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown" role="button" aria-label="<?php print _t("User options"); ?>"><span class="glyphicon glyphicon-user"></span></a>
-						<ul class="dropdown-menu" role="menu"><?php print join("\n", $va_user_links); ?></ul>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown" role="button" aria-label="<?php print _t("User options"); ?>" aria-controls="user-dropdown-menu"><span class="glyphicon glyphicon-user"></span></a>
+						<ul class="dropdown-menu" id="user-dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
 <?php
@@ -167,20 +167,20 @@
 						})
 					});
 				</script>
-				<ul class="nav navbar-nav navbar-right menuItems" role="menu" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?> role="none"><?php print caNavLink($this->request, _t("About"), "", "", "About", "index", null, array("role" => "menuitem")); ?></li>					
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?> role="none"><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index", null, array("role" => "menuitem")); ?></li>					
-					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "explore")) ? ' active' : ''; ?>" role="none">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="menuitem" aria-haspopup="true">Explore <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
-						<ul class="dropdown-menu" role="menu">
-							<li role="none"><?php print caNavLink($this->request, _t("Places"), "", "", "Explore", "places", null, array("role" => "menuitem")); ?></li>
-							<li role="none"><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people", null, array("role" => "menuitem")); ?></li>
-							<li role="none"><?php print caNavLink($this->request, _t("Types"), "", "", "Explore", "types", null, array("role" => "menuitem")); ?></li>
-							<li role="none"><?php print caNavLink($this->request, _t("Works"), "", "", "Browse", "works", null, array("role" => "menuitem")); ?></li>
+				<ul class="nav navbar-nav navbar-right menuItems" aria-label="<?php print _t("Primary Navigation"); ?>">
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "index", null); ?></li>					
+					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index", null); ?></li>					
+					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "explore")) ? ' active' : ''; ?>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" aria-controls="explore_dropdown">Explore <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
+						<ul class="dropdown-menu" id="explore_dropdown">
+							<li><?php print caNavLink($this->request, _t("Places"), "", "", "Explore", "places", null); ?></li>
+							<li><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people", null); ?></li>
+							<li><?php print caNavLink($this->request, _t("Types"), "", "", "Explore", "types", null); ?></li>
+							<li><?php print caNavLink($this->request, _t("Works"), "", "", "Browse", "works", null); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?> role="none"><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index", null, array("role" => "menuitem")); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?> role="none"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form", null, array("role" => "menuitem")); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?> role="none"><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index", null); ?></li>
+					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?> role="none"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form", null); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

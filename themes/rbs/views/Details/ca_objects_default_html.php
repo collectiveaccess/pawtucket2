@@ -115,6 +115,21 @@
 				if ($vs_notes = $t_object->getWithTemplate('<unit delimiter="<br/>">^ca_objects.notes</unit>')) {
 					print "<div class='unit notes'><h6>Notes</h6><p>".$vs_notes."</p></div>";
 				}
+
+?>
+
+				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="author,publisher,artist,craftsperson">
+					<div class='unit'>
+						<h6>Related Entities</h6>
+						<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="author,publisher,artist,craftsperson">
+							^ca_entities.preferred_labels (^relationship_typename)
+						</unit>
+					</div>
+				</ifcount>}}}
+
+<?=
+
+
 				$vs_teaching = $t_object->get('ca_objects.teaching_points', array('delimiter' => ', '));
 				print "<div class='unit'><h6>Teaching Points";
 				if($this->request->isLoggedIn()){
