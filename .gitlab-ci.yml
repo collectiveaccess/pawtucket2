@@ -50,7 +50,7 @@ deploy_staging:
     - cd /app/pawtucket2-staging
     - git pull
     - source .env
-    - cp $SETUP_PHP_PAWTUCKET setup.php
+    - cp $SETUP_PHP_PAWTUCKET_STAGING setup.php
     - docker compose build --build-arg LOCAL_UID=$LOCAL_UID --build-arg SERVERNAME=$SERVERNAME_STAGING
     - docker compose up -d
     - docker compose exec -T pawtucket /bin/bash -c "cd /app/apache2/htdocs && composer install"
