@@ -1,13 +1,13 @@
 <?php
-/* ----------------------------------------------------------------------
- * themes/default/views/Sets/ajax_add_comment_json.php :
+/** ---------------------------------------------------------------------
+ * themes/default/Lightbox/detail_html.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,17 +23,13 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * @package CollectiveAccess
+ * @subpackage theme/default
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
+ *
  * ----------------------------------------------------------------------
  */
-	$va_errors = $this->getVar('errors');
-    $vs_message = $this->getVar('message');
-    $vs_comment = $this->getVar('comment');
-    $vn_comment_count = $this->getVar('comment_count');
-    $vs_comment_count_display = $this->getVar('comment_count_display');
-    $vn_set_id = $this->getVar('set_id');
-	
-	if (is_array($va_errors) && sizeof($va_errors)) {
-			print json_encode(array('status' => 'error', 'errors' => $va_errors));
-	} else {
-			print json_encode(array('status' => 'ok', 'message' => $vs_message, 'comment' => $vs_comment, 'set_id' => $vn_set_id, 'count' => $vn_comment_count, 'displayCount' => $vs_comment_count_display));
-	}
+ 
+$t_set = $this->getVar('t_set');
+?>
+<h1><?= $t_set->get('ca_sets.preferred_labels.name'); ?></h1>

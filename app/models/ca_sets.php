@@ -418,9 +418,13 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$this->getDb()->query('DELETE FROM ca_set_items WHERE set_id = ?', array($this->getPrimaryKey()));
 
 			// remove search indexing for deleted set items
+			$set_item_table_num = Datamodel::getTableNum('ca_set_items');
 			foreach($va_item_ids as $vn_item_id) {
-				$this->getSearchIndexer()->commitRowUnIndexing($this->tableNum(), $vn_item_id, array('queueIndexing' => true));
+				$this->getSearchIndexer()->commitRowUnIndexing($set_item_table_num, $vn_item_id, ['queueIndexing' => true]);
+				$this->getSearchIndexer()->removeDependentIndexing($set_item_table_num, $vn_item_id);
 			}
+			$this->getSearchIndexer()->commitRowUnIndexing($this->tableNum(), $this->getPrimaryKey(), ['queueIndexing' => true]);
+			$this->getSearchIndexer()->removeDependentIndexing($this->tableNum(), $this->getPrimaryKey());
 		}
 
 		if($vn_rc = parent::delete($pb_delete_related, array_merge(array('queueIndexing' => true), $pa_options), $pa_fields, $pa_table_list)) {
@@ -2605,6 +2609,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	*			user_id -> ca_users.user_id that owns or has access to set
 	*			owner - if set, returns only sets owned by the passed user_id
 	*			table - if set, list is restricted to sets that can contain the specified item. You can pass a table name or number. If omitted sets containing any content will be returned.
+	*			tables = 
 	*			setType - Restricts returned sets to those of the specified type. You can pass a type_id or list item code for the set type. If omitted sets are returned regardless of type.
 	*			access - read = 1, write = 2; Restricts returned sets to those with at least the specified access level for the specified user. If "owner" is true then this option has no effect.
 	*			checkAccess - Restricts returned sets to those with an access level of the specified values. If omitted sets are returned regardless of public access (ca_sets.access) value. Can be a single value or array if you wish to filter on multiple public access values.
@@ -2612,11 +2617,17 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	*
 	*
 	*/
-	public function getSetsForUser($pa_options){
+	public function getSetsForUser(?array $pa_options = null){
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		$pn_user_id = isset($pa_options['user_id']) ? (int)$pa_options['user_id'] : null;
 		$pm_table_name_or_num = isset($pa_options['table']) ? $pa_options['table'] : null;
 		if ($pm_table_name_or_num && !($vn_table_num = $this->_getTableNum($pm_table_name_or_num))) { return null; }
+		
+		$tables = caGetOption('tables', $pa_options, null);
+		if(is_array($tables)) { 
+			$tables = array_map(function($v) { return Datamodel::getTableNum($v); }, array_filter($tables, function($v) { return Datamodel::getInstance($v, true); }));
+		}
+		
 		$pm_type = isset($pa_options['setType']) ? $pa_options['setType'] : null;
 		$pn_access = isset($pa_options['access']) ? $pa_options['access'] : null;
 		$pa_public_access = isset($pa_options['checkAccess']) ? $pa_options['checkAccess'] : null;
@@ -2632,7 +2643,10 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$va_sql_params = array();
 			$o_db = $this->getDb();
 			
-			if ($vn_table_num) {
+			if(is_array($tables) && sizeof($tables)) {
+				$va_sql_wheres[] = "(cs.table_num IN (?))";
+				$va_sql_params[] = $tables;
+			} elseif ($vn_table_num) {
 				$va_sql_wheres[] = "(cs.table_num = ?)";
 				$va_sql_params[] = (int)$vn_table_num;
 			}
@@ -2971,7 +2985,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		}
 
 		// Check item level restrictions
-		if ((bool)$this->getAppConfig()->get('perform_item_level_access_checking') && $this->getPrimaryKey()) {
+		if (caACLIsEnabled($this) && $this->getPrimaryKey()) {
 			$vn_item_access = $this->checkACLAccessForUser($po_request->user);
 			if ($vn_item_access < __CA_ACL_EDIT_ACCESS__) {
 				return false;
