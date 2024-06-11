@@ -41,7 +41,7 @@ trait PrimaryRepresentationTrait {
 		$dont_check_primary_value = caGetOption('dontCheckPrimaryValue', $options, false);
 		
 		if($rc = parent::insert($options)) {
-			if(!$dont_check_primary_value && ($this->setPrimary() === false)) {
+			if(!$dont_check_primary_value && ($this->setPrimary(['force' => true]) === false)) {
 				$this->postError(2700, _t('Could not set primary representation: %1', join('; ', $this->getErrors())), 'PrimaryRepresentationTrait::insert');
 			}
 		}
@@ -75,7 +75,7 @@ trait PrimaryRepresentationTrait {
 	public function delete($delete_related=false, $options=null, $fields=null, $table_list=null) {
 		$dont_check_primary_value = caGetOption('dontCheckPrimaryValue', $options, false);
 		if($rc = parent::delete($delete_related, $options, $fields, $table_list)) {
-			if(!$dont_check_primary_value && ($this->setPrimary() === false)) {
+			if(!$dont_check_primary_value && ($this->setPrimary(['force' => true]) === false)) {
 				$this->postError(2700, _t('Could not set primary representation: %1', join('; ', $this->getErrors())), 'PrimaryRepresentationTrait::delete');
 			}
 		}
@@ -83,14 +83,18 @@ trait PrimaryRepresentationTrait {
 	}
 	# ------------------------------------------------------
 	/**
+	 * 
 	 *
+	 * @param array $options Options include:
+	 *		force = Check and set primary even if is_primary field appears to be unchanged. [Default is false] 
 	 */
-	public function setPrimary() {
-		if(!$this->didChange('is_primary')) { return true; }
+	public function setPrimary(?array $options=null) {
+		$force = caGetOption('force', $options, false);
+		if(!$this->didChange('is_primary') && !$force) { return true; }
 		$table = $this->tableName();
 		$rel_table = ($this->RELATIONSHIP_LEFT_TABLENAME !== 'ca_object_representations') ? $this->RELATIONSHIP_LEFT_TABLENAME : $this->RELATIONSHIP_RIGHT_TABLENAME;
 		$rel_key = ($this->RELATIONSHIP_LEFT_TABLENAME !== 'ca_object_representations') ? $this->RELATIONSHIP_LEFT_FIELDNAME : $this->RELATIONSHIP_RIGHT_FIELDNAME;
-		if(!($related_id = $this->get($rel_key))) {
+		if(!($related_id = $this->get($rel_key)) && !($related_id = $this->getOriginalValue($rel_key))) {
 			return null;
 		}
 		$o_db = $this->getDb();
@@ -100,13 +104,14 @@ trait PrimaryRepresentationTrait {
 			INNER JOIN {$rel_table} AS rel ON r.{$rel_key} = rel.{$rel_key}
 			INNER JOIN ca_object_representations AS rep ON r.representation_id = rep.representation_id
 			WHERE r.{$rel_key} = ? AND rel.deleted = 0 AND rep.deleted = 0 ORDER BY r.is_primary DESC", [$related_id]);
-			
 		$seen_primary = false;
 		$subject_is_primary = ((int)$this->get('is_primary') === 1);
 		$relation_id = $this->getPrimaryKey();
 		
+		if($qr->numRows() == 0) { return true; }
 		while($qr->nextRow()) {
-			if($subject_is_primary && ($relation_id == $qr->get('relation_id'))) { 
+			$row_rel_id = $qr->get('relation_id');
+			if($subject_is_primary && ($relation_id == $row_rel_id)) { 
 				$seen_primary = true;
 				continue;
 			}
@@ -115,20 +120,26 @@ trait PrimaryRepresentationTrait {
 				continue;
 			}
 			if (!$seen_primary && ((int)$qr->get('is_primary') === 0)) {
-				$t_rel = $table::findAsInstance($qr->get('relation_id'));
-				$t_rel->setTransaction($this->getTransaction());
-				$t_rel->set('is_primary', 1);
-				
-				$rc = $t_rel->update(['dontCheckPrimaryValue' => true]);
-				
-				if($t_rel->numErrors() > 0) {
-					$this->errors = array_merge($this->errors, $t_rel->errors);
-				} else {
-					$seen_primary = true;
+				// No primary - set one
+				if ($t_rel = $table::findAsInstance($row_rel_id, ['transaction' => $this->getTransaction()])) {
+					$t_rel->setTransaction($this->getTransaction());
+					$t_rel->set('is_primary', 1);
+					$rc = $t_rel->update(['dontCheckPrimaryValue' => true]);
+					
+					if($t_rel->numErrors() > 0) {
+						$this->errors = array_merge($this->errors, $t_rel->errors);
+					} else {
+						$seen_primary = true;
+					}
+					continue;
 				}
-				continue;
 			}
-			if ($seen_primary && ((int)$qr->get('is_primary') === 1)) {
+			if (
+				($seen_primary && ((int)$qr->get('is_primary') === 1))
+				||
+				(!$seen_primary && $subject_is_primary && ((int)$qr->get('is_primary') === 1))
+			) {
+				// Already set/found primary so unset this one
 				$t_rel = $table::findAsInstance($qr->get('relation_id'));
 				$t_rel->setTransaction($this->getTransaction());
 				$t_rel->set('is_primary', 0);
@@ -137,6 +148,7 @@ trait PrimaryRepresentationTrait {
 				if($t_rel->numErrors() > 0) {
 					$this->errors = array_merge($this->errors, $t_rel->errors);
 				}
+				continue;
 			}
 		}
 		return $seen_primary;
