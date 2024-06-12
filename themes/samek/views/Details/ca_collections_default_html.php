@@ -119,7 +119,6 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 			}									
 ?>				
 
-
 {{{<ifcount code="ca_objects" min="1">
 <div class="row mt-4">
 	<div class="col"><h2>Related Objects</h2><hr/></div>
