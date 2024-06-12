@@ -133,21 +133,21 @@
 			
 <?php
 
-	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities.related' delimiter=';;;' sort='ca_entities.preferred_labels.surname'><l><span class='capitalize'>^relationship_typename</span> of ^ca_entities.preferred_labels.displayname</l></unit></ifcount>", array("checkAccess" => $va_access_values));
+	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities.related' delimiter=';;;'><l><span class='capitalize'>^relationship_typename</span> of ^ca_entities.preferred_labels.displayname</l></unit></ifcount>", array("checkAccess" => $va_access_values));
 	if($vs_tmp){
 		$va_entity_names_as_links = explode(";;;", $vs_tmp);
 		$va_interstitial_info = $va_source_name = $va_source_id = array();
 		$va_entities = array();
 		if(is_array($va_entity_names_as_links) && sizeof($va_entity_names_as_links)){
-			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities.preferred_labels.surname'>
+			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities_x_entities.rank'>
 													<ifdef code='ca_entities_x_entities.effective_date'><br/><small>Effective Date: ^ca_entities_x_entities.effective_date</small></ifdef>
 												</unit></ifcount>", array("checkAccess" => $va_access_values));
 			$va_interstitial_info = explode(";;;", $vs_tmp);
 	
 			# --- a space is included in the template because otherwise it returns nothing if there is no source and the arrays no longer line up properly
-			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities.preferred_labels.surname'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values));
+			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities_x_entities.rank'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values));
 			$va_source_name = explode(";;;", $vs_tmp);
-			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities.preferred_labels.surname'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values, "convertCodesToDisplayText" => false));
+			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities_x_entities.rank'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values, "convertCodesToDisplayText" => false));
 			$va_source_id = explode(";;;", $vs_tmp);
 
 			$vs_tmp = "";
