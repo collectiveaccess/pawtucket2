@@ -253,13 +253,12 @@
 		$va_rel_places = array();
 		$i = 0;
 		foreach($va_places as $va_place_info){
-			$va_rel_places[$va_place_info["place_id"]] = array("name" => $va_place_info["name"], "relationship_type" => $va_place_info["relationship_typename"]);
+			$va_rel_places[] = array("name" => $va_place_info["name"], "relationship_type" => $va_place_info["relationship_typename"]);
 			$i++;
 			if($i == 24){
 				break;
 			}
 		}
-		$qr_places = caMakeSearchResult("ca_places", array_keys($va_rel_places));
 ?>
 		<div class="row">
 			<div class="col-sm-12">
@@ -268,12 +267,12 @@
 
 				$i = 0;
 				$col = 0;
-				while($qr_places->nextHit()){
+				foreach($va_rel_places as $va_rel_place){
 					if($col == 0){
 						print "<div class='row'>";
 					}
 					#print "<div class='col-sm-4'>".caDetailLink($this->request, "<div class='bgLightBlue text-center'>".$va_rel_places[$qr_places->get("ca_places.place_id")]["name"]."<br/><small>".$va_rel_places[$qr_places->get("ca_places.place_id")]["relationship_type"]."</small></div>", "", "ca_places", $qr_places->get("ca_places.place_id"))."</div>";
-					print "<div class='col-sm-4'><div class='bgLightBlue text-center'>".$va_rel_places[$qr_places->get("ca_places.place_id")]["name"]."<br/><small>".$va_rel_places[$qr_places->get("ca_places.place_id")]["relationship_type"]."</small></div></div>";
+					print "<div class='col-sm-4'><div class='bgLightBlue text-center'>".$va_rel_place["name"]."<br/><small>".$va_rel_place["relationship_type"]."</small></div></div>";
 					$col++;
 					if($col == 3){
 						$col = 0;
