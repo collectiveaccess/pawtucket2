@@ -80,7 +80,7 @@ class IIIFService {
 		list($ps_type, $pn_id, $pn_page) = self::parseIdentifier($identifier);
 		
 		$vs_image_path = null;
-		$vb_cache = false;
+		
 		if ($vb_cache && CompositeCache::contains($identifier, 'IIIFMediaInfo')) {
 			$va_cache = CompositeCache::fetch($identifier,'IIIFMediaInfo');
 			$va_sizes = $va_cache['sizes'];

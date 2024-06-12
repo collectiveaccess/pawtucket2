@@ -2490,6 +2490,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		switch($va_tmp[0]) {
 			case '_fulltext':
 				if (!isset($pa_options['width'])) { $pa_options['width'] = 30; }
+				if (!isset($pa_options['height'])) { $pa_options['height'] = 30; }
 				if (!isset($pa_options['values'])) { $pa_options['values'] = []; }
 				if (!isset($pa_options['id'])) { $pa_options['id'] = str_replace('.', '_', $ps_field); }
 				if (!isset($pa_options['values']['_fulltext'])) { $pa_options['values'][$ps_field] = ''; }
@@ -2500,6 +2501,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				break;
 			case '_fieldlist':
 				if (!isset($pa_options['width'])) { $pa_options['width'] = 30; }
+				if (!isset($pa_options['height'])) { $pa_options['height'] = 30; }
 				if (!isset($pa_options['values'])) { $pa_options['values'] = []; }
 				if (!isset($pa_options['id'])) { $pa_options['id'] = str_replace('.', '_', $ps_field); }
 				

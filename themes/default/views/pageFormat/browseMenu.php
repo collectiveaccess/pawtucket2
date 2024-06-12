@@ -34,7 +34,7 @@
 ?>
 			<li class="nav-item dropdown">
 				<a class="text-nowrap nav-link<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-					<?= _t('Browse'); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
+					<?= ($o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse")); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
 				</a>
 				<ul class="dropdown-menu">
 <?php

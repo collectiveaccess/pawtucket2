@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Aleo:ital,wght@0,100..900;1,100..900&display=swap');
+
+$dark:          #0c3f55; /* dark blue */
+
+.aleo{
+	font-family: "Aleo";
+}
+/* ------------------------- Navbar ------------------------- */
+@media(min-width:1200px){
+	.navbar{
+		padding-left:33px;
+		padding-right:33px;
+	}
+}
+@media(min-width:992px){
+	.navbar{
+		padding-top:20px;
+		padding-bottom:20px;
+	}
+}
+.navbar-brand{
+	width:300px;
+}
+
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: linear-gradient(to bottom, rgba(12, 63, 85, .7), rgba(12, 63, 85, .7)), url("../assets/graphics/tfana_front.jpg");
+
+
+    /* Full height */
+    height: 100vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/tfana_front.jpg");
+    }
+}
+
+.hpBoxes{
+	.hpBox{
+		@media(max-width:768px){
+			margin-bottom:30px;
+		}
+		img{
+			height:350px;
+		}
+		div{
+			text-shadow: 0px 0px 5px #000;
+			padding-top:45%;
+			background: rgba(12, 63, 85, .5);
+			transition: all 300ms linear;
+			@media(max-width:1199px){
+				padding-top:55%;
+			}
+			@media(max-width:768px){
+				padding-top:30%;
+			}
+		}
+		div:hover{
+			background: rgba(12, 63, 85, .9);
+		}
+	}
+}
+.hpExploreBoxes{
+	.hpExploreBox{
+		margin-bottom:30px;
+		img{
+			height:250px;
+		}
+		div{
+			text-shadow: 0px 0px 5px #000;
+			padding-top:40%;
+			background: rgba(12, 63, 85, .5);
+			transition: all 300ms linear;
+			@media(max-width:1199px){
+				padding-top:55%;
+			}
+			@media(max-width:768px){
+				padding-top:30%;
+			}
+		}
+		div:hover{
+			background: rgba(12, 63, 85, .9);
+		}
+	}
+	.hpExploreBoxLg{
+		img{
+			height:530px;
+		}
+		@media(max-width:767px){
+			img{
+				height:250px;
+			}
+		}
+		div{
+			padding-top:45%;
+			@media(max-width:1199px){
+				padding-top:55%;
+			}
+			@media(max-width:768px){
+				padding-top:30%;
+			}
+		}
+	}
+}
+/* ------------------------- Front ------------------------- */
+.footerSocial svg{
+	height:50px;
+	width:auto;
+}
+#footer img{
+	width:95px;
+	height:auto;
+}
+/* ------------------------- Gallery ------------------------- */
+.gallery{
+	H2{
+		color: $dark;
+		font-weight:bold;
+	}
+}
+/* ------------------------- Disclaimer ----------------------- */
+.disclaimerAlert div.disclaimerAlertBox{
+	margin:25vh 25vw;
+	height:50vh;
+	position:relative;	
+}
+.disclaimerAlert div.disclaimerAlertMessage{
+	font-size: 18px;
+	overflow:scroll;
+}
+.disclaimerAlert div.disclaimerAlertBox{
+	margin:5vh 5vw;
+	height:90vh;
+}
+.disclaimerAlert div.disclaimerAlertMessage{
+	position: relative;
+	height: 100%;
+	font-size: 13px;
+}
+@media(min-width:768px){
+	.disclaimerAlert div.disclaimerAlertBox{
+		margin:10vh 15vw;
+		max-height:80vh;
+	}
+	.disclaimerAlert div.disclaimerAlertMessage{
+		font-size: 18px;
+	}
+}
+@media(min-width:1145px){
+	.disclaimerAlert div.disclaimerAlertBox{
+		margin:15vh 15vw;
+		height:70vh;
+	}
+}
+
+#heroSearchInput { 
+	background-color: #ffffff;
+}
+
+body main {
+	margin-top: 40px;
+}

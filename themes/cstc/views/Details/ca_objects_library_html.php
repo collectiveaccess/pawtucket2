@@ -92,7 +92,15 @@ if($show_nav){
 
 	<div class="row">
 		<div class="col-md-6">
-			{{{media_viewer}}}
+<?php
+		if($media_viewer = $this->getVar("media_viewer")){
+			print $media_viewer;
+		}elseif($t_object->get("ca_object_representations.representation_id")){
+?>
+			{{{digitized_media_message}}}
+<?php
+		}
+?>
 		</div>
 		<div class="col-md-6">
 			<div class="bg-light py-3 px-4 mb-3 h-100">
@@ -145,6 +153,10 @@ if($show_nav){
 							<ifdef code="ca_objects.langmaterial">
 								<dt><?= _t('Language'); ?></dt>
 								<dd>^ca_objects.langmaterial%delimiter=,_</dd>
+							</ifdef>
+							<ifdef code="ca_objects.language_note">
+								<dt><?= _t('Language Note'); ?></dt>
+								<dd>^ca_objects.language_note%delimiter=,_</dd>
 							</ifdef>
 							<ifdef code="ca_objects.accessrestrict">
 								<dt><?= _t('Conditions Governing Access'); ?></dt>
