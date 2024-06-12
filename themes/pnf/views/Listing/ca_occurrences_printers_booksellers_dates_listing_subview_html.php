@@ -75,8 +75,8 @@
 				<div style='padding:20px 10px 0px 10px;'>
 					<div class='row'>
 						<div class='col-sm-4 col-md-3 listingSubHeading'>Name</div>
-						<div class='col-sm-4 col-md-2 listingSubHeading'>Places Active</div>
-						<div class='col-sm-4 col-md-3 listingSubHeading'>Dates</div>
+						<div class='col-sm-4 col-md-2 listingSubHeading'>Places/Dates Active</div>
+						<div class='col-sm-4 col-md-3 listingSubHeading'>Conjectured Date of Publication</div>
 						<div class='col-sm-4 col-md-4 listingSubHeading'>Notes</div>
 					</div>
 				</div>
