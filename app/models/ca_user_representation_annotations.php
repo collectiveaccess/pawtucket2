@@ -275,11 +275,12 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
  		global $g_request;
  		$request = caGetOption('request', $options, $g_request);
  		$group_by = caGetOption('groupBy', $options, null);
+ 		$session = caGetOption('session', $options, null);
  		$user_id = $request->getUserID();
  		$session_id = Session::getSessionID();
  		
- 		$criteria = $user_id ? ['user_id' => $user_id] : ['session_id' => $session_id];
- 	
+ 		$criteria = $session ? ['session_id' => $session] : ($user_id ? ['user_id' => $user_id] : ['session_id' => $session_id]);
+ 
  		$ret = [];
  		if($qr = ca_user_representation_annotations::find($criteria, ['returnAs' => 'searchResult'])) {
 			while($qr->nextHit()) {
@@ -332,6 +333,33 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
 			}
 		}
 		return $ret;
+ 	}
+ 	
+ 	# ------------------------------------------------------
+ 	/**
+ 	 *
+ 	 */
+ 	public static function transferSessionAnnotationsToUser(int $user_id, ?array $options) : ?int {
+ 		global $g_request;
+ 		$request = caGetOption('request', $options, $g_request);
+ 		
+ 		$annotations = self::getAnnotations(['request' => $request, 'session' => caGetOption('session', $options, null)]);
+ 	
+ 		if(!($t_user = ca_users::find($user_id, ['returnAs' => 'firstModelInstance']))) {
+ 			return null;
+ 		}
+ 		$c = 0;
+ 		foreach($annotations as $anno_id => $anno) {
+ 			if($t_anno = ca_user_representation_annotations::findAsInstance($anno_id)) {
+ 				$t_anno->set('user_id', $user_id);
+ 				$t_anno->set('session_id', null);
+ 				if($t_anno->update()) {
+ 					$c++;
+ 				}
+ 			}
+ 		}
+ 		
+ 		return $c;
  	}
  	# ------------------------------------------------------
 }

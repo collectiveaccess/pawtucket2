@@ -825,7 +825,7 @@ class IIIFService {
 	 */
 	public static function cliplist($identifier, RequestHTTP $request, ?array $options=null) {
 		global $g_locale_id;
-		
+		 $auth_success = $request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false));
 		if(!is_array($media = self::getMediaInstance($identifier, $request))) {
 			throw new IIIFAccessException(_t('Unknown error'), 400);
 		}
@@ -915,6 +915,8 @@ class IIIFService {
 							) {
 								$t_anno->replaceLabel(['name' => $title], 'en_US', null, true);
 							} else {
+							print "session key is ".Session::getSessionID();
+								print_R(Session::getVarKeys());
 								$t_media->addAnnotation($title, 'en_US', $request->getUserID(), $properties, 0, 0, ['idno' => $id], ['forcePreviewGeneration' => true]);
 							}
 						}

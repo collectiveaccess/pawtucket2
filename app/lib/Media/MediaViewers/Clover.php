@@ -58,9 +58,13 @@ class Clover extends BaseMediaViewer implements IMediaViewer {
 				}
 			}
 			
+			$o_view->setVar('t_subject', $t_subject);
+			$o_view->setVar('t_instance', $t_instance);
 			$o_view->setVar('data_url', $config->get('site_host').$config->get('ca_url_root').'/service/IIIF/manifest/'.$t_instance->tableName().':'.$t_instance->getPrimaryKey());
 			$o_view->setVar('search_url', $config->get('site_host').$config->get('ca_url_root').'/service/IIIF/search/'.$t_instance->tableName().':'.$t_instance->getPrimaryKey());
 			$o_view->setVar('clip_url', $config->get('site_host').$config->get('ca_url_root').'/service/IIIF/cliplist/'.$t_instance->tableName().':'.$t_instance->getPrimaryKey());
+			
+			$o_view->setVar('initial_page', caGetOption('page', $pa_options, null)); 
 			
 			$o_view->setVar('id', $vs_id = 'caMediaOverlayClover_'.$t_instance->getPrimaryKey().'_'.($vs_display_type = caGetOption('display_type', $pa_data, caGetOption('display_version', $pa_data['display'], ''))));
 			

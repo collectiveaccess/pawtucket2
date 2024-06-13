@@ -4551,6 +4551,7 @@ function caGetMediaViewerHTML($po_request, $ps_identifier, $pt_subject, $pa_opti
 	$ps_display_type 					= caGetOption('display', $pa_options, 'media_overlay');
 	$pb_inline 							= (bool)caGetOption('inline', $pa_options, false);
 	$ps_context 						= caGetOption('context', $pa_options, $po_request->getParameter('context', pString));
+	$page 								= caGetOption('page', $pa_options, $po_request->getParameter('page', pInteger), ['castTo' => 'int']);
 	$ps_display_annotations	 			= caGetOption('displayAnnotations', $pa_options, false);
 	$ps_annotation_display_template 	= caGetOption('displayAnnotationTemplate', $pa_options, caGetOption('displayAnnotationTemplate', $va_detail_config['options'], '^ca_representation_annotations.preferred_labels.name'));
 	$pb_hide_overlay_controls			= (bool)caGetOption('hideOverlayControls.', $pa_options, false);
@@ -4618,7 +4619,9 @@ function caGetMediaViewerHTML($po_request, $ps_identifier, $pt_subject, $pa_opti
 				['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
 				['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 
 				'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 'item_id' => $item_id,
-				'resultList' => caGetOption('resultList', $pa_options, null), 'showRepresentationViewerNextPreviousLinks' => (bool)caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false)]
+				'resultList' => caGetOption('resultList', $pa_options, null), 
+				'showRepresentationViewerNextPreviousLinks' => (bool)caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false),
+				'page' => $page]
 			);
 
 			if ($pb_inline) {	
@@ -4897,7 +4900,12 @@ function caRepresentationViewerHTMLBundles($po_request, $po_data, $pt_subject, $
 				$po_request, 
 				"representation:{$vn_representation_id}", 
 				['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
-				['viewerWrapper' => 'viewerInline', 'context' => caGetOption('context', $pa_options, null), 'checkAccess' => caGetOption('checkAccess', $pa_options, null)]
+				[
+					'viewerWrapper' => 'viewerInline', 
+					'context' => caGetOption('context', $pa_options, null), 
+					'checkAccess' => caGetOption('checkAccess', $pa_options, null),
+					'page' => caGetOption('page', $pa_options, null)
+				]
 			).$vs_tool_bar.$vs_caption."</div></div>";
 
 			if (sizeof($va_reps) > 10) { break(2); }
