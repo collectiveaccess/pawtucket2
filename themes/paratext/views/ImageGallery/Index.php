@@ -13,7 +13,7 @@ $images = array(
     array(
         'image'         => 'Libreria_Bardon.png',
         'thumbnail'     => 'Libreria_Bardon_S.png',
-        'caption'       => ' <p>The storied Librería Bardón, known by Hispanists all over the world, is operated by the third generation of the book-loving Bardón family. It occupies a 19th-century house on the Plaza de San Martín where bibliophiles can find many treasures, including comedias sueltas.</p>
+        'caption'       => ' <p>The storied Librería Bardón, known by Hispanists all over the world, is operated by the third generation of the book-loving Bardón family. It occupies a 19th-century house on the Plaza de San Martín where bibliophiles can find many treasures, including <i>comedias sueltas</i>.</p>
         <p>The interior is a perfect example of an antiquarian bookstore designed with a graceful archway, furnished with floor-to-ceiling bookshelves and an emblematic ladder to reach the top.</p> 
         <p></p>Plaza de San Martín, 3, Madrid, Spain 28013</p>',
     ),
@@ -26,7 +26,7 @@ $images = array(
     array(
         'image'         => 'Home Image 2 duotone.jpg',
         'thumbnail'     => 'Home Image 2 duotone_S.jpg',
-        'caption'       => '<p>The colophons of items printed in Madrid from the seventeenth century to the 1830s frequently referred to the Gradas de San Felipe as a place where sueltas and similar ephemera were sold.</p>
+        'caption'       => '<p>The colophons of items printed in Madrid from the seventeenth century to the 1830s frequently referred to the Gradas de San Felipe as a place where <i>sueltas</i> and similar ephemera were sold.</p>
         <p>San Felipe el Real was an Augustinian monastery, founded in 1547 with the encouragement of crown prince Philip (later Philip II). It stood on a low mound or platform in the calle Mayor between the calle de Esparteros and the calle del Correo. Steps led up to a kind of esplanade, on which the monastery church stood. The main entrance to the church faced the calle de Esparteros, and in front of the entrance was the “Lonja de la Entrada de la Yglesia.” On the north (calle Mayor) side was the “Lonja Grande.” [1] The sloping ground allowed galleries (covachuelas) to be constructed under the lonja grande, and early prints show doorways opening from the calle Mayor into this space. These covachuelas were rented out by the monks, and one of the few sets of accounts to have survived shows that from 1783 to 1786 the total rent for eighteen covachuelas exceeded 10,000 reales a year (Sánchez Espinosa, p. 145). In addition to these covachuelas, Dr. Sánchez Espinosa suggests that the awnings that can be seen projecting from the wall of the church provided protection for more stalls, and that there were even more bookshops in the nearby streets (pp. 148–9).</p>
         <p>Early modern Madrid had several “mentideros”: places where madrileños met to gossip and exchange news, and the Gradas de San Felipe were a favorite one of these. The presence of stalls and kiosks selling a wide variety of goods, including toys and printed ephemera such as newsletters, plays and playlets, was an added attraction, and we find various forms of the address in colophons: “frente a San Felipe el Real,” “frente las gradas de San Felipe el Real,” “en las gradas de San Felipe el Real,” “en su puesto, gradas de San Felipe el Real.”</p>
         <p>It should be noted that San Felipe was only a short distance from another favorite suelta-vending area: the “lonja de comedias de la Puerta del Sol.” [2] Dr. Ulla Lorenzo’s study makes use of the advertisements in the Gaceta de Madrid to show that there were numerous such areas in the central part of the city.</p>
@@ -44,7 +44,7 @@ $images = array(
     array(
         'image'         => 'Home Image 5 duotone.jpg',
         'thumbnail'     => 'Home Image 5 duotone_S.jpg',
-        'caption'       => '<p>A bookstall in the 18th-century as imagined by an illustrator.</p>',
+        'caption'       => '<p>A bookstall in the 18th century as imagined by an illustrator.</p>',
     ),
     array(
         'image'         => 'La librera de Goya.jpg',
@@ -80,7 +80,7 @@ $images = array(
         'image'         => 'Lonja de la seda Valencia.jpg',
         'thumbnail'     => 'Lonja de la seda Valencia_S.jpg',
         'caption'       => '<p>The Lonja de la Seda, built between 1482 and 1533, functioned as a trading house for silk merchants at a time when Valencia’s location made it an important center of Mediterranean trade. In 1996, UNESCO declared it a World Heritage Site, and it is a main architectural attraction for visitors to the city.</p>
-        <p>José Carlos Navarro, bookseller for José Ferrer de Orga and for Martín Perís imprints, had a bookstore on calle de la Lonja de la Seda. The imprints of these sueltas, published between 1811 and 1818, include the address on the title page. Locating the store on a well-known street and making the address very public, must have been good for business.</p>',        
+        <p>José Carlos Navarro, bookseller for José Ferrer de Orga and for Martín Perís imprints, had a bookstore on calle de la Lonja de la Seda. The imprints of these <i>sueltas</i>, published between 1811 and 1818, include the address on the title page. Locating the store on a well-known street and making the address very public, must have been good for business.</p>',        
     ),
     array(
         'image'         => 'Miguelete Valencia.jpg',
@@ -91,7 +91,7 @@ $images = array(
     array(
         'image'         => 'don-quijote-visit-print-shop.jpg',
         'thumbnail'     => 'don-quijote-visit-print-shop_S.jpg',
-        'caption'       => '<p>According to Martín de Riquer, whose scholarly notes accompanied the 1965 Juventud edition of Don Quijote, claimed that in chapter LXII Cervantes was describing the printing house of Sebastiàn de Cormellas, on Calle del Call, which brought out a good number of classic works of the Spanish Golden Age. It is obvious that this image strays from strict framework of this exhibition, however, the connections are too tempting to resist: we meet Cervantes’ 17th-century hero in the 18th-century print shop that published the novel.</p>
+        'caption'       => '<p>According to Martín de Riquer, whose scholarly notes accompanied the 1965 Juventud edition of <i>Don Quijote</i>, claimed that in chapter LXII Cervantes was describing the printing house of Sebastiàn de Cormellas, on Calle del Call, which brought out a good number of classic works of the Spanish Golden Age. It is obvious that this image strays from strict framework of this exhibition, however, the connections are too tempting to resist: we meet Cervantes’ 17th-century hero in the 18th-century print shop that published the novel.</p>
         <p>This engraving of Don Quixote visiting a print shop in Barcelona comes from Sancha’s 1797 edition of Part II. The scene, like the novel, is full of references to real-life characters as well as to fictional ones. The image is rich in details related to printing: a man in the background on the right is setting type (composing stick in his left hand, picking type from the case with his raised right hand); in the background, on the left, a printer is lifting off a sheet from the bed of the press. The gentleman wearing a turban, at the back left, is Antonio de Sancha, who is recognizable from his often-reproduced portrait. The younger, bewigged man directly in front of him is most likely his son, Gabriel, who carried on the business. The event, which in the novel takes place in Barcelona, has been transposed to Madrid, the location being identifiable by the sign over the door that reads “Imprenta de Sancha.”</p>
         <p>It is an engraving by Juan Moreno Tejada (1738–1805) after a composition designed by Luis Paret y Alcázar (1746–1799). The original drawing in this case survives in the Biblioteca Nacional (BNE DIB/15/54/13).</p>
         <p>[Courtesy of Patrick Lenaghan, Head Curator of Prints, Photographs and Sculpture, Hispanic Society Museum & Library]</p>

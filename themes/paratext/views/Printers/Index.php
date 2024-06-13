@@ -65,7 +65,7 @@
             <tr><td data-label='Printers name'>Imprenta de Casas y Vidondo</td><td data-label='Address'></td><td data-label=City>Málaga</td></tr>
             <tr><td data-label='Printers name'>Imprenta de Miguel Domingo</td><td data-label='Address'></td><td data-label=City>Palma</td></tr>
             <tr><td data-label='Printers name'>Imprenta Papelería de José Mir</td><td data-label='Address'>Cadena, II</td><td data-label=City>Palma</td></tr>
-            <tr><td data-label='Printers name'>Palma, tienda de ANTONIO BORRÁS </td><td data-label='Address'>Casita de madera. Cuesta del Teatro. También se escríben Cartas</td><td data-label=City>Palma</td></tr>
+            <tr><td data-label='Printers name'>Palma, tienda de Antonio Borrás </td><td data-label='Address'>Casita de madera. Cuesta del Teatro. También se escríben Cartas</td><td data-label=City>Palma</td></tr>
             <tr><td data-label='Printers name'>Imprenta de Francisco Garcia Onorato y San Miguel</td><td data-label='Address'>Vive en la calle de Libreros, junto à la Universidad</td><td data-label=City>Salamanca</td></tr>
             <tr><td data-label='Printers name'>Imprenta de D. Francisco de Tóxar</td><td data-label='Address'>calle de la Rua</td><td data-label=City>Salamanca</td></tr>
             <tr><td data-label='Printers name'>Imprenta de la Santa Cruz</td><td data-label='Address'>calle de la Rua</td><td data-label=City>Salamanca</td></tr>
@@ -86,7 +86,7 @@
             <tr><td data-label='Printers name'>Imprenta de Estevan</td><td data-label='Address'>frente el horno de Salicofres</td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Imprenta de Joseph, y Thomàs de Orga</td><td data-label='Address'>calle de la Cruz Nueva, junto al Real Colegio de Corpus Christi</td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Viuda de Joseph de Orga</td><td data-label='Address'>calle de la Cruz Nueva, junto [al] Real Colegio del Señor Patriarca</td><td data-label=City>Valencia</td></tr>
-            <tr><td data-label='Printers name'>lldefonso Mompié, </td><td data-label='Address'>calle nueva de San Fernando, núm. 63 y 64, junto al mercado</td><td data-label=City>Valencia</td></tr>
+            <tr><td data-label='Printers name'>lldefonso Mompié</td><td data-label='Address'>calle nueva de San Fernando, núm. 63 y 64, junto al mercado</td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Imprenta de José Gimeno</td><td data-label='Address'>Véndese en su librería, frente al Miguelete, </td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Librería de José Cárlos Navarro</td><td data-label='Address'>calle de la Lonja de la Seda</td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Imprenta de D. Benito Monfort</td><td data-label='Address'></td><td data-label=City>Valencia</td></tr>
@@ -96,6 +96,8 @@
             <tr><td data-label='Printers name'>Herederos de D. Dormer</td><td data-label='Address'></td><td data-label=City>Zaragoça</td></tr>
             <tr><td data-label='Printers name'>Imprenta de Roque Gallifa </td><td data-label='Address'></td><td data-label=City>Zaragoza</td></tr>
             <tr><td data-label='Printers name'>Imprenta que està en la Plaza del Carbon sobre el Peso Real</td><td data-label='Address'></td><td data-label=City>Zaragoza</td></tr>
+			<tr><td data-label='Printers name'>Viuda de Alonso Martín</td><td data-label='Address'>vendese en su casa al lado del correo mayor</td><td data-label=City>Madrid</td></tr>
+			<tr><td data-label='Printers name'>Imprenta de Francisco Garcia Onorato y San Miguèl, Impressor</td><td data-label='Address'>Vive en la calle de Libreros, junto à la Vniversidad</td><td data-label=City>Salamanca</td></tr>
         </tbody>
 
     </table>
