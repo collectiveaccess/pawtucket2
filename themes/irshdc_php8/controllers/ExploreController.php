@@ -109,7 +109,7 @@
 			$qr_res = $o_browse->getResults(array("sort" => "ca_entity_labels.name_sort", "sort_direction" => "asc"));
 				
  			$o_map = new GeographicMap('100%', 500, 'map');
-			$va_map_stats = $o_map->mapFrom($qr_res, "ca_places.georeference", array("labelTemplate" => "^ca_entities.preferred_labels%delimiter=; ", "ajaxContentUrl" => caNavUrl($this->request, "", "Explore", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
+			$va_map_stats = $o_map->mapFrom($qr_res, "ca_places.georeference", array("labelTemplate" => "^ca_entities.preferred_labels%delimiter=; ", "ajaxContentUrl" => caNavUrl($this->request, "", "Explore", "getMapItemInfo"), "excludeRelationshipTypes" => array("second_location","third_location","fourth_location"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
 			$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));
 
 			# --- timeline set

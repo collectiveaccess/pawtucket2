@@ -100,7 +100,7 @@
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString, ['forcePurify' => true]);
 			
-			$vs_type_key = caMakeCacheKeyFromOptions($va_types);
+			$vs_type_key = caMakeCacheKeyFromOptions($va_types, $this->request->isLoggedIn() ? '1' : '0');
 			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
 				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable{$vs_type_key}"));
 			} else {
