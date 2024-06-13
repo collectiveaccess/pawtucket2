@@ -98,6 +98,8 @@ export default function _init(appData) {
 				  toggleLabel: "Tools",
 				  defaultTab: "manifest-content-search"
 				},
+				headerNavigation: appData.headerNavigation,
+				initialPage: appData.initialPage,
 				showIIIFBadge: false,
 				showTitle: true,
 				annotationOverlays: {

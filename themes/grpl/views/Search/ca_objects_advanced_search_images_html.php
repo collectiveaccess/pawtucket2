@@ -56,10 +56,11 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>
 	<div class="col-sm-4" >
 		<h1>Other searches</h1>
-			<p><a href="objects">Search entire collection</a></p>
-			<p><a href="publications">Search newspapers and magazines</a></p>
-			<p><a href="regcard">Search WWI registration cards</a></p>
-
+		<p><?php print caNavLink($this->request, "Search entire collection", "", "", "Search", "advanced/objects"); ?></p>
+		<p><i class="fas fa-caret-right"></i> <?php print caNavLink($this->request, "Search for images", "", "", "Search", "advanced/all_images"); ?></p>
+		<p><?php print caNavLink($this->request, "Search newspapers and magazines", "", "", "Search", "advanced/publications"); ?></p>
+		<p><?php print caNavLink($this->request, "Search WWI registration cards", "", "", "Search", "advanced/regcard"); ?></p>
+		
 	</div><!-- end col -->
 </div><!-- end row -->
 
