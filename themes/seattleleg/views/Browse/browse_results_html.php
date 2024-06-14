@@ -163,8 +163,7 @@ if (!$vb_ajax) {	// !ajax
 			</button>
 			<br />
 
-				<small><a role="button" class="" style="font-size: unset;" data-bs-toggle="modal" data-bs-target="#ExportingResults">
-					What's this?</a></small>
+				<small><a role="button" class="" style="font-size: unset;" data-bs-toggle="modal" data-bs-target="#ExportingResults">What's this?</a></small>
 				<div class="modal fade" id="ExportingResults">
 					<div class="modal-dialog">
 						<div class="modal-content">

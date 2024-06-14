@@ -37,6 +37,13 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+
+$last_modified = $t_object->get("ca_objects.lastmodified");
+$created = $t_object->get("ca_objects.created");
+
+$email_subject = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
+$email_body;
+
 ?>
 <script type="text/javascript">
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
@@ -44,7 +51,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 	<a id="h0"></a>
   <h3>City of Seattle Combined Legislative Records Search</h3>
-  <em>Information modified on May 2, 2024;</em> <em>retrieved on May 6, 2024 10:07 AM</em>
+  <em>Information modified on <?= $last_modified; ?></em> <em><?= $created; ?></em>
   <hr>
 
   <div id="top-search-nav" class="d-flex inline-block justify-content-between">
@@ -75,9 +82,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<i class="bi bi-link-45deg"></i> LINK <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu">
-					<li><a class="dropdown-item" href="https://clerk.seattle.gov/search/clerk-files/323014">Visit Link</a></li>
-					<li><a class="dropdown-item" href="#">Copy Link</a></li>
-					<li><a class="dropdown-item" href="#">Email Link</a></li>
+					<li><a class="dropdown-item" href="#" onclick="Copy();">Copy Link</a></li>
+					<li>
+						<a class="dropdown-item" id="emailLink" href='#'>Email Link</a>
+					</li>
+					
+
 				</ul>
 			</div>
 		</div>
@@ -85,3 +95,24 @@ $map_options = $this->getVar('mapOptions') ?? [];
   </div>
 
 	<hr>
+
+<script type='text/javascript'>
+
+	var url = window.location.href;
+	const linkElement = document.getElementById('emailLink');
+	var newHref = `mailto:?subject=Your%20Subject&body=${url}`;
+  linkElement.href = newHref;
+
+
+	function Copy() {
+		var getUrl = document.createElement('input'),
+		text = window.location.href;
+		document.body.appendChild(getUrl);
+		getUrl.value = text;
+		getUrl.select();
+		document.execCommand('copy');
+		document.body.removeChild(getUrl);
+		$.jGrowl("Link Copied!", { life: 2000 });
+	}
+	
+</script>

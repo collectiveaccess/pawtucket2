@@ -91,12 +91,18 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.INDX">
-				<tr>
-					<td>Index Terms:</td>
-					<td>^ca_objects.INDX</td>
-				</tr>
-			</ifdef>}}}
+			<?php
+				if($t_object->get("ca_objects.index")){
+					if($links = caGetBrowseLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
+			?>
+					<tr>
+						<td><?= _t('Index Terms:'); ?></td>
+						<td><?= join(", ", $links); ?></td>
+					</tr>
+			<?php
+					}
+				}
+			?>
 
     </tbody>
   </table>
@@ -107,12 +113,25 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
         <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Legislative History</span></th>
       </tr>
 			
-			{{{<ifdef code="ca_objects.SPON">
+			<!-- {{{<ifdef code="ca_objects.SPON">
 				<tr>
 					<td>Sponsor:</td>
 					<td>^ca_objects.SPON</td>
 				</tr>
-			</ifdef>}}}
+			</ifdef>}}} -->
+
+			<?php
+				if($t_object->get("ca_objects.SPON")){
+					if($links = caGetBrowseLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
+			?>
+					<tr>
+						<td><?= _t('Sponsor:'); ?></td>
+						<td><?= join(",", $links); ?></td>
+					</tr>
+			<?php
+					}
+				}
+			?>
 
 			{{{<ifdef code="ca_objects.DTIR">
 				<tr>
@@ -121,12 +140,18 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.COMM">
-				<tr>
-					<td>Committee Referral:</td>
-					<td>^ca_objects.COMM</td>
-				</tr>
-			</ifdef>}}}
+			<?php
+				if($t_object->get("ca_objects.COMM")){
+					if($comm = caGetBrowseLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
+			?>
+					<tr>
+						<td><?= _t('Committee Referral:'); ?></td>
+						<td><?= join(",", $comm); ?></td>
+					</tr>
+			<?php
+					}
+				}
+			?>
 
 			{{{<ifdef code="ca_objects.VOTE">
 				<tr>
@@ -170,6 +195,13 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 			</tbody>
 		</table>
 	</ifdef>}}}
+
+	{{{<ifnotdef code="ca_objects.TX">
+		<em>No text for this document is available online. You may view this document at
+			<a href="http://www.seattle.gov/cityclerk/legislation-and-research/research-assistance">the Office of the City Clerk</a>.	If you are unable to visit the Clerk's Office, you may request a copy or scan be made for you by Clerk staff.	Scans and copies provided by the Office of the City Clerk are subject to <a href="http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services">copy fees</a>, and the timing of service
+			is dependent on the availability of staff.
+		</em>
+	<ifnotdef/>}}}
 
 	<table class="record table table-striped table-responsive">
 		<tbody>
