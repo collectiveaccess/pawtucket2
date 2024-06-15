@@ -397,7 +397,7 @@
 					<div class="col-sm-9">
 
 
-						<?= $this->formElement('date:', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
+						<?= $this->formElement('date', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
 
 						<!-- <?php
 								switch($action) {

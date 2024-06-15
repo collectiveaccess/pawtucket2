@@ -122,6 +122,67 @@ class AdvancedSearchView extends View {
 	/**
 	 *
 	 */
+	public function formBundle(string $formbundle, ?array $options=null) : ?string {
+		$this->subject = Datamodel::getInstance($this->info['table'] ?? null, true);
+		
+		if(!is_array($bundle_defs = $this->info['fieldBundles'][$formbundle] ?? null)) {
+			return null;
+		}
+		
+		$opts = [];
+		foreach($bundle_defs as $k => $bi) {
+			if(!($bundle = $bi['bundle'] ?? null)) { continue; }
+			if(!strlen($label = $bi['label'] ?? null)) { continue; }
+			$opts[$bundle] = $label;
+		}
+		$select = caHTMLSelect('bundle', array_flip($opts), ['aria-label' => 'select', 'class' => caGetOption('selectClass', $options, null)]);
+		
+		$ret = [
+			'id' => caGetOption('id', $options, 'bundle'),
+			'select' => $select,
+			'options' => $opts,
+		];
+		
+		// Get form elements for each option
+		$classes = [];
+		$inputs = [];
+		foreach($opts as $b => $l) {
+			//$inputs[$b] = '<input type="text" name="'.$b.'" class="form-control s7terms" placeholder="'._t('Enter %1', $l).'">';
+			
+			$this->form_elements[$b] = 1;
+			$element_id = 'adv-'.preg_replace('![^A-Za-z0-9_]+!', '_', $b);
+			$elements = $this->subject->htmlFormElementForSearch(
+				$this->request, 
+				$b, 
+				array_merge([
+					'class' => join(' ', $classes),
+					'id' => $element_id,
+					'elementsOnly' => true
+					//'attributes' => ['aria-describedby' => $desc_id]
+				], $options)
+			);	
+			if(is_array($elements['elements'] ?? null)) {
+				$elements = $elements['elements'];
+				$elements = array_shift($elements);
+				$inputs[$b] = join('', $elements);
+			} else {
+				$inputs[$b] = $elements;
+			}
+		}
+		$ret['inputs'] = $inputs;
+	//print_r($ret);
+		
+		$js =  "<script>
+	if(!pawtucketUIApps['advancedSearchFieldBundle']) { pawtucketUIApps['advancedSearchFieldBundle'] = {}; }
+	if(!pawtucketUIApps['advancedSearchFieldBundle']['bundles']) { pawtucketUIApps['advancedSearchFieldBundle']['bundles'] = {}; }
+	pawtucketUIApps['advancedSearchFieldBundle']['bundles']['{$formbundle}'] = ".json_encode($ret, true)."</script>";
+		
+		return $js;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	public function formTag(?array $attributes, ?array $options=null) {
 		$attr = array_merge([
 			'action' => caNavUrl($this->request, '*', '*', $this->request->getActionExtra()),
