@@ -92,7 +92,7 @@
 						}
 						print "</div>";
 					}	
-					if($tmp = $this->getVar("audio_full_track_message")){
+					if(($tmp = $this->getVar("audio_full_track_message")) && ($t_object->getRepresentationCount(['checkAccess' => $va_access_values]) > 0)){
 						print "<div class='unit'>".$tmp."</div>";	
 					}
 				}else{
