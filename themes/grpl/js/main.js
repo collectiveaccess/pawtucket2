@@ -1,6 +1,7 @@
 'use strict';
 import React from 'react';
 import ReactDOM from 'react-dom';
+require("../css/viewer.css");
 
 const domContainer = document.querySelector("#pawtucketApp");
 if (!Object.entries)

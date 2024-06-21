@@ -95,7 +95,7 @@ class MetsALTOSearch {
 		//print_R($terms_proc);die;
 		//$query->setQuery(join(' ', $terms_proc));
 		$query->setQuery($search);
-		$query->setStart(0)->setRows(1000);
+		$query->setStart(0)->setRows(5000);
 		$query->setFields(['id', 'name', 'page', 'content']);
 		
 		$query->addSort('page', $query::SORT_ASC);

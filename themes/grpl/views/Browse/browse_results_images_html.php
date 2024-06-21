@@ -121,7 +121,7 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 			# --- check if this result has been cached
 			# --- key is MD5 of table, id, list, refine(vb_refine)
 			$vs_cache_key = md5($vs_table.$vn_id."images".$vb_refine);
-			if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
+			if(false) { //($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 				print ExternalCache::fetch($vs_cache_key, 'browse_result');
 			}else{
 				#Added by TG 5/21 to change collection link to browse page (so collection is browsable) and create hover text
@@ -145,9 +145,14 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
+				$has_anno = '';
 				if ($vs_table == 'ca_objects') {
 					$type_code = $qr_res->get('ca_objects.type_id', ['convertCodesToIdno' => true]);
-				
+					$rep_ids = $qr_res->get('ca_object_representations.representation_id', ['returnAsArray' => true]);
+					if($anno_count = ca_user_representation_annotations::find(['representation_id' => ['IN', $rep_ids]], ['returnAs' => 'count'])) {
+						$has_anno = "<div style='position: absolute; top: 5px; right: 20px;'><i class='fa fa-clipboard fa-2x' alt='Has clippings' title='Has clippings'></i></div>";
+					}
+					
 					if($type_code === 'newspaper') {
 						$rep_id = $qr_res->get('ca_object_representations.representation_id');
 						$vs_thumbnail = "<img src='/service.php/IIIF/representation:{$rep_id}/full/400,400/0/default.jpg?highlight=".urlencode(join(' ', $terms))."'/>";
@@ -196,6 +201,7 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>".(($vs_table=='ca_collections') ? "" : "<small>{$vs_idno_detail_link}</small><br/>")."{$vs_label_detail_link}
 				</div><!-- end bResultItemText -->
+				{$has_anno}
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
 				<hr>

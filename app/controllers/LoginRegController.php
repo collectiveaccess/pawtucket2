@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
-
 require_once(__CA_LIB_DIR__."/ApplicationError.php");
 require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 require_once(__CA_MODELS_DIR__."/ca_users.php");
@@ -255,11 +254,12 @@ class LoginRegController extends BasePawtucketController {
 	# ------------------------------------------------------
 	function login() {
 		$group_id = Session::getVar("join_user_group_id");
+		$old_session_id = Session::getSessionID();
 		if (!$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => html_entity_decode($this->request->getParameter('username', pString)), 'password' => html_entity_decode($this->request->getParameter('password', pString))))) {
 			$this->view->setVar("message", _t("Login failed"));
 			$this->loginForm();
 		} else {
-			# --- user is joining a user group from a supplied link
+			// User is joining a user group from a supplied link
 			if($group_id && $this->_validateGroup($group_id)){
 				if(!$this->request->user->inGroup($group_id)){
 					$this->request->user->addToGroups($group_id);
@@ -267,6 +267,10 @@ class LoginRegController extends BasePawtucketController {
 				}
 				Session::setVar('join_user_group_id', '');
 			}
+			
+			// Does session have annotations to be transferred to user?
+			ca_user_representation_annotations::transferSessionAnnotationsToUser($this->request->user->getUserID(), ['request' => $this->request, 'session' => $old_session_id]);
+			
 			if($this->request->isAjax()){
 				$this->view->setVar("message", _t("You are now logged in"));
 				$this->render("Form/reload_html.php");

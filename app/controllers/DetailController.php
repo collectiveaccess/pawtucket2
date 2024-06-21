@@ -363,6 +363,7 @@ class DetailController extends FindController {
 							'defaultAnnotationID' => $default_annotation_id,	// jump to specific annotation?
 							'startTimecode' => $start_timecode,				// jump to specific time?
 							'alwaysUseCloverViewer' => $always_use_clover,
+							'page' => $this->request->getParameter('page', pInteger),
 							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
 							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $options, false), 
 							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),

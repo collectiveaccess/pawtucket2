@@ -236,7 +236,8 @@ H6, h6{
 
 /* various based on GRPM */
 .container{
-	max-width:1112px;
+	/*max-width:1112px;*/
+	max-width:1250px;
 }
 @media (max-width:768px){
 	body{
@@ -253,7 +254,7 @@ H6, h6{
 }
  .navbar{
 	background-color: #FFFFFF;
-	margin-bottom:0px;
+	margin-bottom:20px;
 }
 .navbar-brand {
 	width:300px;
@@ -510,50 +511,6 @@ div.caMediaOverlayControls .close {
 	text-decoration: none !important;
 }
 
-/* Clover viewer overrides */
-.c-YcJWa {
-	display: flex;
-	flex-grow: 1;
-	flex-shrink: 0;
-	width: 100px !important;
-	max-height: 100% ;
-}
-
-.c-bwRbCV {
-	display: none !important;
-}
-
-.c-gKYThq {
-	flex-direction: column !important;
-}
-
-.c-essvYL {
-	margin: 0px !important;
-	padding: 0px !important;
-}
-
-.c-loOuxq {
-	margin: 0px !important;
-	padding: 0px !important;
-}
-
-#pageArea {
-	margin-top: 3px !important;
-}
-
-.c-bpZFkk {
-	height: 100%;
-}
-
-/* Clover viewer title */
-.c-PJLV.label {
-	color: #000;
-	font-size: 18px;
-	font-weight: normal;
-	margin: 0px;
-	padding: 0px;
-}
-
 .container.newspapers, .container.periodical {
 	width: 100% !important;
 	max-width: unset;
@@ -568,15 +525,91 @@ div.caMediaOverlayControls .close {
 	margin-top: 10px;
 }
 
-.clipping .clipping-text {
-	cursor: pointer;
+
+/* MP more viewer styles */
+.issueNav {
+	background: none;
+	background-color: rgba(0, 0, 0, 0);
+	background-color: #EBEBEB;
+	border: 0px;
+	text-shadow: 0 0px 0 #FFFFFF;
+	font-size: 12px !Important;
+	text-transform: capitalize;
+	padding: 4px 5px 3px 5px;
+	box-shadow: 0 0px 0 rgba(255, 255, 255, 0.15) inset, 0 0px 0px rgba(0, 0, 0, 0.075);
+	border-radius: 0px;
+	letter-spacing: 1px;
+	color: #696969 !important;
+	font-family: "Open Sans", Arial, sans-serif;
+	margin-left:5px;
+	font-weight:normal;
+}
+.c-dsaJAm {
+	flex-grow: 1 !important;
+	width: 61.8%;
+}
+.c-ePXQlZ{
+	padding-top:5px;
+}
+.headerNavigation{
+	float:right;
 }
 
-.clipping .clipping-text:hover {
-	color: #555;
+/* myClippings */
+.myClippingsIssue{
+	background-color: #f1f1f1;
+	padding:15px;
+	margin-bottom:20px;
 }
-
-/* Hide Annotorius "reply" UI */
-.r6o-widget:nth-child(2) {
-	display: none;
+.myClippingsIssueTitle{
+	font-weight:bold;
+	font-size:15px;
+	margin-bottom:15px;
+}
+.myClippingsIssueButtons{
+	margin-bottom:15px;
+	text-align:right;
+}
+.clippingButtons{
+	position:absolute;
+	bottom:0px;
+	left:0px;
+	width:100%;
+}
+.myClippingsIssueButtons .btn, .clippingButtons .btn, .myClippingsIssueButtons .btn:hover, .clippingButtons .btn:hover{
+	background-color:#FFF;
+}
+.myClippingsIssueButtons .btn:hover, .clippingButtons .btn:hover{
+	color:#1592d1 !important;
+}
+@media(max-width:991px){
+	.myClippingsIssueButtons{
+		text-align:left;
+	}
+}
+.clippingButtons .btn{
+	font-size:11px;
+}
+.myClippingsIssue .clipping{
+	background-color: #FFF;
+	text-align:center;
+	padding:10px;
+	line-height:1.1em;
+	height:205px;
+	margin-bottom:15px;
+	overflow:hidden;
+	position:relative;
+}
+.myClippingsIssue .clippingCaption{
+	color:#5b5b5b;
+	padding-top:5px;
+}
+@media (max-width: 767px) {
+	.c-kmZIzy > div .c-gKYThq {
+		flex-grow: 1 !Important;
+	}
+	#newspaper-container {
+		padding: 0px;
+		width: auto !important;
+	}
 }
