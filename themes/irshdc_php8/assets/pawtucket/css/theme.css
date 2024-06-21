@@ -1166,6 +1166,9 @@ h3.popover-title{
 .collectionsContainer .label a.openCollectionContents .glyphicon{
 	top:-1px;
 }
+.collectionsContainer a .glyphicon, .collectionsContainer .glyphicon, #collectionLoad a .glyphicon, #collectionLoad .glyphicon {
+  color: #757575;
+}
 .collectionsContainer .label a.openCollectionContents.active{
 	font-weight:normal !important;
 }
@@ -1185,7 +1188,7 @@ h3.popover-title{
 	padding: 5px 5px 5px 15px;
 	margin: 0px;
 }
-@media(min-width:1450px){
+/*@media(min-width:1450px){
 	#collectionsWrapperArchival .linkoutRight{
 		position:absolute;
 		right:0px;
@@ -1196,7 +1199,7 @@ h3.popover-title{
 		padding:5px;
 		margin:0px
 	}
-}
+}*/
 #collectionsWrapperArchival a, #collectionsWrapperArchival a:visited {
     text-decoration: none;
     color:#000;
@@ -1980,11 +1983,11 @@ a .digExhSideNavLinkImg .digExhSideNavLink{
 	background-color: transparent;
 	background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.5), rgba(0,0,0,0));
 }
-a.currentSection .digExhSideNavLink:before {
-    font-family: FontAwesome;
+/*a.currentSection .digExhSideNavLink:before {
+    font-family: 'Font Awesome 5 Free';
     content: "\f0da";
     padding-right:5px;
-}
+}*/
 
 .detail a:hover .digExhSideNavLinkImg .digExhSideNavLink{
 	color:#FFF;

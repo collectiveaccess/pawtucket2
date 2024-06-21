@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2022 Whirl-i-Gig
+ * Copyright 2015-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 $tmp = explode("/", str_replace("\\", "/", $_SERVER['SCRIPT_NAME']));
 array_pop($tmp);
 $path = join("/", $tmp);
@@ -49,7 +48,7 @@ $path = join("/", $tmp);
 					<ol class="tracelist">
 <?php
 						foreach($errcontext as $i => $trace) {
-							print "<li>".(($i == 0) ? "In " : "At ").$trace['class'].$trace['type'].$trace['function']."(".join(', ', $errcontext_args[$i]).") in <a class='tracelistEntry' title='".$trace['file']."' ondblclick='var f=this.innerHTML;this.innerHTML=this.title;this.title=f;'>".pathinfo($trace['file'], PATHINFO_FILENAME)."</a> line ".$trace['line']."</li>\n";
+							print "<li>".(($i == 0) ? "In " : "At ").$trace['class'].$trace['type'].$trace['function']."(".join(', ', $errcontext_args[$i] ?? []).") in <a class='tracelistEntry' title='".$trace['file']."' ondblclick='var f=this.innerHTML;this.innerHTML=this.title;this.title=f;'>".pathinfo($trace['file'], PATHINFO_FILENAME)."</a> line ".$trace['line']."</li>\n";
 						}
 ?>
 					</ol>
