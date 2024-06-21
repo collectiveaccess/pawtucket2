@@ -40,9 +40,9 @@ $vn_facet_display_length_maximum = 12;
 
 if((is_array($va_facets) && sizeof($va_facets)) || ($qr_res->numHits() > 1)){
 ?>		
-	<div id='bRefine' class='sticky-md-top vh-100 collapse overflow-y-auto'>
+	<div id='bRefine' class='sticky-md-top vh-100 collapse overflow-y-auto bg-white'>
 		<div id='bMorePanel' class='position-absolute w-100 z-3 bg-light h-100 collapse fs-5'><!-- long lists of facets are loaded here --></div>
-		<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
+		<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php
 	if($qr_res->numHits() > 1){
 ?>
@@ -76,22 +76,22 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($qr_res->numHits() > 1)){
 				print "<div class=text-uppercase' id='heading".$vs_facet_name."'><button class='collapsed fw-bold text-uppercase btn btn-white px-0' type='button' data-bs-toggle='collapse' data-bs-target='#".$vs_facet_name."' aria-expanded='false' aria-controls='".$vs_facet_name."'>".$va_facet_info['label_singular']."</button></div>";
 				print "<div id='".$vs_facet_name."' class='accordion-collapse collapse' aria-labelledby='heading".$vs_facet_name."' data-bs-parent='#browseRefineFacets'>";
 				
-				print "<dl>";
+				print "<ul class='list-group mb-1'>";
 				
 						$vn_facet_size = sizeof($va_facet_info['content']);
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {
 							$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-							print "<dd>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</dd>";
+							print "<li class='list-group-item border-0 bg-transparent px-0 py-1'>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</li>";
 							$vn_c++;
 					
 							if(($vn_c == $vn_facet_display_length_maximum) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
-								print "<dd><a hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' aria-label='"._t("View More")."' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</a></dd>";
+								print "<li class='list-group-item border-0 bg-transparent px-0 py-1'><a hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' aria-label='"._t("View More")."' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel' role='button'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</a></li>";
 								break;
 							}
 						}
 
-				print "</dl></div>";
+				print "</ul></div>";
 			}
 		}
 		print "</div><!-- end browseRefineFacets -->";

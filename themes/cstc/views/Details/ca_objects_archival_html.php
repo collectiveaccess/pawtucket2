@@ -165,6 +165,10 @@ if($show_nav){
 								<dt><?= _t('Language'); ?></dt>
 								<dd>^ca_objects.langmaterial%delimiter=,_</dd>
 							</ifdef>
+							<ifdef code="ca_objects.language_note">
+								<dt><?= _t('Language Note'); ?></dt>
+								<dd>^ca_objects.language_note%delimiter=,_</dd>
+							</ifdef>
 							<ifdef code="ca_objects.accessrestrict">
 								<dt><?= _t('Conditions Governing Access'); ?></dt>
 								<dd>^ca_objects.accessrestrict</dd>

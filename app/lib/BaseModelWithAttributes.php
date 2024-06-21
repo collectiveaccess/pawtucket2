@@ -1659,7 +1659,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 			}
 			if(!is_array($pa_options['limitToItemsWithID'])) { $pa_options['limitToItemsWithID'] = array(); }
 			
-			if($qr_types_in_use->numRows() > 0) {
+			if($qr_types_in_use && ($qr_types_in_use->numRows() > 0)) {
 				$pa_options['limitToItemsWithID'] += $qr_types_in_use->getAllFieldValues('type_id');
 			}
 		}
@@ -1783,6 +1783,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 							'placeholder' => $pa_options['placeholder'] ?? null,
 							'forSimpleForm' => true,
 							'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT',
+							'placeholder' => $pa_options['placeholder'] ?? null,
 							'attributes' => $attributes
 						)));
 			}
@@ -3012,7 +3013,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 	 * Eg. for the ca_entities model the __CA_ATTRIBUTE_VALUE_ENTITIES__ constant (numeric 22) is returned.
 	 * Returns null if the model cannot be referenced using a metadata element.
 	 *
-	 * @return int
+	 * @return array
 	 */
 	public static function getAuthorityElementDatatypeList() {
 		require_once(__CA_LIB_DIR__.'/Attributes/Values/CollectionsAttributeValue.php');

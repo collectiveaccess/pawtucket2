@@ -37,33 +37,26 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+
+$type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 ?>
-<script type="text/javascript">
+
+<script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 
-
 <div id="detail">
-  <a name="h0"></a>
-  <h3>City of Seattle Combined Legislative Records Search</h3>
-  <em>Information modified on May 2, 2024;</em> <em>retrieved on May 6, 2024 10:07 AM</em>
-  <p></p>
-  <hr />
 
 	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
 
-  <hr />
-
-
   <h2 class="record-number">
-		<!-- Clerk File 323014  --> 
-		{{{ca_objects.type_id}}} {{{ca_objects.CFN}}}
+		<?= $type_idno; ?> {{{ca_objects.CFN}}}
 	</h2>
 
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><h3 style="margin: 5px 0 0;">Title</h3></th>
+        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Title</span></th>
       </tr>
       <tr>
         <td class="empty"></td>
@@ -79,7 +72,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><h3 style="margin: 5px 0 0;">Description and Background</h3></th>
+        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Description and Background</span></th>
       </tr>
 
 			{{{<ifdef code="ca_objects.STAT">
@@ -98,12 +91,18 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.INDX">
-				<tr>
-					<td>Index Terms:</td>
-					<td>^ca_objects.INDX</td>
-				</tr>
-			</ifdef>}}}
+			<?php
+				if($t_object->get("ca_objects.index")){
+					if($links = caGetBrowseLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
+			?>
+					<tr>
+						<td><?= _t('Index Terms:'); ?></td>
+						<td><?= join(", ", $links); ?></td>
+					</tr>
+			<?php
+					}
+				}
+			?>
 
     </tbody>
   </table>
@@ -111,15 +110,28 @@ $map_options = $this->getVar('mapOptions') ?? [];
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><h3 style="margin: 5px 0 0;">Legislative History</h3></th>
+        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Legislative History</span></th>
       </tr>
 			
-			{{{<ifdef code="ca_objects.SPON">
+			<!-- {{{<ifdef code="ca_objects.SPON">
 				<tr>
 					<td>Sponsor:</td>
 					<td>^ca_objects.SPON</td>
 				</tr>
-			</ifdef>}}}
+			</ifdef>}}} -->
+
+			<?php
+				if($t_object->get("ca_objects.SPON")){
+					if($links = caGetBrowseLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
+			?>
+					<tr>
+						<td><?= _t('Sponsor:'); ?></td>
+						<td><?= join(",", $links); ?></td>
+					</tr>
+			<?php
+					}
+				}
+			?>
 
 			{{{<ifdef code="ca_objects.DTIR">
 				<tr>
@@ -128,12 +140,18 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.COMM">
-				<tr>
-					<td>Committee Referral:</td>
-					<td>^ca_objects.COMM</td>
-				</tr>
-			</ifdef>}}}
+			<?php
+				if($t_object->get("ca_objects.COMM")){
+					if($comm = caGetBrowseLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
+			?>
+					<tr>
+						<td><?= _t('Committee Referral:'); ?></td>
+						<td><?= join(",", $comm); ?></td>
+					</tr>
+			<?php
+					}
+				}
+			?>
 
 			{{{<ifdef code="ca_objects.VOTE">
 				<tr>
@@ -164,7 +182,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<table class="record table table-striped table-responsive">
 			<tbody>
 				<tr>
-					<th colspan="2"><h3 style="margin: 5px 0 0;">Text</h3></th>
+					<th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Text</span></th>
 				</tr>
 				<tr>
 					<td class="empty"></td>
@@ -178,9 +196,16 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</table>
 	</ifdef>}}}
 
+	{{{<ifnotdef code="ca_objects.TX">
+		<em>No text for this document is available online. You may view this document at
+			<a href="http://www.seattle.gov/cityclerk/legislation-and-research/research-assistance">the Office of the City Clerk</a>.	If you are unable to visit the Clerk's Office, you may request a copy or scan be made for you by Clerk staff.	Scans and copies provided by the Office of the City Clerk are subject to <a href="http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services">copy fees</a>, and the timing of service
+			is dependent on the availability of staff.
+		</em>
+	<ifnotdef/>}}}
+
 	<table class="record table table-striped table-responsive">
 		<tbody>
-			<tr><th colspan="2"><h3 style="margin: 5px 0 0;">Attachments</h3></th></tr>
+			<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
 			<tr>
 				<td class="empty"></td>
 				<td>
@@ -192,7 +217,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</tbody>
 	</table>
 
-  <hr />
+  <hr>
 
   <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
 

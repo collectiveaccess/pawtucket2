@@ -88,6 +88,13 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	static private $doc_content_buffer = [];			// content buffer used when indexing
 	
 	static protected $filter_stop_words = null;
+	
+	/**
+	 * Separate connection for async inserts when reindexng
+	 */
+	private $reindex_db = null;
+	private $last_indexing_result = null;
+	
 	# -------------------------------------------------------
 	/**
 	 *
@@ -161,11 +168,10 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if(($max_indexing_buffer_size = (int)$this->search_config->get('max_indexing_buffer_size')) < 1) {
 			$max_indexing_buffer_size = 5000;
 		}
-		
 		$this->options = array(
 				'limit' => 2000,											// maximum number of hits to return [default=2000]  ** NOT CURRENTLY ENFORCED -- MAY BE DROPPED **
 				'maxIndexingBufferSize' => $max_indexing_buffer_size,	// maximum number of indexed content items to accumulate before writing to the database
-				'maxWordIndexInsertSegmentSize' => ceil($max_indexing_buffer_size / 2), // maximum number of word index rows to put into a single insert
+				'maxWordIndexInsertSegmentSize' => ceil($max_indexing_buffer_size), // maximum number of word index rows to put into a single insert
 				'maxWordCacheSize' => 1048576,								// maximum number of words to cache while indexing before purging
 				'cacheCleanFactor' => 0.50,									// percentage of words retained when cleaning the cache
 				
@@ -442,15 +448,12 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			$text = preg_replace("!\|$!", '', $text);
 			if ($this->do_stemming && !$do_not_stem && !$is_blank && !$is_not_blank && !preg_match("![^A-Za-z]+!u", $text)) {
 				$text_stem = $this->stemmer->stem($text);
-				if (($text !== $text_stem) && ($text_stem[strlen($text_stem)-1] !== '*')) { 
-					$text = $text_stem.'*';
+				if ((($text !== $text_stem) || $this->search_config->get('always_stem')) && ($text_stem[strlen($text_stem)-1] !== '*')) { 
+					$text = $text_stem; //.'*';
 					$word_field = 'sw.stem';
 				}
 			}
 			
-			if(($word_field !== 'sw.stem') && ($this->search_config->get('always_stem'))) {
-				$text .= '*';
-			}
 			$this->searched_terms[] = $text;
 			
 			$params = [$subject_tablenum];
@@ -483,9 +486,20 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 
 			$field_sql = null;
 			if (is_array($ap)) {
-				$field_sql = " AND swi.field_table_num = ? AND swi.field_num = ?";
-				$params[] = $ap['table_num'];
-				$params[] = $ap['field_num'];
+				if($ap['datatype'] === __CA_ATTRIBUTE_VALUE_CONTAINER__) {
+					$element_ids = ca_metadata_elements::getElementsForSet($ap['element_id'], ['idsOnly' => true]);
+					if(!is_array($element_ids) || !sizeof($element_ids)) {
+						$element_ids = [$ap['element_id']];
+					}
+					
+					$field_sql = " AND swi.field_table_num = ? AND swi.field_num IN (?)";
+					$params[] = $ap['table_num'];
+					$params[] = array_map(function($v) { return "A{$v}"; }, $element_ids);
+				} else {
+					$field_sql = " AND swi.field_table_num = ? AND swi.field_num = ?";
+					$params[] = $ap['table_num'];
+					$params[] = $ap['field_num'];
+				}
 			
 				if (is_array($ap['relationship_type_ids']) && sizeof($ap['relationship_type_ids'])) {
 					$field_sql .= " AND swi.rel_type_id IN (?)";
@@ -1209,13 +1223,13 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if (is_array(self::$doc_content_buffer) && sizeof(self::$doc_content_buffer)) {
 			while(sizeof(self::$doc_content_buffer) > 0) {
 				if (defined("__CollectiveAccess_IS_REINDEXING__")) {
-					$this->db->query("SET unique_checks=0");
-					$this->db->query("SET foreign_key_checks=0");
-				}
-				$this->db->query($this->insert_word_index_sql."\n".join(",", array_splice(self::$doc_content_buffer, 0, $vn_max_word_segment_size)));
-				if (defined("__CollectiveAccess_IS_REINDEXING__")) {
-					$this->db->query("SET unique_checks=1");
-					$this->db->query("SET foreign_key_checks=1");
+					$db = $this->getReindexDbConnection();
+					if($this->last_indexing_result) { $this->last_indexing_result->reap(); }
+					$this->last_indexing_result = $db->query($this->insert_word_index_sql."\n".join(",", array_splice(self::$doc_content_buffer, 0, $vn_max_word_segment_size)), [], ['resultMode' => MYSQLI_ASYNC]);
+			
+					if($r) { $r->free(); }
+				} else {
+					$this->db->query($this->insert_word_index_sql."\n".join(",", array_splice(self::$doc_content_buffer, 0, $vn_max_word_segment_size)));
 				}
 			}
 			if ($this->debug) { Debug::msg("[SqlSearchDebug] Commit row indexing"); }
@@ -1301,7 +1315,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	/**
 	 *
 	 */
-	public function removeRowIndexing(int $subject_tablenum, int $pn_subject_row_id, ?int $pn_field_tablenum=null, $pa_field_nums=null, ?int $pn_field_row_id=null, ?int $pn_rel_type_id=null) {
+	public function removeRowIndexing(?int $subject_tablenum, ?int $pn_subject_row_id, ?int $pn_field_tablenum=null, $pa_field_nums=null, ?int $pn_field_row_id=null, ?int $pn_rel_type_id=null) {
 
 		//print "[SqlSearchDebug] removeRowIndexing: $subject_tablenum/$pn_subject_row_id<br>\n";
 		$vn_rel_type_id = $pn_rel_type_id ? $pn_rel_type_id : 0;
@@ -2261,6 +2275,16 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			}
 		}
 		return false;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	private function getReindexDbConnection() {
+		if(!$this->reindex_db) {
+			$this->reindex_db = new Db(null, ['uniqueConnection' => true]);
+		}
+		return $this->reindex_db;
 	}
 	# -------------------------------------------------------
 }

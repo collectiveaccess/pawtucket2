@@ -38,8 +38,8 @@
  		$vs_hero = rand(1, 3);
 	}
 
-	$t_set = ca_sets::findAsInstance(['set_code' => 'selina_test_set'], ['checkAccess' => caGetUserAccessValues($this->request)]);
- 	$set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'medium']) : [];
+	$t_set = ca_sets::findAsInstance(['set_code' => 'front_page_set'], ['checkAccess' => caGetUserAccessValues($this->request)]);
+ 	$set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'medium', 'shuffle' => true]) : [];
 ?>
 
 <div class="container">

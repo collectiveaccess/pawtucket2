@@ -67,7 +67,7 @@ if($this->request->isLoggedIn()){
 </head>
 <body id="pawtucketApp" class="d-flex flex-column">
 	<div role="navigation" id="osu_navbar" aria-labelledby="osu_navbar_heading" class="bg-black">
-		<div id="osu_navbar_heading" class="visually-hidden">Ohio State nav bar</div>
+		<div id="osu_navbar_heading" class="visually-hidden text-white">Ohio State nav bar</div>
 		<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 		<div class="container-fluid">
     		<div class="row">
@@ -99,18 +99,27 @@ if($this->request->isLoggedIn()){
 						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "aboutcollection") ? " active" : ""), "", "AboutCollection", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="nav-item">
+					<li class="nav-item d-none d-md-block">
 						<button class="nav-link" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch,#navbarSearchClose" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search form">Search<span id="navbarSearchClose" class="collapse"> <i class="bi bi-x-lg"></i></span></button>
+					</li>
+					<li class="nav-item d-block d-md-none">
+						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>">
+							<div class="input-group mt-4">
+								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
+								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search...">
+								<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
+							</div>
+						</form>
 					</li>
 				</ul>
 			</div>
-			<div class="collapse position-absolute end-0 start-0 vh-100 bg-white px-5" id="navbarSearch">
+			<div class="collapse position-absolute end-0 start-0 vh-100 bg-white px-5 overflow-scroll" id="navbarSearch">
 				<div class="row">
 					<div class="col-12">
-						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>" role="search">
+						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>">
 							<div class="input-group mt-4">
 								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search..." aria-label="Search">
+								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search...">
 								<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 							</div>
 						</form>
@@ -127,7 +136,7 @@ if($this->request->isLoggedIn()){
 					$t_set->load(['set_code' => $search_terms_entity_set_code]);
 					// Enforce access control on set
 					if((sizeof($access_values) == 0) || (sizeof($access_values) && in_array($t_set->get("access"), $access_values))){
-						$search_terms_entity_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => true])) ? $tmp : []);
+						$search_terms_entity_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => false])) ? $tmp : []);
 						$entity_results = caMakeSearchResult('ca_entities', $search_terms_entity_ids);
 						if($entity_results->numHits()){
 ?>
@@ -135,13 +144,9 @@ if($this->request->isLoggedIn()){
 								<ul class="list-unstyled">
 									<li><div class="text-body-tertiary">Featured Faculty:</div></li>
 <?php
-									$i = 0;
 									while($entity_results->nextHit()){
 										print "<li>&mdash; ".caNavlink($this->request, $entity_results->get("ca_entities.preferred_labels.displayname"), "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $entity_results->get("ca_entities.entity_id")))."</li>";
-										$i++;
-										if($i == 5){
-											break;
-										}
+										
 									}
 ?>
 								</ul>
@@ -176,7 +181,7 @@ if($this->request->isLoggedIn()){
 					$t_set->load(['set_code' => $search_terms_collection_set_code]);
 					// Enforce access control on set
 					if((sizeof($access_values) == 0) || (sizeof($access_values) && in_array($t_set->get("access"), $access_values))){
-						$search_terms_collection_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => true])) ? $tmp : []);
+						$search_terms_collection_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => false])) ? $tmp : []);
 						$collection_results = caMakeSearchResult('ca_collections', $search_terms_collection_ids);
 						if($collection_results->numHits()){
 ?>

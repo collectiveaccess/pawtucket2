@@ -38,37 +38,29 @@ $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
 ?>
-<script type="text/javascript">
+<script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 
   <p id="bottom-search-nav">
-    <a href="/">
+    <a href="/" aria-label="home">
 			<i class="bi bi-house-door-fill"></i>
     </a>
     
-    <a href="index.php/Search/advanced/combined">
+    <a href="index.php/Search/advanced/combined" aria-label="search">
 			<i class="bi bi-search"></i>
     </a>
 
-    <a href="">
-			<i class="bi bi-justify-left"></i>
-    </a>
+    <a href="" aria-label="results">{{{resultsLink}}}</a>
+    <a href="" aria-label="prev">{{{previousLink}}}</a>
+    <a href="" aria-label="next">{{{nextLink}}}</a>
 
-    <a href="">
-			<i class="bi bi-chevron-double-right"></i>
-    </a>
-
-    <a href="">
-			<i class="bi bi-chevron-right"></i>
-    </a>
-
-    <a href="#h0">
+    <a href="#h0" aria-label="page up">
 			<i class="bi bi-chevron-double-up"></i>
     </a>
 
-    <a href="https://clerk.seattle.gov/search/help/">
+    <a href="https://clerk.seattle.gov/search/help/" aria-label="help">
 			<i class="bi bi-question-lg"></i>
     </a>
   </p>
-  <a name="hb"></a>
+  <a id="hb" role="button" aria-label="anchor"></a>

@@ -37,7 +37,7 @@
 				</div>
 			</div>
 			
-			<nav class="footerNav">
+			<nav class="footerNav" aria-label="footer navigation">
 				<ul>
         			<li><a href="https://knowlton.osu.edu/siteinfo/accessibility" class="text-light">Accessibility</a></li>
                 	<li><a href="https://it.osu.edu/privacy" class="text-light">Privacy Policy</a></li>

@@ -186,7 +186,7 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 
 	# If you want to order records arbitrarily, add a numeric field to the table and place
 	# its name here. The generic list scripts can then use it to order table records.
-	protected $RANK = null;
+	protected $RANK = 'rank';
 	
 	
 	# ------------------------------------------------------

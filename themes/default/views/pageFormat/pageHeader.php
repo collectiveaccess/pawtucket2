@@ -93,10 +93,10 @@ if($this->request->isLoggedIn()){
 					}
 ?>
 				</ul>
-				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
+				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
 					<div class="input-group mt-4">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search" aria-label="Search">
+						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
 					<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>

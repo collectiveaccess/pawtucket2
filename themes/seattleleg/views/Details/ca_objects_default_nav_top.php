@@ -37,39 +37,42 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+
+$last_modified = $t_object->get("ca_objects.lastmodified");
+$created = $t_object->get("ca_objects.created");
+
+$email_subject = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
+$email_body;
+
 ?>
-<script type="text/javascript">
+<script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 
-  <div id="top-search-nav" class="d-flex inline-block justify-content-between">
-		<div class="nav-icons">
-			<a href="/">
+	<a id="h0"></a>
+  <h3>City of Seattle Combined Legislative Records Search</h3>
+  <em>Information modified on <?= $last_modified; ?></em> <em><?= $created; ?></em>
+  <hr>
+
+  <div id="top-search-nav" class="d-md-flex d-md-inline-block justify-content-between">
+
+		<div class="nav-icons mb-2 mb-md-0">
+			<a href="/" aria-label="home">
 				<i class="bi bi-house-door-fill"></i>
 			</a>
-			<a href="/index.php/Search/advanced/combined">
+			<a href="/index.php/Search/advanced/combined" aria-label="search">
 				<i class="bi bi-search"></i>
 			</a>
 			
-			<a href="">{{{resultsLink}}}</a>
-			<a href="">{{{previousLink}}}</a>
-			<a href="">{{{nextLink}}}</a>
+			<a href="" aria-label="results">{{{resultsLink}}}</a>
+			<a href="" aria-label="prev">{{{previousLink}}}</a>
+			<a href="" aria-label="next">{{{nextLink}}}</a>
 			
-			<!-- <a href="">
-				<i class="bi bi-justify-left"></i>
-			</a>
-			<a href="">
-				<i class="bi bi-chevron-double-right"></i>
-			</a>
-			<a href="">
-				<i class="bi bi-chevron-right"></i>
-			</a> -->
-
-			<a href="#hb">
+			<a href="#hb" aria-label="page down">
 				<i class="bi bi-chevron-double-down"></i>
 			</a>
 			
-			<a href="https://clerk.seattle.gov/search/help/">
+			<a href="https://clerk.seattle.gov/search/help/" aria-label="help">
 				<i class="bi bi-question-lg"></i>
 			</a>
 		</div>
@@ -80,11 +83,35 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<i class="bi bi-link-45deg"></i> LINK <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu">
-					<li><a class="dropdown-item" href="https://clerk.seattle.gov/search/clerk-files/323014">Visit Link</a></li>
-					<li><a class="dropdown-item" href="#">Copy Link</a></li>
-					<li><a class="dropdown-item" href="mailto:?subject=Clerk File 323014&amp;body=https://clerk.seattle.gov/search/clerk-files/323014">Email Link</a></li>
+					<li><a class="dropdown-item" href="#" onclick="Copy();">Copy Link</a></li>
+					<li>
+						<a class="dropdown-item" id="emailLink" href='#'>Email Link</a>
+					</li>
 				</ul>
 			</div>
 		</div>
 
   </div>
+
+	<hr>
+
+<script>
+
+	var url = window.location.href;
+	const linkElement = document.getElementById('emailLink');
+	var newHref = `mailto:?subject=Your%20Subject&body=${url}`;
+  linkElement.href = newHref;
+
+
+	function Copy() {
+		var getUrl = document.createElement('input'),
+		text = window.location.href;
+		document.body.appendChild(getUrl);
+		getUrl.value = text;
+		getUrl.select();
+		document.execCommand('copy');
+		document.body.removeChild(getUrl);
+		$.jGrowl("Link Copied!", { life: 2000 });
+	}
+	
+</script>
