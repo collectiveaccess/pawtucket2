@@ -95,6 +95,8 @@ class AdvancedSearchView extends View {
 		//<input type='text' class='form-control' id='{{{formId}}}' aria-describedby='{{{descId}}}'>
 		$element_id = 'adv-'.preg_replace('![^A-Za-z0-9_]+!', '_', $bundle);
 		$desc_id = 'advdesc-'.preg_replace('![^A-Za-z0-9_]+!', '_', $bundle);
+		
+		if(!isset($options['height'])) { $options['height'] = 1; }
 		$element = $this->subject->htmlFormElementForSearch(
 			$this->request, 
 			$bundle, 
@@ -134,28 +136,29 @@ class AdvancedSearchView extends View {
 			if(!($bundle = $bi['bundle'] ?? null)) { continue; }
 			if(!strlen($label = $bi['label'] ?? null)) { continue; }
 			$opts[$bundle] = $label;
+			$this->form_elements[$bundle] = 1;
 		}
+		
 		$select = caHTMLSelect('bundle', array_flip($opts), ['aria-label' => 'select', 'class' => caGetOption('selectClass', $options, null)]);
 		
 		$ret = [
 			'id' => caGetOption('id', $options, 'bundle'),
+			'templateId' => caGetOption('templateId', $options, 'template'),
 			'select' => $select,
-			'options' => $opts,
+			'options' => $opts
 		];
 		
 		// Get form elements for each option
-		$classes = [];
+		$input_class = caGetOption('inputClass', $options, null);
 		$inputs = [];
 		foreach($opts as $b => $l) {
-			//$inputs[$b] = '<input type="text" name="'.$b.'" class="form-control s7terms" placeholder="'._t('Enter %1', $l).'">';
-			
 			$this->form_elements[$b] = 1;
 			$element_id = 'adv-'.preg_replace('![^A-Za-z0-9_]+!', '_', $b);
 			$elements = $this->subject->htmlFormElementForSearch(
 				$this->request, 
 				$b, 
 				array_merge([
-					'class' => join(' ', $classes),
+					'class' => $input_class,
 					'id' => $element_id,
 					'elementsOnly' => true
 					//'attributes' => ['aria-describedby' => $desc_id]
@@ -170,7 +173,6 @@ class AdvancedSearchView extends View {
 			}
 		}
 		$ret['inputs'] = $inputs;
-	//print_r($ret);
 		
 		$js =  "<script>
 	if(!pawtucketUIApps['advancedSearchFieldBundle']) { pawtucketUIApps['advancedSearchFieldBundle'] = {}; }
@@ -200,7 +202,7 @@ class AdvancedSearchView extends View {
 	public function formHiddenElements(?array $options=null) {
 		$elements = [
 			caHTMLHiddenInput('_advanced', ['value' => 1]),
-			caHTMLHiddenInput('_formElements', ['value' => join('|', array_keys($this->form_elements))]),
+			caHTMLHiddenInput('_formElements', ['id' => '_advanced_formElements', 'value' => join('|', array_keys($this->form_elements))]),
 		];
 		return join("\n", $elements);
 	}
