@@ -45,7 +45,7 @@ $email_subject = $t_object->get("type_id", ['convertCodesToDisplayText' => true]
 $email_body;
 
 ?>
-<script type="text/javascript">
+<script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 
@@ -54,8 +54,9 @@ $email_body;
   <em>Information modified on <?= $last_modified; ?></em> <em><?= $created; ?></em>
   <hr>
 
-  <div id="top-search-nav" class="d-flex inline-block justify-content-between">
-		<div class="nav-icons">
+  <div id="top-search-nav" class="d-md-flex d-md-inline-block justify-content-between">
+
+		<div class="nav-icons mb-2 mb-md-0">
 			<a href="/" aria-label="home">
 				<i class="bi bi-house-door-fill"></i>
 			</a>
@@ -86,8 +87,6 @@ $email_body;
 					<li>
 						<a class="dropdown-item" id="emailLink" href='#'>Email Link</a>
 					</li>
-					
-
 				</ul>
 			</div>
 		</div>
@@ -96,7 +95,7 @@ $email_body;
 
 	<hr>
 
-<script type='text/javascript'>
+<script>
 
 	var url = window.location.href;
 	const linkElement = document.getElementById('emailLink');

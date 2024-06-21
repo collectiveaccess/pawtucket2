@@ -99,19 +99,19 @@
 	?>
 			<div class="well">
 				<h4>Retrieve Council Bill or Ordinance by Number</h4><br>
-				<div class="row text-center">
-					<div class="col-sm-5 d-flex">
+				<div class="row">
+					<div class="col-6">
 						<label for="s3" class="me-1">Council Bill No.</label>
 						<?= $this->formElement('ca_objects.CBN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
 					</div>
-
-					<div class="col-sm-5 d-flex">
+					<br>
+					<div class="col-6">
 						<label for="s4" class="me-1">Ordinance No.</label>
 						
 						<?= $this->formElement('ca_objects.ORDN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
 					</div>
 
-					<div class="col-sm-2">
+					<div class="col-12">
 						<input type="submit" value="Go" class="btn btn-primary">
 					</div>
 				</div>
@@ -125,7 +125,6 @@
 				<div class="d-flex text-center">
 					<div class="input-group">
 						<label for="s3" class="me-1">Resolution No.</label>
-						<!-- <input type="text" id="s3" name="s3" style="width:70px" class="form-control"> &nbsp; -->
 						<?= $this->formElement('ca_objects.RESN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
 					</div>
 					<input type="submit" value="Go" class="btn btn-primary">
@@ -140,7 +139,6 @@
 				<div class="d-flex text-center">
 					<div class="input-group">
 						<label for="s3" class="me-1">File No.</label>
-						<!-- <input type="text" id="s3" name="s3" style="width:70px" class="form-control"> &nbsp; -->
 						<?= $this->formElement('ca_objects.CFN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
 					</div>
 					<input type="submit" value="Go" class="btn btn-primary">
@@ -157,11 +155,9 @@
 
 		<div class="basic-search">
 			<div class="input-group">
-				<label for="s1" class="col-sm-3 control-label">Terms Anywhere:</label>
-				<div class="col-sm-9">
-					<!--<input name="s1" id="s1" type="text" class="form-control">-->
+				<label class="col-12 control-label me-1">Terms Anywhere:</label>
+				<div class="col-12">
 					<?= $this->formElement('_fulltext', ['size' => 60, 'label' => '', 'description' => _t("All fields; includes full text where available")]); ?>
-					<!--<p class="form-text"><em>All fields; includes full text where available.</em></p>-->
 				</div>
 			</div>
 
@@ -173,60 +169,11 @@
 				case 'clerk':
 	?>
 
-			<div class="input-group">
-				<label for="s9" class="col-sm-3 control-label">Terms in Title:</label>
-				<div class="col-sm-9" style="padding-bottom: 10px;">
-					<!-- <input name="s9" id="s9" type="text" class="form-control"> -->
-					<?= $this->formElement('ca_objects.preferred_labels', ['size' => 60, 'label' => '', 'description' => _t("Include text only within the title")]); ?>
-				</div>
-			</div>
-
-	<?php
-			break;
-				case 'agenda':
-	?>
-
-			<hr>
-			<div class="input-group">
-				<label for="s3" class="col-sm-4 control-label">2022-2023 Committees:</label>
-				<div class="col-sm-8">
-					<select id="s3" name="s3" class="form-control">
-						<option value="" selected="">No restriction</option>
-						<optgroup>
-							<option value="(Full.COMM. OR Council.COMM.) NOT Briefing.COMM. AND @DATE>=20220000">City Council</option>
-							<option value="Briefing.COMM. AND @DATE>=20220000">Council Briefings</option>
-						</optgroup>
-						<optgroup>
-							<option value='"Economic Development Technology and City Light".COMM. AND @DATE>=20220000'>Economic Development, Technology &amp; City Light</option>
-							<option value='"Finance and Housing".COMM. AND @DATE>=20220000'>Finance and Housing</option>
-							<option value='"Governance Native Communities &amp; Tribal Governments".COMM. AND @DATE>=20220000'>Governance, Native Communities &amp; Tribal Governments</option>
-							<option value='"Land Use".COMM. AND @DATE>=20220000'>Land Use</option>
-							<option value='"Neighborhoods Education Civil Rights and Culture;.COMM. AND @DATE>=20220000'>Neighborhoods, Education, Civil Rights &amp; Culture</option>
-							<option value='"Public Assets and Homelessness".COMM. AND @DATE>=20220000'>Public Assets and Native Communities</option>
-							<option value='"Public Safety and Human Services".COMM. AND @DATE>=20220000'>Public Safety and Human Services</option>
-							<option value='"Sustainability and Renters&apos; Rights".COMM. AND @DATE>=20220000'>Sustainability and Renters' Rights</option>
-							<option value='"Transportation and Seattle Public Utilities".COMM. AND @DATE>=20220000'>Transportation and Seattle Public Utilities</option>
-						</optgroup>
-						<optgroup>
-							<option value='"Select Budget Committee".COMM. AND @DATE>=20220000'>Select Budget Committee</option>
-							<option value='"Select Committee ".COMM. AND @DATE>=20220000'>Select Committee#2</option>
-							<option value='"Select Committee &amp; Investments".COMM. AND @DATE>=20220000'>Select Committee#3</option>
-						</optgroup>
-					</select>
-				</div>
-			</div>
 			<br>
-			<div class="input-group" style="padding: 0 0 0.25em;">
-				<div class="col-sm-4 control-label"></div>
-				<p style="text-align: center; margin-right: 4px; font-weight: bold;">OR</p>
-			</div>
 			<div class="input-group">
-				<label for="s2" class="col-sm-4 control-label">Terms in Committee Name:</label>
-				<div class="col-sm-8">
-					<input id="s2" name="s2" type="text" class="form-control"/>
-					<p>
-						<em>Also see <a href="/search/committees/">Committee History</a>.</em>
-					</p>
+				<label class="col-12 control-label me-1">Terms in Title:</label>
+				<div class="col-12" style="padding-bottom: 10px;">
+					<?= $this->formElement('ca_objects.preferred_labels', ['size' => 60, 'label' => '', 'description' => _t("Include text only within the title")]); ?>
 				</div>
 			</div>
 
@@ -245,11 +192,36 @@
 		<div class="advanced-search">
 
 			<h4 class="expandable-controls">
-				<a h data-bs-toggle="collapse" href="#filterfield" role="button" aria-expanded="false" aria-controls="filterfield">Filter by Field</a>
+				<a data-bs-toggle="collapse" href="#filterfield" role="button" aria-expanded="false" aria-controls="filterfield">Filter by Field</a>
 				<i class="bi bi-caret-right-fill"></i>
 			</h4>
 
 			<div class="collapse mb-3" id="filterfield">
+
+				<p>Use as many fields as needed. Each text field can contain either one or multiple terms. Months are optional in date fields.</p>
+				
+				<br>
+
+				<label class="col-12 control-label">Search by Field:</label>
+				<div id="field-item" class="input-group advanced-fields mb-1 align-items-center">
+
+					
+					<?= $this->formBundle($action, [
+						'id' => 'field-item', 
+						'selectClass' => 'form-control s7target'
+					]); ?>
+				
+					<div id="field-item-select" class="col-auto me-1"></div>
+					<div id="field-item-input" class="col-auto me-3 s7choices s7text"></div>
+					<div id="field-item-add" class="col-auto d-flex align-items-center">
+						<a role="button" title="Add Row" id="field-item-add-button"><i class="bi bi-plus-lg"></i></a>
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- <div class="collapse mb-3" id="filterfield">
 
 				<p>Use as many fields as needed. Each text field can contain either one or multiple terms. Months are optional in date fields.</p><br>
 
@@ -338,7 +310,7 @@
 
 				</div>
 
-			</div>
+			</div> -->
 
 		</div>
 
@@ -385,7 +357,7 @@
 		<div class="advanced-search">
 
 			<h4 class="expandable-controls">
-				<a h data-bs-toggle="collapse" href="#filterdate" role="button" aria-expanded="false" aria-controls="filterdate">Filter by Date</a>
+				<a data-bs-toggle="collapse" href="#filterdate" role="button" aria-expanded="false" aria-controls="filterdate">Filter by Date</a>
 				<i class="bi bi-caret-right-fill"></i>
 			</h4>
 
@@ -393,72 +365,12 @@
 				<p>A date range can be combined with other search terms, or submitted independently. Months are optional.</p><br>
 
 				<div class="input-group ">
-					<label for="s6range" class="col-sm-3 control-label">Date:</label>
-					<div class="col-sm-9">
+					<label class="col-12 control-label">Date:</label>
+					<div class="col-12">
 
 
 						<?= $this->formElement('date', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
 
-						<!-- <?php
-								switch($action) {
-									case 'combined':
-									case 'bills':
-									case 'resolutions':
-									case 'clerk':
-						?>
-								<select id="s6range" class="form-control" aria-label="select">
-									<option value="" selected="">No date limit, or custom range below</option>
-									<option value="2020-">2020 to Present</option>
-									<option value="2010-2019">2010-2019</option>
-									<option value="2000-2009">2000-2009</option>
-									<option value="1990-1999">1990-1999</option>
-									<option value="1980-1989">1980-1989</option>
-									<option value="1970-1979">1970-1979</option>
-									<option value="1960-1969">1960-1969</option>
-									<option value="1950-1959">1950-1959</option>
-									<option value="1940-1949">1940-1949</option>
-									<option value="1930-1939">1930-1939</option>
-									<option value="1920-1929">1920-1929</option>
-									<option value="1910-1919">1910-1919</option>
-									<option value="1900-1909">1900-1909</option>
-									<option value="1890-1899">1890-1899</option>
-									<option value="1880-1889">1880-1889</option>
-									<option value="1870-1879">1870-1879</option>
-									<option value="-1869">Before 1870</option>
-								</select>
-						<?php
-								break;							
-									case 'agenda':
-									case 'minutes':
-						?>
-								<select id="s6range" class="form-control">
-									<option value="" selected="">No date limit, or custom range below</option>
-									<option value="2020-">2020 to Present</option>
-									<option value="2010-2019">2010-2019</option>
-									<option value="-2009">Before 2010</option>
-								</select>
-
-						<?php
-								break;							
-									case 'committees':
-						?>
-								<select id="s6range" class="form-control">
-									<option value="" selected="">No date limit, or custom range below</option>
-									<option value="2020-">2020 to Present</option>
-									<option value="2010-2019">2010-2019</option>
-									<option value="2000-2009">2000-2009</option>
-									<option value="1990-1999">1990-1999</option>
-									<option value="1980-1989">1980-1989</option>
-									<option value="1970-1979">1970-1979</option>
-									<option value="1960-1969">1960-1969</option>
-									<option value="1950-1959">1950-1959</option>
-									<option value="1940-1949">1940-1949</option>
-									<option value="-1939">Before 1940</option>
-								</select>
-						<?php
-								break;				
-							}			
-						?> -->
 
 						<!-- Change description text for each search type -->
 						<p>
@@ -502,62 +414,6 @@
 
 				</div>
 
-				<!-- <div class="input-group" style="padding: 0 0 0.25em;">
-					<div class="col-sm-4 control-label"></div>
-					<p style="text-align: center; margin-right: 4px; font-weight: bold;">OR</p>
-				</div> -->
-
-				<!-- <div class="input-group" id="s6cust">
-					<label for="s6year1" class="col-sm-3 control-label">Custom Range:</label>
-					<div class="col-sm-9">
-
-						<div class="row row-cols-lg-auto">
-
-							<select id="s6month1" class="form-control w-auto" aria-label="select">
-								<option value="00" selected="">Month</option>
-								<option value="01">Jan</option>
-								<option value="02">Feb</option>
-								<option value="03">Mar</option>
-								<option value="04">Apr</option>
-								<option value="05">May</option>
-								<option value="06">Jun</option>
-								<option value="07">Jul</option>
-								<option value="08">Aug</option>
-								<option value="09">Sep</option>
-								<option value="10">Oct</option>
-								<option value="11">Nov</option>
-								<option value="12">Dec</option>
-							</select>
-
-							<input id="s6year1" type="number" step="1" maxlength="4" class="form-control w-auto" placeholder="Year" max="2024" min="1869">
-
-							<span class="w-auto px-1 d-flex align-items-center"> � </span>
-
-							<select id="s6month2" class="form-control w-auto" aria-label="select">
-								<option value="00" selected="">Month</option>
-								<option value="01">Jan</option>
-								<option value="02">Feb</option>
-								<option value="03">Mar</option>
-								<option value="04">Apr</option>
-								<option value="05">May</option>
-								<option value="06">Jun</option>
-								<option value="07">Jul</option>
-								<option value="08">Aug</option>
-								<option value="09">Sep</option>
-								<option value="10">Oct</option>
-								<option value="11">Nov</option>
-								<option value="12">Dec</option>
-							</select>
-
-							<input id="s6year2" type="number" step="1" maxlength="4" class="form-control w-auto" placeholder="Year" max="2024" min="1869">
-
-							<p><em>To browse a single year, enter it in both fields above.</em></p>
-
-						</div>
-
-					</div>
-				</div> -->
-
 			</div>
 		</div>
 
@@ -570,7 +426,7 @@
 	?>
 		<div class="advanced-search">
 			<h4 class="expandable-controls">
-				<a h data-bs-toggle="collapse" href="#includeexclude" role="button" aria-expanded="false" aria-controls="includeexclude">Include and Exclude</a>
+				<a data-bs-toggle="collapse" href="#includeexclude" role="button" aria-expanded="false" aria-controls="includeexclude">Include and Exclude</a>
 				<i class="bi bi-caret-right-fill"></i>
 			</h4>
 
@@ -602,7 +458,7 @@
 
 		<div class="advanced-search">
 			<h4 class="expandable-controls">
-				<a h data-bs-toggle="collapse" href="#settings" role="button" aria-expanded="false" aria-controls="settings">Settings</a>
+				<a data-bs-toggle="collapse" href="#settings" role="button" aria-expanded="false" aria-controls="settings">Settings</a>
 				<i class="bi bi-caret-right-fill"></i>
 			</h4>
 
@@ -611,9 +467,9 @@
 				<p>These optional settings apply to all combinations of fields above. Adjacency only applies to multiple terms within the same field.</p><br>
 
 				<div class="input-group">
-					<label for="Sect4" class="col-sm-3 control-label">Default Operator:</label>
-					<div class="col-sm-9">
-						<select name="Sect4" class="form-control" aria-label="select">
+					<label for="Sect4" class="col-12 control-label">Default Operator:</label>
+					<div class="col-12">
+						<select name="Sect4" id="Sect4" class="form-control" aria-label="select">
 							<option value="OR">Or</option>
 							<option value="AND" selected="">And</option>
 							<option value="ADJ">Adjacent</option>
@@ -621,9 +477,11 @@
 					</div>
 				</div>
 
+				<br>
+
 				<div class="input-group">
-					<label for="l" class="col-sm-3 control-label">Results Per Page:</label>
-					<div class="col-sm-9">
+					<label for="l" class="col-12 control-label">Results Per Page:</label>
+					<div class="col-12">
 						<select name="l" class="form-control" aria-label="select">
 							<option value="5">5</option>
 							<option value="10">10</option>
@@ -638,6 +496,8 @@
 					</div>
 				</div>
 
+				<br>
+
 				<div class="input-group radio-group">
 					<label for="Sect2" class="col-sm-3 control-label">Thesaurus:</label>
 					<div class="col-sm-9">
@@ -646,6 +506,8 @@
 						<label><input type="radio" name="Sect2" value="THESOFF"> Off</label>
 					</div>
 				</div>
+
+				<br>
 
 				<div class="input-group radio-group">
 					<label for="Sect3" class="col-sm-3 control-label">Plurals:</label>

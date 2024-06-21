@@ -41,7 +41,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 ?>
-<script type="text/javascript">
+<script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 

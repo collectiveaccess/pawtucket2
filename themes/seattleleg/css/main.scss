@@ -392,6 +392,19 @@ footer a{
 		margin-bottom: 30px;
 	}
 
+	#field-item-select{
+
+	}
+
+	#field-item-input select, #field-item-input input{
+		height: 38px !important;
+		width: 200px !important;
+	}
+
+	#field-item-add{
+
+	}
+
 }
 
 
@@ -404,6 +417,8 @@ footer a{
 #detail{
 
 	padding: 62px;
+
+
 
 	#top-search-nav a, #bottom-search-nav a{
 		text-decoration: none !important;
@@ -445,6 +460,9 @@ footer a{
 	}
 
 	@media screen and (max-width: 700px){ 
+
+		padding: 20px;
+
 		table.record tr td:first-child {
 			width: 150px;
 			min-width: 150px;
@@ -471,7 +489,7 @@ footer a{
 #search_results{
 	padding: 32px;
 
-	a{
+	table a{
 		text-decoration: none !important;
 	}
 
