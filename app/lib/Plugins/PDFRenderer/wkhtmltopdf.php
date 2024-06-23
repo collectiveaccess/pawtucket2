@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2023 Whirl-i-Gig
+ * Copyright 2014-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -96,6 +96,8 @@ class WLPlugPDFRendererwkhtmltopdf Extends BasePDFRendererPlugin Implements IWLP
 	 * @seealso wkhtmltopdf::renderFile()
 	 */
 	public function render($content, $options=null) {
+		global $file_cleanup_list;
+		
 	    // Force backtrack limit high to allow regex on very large strings
 	    // If we don't do this preg_replace will fail silently on large PDFs
 	    ini_set('pcre.backtrack_limit', '100000000');
@@ -128,6 +130,8 @@ class WLPlugPDFRendererwkhtmltopdf Extends BasePDFRendererPlugin Implements IWLP
 			header("Content-Disposition: attachment; filename=".caGetOption('filename', $options, 'output.pdf'));
 			print $vs_pdf_content;
 		}
+		
+		$file_cleanup_list = array_merge($file_cleanup_list, [$vs_content_path, $vs_output_path, $vs_header_path, $vs_footer_path]);
 		
 		@unlink($vs_content_path);
 		@unlink($vs_header_path);
