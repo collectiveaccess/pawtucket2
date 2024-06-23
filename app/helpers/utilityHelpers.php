@@ -880,6 +880,33 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
+	 * Remove stray temporary files from application tmp diectory
+	 *
+	 * Currently deletes:
+	 *		wkhtmltopdf tmp files
+	 */
+	function caCleanTmpDirectory() {
+		$config = Configuration::load();
+		if (($threshold = (int)$config->get('tmp_directory_garbage_collection_threshold')) <= 0) {
+			$threshold = 1800;
+		}
+		
+		$files_to_delete = caGetDirectoryContentsAsList(__CA_APP_DIR__.'/tmp', true, false, false, true, ['notModifiedSince' => time() - $threshold]);
+	
+		$count = 0;
+		foreach($files_to_delete as $file_to_delete) {
+			if(is_writeable($file_to_delete)) {
+				if(preg_match("!^".__CA_APP_DIR__.'/tmp'."/wkhtmltopdf[\d]+!", $file_to_delete)) {
+					@unlink($file_to_delete);
+					$count++;
+				}
+			}
+		}
+		
+		return $count;
+	}
+	# ----------------------------------------
+	/**
 	 *
 	 */
 	function caMakeGetFilePath($ps_prefix=null, $ps_extension=null, $options=null) {
