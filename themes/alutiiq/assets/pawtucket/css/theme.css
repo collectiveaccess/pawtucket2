@@ -510,3 +510,8 @@ a.readmore-js-toggle {
 .staticPage .btn-default{
 	margin-bottom:25px;
 }
+label.control-label{
+	font-family: mr-eaves-xl-modern,sans-serif;
+	text-transform: none;
+	font-size:19px;
+}
