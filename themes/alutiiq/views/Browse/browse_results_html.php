@@ -25,7 +25,12 @@
  *
  * ----------------------------------------------------------------------
  */
-
+if(($this->request->getAction() == "repatriation") && !$this->request->isLoggedIn()){
+	print "do redirect";
+	#$vs_url = caNavUrl($this->request, "", "LoginReg", "LoginForm");
+	#$this->notification->addNotification(_t("You must be logged in to view that content"), __NOTIFICATION_TYPE_INFO__);
+	#$this->response->setRedirect($vs_url);
+}else{
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
@@ -95,6 +100,24 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		}
 		if($vs_table == "ca_occurrences"){
+			if(strToLower($this->request->getAction()) == "repatriation"){
+?>
+				<div class="row" style="clear:both;">
+					<div class='col-sm-12 col-md-9 unit'>
+						<hr class="uk-divider-small">
+						<H2 class="uk-h1">Find Repatriation Records</H2>
+					</div>
+				</div>				
+				<div class="row">
+					<div class='col-sm-12 col-md-9 unit'>
+						<p>{{{repatriation_browse}}}</p>
+					</div>
+					<div class="col-sm-12 col-md-3 col-lg-3">
+						<div class='text-center'><a href="mailto:amanda@alutiiqmuseum.org" target="_blank" class="uk-button uk-button-default"><span class="uk-margin-small-right uk-icon" uk-icon="mail"><svg width="20" height="20" viewBox="0 0 20 20"><polyline fill="none" stroke="#000" points="1.4,6.5 10,11 18.6,6.5"></polyline><path d="M 1,4 1,16 19,16 19,4 1,4 Z M 18,15 2,15 2,5 18,5 18,15 Z"></path></svg></span> Contact Us</a></div>
+					</div>
+				</div>
+<?php			
+			}else{
 ?>
 			<div class="row" style="clear:both;">
 				<div class='col-sm-12 col-md-9 unit'>
@@ -113,6 +136,7 @@ if (!$vb_ajax) {	// !ajax
 				</div>
 			</div>
 <?php
+			}
 		}
 ?>
 <div class="row" style="clear:both;">
@@ -354,4 +378,5 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		print $this->render('Browse/browse_panel_subview_html.php');
 } //!ajax
+}
 ?>

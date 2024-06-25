@@ -733,6 +733,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$va_sql_wheres[] = "(csl.name = ?)";
 			$va_sql_params[] = (string)$ps_set_name;
 		}
+		$va_sql_selects[] = 'cs.`rank`';
 		
 		if (!$pb_set_ids_only && !$pb_omit_counts) {
 			// get set item counts

@@ -80,16 +80,18 @@
 			$qr_res->seek($vn_start);
 			
 			# --- institutions don't have objects linked to them - they are linked to the collections so this won't work
+			# --- repatriation occurrences don't show objects
 			if (!in_array($vs_table, array('ca_objects', 'ca_entities'))) {
-				$va_ids = array();
-				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
-				}
-			
-				$qr_res->seek($vn_start);
+				if(strToLower($this->request->getAction()) != "repatriation"){
+					$va_ids = array();
+					while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
+						$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
+					}
 				
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
-				
+					$qr_res->seek($vn_start);
+					
+					$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				}					
 			} else {
 				$va_images = null;
 			}
@@ -116,7 +118,12 @@
 				
 					if($vs_table == "ca_occurrences"){
 						$vs_idno 	= "";
-						$vs_label 	= $qr_res->get("ca_occurrences.preferred_labels")." &mdash; ".$qr_res->get("ca_occurrences.alutiiq_word");
+						if(strToLower($this->request->getAction()) == "repatriation"){
+							$vs_label 	= $qr_res->getWithTemplate("^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.repatriation_status'><br/><i>^ca_occurrences.repatriation_status</i></ifdef>");
+						
+						}else{
+							$vs_label 	= $qr_res->get("ca_occurrences.preferred_labels")." &mdash; ".$qr_res->get("ca_occurrences.alutiiq_word");
+						}
 					}else{
 						$vs_idno 	= $qr_res->get("{$vs_table}.idno");
 						$vs_label 	= $qr_res->get("{$vs_table}.preferred_labels");
@@ -134,7 +141,9 @@
 						break;
 						# ----------
 						default:
-							$vs_image = $va_images[$vn_id];
+							if(strToLower($this->request->getAction()) != "repatriation"){
+								$vs_image = $va_images[$vn_id];
+							}
 						break;
 						# ----------
 					}
@@ -161,7 +170,19 @@
 				
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
-					if($vs_table != "ca_entities"){
+					if(strToLower($this->request->getAction()) == "repatriation"){
+						$vs_tmp = "
+							<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+								<div class='bResultListItem' id='row{$vn_id}'>
+									<div class='bResultListItemContent'>
+										<div class='bResultListItemText'>
+											".(($vs_idno) ? "<small>".$vs_idno."</small><br/>" : "")."{$vs_label}
+										</div><!-- end bResultListItemText -->
+									</div><!-- end bResultListItemContent -->
+								</div><!-- end bResultListItem -->
+							</div><!-- end col -->";
+						$vs_result_output = caDetailLink($this->request, $vs_tmp, '', $vs_table, $vn_id);
+					}elseif($vs_table != "ca_entities"){
 						$vs_tmp = "
 							<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 								<div class='bResultListItem' id='row{$vn_id}'>
