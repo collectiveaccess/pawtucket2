@@ -27,8 +27,9 @@
 				<div class="row" id="collectionsWrapper">
 					<div class='h-100 overflow-y-auto col-12<?php print ($o_collections_config->get("always_link_to_hierarchy_viewer_sublist") || $vb_has_grandchildren) ? " col-sm-4" : ""; ?>'>
 						<div class='mx-3'>
-							<div class='fw-medium fs-3'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
+							<div class='fw-medium fs-3'>Digital Objects</div>
 <?php
+					$first_sub_collection_id = null;
 					if($qr_collection_children->numHits()){
 						while($qr_collection_children->nextHit()) {
 							$vs_icon = "";
@@ -48,6 +49,9 @@
 								$vs_record_count = "<br/><small class='ms-2 fw-normal'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 							}
 							if($vb_link_sublist || $o_collections_config->get("always_link_to_hierarchy_viewer_sublist")){
+								if(!$first_sub_collection_id){
+									$first_sub_collection_id = $qr_collection_children->get("ca_collections.collection_id");
+								}
 								print "<a href='#' class='p-3 d-block bg-body-tertiary text-black fw-medium' hx-target='#collectionLoad' hx-get='".caNavUrl($this->request, '', 'Collections', 'childList', array('collection_id' => $qr_collection_children->get("ca_collections.collection_id")))."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</a>";
 							}else{
 								# --- there are no grandchildren to show in browser, so check if we should link to detail page instead
@@ -77,9 +81,10 @@
 <?php
 					if($o_collections_config->get("always_link_to_hierarchy_viewer_sublist") || $vb_has_grandchildren){
 ?>
-							<div class='h-100 overflow-y-auto col-xs-12 col-sm-8 border-start'><div id='collectionLoad' class='mx-3'>
-								<i class="bi bi-arrow-left"></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.
+							<div class='h-100 overflow-y-auto col-xs-12 col-sm-8 border-start'><div id='collectionLoad' class='mx-3'hx-trigger="load" hx-target="#collectionLoad" hx-get="<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('collection_id' => $first_sub_collection_id)); ?>">
+								Loading...
 							</div></div>
+
 <?php
 					}
 ?>
