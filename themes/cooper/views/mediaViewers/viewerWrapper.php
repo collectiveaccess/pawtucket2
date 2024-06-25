@@ -45,39 +45,47 @@
 		$vn_object_id =  $this->request->getParameter('object_id', pInteger);
 	}
 	$vs_context = $this->request->getParameter('context', pString);
-	$t_object = new ca_objects($vn_object_id);
-	$va_siblings = $t_object->get("ca_objects.siblings.object_id", array("returnAsArray" => true));
-	$vn_previous_id = $vn_next_id = $vn_current_id = null;
-	if(is_array($va_siblings) && sizeof($va_siblings)){
-		foreach($va_siblings as $vn_sib_obj_id){
-			if($vn_current){
-				$vn_next_id = $vn_sib_obj_id;
-				break;
+	if($vs_context != "publication"){
+		
+		$t_object = new ca_objects($vn_object_id);
+		$va_siblings = $t_object->get("ca_objects.siblings.object_id", array("returnAsArray" => true));
+		$vn_previous_id = $vn_next_id = $vn_current_id = null;
+		if(is_array($va_siblings) && sizeof($va_siblings)){
+			foreach($va_siblings as $vn_sib_obj_id){
+				if($vn_current){
+					$vn_next_id = $vn_sib_obj_id;
+					break;
+				}
+				if($vn_sib_obj_id == $vn_object_id){
+					$vn_current = $vn_sib_obj_id;
+				}else{
+					$vn_previous_id = $vn_sib_obj_id;
+				}
 			}
-			if($vn_sib_obj_id == $vn_object_id){
-				$vn_current = $vn_sib_obj_id;
-			}else{
-				$vn_previous_id = $vn_sib_obj_id;
-			}
+		}elseif($vn_exhibition_id =  $this->request->getParameter('exhibition_id', pInteger)){
+			$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
+			$va_result_ids = $o_context->getResultList();
+			$vn_previous_id = $o_context->getPreviousID($vn_object_id);
+			$vn_next_id = $o_context->getNextID($vn_object_id);
 		}
+		print "<div class='pull-right'>";
+		if($vn_previous_id){
+			$t_object = new ca_objects($vn_previous_id);
+			if($vn_rep_id = $t_object->get("ca_object_representations.representation_id")){
+				print "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, '*', '*', $this->request->getAction(), array('representation_id' => $vn_rep_id, "object_id" => $vn_previous_id, "object_id" => $vn_previous_id, 'context' => $vs_context, 'exhibition_id' => $vn_exhibition_id))."\");'><i class='fa fa-angle-left'></i> Previous</a>";
+				print "&nbsp;&nbsp;&nbsp;&nbsp;";
+			}			
+		}
+		
+		if($vn_next_id){
+			$t_object = new ca_objects($vn_next_id);
+			if($vn_rep_id = $t_object->get("ca_object_representations.representation_id")){
+				print "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, '*', '*', $this->request->getAction(), array('representation_id' => $vn_rep_id, "object_id" => $vn_next_id, 'context' => $vs_context, 'exhibition_id' => $vn_exhibition_id))."\");'>Next <i class='fa fa-angle-right'></i></a>";
+				print "&nbsp;&nbsp;&nbsp;&nbsp;";
+			}			
+		}
+		print "</div>";
 	}
-	print "<div class='pull-right'>";
-	if($vn_previous_id){
-		$t_object = new ca_objects($vn_previous_id);
-		if($vn_rep_id = $t_object->get("ca_object_representations.representation_id")){
-			print "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, '*', '*', $this->request->getAction(), array('representation_id' => $vn_rep_id, "object_id" => $vn_previous_id, 'context' => $vs_context))."\");'><i class='fa fa-angle-left'></i> Previous</a>";
-			print "&nbsp;&nbsp;&nbsp;&nbsp;";
-		}			
-	}
-	
-	if($vn_next_id){
-		$t_object = new ca_objects($vn_next_id);
-		if($vn_rep_id = $t_object->get("ca_object_representations.representation_id")){
-			print "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, '*', '*', $this->request->getAction(), array('representation_id' => $vn_rep_id, "object_id" => $vn_next_id, 'context' => $vs_context))."\");'>Next <i class='fa fa-angle-right'></i></a>";
-			print "&nbsp;&nbsp;&nbsp;&nbsp;";
-		}			
-	}
-	print "</div>";
 ?>
 </div>
 <?php } ?>

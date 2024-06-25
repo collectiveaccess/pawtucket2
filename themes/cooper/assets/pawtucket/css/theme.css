@@ -568,7 +568,7 @@ ul.menuItems {
 	bottom:auto;
 	height:auto;
 }
-@media (min-width: 1010px) {
+@media (min-width: 1320px) {
 	#footer{
 		position:fixed;
 		bottom:0px;
@@ -625,7 +625,7 @@ ul.menuItems {
 	margin-right:0px;
 }
 
-@media (max-width: 1010px) {
+@media (max-width: 1320px) {
 	#footer .pull-right{
 		float:none !important;
 	}
@@ -639,6 +639,7 @@ ul.menuItems {
 	#footer{
 		text-align:center;
 		padding-top:20px;
+		height:auto;
 	}
 	#footer ul{
 		margin-right:0px;
@@ -1170,7 +1171,7 @@ ul.menuItems {
 	}
 }
 .browse .nav-tabs{
-	margin-top:50px;
+	margin-top:20px;
 }
 .listing H2{
 	margin-bottom:55px;
@@ -1476,7 +1477,7 @@ ul.menuItems {
 }
 
 /* course detail */
-.courseEntityList, .textsList{
+.courseEntityList, .textsList {
 	padding:30px 30px 50px 30px;
 }
 .detail .textsList{
@@ -1485,6 +1486,10 @@ ul.menuItems {
 .browse .textsList {
     border-bottom: 1px solid #939598;
     margin-right: 15px;
+    padding:30px 0px 50px 0px;
+}
+.studentWorkHeading{
+	padding:30px 0px 0px 0px;
 }
 .courseEntityListOverflow{
 	max-height:600px;
@@ -1579,4 +1584,22 @@ div.caMediaOverlayControls{
 }
 .black{
 	color:#000;
+}
+
+
+div.caMediaOverlayControls{
+	position: absolute;
+	padding: 10px 0px 10px 0px;
+	width: 100%;
+	bottom: 0px;
+	left: 0px;
+	z-index: 32000;
+	top: auto;
+	opacity: .8;
+}
+.detail.publication #detailRepNav{
+	display:none;
+}
+#caMediaPanelContentArea{
+	margin-top:0px;
 }

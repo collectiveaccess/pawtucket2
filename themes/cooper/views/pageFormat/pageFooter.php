@@ -32,7 +32,7 @@
 			<div class="container"><div class="row">
 				<div class="col-sm-12">
 					<div class="footerLogo pull-right">
-						<?php print caGetThemeGraphic($this->request, 'IMLS_Logo.png'); ?><?php print caGetThemeGraphic($this->request, 'levyLogo2.jpg'); ?><?php print caGetThemeGraphic($this->request, 'metro_logo.png'); ?><?php print caGetThemeGraphic($this->request, 'nhprc-logo.jpg'); ?>
+						<?php print caGetThemeGraphic($this->request, 'IMLS_Logo.png'); ?><?php print caGetThemeGraphic($this->request, 'levyLogo2.jpg'); ?><?php print caGetThemeGraphic($this->request, 'metro_logo.png'); ?><?php print caGetThemeGraphic($this->request, 'nhprc-logo.jpg').caGetThemeGraphic($this->request, 'NYSCA-Logo-Black.png'); ?>
 					</div>
 					<ul class="list-inline pull-right">
 						<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>

@@ -37,9 +37,9 @@
 	$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_galleryConfig->get('gallery_set_type')); 			
  	$t_set = new ca_sets();
 	if($vn_gallery_set_type_id){
-		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id);
+		# --- student works: objects sets
+		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => 'ca_objects');
 		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
-		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $va_access_values));
 		
 		$o_front_config = caGetFrontConfig();
 		$vs_front_page_set = $o_front_config->get('front_page_set_code');
@@ -47,12 +47,11 @@
 		foreach($va_sets as $vn_set_id => $va_set) {
 			if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
 				unset($va_sets[$vn_set_id]); 
-			}
-			$va_first_item = $va_set_first_items[$vn_set_id];
-			$va_first_item = array_shift($va_first_item);
-			$vn_item_id = $va_first_item["item_id"];
-			
+			}			
 		}
+		# --- exhibitions: occurrences sets
+		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => 'ca_occurrences');
+		$va_occ_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
 	}
 ?>
 	<div class="frontTopContainer">
@@ -89,13 +88,45 @@
 		<div class="col-sm-12 frontGalleries">
 <?php
 			if(sizeof($va_sets) > 1){
+				# mix together the exhibition and student work sets
+				$va_all_set_ids = array();
+				$c = sizeof($va_occ_sets);
+				if(sizeof($va_sets) > $c){
+					$c = sizeof($va_sets);
+				}
+				$va_object_sets_ids = array_keys($va_sets);
+				$va_occ_sets_ids = array_keys($va_occ_sets);
+				for ($x = 0; $x <= $c; $x++) {
+					if($va_object_sets_ids[$x]){
+						$va_all_set_ids[] = $va_object_sets_ids[$x];
+					}
+					if($va_occ_sets_ids[$x]){
+						$va_all_set_ids[] = $va_occ_sets_ids[$x];
+					}
+				}
+			
+			
 				$i = 1;
-				foreach($va_sets as $vn_set_id => $va_set){
+				foreach($va_all_set_ids as $vn_set_id){
+				#foreach($va_sets as $vn_set_id => $va_set){
 					$t_set = new ca_sets($vn_set_id);
-					$qr_set_items = caMakeSearchResult("ca_objects", array_keys($t_set->getItemRowIDs()));
+					if(in_array($vn_set_id, $va_object_sets_ids)){
+						$table = "ca_objects";
+					}else{
+						$table = "ca_occurrences";
+					}
+					$qr_set_items = caMakeSearchResult($table, array_keys($t_set->getItemRowIDs()));
 					if($qr_set_items->numHits()){
+						if($table == "ca_objects"){
 ?>
-						<div class="frontGallerySlideLabel"><?php print caNavLink($this->request, _t("See All")." <i class='fa fa-caret-down'></i>", "btn-default", "", "Search", "projects", array("search" => "ca_sets.set_id:".$vn_set_id)); ?><?php print $va_set["name"]; ?> <span class='frontGallerySlideLabelSub'>/ <?php print $qr_set_items->numHits(); ?> projects</span></div>
+						<div class="frontGallerySlideLabel"><?php print caNavLink($this->request, _t("See All")." <i class='fa fa-caret-down'></i>", "btn-default", "", "Search", "projects", array("search" => "ca_sets.set_id:".$vn_set_id)); ?><?php print $t_set->get("ca_sets.preferred_labels.name"); ?> <span class='frontGallerySlideLabelSub'>/ <?php print $qr_set_items->numHits(); ?> projects</span></div>
+<?php
+						}else{
+?>
+						<div class="frontGallerySlideLabel"><?php print caNavLink($this->request, _t("See All")." <i class='fa fa-caret-down'></i>", "btn-default", "", "Search", "exhibitions", array("search" => "ca_sets.set_id:".$vn_set_id)); ?><?php print $t_set->get("ca_sets.preferred_labels.name"); ?> <span class='frontGallerySlideLabelSub'>/ <?php print $qr_set_items->numHits(); ?> exhibitions</span></div>
+<?php						
+						}
+?>
 						<div class="jcarousel-wrapper">
 							<!-- Carousel -->
 							<div class="jcarousel gallery<?php print $i; ?>">
@@ -105,19 +136,36 @@
 									while($qr_set_items->nextHit()){
 										$vs_image = "";
 										$tmp_images = array();
-										$va_all_ids[] = $qr_set_items->get("ca_objects.object_id");
-										$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' delimiter='|||'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
-										if(!$vs_image){
-											$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' limit='1'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values));
+										if($table == "ca_objects"){
+											$va_all_ids[] = $qr_set_items->get("ca_objects.object_id");
+											$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' delimiter='|||'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
+											if(!$vs_image){
+												$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' limit='1' delimiter='|||'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values));
+											}
+											if($vn_c = mb_strpos($vs_image, "|||")){
+												$tmp_images = explode("|||", $vs_image);
+												$vs_image = $tmp_images[0];
+											}
+											if(!$vs_image){
+												$vs_image = caGetThemeGraphic($this->request, 'placeholder.jpg', array("style" => "opacity:.5;"));
+											}
+											print "<li><div class='slide'>".caDetailLink($this->request, $vs_image, "", "ca_objects", $qr_set_items->get("ca_objects.object_id"))."<div class='slideCaption'>".caDetailLink($this->request, $qr_set_items->get("ca_objects.preferred_labels.name"), "", "ca_objects", $qr_set_items->get("ca_objects.object_id"))."</div></div></li>";
+										}else{
+											$va_all_ids[] = $qr_set_items->get("ca_occurrences.occurrence_id");
+											$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_occurrences.children' sort='ca_occurrences.idno' limit='1' delimiter='|||'><unit relativeTo='ca_objects' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit></unit>", array("checkAccess" => $va_access_values));
+											if(!$vs_image){
+												$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_occurrences.children' sort='ca_occurrences.idno' limit='1'><unit relativeTo='ca_objects' sort='ca_objects.idno' limit='1' delimiter='|||'>^ca_object_representations.media.widepreview</unit></unit>", array("checkAccess" => $va_access_values));
+											}
+											if($vn_c = mb_strpos($vs_image, "|||")){
+												$tmp_images = explode("|||", $vs_image);
+												$vs_image = $tmp_images[0];
+											}
+											if(!$vs_image){
+												$vs_image = caGetThemeGraphic($this->request, 'placeholder.jpg', array("style" => "opacity:.5;"));
+											}
+											print "<li><div class='slide'>".caDetailLink($this->request, $vs_image, "", "ca_occurrences", $qr_set_items->get("ca_occurrences.occurrence_id"))."<div class='slideCaption'>".caDetailLink($this->request, $qr_set_items->get("ca_occurrences.preferred_labels.name"), "", "ca_occurrences", $qr_set_items->get("ca_occurrences.occurrence_id"))."</div></div></li>";
+										
 										}
-										if($vn_c = mb_strpos($vs_image, "|||")){
-											$tmp_images = explode("|||", $vs_image);
-											$vs_image = $tmp_images[0];
-										}
-										if(!$vs_image){
-											$vs_image = caGetThemeGraphic($this->request, 'placeholder.jpg', array("style" => "opacity:.5;"));
-										}
-										print "<li><div class='slide'>".caDetailLink($this->request, $vs_image, "", "ca_objects", $qr_set_items->get("ca_objects.object_id"))."<div class='slideCaption'>".caDetailLink($this->request, $qr_set_items->get("ca_objects.preferred_labels.name"), "", "ca_objects", $qr_set_items->get("ca_objects.object_id"))."</div></div></li>";
 										$c++;
 										if($c == 25){
 											break;
