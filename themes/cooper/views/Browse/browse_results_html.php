@@ -378,8 +378,14 @@ if (!$vb_ajax) {	// !ajax
 				</div><!-- end row -->
 <?php				
 			}
-			
-				
+			#if($vs_exhibitions_output || $vs_faculty_text){
+?>
+				<div class="row studentWorkHeading">
+					<div class='col-sm-12'><H5>Student Work</H5></div>
+				</div>
+					
+<?php			
+			#}
 				//
 				// GET RELATIONSHIP TYPES FOR TABS
 				//
