@@ -95,6 +95,8 @@ class AdvancedSearchView extends View {
 		//<input type='text' class='form-control' id='{{{formId}}}' aria-describedby='{{{descId}}}'>
 		$element_id = 'adv-'.preg_replace('![^A-Za-z0-9_]+!', '_', $bundle);
 		$desc_id = 'advdesc-'.preg_replace('![^A-Za-z0-9_]+!', '_', $bundle);
+		
+		if(!isset($options['height'])) { $options['height'] = 1; }
 		$element = $this->subject->htmlFormElementForSearch(
 			$this->request, 
 			$bundle, 
@@ -122,6 +124,67 @@ class AdvancedSearchView extends View {
 	/**
 	 *
 	 */
+	public function formBundle(string $formbundle, ?array $options=null) : ?string {
+		$this->subject = Datamodel::getInstance($this->info['table'] ?? null, true);
+		
+		if(!is_array($bundle_defs = $this->info['fieldBundles'][$formbundle] ?? null)) {
+			return null;
+		}
+		
+		$opts = [];
+		foreach($bundle_defs as $k => $bi) {
+			if(!($bundle = $bi['bundle'] ?? null)) { continue; }
+			if(!strlen($label = $bi['label'] ?? null)) { continue; }
+			$opts[$bundle] = $label;
+			$this->form_elements[$bundle] = 1;
+		}
+		
+		$select = caHTMLSelect('bundle', array_flip($opts), ['aria-label' => 'select', 'class' => caGetOption('selectClass', $options, null)]);
+		
+		$ret = [
+			'id' => caGetOption('id', $options, 'bundle'),
+			'templateId' => caGetOption('templateId', $options, 'template'),
+			'select' => $select,
+			'options' => $opts
+		];
+		
+		// Get form elements for each option
+		$input_class = caGetOption('inputClass', $options, null);
+		$inputs = [];
+		foreach($opts as $b => $l) {
+			$this->form_elements[$b] = 1;
+			$element_id = 'adv-'.preg_replace('![^A-Za-z0-9_]+!', '_', $b);
+			$elements = $this->subject->htmlFormElementForSearch(
+				$this->request, 
+				$b, 
+				array_merge([
+					'class' => $input_class,
+					'id' => $element_id,
+					'elementsOnly' => true
+					//'attributes' => ['aria-describedby' => $desc_id]
+				], $options)
+			);	
+			if(is_array($elements['elements'] ?? null)) {
+				$elements = $elements['elements'];
+				$elements = array_shift($elements);
+				$inputs[$b] = join('', $elements);
+			} else {
+				$inputs[$b] = $elements;
+			}
+		}
+		$ret['inputs'] = $inputs;
+		
+		$js =  "<script>
+	if(!pawtucketUIApps['advancedSearchFieldBundle']) { pawtucketUIApps['advancedSearchFieldBundle'] = {}; }
+	if(!pawtucketUIApps['advancedSearchFieldBundle']['bundles']) { pawtucketUIApps['advancedSearchFieldBundle']['bundles'] = {}; }
+	pawtucketUIApps['advancedSearchFieldBundle']['bundles']['{$formbundle}'] = ".json_encode($ret, true)."</script>";
+		
+		return $js;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	public function formTag(?array $attributes, ?array $options=null) {
 		$attr = array_merge([
 			'action' => caNavUrl($this->request, '*', '*', $this->request->getActionExtra()),
@@ -139,7 +202,7 @@ class AdvancedSearchView extends View {
 	public function formHiddenElements(?array $options=null) {
 		$elements = [
 			caHTMLHiddenInput('_advanced', ['value' => 1]),
-			caHTMLHiddenInput('_formElements', ['value' => join('|', array_keys($this->form_elements))]),
+			caHTMLHiddenInput('_formElements', ['id' => '_advanced_formElements', 'value' => join('|', array_keys($this->form_elements))]),
 		];
 		return join("\n", $elements);
 	}

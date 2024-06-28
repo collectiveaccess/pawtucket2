@@ -91,12 +91,12 @@ if (!$vb_ajax) {	// !ajax
 	?>
 						<p>
 							<strong style="color: maroon;">This database contains legislation that has already been acted on by Council (passed, retired, etc.).
-							Legislation currently in process can be found here: <a href="https://seattle.legistar.com/Legislation.aspx" target="_blank">Current Legislation</a>.</strong>
-							Please visit our <a href="http://www.seattle.gov/cityclerk/legislation-rules-records-and-resources/a-new-way-to-view-legislation-and-agendas" target="_blank">FAQ</a> page for additional information.
+							Legislation currently in process can be found here: <a class="text-decoration-underline" href="https://seattle.legistar.com/Legislation.aspx" target="_blank">Current Legislation</a>.</strong>
+							Please visit our <a class="text-decoration-underline" href="http://www.seattle.gov/cityclerk/legislation-rules-records-and-resources/a-new-way-to-view-legislation-and-agendas" target="_blank">FAQ</a> page for additional information.
 						</p>
 						<p>
 							To narrow your results or for advanced searching, you may wish to search on each database separately. Refer to the list of
-							<a href="/search/">all Clerk and Municipal Archives records indexes</a> to navigate.
+							<a class="text-decoration-underline" href="/">all Clerk and Municipal Archives records indexes</a> to navigate.
 						</p>
 	<?php
 					break;
@@ -132,7 +132,7 @@ if (!$vb_ajax) {	// !ajax
   <div id="top-search-nav" class="d-flex inline-block justify-content-between">
 
 		<div class="nav-icons">
-			<a name="h0" role="anchor" aria-label="anchor"></a>
+			<a name="h0" role="button" aria-label="anchor"></a>
 
 			<a href="/" aria-label="home">
 				<i class="bi bi-house-door-fill"></i>
@@ -157,14 +157,12 @@ if (!$vb_ajax) {	// !ajax
 		</div>
 
 		<div id="export-controls">
-			<button onclick="" class="btn btn-sm btn-primary">
-				<i class="bi bi-download"></i>
-				EXPORT
+			<button onclick="document.location='<?= caNavUrl($this->request, '*', '*', '*', ['view' => 'xlsx', 'export_format' => 'excel']); ?>'; return false;" class="btn btn-sm btn-primary">
+				<i class="bi bi-download"></i> Export
 			</button>
 			<br />
 
-				<small><a role="button" class="" style="font-size: unset;" data-bs-toggle="modal" data-bs-target="#ExportingResults">
-					What's this?</a></small>
+				<small><a role="button" class="" style="font-size: unset;" data-bs-toggle="modal" data-bs-target="#ExportingResults">What's this?</a></small>
 				<div class="modal fade" id="ExportingResults">
 					<div class="modal-dialog">
 						<div class="modal-content">
@@ -214,7 +212,7 @@ if (!$vb_ajax) {	// !ajax
 			<div id="browseResultsContainer">
 				<div class="row">
 
-					<table style="width: 100%;" class="table table-striped table-responsive">
+					<table style="width: 100%;" class="table table-striped overflow-x-auto">
 						<tbody>
 							<tr>
 								<th>Result</th>
@@ -276,7 +274,7 @@ if (!$vb_ajax) {	// !ajax
     </a>
   </p>
 
-  <a id="hb" role="anchor" aria-label="anchor"></a>
+  <a id="hb" role="button" aria-label="anchor"></a>
 
 </div>
 

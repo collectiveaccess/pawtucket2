@@ -60,6 +60,9 @@ if($this->request->isLoggedIn()){
 	
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.8/jquery.jgrowl.min.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.8/jquery.jgrowl.min.js"></script>
+
 	<script>
 		let pawtucketUIApps = {};
 	</script>
@@ -92,30 +95,45 @@ if($this->request->isLoggedIn()){
 							</button>
             </div>
             <div class="modal-body">
-              <form role="search" id="googleSearch" class="navbar-form" style="width: 600px; margin: 100px auto auto;">
-								<div class="input-group">
-									<input type="text" class="form-control" title="Search" id="searchInput" name="terms" size="18" maxlength="255" value="" placeholder="Search" autocomplete="off" style="width: 500px; height: 55px; border: none; font-size: 28px; border-radius: 0;">
-									<button id="searchButton" type="submit" class="btn btn-secondary btn-default" tabindex='0'
-									style="border-radius: 0; background-color: #666; color: #fff;border-color: #666; height: 55px; width: 55px;" aria-label="search button">
-                    <span class="visually-hidden">search</span>
-                    <i class="bi bi-search" style="font-size: 24px;"></i>
-                  </button>
-								</div>
+              <form role="search" id="googleSearch" class="navbar-form" style="width: 600px; margin: 100px auto auto;" action='https://www.seattle.gov/searchresults'>
+				<div class="input-group">
+					<input type="text" class="form-control" title="Search" id="searchInput" name="terms" size="18" maxlength="255" value="" placeholder="Search" autocomplete="off" style="width: 500px; height: 55px; border: none; font-size: 28px; border-radius: 0;">
+					<button id="searchButton" type="submit" class="btn btn-secondary btn-default" tabindex='0'
+						style="border-radius: 0; background-color: #666; color: #fff;border-color: #666; height: 55px; width: 55px;" aria-label="search button">
+							<span class="visually-hidden">search</span>
+							<i class="bi bi-search" style="font-size: 24px;"></i>
+					</button>
+				</div>
 
-								<div>
-									<fieldset class="searchToggles text-white" aria-label="search-toggles">
-										<div class="radio" style="text-align: right; float: right;margin-top: 10px;">
-											<label class="pe-1" for="Seattlegov">
-												<input type="radio" name="catids" value="" title="Seattlegov" id="Seattlegov" checked="checked">
-												<span>Seattle.Gov</span>
-											</label>
-											<label class="pe-1" for="deptCollection">
-												<input type="radio" name="catids" value="1889" title="Current Site" id="deptCollection">
-												<span>This Site Only</span>
-											</label>
-										</div>
-									</fieldset>
-								</div>
+				<div>
+					<fieldset class="searchToggles text-white" aria-label="search-toggles">
+						<div class="radio" style="text-align: right; float: right;margin-top: 10px;">
+							<label class="pe-1" for="Seattlegov">
+								<input type="radio" name="catids" value="" title="Seattlegov" id="Seattlegov" checked="checked">
+								<span>Seattle.Gov</span>
+							</label>
+							<label class="pe-1" for="deptCollection">
+								<input type="radio" name="catids" value="1889" title="Current Site" id="deptCollection">
+								<span>This Site Only</span>
+							</label>
+						</div>
+					</fieldset>
+				</div>
+				<script>
+					let googleSearch = document.getElementById('googleSearch');
+					let seattlegov = document.getElementById('Seattlegov');
+					let deptCollection = document.getElementById('deptCollection');
+					let searchInput = document.getElementById('searchInput');
+					seattlegov.onclick = function(e) {
+						let s = searchInput.value;
+						googleSearch.action = 'https://www.seattle.gov/searchresults?terms=' + escape(s);
+						searchInput.name = 'terms';
+					};
+					deptCollection.onclick = function(e) {
+						googleSearch.action = '/Search/combined';
+						searchInput.name = 'search';
+					};
+				</script>
               </form>
             </div>
 
@@ -169,7 +187,10 @@ if($this->request->isLoggedIn()){
 		<li class="list-group-item last" style="height: 100px;"></li>
 	</ul>
 
-<!-------------------------------- Mobile Menu -------------------------------->
+
+
+
+ <!-- Mobile Menu -->
 
 
 <ul id="seagovMenuMobile" class="list-group slidemenu-right">
@@ -192,8 +213,7 @@ if($this->request->isLoggedIn()){
         <fieldset class="searchToggles">
           <div class="radio">
             <label for="Seattlegov_M">
-              <input type="radio" name="catids" value="" title="Seattlegov" id="Seattlegov_M"
-              checked="checked">
+              <input type="radio" name="catids" value="" title="Seattlegov" id="Seattlegov_M" checked="checked">
               <span class="text-white">
                 Seattle.Gov
               </span>

@@ -36,7 +36,7 @@
 			<div class="container-fluid">
 				<div class="row align-items-center">
 					<div class="col-lg-6">
-						<?= caNavlink($this->request, _t("<div>Milton Glacier Design Study Center and Archives</div><div class='divide border-bottom border-black my-1'></div><div>SVA Archives</div>"), "text-black fs-2 navbar-brand", "", "", ""); ?>
+						<?= caNavlink($this->request, _t("<div>Milton Glaser Design Study Center and Archives</div><div class='divide border-bottom border-black my-1'></div><div>SVA Archives</div>"), "text-black fs-2 navbar-brand", "", "", ""); ?>
 					</div>
 					<div class="col-lg-2"></div>
 					<div class="col-lg-4 text-lg-end">
@@ -56,7 +56,7 @@
 						</div>
 						<div class="text-center">
 							<ul class="list-inline pt-3 mb-0">
-								<li class="list-inline-item fs-4 px-2"><a href="mailto:archives@visualartsfoundation.org" class="" aria-label="Email Us"><i class="bi bi-envelope"></i></a></li>
+								<li class="list-inline-item fs-4 px-2"><?php print caNavlink($this->request, '<i class="bi bi-envelope"></i>', '', '', "Contact", 'form'); ?></li>
 								<li class="list-inline-item fs-4 px-2"><a href="https://www.instagram.com/glaserarchives/" class="" aria-label="Instagram Link"><i class="bi bi-instagram"></i></a></li>
 								<li class="list-inline-item fs-4 px-2"><a href="https://twitter.com/glaserarchives" class="" aria-label="X Link"><i class="bi bi-twitter-x"></i></a></li>
 							</ul>

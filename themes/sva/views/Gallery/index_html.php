@@ -81,7 +81,7 @@
 			print "<div class='col-sm-6 col-lg-4 d-flex'>";
 			$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 bg-white p-3 border-0 mb-4'><img src='".$va_first_item["representation_url"]."' class='".$vs_image_class."' alt=''>
 							<div class='card-body px-0'>
-								<div class='card-title fw-medium lh-sm fs-4 text-decoration-underline'>".$va_set["name"]."</div>
+								<div class='card-title fw-medium lh-sm fs-4'>".$va_set["name"]."</div>
 								<div class='card-text small text-body-secondary'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</div>
 							</div>
 							<div class='card-footer text-end bg-transparent border-0 p-0'>
