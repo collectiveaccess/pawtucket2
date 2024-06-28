@@ -34,7 +34,7 @@ if($this->request->isLoggedIn()){
 	$user_links .= "<li class='dropdown-item dropdown position-relative'><a class='".(($this->request->getController() == 'LoginReg') ? ' active' : '')."' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'>User Options <i class='bi bi-person-circle' aria-label='"._t('User Options')."'></i></a>
 						<ul class='dropdown-menu dropdown-menu-sub'>";
 	
-	$user_links .= '<li class="dropdown-item"><a class="dropdown-header fs-5 text-wrap pe-none">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).'<br>'.$this->request->user->get("email").'</a></li>';
+	$user_links .= '<li class="dropdown-item"><a class="dropdown-header fs-5 text-wrap pe-none text-break">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).'<br>'.$this->request->user->get("email").'</a></li>';
 	// $user_links .= "<li><hr class='dropdown-divider'></li>";
 	if(caDisplayLightbox($this->request)){
 		$user_links .= "<li class='dropdown-item'>".caNavLink($this->request, $lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
