@@ -2107,6 +2107,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$va_items = $sorted_items;
 		}
 		
+		if(caGetOption('shuffle', $pa_options, false)) {
+			shuffle($va_items);
+		}
 		
 		if (caGetOption('idsOnly', $pa_options, false)) {
 			return array_keys($va_items);
