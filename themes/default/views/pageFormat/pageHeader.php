@@ -65,7 +65,7 @@ if($this->request->isLoggedIn()){
 	</script>
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
-	
+	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<nav class="navbar navbar-expand-lg shadow-sm">
 		<div class="container-xl">
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'logo.svg', array("alt" => "Site logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
@@ -93,7 +93,7 @@ if($this->request->isLoggedIn()){
 					}
 ?>
 				</ul>
-				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
+				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
 					<div class="input-group mt-4">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search">
@@ -105,7 +105,7 @@ if($this->request->isLoggedIn()){
 		</div>
 	</nav>	
 
-	<main <?= caGetPageCSSClasses(); ?>>
+	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4'>";

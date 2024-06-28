@@ -339,7 +339,7 @@ footer{
 				cursor: pointer;
 			}
 			#mc-embedded-subscribe:hover{
-				background-color: #858585;
+				background-color: #FFFFFF;
 				color: white;
 			}
 		}
@@ -359,9 +359,7 @@ footer{
 				transition: border 0.15s ease-in-out,color 0.15s ease-in-out;
 				display: inline-block;
 			
-				span {
-					display: none;
-				}
+				
 			}
 		}
 		.give-cta-btn a:hover{
@@ -413,4 +411,12 @@ footer{
 	H2{
 		letter-spacing: -0.84px
 	}
-}	
+}
+
+/* accessibility changes */
+.form-control:focus {
+	box-shadow:0 0 2px 2px rgba(102,102,102,.5);
+}
+nav #navbarSearch button:focus{
+	box-shadow:0 0 2px 2px rgba(102,102,102,.5);
+}

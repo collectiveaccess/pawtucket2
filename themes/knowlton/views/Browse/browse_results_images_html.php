@@ -118,7 +118,7 @@
 					$vs_typecode = "";
 					
 					if ($vs_table == 'ca_objects') {
-						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $vs_image_class)))){
+						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $vs_image_class, "alt" => "")))){
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
@@ -127,7 +127,7 @@
 								$vs_thumbnail = $vs_default_placeholder;
 							}
 						}
-						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, 'shadow-sm', $vs_table, $vn_id);				
+						#$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, 'shadow-sm', $vs_table, $vn_id);				
 					} else {
 						if($va_images[$vn_id]){
 							$vs_thumbnail = $va_images[$vn_id];
@@ -141,13 +141,12 @@
 						$vs_add_to_set_link = "<a href='#' class='link-dark mx-1' aria-label='Add' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 					$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
+					$vs_detail_link = caDetailLink($this->request, $vs_thumbnail."<div class='card-body px-0 pt-2 pb-5'>".$vs_caption."</div>", '', $vs_table, $vn_id, null));
 					$vs_result_output = "
 			<div class='col-md-6 col-lg-4 d-flex'>
 				<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 border-0 mb-4'>
-				  {$vs_rep_detail_link}
-				  	<div class='card-body px-0 pt-2 pb-5'>
-						{$vs_caption}
-					</div>
+				  {$vs_detail_link}
+				  	
 				 </div>	
 			</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));

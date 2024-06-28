@@ -66,9 +66,9 @@ if($this->request->isLoggedIn()){
 	</script>
 </head>
 <body id="pawtucketApp" class="d-flex flex-column">
+	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<div role="navigation" id="osu_navbar" aria-labelledby="osu_navbar_heading" class="bg-black">
 		<div id="osu_navbar_heading" class="visually-hidden text-white">Ohio State nav bar</div>
-		<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 		<div class="container-fluid">
     		<div class="row">
     			<div class="col-4">
@@ -113,10 +113,10 @@ if($this->request->isLoggedIn()){
 					</li>
 				</ul>
 			</div>
-			<div class="collapse position-absolute end-0 start-0 vh-100 bg-white px-5 overflow-scroll" id="navbarSearch">
+			<div class="collapse position-absolute end-0 start-0 vh-100 bg-white px-5 overflow-scroll" id="navbarSearch" aria-modal="true">
 				<div class="row">
 					<div class="col-12">
-						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>">
+						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>" role="search">
 							<div class="input-group mt-4">
 								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search...">
@@ -141,8 +141,8 @@ if($this->request->isLoggedIn()){
 						if($entity_results->numHits()){
 ?>
 							<div class="col-12 col-md-4">
+								<H2 class="text-body-tertiary fs-4 fw-normal">Featured Faculty:</H2>
 								<ul class="list-unstyled">
-									<li><div class="text-body-tertiary">Featured Faculty:</div></li>
 <?php
 									while($entity_results->nextHit()){
 										print "<li>&mdash; ".caNavlink($this->request, $entity_results->get("ca_entities.preferred_labels.displayname"), "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $entity_results->get("ca_entities.entity_id")))."</li>";
@@ -162,8 +162,8 @@ if($this->request->isLoggedIn()){
 				if(is_array($va_list_items) && sizeof($va_list_items)){
 ?>
 							<div class="col-12 col-md-4">
+								<H2 class="text-body-tertiary fs-4 fw-normal">Work Types:</H2>
 								<ul class="list-unstyled">
-									<li><div class="text-body-tertiary">Work Types:</div></li>
 <?php
 										foreach($va_list_items as $va_list_item){
 											$va_list_item = array_pop($va_list_item);
@@ -186,8 +186,8 @@ if($this->request->isLoggedIn()){
 						if($collection_results->numHits()){
 ?>
 							<div class="col-12 col-md-4">
+								<H2 class="text-body-tertiary fs-4 fw-normal">Collections:</H2>
 								<ul class="list-unstyled">
-									<li><div class="text-body-tertiary">Collections:</div></li>
 <?php
 									$i = 0;
 									while($collection_results->nextHit()){
