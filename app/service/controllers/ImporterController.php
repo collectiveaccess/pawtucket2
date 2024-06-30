@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2021 Whirl-i-Gig
+ * Copyright 2021-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -647,7 +647,21 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					$item_count = $t_list->numItemsInList($list_id);
 					
 					if ($item_count <= 500) {
-						$items = array_map(function($v) { return $v['name_plural']; }, caExtractValuesByUserLocale($t_list->getItemsForList($list_id)));
+						$opts = [];
+						if($expr = caGetOption('filterExpression', $info, false)) {
+							$opts['filterExpression'] = $expr;
+						}
+
+						$items = array_map(function($v) { return $v['name_plural']; }, caExtractValuesByUserLocale($t_list->getItemsForList($list_id, $opts)));
+						$t_item = new ca_list_items();
+						$np = $t_item->getNonPreferredDisplayLabelsForIDs(array_keys($items));
+
+						
+						foreach($np as $id => $labels) {
+							$items[$id] = $labels[0];
+						}
+						asort($items);
+						
 						$type['enum'] = array_map(function($v) { return (string)$v; }, array_keys($items));
 						$type['enumNames'] = array_values($items);
 					}
@@ -732,6 +746,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					while($qr->nextHit()) {
 						$options[$qr->get("{$element_code}.preferred_labels")] = $qr->getPrimaryKey();
 					}
+					ksort($options);
 					$type = [
 						'type' => 'array', 'format' => 'string',
 						'items' => [
