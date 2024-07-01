@@ -118,7 +118,7 @@
 					$vs_typecode = "";
 					
 					if ($vs_table == 'ca_objects') {
-						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $vs_image_class, "alt" => "")))){
+						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $vs_image_class, "alt" => "xxx")))){
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
@@ -127,6 +127,8 @@
 								$vs_thumbnail = $vs_default_placeholder;
 							}
 						}
+						# --- during accessibility testing, they asked us to remove the alt text from result images and instead have the title be part of the link
+						$vs_thumbnail = str_replace("xxx", "", $vs_thumbnail);
 						#$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, 'shadow-sm', $vs_table, $vn_id);				
 					} else {
 						if($va_images[$vn_id]){
