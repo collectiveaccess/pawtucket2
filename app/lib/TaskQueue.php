@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2004-2023 Whirl-i-Gig
+ * Copyright 2004-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,19 +29,19 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 require_once(__CA_LIB_DIR__."/BaseObject.php");
-require_once(__CA_LIB_DIR__."/Logging/Eventlog.php");
 require_once(__CA_LIB_DIR__."/Utils/ProcessStatus.php");
 require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
 
 class TaskQueue extends BaseObject {
-	private $eventlog;
+	private $log;
 	private $processes;
 	private $app_plugin_manager;
 	private $handler_plugin_dirs = [];
 	private $config;
 	private $transaction = null;
+	
+	static $tasks_added = 0;
 
 	# ---------------------------------------------------------------------------
 	/**
@@ -55,7 +55,7 @@ class TaskQueue extends BaseObject {
  			$this->handler_plugin_dirs[] = $vs_default_dir;
 		}
 		
-		$this->eventlog = new Eventlog();
+		$this->log = caGetLogger();
 		$this->processes = new ProcessStatus();
  		$this->app_plugin_manager = new ApplicationPluginManager();
  		$this->transaction = caGetOption('transaction', $options, null);
@@ -173,6 +173,7 @@ class TaskQueue extends BaseObject {
 			$this->postError(503, join('; ', $o_db->getErrors()), 'TaskQueue->addTask()');
 			return null;
 		}
+		TaskQueue::$tasks_added++;
 		return $o_db->getLastInsertID();
 	}
 	# ---------------------------------------------------------------------------
@@ -205,7 +206,7 @@ class TaskQueue extends BaseObject {
 	 * This is useful when the task queue script (or the whole machine) crashed.
 	 * It shouldn't interfere with any running handlers.
 	 */
-	function resetUnfinishedTasks() {
+	public function resetUnfinishedTasks() {
 		// verify registered processes
 		$o_appvars = new ApplicationVars();
 		$va_processes = $o_appvars->getVar('taskqueue_processes');
@@ -234,13 +235,51 @@ class TaskQueue extends BaseObject {
 				continue;
 			}
 			// reset started_on datetime
-			$this->eventlog->log(array(
-				'CODE' => 'QUE',
-				'SOURCE' => 'TaskQueue->resetUnfinishedTasks()',
-				'MESSAGE' => 'Reset start_date for unfinished task with task_id '.$qr_unfinished->get('task_id')
-			));
+			$this->log->logNotice(_t('[TaskQueue] Reset start_date for unfinished task with task_id %1', $qr_unfinished->get('task_id')));
 			$o_db->query('UPDATE ca_task_queue SET started_on = NULL WHERE task_id = ?', [$qr_unfinished->get('task_id')]);
 		}
+	}
+	# ---------------------------------------------------------------------------
+	/**
+	 * Resets task that did not complete due to queue crash or error
+	 */
+	public function resetIncompleteTasks(array $task_ids) : bool {
+		$task_ids = array_filter(array_map('intval', $task_ids), function($v) { return $v; });
+		if(!sizeof($task_ids)) {
+			return false;
+		}
+		// verify registered processes
+		$o_appvars = new ApplicationVars();
+		$va_processes = $o_appvars->getVar('taskqueue_processes');
+		if (!is_array($va_processes)) { $va_processes = []; }
+		$va_verified_processes = $this->verifyProcesses($va_processes);
+		$o_appvars->setVar('taskqueue_processes', $va_verified_processes);
+		$o_appvars->save();
+
+		$o_db = $this->getDb();
+		$qr_unfinished = $o_db->query('
+			SELECT *
+			FROM ca_task_queue
+			WHERE
+				(completed_on IS NULL OR error_code > 0) AND
+				started_on IS NOT NULL AND
+				task_id IN (?)
+		', [$task_ids]);
+
+		// reset start datetime for zombie rows
+		while($qr_unfinished->nextRow()) {
+			// don't touch rows that are being processed right now
+			if(
+				$this->rowKeyIsBeingProcessed($qr_unfinished->get('row_key')) ||
+				$this->entityKeyIsBeingProcessed($qr_unfinished->get('entity_key'))
+			) {
+				continue;
+			}
+			// reset started_on datetime
+			$this->log->logNotice(_t('[TaskQueue] Reset start_date and error status for unfinished task with task_id %1', $qr_unfinished->get('task_id')));
+			$o_db->query('UPDATE ca_task_queue SET started_on = NULL, completed_on = NULL, error_code = 0 WHERE task_id = ?', [$qr_unfinished->get('task_id')]);
+		}
+		return true;
 	}
 	# ---------------------------------------------------------------------------
 	/**
@@ -259,11 +298,7 @@ class TaskQueue extends BaseObject {
 		}
 		
 		if (!sizeof($this->handler_plugin_dirs)) {
-			$this->eventlog->log(array(
-				'CODE' => 'ERR', 
-				'SOURCE' => 'TaskQueue->processQueue()', 
-				'MESSAGE' => 'Queue processing failed because no handler directories are configured; queue was halted')
-			);		
+			$this->log->logError(_t('[TaskQueu] Queue processing failed because no handler directories are configured; queue was halted'));
 			$this->postError(510, _t('No handler directories are configured!'), 'TaskQueue->processQueue()');
 			$this->unregisterProcess($proc_id);
 			return false;
@@ -304,7 +339,7 @@ class TaskQueue extends BaseObject {
 				$proc_parameters = unserialize(base64_decode($qr_tasks->get('parameters')));
 				
 				if(!($h = $this->getHandler($proc_handler))) {
-					$this->eventlog->log(array('CODE' => 'ERR', 'SOURCE' => 'TaskQueue->processQueue()', 'MESSAGE' => _t('Queue processing failed because of invalid task queue handler "%1"; queue was halted', $proc_handler)));
+					$this->log->logError(_t('[TaskQueue] Queue processing failed because of invalid task queue handler "%1"; queue was halted', $proc_handler));
 					$this->postError(500, _t('Invalid task queue handler "%1"', $proc_handler), 'TaskQueue->processQueue()');
 					
 					$o_db->query('
@@ -331,11 +366,7 @@ class TaskQueue extends BaseObject {
 				} else {
 					$errorDescription = $h->error ? $h->error->getErrorDescription() : '';
 					$errorNumber      = $h->error->getErrorNumber();
-					$this->eventlog->log( array(
-						'CODE'    => 'ERR',
-						'SOURCE'  => 'TaskQueue->processQueue()',
-						'MESSAGE' => _t('Queue processing failed using handler %1: %2 [%3]; queue was NOT halted', $proc_handler, $errorDescription, $errorNumber)
-					) );
+					$this->log->logError(_t('[TaskQueue] Queue processing failed using handler %1: %2 [%3]; queue was NOT halted', $proc_handler, $errorDescription, $errorNumber));
 					$this->errors[] = $h->error;
 					
 					// Got error, so mark task as failed (non-zero error_code value)
@@ -346,11 +377,7 @@ class TaskQueue extends BaseObject {
 						[time(), (int) $errorNumber, (int)$qr_tasks->get('task_id')]);
 				}
 				if ($o_db->numErrors()) {
-					$this->eventlog->log(array(
-						'CODE' => 'ERR', 
-						'SOURCE' => 'TaskQueue->processQueue()', 
-						'MESSAGE' => _t('Queue processing failed while closing task record using %1: %2; queue was halted', $proc_handler, join('; ', $o_db->getErrors())))
-					);
+					$this->log->logError(_t('[TaskQueue] Queue processing failed while closing task record using %1: %2; queue was halted', $proc_handler, join('; ', $o_db->getErrors())));
 					$this->postError(515, _t('Error while closing task record: %1', join('; ', $o_db->getErrors())), 'TaskQueue->processQueue()');
 					
 					$this->unregisterProcess($proc_id);
@@ -371,11 +398,7 @@ class TaskQueue extends BaseObject {
 	 */
 	function cancelPendingTasksForEntity($ps_entity_key, $handler='') {
 		if ($this->entityKeyIsBeingProcessed($ps_entity_key)) {
-			$this->eventlog->log(array(
-				'CODE' => 'ERR', 
-				'SOURCE' => 'TaskQueue->cancelPendingTasksForEntity()', 
-				'MESSAGE' => _t('Can\'t cancel pending tasks for entity key "%1" because an item associated with the entity is being processed', $ps_entity_key)
-			));
+			$this->log->logError(_t('[TaskQueue] Can\'t cancel pending tasks for entity key "%1" because an item associated with the entity is being processed', $ps_entity_key));
 			return false;
 		}
 		$sql_handler_criteria = '';
@@ -401,9 +424,8 @@ class TaskQueue extends BaseObject {
 		$task_cancel_delete_failures = [];
 		
 		if (!sizeof($this->handler_plugin_dirs)) {
-			$this->eventlog->log(array('CODE' => 'ERR', 'SOURCE' => 'TaskQueue->cancelPendingTasks()', 'MESSAGE' => 'Cancelling of task failed because no handler directories are configured'));		
+			$this->log->logError(_t('[TaskQueue] Cancelling of task failed because no handler directories are configured'));
 			$this->postError(510, _t('No handler directories are configured!'), 'TaskQueue->cancelPendingTasks()');	
-
 			return false;
 		}
 		
@@ -411,12 +433,7 @@ class TaskQueue extends BaseObject {
 			$proc_handler = $qr_tasks->get('handler');
 			
 			if(!($h = $this->getHandler($proc_handler))) {
-				$this->eventlog->log([
-					'CODE' => 'ERR', 
-					'SOURCE' => 'TaskQueue->cancelPendingTasks()', 
-					'MESSAGE' => _t('Cancelling of task failed because of invalid task queue handler "%1"; plugin directories were %2', $proc_handler, join('; ', $this->handler_plugin_dirs))
-					]
-				);
+				$this->log->logError(_t('[TaskQueue] Cancelling of task failed because of invalid task queue handler "%1"; plugin directories were %2', $proc_handler, join('; ', $this->handler_plugin_dirs)));
 				$this->postError(500, _t('Invalid task queue handler "%1"', $proc_handler), 'TaskQueue->cancelPendingTasks()');
 				continue;
 			}
@@ -473,11 +490,8 @@ class TaskQueue extends BaseObject {
 	 */
 	function cancelPendingTasksForRow($ps_row_key, $handler='') {
 		if ($this->rowKeyIsBeingProcessed($ps_row_key)) {
-			$this->eventlog->log(array(
-					'CODE' => 'ERR', 
-					'SOURCE' => 'TaskQueue->cancelPendingTasksForRow()', 
-					'MESSAGE' => _t('Can\'t cancel pending tasks for row key "%1" because the row is being processed', $ps_row_key)));
-			$this->error = _t('Can\'t cancel pending tasks for row key "%1" because the queue is being processed', $ps_row_key);
+			$this->log->logError(_t('[TaskQueue] Can\'t cancel pending tasks for row key "%1" because the row is being processed', $ps_row_key));
+			$this->postError(510, _t('Can\'t cancel pending tasks for row key "%1" because the queue is being processed', $ps_row_key), 'TaskQueue->cancelPendingTasks()');
 			return false;
 		}
 		$sql_handler_criteria = '';
@@ -502,16 +516,15 @@ class TaskQueue extends BaseObject {
 		$task_cancel_delete_failures = [];
 		
 		if (!sizeof($this->handler_plugin_dirs)) {
-			$this->eventlog->log(array('CODE' => 'ERR', 'SOURCE' => 'TaskQueue->cancelPendingTasks()', 'MESSAGE' => 'Queue processing failed because no handler directories are configured; queue was halted'));		
+			$this->log->logError(_t('[TaskQueue] Queue processing failed because no handler directories are configured; queue was halted'));		
 			$this->postError(510, _t('No handler directories are configured!'), 'TaskQueue->cancelPendingTasks()');	
-	
 			return false;
 		}
 		while($qr_tasks->nextRow()) {
 			$proc_handler = $qr_tasks->get('handler');
 			
 			if(!($h = $this->getHandler($proc_handler))) {
-				$this->eventlog->log(array('CODE' => 'ERR', 'SOURCE' => 'TaskQueue->cancelPendingTasks()', 'MESSAGE' => _t('Queue processing failed because of invalid task queue handler "%1"; queue was halted', $proc_handler)));
+				$this->log->logError(_t('[TaskQueue] Queue processing failed because of invalid task queue handler "%1"; queue was halted', $proc_handler));
 				$this->postError(500, _t('Invalid task queue handler "%1"', $proc_handler), 'TaskQueue->cancelPendingTasks()');
 				continue;
 			}
@@ -692,6 +705,25 @@ class TaskQueue extends BaseObject {
 	 */
 	function getDb() {
 		return $this->transaction ? $this->transaction->getDb() : new Db();
+	}
+	# ---------------------------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function run(?array $options=null) : bool {
+		$tq = new TaskQueue();
+		$quiet = caGetOption('quiet', $options, true);
+
+		if(caGetOption('restart', $options, false))  { $tq->resetUnfinishedTasks(); }
+
+		if (!$quiet) { CLIUtils::addMessage(_t("Processing queued tasks...")); }
+		$tq->processQueue();	
+
+		if (!$quiet) { CLIUtils::addMessage(_t("Processing recurring tasks...")); }
+		$tq->runPeriodicTasks();	// Process recurring tasks implemented in plugins
+		if (!$quiet) {  CLIUtils::addMessage(_t("Processing complete.")); }
+		
+		return true;
 	}
 	# ---------------------------------------------------------------------------
 }

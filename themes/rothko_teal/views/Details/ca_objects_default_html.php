@@ -372,6 +372,9 @@
 					if ($t_prov_rel->get('ca_objects_x_collections.sold_yn') == 163) { 
 						$vs_buf[]= "(not sold)";
 					}	
+					if($vs_rem = $t_prov_rel->get('ca_objects_x_collections.transaction_remarks')) {
+						$vs_buf[]= $vs_rem;
+					}
 					if (is_array($vs_buf) && (sizeof($vs_buf) > 0)){
 						$vs_prov_line.= ", ".join(', ', $vs_buf);
 					}

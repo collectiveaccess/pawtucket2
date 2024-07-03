@@ -225,7 +225,7 @@
 							$vs_essays[] = "<div class='trimText'>".$va_essay."</div>";
 						}
 						print "<hr>";
-						print "<div class='unit'><h2 class='artist'>Essays</h2>".join($vs_essays, "<hr class='dark'>")."</div>";
+						print "<div class='unit'><h2 class='artist'>Essays</h2>".join("<hr class='dark'>", $vs_essays)."</div>";
 					}																																					
 ?>						
 				</div>	<!-- end col-12 -->		

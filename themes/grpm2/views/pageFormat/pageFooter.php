@@ -53,12 +53,12 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-12">
-						<ul class="list-inline pull-center social">
+						<!--<ul class="list-inline pull-center social">
 							<li><a href="https://www.facebook.com/GRMuseum/?fref=ts" title="Grand Rapids Public Museum Facebook" target="_blank"><span class="fa fa-facebook"></span></a></li>
 							<li><a href="https://twitter.com/GRMuseum?lang=en" title="Grand Rapids Public Museum Twitter" target="_blank"><span class="fa fa-twitter"></span></i></a></li>
 							<li><a href="https://www.instagram.com/grmuseum/" title="Grand Rapids Public Museum Instagram" target="_blank"><span class="fa fa-instagram"></span></a></li>
 							<li><a href="https://www.pinterest.com/grpublicmuseum/" title="Grand Rapids Public Museum Pinterest" target="_blank"><span class="fa fa-pinterest"></span></a></li>
-						</ul>
+						</ul>-->
 						<br/>
 						<br/>&copy; Grand Rapids Public Museum <?php print date("Y"); ?>
 					</div>

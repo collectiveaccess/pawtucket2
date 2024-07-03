@@ -1,6 +1,6 @@
 <div class="container">
 	<div class="row">
-		<div class="col-sm-8" style='border-right:1px solid #ddd;'>
+		<div class="col-sm-8 advancedSearchFormCol">
 			<h1>Objects Advanced Search</h1>
 
 <?php			
@@ -46,7 +46,7 @@
 			</div>
 		</div>	
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
-			<div class="" style="margin: 10px 0px">
+			<div class="" style="margin: 25px 0px">
 				Has Media (image, video, audio, etc.) &nbsp 
 				{{{ca_object_representations.md5%render=is_set&label=Has+media}}}
 			</div>
@@ -74,9 +74,8 @@
 			</div>
 		</div>	
 	<br style="clear: both;"/>
-	<div style='margin-right:230px;'>
-		<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
-		<div style="float: right;">{{{submit%label=Search}}}</div>
+	<div class='text-center'>
+		{{{reset%label=Reset}}}&nbsp;&nbsp;{{{submit%label=Search}}}
 	</div>								
 	</div>	
 	

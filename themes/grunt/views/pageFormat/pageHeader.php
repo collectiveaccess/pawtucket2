@@ -170,7 +170,7 @@
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?> role="menuitem" tabindex="0"><?php print caNavLink($this->request, _t("About the Archive"), "", "", "About", ""); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?> role="menuitem" tabindex="0"><?php print caNavLink($this->request, _t("Galleries"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Listing") ? 'class="active"' : ''; ?> role="menuitem" tabindex="0"><?php print caNavLink($this->request, _t("Subject Guides"), "", "", "Listing", "subject_guides"); ?></li>
+					<li <?php print ($this->request->getController() == "Listing") ? 'class="active"' : ''; ?> role="menuitem" tabindex="0"><?php print caNavLink($this->request, _t("Projects"), "", "", "Listing", "projects"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

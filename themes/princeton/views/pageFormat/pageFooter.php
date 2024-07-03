@@ -35,15 +35,15 @@
 					print "<div class='AAlogo'><a href='https://artandarchaeology.princeton.edu/' target='_blank'>".caGetThemeGraphic($this->request, 'A&A_logo.png', array("alt" => "Department of Art & Archaeology"))."</a></div>";
 ?>
 					<div class="address">
-						<a href='https://visualresources.princeton.edu/' target='_blank'><b>Visual Resources</b></a><br/>
-						2-N-7/8 Green Hall<br/>
-						609-258-3776<br/>
+						<a href='https://visualresources.princeton.edu/' target='_blank'><b>Visual Resources</b></a><br>
+						2-N-7/8 Green Hall<br>
+						609-258-3776<br>
 						<a href="mailto:visres@princeton.edu">visres@princeton.edu</a>
 					</div>
 				</div>
 				<div class="col-sm-12 col-md-6 col-lg-5 text-center">
 <?php
-					print "<div class='princetonLogo'><a href='https://www.princeton.edu' target='_blank'>".caGetThemeGraphic($this->request, 'PU1line.png', array("alt" => "Department of Art & Archaeology"))."</a></div>";
+					print "<div class='princetonLogo'><a href='https://www.princeton.edu' target='_blank'>".caGetThemeGraphic($this->request, 'PU1line.png', array("alt" => "Princeton University"))."</a></div>";
 ?>				
 				</div>
 			</div>
@@ -63,7 +63,7 @@
 			
 			</div>
 		</div>
-		<script type="text/javascript">
+		<script>
 			/*
 				Set up the "caMediaPanel" panel that will be triggered by links in object detail
 				Note that the actual <div>'s implementing the panel are located here in views/pageFormat/pageFooter.php

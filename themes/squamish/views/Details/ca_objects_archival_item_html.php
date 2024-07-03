@@ -86,9 +86,22 @@
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,contributor"><div class="unit"><label>Creators and Contributors</label>
 						<unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,contributor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>
 					</div></ifcount>}}}
+<?php
+				$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "excludeRelationshipTypes" => array("creator", "contributor", "holding_repository")));
+				if(is_array($va_entities) && sizeof($va_entities)){
+					$va_entities_by_type = array();
+					foreach($va_entities as $va_entity_info){
+						$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
+					}
+					foreach($va_entities_by_type as $vs_type => $va_entity_links){
+						print "<div class='unit'><label>".$vs_type.((sizeof($va_entity_links) > 1) ? "s" : "")."</label>".join(", ", $va_entity_links)."</div>";
+					}
+				}
+?>
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.display_date"><div class="unit"><label>Date</label>^ca_objects.display_date%delimiter=,_</div></ifdef>}}}
 				{{{<ifnotdef code="ca_objects.display_date"><ifdef code="ca_objects.date"><div class="unit"><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef></ifnotdef>}}}
+				{{{<ifdef code="ca_objects.date_note"><div class="unit"><label>Date Note</label><unit relativeTo="ca_objects.date_note" delimiter="<br/>">^ca_objects.date_note</unit></div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.GMD"><div class="unit"><label>General Material Designation</label>^ca_objects.GMD%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.phys_desc"><div class="unit"><label>Physical Description</label>^ca_objects.phys_desc</div></ifdef>}}}

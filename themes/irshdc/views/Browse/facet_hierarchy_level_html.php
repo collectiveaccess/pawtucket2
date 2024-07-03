@@ -66,7 +66,7 @@
 	if ($vb_is_nav) { print "<div class='row'>"; }
 	if(sizeof($va_links)){
 		ksort($va_links);
-		print join($va_links, "\n");
+		print join("\n", $va_links);
 	}
 	if ($vb_is_nav) { print "</div>\n"; }
 	if($vs_link_to == "morePanel"){

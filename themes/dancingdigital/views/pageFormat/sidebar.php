@@ -30,12 +30,43 @@
 				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'choreographers_html'); ?>">Choreographers</a></li>
 				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'choreographic_works_html'); ?>">Choreographic Works</a></li>
 				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'performances_html'); ?>">Performances</a></li>
-				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'journey_html'); ?>">Gesel’s Journey</a></li>
+				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'Detail', 'journey/1'); ?>">Gesel’s Journey</a></li>
 				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'archives_html'); ?>">Archives</a></li>
+				<form class="navbar-form" role="search" action="<?= caNavUrl($this->request, '', 'search/objects', 'Index'); ?>" aria-label="<?= _t("Search"); ?>">
+					<div class="formOutline m-0 border-0" style='width:180px;'>
+						<div class="form-group">
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="<?= _t("Search text"); ?>" style='background-color:#fff;' />
+						</div>
+						<button type="submit" class="btn-search ps-3" id="headerSearchButton" style="background-color: transparent;">
+							<span class="glyphicon glyphicon-search" style="color: #fff;" aria-label="<?= _t("Submit"); ?>"></span>
+						</button>
+					</div>
+				</form>
+
+				<?php
+					if($this->request->isLoggedIn()){
+
+						if(caDisplayLightbox($this->request)){
+							print "<li>".caNavLink($this->request, _t('Lightbox'), 'nav-link', '', 'Lightbox', 'Index', array())."</li>";
+						}
+
+						print "<li>".caNavLink($this->request, _t('Site Info'), 'nav-link', '', 'About', 'siteinfo', array())."</li>";
+
+						print "<li>".caNavLink($this->request, _t('Logout'), 'nav-link', '', 'LoginReg', 'Logout', array())."</li>";
+					} else {
+
+						print "<li>".caNavLink($this->request, _t('Site Info'), 'nav-link', '', 'About', 'siteinfo', array())."</li>";
+
+						if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+						if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+					}
+				?>
+
 			</ul>
 		</div>
 	</div>
 </nav>
+
 
 <div class="sidebar-container">
 	
@@ -70,35 +101,48 @@
 		<li><a href="<?= caNavUrl($this->request, '', 'About', 'choreographers_html'); ?>" class="btn">Choreographers</a></li>
 		<li><a href="<?= caNavUrl($this->request, '', 'About', 'choreographic_works_html'); ?>" class="btn">Choreographic Works</a></li>
 		<li><a href="<?= caNavUrl($this->request, '', 'About', 'performances_html'); ?>" class="btn">Performances</a></li>
-		<li><a href="<?= caNavUrl($this->request, '', 'About', 'journey_html'); ?>" class="btn">Gesel's Journey</a></li>
+		<li><a href="<?= caNavUrl($this->request, '', 'Detail', 'journey/1'); ?>" class="btn">Gesel's Journey</a></li>
 		<li><a href="<?= caNavUrl($this->request, '', 'About', 'archives_html'); ?>" class="btn">Explore the Archives</a></li>
+
+		<form class="navbar-form p-0 ps-2" role="search" action="<?= caNavUrl($this->request, '', 'search/objects', 'Index'); ?>" aria-label="<?= _t("Search"); ?>">
+			<div class="formOutline">
+				<div class="form-group">
+					<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="<?= _t("Search text"); ?>" />
+				</div>
+				<button type="submit" class="btn-search" id="headerSearchButton" style="background-color: transparent;">
+					<span class="glyphicon glyphicon-search" style="color: #fff;" aria-label="<?= _t("Submit"); ?>"></span>
+				</button>
+			</div>
+		</form>
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#headerSearchButton').prop('disabled',true);
+				$('#headerSearchInput').on('keyup', function(){
+					$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
+				})
+			});
+		</script>
+
+<?php
+	if($this->request->isLoggedIn()){
+
+		if(caDisplayLightbox($this->request)){
+			print "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Lightbox', 'Index', array())."</li>";
+		}
+
+		print "<li>".caNavLink($this->request, _t('Site Info'), '', '', 'About', 'siteinfo', array())."</li>";
+
+		print "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
+	} else {
+
+		print "<li>".caNavLink($this->request, _t('Site Info'), '', '', 'About', 'siteinfo', array())."</li>";
+
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+	}
+?>
+
 	</ul>
 
 </div>
-
-<!-- NavLink Example -->
-<!-- <?= caNavLink(
-		$this->request, 
-		'Choreographers', //link text
-		'btn', //classes
-		'', 
-		'About', //folder
-		'choreographers_html', //file
-		[],		//URL parameters
-		[]	 //html <a> attributes
-	); 
-?> -->
-
-<!-- <li class="mb-1">
-	<a href="<?= caNavUrl($this->request, '', 'Front', 'front_page_html'); ?>" class="btn btn-toggle align-items-center text-white collapsed" data-bs-toggle="collapse" data-bs-target="#about-collapse" aria-expanded="true">
-		About <i class="fa-solid fa-angle-down fa-xs"></i>
-	</a>
-	<div class="collapse show ps-5" id="about-collapse">
-		<ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-			<li class="collapsed-item">
-				<a href="<?= caNavUrl($this->request, '', '', 'about'); ?>" class="link-light text-decoration-none">Our Story</a>
-			</li>
-			<li class="collapsed-item"><a href="#" class="link-light text-decoration-none">Gallery</a></li>
-		</ul>
-	</div>
-</li> -->

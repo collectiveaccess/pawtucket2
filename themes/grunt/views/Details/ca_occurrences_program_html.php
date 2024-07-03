@@ -142,7 +142,15 @@ if($vb_2_col){
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="1">
+<?php
+	# --- show related objects if there are any on this program or the children of this program
+	$vb_show_related_objects = false;
+	if($t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values)) || $t_item->getWithTemplate("<unit relativeTo='ca_occurrences.children'>^ca_objects.object_id</unit>", array("checkAccess" => $va_access_values))){
+		$vb_show_related_objects = true;
+	}
+	if($vb_show_related_objects){
+?>
+{{{
 			<div class="row">
 				<div class="col-sm-12"><H3>Related Archive, Library & Publication Objects</H3><HR/></div>
 			</div>
@@ -165,7 +173,11 @@ if($vb_2_col){
 					
 				});
 			</script>
-</ifcount>}}}		</div><!-- end container -->
+}}}
+<?php
+	}
+?>
+		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">

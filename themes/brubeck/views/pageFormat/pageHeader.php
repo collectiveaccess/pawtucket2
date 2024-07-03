@@ -55,28 +55,28 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 
 ?><!DOCTYPE html>
-<html lang="en" <?php print ((strtoLower($this->request->getController()) == "front")) ? "class='frontContainer'" : ""; ?>>
+<html lang="en" <?= ((strtoLower($this->request->getController()) == "front")) ? "class='frontContainer'" : ""; ?>>
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	
-	<meta property="og:url" content="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />
+	<meta property="og:url" content="<?= $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />
 	<meta property="og:type" content="website" />
 <?php
 	if(!in_array(strToLower($this->request->getAction), array("objects"))){
 		# --- this is set on detail page
 ?>
-	<meta property="og:description" content="<?php print htmlspecialchars((MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name")); ?>" />
-	<meta property="og:title" content="<?php print $this->request->config->get("app_display_name"); ?>" />
+	<meta property="og:description" content="<?= htmlspecialchars((MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name")); ?>" />
+	<meta property="og:title" content="<?= $this->request->config->get("app_display_name"); ?>" />
 <?php
 	}
 ?>	
 
 	
-	<?php print MetaTagManager::getHTML(); ?>
-	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
+	<?= MetaTagManager::getHTML(); ?>
+	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
+	<title><?= (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -96,7 +96,7 @@
 	<link rel="stylesheet" href="https://use.typekit.net/lzb1bct.css">
 </head> 
 
-<body class='<?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
+<body class='<?= (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
@@ -119,7 +119,9 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, _t("<span>The</span><strong>BRUBECK</strong>Collection"), "navbar-brand", "", "","");
+				#print caNavLink($this->request, _t("<span>The</span><strong>BRUBECK</strong>Collection"), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'TBC_Reversed_Stacked.png', array("alt" => "The Brubeck Collection", "role" => "banner")), "navbar-brand", "", "","");
+				
 ?>
 			</div>
 
@@ -129,8 +131,8 @@
 	if ($vb_has_user_links) {
 ?>
 			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav" role="list" aria-label="<?php print _t("Mobile User Navigation"); ?>">
-					<?php print join("\n", $va_user_links); ?>
+				<ul class="nav navbar-nav" role="list" aria-label="<?= _t("Mobile User Navigation"); ?>">
+					<?= join("\n", $va_user_links); ?>
 				</ul>
 			</div>
 <?php
@@ -140,24 +142,26 @@
 <?php
 	if ($vb_has_user_links) {
 ?>
-				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
+				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?= _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" role="graphics-document" aria-label="<?php print _t("User options"); ?>"></span></a>
-						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" role="graphics-document" aria-label="<?= _t("User options"); ?>"></span></a>
+						<ul class="dropdown-menu" role="list"><?= join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
 <?php
 	}
 ?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
+				<form class="navbar-form navbar-right" role="search" action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?= _t("Search"); ?>">
 					<div class="formOutline">
 						<div class="form-group">
 							<label for="headerSearchInput" class="sr-only">Search:</label>
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?= _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?= _t("Search text"); ?>" />
 						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" role="graphics-document" aria-label="<?php print _t("Submit"); ?>"></span></button>
+						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" role="graphics-document" aria-label="<?= _t("Submit"); ?>"></span></button>
 					</div>
-					<div class="headerAdvancedSearch"><?php print caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
+					<div class="headerAdvancedSearch">
+						<?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?>
+					</div>
 				</form>
 				<script type="text/javascript">
 					$(document).ready(function(){
@@ -167,28 +171,28 @@
 						})
 					});
 				</script>
-				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li class="dropdown-container<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>">
+				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?= _t("Primary Navigation"); ?>">
+					<li class="dropdown-container<?= ($this->request->getController() == "About") ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Guide"), "", "", "About", "Guide"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Plan Your Visit"), "", "", "About", "Visit"); ?></li>
+							<li><?= caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection"); ?></li>
+							<li><?= caNavLink($this->request, _t("Guide"), "", "", "About", "Guide"); ?></li>
+							<li><?= caNavLink($this->request, _t("Plan Your Visit"), "", "", "About", "Visit"); ?></li>
 						</ul>
 					</li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="dropdown-container<?php print (in_array(strToLower($this->request->getController()), array("gallery", "listing"))) ? ' active' : ''; ?>">
+					<?= $this->render("pageFormat/browseMenu.php"); ?>	
+					<li class="dropdown-container<?= (in_array(strToLower($this->request->getController()), array("gallery", "listing"))) ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Featured <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Tours"), "", "", "Featured", "Tours"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Songs"), "", "", "Featured", "Songs"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Exhibits"), "", "", "Gallery", "Index"); ?></li>
+							<li><?= caNavLink($this->request, _t("Tours"), "", "", "Featured", "Tours"); ?></li>
+							<li><?= caNavLink($this->request, _t("Songs"), "", "", "Featured", "Songs"); ?></li>
+							<li><?= caNavLink($this->request, _t("Exhibits"), "", "", "Gallery", "Index"); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
+					<li <?= ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?= caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
 	<div class="container"><div class="row"><div class="col-xs-12">
-		<div role="main" id="main"><div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+		<div role="main" id="main"><div id="pageArea" <?= caGetPageCSSClasses(); ?>>

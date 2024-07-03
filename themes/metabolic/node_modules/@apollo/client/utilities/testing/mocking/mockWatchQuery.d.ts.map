@@ -1,1 +1,0 @@
-{"version":3,"file":"mockWatchQuery.d.ts","sourceRoot":"","sources":["../../../../src/utilities/testing/mocking/mockWatchQuery.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,YAAY,CAAC;AAE5C,OAAO,EAAE,eAAe,EAAE,MAAM,+BAA+B,CAAC;0CAG7C,GAAG,KAAK,GAAG,sBACR,cAAc,EAAE,KACnC,eAAe,CAAC,GAAG,CAAC;AAHvB,wBAWE"}

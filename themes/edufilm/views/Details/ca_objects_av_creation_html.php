@@ -93,7 +93,7 @@
 							^ca_objects.vhh_Title.TitleText 
 							<ifdef code="ca_objects.vhh_Title.TitleType">(^ca_objects.vhh_Title.TitleType)</ifdef>
 						</ifdef>
-
+						
 						
 							<ifdef code="ca_objects.vhh_Title.TitleTemporalScope|ca_objects.vhh_Title.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">

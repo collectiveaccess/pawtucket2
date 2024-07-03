@@ -3834,3 +3834,7 @@ input[type='text'].ui-autocomplete-loading {
 	background-color: #FBF719;
 	opacity: 0.8;
 }
+
+.lbItemContent {
+	overflow: hidden;
+}

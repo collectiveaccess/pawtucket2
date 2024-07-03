@@ -1,0 +1,59 @@
+/* universal header/footer styles */
+#header { padding:0px; margin:0px;}
+img.headerImg {height:45px; width:auto; margin-top:20px; margin-bottom:10px;}
+.pagingText { position: absolute; top: 30px; right: 30px; font: "tahoma"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px;}
+#footer .pagingText{ top:20px; }
+.footerText { position:relative; font-size: 11px;  top:13px; padding-right:40px;  }  
+body{ font: "tahoma, sans-serif"; margin:0px; padding:0px;}
+
+/* dompdf */
+@page { margin: 65px 56px 35px 56px; }
+
+#headerdompdf { position: fixed; left: 0px; top: -75px; right: 0px; height: 55px;  text-align: left; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
+#footerdompdf { position: fixed; left: 0px; bottom: -0px; right: 0px; height: 0px; text-align: center; vertical-align: bottom; }
+#footerdompdf .pagingText:after { content: counter(page, decimal); }
+#footerdompdf .pagingText { position: absolute; top: 0px; right: 30px; font: "tahoma"; font-size: 11px; text-align: right; margin: 0px;}
+#footerdompdf .footerText { position:relative; font-size: 11px; padding-right:40px;  } 
+
+/* summary styles */
+.title { font: "tahoma, sans-serif"; font-size: 24px; width:100%; padding-top:30px; text-align: left; font-weight: 400;}
+.representationList { width: 100%; margin-top:10px; text-align: center; }
+.unit {font: "tahoma, sans-serif"; font-size:12px; margin-bottom:12px; font-weight:400; line-height:1.2em;}
+h6 {font: "tahoma, sans-serif"; font-size:12px; font-weight:bold; text-transform:capitalize; margin:0px 0px 5px 0px; padding:0px;}
+.tombstone { margin-top:20px;}
+.clear { clear: both; }
+
+h2 { font: "tahoma, sans-serif"; font-size:18px; width:100%; padding-top:10px; padding-bottom:5px; text-align: left; font-weight:400 !important;}
+
+
+.fileIcon{
+	background-image: url("folder.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	width:17px;
+	height:14px;
+	display:inline-block;
+}
+.collectionContents{
+	margin-top:20px;
+}
+.objectsTable{
+	margin-bottom:15px;
+	background-color: #f3f3f3;
+}
+.objectsTableHeader {font-size:12px; font-weight:bold; text-transform:capitalize; margin-bottom:5px; background-color:#f3f3f3;}
+.objectsTableItem {font-size:12px;}
+.objectsTableHeader td, .objectsTableItem td{ padding:5px;}
+.objectsTableItem td{ background-color: #FFF;}
+
+.toc a{
+	color:#000;
+	text-decoration:none;
+	font: "tahoma, sans-serif";
+	font-size:12px;
+	width:100%;
+	text-align: left;
+	font-weight:400 !important;
+}
+.toc .unit {font: "tahoma, sans-serif"; font-size:12px; margin-bottom:5px; text-align:left; clear:left;}
+.toc { margin:20px 0px 20px 10px; }

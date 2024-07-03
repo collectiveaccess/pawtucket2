@@ -18,11 +18,11 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1 text-center'>
-					<H1>{{{^ca_occurrences.preferred_labels.name}}} &mdash; {{{^ca_occurrences.alutiiq_word}}}{{{<ifdef code="ca_occurrences.pronunciation_audio_clip"> <i id="playPronunciation" class="fa fa-volume-up" aria-hidden="true"></i></ifdef>}}}</H1>
-
+				<div class='col-sm-12 text-center'>
+					<H2 class="uk-h1">{{{^ca_occurrences.preferred_labels.name}}} &mdash; {{{^ca_occurrences.alutiiq_word}}}{{{<ifdef code="ca_occurrences.pronunciation_audio_clip"> <span id='playPronunciation'><span class='uk-link el-image uk-icon' uk-icon='icon: microphone;'><svg width='20' height='20' viewBox='0 0 20 20'><line fill='none' stroke='#000' x1='10' x2='10' y1='16.44' y2='18.5'></line><line fill='none' stroke='#000' x1='7' x2='13' y1='18.5' y2='18.5'></line><path fill='none' stroke='#000' stroke-width='1.1' d='M13.5 4.89v5.87a3.5 3.5 0 0 1-7 0V4.89a3.5 3.5 0 0 1 7 0z'></path><path fill='none' stroke='#000' stroke-width='1.1' d='M15.5 10.36V11a5.5 5.5 0 0 1-11 0v-.6'></path></svg></span></span></ifdef>}}}</H2>
+						
 					<HR>
-					{{{<ifdef code="ca_occurrences.sentence"><h2>^ca_occurrences.sentence</h2></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.sentence"><div class="sentence">^ca_occurrences.sentence</div></ifdef>}}}
 					<HR>
 <?php
 					if($va_audio_podcast = $t_item->representationsWithMimeType(array('audio/mpeg', 'audio/x-aiff', 'audio/x-wav, audio/mp4'), array('versions' => array('original'), 'return_with_access' => $va_access_values))){
@@ -35,7 +35,7 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
-				<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+				<div class='col-sm-6 col-md-6'>
 <?php
 					if($va_images = $t_item->representationsWithMimeType(array('image/jpeg', 'image/tiff', 'image/png', 'image/x-dcraw', 'image/x-psd', 'image/x-dpx', 'image/jp2', 'image/x-adobe-dng', 'image/bmp', 'image/x-bmp'), array('versions' => array('large'), 'return_with_access' => $va_access_values))){
 						foreach($va_images as $vn_rep_id => $va_image_info){
@@ -47,19 +47,7 @@
 					}					
 ?>
 					<div class="row">
-						<div class="col-md-6">
-							<!-- AddToAny BEGIN -->
-							<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
-							<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-							<a class="a2a_button_facebook"></a>
-							<a class="a2a_button_twitter"></a>
-							<a class="a2a_button_linkedin"></a>
-							<a class="a2a_button_email"></a>
-							</div>
-							<script async src="https://static.addtoany.com/menu/page.js"></script>
-							<!-- AddToAny END -->
-						</div>
-						<div class="col-md-6">
+						<div class="col-sm-12">
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
@@ -83,7 +71,7 @@
 						</div>
 					</div>
 				</div><!-- end col -->
-				<div class='col-md-6 col-lg-5 text-left'>
+				<div class='col-md-6'>
 					{{{<ifdef code="ca_occurrences.description"><div class="unit">^ca_occurrences.description</div></ifdef>}}}
 					
 				</div><!-- end col -->

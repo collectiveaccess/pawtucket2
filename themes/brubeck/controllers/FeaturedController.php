@@ -145,7 +145,7 @@
 			}
  			$qr_timeline_occs = caMakeSearchResult(
 				"ca_occurrences",
-				$t_song->get("ca_occurrences.related.occurrence_id", array("returnAsArray" => true, "restrictToTypes" => array("appearance", "album", "studio_session"), "checkAccess" => $this->opa_access_values)),
+				$t_song->get("ca_occurrences.related.occurrence_id", array("returnAsArray" => true, "restrictToTypes" => array("appearance", "album", "reissue", "studio_session"), "checkAccess" => $this->opa_access_values)),
 				['checkAccess' => $this->opa_access_values]
 			);
 

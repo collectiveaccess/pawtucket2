@@ -94,22 +94,25 @@
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
-		<div class="row">
-			<div class="col-sm-4">
-					<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-						<label for="security">Security Question</label>
-						<div class='row'>
-							<div class='col-sm-4'>
-								<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-							</div>
-							<div class='col-sm-4'>
-								<input name="security" value="" id="security" type="text" class="form-control input-sm" />
-							</div>
-						</div><!--end row -->	
+<?php
+	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class='form-group<?= (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha"></div>
 					</div>
-			</div><!-- end col -->
-		</div><!-- end row -->
-				
+				</div>
+			</div><!-- end row -->
+<?php
+	}
+?>				
 		<div class="form-group">
 			<br/><button type="submit" class="btn btn-default">Send</button>
 		</div><!-- end form-group -->

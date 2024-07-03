@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2022 Whirl-i-Gig
+ * Copyright 2008-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,17 +29,11 @@
  *
  * ----------------------------------------------------------------------
  */
-
-/**
- *
- */
-
 require_once(__CA_LIB_DIR__."/Search/SearchBase.php");
 require_once(__CA_LIB_DIR__.'/Utils/Graph.php');
 require_once(__CA_LIB_DIR__.'/Utils/Timer.php');
 require_once(__CA_LIB_DIR__.'/Utils/CLIProgressBar.php');
 require_once(__CA_APP_DIR__.'/helpers/utilityHelpers.php');
-require_once(__CA_MODELS_DIR__.'/ca_search_indexing_queue.php');
 
 class SearchIndexer extends SearchBase {
 	# ------------------------------------------------
@@ -55,6 +49,8 @@ class SearchIndexer extends SearchBase {
 
 	static $s_search_indexing_queue_inserts = [];
 	static $s_search_unindexing_queue_inserts = [];
+	
+	static $queued_entry_count = 0;
 	
 	/**
 	 *
@@ -79,7 +75,8 @@ class SearchIndexer extends SearchBase {
 	# -------------------------------------------------------
 	public function __destruct() {
 		$o_db = new Db();
-		if(sizeof(self::$s_search_indexing_queue_inserts) > 0) {
+		if(($c = sizeof(self::$s_search_indexing_queue_inserts)) > 0) {
+			SearchIndexer::$queued_entry_count += $c;
 			$va_insert_segments = array();
 			foreach (self::$s_search_indexing_queue_inserts as $va_insert_data) {
 				$va_insert_segments[] = "('" . join("','", $va_insert_data) . "')";
@@ -90,7 +87,8 @@ class SearchIndexer extends SearchBase {
             }
 		}
 
-		if(sizeof(self::$s_search_unindexing_queue_inserts) > 0) {
+		if(($c = sizeof(self::$s_search_unindexing_queue_inserts)) > 0) {
+			SearchIndexer::$queued_entry_count += $c;
 			$va_insert_segments = array();
 			foreach (self::$s_search_unindexing_queue_inserts as $va_insert_data) {
 				$va_insert_segments[] = "('" . join("','", $va_insert_data) . "')";
@@ -802,8 +800,9 @@ if (!$for_current_value_reindex) {
 							// is this field related to something?
 							if (is_array($va_rels = Datamodel::getManyToOneRelations($vs_subject_tablename)) && ($va_rels[$vs_field] ?? null)) {
 								if (isset($va_rels[$vs_field])) {
-									if ($pa_changed_fields[$vs_field] ?? null) {
+									if (($pa_changed_fields[$vs_field] ?? null) && ($va_rels[$vs_field]['one_table'] ?? null)) {
 										$pb_reindex_mode = true;	// trigger full reindex of record so it reflects text of related item (if so indexed)
+										$this->opo_engine->removeRowIndexing($pn_subject_table_num, $pn_subject_row_id, Datamodel::getTableNum($va_rels[$vs_field]['one_table']), ["I{$vn_fld_num}"]);
 									}
 								}
 							}
@@ -1508,7 +1507,7 @@ if (!$for_current_value_reindex) {
 								}
 							}
 						}
-						
+						$rtable_num = $t_base->tableNum();
 						foreach($references as $row_id => $elements) {
 							$content = join('; ', array_keys($values ?? []));
 							$element_fields_to_index = $this->getFieldsToIndex($element_table_num, $rtable_num);
@@ -1570,6 +1569,8 @@ if (!$for_current_value_reindex) {
 				}
 			}
 		}
+		
+		return true;
 	}
 	# ------------------------------------------------
 	/**

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -100,7 +100,7 @@
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString, ['forcePurify' => true]);
 			
-			$vs_type_key = caMakeCacheKeyFromOptions($va_types);
+			$vs_type_key = caMakeCacheKeyFromOptions($va_types, $this->request->isLoggedIn() ? '1' : '0');
 			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
 				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable{$vs_type_key}"));
 			} else {
@@ -209,6 +209,7 @@
 				}
 		
 			} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
+				$p = array_map('urldecode', $p);
 				$o_browse->addCriteria($vs_facet, $p);
 			} else { 
 				if (($o_browse->numCriteria() == 0)) {
@@ -417,7 +418,9 @@
 				    'color' => '#cc0000', 
 				    'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
 				    'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
-				    'ajaxContentUrl' => (caGetOption('title_template', $va_view_info['display'], null) || caGetOption('description_template', $va_view_info['display'], null)) ? caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view)) : null
+				    //'ajaxContentUrl' => (caGetOption('title_template', $va_view_info['display'], null) || caGetOption('description_template', $va_view_info['display'], null)) ? caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view)) : null,
+				    'excludeRelationshipTypes' => caGetOption('excludeRelationshipTypes', $va_view_info['display'], null),
+				    'ajaxContentUrl' => caGetOption('ajaxContentUrl', $va_view_info['display'], null),
 				);
 				
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));

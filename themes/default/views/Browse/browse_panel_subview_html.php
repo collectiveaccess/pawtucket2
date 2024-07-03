@@ -31,7 +31,7 @@
 	
 	</div>
 </div>
-<script type="text/javascript">
+<script>
 /*
 	Set up the "caBrowsePanel" panel that will be triggered by links in object detail
 	Note that the actual <div>'s implementing the panel are located here in views/pageFormat/pageFooter.php

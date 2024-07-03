@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2023 Whirl-i-Gig
+ * Copyright 2007-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,10 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- /**
-  *
-  */
 require_once(__CA_LIB_DIR__."/Controller/Request.php");
 
 # ----------------------------------------
@@ -70,6 +66,7 @@ class RequestHTTP extends Request {
 	
 	private $ops_script_name;
 	private $ops_base_path;
+	private $ops_full_path;
 	private $ops_path_info;
 	private $ops_request_method;
 	private $ops_raw_post_data = "";
@@ -197,7 +194,7 @@ class RequestHTTP extends Request {
 		// @todo: REMOVE IN FUTURE VERSION
 		// JSON API (deprecated)
 		/* allow authentication via URL for web service API like so: http://user:pw@example.com/ */
-		if($this->ops_script_name=="service.php") {
+		if(in_array($this->ops_script_name, ["service", "service.php"])) {
 			$this->ops_raw_post_data = file_get_contents("php://input");
 
 			if($_SERVER["PHP_AUTH_USER"] && $_SERVER["PHP_AUTH_PW"]){
@@ -272,7 +269,13 @@ class RequestHTTP extends Request {
 	}
 	# -------------------------------------------------------
 	public static function isAjax() {
-		return ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest"));
+		if((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest")) {
+			return true;
+		}
+		if((isset($_SERVER['HTTP_HX_REQUEST']) && (bool)$_SERVER['HTTP_HX_REQUEST'])) {
+			return true;
+		}
+		return false;
 	}
 	# -------------------------------------------------------
 	function isDownload($pb_set_download=null) {
@@ -686,20 +689,23 @@ class RequestHTTP extends Request {
 	 */
 	function setInternalRedirect(array $components) : bool {
 		$app = AppController::getInstance();
-		
 		$module = $controller = $action = $action_extra = null;
 		foreach($components as $k => $v) {
 			switch(strtolower($k)) {
 				case 'module':
+					if($v === '*') { $v = $this->getModulePath(); }
 					$this->setModulePath($module = $v);
 					break;
 				case 'controller':
+					if($v === '*') { $v = $this->getController(); }
 					$this->setController($controller = $v);
 					break;
 				case 'action':
+					if($v === '*') { $v = $this->getAction(); }
 					$this->setAction($action = $v);
 					break;
 				case 'actionextra':
+					if($v === '*') { $v = $this->getActionExtra(); }
 					$this->setActionExtra($action_extra = $v);
 					break;
 			}
@@ -729,66 +735,24 @@ class RequestHTTP extends Request {
 			$this->user->close();
 		}
 
-		if((!defined('__CA_IS_SERVICE_REQUEST__') || !__CA_IS_SERVICE_REQUEST__) && defined('__CA_SITE_HOSTNAME__') && strlen(__CA_SITE_HOSTNAME__) > 0) {
-			$host_without_port = __CA_SITE_HOSTNAME__;
-			$host_port = null;
-		    if(preg_match("/:([\d]+)$/", $host_without_port, $m)) {
-		    	$host_without_port = preg_replace("/:[\d]+$/", '', $host_without_port);
-		    	$host_port = (int)$m[1];
-		    } 
-		    
-			if (
-			    !($port = (int)$this->getAppConfig()->get('out_of_process_search_indexing_port'))
-			    && 
-			    !($port = (int)getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_PORT'))
-			) {
-                if(__CA_SITE_PROTOCOL__ == 'https') { 
-                    $port = $host_port ?? 443;	
-                } elseif(isset($_SERVER['SERVER_PORT']) &&  $_SERVER['SERVER_PORT']) {
-                    $port = $_SERVER['SERVER_PORT'];
-                } else {
-                    $port = $host_port ?? 80;
-                }
-            }
-			
-			if (
-			    !($proto = trim($this->getAppConfig()->get('out_of_process_search_indexing_protocol')))
-			    && 
-			    !($proto = getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_PROTOCOL'))
-			) {
-			    $proto = (($port == 443) || (__CA_SITE_PROTOCOL__ == 'https')) ? 'ssl' : 'tcp';
+		if((!defined('__CA_IS_SERVICE_REQUEST__') || !__CA_IS_SERVICE_REQUEST__) && defined('__CA_SITE_HOSTNAME__') && strlen(__CA_SITE_HOSTNAME__) > 0) {			
+			$disable_background_processing = $this->getAppConfig()->get(['disable_background_processing']);
+			if((__CA_APP_TYPE__ === 'PROVIDENCE') && !$this->getAppConfig()->get('disable_out_of_process_search_indexing') && !$disable_background_processing && $this->getAppConfig()->get('run_search_indexing_queue') ) {
+				if(
+					!ca_search_indexing_queue::isRunning() 
+					&& 
+					(
+						(isset(SearchIndexer::$queued_entry_count) && (SearchIndexer::$queued_entry_count > 0))
+						||
+						(ca_search_indexing_queue::count() > 0)
+					)
+				) {
+					\CA\Process\Background::run('searchIndexingQueue');
+				}
 			}
 			
-			if (
-			    !($indexing_hostname = trim($this->getAppConfig()->get('out_of_process_search_indexing_hostname')))
-			    && 
-			    !($indexing_hostname = getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_HOSTNAME'))
-			) {
-			    $indexing_hostname = $host_without_port;
-			}
-			
-			// trigger async search indexing
-			if((__CA_APP_TYPE__ === 'PROVIDENCE') && !$this->getAppConfig()->get('disable_out_of_process_search_indexing') && $this->getAppConfig()->get('run_indexing_queue') ) {
-                require_once(__CA_MODELS_DIR__."/ca_search_indexing_queue.php");
-                if (!ca_search_indexing_queue::lockExists()) {
-                	$dont_verify_ssl_cert = (bool)$this->getAppConfig()->get('out_of_process_search_indexing_dont_verify_ssl_cert');
-                    $context = stream_context_create([
-						'ssl' => [
-							'verify_peer' => !$dont_verify_ssl_cert,
-							'verify_peer_name' => !$dont_verify_ssl_cert
-						]
-					]);
-
-					$r_socket = stream_socket_client($proto . '://'. $indexing_hostname.':'.$port, $errno, $errstr, ini_get("default_socket_timeout"), STREAM_CLIENT_CONNECT, $context);
-
-                    if ($r_socket) {
-                        $http  = "GET ".$this->getBaseUrlPath()."/index.php?processIndexingQueue=1 HTTP/1.1\r\n";
-                        $http .= "Host: ".__CA_SITE_HOSTNAME__."\r\n";
-                        $http .= "Connection: Close\r\n\r\n";
-                        fwrite($r_socket, $http);
-                        fclose($r_socket);
-                    }
-                }
+			if(isset(TaskQueue::$tasks_added) && (TaskQueue::$tasks_added > 0) && !$disable_background_processing) {
+				\CA\Process\Background::run('taskQueue');
 			}
 		}
 	}
@@ -858,8 +822,8 @@ class RequestHTTP extends Request {
 	public function doAuthentication($pa_options) {	
 		global $AUTH_CURRENT_USER_ID;
 
-		$o_event_log = new Eventlog();
 		$vs_app_name = $this->config->get("app_name");
+		$vs_auth_login_url = $this->getBaseUrlPath().'/'.$this->getScriptName().'/'.$this->config->get("auth_login_path");
 		
 		foreach(array(
 			'no_headers', 'dont_redirect_to_login', 'dont_create_new_session', 'dont_redirect_to_welcome',
@@ -913,12 +877,12 @@ class RequestHTTP extends Request {
 			
 			if (!$vb_login_successful) {
 				$this->user = new ca_users();		// add user object
-
+				$vs_tmp1 = $vs_tmp2 = null;
                 if (!AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__) || $pa_options['allow_external_auth']) {
-                    $vs_tmp1 = $vs_tmp2 = null;
+                    
                     if (($vn_auth_type = $this->user->authenticate($vs_tmp1, $vs_tmp2, $pa_options["options"]))) {	# error means user_id in session is invalid
                         if (($pa_options['noPublicUsers'] && $this->user->isPublicUser()) || !$this->user->isActive()) {
-                            $o_event_log->log(array("CODE" => "LOGF", "SOURCE" => "Auth", "MESSAGE" => "Failed login for user id '".$vn_user_id."' (".$_SERVER['REQUEST_URI']."); IP=".RequestHTTP::ip()."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'"));
+                            caLogEvent('LOGF', "Failed login for user id '".$vn_user_id."' (".$_SERVER['REQUEST_URI']."); IP=".RequestHTTP::ip()."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'", 'Auth');
                             $vb_login_successful = false;
                         } else {
                             $vb_login_successful = true;
@@ -928,7 +892,7 @@ class RequestHTTP extends Request {
 
                     if (!$vb_login_successful) {																	// throw user to login screen
                         if (!$pa_options["dont_redirect_to_login"]) {
-                            $o_event_log->log(array("CODE" => "LOGF", "SOURCE" => "Auth", "MESSAGE" => "Failed login with redirect for user id '".$vn_user_id."' (".$_SERVER['REQUEST_URI']."); IP=".RequestHTTP::ip()."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'"));
+                        	caLogEvent('LOGF', "Failed login with redirect for user id '".$vn_user_id."' (".$_SERVER['REQUEST_URI']."); IP=".RequestHTTP::ip()."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'", 'AUTH');
                             $vs_redirect = $this->getRequestUrl(true);
 
                             if (strpos($vs_redirect, $this->config->get("auth_login_path") !== -1)) {
@@ -952,7 +916,7 @@ class RequestHTTP extends Request {
                 			$vb_login_successful = true;
                 		}
                 	} catch (Exception $e) {
-                		$o_event_log->log(array("CODE" => "LOGF", "SOURCE" => "Auth", "MESSAGE" => "Failed login with exception '".$e->getMessage()." (".$_SERVER['REQUEST_URI']."); IP=".$_SERVER["REMOTE_ADDR"]."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'"));
+                		caLogEvent('LOGF', "Failed login with exception '".$e->getMessage()." (".$_SERVER['REQUEST_URI']."); IP=".$_SERVER["REMOTE_ADDR"]."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'", 'Auth');
                 		$this->opo_response->addHeader("Location", $vs_auth_login_url);
                 		return false;
                 	}
@@ -985,16 +949,18 @@ class RequestHTTP extends Request {
 			$this->user = new ca_users();															// auth failed
 																								// throw user to login screen
 			if ($pa_options["user_name"]) {
-				$o_event_log->log(array("CODE" => "LOGF", "SOURCE" => "Auth", "MESSAGE" => "Failed login for '".$pa_options["user_name"]."' (".$_SERVER['REQUEST_URI']."); IP=".RequestHTTP::ip()."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'"));
+				caLogEvent('LOGF', "Failed login for '".$pa_options["user_name"]."' (".$_SERVER['REQUEST_URI']."); IP=".RequestHTTP::ip()."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'", 'Auth');
 			}
 			if (!$pa_options["dont_redirect_to_login"]) {
-				$vs_auth_login_url = $this->getBaseUrlPath().'/'.$this->getScriptName().'/'.$this->config->get("auth_login_path");
 				$this->opo_response->addHeader("Location", $vs_auth_login_url);
 			}
 			return false;
 		} else {		
-			$o_event_log->log(array("CODE" => "LOGN", "SOURCE" => "Auth", "MESSAGE" => "Successful login for '".$pa_options["user_name"]."'; IP=".$_SERVER["REMOTE_ADDR"]."; user agent=".RequestHTTP::ip()));
-		    
+			$msg = "Successful login for '".$pa_options["user_name"]."'; IP=".$_SERVER["REMOTE_ADDR"]."; user agent=".RequestHTTP::ip();
+			caLogEvent('LOGIN', $msg, 'Auth');	// write logins to text log
+			
+			require_once(__CA_LIB_DIR__."/Logging/Eventlog.php");
+		    Eventlog::add(['CODE' => 'LOGN', 'MESSAGE' => $msg, 'SOURCE' => 'Auth']);	// Write logins to old table-based event log
 		    $this->session_id = Session::init($vs_app_name, isset($pa_options["dont_create_new_session"]) ? $pa_options["dont_create_new_session"] : false);
 			
 			Session::setVar($vs_app_name."_user_auth_type",$vn_auth_type);				// type of auth used: 1=username/password; 2=ip-base auth
@@ -1087,7 +1053,13 @@ class RequestHTTP extends Request {
 	public function getHash() {
 		$params = $this->getParameters(['POST', 'GET', 'REQUEST', 'PATH']);
 		unset($params['noCache']);
-		unset($params['nocache']);
+		
+		if(is_array($omit_vars = $this->config->getList('content_cache_omit_parameters'))) {
+			foreach($omit_vars as $ov) {
+				unset($params[$ov]);
+			}
+		}
+		
 		ksort($params);
 	
 		$path_elements = [$this->getModulePath(), $this->getController(), $this->getAction(), $this->getActionExtra()];
@@ -1111,8 +1083,11 @@ class RequestHTTP extends Request {
 	 * @return string
 	 */
 	static public function ip() {
-		if (isset($_SERVER['HTTP_X_REAL_IP']) && $_SERVER['HTTP_X_REAL_IP']) { return $_SERVER['HTTP_X_REAL_IP']; }
-		if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']) { return $_SERVER['HTTP_X_FORWARDED_FOR']; }
+		if(is_array($headers = Configuration::load()->getList('request_ip_headers'))) {
+			foreach($headers as $h) {
+				if (isset($_SERVER[$h]) && $_SERVER[$h]) { return $_SERVER[$h]; }
+			}
+		}
 		return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
 	}
 	# ----------------------------------------

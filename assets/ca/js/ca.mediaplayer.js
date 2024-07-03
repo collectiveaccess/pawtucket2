@@ -180,6 +180,26 @@ var caUI = caUI || {};
 			}
 		};
 		
+		// Register handler for time update
+		that.onReady = function(playerName, f) {
+			if (!that.players[playerName]) return null;
+			
+			switch(that.playerTypes[playerName]) {
+				case 'VideoJS':
+					that.players[playerName].addEvent('ready', f);
+					break;
+				case 'Plyr':
+					that.players[playerName].on('ready', f);
+					break;
+				case 'MediaElement':
+					that.players[playerName][0].addEventListener('ready', f);
+					break;
+				default:
+					return null;
+					break;
+			}
+		};
+		
 		//
 		that.getPlayerNames = function() {
 			return Object.keys(that.players);

@@ -43,11 +43,6 @@
 ?>
 <div class='lbItem'>
 	<div class='lbItemContent'>
-		{{{representation}}}
-		<div id='comment{{{item_id}}}' class='lbSetItemComment'><!-- load comments here --></div>
-		<div class='caption'>{{{caption}}}</div>
-	</div><!-- end lbItemContent -->
-	<div class='lbExpandedInfo' id='lbExpandedInfo{{{item_id}}}'><hr/>
 <?php
 		if($vb_write_access) {
 ?>
@@ -55,6 +50,11 @@
 <?php
 		}
 ?>
+		{{{representation}}}
+		<div id='comment{{{item_id}}}' class='lbSetItemComment'><!-- load comments here --></div>
+		<div class='caption'>{{{caption}}}</div>
+	</div><!-- end lbItemContent -->
+	<div class='lbExpandedInfo' id='lbExpandedInfo{{{item_id}}}'><hr/>
 		<div>
 			<?php print caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span>", '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail"))); ?>
 <?php

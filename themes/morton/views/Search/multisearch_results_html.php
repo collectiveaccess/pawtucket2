@@ -1,5 +1,6 @@
 <?php
 	$va_results = $this->getVar('results');
+	$vs_search = $this->getVar('search');
 	$va_result_count = $va_results['_info_']['totalCount'];
 	if ($va_result_count > 0) {
 ?>
@@ -13,6 +14,7 @@
 				print " | ";
 			}
 			print "<a href='#{$vs_block}'>".$va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].")</a>";
+			#print caNavLink($this->request, $va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].")", '', '', 'Search', $vs_block, array('search' => $vs_search));
 		}
 ?>
 		</small>

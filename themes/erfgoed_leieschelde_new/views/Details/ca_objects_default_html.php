@@ -151,6 +151,9 @@
 ?>				
 				
 				{{{<ifdef code="ca_objects.dimensions"><div class="unit"><label>Afmetingen</label><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_name">^ca_objects.dimensions.dimensions_name: </ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth</ifdef><ifdef code="ca_objects.dimensions.dimensions_unit"> ^ca_objects.dimensions.dimensions_unit</ifdef><ifdef code="ca_objects.dimensions.weight"> ^ca_objects.dimensions.weight</ifdef><ifdef code="ca_objects.dimensions.weight,ca_objects.dimensions.weight_unit"> ^ca_objects.dimensions.weight_unit</ifdef></unit></div></ifdef>}}}
+<?php
+				print $t_object->getWithTemplate('<ifdef code="ca_objects.production_maker.maker"><div class="unit"><label>Vervaardigers</label><unit relativeTo="ca_objects.production_maker" delimiter="<br/>">^ca_objects.production_maker.maker <ifdef code="ca_objects.production_maker.maker_role">(^ca_objects.production_maker.maker_role)</ifdef></unit></div></ifdef>');
+?>
 				{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Plaatsen</label><unit relativeTo="ca_places" delimiter="<br/>">
 					<unit relativeTo="ca_places.parent">
 						<if rule="^ca_places.type_id !~ /land/">

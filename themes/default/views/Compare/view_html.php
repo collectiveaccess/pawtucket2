@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2018 Whirl-i-Gig
+ * Copyright 2016-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,45 +29,44 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- $va_items = $this->getVar('items');
- 
- if(sizeof($va_items) > 0) {
-	 // Calculate window geometry; for up to 3 windows place side-by-side,
-	 // otherwise to to make something square-ish
-	 $vn_num_windows = sizeof($va_items);
-	 if ($vn_num_windows <= 3) {
-		$vs_layout = "1x{$vn_num_windows}";
-	 } else {
-		$vn_dim_width = ceil(sqrt($vn_num_windows));
-		$vn_dim_height = ceil($vn_num_windows/$vn_dim_width);
-		$vs_layout = "{$vn_dim_width}x{$vn_dim_height}";
-	 }
- 
-	 $va_data = [];
-	 $va_windows = [];
- 
-	 foreach($va_items as $va_item) {
-		$va_data[] = [
-			'manifestUri' =>  $vs_url = caNavUrl($this->request, '', 'Compare', 'Manifest', ['id' => $va_item['resolved_id']])
-		];
-		$va_windows[] = [
-			'loadedManifest' => $vs_url,
-			'overlay' => false,
-			'viewType' => "ImageView",
-			'availableViews' => ["ImageView"],
-			'displayLayout' => false,
-			'bottomPanel' => false,
-			'bottomPanelAvailable' => false,
-			'bottomPanelVisible' => false,
-			'sidePanel' => false,
-			'annotationLayer' => false,
-			'annotationCreation' => false,
-			'layoutOptions' => [
-				'close' => false
-			]
-		];
-	 }
+$items = $this->getVar('items');
+
+if(sizeof($items) > 0) {
+ // Calculate window geometry; for up to 3 windows place side-by-side,
+ // otherwise to to make something square-ish
+ $num_windows = sizeof($items);
+ if ($num_windows <= 3) {
+	$layout = "1x{$num_windows}";
+ } else {
+	$dim_width = ceil(sqrt($num_windows));
+	$dim_height = ceil($num_windows/$dim_width);
+	$layout = "{$dim_width}x{$dim_height}";
+ }
+
+ $data = [];
+ $windows = [];
+
+ foreach($items as $item) {
+	$data[] = [
+		'manifestUri' =>  $url = caNavUrl($this->request, '', 'Compare', 'Manifest', ['id' => $item['resolved_id']])
+	];
+	$windows[] = [
+		'loadedManifest' => $url,
+		'overlay' => false,
+		'viewType' => "ImageView",
+		'availableViews' => ["ImageView"],
+		'displayLayout' => false,
+		'bottomPanel' => false,
+		'bottomPanelAvailable' => false,
+		'bottomPanelVisible' => false,
+		'sidePanel' => false,
+		'annotationLayer' => false,
+		'annotationCreation' => false,
+		'layoutOptions' => [
+			'close' => false
+		]
+	];
+ }
 ?>
 
 <div style="width: 100%; height: 400px" id="comparison_viewer">
@@ -75,29 +74,29 @@
 </div>
 
 <script type="text/javascript">
-	var _compareViewer = Mirador({  
-		id: "comparison_viewer",
-		layout: "<?php print $vs_layout; ?>",
-		data: <?php print json_encode($va_data); ?>,  
-		windowObjects: <?php print json_encode($va_windows); ?>,
-		buildPath: '<?php print __CA_URL_ROOT__."/assets/mirador/"; ?>',
-		mainMenuSettings: {
-			buttons: { 
-				layout: false
-			},
-			userButtons: [
-			    {"label": "Back",
-                 "iconClass": "teal-results",
-                 "attributes": { "class": "small", "href":  "<?php print Session::getVar('compare_last_page'); ?>" }
-                }
-			]
-		}
-	});
-	$("#comparison_viewer").height($(window).height() - $("nav").height() + "px");
+var _compareViewer = Mirador({  
+	id: "comparison_viewer",
+	layout: "<?= $layout; ?>",
+	data: <?= json_encode($data); ?>,  
+	windowObjects: <?= json_encode($windows); ?>,
+	buildPath: '<?= __CA_URL_ROOT__."/assets/mirador/"; ?>',
+	mainMenuSettings: {
+		buttons: { 
+			layout: false
+		},
+		userButtons: [
+			{"label": "Back",
+			 "iconClass": "teal-results",
+			 "attributes": { "class": "small", "href":  <?= json_encode(Session::getVar('compare_last_page')); ?> }
+			}
+		]
+	}
+});
+$("#comparison_viewer").height($(window).height() - $("nav").height() + "px");
 </script>
 <?php
-	} else {
+} else {
 ?>
-	<h2>No images are selected</h2>
+<h2><?= _t('No images are selected'); ?></h2>
 <?php
-	}
+}

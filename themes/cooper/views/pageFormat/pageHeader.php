@@ -295,20 +295,32 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <?php
 	}
 ?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'projects'); ?>">
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search" id="searchFormHeader">
+							<input type="text" class="form-control" placeholder="Keyword" name="search" id="searchFormHeader">
 						</div>
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print (strToLower($this->request->getAction()) == "courses") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Courses"), "", "", "Listing", "Courses"); ?></li>
-					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "projects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Projects"), "", "", "Browse", "projects"); ?></li>
-					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "people")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
-					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "location")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Locations"), "", "", "Browse", "location"); ?></li>
+					<li><?php print caNavLink($this->request, _t("Exhibitions"), "", "", "Browse", "exhibitions"); ?></li>
+					<li class="dropdown" style="position:relative;">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Student Work</span></a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("Projects"), "", "", "Browse", "projects"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Courses"), "", "", "Listing", "Courses"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Locations"), "", "", "Browse", "location"); ?></li>
+						</ul>
+					</li>
+					<li class="navSpace"><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
 				</ul>
+				
+
+
+
+
+
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>

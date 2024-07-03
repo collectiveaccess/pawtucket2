@@ -1,3 +1,11 @@
+<?php
+	$vs_download_links = "";
+	if ($t_site_page = $this->getVar("page")) {
+		if($t_site_page->getWithTemplate("^ca_site_page_media.media_id")){
+			$vs_download_links = $t_site_page->getWithTemplate("<unit relativeTo='ca_site_page_media' delimiter='<br/>'><a href='^ca_site_page_media.media.original.url' class='btn btn-default'><span class='glyphicon glyphicon-download-alt' aria-label='Download' title='Download'></span> ^ca_site_page_media.title</a></unit>");
+		}
+	}
+?>
 <div class="row">
 	<div class="col-sm-3">
 		<div class="aboutSideNav">
@@ -8,8 +16,7 @@
 				<li><a href="#Copyright_Use">{{{Copyright_Use_Label}}}</a></li>
 				<li><a href="#Corrections">{{{Corrections_Label}}}</a></li>
 				<li><a href="#Credits">{{{Credits_Label}}}</a></li>
-				<li><a href="#Accessibility_Statement">{{{Accessibility_Statement_Label}}}</a></li>
-				<li><a href="#Privacy_Terms">{{{Privacy_Terms_Label}}}</a></li>
+				<li><a href="#Policies">{{{Policies_Label}}}</a></li>
 			</ul>
 		</div>
 	</div>
@@ -33,10 +40,15 @@
 		<div id="Credits"></div><div class="aboutSection">{{{Credits_Label}}}</div>
 		{{{Credits}}}
 		
-		<div id="Accessibility_Statement"></div><div class="aboutSection">{{{Accessibility_Statement_Label}}}</div>
-		{{{Accessibility_Statement}}}
-		
-		<div id="Privacy_Terms"></div><div class="aboutSection">{{{Privacy_Terms_Label}}}</div>
-		{{{Privacy_Terms}}}
+		<div id="Policies"></div><div class="aboutSection">{{{Policies_Label}}}</div>
+		{{{Policies}}}
+<?php
+		if($vs_download_links){
+?>
+		<div class='policyFileLinks'><?php print $vs_download_links; ?></div>
+<?php
+		}
+?>
+
 	</div>
 </div>

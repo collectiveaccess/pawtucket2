@@ -25,10 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
-
 require_once(__CA_APP_DIR__.'/helpers/libraryServicesHelpers.php');
 require_once(__CA_LIB_DIR__.'/Search/ObjectSearch.php');
-require_once(__CA_MODELS_DIR__.'/ca_object_checkouts.php');
 require_once(__CA_LIB_DIR__.'/ResultContext.php');
 
 class CheckOutController extends ActionController {
@@ -63,6 +61,7 @@ class CheckOutController extends ActionController {
 		
 		$this->view->setVar('user_id', $user_id);
 		$this->view->setVar('checkout_types', ca_object_checkouts::getObjectCheckoutTypes());
+		$this->view->setVar('config', Configuration::load(__CA_CONF_DIR__."/library_services.conf"));
 		
 		$this->render('checkout/items_html.php');
 	}
@@ -199,6 +198,8 @@ class CheckOutController extends ActionController {
 		$checkout_template = $library_config->get('checkout_receipt_item_display_template');
 		$reservation_template = $library_config->get('checkout_reservation_receipt_item_display_template');
 		
+		$per_transaction_checkout_notes_and_due_date = $library_config->get('per_transaction_checkout_notes_and_due_date');
+			
 		$user_id = $this->request->getParameter('user_id', pInteger);
 		$ps_item_list = $this->request->getParameter('item_list', pString);
 		$item_list = json_decode(stripslashes($ps_item_list), true);
@@ -213,12 +214,21 @@ class CheckOutController extends ActionController {
 			$sender_name = $library_config->get('notification_sender_name');
 			$subject = _t('Receipt for check out');
 			
+			$transaction_notes = $this->request->getParameter('transaction_notes', pString);
+			$transaction_due_date = $this->request->getParameter('transaction_due_date', pString);
+			
 			$checked_out_items = $reserved_items = [];
 			$t_object = new ca_objects();
 			foreach($item_list as $i => $item) {
 				if (!$t_object->load(array('object_id' => $item['object_id'], 'deleted' => 0))) { continue; }
 			
 				$name = $t_object->getWithTemplate("^ca_objects.preferred_labels.name (^ca_objects.idno)");
+				
+				if($per_transaction_checkout_notes_and_due_date) {
+					$item['note'] = $transaction_notes;
+					$item['due_date'] = $transaction_due_date;
+				}
+				
 				if ($checkout_info = $t_checkout->objectIsOut($item['object_id'])) {
 					if ($checkout_info['user_id'] == $user_id) {
 						// user already has item so skip it

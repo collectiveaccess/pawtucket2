@@ -30,7 +30,7 @@
 		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer" class="text-left">
 			<div class="row">
-				<div class="col-sm-12 col-md-8 col-md-offset-2">
+				<div class="col-sm-12 col-lg-8 col-lg-offset-2">
 					<div class="row">
 						<div class="col-sm-4">
 							<div class="logo"><a href="https://www.squamish.net/"><?php print caGetThemeGraphic($this->request, 'SN-Logo-white.png', array("alt" => $this->request->config->get("app_display_name"))); ?></a></div>
@@ -44,9 +44,9 @@
 						</div>
 						<div class="col-sm-4">
 							<ul class="list-inline social">
-								<li><a href="https://www.facebook.com/SquamishNation" target="_blank"><i class="fa fa-facebook"></i></a></li>
-								<li><a href="https://www.instagram.com/squamishnation/" target="_blank"><i class="fa fa-instagram"></i></a></li>
-								<li><a href="https://twitter.com/SquamishNation" target="_blank"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="https://www.facebook.com/SquamishNation" target="_blank"><i class="fa fa-facebook" role="graphics-document" aria-label="Facebook"></i></a></li>
+								<li><a href="https://www.instagram.com/squamishnation/" target="_blank"><i class="fa fa-instagram" role="graphics-document" aria-label="Instagram"></i></a></li>
+								<li><a href="https://twitter.com/SquamishNation" target="_blank"><i class="fa fa-twitter" role="graphics-document" aria-label="Twitter"></i></a></li>
 							</ul>
 						</div>
 					</div>
@@ -59,14 +59,16 @@
 			</div>
 		</footer><!-- end footer -->
 <?php
-if((!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
-	# --- display lightbox alert
+# --- display lightbox alert
+if($this->request->getParameter("accept_terms", pInteger)){
 	Session::setVar('visited_time', time());
-
+}
+if((!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
+	
 ?>
 	<div class="disclaimerAlert">
 		<div class="disclaimerAlertBox">
-			<div class="disclaimerAlertMessage"><H1>Appropriate Use</H1>{{{disclaimer_alert_message}}}<div class="enterButton"><a href="#" class="btn btn-default"  onclick="$('.disclaimerAlert').remove(); return false;">Accept and Enter</a></div></div>
+			<div class="disclaimerAlertMessage"><H1>Appropriate Use</H1>{{{disclaimer_alert_message}}}<div class="enterButton"><?php print caNavLink($this->request, _t("Accept and Enter"), 'btn btn-default', '', '*', '*', array('accept_terms' => 1)); ?></div></div>
 			
 		</div>
 	</div>

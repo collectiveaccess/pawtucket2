@@ -12,7 +12,7 @@ if(!function_exists('_getRelsForEntity')) {
 	function _getRelsForEntity($t_entity, $entity_nodes, $entity_edges, $level) {
 		global $request, $cur_entity_id;
 	
-		if($level > 2) {
+		if($level > 1) {
 			return ['nodes' => $entity_nodes, 'edges' => $entity_edges];
 		}
 	
@@ -25,6 +25,8 @@ if(!function_exists('_getRelsForEntity')) {
 	
 		if(is_array($rel_entities)) {
 			foreach($rel_entities as $e) {
+				// print_R($e);
+				// print '<br><br>';
 				if(!isset($entity_nodes[$e['entity_id']])) {
 					$entity_nodes[$e['entity_id']] = [
 						'shape' => 'box',

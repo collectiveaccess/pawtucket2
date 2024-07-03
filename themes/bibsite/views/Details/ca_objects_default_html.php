@@ -76,7 +76,7 @@
 							$t_list_item->load($vn_language_id);
 							$va_lang_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "language_facet", "id" => $vn_language_id));
 						}
-						print join($va_lang_links, ", ")."</div>";
+						print join(", ", $va_lang_links)."</div>";
 					}
 
 					$vn_tmp_id = $t_object->get("ca_objects.type_id");
@@ -114,7 +114,7 @@
 						foreach($va_dates as $vs_date){
 							$va_tmp[] = caNavLink($this->request, $vs_date, "", "", "Search", "objects", array("search" => "ca_objects.coverageDates: ".$vs_date));
 						}
-						print join($va_tmp, ", ");
+						print join(", ", $va_tmp);
 						print "</div>";
 					}
 					
@@ -125,7 +125,7 @@
 						foreach($va_tmp as $vn_tmp_id => $va_tmp_info){
 							$va_links[] = caNavLink($this->request, $va_tmp_info['tgn'], "", "", "Browse", "objects", array("facet" => "tgn_facet", "id" => $vn_tmp_id));
 						}
-						print join($va_links, ", ")."</div>";
+						print join(", ", $va_links)."</div>";
 					}
 					$va_tmp = $t_object->get("ca_objects.audience", array("returnAsArray" => true));
 					if(sizeof($va_tmp)){
@@ -136,7 +136,7 @@
 							$t_list_item->load($vn_tmp_id);
 							$va_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_plural"), "", "", "Browse", "objects", array("facet" => "audience_facet", "id" => $vn_tmp_id));
 						}
-						print join($va_links, ", ")."</div>";
+						print join(", ", $va_links)."</div>";
 					}
 ?>				
 				</div>

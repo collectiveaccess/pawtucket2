@@ -107,9 +107,14 @@
 					</div>
 				</ifdef>}}}
 
-				{{{<ifcount code="ca_objects.format_text" min="1"><label>Format</label></ifcount>}}}
-				{{{<unit delimiter="; ">^ca_objects.format_text</unit>}}}
-			
+				
+				{{{<ifcount code="ca_objects.format_text" min="1">
+					<div class='unit'>
+						<label>Format</label>
+						<unit delimiter=", ">^ca_objects.format_text</unit>
+					</div>
+				</ifcount>}}}
+
 				<?php
 					$list_item_links = caGetBrowseLinks($t_object, 'ca_list_items', ['linkTemplate' => '<li>^LINK</li>']);
 					$lcsh_links = caGetSearchLinks($t_object, 'ca_objects.lcsh_terms', ['linkTemplate' => '<li>^LINK</li>']);

@@ -124,7 +124,7 @@
 								$va_tmp[] = $vs_date;
 							}
 						}
-						$vs_description = join($va_tmp, ", ");
+						$vs_description = join(", ", $va_tmp);
 					}
 					
 					 if($e = $qr_res->get('ca_entities.preferred_labels.displayname', ['restrictToRelationshipType' => ['interviewee'], 'delimiter' => ', '])){

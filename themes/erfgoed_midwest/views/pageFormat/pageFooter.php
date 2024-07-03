@@ -33,7 +33,7 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<ul class="list-inline">
-							<li><a href="https://www.bienet.be" target="_blank"><b>WWW.BIENET.BE</b></a></li>
+							<li><a href="https://www.midwest.be/cultuur-en-erfgoed" target="_blank"><b>WWW.MIDWEST.BE</b></a></li>
 							<li><i class="fa fa-map-marker" aria-hidden="true"></i> Ooststraat 35, 8800 Roeselare</li>
 							<li><i class="fa fa-paper-plane" aria-hidden="true"></i> <?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 							<li><i class="fa fa-phone" aria-hidden="true"></i> +32(0)51 26 87 49</li>

@@ -16,12 +16,14 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-8'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
-					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
+				<div class='col-md-12 col-lg-12 text-center'>
+					<H1 class="uk-h1">{{{^ca_entities.preferred_labels.displayname}}}</H1>
 					{{{<ifdef code="ca_entities.description">
 						<div class='unit'>^ca_entities.description</div>
 					</ifdef>}}}
-					{{{<ifdef code="ca_entities.website|ca_entities.online_collection"><H2><ifdef code="ca_entities.website"><a href="^ca_entities.website" target="_blank">^ca_entities.website <i class="fa fa-external-link" aria-hidden="true"></i></a></ifdef><ifdef code="ca_entities.website,ca_entities.online_collection"><br/></ifdef><ifdef code="ca_entities.online_collection"><a href="^ca_entities.online_collection" target="_blank">Online Collection <i class="fa fa-external-link" aria-hidden="true"></i></a></ifdef></H2></ifdef>}}}
+					<hr/>
+					{{{<ifdef code="ca_entities.website|ca_entities.online_collection"><div class="link"><ifdef code="ca_entities.website"><a href="^ca_entities.website" target="_blank">^ca_entities.website <i class="fa fa-external-link" aria-hidden="true"></i></a></ifdef><ifdef code="ca_entities.website,ca_entities.online_collection"><br/></ifdef><ifdef code="ca_entities.online_collection"><a href="^ca_entities.online_collection" target="_blank">Online Collection <i class="fa fa-external-link" aria-hidden="true"></i></a></ifdef></div></ifdef>}}}
+					<HR/>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			

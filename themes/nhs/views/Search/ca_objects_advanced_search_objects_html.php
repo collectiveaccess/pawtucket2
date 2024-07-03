@@ -36,16 +36,22 @@ print "<p>Click here for the ".caNavLink($this->request, _t("Manuscript Collecti
 			{{{ca_objects.idno%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a particular date or date range.">Date</span>
-			{{{ca_objects.date.dates_value%width=200px&useDatePicker=0}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search additional object identifiers.">Other Object Number</span>
+			{{{ca_objects.other_number%width=210px}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a particular date or date range.">Date</span>
+			{{{ca_objects.date.dates_value%width=200px&useDatePicker=0}}}
+		</div>
+		<div class="advancedSearchField col-sm-6">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by object's materials.">Material</span>
 			{{{ca_objects.materials%width=210px}}}
 		</div>
-		<div class="advancedSearchField col-sm-6">
+	</div>
+	<div class='row'>
+		<div class="advancedSearchField col-sm-12">
 			<div style="display:none;">{{{ca_objects.aat%width=210px}}}</div>
 			
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search objects by type (for example: photograph or shoe)">Object Type</span>

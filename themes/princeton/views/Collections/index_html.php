@@ -14,7 +14,7 @@
 	$vn_i = 0;
 	if($qr_collections && $qr_collections->numHits()) {
 		while($qr_collections->nextHit()) {
-			$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' limit='1'><ifdef code='ca_object_representations.media'>^ca_object_representations.media.widepreview</ifdef></unit>");
+			$vs_image = $qr_collections->getWithTemplate("<ifdef code='ca_object_representations.media'>^ca_object_representations.media.widepreview</ifdef>");
 			if($vs_image){
 				$vs_image = "<div class='collectionImage'>".$vs_image."</div>";
 			}

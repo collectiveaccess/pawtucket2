@@ -171,7 +171,7 @@
 						$va_links[caGetListItemByIDForDisplay($va_academic_id, true)] = caNavLink($this->request, caGetListItemByIDForDisplay($va_academic_id, true), '', 'Browse', 'objects', 'facet/academic_themes/id/'.$va_academic_id);
 					}
 					ksort($va_links);
-					$vs_buf.= join($va_links, "<br/>");
+					$vs_buf.= join("<br/>", $va_links);
 					$vs_buf.= "</div>";
 				}				
 				if ($vs_buf != "") {

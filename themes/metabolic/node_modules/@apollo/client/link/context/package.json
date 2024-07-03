@@ -1,7 +1,0 @@
-{
-  "name": "@apollo/client/link/context",
-  "main": "context.cjs.js",
-  "module": "index.js",
-  "types": "index.d.ts",
-  "sideEffects": false
-}

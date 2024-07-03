@@ -38,7 +38,7 @@
 		<footer id="footer" role="contentinfo">
 			<div class="footerLogo">
 <?php 
-					print "<a href='https://www.amnh.org'>".caGetThemeGraphic($this->request, 'AMNHlogos/150Y_2Line_White-2208x513.png', array("alt" => "AMNH"))."</a>";
+					print "<a href='https://www.amnh.org'>".caGetThemeGraphic($this->request, 'AMNH_Primary_WHITE.png', array("alt" => "AMNH"))."</a>";
 ?>
 			</div>
 			<div>

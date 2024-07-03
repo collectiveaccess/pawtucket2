@@ -1,7 +1,0 @@
-{
-  "name": "@apollo/client/react/hoc",
-  "main": "hoc.cjs.js",
-  "module": "index.js",
-  "types": "index.d.ts",
-  "sideEffects": false
-}

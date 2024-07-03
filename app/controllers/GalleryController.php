@@ -87,7 +87,7 @@
 				
 					// Sort by name by default; otherwise sort on rank
 					if($this->config->get('gallery_sort_by') !== 'name') {
-						$sets = caSortArrayByKeyInValue($sets, ['rank', 'set_id']);
+						$sets = caSortArrayByKeyInValue($sets, ['rank', 'set_id'], 'ASC', ['mode' => SORT_NUMERIC]);
 					}
 					$vs_front_page_set = $o_front_config->get('front_page_set_code');
 					$vb_omit_front_page_set = (bool)$this->config->get('omit_front_page_set_from_gallery');

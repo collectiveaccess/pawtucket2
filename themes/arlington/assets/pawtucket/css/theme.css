@@ -270,7 +270,7 @@ body{
 	padding-bottom:20px;
 }
 .bResultItem .bResultItemText, .bResultListItemCol .bResultListItemText{
-  font-size: 12px;
+  font-size: 15px;
 }
 
 
@@ -291,7 +291,7 @@ body.frontContainer #footer{
 
 .parallax {
 	position:relative;
-    background-image: url("../graphics/new_hero_image.jpeg");
+    background-image: url("../graphics/CLH_MainPage.jpg");
 
     /* Full height */
     height: 100vh;
@@ -307,14 +307,17 @@ body.frontContainer #footer{
 	top:-20px;
 }
 .parallax.hero1 {
-	background-image: url("../graphics/new_hero_image.jpeg");
+	background-image: url("../graphics/CLH_MainPage.jpg");
 }
 .parallax.hero2 {
-    background-image: url("../graphics/new_hero_image.jpeg");
+    background-image: url("../graphics/CLH_MainPage.jpg");
 }
 .parallax.hero3 {
-    background-image: url("../graphics/new_hero_image.jpeg");
+    background-image: url("../graphics/CLH_MainPage.jpg");
 }
+
+
+
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
 		width:300px;
@@ -342,6 +345,37 @@ body.frontContainer #footer{
 	}
 }
 @media(max-width:768px){
+
+	.parallax {
+		position: relative;
+		background-image: url("../graphics/CLH_MainMobilePage.jpg") !important;
+
+		/* Full height */
+		height: 70vh !important;
+
+		/* Create the parallax scrolling effect */
+		background-attachment: fixed;
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-size: cover;
+
+		margin-left: -15px;
+		margin-right: -15px;
+		top: -20px;
+	}
+
+	.parallax.hero1 {
+		background-image: url("../graphics/CLH_MainMobilePage.jpg") !important;
+	}
+
+	.parallax.hero2 {
+		background-image: url("../graphics/CLH_MainMobilePage.jpg") !important;
+	}
+
+	.parallax.hero3 {
+		background-image: url("../graphics/CLH_MainMobilePage.jpg") !important;
+	}
+
 	.parallax .heroSearch{
 		margin-top: 10vh;
 	}
@@ -511,10 +545,10 @@ body.frontContainer #footer{
 	background-image: url('../graphics/new_explore_objects.jpg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage2{
-	background-image: url('../graphics/explore_collections.jpg');
+	background-image: url('../graphics/Collections_Image.jpg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage3{
-	background-image: url('../graphics/explore_entities.jpg');
+	background-image: url('../graphics/PeopleImage.jpg');
 }
 .hpExploreBox .hpExploreBoxDetails {
 	padding: 15px 13px 22px;
@@ -531,6 +565,7 @@ body.frontContainer #footer{
 .hpExploreBox .hpExploreBoxTitle a:hover {
 	text-decoration:none;
 }
+
 
 
 
@@ -566,13 +601,13 @@ body.frontContainer #footer{
 	color: #000;
 }
 .gallery .setDescription {
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: normal;
 	line-height: 1.8em;
 }
 .gallery .unit{
 	margin-bottom: 12px;
-	font-size:14px;
+	font-size:15px;
 }
 .gallery .galleryViewRecord{
 	padding-top:15px;
@@ -601,7 +636,7 @@ body.frontContainer #footer{
 }
 .frontGridCaption a{
 	color: #000;
-	font-size: 14px !important;
+	font-size: 15px !important;
 	font-family: Lato;
 }
 

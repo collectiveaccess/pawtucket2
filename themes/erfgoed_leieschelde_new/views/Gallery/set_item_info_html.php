@@ -13,7 +13,7 @@
 			<ifdef code="ca_objects.idno"><div class="unit"><H6>Inventarisnummer</H6>^ca_objects.idno</div></ifdef>
 			<ifdef code="ca_objects.content_description">
 				<div class="unit"><h6>Beschrijving</h6>
-					<span class="trimText">^ca_objects.content_description</span>
+					<span class="trimText"><unit relativeTo="ca_objects.content_description" delimiter="<br/><br/>">^ca_objects.content_description</unit></span>
 				</div>
 			</ifdef>
 			<ifcount code="ca_list_items" min="1"><div class="unit"><H6>Objecttype</H6><unit relativeTo="ca_list_items" delimiter=", ">^ca_list_items.preferred_labels.name_plural</unit></div></ifcount>

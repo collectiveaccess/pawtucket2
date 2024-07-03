@@ -47,6 +47,44 @@
 	print $this->render("header.php");
 	print $this->render("footer.php");	
 
+	if($t_item->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true)) == "Repatriation/Reburial"){
+?>
+	<div class="title">
+		<h1 class="title">{{{^ca_occurrences.preferred_labels.name}}}</h1>
+	</div>
+	<div class="tombstone">
+		<HR>
+					{{{<ifdef code="ca_occurrences.idno"><div class="unit"><H6>Identifier</H6>^ca_occurrences.idno</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.repatriation_status"><div class="unit"><H6>Status</H6>^ca_occurrences.repatriation_status</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.repat_type"><div class="unit"><H6>Repatriation Type</H6>^ca_occurrences.repat_type</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.min_number"><div class="unit"><H6>Minimum Number of Individuals</H6>^ca_occurrences.min_number</div></ifdef>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="repatriating_entity" min="1">
+						<div class="unit"><H6>Holding Institution</H6>
+						<unit relativeTo="ca_entities" restrictToRelationshipTypes="repatriating_entity" delimiter="<br>">
+							^ca_entities.preferred_labels.displayname
+						</unit>
+						</div>
+					</ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="potential_claimant" min="1">
+						<div class="unit"><H6>Potential Claimant<ifcount code="ca_entities" restrictToRelationshipTypes="potential_claimant" min="2">s</ifcount></H6>
+						<unit relativeTo="ca_entities" restrictToRelationshipTypes="potential_claimant" delimiter="<br>">
+							^ca_entities.preferred_labels.displayname
+						</unit>
+						</div>
+					</ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="claimant" min="1">
+						<div class="unit"><H6>Final Claimant</H6>
+						<unit relativeTo="ca_entities" restrictToRelationshipTypes="claimant" delimiter="<br>">
+							^ca_entities.preferred_labels.displayname
+						</unit>
+						</div>
+					</ifcount>}}}
+					{{{<ifdef code="ca_occurrences.repat_notes"><div class="unit"><H6>Notes</H6>^ca_occurrences.repat_notes</div></ifdef>}}}
+	</div>				
+
+<?php	
+	
+	}else{
 ?>
 	<div class="title">
 		<h1 class="title">{{{^ca_occurrences.preferred_labels.name}}} &mdash; {{{^ca_occurrences.alutiiq_word}}}</h1>
@@ -60,4 +98,5 @@
 	</div>				
 
 <?php	
+	}
 	print $this->render("pdfEnd.php");

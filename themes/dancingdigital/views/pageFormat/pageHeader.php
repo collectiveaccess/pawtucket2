@@ -72,9 +72,16 @@
 	<?php
 		}
 	?>	
+	
+	<script type="text/javascript">
+			let pawtucketUIApps = {};
+	</script>
 
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
+	
+	<script src="<?= $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
+	<script src="<?= $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
 
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
@@ -88,6 +95,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@barba/core"></script>
     <script src=" https://cdn.jsdelivr.net/npm/@barba/css@2.1.15/dist/barba-css.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css">
+	<script type="text/javascript" src="https://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js"></script>
 
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 </head> 

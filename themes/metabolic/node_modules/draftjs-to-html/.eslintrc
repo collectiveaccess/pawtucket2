@@ -1,8 +1,0 @@
-{
-  "parser": "babel-eslint",
-  "extends": "airbnb",
-  "plugins": [ "mocha" ],
-  "env": {
-    "mocha": true
-  }
-}

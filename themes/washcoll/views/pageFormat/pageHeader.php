@@ -78,6 +78,7 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<!-- Google tag (gtag.js) --> <script async src=https://www.googletagmanager.com/gtag/js?id=G-SWZTWQ6YLR></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-SWZTWQ6YLR'); </script>
 </head>
 <body>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>

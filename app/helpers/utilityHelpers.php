@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2023 Whirl-i-Gig
+ * Copyright 2007-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,15 +29,9 @@
  *
  * ----------------------------------------------------------------------
  */
-
- /**
-   *
-   */
-
 require_once(__CA_LIB_DIR__.'/Datamodel.php');
 require_once(__CA_LIB_DIR__.'/Configuration.php');
 require_once(__CA_LIB_DIR__.'/Parsers/ZipFile.php');
-require_once(__CA_LIB_DIR__.'/Logging/Eventlog.php');
 require_once(__CA_LIB_DIR__.'/Utils/Encoding.php');
 require_once(__CA_APP_DIR__.'/helpers/batchHelpers.php');
 require_once(__CA_LIB_DIR__.'/Parsers/ganon.php');
@@ -54,7 +48,6 @@ if (!function_exists('array_key_first')) {
         return NULL;
     }
 }
-
 # ----------------------------------------------------------------------
 # String localization functions (getText)
 # ----------------------------------------------------------------------
@@ -887,6 +880,33 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
+	 * Remove stray temporary files from application tmp diectory
+	 *
+	 * Currently deletes:
+	 *		wkhtmltopdf tmp files
+	 */
+	function caCleanTmpDirectory() {
+		$config = Configuration::load();
+		if (($threshold = (int)$config->get('tmp_directory_garbage_collection_threshold')) <= 0) {
+			$threshold = 1800;
+		}
+		
+		$files_to_delete = caGetDirectoryContentsAsList(__CA_APP_DIR__.'/tmp', true, false, false, true, ['notModifiedSince' => time() - $threshold]);
+	
+		$count = 0;
+		foreach($files_to_delete as $file_to_delete) {
+			if(is_writeable($file_to_delete)) {
+				if(preg_match("!^".__CA_APP_DIR__.'/tmp'."/wkhtmltopdf[\d]+!", $file_to_delete)) {
+					@unlink($file_to_delete);
+					$count++;
+				}
+			}
+		}
+		
+		return $count;
+	}
+	# ----------------------------------------
+	/**
 	 *
 	 */
 	function caMakeGetFilePath($ps_prefix=null, $ps_extension=null, $options=null) {
@@ -1070,9 +1090,9 @@ function caFileIsIncludable($ps_file) {
 		if (
 			caGetOption('strict', $pa_options, false)
 			?
-				preg_match("!^(".join('|', $schemes)."):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#]*[\w\-\@?^=%&/~\+#])?$!", $ps_url, $va_matches)
+				preg_match("!^(".join('|', $schemes)."):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#\(\)\[\]]*[\w\-\@?^=%&/~\+#])?$!", $ps_url, $va_matches)
 				:
-				preg_match("!(".join('|', $schemes)."):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#]*[\w\-\@?^=%&/~\+#])?!", $ps_url, $va_matches)
+				preg_match("!(".join('|', $schemes)."):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#\(\)\[\]]*[\w\-\@?^=%&/~\+#])?!", $ps_url, $va_matches)
 			) {
 			return array(
 				'protocol' => $va_matches[1],
@@ -2279,14 +2299,6 @@ function caFileIsIncludable($ps_file) {
 
 		return gmdate($ps_format, (int) $va_unix_timestamps['start']);
 	}
-	# ----------------------------------------
-	/**
-	 *
-	 */
-	function caLogEvent($ps_code, $ps_message, $ps_source=null) {
-		$t_log = new EventLog();
-		return $t_log->log(array('CODE' => $ps_code, 'MESSAGE' => $ps_message, 'SOURCE' => $ps_source));
-	}
 	# ---------------------------------------
 	/**
 	 * Truncates text to a maximum length, including an ellipsis ("...")
@@ -2334,14 +2346,13 @@ function caFileIsIncludable($ps_file) {
 	/**
 	 * Determines if current request was from from command line
 	 *
-	 * @return boolean True if request wasrun from command line, false if not
+	 * @return boolean True if request was run from command line, false if not
 	 */
 	function caIsRunFromCLI() {
-		if(php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])) {
-			return true;
-		} else {
-			return false;
-		}
+		if (in_array(PHP_SAPI, array('cli', 'cli-server', 'phpdbg'))) {
+      		return true;
+      	}
+      	return false;
 	}
 	# ---------------------------------------
 	/**
@@ -2931,27 +2942,26 @@ function caFileIsIncludable($ps_file) {
 		global $g_ui_locale;
 		if(!$locale) { $locale = $g_ui_locale; }
 		if(!$locale && defined('__CA_DEFAULT_LOCALE__')) { $locale = __CA_DEFAULT_LOCALE__; }
-		
+	
 		$currency_specifier = $decimal_value = null;
 		// it's either "<something><decimal>" ($1000) or "<decimal><something>" (1000 EUR) or just "<decimal>" with an implicit <something>
 		try {
 			// either
 			if (preg_match("!^([^\d]+)([\d\.\,]+)$!", trim($value), $matches)) {
-				$decimal_value = (strpos($matches[2], ',') !== false) ? Zend_Locale_Format::getNumber($matches[2], ['locale' => $locale, 'precision' => 2]) : (float)$matches[2];
+				$decimal_value = Zend_Locale_Format::getNumber($matches[2], ['locale' => $locale, 'precision' => 2]);
 				$currency_specifier = trim($matches[1]);
 			// or 1
 			} else if (preg_match("!^([\d\.\,]+)([^\d]+)$!", trim($value), $matches)) {
-				$decimal_value = (strpos($matches[1], ',') !== false) ? Zend_Locale_Format::getNumber($matches[1], ['locale' => $locale, 'precision' => 2]) : (float)$matches[1];
+				$decimal_value = Zend_Locale_Format::getNumber($matches[1], ['locale' => $locale, 'precision' => 2]);
 				$currency_specifier = trim($matches[2]);
 			// or 2
 			} else if (preg_match("!(^[\d\,\.]+$)!", trim($value), $matches)) {
-				$decimal_value = (strpos($matches[1], ',') !== false) ? Zend_Locale_Format::getNumber($matches[1], ['locale' => $locale, 'precision' => 2]) : (float)$matches[1];
+				$decimal_value = Zend_Locale_Format::getNumber($matches[1], ['locale' => $locale, 'precision' => 2]);
 				$currency_specifier = null;
 			}
 		} catch (Zend_Locale_Exception $e){
 			return null;
 		}
-
 		if ($currency_specifier || ($decimal_value > 0)) {
 			return ['currency' => $currency_specifier, 'value' => round($decimal_value, 2)];
 		}
@@ -3176,7 +3186,7 @@ function caFileIsIncludable($ps_file) {
 	function caUploadFileToGitHub($ps_user, $ps_token, $ps_owner, $ps_repo, $ps_git_path, $ps_local_filepath, $ps_branch = 'master', $pb_update_on_conflict=true, $ps_commit_msg = null) {
 		// check mandatory params
 		if(!$ps_user || !$ps_token || !$ps_owner || !$ps_repo || !$ps_git_path || !$ps_local_filepath) {
-			caLogEvent('DEBG', "Invalid parameters for GitHub file upload. Check your configuration!", 'caUploadFileToGitHub');
+			caLogEvent('DEBUG', "Invalid parameters for GitHub file upload. Check your configuration!", 'caUploadFileToGitHub');
 			return false;
 		}
 
@@ -3195,7 +3205,7 @@ function caFileIsIncludable($ps_file) {
 		} catch (Github\Exception\RuntimeException $e) {
 			switch($e->getCode()) {
 				case 401:
-					caLogEvent('DEBG', "Could not authenticate with GitHub. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
+					caLogEvent('DEBUG', "Could not authenticate with GitHub. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
 					break;
 				case 422:
 					if($pb_update_on_conflict) {
@@ -3206,23 +3216,23 @@ function caFileIsIncludable($ps_file) {
 							}
 							return true; // overwrite was successful if there was no exception in above statement
 						} catch (Github\Exception\RuntimeException $ex) {
-							caLogEvent('DEBG', "Could not update exiting file in GitHub. Error message was: ".$ex->getMessage()." - Code was: ".$ex->getCode(), 'caUploadFileToGitHub');
+							caLogEvent('DEBUG', "Could not update exiting file in GitHub. Error message was: ".$ex->getMessage()." - Code was: ".$ex->getCode(), 'caUploadFileToGitHub');
 							break;
 						}
 					} else {
-						caLogEvent('DEBG', "Could not upload file to GitHub. It looks like a file already exists at {$ps_git_path}.", 'caUploadFileToGitHub');
+						caLogEvent('DEBUG', "Could not upload file to GitHub. It looks like a file already exists at {$ps_git_path}.", 'caUploadFileToGitHub');
 					}
 					break;
 				default:
-					caLogEvent('DEBG', "Could not upload file to GitHub. A generic error occurred. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
+					caLogEvent('DEBUG', "Could not upload file to GitHub. A generic error occurred. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
 					break;
 			}
 			return false;
 		} catch (Github\Exception\ValidationFailedException $e) {
-			caLogEvent('DEBG', "Could not upload file to GitHub. The parameter validation failed. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
+			caLogEvent('DEBUG', "Could not upload file to GitHub. The parameter validation failed. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
 			return false;
 		} catch (Exception $e) {
-			caLogEvent('DEBG', "Could not upload file to GitHub. A generic error occurred. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
+			caLogEvent('DEBUG', "Could not upload file to GitHub. A generic error occurred. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
 			return false;
 		}
 
@@ -3240,7 +3250,7 @@ function caFileIsIncludable($ps_file) {
 	function caExportDataToResourceSpace($ps_user, $ps_key, $ps_base_url, $ps_local_filepath) {
 		// check mandatory params
 		if(!$ps_user || !$ps_key || !$ps_base_url || !$ps_local_filepath) {
-		    caLogEvent('DEBG', "Invalid parameters for ResourceSpace export. Check your configuration!", 'caExportDataToResourceSpace');
+		    caLogEvent('DEBUG', "Invalid parameters for ResourceSpace export. Check your configuration!", 'caExportDataToResourceSpace');
 			return false;
 		}
 		if (!file_exists($ps_local_filepath)) { 
@@ -3315,7 +3325,7 @@ function caFileIsIncludable($ps_file) {
                                 }
                             }
                         } else {
-                            caLogEvent('DEBG', "Could not create Collection. Check your ResourceSpace configuration", 'caExportDataToResourceSpace');
+                            caLogEvent('DEBUG', "Could not create Collection. Check your ResourceSpace configuration", 'caExportDataToResourceSpace');
                         }
                     }
                     $vs_query = 'user='.$ps_user.'&function=add_resource_to_collection&param1='.$vn_rs_id.'&param2='.$vs_collection_id;
@@ -3851,11 +3861,8 @@ function caFileIsIncludable($ps_file) {
 	        if (sizeof($va_tokens) > 2000) { 
 	        	$va_tokens = array_filter($va_tokens, function($v) { return ($v > (time() - 86400)); });	// delete any token older than eight hours
 	    	}
-	    	if (sizeof($va_tokens) > 2000) { 
-	    		$va_tokens = array_slice($va_tokens, 0, 500, true); // delete last quarter of token buffer if it gets too long
-	    	}
 	    
-	        if (!isset($va_tokens[$vs_token])) { $va_tokens[$vs_token] = time(); }
+	        $va_tokens[$vs_token] = time();
 	        
 	        PersistentCache::save("csrf_tokens_{$session_id}", $va_tokens, "csrf_tokens");
 	    }
@@ -3942,6 +3949,7 @@ function caFileIsIncludable($ps_file) {
 			// Any elements means a value
 			return (is_array($pa_initial_values) && (sizeof($pa_initial_values) > 0));
 		}
+		return false;
 	}
 	# ----------------------------------------
 	/**
@@ -4096,7 +4104,7 @@ function caFileIsIncludable($ps_file) {
         if (is_null($pa_use_unicode_fraction_glyphs_for)) { $pb_use_unicode_fraction_glyphs = $o_config->get('use_unicode_fractions_for_measurements'); }
 		
 		$pn_inches_as_float = (float)preg_replace("![^\d\.]+!", "", $pn_inches_as_float);	// remove commas and such; also remove "-" as dimensions can't be negative
-		$num = ceil($pn_inches_as_float * $pn_denom);
+		$num = floor($pn_inches_as_float * $pn_denom);
 		$int = (int)($num / $pn_denom);
 		$num %= $pn_denom;
 
@@ -5023,11 +5031,58 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
-	 * Check if background processing queue is enabled
+	 * Check if background processing using the task queue is enabled
 	 *
 	 * @return bool
 	 */
-	function caProcessingQueueIsEnabled() : bool {
-		return defined('__CA_QUEUE_ENABLED__') && __CA_QUEUE_ENABLED__;
+	function caTaskQueueIsEnabled() : bool {
+		if(defined('__CA_QUEUE_ENABLED__')) {
+			return  __CA_QUEUE_ENABLED__;
+		}
+		$config = Configuration::load();
+		return (bool)$config->get('run_task_queue');
+	}
+	# ----------------------------------------
+	/**
+	 * Evaluate expression on model instance or current row of search result
+	 * 
+	 * @param BaseModel|SearchResult $item
+	 * @param string $expression
+	 * @param array $options Options include:
+	 *		context = Prefix to add to tag. [Default is null]
+	 *		... other optiond are passed through to get()
+	 *
+	 * @return bool
+	 */
+	function caEvaluateExpression($item, string $expression, ?array $options=null) : bool {
+		$expr_tags = caGetTemplateTags($expression);
+		$values = caGetTagValuesFromDataItem($item, $expr_tags, $options);
+		return (bool)ExpressionParser::evaluate($expression, $values);
+	}
+	# ----------------------------------------
+	/**
+	 * Return array with values for tags from a model instance or current row of search result
+	 *
+	 * @param BaseModel|SearchResult $item
+	 * @param array $tags
+	 * @param array $options Options include:
+	 *		context = Prefix to add to tag. [Default is null]
+	 *		... other optiond are passed through to get()
+	 *
+	 * @return array
+	 */
+	function caGetTagValuesFromDataItem($item, array $tags, ?array $options=null) : array {
+		if(!is_array($options)) {
+			$options = ['convertCodesToIdno' => true, 'returnAsArray' => false];
+		}	
+		$context = caGetOption('context', $options, null);
+		$vars = [];
+		if(is_array($tags)) {
+			foreach($tags as $tag) {
+				$v = $item->get(($context ? "{$context}." : '').$tag, $options);
+				$vars[$tag] = $v;
+			}
+		}
+		return $vars;
 	}
 	# ----------------------------------------

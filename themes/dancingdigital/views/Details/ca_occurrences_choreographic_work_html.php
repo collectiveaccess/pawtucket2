@@ -82,20 +82,39 @@
 				</div> 
 			</div>
 
-			<!-- {{{<ifcount code="ca_entities" min="1" restrictToTypes="individual">
-				<div class="row works-row">
-					<label class="entity-data-label mb-3">Related People</label>
-					<ul class="detail-list">
-						<unit relativeTo="ca_entities" delimiter="" restrictToTypes="individual">
-							<li class='detail-list-item'>
-								<div class='related-item-title'>
-									<l>^ca_entities.preferred_labels.displayname <span style="color: rgba(255, 255, 255, 0.5); font-size: 16px;">(^relationship_typename)</span></l>
-								</div>
-							</li>
-						</unit>
-					</ul>
+			{{{<ifdef code="ca_occurrences.date|ca_occurrences.sound|ca_occurrences.description">
+				<div class="row object-data-row">
+					<div class="col">
+						<ifdef code="ca_occurrences.date">
+							<div class="object-info">
+								<label class="object-info-label">Creation Date</label><br>
+								<div class="info-text">^ca_occurrences.date</div>
+							</div>
+						</ifdef>
+
+						<ifdef code="ca_occurrences.sound">
+							<div class="object-info">
+								<label class="object-info-label">Sound</label><br>
+								<unit delimiter="<br>">
+									<ifdef code="ca_occurrences.sound.sound_title"><div class="info-text">Title: ^ca_occurrences.sound.sound_title</div></ifdef>
+									<ifdef code="ca_occurrences.sound.sound_date"><div class="info-text">Date: ^ca_occurrences.sound.sound_date</div></ifdef>
+									<ifdef code="ca_occurrences.sound.sound_type"><div class="info-text capitalize">Type: ^ca_occurrences.sound.sound_type</div></ifdef>
+									<ifdef code="ca_occurrences.sound.live_recorded"><div class="info-text">Live/Recorded: ^ca_occurrences.sound.live_recorded</div></ifdef>
+									<ifdef code="ca_occurrences.sound.creator"><div class="info-text">Recording Artist: ^ca_occurrences.sound.creator</div></ifdef>
+									<ifdef code="ca_occurrences.sound.sound_details"><div class="info-text">Details: ^ca_occurrences.sound.sound_details</div></ifdef>
+								</unit>
+							</div>
+						</ifdef>
+
+						<ifdef code="ca_occurrences.description">
+							<div class="object-info">
+								<label class="object-info-label">Description</label><br>
+								<div class="info-text">^ca_occurrences.description</div>
+							</div>
+						</ifdef>
+					</div> 
 				</div>
-			</ifcount>}}} -->
+			</ifdef>}}}
 
 			{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="choreographic_work">
 				<div class="row works-row">

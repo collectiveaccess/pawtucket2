@@ -26,35 +26,158 @@
  * ----------------------------------------------------------------------
  */
 ?>
+			<div style="clear:both; height:1px;"><!-- empty --></div>
+<?php
+	if(strToLower($this->request->getController()) != "word"){
+?>
+		</div><!-- end col --></div><!-- end row --></div><!-- end container -->
+<?php	
+	}
+?>
 		</div><!-- end content-area -->
-		<div style="clear:both; height:1px;"><!-- empty --></div>
-		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+	</div><!-- end pageArea -->
+</div><!-- end main -->
 
-		<footer class="tm-footer uk-text-center uk-text-contrast" role="contentinfo">
-    		<div class="footer-container">
-				<div class="uk-panel"><ul class="uk-subnav uk-subnav-line uk-flex-center"><li><a href="https://alutiiqmuseum.org/about">Governance</a></li><li><a href="https://alutiiqmuseum.org/contact-us">Contact Us</a></li><li><a href="https://alutiiqmuseum.org/newsletter">Newsletter</a></li><li><a href="https://alutiiqmuseum.org/press-releases">Press Releases</a></li><li><a href="https://alutiiqmuseum.org/opportunity">Opportunity</a></li></ul></div>
-				<div class="uk-panel">
-					<h6 style="text-align: center;">Founding and Sustaining Organizations:&nbsp;<a href="http://www.kanaweb.org/" target="_blank" rel="noopener noreferrer">Kodiak Area Native Association</a>, <a href="http://www.koniag.com/" target="_blank" rel="noopener noreferrer">Koniag Inc.</a>, <a href="https://www.afognak.com/" target="_blank" rel="noopener noreferrer">Afognak Native Corporation</a>, <a href="http://aki-kodiak.com/" target="_blank" rel="noopener noreferrer">Akhiok-Kaguyak Inc.</a>, <a href="http://leisnoi.com/" target="_blank" rel="noopener noreferrer">Leisnoi Inc.</a>,<br><a href="http://www.nativesofkodiak.com/" target="_blank" rel="noopener noreferrer">Natives of Kodiak Inc.</a>, <a href="http://www.oldharbornativecorp.com/" target="_blank" rel="noopener noreferrer">Old Harbor Native Corporation</a>, <a href="http://www.ouzinkie.com/" target="_blank" rel="noopener noreferrer">Ouzinkie Native Corporation</a></h6>
-					<h6 style="text-align: center;"><span style="font-size: 8pt;"><a href="http://www.ouzinkie.com/" target="_blank" rel="noopener noreferrer"></a><span class="uk-slideshow">©2020 Alutiiq Museum and Archaeological Repository. All rights reserved.&nbsp;</span><span style="letter-spacing: 0px;">Website supported by the City of Kodiak.</span></span></h6>
-					<div style="text-align: center;"><span style="font-size: 8pt;"> <a href="https://alutiiqmuseum.org/component/osmap/?view=html&amp;id=2">Sitemap</a></span></div>
+
+
+
+
+<footer>
+	<!-- Builder #footer -->
+	<div class="footer-section uk-section-primary uk-section">
+    	<div class="uk-container uk-container-large">                
+            <div class="uk-grid tm-grid-expand uk-grid-margin" uk-grid="">
+				<div class="uk-width-1-2@s uk-width-1-4@m uk-first-column">
+					<div class="uk-margin uk-text-left@s uk-text-center">
+        				<a class="el-link" href="#" uk-scroll=""><picture>
+						<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-4a8641a6.webp 218w" sizes="(min-width: 218px) 218px">
+						<img src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-4a8641a6.webp" width="218" height="160" class="el-image" alt="Alutiiq Museum Logo" loading="lazy">
+						</picture></a>    
+    				</div>
 				</div>
+				<div class="uk-width-1-2@s uk-width-1-4@m">
+					<div class="uk-h5 uk-heading-divider">        Location    </div><div class="uk-panel uk-margin"><p>Alutiiq Museum<br>215 Mission Road<br>Suite 101<br>Kodiak, AK 99615</p></div>
+				</div>
+				<div class="uk-width-1-2@s uk-width-1-4@m">
+					<div class="uk-h5 uk-heading-divider">        Museum Hours    </div><div class="uk-panel uk-margin"><p>Gallery closed for renovations until 2025.</p><p>Museum Store open at the Downtown Marketplace<br>Tues—Sat: 10 am to 5 pm</p></div>
+				</div>
+				<div class="uk-width-1-2@s uk-width-1-4@m">
+					<div class="uk-h5 uk-heading-divider">        Connect With Us    </div><div class="uk-panel uk-margin"><a class="uk-link-text" href="mailto:info@alutiiqmuseum.org">info@alutiiqmuseum.org</a><br>
+					<a class="uk-link-text" href="tel:+18444258844">+ 844-425-8844</a>
+				</div>
+				<div class="uk-margin">        
+					<a class="el-content uk-button uk-button-default uk-button-small" href="/museum/about/contact-us/">    
+							Contact Us        
+					</a>
+				</div>
+				<div class="uk-margin-remove-vertical uk-visible@s" uk-scrollspy="target: [uk-scrollspy-class];">    <div class="uk-child-width-auto uk-grid-small uk-flex-inline uk-grid" uk-grid="">
+						<div class="uk-first-column">
+			<a class="el-link uk-icon-button" href="https://www.facebook.com/AlutiiqMuseum" target="_blank" rel="noreferrer"><span uk-icon="icon: facebook;" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M11,10h2.6l0.4-3H11V5.3c0-0.9,0.2-1.5,1.5-1.5H14V1.1c-0.3,0-1-0.1-2.1-0.1C9.6,1,8,2.4,8,5v2H5.5v3H8v8h3V10z"></path></svg></span></a></div>
+						<div>
+			<a class="el-link uk-icon-button" href="https://www.instagram.com/alutiiqmuseum/" target="_blank" rel="noreferrer"><span uk-icon="icon: instagram;" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M13.55,1H6.46C3.45,1,1,3.44,1,6.44v7.12c0,3,2.45,5.44,5.46,5.44h7.08c3.02,0,5.46-2.44,5.46-5.44V6.44 C19.01,3.44,16.56,1,13.55,1z M17.5,14c0,1.93-1.57,3.5-3.5,3.5H6c-1.93,0-3.5-1.57-3.5-3.5V6c0-1.93,1.57-3.5,3.5-3.5h8 c1.93,0,3.5,1.57,3.5,3.5V14z"></path><circle cx="14.87" cy="5.26" r="1.09"></circle><path d="M10.03,5.45c-2.55,0-4.63,2.06-4.63,4.6c0,2.55,2.07,4.61,4.63,4.61c2.56,0,4.63-2.061,4.63-4.61 C14.65,7.51,12.58,5.45,10.03,5.45L10.03,5.45L10.03,5.45z M10.08,13c-1.66,0-3-1.34-3-2.99c0-1.65,1.34-2.99,3-2.99s3,1.34,3,2.99 C13.08,11.66,11.74,13,10.08,13L10.08,13L10.08,13z"></path></svg></span></a></div>
+						<div>
+			<a class="el-link uk-icon-button" href="https://www.linkedin.com/company/10252828/admin/feed/posts/" target="_blank" rel="noreferrer"><span uk-icon="icon: linkedin;" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M5.77,17.89 L5.77,7.17 L2.21,7.17 L2.21,17.89 L5.77,17.89 L5.77,17.89 Z M3.99,5.71 C5.23,5.71 6.01,4.89 6.01,3.86 C5.99,2.8 5.24,2 4.02,2 C2.8,2 2,2.8 2,3.85 C2,4.88 2.77,5.7 3.97,5.7 L3.99,5.7 L3.99,5.71 L3.99,5.71 Z"></path><path d="M7.75,17.89 L11.31,17.89 L11.31,11.9 C11.31,11.58 11.33,11.26 11.43,11.03 C11.69,10.39 12.27,9.73 13.26,9.73 C14.55,9.73 15.06,10.71 15.06,12.15 L15.06,17.89 L18.62,17.89 L18.62,11.74 C18.62,8.45 16.86,6.92 14.52,6.92 C12.6,6.92 11.75,7.99 11.28,8.73 L11.3,8.73 L11.3,7.17 L7.75,7.17 C7.79,8.17 7.75,17.89 7.75,17.89 L7.75,17.89 L7.75,17.89 Z"></path></svg></span></a></div>
+						<div>
+			<a class="el-link uk-icon-button" href="https://www.pinterest.com/AlutiiqMuseum/" target="_blank" rel="noreferrer"><span uk-icon="icon: pinterest;" class="uk-icon"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10.21,1 C5.5,1 3,4.16 3,7.61 C3,9.21 3.85,11.2 5.22,11.84 C5.43,11.94 5.54,11.89 5.58,11.69 C5.62,11.54 5.8,10.8 5.88,10.45 C5.91,10.34 5.89,10.24 5.8,10.14 C5.36,9.59 5,8.58 5,7.65 C5,5.24 6.82,2.91 9.93,2.91 C12.61,2.91 14.49,4.74 14.49,7.35 C14.49,10.3 13,12.35 11.06,12.35 C9.99,12.35 9.19,11.47 9.44,10.38 C9.75,9.08 10.35,7.68 10.35,6.75 C10.35,5.91 9.9,5.21 8.97,5.21 C7.87,5.21 6.99,6.34 6.99,7.86 C6.99,8.83 7.32,9.48 7.32,9.48 C7.32,9.48 6.24,14.06 6.04,14.91 C5.7,16.35 6.08,18.7 6.12,18.9 C6.14,19.01 6.26,19.05 6.33,18.95 C6.44,18.81 7.74,16.85 8.11,15.44 C8.24,14.93 8.79,12.84 8.79,12.84 C9.15,13.52 10.19,14.09 11.29,14.09 C14.58,14.09 16.96,11.06 16.96,7.3 C16.94,3.7 14,1 10.21,1"></path></svg></span></a></div>
+	
+				</div></div>
+			</div>
+		</div>
+		<div class="uk-grid tm-grid-expand uk-grid-margin" uk-grid="">
+			<div class="uk-width-3-4@m uk-first-column">
+				<div class="uk-h3 uk-heading-divider">        Founding and Sustaining Organizations    </div>
 				<div>
-					<a class="tm-totop-scroller uk-text-center uk-link-muted uk-margin-top" data-uk-smooth-scroll="" href="#"></a>
+        			<div class="uk-child-width-expand uk-grid" uk-grid="">    
+    					<div class="uk-first-column">        
+							<ul class="uk-margin-remove-bottom uk-nav uk-nav-default">                                <li class="el-item ">
+							<a class="uk-flex- el-link" href="http://www.kanaweb.org/" target="_blank">
+												Kodiak Area Native Association            
+							</a></li>
+																		<li class="el-item ">
+							<a class="uk-flex- el-link" href="http://www.koniag.com/" target="_blank">
+												Koniag, Inc.        
+	
+							</a></li>
+							<li class="el-item ">
+							<a class="uk-flex- el-link" href="https://www.afognak.com/" target="_blank">
+												Afognak Native Corporation        
+							</a></li>
+							</ul>
+                		</div>
+        				<div>        
+							<ul class="uk-margin-remove-bottom uk-nav uk-nav-default">                                <li class="el-item ">
+							<a class="uk-flex- el-link" href="http://aki-kodiak.com/" target="_blank">           
+												Akhiok-Kaguyak Inc.           
+							</a></li>
+							<li class="el-item ">
+							<a class="uk-flex- el-link" href="http://leisnoi.com/" target="_blank">
+												Leisnoi Inc        
+							</a></li>
+							<li class="el-item ">
+							<a class="uk-flex- el-link" href="http://www.nativesofkodiak.com/" target="_blank">
+												Natives of Kodiak Inc        
+							</a></li>
+							</ul>
+                		</div>
+        				<div>        
+							<ul class="uk-margin-remove-bottom uk-nav uk-nav-default">                                <li class="el-item ">
+							<a class="uk-flex- el-link" href="http://www.oldharbornativecorp.com/" target="_blank">
+												Old Harbor Native Corporation        
+							</a></li>
+							<li class="el-item ">
+							<a class="uk-flex- el-link" href="http://www.ouzinkie.com/" target="_blank">
+												Ouzinkie Native Corporation        
+							</a></li>
+							</ul>
+                		</div>
+        			</div>    
 				</div>
+			</div>
+			<div class="uk-grid-item-match uk-flex-middle uk-width-1-4@m">
+    			<div class="uk-panel uk-width-1-1">                                
+					<div class="uk-margin uk-text-left@l uk-text-center">
+						<picture>
+						<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/American-Alliance-of-Museums-0dbe8149.png  171w" sizes="(min-width: 171px) 171px">
+						<img src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/American-Alliance-of-Museums-0dbe8149.png" width="171" height="140" class="el-image" alt="American Alliance of Museums Accredited Museum" loading="lazy">
+						</picture>        
+					</div>
+                </div>            
         	</div>
-    	</footer>
-<div id="offcanvas" class="uk-offcanvas" aria-hidden="false">
-        <div class="uk-offcanvas-bar uk-offcanvas-bar-show" mode="push"><ul class="uk-nav uk-nav-offcanvas">
-		<li><a href="https://alutiiqmuseum.org/?Itemid=528">Donate</a></li></ul>
-<ul class="uk-nav uk-nav-offcanvas">
-<li class="uk-parent"><a href="#">VISIT</a>
-<ul class="uk-nav-sub"><li><a href="https://alutiiqmuseum.org/visit/our-mission">Our Mission</a></li><li><a href="https://alutiiqmuseum.org/visit/location-hours-admission">Location, Hours, Admission</a></li><li><a href="https://forms.zohopublic.com/alutiiqm/form/TourReservationForm/formperma/G0EFrVHK1saQg_eNFd2tktuSFjZtoB5V3qwwU599gbs">Schedule a Tour</a></li><li><a href="https://alutiiqmuseum.org/visit/on-exhibit">Exhibits</a></li><li><a href="https://alutiiqmuseum.org/visit/upcoming-events">Events</a></li><li><a href="http://ancestorsmemorial.org/" target="_blank" rel="noopener noreferrer">Ancestors' Memorial</a></li></ul></li><li class="uk-parent"><a href="#">LEARN</a>
-<ul class="uk-nav-sub"><li class="uk-parent"><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people">Alutiiq / Sugpiaq People</a><ul><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/language">Language</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/values">Values</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/land-acknowledgement">Land Acknowledgement</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/subsistence">Subsistence</a></li><li class="uk-parent"><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/cultural-arts">Cultural Arts</a><ul><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/cultural-arts/beading">Beading</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/cultural-arts/carving">Carving</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/cultural-arts/dancing">Dancing</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/cultural-arts/graphic-arts">Graphic Arts</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/cultural-arts/skin-sewing">Skin Sewing</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/cultural-arts/singing">Singing</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/cultural-arts/story-telling">Story Telling</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/cultural-arts/weaving">Weaving</a></li></ul></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/history">History</a></li><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people/short-lessons">Learn More</a></li></ul></li><li><a href="https://alutiiqmuseum.org/learn/plant-gallery">Plant Gallery</a></li><li><a href="https://alutiiqmuseum.org/learn/contest">Coloring Alutiiq</a></li><li><a href="https://alutiiqmuseum.org/learn/alutiiq-word-of-the-week">Alutiiq Word of the Week</a></li><li><a href="https://alutiiqmuseum.org/learn/word-of-the-week-archive">Word of the Week Archive</a></li><li><a href="https://alutiiqmuseum.org/teachers">For Teachers</a></li><li><a href="https://alutiiqmuseum.org/learn/history-of-the-alutiiq-museum">Museum History</a></li><li><a href="https://alutiiqmuseum.org/learn/ask-a-question">Ask A Question</a></li></ul></li><li class="uk-parent"><a href="#">EXPLORE</a>
-<ul class="uk-nav-sub"><li class="uk-parent"><a href="https://alutiiqmuseum.org/explore/collections">Collections</a><ul><li class="uk-parent"><a href="#">Types of Collections</a>
-<ul><li><a href="https://alutiiqmuseum.org/explore/collections/types-of-collections/archaeology">Archaeological</a></li><li><a href="https://alutiiqmuseum.org/explore/collections/types-of-collections/archival">Archival</a></li><li><a href="https://alutiiqmuseum.org/explore/collections/types-of-collections/audiovisual">Audiovisual</a></li><li><a href="https://alutiiqmuseum.org/explore/collections/types-of-collections/contemporary-art">Contemporary Art</a></li><li><a href="https://alutiiqmuseum.org/explore/collections/types-of-collections/ethnographic">Ethnographic</a></li><li><a href="https://alutiiqmuseum.org/explore/collections/types-of-collections/natural-history">Natural History</a></li><li><a href="https://alutiiqmuseum.org/explore/collections/types-of-collections/photographic">Photographic</a></li></ul></li><li><a href="https://alutiiqmuseum.org/explore/collections/facilities-policies">Facilities / Policies</a></li><li><a href="https://alutiiqmuseum.org/explore/collections/contributing">Contributing</a></li><li><a href="https://alutiiqmuseum.org/explore/collections/repatriation">Repatriation</a></li><li><a href="https://alutiiqmuseum.org/explore/collections/collections-research">Collections Research</a></li></ul></li><li><a href="https://alutiiqmuseum.org/explore/past-exhibits">Past Exhibits</a></li><li><a href="https://alutiiqmuseum.org/explore/crafts">Crafts</a></li><li><a href="https://alutiiqmuseum.org/explore/uswitusqaq-s-dream">Uswitusqaq's Dream</a></li><li><a href="https://alutiiqmuseum.org/explore/lecture-videos">Videos</a></li><li><a href="https://alutiiqmuseum.org/explore/virtual-tour">Virtual Tour</a></li><li><a href="https://alutiiqmuseum.org/explore/cultural-experiences">Cultural Experiences</a></li></ul></li><li class="uk-parent"><a href="#">RESEARCH</a>
-<ul class="uk-nav-sub"><li class="uk-parent"><a href="https://alutiiqmuseum.org/research/archeology">Archaeology</a><ul><li><a href="https://alutiiqmuseum.org/research/archeology/womens-bay-project">Womens Bay Project</a></li><li><a href="https://alutiiqmuseum.org/research/archeology/site-stewardship">Site Stewardship</a></li><li><a href="https://alutiiqmuseum.org/research/archeology/petroglyphs">Petroglyphs</a></li><li><a href="https://alutiiqmuseum.org/research/archeology/living-by-midway-bay">Living by Midway Bay</a></li><li><a href="https://kodiakarchaeology.oberlincollegelibrary.org/neatline/show/excavationfinds">Mikt'sqaq Angayuk</a></li><li><a href="https://alutiiqmuseum.org/research/archeology/little-island">Qik'rtangcuk</a></li></ul></li><li><a href="http://languagearchive.alutiiqmuseum.org/home" target="_blank" rel="noopener noreferrer">Language Collections</a></li><li><a href="https://alutiiqmuseum.org/research/language-collections">Language Studies</a></li><li><a href="https://alutiiqmuseum.org/research/library">Library</a></li><li><a href="https://alutiiqmuseum.org/research/photos">Share Photos</a></li><li><?php print caNavLink($this->request, "Amutat Database", "", "", "", ""); ?><li></ul></li><li class="uk-parent"><a href="#">SHOP</a>
-<ul class="uk-nav-sub"><li><a href="https://alutiiqmuseumstore.org" target="_blank" rel="noopener noreferrer">Museum Store</a></li><li><a href="https://alutiiqmuseum.org/shop/artist-bios">Artists</a></li><li><a href="https://alutiiqmuseum.org/shop/the-alutiiq-seal">The Alutiiq Seal</a></li><li><a href="https://alutiiqmuseum.org/shop/arts-advocacy">Arts Advocacy</a></li><li><a href="https://alutiiqmuseum.org/shop/info-for-artists">Sell &amp; Consign</a></li></ul></li><li class="uk-parent"><a href="https://alutiiqmuseum.org/give">GIVE</a><ul class="uk-nav-sub"><li><a href="https://alutiiqmuseum.org/give/donations">Donations</a></li><li><a href="https://alutiiqmuseum.org/give">Membership</a></li><li><a href="https://alutiiqmuseum.org/give/sponsor">Sponsor</a></li><li><a href="https://alutiiqmuseum.org/give/serve">Serve</a></li><li><a href="https://alutiiqmuseum.org/give/volunteers">Volunteer</a></li></ul></li></ul></div>
-    </div>
+        </div>
+        <div class="uk-grid tm-grid-expand uk-grid-margin uk-grid-stack" uk-grid="">
+			<div class="uk-width-3-4@m uk-first-column">
+    			<div class="uk-panel uk-margin"><p>Supported by the<em>&nbsp;Exxon Valdez</em> Oil Spill Trustee Council through the CORaL Network.</p></div>
+			</div>
+			<div class="uk-width-1-4@m uk-grid-margin uk-first-column">
+    		</div>
+    	</div>
+	</div>
+	</div>
+	<div class="black-bg uk-section-secondary uk-section uk-section-xsmall">
+        <div class="uk-container uk-container-large">                
+            <div class="uk-grid tm-grid-expand uk-child-width-1-1 uk-margin uk-margin-remove-bottom">
+				<div class="uk-width-1-1">
+					<div class="uk-margin-xlarge uk-text-center"><a href="#" uk-totop="" uk-scroll="" class="uk-icon uk-totop" role="button" aria-label="Back to top"><svg width="30" height="30" viewBox="0 0 30 30"><polygon points="23.3727 8.39305 14.99965 .02049 6.62758 8.39305 7.68812 9.4536 14.24965 2.89165 14.24965 29.99998 15.74965 29.99998 15.74965 2.89152 22.31215 9.4536 23.3727 8.39305"></polygon></svg></a></div>
+				</div>
+			</div>
+			<div class="uk-grid tm-grid-expand uk-grid-small uk-margin-small" uk-grid="">
+				<div class="uk-width-1-3@s uk-width-1-4@m uk-first-column">
+					<div class="uk-panel uk-margin-remove-vertical uk-text-left@s uk-text-center"><p class="uk-text-small"><a href="/privacy-policy" class="uk-link-text uk-margin-small-left">Privacy Policy</a></p></div><div class="uk-panel uk-text-small uk-text-muted uk-margin-small uk-text-left@s uk-text-center uk-hidden@m">© <script> document.currentScript.insertAdjacentHTML('afterend', '<time datetime="' + new Date().toJSON() + '">' + new Intl.DateTimeFormat(document.documentElement.lang, {year: 'numeric'}).format() + '</time>'); </script><time datetime="2024-03-28T15:29:13.935Z">2024</time> Alutiiq Museum. All rights reserved.</div>
+				</div>
+				<div class="uk-width-2-3@s uk-width-3-4@m uk-visible@m">    
+					<div class="uk-panel uk-text-small uk-text-right@s uk-text-center uk-visible@m">© <script> document.currentScript.insertAdjacentHTML('afterend', '<time datetime="' + new Date().toJSON() + '">' + new Intl.DateTimeFormat(document.documentElement.lang, {year: 'numeric'}).format() + '</time>'); </script><time datetime="2024-03-28T15:29:13.952Z">2024</time> Alutiiq Museum and Archaeological Repository. All rights reserved.</div>
+				</div>
+			</div>
+        </div>                
+    </div>            
+</footer>    
+    
+    
+    
+    
+    
+    
+</div><!-- end tm-page --->
 <?php
 	//
 	// Output HTML for debug bar
