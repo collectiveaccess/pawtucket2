@@ -109,7 +109,7 @@
 					print "<div class='row'>";
 					foreach($va_audio_files_by_type as $vn_rep_id => $va_audio_file){
 						print "<div class='text-center col-sm-6 col-md-4 col-lg-4'>";
-						print "<div class='unit audioPlayerContainer bgLtBeige'><i id='playPronunciationIcon".$vn_rep_id."' onClick='playAudio(\"".$vn_rep_id."\")' class='fa fa-play-circle-o audioButton' aria-hidden='true'></i>";
+						print "<div class='unit audioPlayerContainer bgLtBeige'><i id='playPronunciationIcon".$vn_rep_id."' onClick='playAudio(\"".$vn_rep_id."\")' class='far fa-play-circle audioButton' aria-hidden='true'></i>";
 						if($va_audio_file["caption"]){
 							print "<br/>".$va_audio_file["caption"];
 						}
@@ -148,13 +148,13 @@
 	function playAudio(audioId) {
 		var audio = document.getElementById("playPronunciation" + audioId);
 		var audios = document.getElementsByTagName('audio');
-		if($(".audioButton").hasClass('fa-stop-circle-o')){
-			$(".audioButton").addClass('fa-play-circle-o');
-			$(".audioButton").removeClass('fa-stop-circle-o');
+		if($(".audioButton").hasClass('fa-stop-circle')){
+			$(".audioButton").addClass('fa-play-circle');
+			$(".audioButton").removeClass('fa-stop-circle');
 		}
 		if(audio.paused){
-			$("#playPronunciationIcon" + audioId).addClass('fa-stop-circle-o');
-			$("#playPronunciationIcon" + audioId).removeClass('fa-play-circle-o');
+			$("#playPronunciationIcon" + audioId).addClass('fa-stop-circle');
+			$("#playPronunciationIcon" + audioId).removeClass('fa-play-circle');
 			for(var i = 0, len = audios.length; i < len;i++){
 				if(!audios[i].paused){
 					audios[i].pause();
@@ -164,15 +164,15 @@
 			audio.play();
 			
 		}else{
-			$("#playPronunciationIcon" + audioId).removeClass('fa-stop-circle-o');
-			$("#playPronunciationIcon" + audioId).addClass('fa-play-circle-o');
+			$("#playPronunciationIcon" + audioId).removeClass('fa-stop-circle');
+			$("#playPronunciationIcon" + audioId).addClass('fa-play-circle');
 			audio.pause();
 			audio.currentTime = 0;
 		}
 	}
 	function audioEnded(audioId){
-		$("#playPronunciationIcon" + audioId).removeClass('fa-stop-circle-o');
-		$("#playPronunciationIcon" + audioId).addClass('fa-play-circle-o');
+		$("#playPronunciationIcon" + audioId).removeClass('fa-stop-circle');
+		$("#playPronunciationIcon" + audioId).addClass('fa-play-circle');
 	}
 	
 	
