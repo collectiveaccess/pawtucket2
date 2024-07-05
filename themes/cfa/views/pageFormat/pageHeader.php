@@ -57,7 +57,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 		
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 	
-	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?= (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 
 	<!-- Dynamic meta tags -->
@@ -146,7 +146,7 @@ $va_access_values = caGetUserAccessValues($this->request);
             <div class="row">
                 <div class="wrap">
                     <a href="https://chicagofilmarchives.org/" id="logo">
-                        <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo-desktop.svg"/>
+                        <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo-desktop.svg" alt="Go to the Homepage" />
                     </a>
                     <ul id="menu-extra" class="nav header-nav horizontal extra">
                         <li id="menu-item-34" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34">
@@ -237,8 +237,7 @@ $va_access_values = caGetUserAccessValues($this->request);
                     <div class="row layout-fixed-right dim-down">
                         <div>
                             <a href="https://chicagofilmarchives.org/" id="compact-logo">
-                                <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo.svg"
-                                />
+                                <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo.svg" alt="Go to the Homepage" />
                             </a>
                             <ul id="menu-main-1" class="nav header-nav horizontal main nav-color">
                                 <li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-8 current_page_item menu-item-28">
@@ -298,12 +297,10 @@ $va_access_values = caGetUserAccessValues($this->request);
         <div class="int">
             <div class="row wrap">
                 <a href="https://chicagofilmarchives.org/" id="logo-mobile">
-                    <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo-mobile.svg"
-                    />
+                    <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo-mobile.svg" alt="Go to the Homepage" />
                 </a>
                 <a href="#" id="burger">
-                    <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/burger.svg"
-                    />
+                    <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/burger.svg"  alt="Open Menu Mobile" />
                 </a>
             </div>
         </div>
@@ -312,16 +309,14 @@ $va_access_values = caGetUserAccessValues($this->request);
         <div class="layout">
             <div class="row wrap">
                 <a href="#" id="close-mobile-panel">
-                    <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/close-panel-icon.svg"
-                    />
+                    <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/close-panel-icon.svg" alt="Close Mobile Panel" />
                 </a>
             </div>
             <div class="scroll-layer">
                 <div class="menu-container">
                     <div class="wrap">
                         <div class="module-search-form">
-                            <form role="search" aria-label="Search For" method="get" class="search-form"
-                            action="https://chicagofilmarchives.org/">
+                            <form role="search" aria-label="Search For" method="get" class="search-form" action="https://chicagofilmarchives.org/">
                                 <label for="search-form-3" class="visually-hidden">
                                     Search
                                 </label>
@@ -461,4 +456,4 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<div class="row">
 		<div class="col-xs-12">
 			<div role="main" id="main">
-				<div id="pageArea" <?php print caGetPageCSSClasses(); ?>
+				<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
