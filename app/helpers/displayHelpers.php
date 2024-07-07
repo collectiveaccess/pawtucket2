@@ -4391,9 +4391,19 @@ function caRepToolbar($po_request, $pt_representation, $pt_subject, $pa_options=
 
 	if (!caGetOption(['no_overlay'], $va_rep_display_info, false)) {
 		$overlay_icon = $o_media_display_config->get('overlay_icon');
-		$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $vn_rep_id, 'set_id' => caGetOption('set_id', $pa_options, 0), 'overlay' => 1))."\", function() { var url = jQuery(\"#\" + caMediaPanel.getPanelID()).data(\"reloadUrl\"); if(url) { window.location = url; } }); return false;' aria-label='"._t("Open Media View")."' title='"._t("Open Media View")."'>{$overlay_icon}</a>\n";
+		
+		$apm = new ApplicationPluginManager();
+		$toolbar_dtl = $apm->hookRepToolBarZoomButton([
+			'request' => $po_request, 'representation_id' => $vn_rep_id, 
+			'table' => $ps_table, 'subject_id' => $pn_subject_id, 
+			'options' => $pa_options,
+			'zoomParams' => $zoom_params = ['context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $vn_rep_id, 'set_id' => caGetOption('set_id', $pa_options, 0), 'overlay' => 1]
+		]);
+		if(isset($toolbar_dtl['zoomParams']) && is_array($toolbar_dtl['zoomParams'])) {
+			$zoom_params = $toolbar_dtl['zoomParams'];
+		}
+		$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', $zoom_params)."\", function() { var url = jQuery(\"#\" + caMediaPanel.getPanelID()).data(\"reloadUrl\"); if(url) { window.location = url; } }); return false;' aria-label='"._t("Open Media View")."' title='"._t("Open Media View")."'>{$overlay_icon}</a>\n";	
 	}
-
 	if (is_null($vb_show_compare = caGetOption('compare', $va_detail_type_config['options'], null))) {
 		$vb_show_compare = caGetOption('compare', $va_rep_display_info, false);
 	}
