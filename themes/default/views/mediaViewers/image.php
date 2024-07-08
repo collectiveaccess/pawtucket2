@@ -20,10 +20,10 @@ $options = $this->getVar('options');
 ?>
 	<div class="imageviewer-control-bar text-left">
 		<div class="btn-group" role="group" aria-label="Viewer Controls">
-			<a href="#" id="imageviewer-zoom-in" class="btn btn-white imageviewer-control" role="button" aria-label="zoom in"><i class="bi bi-zoom-in"></i></a>
-			<a href="#" id="imageviewer-zoom-out" class="btn btn-white imageviewer-control" role="button" aria-label="zoom out"><i class="bi bi-zoom-out"></i></a>
-			<a href="#" id="imageviewer-home" class="btn btn-white imageviewer-control" role="button" aria-label="fit image"><i class="bi bi-house"></i></a>
-			<!--<a href="#" id="imageviewer-full-page" class="btn btn-white imageviewer-control" role="button" aria-label="expand"><i class="bi bi-fullscreen"></i></a>-->
+			<button type="button"  id="imageviewer-zoom-in" class="btn btn-white imageviewer-control" aria-label="zoom in"><i class="bi bi-zoom-in"></i></button>
+			<button type="button"  id="imageviewer-zoom-out" class="btn btn-white imageviewer-control" aria-label="zoom out"><i class="bi bi-zoom-out"></i></button>
+			<button type="button"  id="imageviewer-home" class="btn btn-white imageviewer-control" aria-label="fit image"><i class="bi bi-house"></i></button>
+			<!--<button type="button"  id="imageviewer-full-page" class="btn btn-white imageviewer-control" aria-label="expand"><i class="bi bi-fullscreen"></i></button>-->
 		</div>
 	</div>
 <?php

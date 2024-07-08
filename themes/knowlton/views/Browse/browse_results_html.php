@@ -83,7 +83,7 @@ if (!$vb_ajax) {	// !ajax
 				}else{
 					$facet_name = $va_criterion["facet"];
 				}
-				$vs_criteria .= "<span class='text-capitalize fs-5'>".$facet_name.":</span> ".caNavLink($this->request, $va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm me-4', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+				$vs_criteria .= "<span class='text-capitalize fs-5'>".$facet_name.":</span> ".caNavLink($this->request, $va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm me-4', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("role" => "button", "aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
 				$vb_start_over = true;
 			}
 		}
@@ -136,8 +136,8 @@ if (!$vb_ajax) {	// !ajax
 					print "<li class='list-inline-item me-2'>/</li>";
 				}
 			}
-			print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-arrow-down" role="button" aria-label="direction ascending"></i>', (($vs_sort_dir == 'asc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-			print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-arrow-up" role="button" aria-label="direction descending"></i>', (($vs_sort_dir == 'desc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+			print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-arrow-down" aria-label="direction ascending"></i>', (($vs_sort_dir == 'asc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0), array("role" => "button", "aria-pressed" => (($vs_sort_dir == 'asc') ? 'false' : 'true')))."</li>";
+			print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-arrow-up" aria-label="direction descending"></i>', (($vs_sort_dir == 'desc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0), array("role" => "button", "aria-pressed" => (($vs_sort_dir == 'desc') ? 'false' : 'true')))."</li>";
 			print "</ul>\n";
 			print "</li>\n";
 		}
@@ -190,6 +190,7 @@ if (!$vb_ajax) {	// !ajax
 			print "</div>";
 		}
 ?>
+			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
 			<div id="browseResultsContainer">
 				<div class="row">
 <?php
@@ -213,7 +214,7 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end browseResultsContainer -->
 	</div><!-- end col-8 -->
 	
-	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3">
+	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3"><a name="filters"></a>
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			

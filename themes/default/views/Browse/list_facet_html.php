@@ -69,7 +69,7 @@ print "<div class='fw-semibold fs-4 text-capitalize'>".$va_facet_info["label_plu
 if($va_facet_info["group_mode"]== "alphabetical"){
 	print "<div class='position-absolute end-0 w-auto p-3 text-center'><nav class='nav nav-pills flex-column' id='bRefineLetterBar'>";
 	foreach($va_letter_bar as $vs_letter){
-		print "<a href='#facetList".$vs_letter."' class='nav-link py-1 px-1'>".$vs_letter."</a>";
+		print "<a href='#facetList".$vs_letter."' class='nav-link py-1 px-1' aria-label='"._t("Skip to section %1", $vs_letter)."'>".$vs_letter."</a>";
 	}
 	print "</nav></div><!-- end bRefineLetterBar -->";
 }

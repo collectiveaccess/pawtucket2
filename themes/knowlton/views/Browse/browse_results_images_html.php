@@ -158,9 +158,8 @@
 				$vn_results_output++;
 			}
 			
-			print "<div style='clear:both' class='text-center' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."' hx-trigger='revealed' hx-swap='outerHTML'>
-						<div class='spinner-border htmx-indicator m-3' role='status'><span class='visually-hidden'>Loading...</span></div>
-					</div>";
+			print "<button class='btn btn-primary w-auto mx-auto mb-4' hx-trigger='click' hx-target='this' hx-swap='outerHTML' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."'>More</button>";
+			
 		
 		}
 ?>

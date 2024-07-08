@@ -97,7 +97,7 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='list-inline-item me-2'>|</li>";
 						}
 					}
-					print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-sort-down"'.(($vs_sort_dir == 'asc') ? '' : '-alt').' aria-label="direction" role="button"></i>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+					print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-sort-down"'.(($vs_sort_dir == 'asc') ? '' : '-alt').' aria-label="direction"></i>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0), array("role" => "button"))."</li>";
 					print "</ul>\n";
 					print "</li>\n";
 				}
@@ -161,6 +161,7 @@ if (!$vb_ajax) {	// !ajax
 			print "</div>";
 		}
 ?>
+			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
 			<div id="browseResultsContainer">
 				<div class="row">
 <?php
@@ -184,7 +185,7 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end browseResultsContainer -->
 	</div><!-- end col-8 -->
 	
-	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 offset-xl-1">
+	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 offset-xl-1"><a name="filters"></a>
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
