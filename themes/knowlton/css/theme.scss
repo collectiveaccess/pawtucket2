@@ -321,6 +321,10 @@ footer{
 					max-width:50%;
 				}
 			}
+			#mce-EMAIL::placeholder {
+				color: #c5c5c5;
+				opacity: 1;
+			}
 			#mc-embedded-subscribe{
 				flex: 0 1 auto;
 				padding: 0 1em;
@@ -405,9 +409,11 @@ footer{
 	dt, .fs-5 {
  		font-size:1.1rem !important;
 	}
-	.twocol{
-		column-count: 2;
-  		column-gap: 15px;
+	@media (min-width: 1024px) {
+		.twocol{
+			column-count: 2;
+			column-gap: 15px;
+		}
 	}
 }
 /* static page */
