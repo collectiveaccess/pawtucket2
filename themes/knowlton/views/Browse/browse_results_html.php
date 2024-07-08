@@ -83,7 +83,7 @@ if (!$vb_ajax) {	// !ajax
 				}else{
 					$facet_name = $va_criterion["facet"];
 				}
-				$vs_criteria .= "<span class='text-capitalize fs-5'>".$facet_name.":</span> ".caNavLink($this->request, $va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm me-4', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("role" => "button", "aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
+				$vs_criteria .= "<span class='text-capitalize fs-5'>".$facet_name.":</span> ".caNavLink($this->request, $va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm me-4', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
 				$vb_start_over = true;
 			}
 		}
