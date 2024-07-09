@@ -67,9 +67,9 @@ foreach($va_facet_content as $vn_id => $va_item) {
 print '<div class="position-absolute end-0 w-auto pe-3"><button type="button" class="btn-close" aria-label="'._t("Close").'" data-bs-toggle="collapse" data-bs-target="#bMorePanel" aria-controls="bMorePanel"></button></div>';
 print "<div class='fw-semibold fs-4 text-capitalize'>".$va_facet_info["label_plural"]."<span class='fw-normal  fs-5'> (".sizeof($va_facet_content)." total)</span></div>";
 if($va_facet_info["group_mode"]== "alphabetical"){
-	print "<div class='position-absolute end-0 w-auto p-3 text-center'><nav class='nav nav-pills flex-column' id='bRefineLetterBar'>";
+	print "<div class='position-absolute end-0 w-auto p-3 text-center'><nav class='nav nav-pills flex-column' id='bRefineLetterBar' aria-label='"._t("Skip to sections by letter")."'>";
 	foreach($va_letter_bar as $vs_letter){
-		print "<a href='#facetList".$vs_letter."' class='nav-link py-1 px-1'>".$vs_letter."</a>";
+		print "<a href='#facetList".$vs_letter."' class='nav-link py-1 px-1' aria-label='"._t("Skip to section %1", $vs_letter)."'>".$vs_letter."</a>";
 	}
 	print "</nav></div><!-- end bRefineLetterBar -->";
 }

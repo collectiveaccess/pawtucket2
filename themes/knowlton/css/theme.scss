@@ -321,6 +321,10 @@ footer{
 					max-width:50%;
 				}
 			}
+			#mce-EMAIL::placeholder {
+				color: #c5c5c5;
+				opacity: 1;
+			}
 			#mc-embedded-subscribe{
 				flex: 0 1 auto;
 				padding: 0 1em;
@@ -339,8 +343,9 @@ footer{
 				cursor: pointer;
 			}
 			#mc-embedded-subscribe:hover{
-				background-color: #858585;
-				color: white;
+				background-color: #FFFFFF;
+				color: #000000;
+				border-color: #FFF;
 			}
 		}
 		.give-cta-btn{
@@ -359,9 +364,7 @@ footer{
 				transition: border 0.15s ease-in-out,color 0.15s ease-in-out;
 				display: inline-block;
 			
-				span {
-					display: none;
-				}
+				
 			}
 		}
 		.give-cta-btn a:hover{
@@ -395,7 +398,9 @@ footer{
 }
 @media (min-width: 768px) {
 	#bRefine{
-		top: 150px;
+		.bRefineLetterBar{
+			height:90%;
+		}
 	}
 }
 /* --- detail ---*/
@@ -406,6 +411,12 @@ footer{
 	dt, .fs-5 {
  		font-size:1.1rem !important;
 	}
+	@media (min-width: 1024px) {
+		.twocol{
+			column-count: 2;
+			column-gap: 15px;
+		}
+	}
 }
 /* static page */
 .staticPage{
@@ -413,4 +424,12 @@ footer{
 	H2{
 		letter-spacing: -0.84px
 	}
-}	
+}
+
+/* accessibility changes */
+.form-control:focus, nav #navbarSearch button:focus, #searchWithin button:focus, #bMorePanel button:focus, .nav-link:focus{
+	box-shadow:0 0 2px 2px rgba(102,102,102,.5);
+}
+.btn-white:focus{
+	box-shadow:0 0 2px 2px rgba(102,102,102,.5);
+}

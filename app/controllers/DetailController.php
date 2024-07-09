@@ -286,8 +286,8 @@ class DetailController extends FindController {
 		$this->view->setVar('previousURL', caDetailUrl($this->request, $table, $vn_previous_id));
 		$this->view->setVar('nextURL', caDetailUrl($this->request, $table, $vn_next_id));
 		
-		$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $options, _t('Previous')), caGetOption('detailNavLinkClass', $options, ''), $table, $vn_previous_id, [], ['aria-label' => _t('Previous')]) : '');
-		$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $options, _t('Next')), caGetOption('detailNavLinkClass', $options, ''), $table, $vn_next_id, [], ['aria-label' => _t('Next')]) : '');
+		$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $options, _t('Previous')), caGetOption('detailNavLinkClass', $options, ''), $table, $vn_previous_id, [], ['aria-label' => _t('Previous result')]) : '');
+		$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $options, _t('Next')), caGetOption('detailNavLinkClass', $options, ''), $table, $vn_next_id, [], ['aria-label' => _t('Next result')]) : '');
 		
 		$params = [];
 		$params["row_id"] = $t_subject->getPrimaryKey(); # --- used to jump to the last viewed item in the search/browse results
