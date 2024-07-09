@@ -398,7 +398,9 @@ footer{
 }
 @media (min-width: 768px) {
 	#bRefine{
-		top: 150px;
+		.bRefineLetterBar{
+			height:90%;
+		}
 	}
 }
 /* --- detail ---*/

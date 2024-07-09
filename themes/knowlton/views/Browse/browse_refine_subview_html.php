@@ -40,9 +40,10 @@ $vn_facet_display_length_maximum = 12;
 
 if((is_array($va_facets) && sizeof($va_facets)) || ($qr_res->numHits() > 1)){
 ?>		
-	<div id='bRefine' class='sticky-md-top vh-100 collapse overflow-y-auto bg-white'>
+	<div id='bRefine' class='sticky-md-top vh-100 collapse bg-white'>
 		<div id='bMorePanel' tabindex="-1" class='position-absolute w-100 z-3 bg-light h-100 collapse fs-5'><!-- long lists of facets are loaded here --></div>
 		<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
+		<div class="h-100 overflow-y-auto">
 <?php
 	if($qr_res->numHits() > 1){
 ?>
@@ -96,5 +97,5 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($qr_res->numHits() > 1)){
 		}
 		print "</div><!-- end browseRefineFacets -->";
 	}
-	print "</div><!-- end bRefine -->\n";	
+	print "</div></div><!-- end bRefine -->\n";	
 }

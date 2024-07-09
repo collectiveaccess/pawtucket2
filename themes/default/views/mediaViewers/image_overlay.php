@@ -17,6 +17,9 @@ $options = $this->getVar('options');
 		width: 100%;
 		height: 100%;
 	}
+	.openseadragon-canvas:focus{
+		box-shadow:inset 0 2px 2px rgba(102,102,102,.5);
+	}
 </style>
 <?php
 	if($options['zoom'] ?? false) {

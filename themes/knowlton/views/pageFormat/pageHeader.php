@@ -87,7 +87,7 @@ if($this->request->isLoggedIn()){
     		</div>	
     	</div>
 	</div>
-	<nav class="navbar navbar-expand-md sticky-md-top">
+	<nav class="navbar navbar-expand-md <?php print (!in_array(strToLower($this->request->getController()), array('browse', 'search'))) ? 'sticky-md-top' : ''; ?>">
 		<div class="container-fluid px-md-0">
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'knowlton_dl_logo_draft.svg', array("alt" => "Knowlton School Digital Library and Archive", "role" => "banner")), "navbar-brand  img-fluid p-0 m-0", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,8 +105,8 @@ if($this->request->isLoggedIn()){
 					<li class="nav-item d-block d-md-none">
 						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>">
 							<div class="input-group mt-4">
-								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search...">
+								<label for="nav-search-input-mobile" class="form-label visually-hidden">Search</label>
+								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input-mobile" placeholder="Search...">
 								<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 							</div>
 						</form>
@@ -116,10 +116,11 @@ if($this->request->isLoggedIn()){
 			<div class="collapse position-absolute end-0 start-0 vh-100 bg-white px-5 overflow-scroll" id="navbarSearch" aria-modal="true">
 				<div class="row">
 					<div class="col-12">
+						
 						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>" role="search">
 							<div class="input-group mt-4">
 								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search...">
+								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search..." tabindex="0">
 								<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 							</div>
 						</form>
@@ -206,6 +207,8 @@ if($this->request->isLoggedIn()){
 				}
 ?>
 				</div>
+				<div id="loopBack" class="visually-hidden" onfocus="document.getElementById('nav-search-input').focus();" tabindex="0"></div>
+
 			</div>
 		</div>
 	</nav>	
