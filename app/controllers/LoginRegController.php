@@ -40,6 +40,11 @@ class LoginRegController extends BasePawtucketController {
 		if ($po_request->getAppConfig()->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 			throw new ApplicationException('Login/registration not allowed');
 		}
+		
+		if (AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__)) {
+		    $vb_auth_success = $po_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($po_request->getController() == 'LoginReg')));
+		}
+		
 		caSetPageCSSClasses(array("loginreg"));
 	}
 	# -------------------------------------------------------
