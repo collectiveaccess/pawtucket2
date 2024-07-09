@@ -104,7 +104,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		}else{
 ?>
-			<H1 class="text-capitalize fs-2 mb-5 pb-2">
+			<H1 class="text-capitalize fs-2 mb-5 pb-2" aria-live="polite">
 <?php
 				if(!$vs_page_title){
 					$vs_page_title = (($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL'));
