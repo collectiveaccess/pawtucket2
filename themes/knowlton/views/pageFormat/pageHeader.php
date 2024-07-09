@@ -100,7 +100,7 @@ if($this->request->isLoggedIn()){
 					</li>
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="nav-item d-none d-md-block">
-						<button class="nav-link" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch,#navbarSearchClose" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search form">Search<span id="navbarSearchClose" class="collapse"> <i class="bi bi-x-lg"></i></span></button>
+						<button id="navSearchToggle" class="nav-link" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch,#navbarSearchClose" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search form">Search<span id="navbarSearchClose" class="collapse"> <i class="bi bi-x-lg"></i></span></button>
 					</li>
 					<li class="nav-item d-block d-md-none">
 						<form action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>">
@@ -207,7 +207,7 @@ if($this->request->isLoggedIn()){
 				}
 ?>
 				</div>
-				<div id="loopBack" class="visually-hidden" onfocus="document.getElementById('nav-search-input').focus();" tabindex="0"></div>
+				<div id="loopBack" class="visually-hidden" onfocus="document.getElementById('navSearchToggle').focus();" tabindex="0"></div>
 
 			</div>
 		</div>
