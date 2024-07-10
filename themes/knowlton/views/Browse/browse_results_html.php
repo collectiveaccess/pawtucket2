@@ -51,7 +51,7 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$vn_result_size 	= $qr_res->numHits();
 	
 	
 	$va_options			= $this->getVar('options');
@@ -192,7 +192,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
 			<div id="browseResultsContainer">
-				<div class="row">
+				<ul class="row ps-0">
 <?php
 } // !ajax
 
@@ -210,7 +210,7 @@ if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_ke
 if (!$vb_ajax) {	// !ajax
 ?>
 			
-			</div><!-- end row -->
+			</ul><!-- end row -->
 		</div><!-- end browseResultsContainer -->
 	</div><!-- end col-8 -->
 	
