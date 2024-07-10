@@ -136,8 +136,8 @@ if (!$vb_ajax) {	// !ajax
 					print "<li class='list-inline-item me-2'>/</li>";
 				}
 			}
-			print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-arrow-down" aria-label="direction ascending"></i>', (($vs_sort_dir == 'asc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-			print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-arrow-up" aria-label="direction descending"></i>', (($vs_sort_dir == 'desc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+			print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-arrow-down"></i>', (($vs_sort_dir == 'asc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0), array("aria-label" => _t("direction ascending")))."</li>";
+			print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-arrow-up"></i>', (($vs_sort_dir == 'desc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0), array("aria-label" => _t("direction descending")))."</li>";
 			print "</ul>\n";
 			print "</li>\n";
 		}
