@@ -38,7 +38,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
  	$t_item = $this->getVar('t_subject');
 	$t_display = $this->getVar('t_display');
 	$va_placements = $this->getVar("placements");
@@ -82,6 +81,26 @@
 				</div>
 			</ifdef>
 		<dl>
+			<!--external collection info -->
+				<ifdef code="ca_collections.creation_date">
+					<dt><?= _t('Date'); ?></dt>
+					<dd>
+						^ca_collections.creation_date
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.description">
+					<dt><?= _t('Description'); ?></dt>
+					<dd>
+						^ca_collections.description
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.notes">
+					<dt><?= _t('Admin Notes'); ?></dt>
+					<dd>
+						^ca_collections.notes
+					</dd>
+				</ifdef>
+				<!-- end external collection info -->
 			<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator">
 				<dt>Creator</dt>
 				<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", ">
@@ -157,23 +176,17 @@
 						</unit></dd>
 					</dl>
 				</ifcount>
-				<ifdef code="ca_collections.processInfo|ca_collections.acqinfo|ca_object_lots.idno_stub">
+				<ifdef code="ca_object_lots.idno_stub">
 					<dt><?= _t('Administrative Information'); ?></dt>
 					<ifdef code="ca_object_lots.idno_stub"><dd><b>Related Lots: </b>
 						^ca_object_lots.idno_stub%delimiter=,_
-					</dd></ifdef>
-					<ifdef code="ca_collections.acqinfo"><dd><b>Acquisition Notes: </b>
-						^ca_collections.acqinfo
-					</dd></ifdef>
-					<ifdef code="ca_collections.processInfo"><dd><b>Processing Notes: </b>
-						^ca_collections.processInfo
 					</dd></ifdef>
 				</ifdef>
 				
 				
 				
 				
-				<ifdef code="ca_collections.processInfo|ca_collections.acqinfo|ca_object_lots.idno_stub">
+				<ifdef code="ca_collections.accessrestrict|ca_collections.physaccessrestrict|ca_collections.techaccessrestrict|ca_collections.reproduction|ca_collections.preferCite">
 					<dt><?= _t('Access and Use'); ?></dt>	
 				
 					<ifdef code="ca_collections.accessrestrict">
@@ -194,11 +207,6 @@
 					<ifdef code="ca_collections.reproduction">
 						<dd><b><?= _t('Conditions Governing Reproduction'); ?></b>
 							^ca_collections.reproduction
-						</dd>
-					</ifdef>
-					<ifdef code="ca_collections.otherfindingaid">
-						<dd><b><?= _t('Other Finding Aids'); ?></b>
-							^ca_collections.otherfindingaid
 						</dd>
 					</ifdef>
 					<ifdef code="ca_collections.preferCite">
@@ -226,7 +234,7 @@
 	if ($t_item->get("ca_collections.children.collection_id") || $t_item->get("ca_objects.object_id")){
 		print "<div class='border'></div><br/><b>Collection Contents</b>";
 		if ($t_item->get('ca_collections.collection_id')) {
-			print caGetCollectionLevelSummary($this->request, array($t_item->get('ca_collections.collection_id')), 1);
+			print caGetCollectionLevelSummaryNavyYardExport($this->request, array($t_item->get('ca_collections.collection_id')), 1);
 		}
 	}
 	print $this->render("pdfEnd.php");

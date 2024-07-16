@@ -82,9 +82,10 @@ footer{
 }
 
 .detail{
-	.btn-white{
+	.btn-white, .btn-group{
 		background-color:$body-bg;
 	}
+	
 }
 /* ------------------------- Detail ------------------------- */
 .detail{
@@ -95,5 +96,16 @@ footer{
 	dd{
 		line-height:1.25rem;
 		margin-bottom:.25rem;
+	}
+}
+/* Gallery */
+.gallery{
+	H2{
+		font-size: 1.5rem;
+	}
+	@media(min-width:768px){
+		H2{
+			font-size: 2rem;
+		}
 	}
 }

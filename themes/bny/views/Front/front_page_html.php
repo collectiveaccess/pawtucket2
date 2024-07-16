@@ -61,6 +61,13 @@
 		</div>
 	</div>
 </div>
+<div class="container-flex">
+	<div class="row">
+		<div class="col text-end">
+			<div class="pt-1 pe-2"><?php print caDetailLink($this->request, "Brooklyn Navy Yard, Circa 1904", "", "ca_objects", "14473"); ?></div>
+		</div>
+	</div>
+</div>
 <?php
 	$vs_hp_intro_title = $this->getVar("hp_intro_title");
 	$vs_hp_intro = $this->getVar("hp_intro");

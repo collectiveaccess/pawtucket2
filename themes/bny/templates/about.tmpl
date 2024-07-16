@@ -9,10 +9,10 @@
 <div class="row">
 	<div class="col-sm-3">
 		<div class="sticky-sm-top">
-			<ul>
-				<li><a href="#About">{{{About_Label}}}</a></li>
-				<li><a href="#Donate">{{{Donate_Label}}}</a></li>
-				<li><a href="#Policies">{{{Policies_Label}}}</a></li>
+			<ul class="list-group">
+				<li class="list-group-item border-0"><a href="#About" class="fw-medium fs-4">{{{About_Label}}}</a></li>
+				<li class="list-group-item border-0"><a href="#Donate" class="fw-medium fs-4">{{{Donate_Label}}}</a></li>
+				<li class="list-group-item border-0"><a href="#Policies" class="fw-medium fs-4">{{{Policies_Label}}}</a></li>
 			</ul>
 		</div>
 	</div>
@@ -21,10 +21,10 @@
 		<div id="About" class="anchor"></div><H2>{{{About_Label}}}</H2>
 		{{{About}}}
 		
-		<div id="Donate"></div><H2>{{{Donate_Label}}}</H2>
+		<div id="Donate"></div><H2 class="mt-4">{{{Donate_Label}}}</H2>
 		{{{Donate}}}
 		
-		<div id="Policies"></div><H2>{{{Policies_Label}}}</H2>
+		<div id="Policies"></div><H2 class="mt-4">{{{Policies_Label}}}</H2>
 		{{{Policies}}}
 <?php
 		if($vs_download_links){

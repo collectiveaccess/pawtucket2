@@ -61,7 +61,6 @@ if($show_nav){
 	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-3 fw-medium text-transform-none">{{{^ca_objects.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0">
 		</div>
 	</div>
@@ -100,6 +99,14 @@ if($show_nav){
 				<div class="row">
 					<div class="col">				
 						{{{<dl class="mb-0">
+							<ifdef code="ca_objects.type_id">
+								<dt><?= _t('Object Type'); ?></dt>
+								<dd>^ca_objects.type_id</dd>
+							</ifdef>
+							<ifdef code="ca_objects.idno">
+								<dt><?= _t('Object ID'); ?></dt>
+								<dd>^ca_objects.idno</dd>
+							</ifdef>
 							<ifdef code="ca_objects.creation_date">
 								<dt><?= _t('Date'); ?></dt>
 								<dd>^ca_objects.creation_date</dd>
