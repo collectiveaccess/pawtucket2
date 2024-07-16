@@ -113,6 +113,12 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 						^ca_collections.description
 					</dd>
 				</ifdef>
+				<ifdef code="ca_collections.notes">
+					<dt><?= _t('Admin Notes'); ?></dt>
+					<dd>
+						^ca_collections.notes
+					</dd>
+				</ifdef>
 			</dl>}}}
 <?php
 			$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));

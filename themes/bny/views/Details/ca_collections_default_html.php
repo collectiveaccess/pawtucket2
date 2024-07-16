@@ -199,23 +199,17 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				}
 			}
 ?>
-				<ifdef code="ca_collections.processInfo|ca_collections.acqinfo|ca_object_lots.idno_stub">
+				<ifdef code="ca_object_lots.idno_stub">
 					<dt><?= _t('Administrative Information'); ?></dt>
 					<ifdef code="ca_object_lots.idno_stub"><dd><span class="fw-medium">Related Lots: </span>
 						^ca_object_lots.idno_stub%delimiter=,_
-					</dd></ifdef>
-					<ifdef code="ca_collections.acqinfo"><dd><span class="fw-medium">Acquisition Notes: </span>
-						^ca_collections.acqinfo
-					</dd></ifdef>
-					<ifdef code="ca_collections.processInfo"><dd><span class="fw-medium">Processing Notes: </span>
-						^ca_collections.processInfo
 					</dd></ifdef>
 				</ifdef>
 				
 				
 				
 				
-				<ifdef code="ca_collections.processInfo|ca_collections.acqinfo|ca_object_lots.idno_stub">
+				<ifdef code="ca_collections.accessrestrict|ca_collections.physaccessrestrict|ca_collections.techaccessrestrict|ca_collections.reproduction|ca_collections.preferCite">
 					<dt><?= _t('Access and Use'); ?></dt>	
 				
 					<ifdef code="ca_collections.accessrestrict">
@@ -236,11 +230,6 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					<ifdef code="ca_collections.reproduction">
 						<dd><span class="fw-medium"><?= _t('Conditions Governing Reproduction'); ?></span>
 							^ca_collections.reproduction
-						</dd>
-					</ifdef>
-					<ifdef code="ca_collections.otherfindingaid">
-						<dd><span class="fw-medium"><?= _t('Other Finding Aids'); ?></span>
-							^ca_collections.otherfindingaid
 						</dd>
 					</ifdef>
 					<ifdef code="ca_collections.preferCite">
