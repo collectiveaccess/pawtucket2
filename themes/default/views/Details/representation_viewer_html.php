@@ -89,7 +89,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 		color: #fff;
 		
 		left: 10px;
-		top: 5px;
+		top: 0px;
 		z-index: 150000;
 		font-size: 20px;
 	}
