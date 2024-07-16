@@ -68,7 +68,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 
 <div class="row" style="clear:both;">
-	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
+	<div class='col-sm-12 <?php print (strToLower($this->request->getAction()) != "seasons") ? "col-md-8 col-lg-9 col-xl-8" : ""; ?>'>
 		<div class="row">
 			<div class="col-md-12 col-lg-5">
 				<H1 class="text-capitalize fs-3">
@@ -184,13 +184,17 @@ if (!$vb_ajax) {	// !ajax
 			</div><!-- end row -->
 		</div><!-- end browseResultsContainer -->
 	</div><!-- end col-8 -->
-	
+<?php
+	if(strToLower($this->request->getAction()) != "seasons"){
+?>	
 	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 offset-xl-1"><a name="filters"></a>
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
-	
+<?php
+	}
+?>	
 	
 </div><!-- end row -->
 
