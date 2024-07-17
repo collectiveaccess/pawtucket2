@@ -1,5 +1,21 @@
 /* red text: #D20000; red bg and icons (darker):#8a0000; tan: #e0d7ba; charcoal: #605b4b; stone:#f0ede4; */
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@900&display=swap');
+@font-face {
+  font-family:"WhitneySalishan";
+  src: url("WhitneySalishan-Medium.otf") format("opentype");
+  font-display:swap;
+  font-style:normal;
+  font-weight:400;
+  font-stretch:normal
+}
+@font-face {
+  font-family:"WhitneySalishan";
+  src: url("WhitneySalishan-Bold.otf") format("opentype");
+  font-display:swap;
+  font-style:normal;
+  font-weight:700;
+  font-stretch:normal
+}
 body{
 	color: #454545;
 	size:14px;
@@ -2399,56 +2415,106 @@ a.digExhDetailPrev, a.digExhDetailNext{
 	width:auto !important;
 }*/
 
-
+/* green #24420E */
 .disclaimerAlert{
 	position:fixed;
-	top:85px;
+	top:0px;
 	bottom:0px;
 	left:0px;
-	background-color:#e0d7ba;
+	right:0px;
 	width:100%;
-	height:100%;
+	height:100vh;
 	z-index:2000;
-	overflow:scroll;
+	background-image: url("../graphics/RSHDCLandscape-warning.jpg"); 
+	background-color: #e0d7ba;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 .disclaimerAlert div.disclaimerAlertMessage{
-	font-size: 20px;
-    font-weight: 600;
-	color: #000;
+	font-size: 28px;
+    font-weight: 400;
+	color: #FFF;
+	text-shadow: 7px 7px 7px rgba(0, 0, 0, 0.5);
 	text-align:center;	
-	padding: 5% 20% 0 20%;
-	margin-bottom:150px;
+	padding: 30px 50px 40px 50px;
+	background-color: rgba(36, 66, 14, 0.65);
+	font-family: "WhitneySalishan";
+	position: absolute;
+	top: 50%;
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+	width:85%;
+	left:0px;
+	right:0px;
+	max-height:100%;
+	overflow-y:scroll;
+
+	margin-left: auto;
+	margin-right: auto;line-height:1.4em
+}
+.disclaimerAlert div.disclaimerAlertMessage em{
+	font-style:normal;
+	display:inline-block;
+	background-color:#24420E;
+	padding:10px 25px 10px 25px;
+	color:#FFF;
+}
+.disclaimerAlert div.disclaimerAlertMessage em a{
+	color:#FFF;
 }
 .disclaimerAlert div.disclaimerAlertMessage strong, .disclaimerAlert div.disclaimerAlertMessage b{
-	font-size: 24px;
+	font-size: 25px;
 }
 .disclaimerAlert .enterButton{
 	text-align:center;
-	margin-top:30px;
+	margin-top:35px;
 	margin-bottom:10px;
+}
+.disclaimerAlert .enterButton .btn{
+	background-color:#24420E;
+	font-family: "WhitneySalishan";
+	font-size:32px;
+	font-weight:700;
+	text-transform:uppercase;	
+	display:inline-block;
+	width:100%;
+	padding:15px;
+	border-radius:10px;
+	text-shadow: 7px 7px 7px rgba(0, 0, 0, 0.5);
+}
+.disclaimerAlert .rshdcLogo{
+	margin-top:39px;
+}
+.disclaimerAlert .rshdcLogo img{
+	width:80%;
+	height:auto;
 }
 
 @media(max-width:768px){
-	.disclaimerAlert{
-		top:67px;
-	}
 	.disclaimerAlert div.disclaimerAlertMessage{
-		font-size: 15px;
-		padding: 5% 5% 0 5%;
+		font-size: 18px;
+		width:100%;
+		padding: 30px 20px 30px 20px;
 	}
-	.disclaimerAlert div.disclaimerAlertMessage strong, .disclaimerAlert div.disclaimerAlertMessage b{
-		font-size: 19px;
+	.disclaimerAlert .enterButton .btn{
+		font-size: 20px;
 	}
 }
 @media (min-width: 768px) and (max-width: 1244px){
-	.disclaimerAlert{
-		top:123px;
-	}	
 	.disclaimerAlert div.disclaimerAlertMessage{
-		font-size: 15px;
-		padding: 5% 20% 0 20%;
+		font-size: 20px;
+		width:85%;
 	}
-	.disclaimerAlert div.disclaimerAlertMessage strong, .disclaimerAlert div.disclaimerAlertMessage b{
-		font-size: 19px;
+	.disclaimerAlert .enterButton .btn{
+		font-size: 24px;
+	}
+}
+@media (min-width: 1245px) and (max-width: 1479px){
+	.disclaimerAlert div.disclaimerAlertMessage{
+		font-size: 24px;
+	}
+	.disclaimerAlert .enterButton .btn{
+		font-size: 28px;
 	}
 }
