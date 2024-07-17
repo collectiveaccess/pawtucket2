@@ -39,11 +39,16 @@
 					<ul class="dropdown-menu">
 <?php
 						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-							if($vs_browse_name != "all_objects"){
-								print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, '')."</li>";
+							if(!$va_browse_type["dontShowInBrowseMenu"]){
+								$va_options = array();
+								if($vs_browse_name == "schools"){
+									$va_options = array("view" => "images");
+								}
+								print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, $va_options)."</li>";
 							}
 						}
 ?>
+						<li><a href="https://collections.irshdc.ubc.ca/WhereToFindRecords">Archives</a></li>
 					</ul>	
 				</li>
 <?php				
@@ -71,9 +76,11 @@
 										<ul class="nav nav-pills">			
 <?php
 											foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-												print "<li><div class='browseHeadernav caps".((!$vs_first_browse) ? " active" : "")."'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(\".browseHeadernav\").removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a><b class='caret'></b></div></li>";
-												if(!$vs_first_browse){
-													$vs_first_browse = $vs_browse_name;
+												if(!$va_browse_type["dontShowInBrowseMenu"]){
+													print "<li><div class='browseHeadernav caps".((!$vs_first_browse) ? " active" : "")."'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(\".browseHeadernav\").removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a><b class='caret'></b></div></li>";
+													if(!$vs_first_browse){
+														$vs_first_browse = $vs_browse_name;
+													}
 												}
 											}
 ?>

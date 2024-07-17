@@ -50,7 +50,7 @@ if(is_array($va_item_ids) && sizeof($va_item_ids)){
 	$va_set_items = array();
 	if($qr_set_items->numHits()){
 		while($qr_set_items->nextHit()){
-			$va_set_items[$qr_set_items->get("row_id")] = array("title" => $qr_set_items->get("ca_set_items.preferred_labels"), "description" => $qr_set_items->get("ca_set_items.set_item_description"), "georeference" => $qr_set_items->get("ca_set_items.georeference"), "date" => $qr_set_items->get("ca_set_items.indexingDatesSet", array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';')), "date_display" => $qr_set_items->get("ca_set_items.indexingDatesSet"));
+			$va_set_items[$qr_set_items->get("row_id")] = array("title" => $qr_set_items->get("ca_set_items.preferred_labels"), "description" => $qr_set_items->get("ca_set_items.set_item_description"), "caption" => $qr_set_items->get("ca_set_items.caption"), "georeference" => $qr_set_items->get("ca_set_items.georeference"), "date" => $qr_set_items->get("ca_set_items.indexingDatesSet", array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';')), "date_display" => $qr_set_items->get("ca_set_items.indexingDatesSet"));
 		}
 	}
 }
@@ -111,7 +111,7 @@ while($qr_res->nextHit()) {
 				'url' => $qr_res->getWithTemplate($va_view_info['display']['image'], array('returnURL' => true, 'checkAccess' => $va_access_values)),
 				'thumbnail' => $qr_res->getWithTemplate($va_view_info['display']['icon'], array('returnURL' => true, 'checkAccess' => $va_access_values)),
 				'credit' => $qr_res->getWithTemplate($va_view_info['display']['credit_template']),
-				'caption' => $qr_res->getWithTemplate($va_view_info['display']['caption_template'])
+				'caption' => $va_set_items[$qr_res->get($vs_primary_key)]["caption"]
 			],
 			'start_date' => $va_timeline_dates['start_date'],
 			'end_date' => $va_timeline_dates['end_date'],
@@ -145,7 +145,7 @@ while($qr_res->nextHit()) {
 				'url' => $qr_res->getWithTemplate($va_view_info['display']['image'], array('returnURL' => true, 'checkAccess' => $va_access_values)),
 				'thumbnail' => $qr_res->getWithTemplate($va_view_info['display']['icon'], array('returnURL' => true, 'checkAccess' => $va_access_values)),
 				'credit' => $qr_res->getWithTemplate($va_view_info['display']['credit_template']),
-				'caption' => $qr_res->getWithTemplate($va_view_info['display']['caption_template'])
+				'caption' => $va_set_items[$qr_res->get($vs_primary_key)]["caption"]
 			],
 			'start_date' => $va_timeline_dates['start_date'],
 			'end_date' => $va_timeline_dates['end_date'],

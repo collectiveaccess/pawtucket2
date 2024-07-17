@@ -48,9 +48,9 @@ if($vs_mode == "map"){
 	}elseif(strpos($vs_last_find, "search") !== false){
 		$vs_link_text = "Search";	
 	}elseif(strpos($vs_last_find, "gallery") !== false){
-		$vs_link_text = "Explore Features";	
+		$vs_link_text = "Features";	
 	}elseif(strpos($vs_last_find, "school") !== false){
-		$vs_link_text = "Explore Schools";	
+		$vs_link_text = "Schools";	
 	}elseif(strpos($vs_last_find, "front") !== false){
 		# --- home link is always in breadcrumb trail
 		$vs_link_text = "";	
@@ -102,7 +102,7 @@ if($vs_mode == "map"){
 						
 						{{{<ifdef code="ca_entities.indexingDatesSet"><div class="unit"><unit relativeTo="ca_entities" delimiter=", ">^ca_entities.indexingDatesSet</unit></div></ifdef>}}}
 						
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><l><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit></l> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
+						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities.related" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						{{{<ifdef code="ca_entities.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
 								<div class="trimText">^ca_entities.description_new.description_new_txt</div>
@@ -225,7 +225,7 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 60
+		  maxHeight: 100
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,

@@ -108,7 +108,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, "Indian Residential School History & Dialogue Centre", "navbar-brand", "", "","");
+				print caNavLink($this->request, "Indian Residential School<br/>History & Dialogue Centre<br/><b>COLLECTIONS</b>", "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -148,11 +148,12 @@
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
 					<li class="dropdown <?php print ($this->request->getController() == "Explore") ? ' active"' : ''; ?>" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>Explore</span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>Learn</span></a>
 						<ul class="dropdown-menu">
 							<!--<li><?php print caNavLink($this->request, "<span>"._t("Narrative Threads")."</span>", "", "", "Explore", "narrativethreads"); ?></li>-->
 							<li><?php print caNavLink($this->request, "<span>"._t("BC Schools")."</span>", "", "", "Explore", "schools"); ?></li>
-							<li><?php print caNavLink($this->request, "<span>"._t("Featured Collections")."</span>", "", "", "Gallery", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Featured")."</span>", "", "", "Gallery", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Map")."</span>", "", "", "Browse", "schools", array("view" => "map")); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Resources")."</span>", "", "", "Listing", "Resources"); ?></li>
 <?php
 	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewDigExh")){
@@ -162,18 +163,20 @@
 	}
 	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewEduRes")){
 ?>
-							<li><?php print caNavLink($this->request, "<span>"._t("Educational Resources")."</span>", "", "", "Listing", "EducationalResources"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Educational Resources")."</span>", "", "", "Explore", "EducationalResources"); ?></li>
 <?php
 	}
 ?>					
+							<li><a href='/UserGuide'><span><?php print _t("User Guide"); ?></span></a></li>
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="dropdown <?php print ($this->request->getController() == "About") ? ' active"' : ''; ?>" style="position:relative;">
+					<li class="dropdown <?php print (in_array($this->request->getController(), array("AboutCollections", "CurrentProjects", "InformationResources"))) ? ' active"' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>About</span></a>
 						<ul class="dropdown-menu">
-							<li><a href='/AboutTheProject'><span><?php print _t("About the Project"); ?></span></a></li>
-							<li><a href='/Acknowledgements'><span><?php print _t("Acknowledgements"); ?></span></a></li>
+							<li><a href='/AboutCollections' <?php print ($this->request->getController() == "AboutCollections") ? 'class="active"' : ''; ?>><span><?php print _t("About the Collections "); ?></span></a></li>
+							<li><a href='/CurrentProjects' <?php print ($this->request->getController() == "CurrentProjects") ? 'class="active"' : ''; ?>><span><?php print _t("Current Projects"); ?></span></a></li>
+							<li><a href='/InformationResources' <?php print ($this->request->getController() == "InformationResources") ? 'class="active"' : ''; ?>><span><?php print _t("Resources for Information Professionals"); ?></span></a></li>
 						</ul>
 					</li>
 					
