@@ -36,6 +36,7 @@
 		<footer class="mt-5 bg-dark text-white">
 			<div class="container footerTop">
 				<div class="row">
+
 					<div class="col-md-12 col-lg-4 align-items-start">	
 						<div class="display-6">Samek Art Museum Locations</div>
 						<div class="pe-md-3">
@@ -69,8 +70,15 @@
 							</div>
 						</div>
 					</div>
+
+					<div class="col-md-12 col-lg-4 align-items-start">
+						<a href="https://www.facebook.com/SamekArtMuseum" target="_blank"><i class="bi bi-facebook text-white me-2"></i></a>
+						<a href="https://www.instagram.com/samekartmuseum/" target="_blank"><i class="bi bi-instagram text-white"></i></a>
+					</div>
+
 				</div>
 			</div>
+
 			<div class="container-fluid footerBottom">
 				<div class="row">
 					<div class="col-sm-12 text-center">
@@ -87,6 +95,7 @@
 					</div>
 				</div>
 			</div>
+
 		</footer>
 		
 		<script>

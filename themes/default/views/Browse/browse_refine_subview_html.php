@@ -42,19 +42,19 @@ if (sizeof($va_criteria) > 0) {
 	$i = 0;
 	$vb_start_over = false;
 	foreach($va_criteria as $va_criterion) {
-		$vs_criteria .= caNavLink($this->request, $va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+		$vs_criteria .= caNavLink($this->request, $va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
 		$vb_start_over = true;
 		$i++;
 	}
 	if($vb_start_over){
-		$vs_criteria .= caNavLink($this->request, _t("Start Over"), 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '', 'Browse', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0));
+		$vs_criteria .= caNavLink($this->request, _t("Start Over"), 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '', 'Browse', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0), array("role" => "button"));
 	}
 }
 
 if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->numHits() > 1)){
 ?>		
 	<div id='bRefine' class='bg-light sticky-md-top vh-100 collapse overflow-y-auto'>
-		<div id='bMorePanel' class='position-absolute w-100 z-3 bg-light h-100 collapse'><!-- long lists of facets are loaded here --></div>
+		<div id='bMorePanel' tabindex='-1' class='position-absolute w-100 z-3 bg-light h-100 collapse'><!-- long lists of facets are loaded here --></div>
 		<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php
 	if($qr_res->numHits() > 1){
@@ -109,7 +109,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 							$vn_c++;
 					
 							if(($vn_c == $vn_facet_display_length_maximum) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
-								$vs_more_link = "<li class='list-group-item border-0 bg-transparent px-0 py-1'><button class='btn btn-sm btn-secondary' hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel' role='button'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</button></li>";
+								$vs_more_link = "<li class='list-group-item border-0 bg-transparent px-0 py-1'><button class='btn btn-sm btn-secondary' hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel' role='button' onClick='document.getElementById(\"bMorePanel\").focus();'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</button></li>";
 								break;
 							}
 						}

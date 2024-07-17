@@ -83,9 +83,9 @@ $email_body;
 					<i class="bi bi-link-45deg"></i> LINK <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu">
-					<li><a class="dropdown-item" href="#" onclick="Copy();">Copy Link</a></li>
+					<li><a class="dropdown-item" style="font-size: 18px;" href="#" onclick="Copy();">Copy Link</a></li>
 					<li>
-						<a class="dropdown-item" id="emailLink" href='#'>Email Link</a>
+						<a class="dropdown-item" style="font-size: 18px;" id="emailLink" href='#'>Email Link</a>
 					</li>
 				</ul>
 			</div>

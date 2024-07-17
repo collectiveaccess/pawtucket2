@@ -286,8 +286,8 @@ class DetailController extends FindController {
 		$this->view->setVar('previousURL', caDetailUrl($this->request, $table, $vn_previous_id));
 		$this->view->setVar('nextURL', caDetailUrl($this->request, $table, $vn_next_id));
 		
-		$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $options, _t('Previous')), caGetOption('detailNavLinkClass', $options, ''), $table, $vn_previous_id, [], ['aria-label' => _t('Previous')]) : '');
-		$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $options, _t('Next')), caGetOption('detailNavLinkClass', $options, ''), $table, $vn_next_id, [], ['aria-label' => _t('Next')]) : '');
+		$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $options, _t('Previous')), caGetOption('detailNavLinkClass', $options, ''), $table, $vn_previous_id, [], ['aria-label' => _t('Previous result')]) : '');
+		$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $options, _t('Next')), caGetOption('detailNavLinkClass', $options, ''), $table, $vn_next_id, [], ['aria-label' => _t('Next result')]) : '');
 		
 		$params = [];
 		$params["row_id"] = $t_subject->getPrimaryKey(); # --- used to jump to the last viewed item in the search/browse results
@@ -537,12 +537,16 @@ class DetailController extends FindController {
 		//		first look for type-specific view
 		$path = "Details/{$table}_default_html.php";		// If no type specific view use the default
 		if ($subject_type_code = $t_subject->getTypeCode()) {
-			if (is_array($type_codes = caMakeTypeList($table, [$subject_type_code]))) {
-				$type_codes = array_merge($type_codes, caMakeTypeList($table, $t_subject->getTypeInstance()->getHierarchyAncestors($t_subject->getTypeID(), ['idsOnly' => true]), ['dontIncludeSubtypesInTypeRestriction' => true]));
-				foreach($type_codes as $type_code) {   // try more specific types first
-					if ($this->viewExists("Details/{$table}_{$type_code}_html.php")) {
-						$path = "Details/{$table}_{$type_code}_html.php";
-						break;
+			if ($this->viewExists("Details/{$table}_{$subject_type_code}_html.php")) {
+				$path = "Details/{$table}_{$subject_type_code}_html.php";
+			}else{
+				if (is_array($type_codes = caMakeTypeList($table, [$subject_type_code]))) {
+					$type_codes = array_merge($type_codes, caMakeTypeList($table, $t_subject->getTypeInstance()->getHierarchyAncestors($t_subject->getTypeID(), ['idsOnly' => true]), ['dontIncludeSubtypesInTypeRestriction' => true]));
+					foreach($type_codes as $type_code) {   // try more specific types before using default
+						if ($this->viewExists("Details/{$table}_{$type_code}_html.php")) {
+							$path = "Details/{$table}_{$type_code}_html.php";
+							break;
+						}
 					}
 				}
 			}

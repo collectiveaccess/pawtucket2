@@ -31,21 +31,42 @@ require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
 
 class LoginRegController extends BasePawtucketController {
 	# -------------------------------------------------------
-	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
-		parent::__construct($po_request, $po_response, $pa_view_paths);
+	/**
+	 *
+	 */
+	public function __construct(&$request, &$response, $view_paths=null) {
+		parent::__construct($request, $response, $view_paths);
 
-		if ($po_request->getAppConfig()->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
+		if ($request->getAppConfig()->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 			throw new ApplicationException('Login/registration not allowed');
 		}
+		
+		if (AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__)) {
+		    $auth_success = $request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($request->getController() == 'LoginReg')));
+		}
+		
 		caSetPageCSSClasses(array("loginreg"));
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	function loginForm() {
+		if (AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__)) {
+			if($this->request->isLoggedIn()) {
+				$this->notification->addNotification(_t("You have been logged in"), __NOTIFICATION_TYPE_INFO__);
+			}
+			$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+			return;
+		}
 		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Login"));
 		$this->render("LoginReg/form_login_html.php");
 	}
 	# ------------------------------------------------------
-	function loginRegisterForm($t_user = "") {
+	/**
+	 *
+	 */
+	function loginRegisterForm(?ca_users $t_user=null) {
 		if ($this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 			$this->notification->addNotification(_t("Login is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 			$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
@@ -64,21 +85,24 @@ class LoginRegController extends BasePawtucketController {
 			}
 			$this->view->setVar("t_user", $t_user);
 
-			$va_profile_prefs = $t_user->getValidPreferences('profile');
-			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
-				$va_elements = array();
-				foreach($va_profile_prefs as $vs_pref) {
-					$va_pref_info = $t_user->getPreferenceInfo($vs_pref);
-					$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label class='form-label' for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
+			$profile_prefs = $t_user->getValidPreferences('profile');
+			if (is_array($profile_prefs) && sizeof($profile_prefs)) {
+				$elements = [];
+				foreach($profile_prefs as $pref) {
+					$pref_info = $t_user->getPreferenceInfo($pref);
+					$elements[$pref] = array('element' => $t_user->preferenceHtmlFormElement($pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($pref, "<label for='pref_".$pref."'>".$pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($pref, "<label class='form-label' for='pref_".$pref."'>".$pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $pref_info, 'label' => $pref_info['label']);
 				}
 
-				$this->view->setVar("profile_settings", $va_elements);
+				$this->view->setVar("profile_settings", $elements);
 			}
 		}
 		$this->render("LoginReg/form_login_register_html.php");
 	}
 	# ------------------------------------------------------
-	function registerForm($t_user = "") {
+	/**
+	 *
+	 */
+	function registerForm(?ca_users $t_user=null) {
 		if (
 			$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
 			||
@@ -94,21 +118,24 @@ class LoginRegController extends BasePawtucketController {
 		}
 		$this->view->setVar("t_user", $t_user);
 
-		$va_profile_prefs = $t_user->getValidPreferences('profile');
-		if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
-			$va_elements = array();
-			foreach($va_profile_prefs as $vs_pref) {
-				$va_pref_info = $t_user->getPreferenceInfo($vs_pref);
-				$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label class='form-label' for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
+		$profile_prefs = $t_user->getValidPreferences('profile');
+		if (is_array($profile_prefs) && sizeof($profile_prefs)) {
+			$elements = [];
+			foreach($profile_prefs as $pref) {
+				$pref_info = $t_user->getPreferenceInfo($pref);
+				$elements[$pref] = array('element' => $t_user->preferenceHtmlFormElement($pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($pref, "<label for='pref_".$pref."'>".$pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($pref, "<label class='form-label' for='pref_".$pref."'>".$pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $pref_info, 'label' => $pref_info['label']);
 			}
 
-			$this->view->setVar("profile_settings", $va_elements);
+			$this->view->setVar("profile_settings", $elements);
 		}
 
 		$this->render("LoginReg/form_register_html.php");
 	}
 	# ------------------------------------------------------
-	function profileForm($t_user = "") {
+	/**
+	 *
+	 */
+	function profileForm(?ca_users $t_user=null) {
 		if(!$this->request->isLoggedIn()){
 			$this->notification->addNotification(_t("User is not logged in"), __NOTIFICATION_TYPE_ERROR__);
 			$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
@@ -129,10 +156,10 @@ class LoginRegController extends BasePawtucketController {
 	
 		$va_profile_prefs = $t_user->getValidPreferences('profile');
 		if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
-			$va_elements = array();
-			foreach($va_profile_prefs as $vs_pref) {
-				$va_pref_info = $t_user->getPreferenceInfo($vs_pref);
-				$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label class='form-label' for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
+			$va_elements = [];
+			foreach($va_profile_prefs as $pref) {
+				$va_pref_info = $t_user->getPreferenceInfo($pref);
+				$va_elements[$pref] = array('element' => $t_user->preferenceHtmlFormElement($pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($pref, "<label for='pref_".$pref."'>".$va_pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($pref, "<label class='form-label' for='pref_".$pref."'>".$va_pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
 			}
 
 			$this->view->setVar("profile_settings", $va_elements);
@@ -141,6 +168,9 @@ class LoginRegController extends BasePawtucketController {
 		$this->render("LoginReg/form_profile_html.php");
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	function profileSave() {
 		if (caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
 			if(!$this->request->isLoggedIn()){
@@ -159,93 +189,93 @@ class LoginRegController extends BasePawtucketController {
 			$t_user = $this->request->user;
 			$t_user->purify(true);
 	
-			$ps_email = html_entity_decode(strip_tags($this->request->getParameter("email", pString)));
-			$ps_fname = strip_tags($this->request->getParameter("fname", pString));
-			$ps_lname = strip_tags($this->request->getParameter("lname", pString));
-			$ps_password = html_entity_decode(strip_tags($this->request->getParameter("password", pString)));
-			$ps_password2 = html_entity_decode(strip_tags($this->request->getParameter("password2", pString)));
+			$email = html_entity_decode(strip_tags($this->request->getParameter("email", pString)));
+			$fname = strip_tags($this->request->getParameter("fname", pString));
+			$lname = strip_tags($this->request->getParameter("lname", pString));
+			$password = html_entity_decode(strip_tags($this->request->getParameter("password", pString)));
+			$password2 = html_entity_decode(strip_tags($this->request->getParameter("password2", pString)));
   
-			$ps_security = strip_tags($this->request->getParameter("security", pString));
-			$ps_group_code = strip_tags($this->request->getParameter("group_code", pString));
+			$security = strip_tags($this->request->getParameter("security", pString));
+			$group_code = strip_tags($this->request->getParameter("group_code", pString));
 
-			$va_errors = [];
+			$errors = [];
 
-			if (!caCheckEmailAddress($ps_email)) {
-				$va_errors["email"] = _t("E-mail address is not valid.");
+			if (!caCheckEmailAddress($email)) {
+				$errors["email"] = _t("E-mail address is not valid.");
 			}else{
-				# --- if the username is changing, make sure there isn't an account uwith the same user name already
-				if($ps_email != $t_user->get("user_name")){
+				# --- if the username is changing, make sure there isn't an account with the same user name already
+				if($email != $t_user->get("user_name")){
 					# --- does deleted user login record for this user already exist?
 					# --- (look for active records only; inactive records will effectively block reregistration)
 					$t_user_check = new ca_users();
-					$vb_user_exists_but_is_deleted = false;
-					if ($t_user_check->load(array('user_name' => $ps_email))) {
+					$user_exists_but_is_deleted = false;
+					if ($t_user_check->load(array('user_name' => $email))) {
 						if ((int)$t_user_check->get('userclass') == 255) {
 							if ($t_user_check->get('active') == 1) {
 								// yeah... so allow registration
-								$vb_user_exists_but_is_deleted = true;
+								$user_exists_but_is_deleted = true;
 							} else {
 								// existing inactive user record blocks registration
-								$va_errors["email"] = _t("User cannot register");
+								$errors["email"] = _t("User cannot register");
 							}
 						} else {
 							// already valid login with this user name
-							$va_errors["email"] = _t("A user has already registered with this email address");
+							$errors["email"] = _t("A user has already registered with this email address");
 						}
 					}
 				}
-				if(!$va_errors["email"]){
-					if($t_user->get('userclass') == 1) { $t_user->set("user_name", $ps_email); }	// only set for public users
-					$t_user->set("email", $ps_email);
+				if(!$errors["email"]){
+					if($t_user->get('userclass') == 1) { $t_user->set("user_name", $email); }	// only set for public users
+					$t_user->set("email", $email);
 				}
 			}
-			if (!$ps_fname) {
-				$va_errors["fname"] = _t("Please enter your first name");
+			if (!$fname) {
+				$errors["fname"] = _t("Please enter your first name");
 			}else{
-				$t_user->set("fname", $ps_fname);
+				$t_user->set("fname", $fname);
 			}
-			if (!$ps_lname) {
-				$va_errors["lname"] = _t("Please enter your last name");
+			if (!$lname) {
+				$errors["lname"] = _t("Please enter your last name");
 			}else{
-				$t_user->set("lname", $ps_lname);
+				$t_user->set("lname", $lname);
 			}
-			if ($ps_password) {
-				if($ps_password != $ps_password2){
-					$va_errors["password"] = _t("Passwords do not match");
+			if ($password) {
+				if($password != $password2){
+					$errors["password"] = _t("Passwords do not match");
 				}
-				if(strlen($ps_password) < 4){
-					$va_errors["password"] = _t("Password must be at least 4 characters long");
+				if(strlen($password) < 4){
+					$errors["password"] = _t("Password must be at least 4 characters long");
 				}
-				if(!$va_errors["password"]){
-					$t_user->set("password", $ps_password);
+				if(!$errors["password"]){
+					$t_user->set("password", $password);
 				}
 			}
 			
 			$t_group_to_join = null;
-			if (strlen($ps_group_code) && !($t_group_to_join = $this->_validateGroup($ps_group_code))){
-				$va_errors["group_code"] = _t("Group code %1 is not valid", $ps_group_code);
+			if (strlen($group_code) && !($t_group_to_join = $this->_validateGroup($group_code))){
+				$errors["group_code"] = _t("Group code %1 is not valid", $group_code);
 			}
 			
 			// Check user profile responses
-			$va_profile_prefs = $t_user->getValidPreferences('profile');
-			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
-				foreach($va_profile_prefs as $vs_pref) {
-					$vs_pref_value = $this->request->getParameter('pref_'.$vs_pref, pString);
-					if (!$t_user->isValidPreferenceValue($vs_pref, $vs_pref_value)) {
-						$va_errors[$vs_pref] = join("; ", $t_user->getErrors());
+			$profile_prefs = $t_user->getValidPreferences('profile');
+			if (is_array($profile_prefs) && sizeof($profile_prefs)) {
+				foreach($profile_prefs as $pref) {
+					$pref_value = $this->request->getParameter('pref_'.$pref, pString);
+					if (!$t_user->isValidPreferenceValue($pref, $pref_value)) {
+						$errors[$pref] = join("; ", $t_user->getErrors());
 
 						$t_user->clearErrors();
 					}else{
-						$t_user->setPreference($vs_pref, $this->request->getParameter('pref_'.$vs_pref, pString));
+						$t_user->setPreference($pref, $this->request->getParameter('pref_'.$pref, pString));
 					}
 				}
 			}		
 	
-			if(sizeof($va_errors) == 0){
+			if(sizeof($errors) == 0){
 				# --- there are no errors so update new user record
 				$t_user->update();
 				if($t_user->numErrors()) {
-					$va_errors["general"] = join("; ", $t_user->getErrors());
+					$errors["general"] = join("; ", $t_user->getErrors());
 				}else{
 					#success
 					
@@ -253,14 +283,14 @@ class LoginRegController extends BasePawtucketController {
 					if ($t_group_to_join && ($group_id = $t_group_to_join->getPrimaryKey())) {
 						if(!$t_user->inGroup($group_id)){
 							$t_user->addToGroups($group_id);
-							$vs_group_message = _t("You were added to group <em>%1</em>", $t_group_to_join->get('name'));
+							$group_message = _t("You were added to group <em>%1</em>", $t_group_to_join->get('name'));
 						}else{
-							$vs_group_message = _t("You are already a member of group <em>%1</em>", $t_group_to_join->get('name'));
+							$group_message = _t("You are already a member of group <em>%1</em>", $t_group_to_join->get('name'));
 						}
 					}
 
 					
-					$this->notification->addNotification(_t("Updated profile").($vs_group_message ? "<br/>{$vs_group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
+					$this->notification->addNotification(_t("Updated profile").($group_message ? "<br/>{$group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
 					// If we are editing the user record of the currently logged in user
 					// we have a problem: the request object flushes out changes to its own user object
 					// for the logged-in user at the end of the request overwriting any changes we've made.
@@ -270,19 +300,25 @@ class LoginRegController extends BasePawtucketController {
 					$this->request->user->load($t_user->getPrimaryKey());
 				}
 			}
-			if(sizeof($va_errors)){
+			if(sizeof($errors)){
 				$this->notification->addNotification(_t("There were errors, your profile could not be updated"), __NOTIFICATION_TYPE_ERROR__);
-				$this->view->setVar("errors", $va_errors);
+				$this->view->setVar("errors", $errors);
 			}
 		}
 		$this->profileForm();
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	function resetForm() {
 		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Reset Password"));
 		$this->render("LoginReg/form_reset_html.php");
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	function login() {
 		$group_id = Session::getVar("join_user_group_id");
 		if (!$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => html_entity_decode($this->request->getParameter('username', pString)), 'password' => html_entity_decode($this->request->getParameter('password', pString))))) {
@@ -293,46 +329,52 @@ class LoginRegController extends BasePawtucketController {
 			if($group_id && $this->_validateGroup($group_id)){
 				if(!$this->request->user->inGroup($group_id)){
 					$this->request->user->addToGroups($group_id);
-					$vs_group_message = _t(" and added to the group");
+					$group_message = _t(" and added to the group");
 				}
 				Session::setVar('join_user_group_id', '');
 			}
 			
-			$vs_controller = $vs_module_path = '';
-			if ($vs_default_action = $this->request->config->get('default_action')) {
-				$va_tmp = explode('/', $vs_default_action);
-				$vs_action = array_pop($va_tmp);
-				if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
-				if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
+			$controller = $module_path = '';
+			if ($default_action = $this->request->config->get('default_action')) {
+				$va_tmp = explode('/', $default_action);
+				$action = array_pop($va_tmp);
+				if (sizeof($va_tmp)) { $controller = array_pop($va_tmp); }
+				if (sizeof($va_tmp)) { $module_path = join('/', $va_tmp); }
 			} else {
-				$vs_controller = 'Front';
-				$vs_action = 'Index';
+				$controller = 'Front';
+				$action = 'Index';
 			}
-			$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
-			$this->notification->addNotification(_t("You have been logged in").($vs_group_message ? "<br/>{$vs_group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
-			$this->response->setRedirect($vs_url);
+			$url = caNavUrl($this->request, $module_path, $controller, $action);
+			$this->notification->addNotification(_t("You have been logged in").($group_message ? "<br/>{$group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
+			$this->response->setRedirect($url);
 		}
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	function logout() {
-		if ($vs_default_action = $this->request->config->get('default_action')) {
-			$va_tmp = explode('/', $vs_default_action);
-			$vs_action = array_pop($va_tmp);
-			if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
-			if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
+		if ($default_action = $this->request->config->get('default_action')) {
+			$tmp = explode('/', $default_action);
+			$action = array_pop($tmp);
+			if (sizeof($tmp)) { $controller = array_pop($tmp); }
+			if (sizeof($tmp)) { $module_path = join('/', $tmp); }
 		} else {
-			$vs_controller = 'Front';
-			$vs_action = 'Index';
+			$controller = 'Front';
+			$action = 'Index';
 		}
-		$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
+		$url = caNavUrl($this->request, $module_path, $controller, $action);
 
 		$this->request->deauthenticate();
 		$this->notification->addNotification(_t("You have been logged out"), __NOTIFICATION_TYPE_INFO__);
-		$this->response->setRedirect($vs_url);
+		$this->response->setRedirect($url);
 
 		$this->loginForm();
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	function register() {
 		if (!caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
 			$this->registerForm();
@@ -355,43 +397,43 @@ class LoginRegController extends BasePawtucketController {
 		$t_user->purify(true);
 
 		# --- process incoming registration attempt
-		$ps_email = html_entity_decode(strip_tags($this->request->getParameter("email", pString)));
-		$ps_fname = strip_tags($this->request->getParameter("fname", pString));
-		$ps_lname = strip_tags($this->request->getParameter("lname", pString));
-		$ps_password = html_entity_decode(strip_tags($this->request->getParameter("password", pString)));
-		$ps_password2 = html_entity_decode(strip_tags($this->request->getParameter("password2", pString)));
-		$ps_security = strip_tags($this->request->getParameter("security", pString));
-		$ps_captcha = strip_tags($this->request->getParameter("g-recaptcha-response", pString));
-		$ps_group_code = strip_tags($this->request->getParameter("group_code", pString));
+		$email = html_entity_decode(strip_tags($this->request->getParameter("email", pString)));
+		$fname = strip_tags($this->request->getParameter("fname", pString));
+		$lname = strip_tags($this->request->getParameter("lname", pString));
+		$password = html_entity_decode(strip_tags($this->request->getParameter("password", pString)));
+		$password2 = html_entity_decode(strip_tags($this->request->getParameter("password2", pString)));
+		$security = strip_tags($this->request->getParameter("security", pString));
+		$captcha = strip_tags($this->request->getParameter("g-recaptcha-response", pString));
+		$group_code = strip_tags($this->request->getParameter("group_code", pString));
 
-		$va_errors = array();
+		$errors = [];
 
-		if (!caCheckEmailAddress($ps_email)) {
-			$va_errors["email"] = _t("E-mail address is not valid.");
+		if (!caCheckEmailAddress($email)) {
+			$errors["email"] = _t("E-mail address is not valid.");
 		}else{
-			$t_user->set("email", $ps_email);
+			$t_user->set("email", $email);
 		}
-		if (!$ps_fname) {
-			$va_errors["fname"] = _t("Please enter your first name");
+		if (!$fname) {
+			$errors["fname"] = _t("Please enter your first name");
 		}else{
-			$t_user->set("fname", $ps_fname);
+			$t_user->set("fname", $fname);
 		}
-		if (!$ps_lname) {
-			$va_errors["lname"] = _t("Please enter your last name");
+		if (!$lname) {
+			$errors["lname"] = _t("Please enter your last name");
 		}else{
-			$t_user->set("lname", $ps_lname);
+			$t_user->set("lname", $lname);
 		}
-		if ((!$ps_password) || (!$ps_password2)) {
-			$va_errors["password"] = _t("Please enter and re-type your password.");
+		if ((!$password) || (!$password2)) {
+			$errors["password"] = _t("Please enter and re-type your password.");
 		}else{
-			if($ps_password != $ps_password2){
-				$va_errors["password"] = _t("Passwords do not match");
+			if($password != $password2){
+				$errors["password"] = _t("Passwords do not match");
 			}
-			if(strlen($ps_password) < 4){
-				$va_errors["password"] = _t("Password must be at least 4 characters long");
+			if(strlen($password) < 4){
+				$errors["password"] = _t("Password must be at least 4 characters long");
 			}
-			if(!$va_errors["password"]){
-				$t_user->set("password", $ps_password);
+			if(!$errors["password"]){
+				$t_user->set("password", $password);
 			}
 		}
 		$co_security = $this->request->config->get('registration_security');
@@ -402,37 +444,37 @@ class LoginRegController extends BasePawtucketController {
 			}
 		}
 		if($co_security == 'captcha'){
-			if(!$ps_captcha){
-					$va_errors["recaptcha"] = _t("Please complete the captcha");
+			if(!$captcha){
+					$errors["recaptcha"] = _t("Please complete the captcha");
 			} else {
-				$va_request = curl_init();
-				curl_setopt($va_request, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
-				curl_setopt($va_request, CURLOPT_HEADER, 0);
-				curl_setopt($va_request, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($va_request, CURLOPT_POST, 1);
-				$va_request_params = ['secret'=>__CA_GOOGLE_RECAPTCHA_SECRET_KEY__, 'response'=>$ps_captcha];
-				curl_setopt($va_request, CURLOPT_POSTFIELDS, $va_request_params);
-				$va_captcha_resp = curl_exec($va_request);
-				$captcha_json = json_decode($va_captcha_resp, true);
+				$request = curl_init();
+				curl_setopt($request, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
+				curl_setopt($request, CURLOPT_HEADER, 0);
+				curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($request, CURLOPT_POST, 1);
+				$request_params = ['secret'=>__CA_GOOGLE_RECAPTCHA_SECRET_KEY__, 'response'=>$captcha];
+				curl_setopt($request, CURLOPT_POSTFIELDS, $request_params);
+				$captcha_resp = curl_exec($request);
+				$captcha_json = json_decode($captcha_resp, true);
 				if(!$captcha_json['success']){
-						$va_errors["recaptcha"] = _t("Your Captcha was rejected, please try again");
+						$errors["recaptcha"] = _t("Your Captcha was rejected, please try again");
 				}
 			}
 		}
 		
 		// check that group code exists if specified
 		$t_group_to_join = null;
-		if (strlen($ps_group_code) && !($t_group_to_join = $this->_validateGroup($ps_group_code))) {
-			$va_errors["group_code"] = _t("Group code %1 is not valid", $ps_group_code);
+		if (strlen($group_code) && !($t_group_to_join = $this->_validateGroup($group_code))) {
+			$errors["group_code"] = _t("Group code %1 is not valid", $group_code);
 		}
 		
 		// Check user profile responses
-		$va_profile_prefs = $t_user->getValidPreferences('profile');
-		if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
-			foreach($va_profile_prefs as $vs_pref) {
-				$vs_pref_value = $this->request->getParameter('pref_'.$vs_pref, pString);
-				if (!$t_user->isValidPreferenceValue($vs_pref, $vs_pref_value)) {
-					$va_errors[$vs_pref] = join("; ", $t_user->getErrors());
+		$profile_prefs = $t_user->getValidPreferences('profile');
+		if (is_array($profile_prefs) && sizeof($profile_prefs)) {
+			foreach($profile_prefs as $pref) {
+				$pref_value = $this->request->getParameter('pref_'.$pref, pString);
+				if (!$t_user->isValidPreferenceValue($pref, $pref_value)) {
+					$errors[$pref] = join("; ", $t_user->getErrors());
 
 					$t_user->clearErrors();
 				}
@@ -441,34 +483,34 @@ class LoginRegController extends BasePawtucketController {
 
 		# --- does deleted user login record for this user already exist?
 		# --- (look for active records only; inactive records will effectively block reregistration)
-		$vb_user_exists_but_is_deleted = false;
-		if ($t_user->load(array('user_name' => $ps_email))) {
+		$user_exists_but_is_deleted = false;
+		if ($t_user->load(array('user_name' => $email))) {
 			if ((int)$t_user->get('userclass') == 255) {
 				if ($t_user->get('active') == 1) {
 					// yeah... so allow registration
-					$vb_user_exists_but_is_deleted = true;
+					$user_exists_but_is_deleted = true;
 				} else {
 					// existing inactive user record blocks registration
-					$va_errors["email"] = _t("User cannot register");
+					$errors["email"] = _t("User cannot register");
 				}
 			} else {
 				// already valid login with this user name
-				$va_errors["email"] = _t("A user has already registered with this email address");
+				$errors["email"] = _t("A user has already registered with this email address");
 			}
 		}
 
 		# get names of form fields
-		$va_fields = $t_user->getFormFields();
+		$fields = $t_user->getFormFields();
 
 		# loop through fields
-		foreach($va_fields as $vs_f => $va_attr) {
-			switch($vs_f){
+		foreach($fields as $f => $attr) {
+			switch($f){
 				case "user_name":
-					if (!$vb_user_exists_but_is_deleted && !sizeof($va_errors)) {
+					if (!$user_exists_but_is_deleted && !sizeof($errors)) {
 						# set field value
-						$t_user->set("user_name",$ps_email);
+						$t_user->set("user_name",$email);
 						if ($t_user->numErrors() > 0) {
-							$va_errors[$vs_f] = join("; ", $t_user->getErrors());
+							$errors[$f] = join("; ", $t_user->getErrors());
 						}
 					}
 					break;
@@ -486,51 +528,50 @@ class LoginRegController extends BasePawtucketController {
 					break;
 				# -------------
 				default:
-					if(!$va_errors[$vs_f]){
-						$t_user->set($vs_f,$_REQUEST[$vs_f]); # set field values
+					if(!$errors[$f]){
+						$t_user->set($f,$_REQUEST[$f]); # set field values
 						if ($t_user->numErrors() > 0) {
-							$va_errors[$vs_f] = join("; ", $t_user->getErrors());
+							$errors[$f] = join("; ", $t_user->getErrors());
 						}
 					}
 					break;
 				# -------------
 			}
 		}
-		$t_user->set("registered_on","now");
+		$t_user->set("registered_on", _t("now"));
 
 		// Save user profile responses
-		if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
-			foreach($va_profile_prefs as $vs_pref) {
-				$t_user->setPreference($vs_pref, $this->request->getParameter('pref_'.$vs_pref, pString));
+		if (is_array($profile_prefs) && sizeof($profile_prefs)) {
+			foreach($profile_prefs as $pref) {
+				$t_user->setPreference($pref, $this->request->getParameter('pref_'.$pref, pString));
 			}
 		}
 
-		if(sizeof($va_errors) == 0){
+		if(sizeof($errors) == 0){
 			# --- there are no errors so make new user record
-			$t_user->setMode(ACCESS_WRITE);
 
-			if ($vb_user_exists_but_is_deleted) {
+			if ($user_exists_but_is_deleted) {
 				$t_user->update();
 			} else {
 				$t_user->insert();
 			}
 			$pn_user_id = $t_user->get("user_id");
 			if($t_user->numErrors()) {
-				$va_errors["register"] = join("; ", $t_user->getErrors());
+				$errors["register"] = join("; ", $t_user->getErrors());
 			}else{
 				# --- add default roles
-				if (($va_default_roles = $this->request->config->getList('registration_default_roles')) && sizeof($va_default_roles)) {
-					$t_user->addRoles($va_default_roles);
+				if (($default_roles = $this->request->config->getList('registration_default_roles')) && sizeof($default_roles)) {
+					$t_user->addRoles($default_roles);
 				}
 				# --- user is joining a user group from a supplied link
 				if(Session::getVar("join_user_group_id") && $this->_validateGroup(Session::getVar("join_user_group_id"))) {
 					if(!$t_user->inGroup(Session::getVar("join_user_group_id"))){
 						$t_user->addToGroups(Session::getVar("join_user_group_id"));
 						Session::setVar('join_user_group_id', '');
-						$vs_group_message = _t(" You were added to the group");
+						$group_message = _t(" You were added to the group");
 					}else{
 						Session::setVar('join_user_group_id', '');
-						$vs_group_message = _t(" You are already a member of the group");
+						$group_message = _t(" You are already a member of the group");
 					}
 				}
 				
@@ -538,9 +579,9 @@ class LoginRegController extends BasePawtucketController {
 				if ($t_group_to_join && ($group_id = $t_group_to_join->getPrimaryKey())) {
 					if(!$t_user->inGroup($group_id)){
 						$t_user->addToGroups($group_id);
-						$vs_group_message = _t("You were added to group <em>%1</em>", $t_group_to_join->get('name'));
+						$group_message = _t("You were added to group <em>%1</em>", $t_group_to_join->get('name'));
 					}else{
-						$vs_group_message = _t("You are already a member of group <em>%1</em>", $t_group_to_join->get('name'));
+						$group_message = _t("You are already a member of group <em>%1</em>", $t_group_to_join->get('name'));
 					}
 				}
 
@@ -549,12 +590,12 @@ class LoginRegController extends BasePawtucketController {
 				$o_view->setVar("t_user", $t_user);
 				
 				# -- generate email subject line from template
-				$vs_subject_line = $o_view->render("mailTemplates/reg_conf_subject.tpl");
+				$subject_line = $o_view->render("mailTemplates/reg_conf_subject.tpl");
 
 				# -- generate mail text from template - get both the text and the html versions
-				$vs_mail_message_text = $o_view->render("mailTemplates/reg_conf.tpl");
-				$vs_mail_message_html = $o_view->render("mailTemplates/reg_conf_html.tpl");
-				caSendmail($t_user->get('email'), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+				$mail_message_text = $o_view->render("mailTemplates/reg_conf.tpl");
+				$mail_message_html = $o_view->render("mailTemplates/reg_conf_html.tpl");
+				caSendmail($t_user->get('email'), $this->request->config->get("ca_admin_email"), $subject_line, $mail_message_text, $mail_message_html);
 
 				if($this->request->config->get("email_notification_for_new_registrations")){
 					# --- send email to admin
@@ -562,50 +603,53 @@ class LoginRegController extends BasePawtucketController {
 
 					$o_view->setVar("t_user", $t_user);
 					# -- generate email subject line from template
-					$vs_subject_line = $o_view->render("mailTemplates/reg_admin_notification_subject.tpl");
+					$subject_line = $o_view->render("mailTemplates/reg_admin_notification_subject.tpl");
 
 					# -- generate mail text from template - get both the text and the html versions
-					$vs_mail_message_text = $o_view->render("mailTemplates/reg_admin_notification.tpl");
-					$vs_mail_message_html = $o_view->render("mailTemplates/reg_admin_notification_html.tpl");
+					$mail_message_text = $o_view->render("mailTemplates/reg_admin_notification.tpl");
+					$mail_message_html = $o_view->render("mailTemplates/reg_admin_notification_html.tpl");
 				
-					caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+					caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $subject_line, $mail_message_text, $mail_message_html);
 				}
 
-				$vs_action = $vs_controller = $vs_module_path = '';
-				if ($vs_default_action = $this->request->config->get('default_action')) {
-					$va_tmp = explode('/', $vs_default_action);
-					$vs_action = array_pop($va_tmp);
-					if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
-					if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
+				$action = $controller = $module_path = '';
+				if ($default_action = $this->request->config->get('default_action')) {
+					$tmp = explode('/', $default_action);
+					$action = array_pop($tmp);
+					if (sizeof($tmp)) { $controller = array_pop($tmp); }
+					if (sizeof($tmp)) { $module_path = join('/', $tmp); }
 				} else {
-					$vs_controller = 'Front';
-					$vs_action = 'Index';
+					$controller = 'Front';
+					$action = 'Index';
 				}
-				$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
+				$url = caNavUrl($this->request, $module_path, $controller, $action);
 				if($t_user->get("active")){
 					# log in the new user
-					$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $ps_email, 'password' => $ps_password));
+					$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $email, 'password' => $password));
 
 					if($this->request->isLoggedIn()){
-						$this->notification->addNotification(_t('Thank you for registering!  You are now logged in.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
-						$this->response->setRedirect($vs_url);
+						$this->notification->addNotification(_t('Thank you for registering!  You are now logged in.').$group_message, __NOTIFICATION_TYPE_INFO__);
+						$this->response->setRedirect($url);
 					}else{
-						$va_errors["register"] = _t("Login failed.");
+						$errors["register"] = _t("Login failed.");
 					}
 				}else{
 					# --- registration needs approval
-					$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
-					$this->response->setRedirect($vs_url);
+					$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$group_message, __NOTIFICATION_TYPE_INFO__);
+					$this->response->setRedirect($url);
 				}
 			}
 		}
 
-		if(sizeof($va_errors) > 0) {
-			$this->view->setVar('errors', $va_errors);
+		if(sizeof($errors) > 0) {
+			$this->view->setVar('errors', $errors);
 			$this->registerForm($t_user);
 		}
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	function joinGroup() {
 		$t_user_group = $this->_validateGroup($group_code = $this->request->getParameter("group_code", pString));
 	
@@ -646,38 +690,41 @@ class LoginRegController extends BasePawtucketController {
 		return;
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	function resetSend(){
 		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Reset Password"));
 		$t_user = new ca_users();
 
-		$vs_message = "";
-		$va_errors = array();
-		$ps_email = $this->request->getParameter('reset_email', pString);
-		if (!caCheckEmailAddress($ps_email)) {
+		$message = "";
+		$errors = [];
+		$email = $this->request->getParameter('reset_email', pString);
+		if (!caCheckEmailAddress($email)) {
 			$this->view->setVar("message",_t("E-mail address is not valid"));
 			$this->resetForm();
 		}else{
 			$t_user->setErrorOutput(0);
-			if (!$t_user->load(array("user_name" => $ps_email))) {
-				$t_user->load(array("email" => $ps_email));
+			if (!$t_user->load(array("user_name" => $email))) {
+				$t_user->load(array("email" => $email));
 			}
 			# verify user exists with this e-mail address
 			if ($t_user->getPrimaryKey()) {
 				# user with e-mail does exists...
 
-				if (sizeof($va_errors) == 0) {
+				if (sizeof($errors) == 0) {
 					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
-					$vs_reset_key = md5($t_user->get("user_id").'/'.$t_user->get("password"));
+					$reset_key = md5($t_user->get("user_id").'/'.$t_user->get("password"));
 					# --- get the subject of the email from template
-					$vs_subject_line = $o_view->render('mailTemplates/instructions_subject.tpl');
+					$subject_line = $o_view->render('mailTemplates/instructions_subject.tpl');
 
 					# -- generate mail text from template - get both the text and html versions
-					$vs_password_reset_url = $this->request->config->get("site_host").caNavUrl($this->request, '', 'LoginReg', 'resetSave', array('key' => $vs_reset_key));
-					$o_view->setVar("password_reset_url", $vs_password_reset_url);
-					$vs_mail_message_text = $o_view->render('mailTemplates/instructions.tpl');
-					$vs_mail_message_html = $o_view->render('mailTemplates/instructions_html.tpl');
+					$password_reset_url = $this->request->config->get("site_host").caNavUrl($this->request, '', 'LoginReg', 'resetSave', array('key' => $reset_key));
+					$o_view->setVar("password_reset_url", $password_reset_url);
+					$mail_message_text = $o_view->render('mailTemplates/instructions.tpl');
+					$mail_message_html = $o_view->render('mailTemplates/instructions_html.tpl');
 
-					caSendmail($t_user->get('email'), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+					caSendmail($t_user->get('email'), $this->request->config->get("ca_admin_email"), $subject_line, $mail_message_text, $mail_message_html);
 
 					$this->view->setVar("email", $this->request->config->get("ca_admin_email"));
 					$this->view->setVar("action", "send");
@@ -691,16 +738,17 @@ class LoginRegController extends BasePawtucketController {
 		}
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	function resetSave(){
 		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Reset Password"));
-		$ps_action = $this->request->getParameter('action', pString);
-		if(!$ps_action){
-			$ps_action = "reset";
-		}
-		$ps_key = $this->request->getParameter('key', pString);
-		$ps_key = preg_replace("/[^A-Za-z0-9]+/", "", $ps_key);
-		$this->view->setVar("key", $ps_key);
 
+		if(!($action = $this->request->getParameter('action', pString))) {
+			$action = "reset";
+		}
+		$key = preg_replace("/[^A-Za-z0-9]+/", "", $this->request->getParameter('key', pString));
+		$this->view->setVar("key", $key);
 		$this->view->setVar("email", $this->request->config->get("ca_admin_email"));
 
 		$o_check_key = new Db();
@@ -709,70 +757,69 @@ class LoginRegController extends BasePawtucketController {
 				FROM ca_users 
 				WHERE
 					md5(concat(concat(user_id, '/'), password)) = ?
-			", $ps_key);
+			", $key);
 
 		#
 		# Check reset key
 		#
-		if ((!$qr_check_key->nextRow()) || (!$vs_user_id = $qr_check_key->get("user_id"))) {
+		if ((!$qr_check_key->nextRow()) || (!$user_id = $qr_check_key->get("user_id"))) {
 			$this->view->setVar("action", "reset_failure");
 			$this->view->setVar("message",_t("Your password could not be reset"));
 			$this->render('LoginReg/form_reset_html.php');
 		}else{
 
-			$ps_password = $this->request->getParameter('password', pString);
-			$ps_password_confirm = $this->request->getParameter('password_confirm', pString);
+			$password = $this->request->getParameter('password', pString);
+			$password_confirm = $this->request->getParameter('password_confirm', pString);
 
-			switch($ps_action) {
+			switch($action) {
 				case 'reset_save':
-					if(!$ps_password || !$ps_password_confirm){
+					if(!$password || !$password_confirm){
 						$this->view->setVar("message", _t("Please enter and re-type your password."));
-						$ps_action = "reset";
+						$action = "reset";
 						break;
 					}
-					if ($ps_password != $ps_password_confirm) {
+					if ($password != $password_confirm) {
 						$this->view->setVar("message", _t("Passwords do not match. Please try again."));
-						$ps_action = "reset";
+						$action = "reset";
 						break;
 					}
 					
-					if(strlen($ps_password) < 4){
+					if(strlen($password) < 4){
 						$this->view->setVar("message", _t("Password must be at least 4 characters long."));
-						$ps_action = "reset";
+						$action = "reset";
 						break;
 					}
 					$t_user = new ca_users();
 					$t_user->purify(true);
-					$t_user->load($vs_user_id);
+					$t_user->load($user_id);
 					# verify user exists with this e-mail address
 					if ($t_user->getPrimaryKey()) {
 						# user with e-mail already exists...
-						$t_user->setMode(ACCESS_WRITE);
-						$t_user->set("password", $ps_password);
+						$t_user->set("password", $password);
 						$t_user->update();
 
 						if ($t_user->numErrors()) {
 							$this->notification->addNotification(join("; ", $t_user->getErrors()), __NOTIFICATION_TYPE_INFO__);
-							$ps_action = "reset_failure";
+							$action = "reset_failure";
 						} else {
-							$ps_action = "reset_success";
+							$action = "reset_success";
 							$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
 							# -- generate email subject
-							$vs_subject_line = $o_view->render("mailTemplates/notification_subject.tpl");
+							$subject_line = $o_view->render("mailTemplates/notification_subject.tpl");
 
 							# -- generate mail text from template - get both the html and text versions
-							$vs_mail_message_text = $o_view->render("mailTemplates/notification.tpl");
-							$vs_mail_message_html = $o_view->render("mailTemplates/notification_html.tpl");
+							$mail_message_text = $o_view->render("mailTemplates/notification.tpl");
+							$mail_message_html = $o_view->render("mailTemplates/notification_html.tpl");
 
-							caSendmail($t_user->get('email'), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+							caSendmail($t_user->get('email'), $this->request->config->get("ca_admin_email"), $subject_line, $mail_message_text, $mail_message_html);
 						}
 						break;
 					} else {
 						$this->notification->addNotification(_t("Invalid user"), __NOTIFICATION_TYPE_INFO__);
-						$ps_action = "reset_failure";
+						$action = "reset_failure";
 					}
 			}
-			$this->view->setVar("action", $ps_action);
+			$this->view->setVar("action", $action);
 			$this->render('LoginReg/form_reset_html.php');
 		}
 	}
