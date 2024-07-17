@@ -119,7 +119,7 @@
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
 					if ($vs_table == 'ca_objects') {
-						$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
+						$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' limit='1' delimiter='|'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
 						if(!$vs_thumbnail){
 							$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' limit='1' delimiter='|'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values));
 						}
@@ -138,7 +138,7 @@
 						$vs_info = null;
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} elseif($vs_table == "ca_occurrences") { # --- exhibitions
-						$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_occurrences.children' sort='ca_occurrences.idno'><unit relativeTo='ca_objects' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit></unit>", array("checkAccess" => $va_access_values));
+						$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_occurrences.children' sort='ca_occurrences.idno' limit='1' delimiter='|'><unit relativeTo='ca_objects' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit></unit>", array("checkAccess" => $va_access_values));
 						if(!$vs_thumbnail){
 							$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_occurrences.children' sort='ca_occurrences.idno' limit='1'><unit relativeTo='ca_objects' sort='ca_objects.idno' limit='1' delimiter='|'>^ca_object_representations.media.widepreview</unit></unit>", array("checkAccess" => $va_access_values));
 						}

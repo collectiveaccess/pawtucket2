@@ -130,6 +130,8 @@
 					<div class="row">
 						<div class='col-sm-12'>
 <?php
+						$va_all_object_ids = array();
+						
 						if($qr_objects->numHits() > 0){
 ?>
 							<div class="container">
@@ -142,7 +144,8 @@
 										if($va_icon = $qr_objects->get("ca_object_representations.media.widepreview", array("checkAccess" => $va_access_values, "returnAsArray" => true))){
 											$vs_icon = $va_icon[0];
 											#$va_objects[$qr_objects->get("object_id")] = array("icon" => $vs_icon);
-											print "<div class='col-sm-6 col-md-3'>".$vs_icon."</div>";
+											print "<div class='col-sm-6 col-md-3'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $qr_objects->get("ca_objects.object_id"), "representation_id" => $qr_objects->get("ca_object_representations.representation_id"), "overlay" => 1, "exhibition_id" => $vn_id))."\"); return false;'>".$vs_icon."</a></div>";
+											$va_all_object_ids[] = $qr_objects->get("ca_objects.object_id");
 										}
 									}
 								}
@@ -151,6 +154,12 @@
 							</div>
 <?php
 						}
+		$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_all_object_ids);
+		$o_context->saveContext();
+
+
 ?>			
 						</div><!-- end col -->
 					</div><!-- end row -->
@@ -190,7 +199,7 @@
 												</div>
 												<H6>Semester</H6><div class='unitTop'>{{{<ifdef code="ca_occurrences.semester">^ca_occurrences.semester</ifdef>}}}{{{<ifnotdef code="ca_occurrences.semester">N/A</ifnotdef>}}}</div>
 												<H6>Exhibition Space</H6><div class='unitTop'>{{{<ifdef code="ca_occurrences.exh_space">^ca_occurrences.exh_space%delimiter,_</ifdef>}}}{{{<ifnotdef code="ca_occurrences.exh_space">N/A</ifnotdef>}}}</div>
-												{{{<ifdef code="ca_occurrences.additional_exh_space"><H6>Additional Exhibition Space</H6><div class='unitTop'>^ca_occurrences.additional_exh_space%delimiter,_</div></ifdef>}}}
+												<H6>Additional Exhibition Space</H6><div class='unitTop'>{{{<ifdef code="ca_occurrences.additional_exh_space">^ca_occurrences.additional_exh_space%delimiter,_</ifdef>}}}{{{<ifnotdef code="ca_occurrences.additional_exh_space">N/A</ifnotdef>}}}</div>
 											
 											</div>
 										</div><!-- end row -->
@@ -302,17 +311,21 @@
 														}
 					?>
 														</div>											
-														{{{<ifcount code="ca_occurrences.related" restrictToTypes="publication" min="1">
-															<H7>Related Publications</H7><div class='unitBottom'>
+														<H7>Related Publications</H7><div class='unitBottom'>
+															{{{<ifcount code="ca_occurrences.related" restrictToTypes="publication" min="1">
+														
 																<unit relativeTo="ca_occurrences.related" restrictToTypes="publication" delimiter="<br/>">
 																	<l>^ca_occurrences.preferred_labels.name</l>
 																</unit>
-															</div>
-														</ifcount>}}}
+															</ifcount>
+															<ifcount code="ca_occurrences.related" restrictToTypes="publication" max="0">
+															N/A
+															</ifcount>}}}
+														</div>
 													</div>
 													<div class="col-sm-4">
-														<H7>Rights</H7><div class='unitBottom'>{{{<ifdef code="ca_occurrences.rights">^ca_occurrences.rights</ifdef><ifnotdef code="ca_occurrences.rights">NA</ifnotdef>}}}</div>
-														<H7>Note</H7><div class='unitBottom'>{{{<ifdef code="ca_occurrences.note_public">^ca_occurrences.note_public</ifdef><ifnotdef code="ca_occurrences.note_public">NA</ifnotdef>}}}</div>
+														<H7>Rights</H7><div class='unitBottom'>{{{<ifdef code="ca_occurrences.rights">^ca_occurrences.rights</ifdef><ifnotdef code="ca_occurrences.rights">N/A</ifnotdef>}}}</div>
+														<H7>Note</H7><div class='unitBottom'>{{{<ifdef code="ca_occurrences.note_public">^ca_occurrences.note_public</ifdef><ifnotdef code="ca_occurrences.note_public">N/A</ifnotdef>}}}</div>
 													</div>
 												</div><!-- end row -->
 											</div>

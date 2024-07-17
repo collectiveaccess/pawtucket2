@@ -299,7 +299,67 @@
             </div>                
 		</div>
 <?php	
+	}elseif(in_array(strToLower($this->request->getController()), array("loginreg", "contact")) || in_array(strToLower($this->request->getAction()), array("repatriation"))){
+?>
+		<div class="uk-section-secondary uk-section uk-section-xsmall">
+			<div class="uk-container">                
+				<div class="uk-grid tm-grid-expand uk-child-width-1-1 uk-grid-margin">
+					<div class="uk-width-1-1@m">
+						<nav aria-label="Breadcrumb">
+							<ul class="uk-breadcrumb uk-margin-remove-bottom" vocab="https://schema.org/" typeof="BreadcrumbList">
+	
+									<li property="itemListElement" typeof="ListItem">            <a href="https://alutiiqmuseum.org" property="item" typeof="WebPage"><span property="name">Home</span></a>
+									<meta property="position" content="1">
+									</li>    
+									<li property="itemListElement" typeof="ListItem">            <a href="https://alutiiqmuseum.org/museum/" property="item" typeof="WebPage"><span property="name">Museum</span></a>
+									<meta property="position" content="2">
+									</li>    
+									<li property="itemListElement" typeof="ListItem">            <a href="https://alutiiqmuseum.org/museum/repatriation/" property="item" typeof="WebPage"><span property="name">Repatriation</span></a>
+									<meta property="position" content="3">
+									</li>   
+							</ul>
+						</nav>
+						<h1 class="uk-heading-medium uk-margin-small" uk-parallax="y: 0,-75; easing: 1; media: @m" style="transform: translateY(0px); will-change: transform;">        Repatriation    </h1>
+					</div>
+				</div>
+			</div>                
+		</div>
+		<div class="uk-section-muted uk-section">           
+			<div class="uk-container">                
+				<div class="uk-grid tm-grid-expand uk-child-width-1-1 uk-grid-margin">
+					<div class="uk-width-1-1">
+						<nav class="uk-text-center">
+							<ul class="uk-margin-remove-bottom uk-subnav  uk-subnav-divider uk-flex-center" uk-margin="">        
+								<li class="el-item uk-first-column">
+									<a class="el-link" href="https://alutiiqmuseum.org/museum/repatriation/">Introduction</a></li>
+<?php
+							if($this->request->isLoggedIn()){
+?>
+								<li class="el-item ">
+									<?php print caNavLink($this->request, "Find", "el-link", "", "browse", "repatriation"); ?>
+								</li>
+<?php
+							}
+?>
+								<li class="el-item ">
+<?php
+									if($this->request->isLoggedIn()){
+										print caNavLink($this->request, "Logout", "el-link", "", "loginReg", "logout");
+									}else{
+										print caNavLink($this->request, "Login", "el-link", "", "loginReg", "loginform");
+									}
+?>
+								</li>
+							</ul>
+						</nav> 
+					</div>
+				</div>
+            </div>
+		</div>
+	
+<?php	
 	}else{
+		# --- amutat
 ?>
 		<div class="uk-section-secondary uk-section uk-section-xsmall">
 			<div class="uk-container">                

@@ -133,21 +133,21 @@
 			
 <?php
 
-	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities.related' delimiter=';;;' sort='ca_entities.preferred_labels.surname'><l><span class='capitalize'>^relationship_typename</span> of ^ca_entities.preferred_labels.displayname</l></unit></ifcount>", array("checkAccess" => $va_access_values));
+	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities.related' delimiter=';;;'><l><span class='capitalize'>^relationship_typename</span> of ^ca_entities.preferred_labels.displayname</l></unit></ifcount>", array("checkAccess" => $va_access_values));
 	if($vs_tmp){
 		$va_entity_names_as_links = explode(";;;", $vs_tmp);
 		$va_interstitial_info = $va_source_name = $va_source_id = array();
 		$va_entities = array();
 		if(is_array($va_entity_names_as_links) && sizeof($va_entity_names_as_links)){
-			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities.preferred_labels.surname'>
+			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities_x_entities.rank'>
 													<ifdef code='ca_entities_x_entities.effective_date'><br/><small>Effective Date: ^ca_entities_x_entities.effective_date</small></ifdef>
 												</unit></ifcount>", array("checkAccess" => $va_access_values));
 			$va_interstitial_info = explode(";;;", $vs_tmp);
 	
 			# --- a space is included in the template because otherwise it returns nothing if there is no source and the arrays no longer line up properly
-			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities.preferred_labels.surname'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values));
+			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities_x_entities.rank'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values));
 			$va_source_name = explode(";;;", $vs_tmp);
-			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities.preferred_labels.surname'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values, "convertCodesToDisplayText" => false));
+			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities_x_entities.rank'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values, "convertCodesToDisplayText" => false));
 			$va_source_id = explode(";;;", $vs_tmp);
 
 			$vs_tmp = "";
@@ -253,13 +253,12 @@
 		$va_rel_places = array();
 		$i = 0;
 		foreach($va_places as $va_place_info){
-			$va_rel_places[$va_place_info["place_id"]] = array("name" => $va_place_info["name"], "relationship_type" => $va_place_info["relationship_typename"]);
+			$va_rel_places[] = array("name" => $va_place_info["name"], "relationship_type" => $va_place_info["relationship_typename"]);
 			$i++;
 			if($i == 24){
 				break;
 			}
 		}
-		$qr_places = caMakeSearchResult("ca_places", array_keys($va_rel_places));
 ?>
 		<div class="row">
 			<div class="col-sm-12">
@@ -268,12 +267,12 @@
 
 				$i = 0;
 				$col = 0;
-				while($qr_places->nextHit()){
+				foreach($va_rel_places as $va_rel_place){
 					if($col == 0){
 						print "<div class='row'>";
 					}
 					#print "<div class='col-sm-4'>".caDetailLink($this->request, "<div class='bgLightBlue text-center'>".$va_rel_places[$qr_places->get("ca_places.place_id")]["name"]."<br/><small>".$va_rel_places[$qr_places->get("ca_places.place_id")]["relationship_type"]."</small></div>", "", "ca_places", $qr_places->get("ca_places.place_id"))."</div>";
-					print "<div class='col-sm-4'><div class='bgLightBlue text-center'>".$va_rel_places[$qr_places->get("ca_places.place_id")]["name"]."<br/><small>".$va_rel_places[$qr_places->get("ca_places.place_id")]["relationship_type"]."</small></div></div>";
+					print "<div class='col-sm-4'><div class='bgLightBlue text-center'>".$va_rel_place["name"]."<br/><small>".$va_rel_place["relationship_type"]."</small></div></div>";
 					$col++;
 					if($col == 3){
 						$col = 0;

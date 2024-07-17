@@ -191,17 +191,26 @@
 if($this->request->getParameter('confirmEnter', pInteger)){
 	Session::setVar('visited_time', time());
 }
-if($show_curtain && (!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
+if(!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400))){
 ?>
 	<div class="disclaimerAlert">
 		<div class="disclaimerAlertMessage">
 			<?php print Session::getVar('visited_time'); ?>{{{content_warning}}}
-			<div class="row">
-				<div class="col-sm-6 col-md-4 col-md-offset-2">
-					<div class="enterButton"><a href="https://irshdc.ubc.ca/for-survivors/healing-and-wellness-resources/" class="btn btn-default">Wellness Resources</a></div>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 col-lg-5">
+						<div class="enterButton"><a href="https://irshdc.ubc.ca/for-survivors/healing-and-wellness-resources/" class="btn btn-default">Wellness Resources</a></div>
+					</div>
+					<div class="col-md-6 col-lg-5 col-lg-offset-2">
+						<div class="enterButton"><?php print caNavLink($this->request, "Enter", "btn btn-default", "*", "*", "*", array("confirmEnter" => 1)); ?></div>
+					</div>
 				</div>
-				<div class="col-sm-6 col-md-4">
-					<div class="enterButton"><?php print caNavLink($this->request, "Enter", "btn btn-default", "*", "*", "*", array("confirmEnter" => 1)); ?></div>
+			</div>
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 text-center rshdcLogo">
+						<?php print caGetThemeGraphic($this->request, 'IRSHDC_wordmark-white.png', array("alt" => "RSHDC logo")); ?>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -41,10 +41,6 @@
 	$vn_content_category_transcript = $t_list->getItemIDFromList("content_categories", "Transcript");
 	
 	require_once(__CA_LIB_DIR__.'/Search/ObjectSearch.php');
-if($vb_ajax){
-	# --- display media for child record on ajax load
-	print $this->getVar("representationViewer");
-}else{
 
 ?>
 <div class="continer">
@@ -60,7 +56,30 @@ if($vb_ajax){
 			</div>
 			<div class="row">
 				<div class='col-sm-12 col-md-offset-2 col-md-8'>
-{{{representationViewer}}}
+
+
+
+					<div class="row detailImages">
+<?php
+						$va_thumbnails = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("version" => "iconlarge", "returnAs" => "array", "linkTo" => "basic", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+						if(is_array($va_thumbnails) && sizeof($va_thumbnails)){
+?>
+						<div class="col-sm-2 detailImagesThumbs">
+<?php
+							foreach($va_thumbnails as $thumbnail){
+								print $thumbnail;
+							}
+?>
+						</div>
+<?php
+						}
+?>
+						<div class="col-sm-<?php print (sizeof($va_thumbnails) > 1) ? "10" : "12"; ?>">
+							<div id="detailObjectImageLarge">{{{representationViewer}}}</div>
+						</div>
+					</div>
+
+
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
@@ -183,6 +202,3 @@ if($vb_ajax){
 			</div>
 
 		</div><!-- end container -->
-<?php
-}
-?>

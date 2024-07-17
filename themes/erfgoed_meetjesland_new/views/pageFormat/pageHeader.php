@@ -194,6 +194,7 @@
 							<li><a href="https://comeet.be/onze-deelwerkingen/erfgoedcel-meetjesland/" target="_blank">Over Erfgoedcel Meetjesland</a></li>
 							<li><?php print caNavLink($this->request, "Veelgestelde vragen", "", "", "About", "Guide"); ?></li>
 							<li><?php print caNavLink($this->request, "Jouw collectie op de erfgoedbank", "", "", "About", "Collection"); ?></li>
+							<li><?php print caNavLink($this->request, "Jouw project op de erfgoedbank", "", "", "About", "Projectpagina"); ?></li>
 						</ul>
 					</li>
 				</ul>
