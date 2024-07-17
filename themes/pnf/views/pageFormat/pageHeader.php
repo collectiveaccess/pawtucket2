@@ -244,7 +244,7 @@ if($this->request->isLoggedIn()){
 if($this->request->isLoggedIn()){
 ?>
 
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'MISCELANEA', '', '', 'Listing', 'miscellanies');?></li>							
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'MISCELÁNEA', '', '', 'Listing', 'miscellanies');?></li>							
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'ORNAMENTOS', '', '', 'Pictorials', 'ornaments');?></li>
 <?php
 }
