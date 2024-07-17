@@ -114,15 +114,27 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
-    background-position: middle center;
+    background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-
-    .hero1, .hero2, .hero3 {
-        background-image: url("../assets/graphics/Dylan-hero-cropped.jpg");
-    }
 }
-
+.parallax.hero1 {
+     background-image: url("../assets/graphics/Dylan-hero-cropped.jpg");
+}
+.parallax.hero2{
+     background-image: url("../assets/graphics/Hero-1972-Doc-Watson--Elementary-Doctor-Watson-001.jpg");
+     background-position: top center;
+}
+.parallax.hero3 {
+	background-image: url("../assets/graphics/Hero-Flamenco_Spectacular-1958-pres.jpg");
+}
+.parallax.hero4 {
+	background-image: url("../assets/graphics/Hero-JazzOdyssey-Vol-II-Chicago-1964.jpg");
+}
+.parallax.hero5 {
+	background-image: url("../assets/graphics/Hero-MG04_3340-Hesse-Nov-pres.jpg");
+	background-position: bottom center;
+}
 .hpExplore{
 	img{
 		height: 650px;
