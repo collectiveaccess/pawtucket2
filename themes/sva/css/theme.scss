@@ -107,19 +107,19 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 /* ------------------------- Front ------------------------- */
 .parallax {
     position: relative;
-    background-image: url("../assets/graphics/homePage.jpg");
+    background-image: url("../assets/graphics/Dylan-hero-cropped.jpg");
 
     /* Full height */
     height: 100vh;
 
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
-    background-position: top center;
+    background-position: middle center;
     background-repeat: no-repeat;
     background-size: cover;
 
     .hero1, .hero2, .hero3 {
-        background-image: url("../assets/graphics/homePage.jpg");
+        background-image: url("../assets/graphics/Dylan-hero-cropped.jpg");
     }
 }
 
