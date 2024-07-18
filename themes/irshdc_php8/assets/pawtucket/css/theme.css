@@ -2491,7 +2491,7 @@ a.digExhDetailPrev, a.digExhDetailNext{
 	height:auto;
 }
 
-@media(max-width:768px){
+@media(max-width:768px), (max-height: 550px){
 	.disclaimerAlert div.disclaimerAlertMessage{
 		font-size: 18px;
 		width:100%;
@@ -2501,7 +2501,7 @@ a.digExhDetailPrev, a.digExhDetailNext{
 		font-size: 20px;
 	}
 }
-@media (min-width: 768px) and (max-width: 1244px){
+@media (min-width: 769px) and (min-height: 551px){
 	.disclaimerAlert div.disclaimerAlertMessage{
 		font-size: 20px;
 		width:85%;
@@ -2510,11 +2510,19 @@ a.digExhDetailPrev, a.digExhDetailNext{
 		font-size: 24px;
 	}
 }
-@media (min-width: 1245px) and (max-width: 1479px){
+@media (min-width: 1245px) and (min-height: 700px){
 	.disclaimerAlert div.disclaimerAlertMessage{
 		font-size: 24px;
 	}
 	.disclaimerAlert .enterButton .btn{
 		font-size: 28px;
+	}
+}
+@media (min-width: 1479px) and (min-height: 700px){
+	.disclaimerAlert div.disclaimerAlertMessage{
+		font-size: 28px;
+	}
+	.disclaimerAlert .enterButton .btn{
+		font-size: 32px;
 	}
 }
