@@ -191,11 +191,11 @@
 if($this->request->getParameter('confirmEnter', pInteger)){
 	Session::setVar('visited_time', time());
 }
-if(!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400))){
+if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
 ?>
 	<div class="disclaimerAlert">
 		<div class="disclaimerAlertMessage">
-			<?php print Session::getVar('visited_time'); ?>{{{content_warning}}}
+			{{{content_warning}}}
 			<div class="container">
 				<div class="row">
 					<div class="col-md-6 col-lg-5">
