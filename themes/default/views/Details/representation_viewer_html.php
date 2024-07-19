@@ -78,7 +78,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 		color: #fff;
 		
 		right: 10px;
-		top: 5px;
+		top: 0px;
 		z-index: 150000;
 		font-size: 20px;
 	}
@@ -89,7 +89,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 		color: #fff;
 		
 		left: 10px;
-		top: 5px;
+		top: 0px;
 		z-index: 150000;
 		font-size: 20px;
 	}
@@ -157,7 +157,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 			<button type="button" id="mediaviewer-overlay-next" class="btn btn-link btn-lg p-0 text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);' aria-label='next slide'><i class="bi bi-arrow-right"></i></button>
 		</div>
 		<div id="mediaviewer-overlay-caption" class="mediaviewer-caption"></div>
-		<div class="mediaviewer-overlay-close pt-1">
+		<div class="mediaviewer-overlay-close">
 			<button type="button" class="btn btn-link btn-lg p-0 text-light" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();' aria-label='close dialog'><i class="bi bi-x-lg"></i></button>
 		</div>
 	</div>

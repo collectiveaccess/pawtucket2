@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2023 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -44,7 +44,6 @@ $media_options = array_merge($media_options, [
 ]);
 ?>
 <script>
-	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 <?php
@@ -52,17 +51,17 @@ if($show_nav){
 ?>
 	<div class="row mt-n3">
 		<div class="col text-center text-md-end">
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+			<nav aria-label="result navigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 	</div>
 <?php
 }
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row">
 		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_objects.preferred_labels.name}}}</H1>
+			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
-			<hr class="mb-0"/>
+			<hr class="mb-0">
 		</div>
 	</div>
 <?php
@@ -91,120 +90,108 @@ if($show_nav){
 	}
 ?>
 
-	<div class="row">
+	<div class="row mb-4">
 		<div class="col-md-6">
-<?php
-		if($media_viewer = $this->getVar("media_viewer")){
-			print $media_viewer;
-		}elseif($t_object->get("ca_object_representations.representation_id")){
-?>
-			{{{digitized_media_message}}}
-<?php
-		}
-?>
+				{{{media_viewer}}}
 		</div>
 		<div class="col-md-6">
-			<div class="bg-light py-3 px-4 mb-3 h-100">
+			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->
 				<div class="row">
 					<div class="col">				
 						{{{<dl class="mb-0">
-							<ifdef code="ca_objects.display_date">
+							<ifdef code="ca_objects.date">
 								<dt><?= _t('Date'); ?></dt>
-								<dd>^ca_objects.display_date%delimiter=,_</dd>
+								<dd>^ca_objects.date%delimiter=,_</dd>
 							</ifdef>
-		
-							<ifdef code="ca_objects.extent_text">
-								<dt><?= _t('Extent and Medium'); ?></dt>
-								<dd>^ca_objects.extent_text</dd>
-							</ifdef>
-							<ifdef code="ca_objects.material_designations">
-								<dt><?= _t('Material Designation'); ?></dt>
-								<dd>^ca_objects.material_designations</dd>
-							</ifdef>
-							<ifdef code="ca_objects.cartographic_format">
+							<ifdef code="ca_objects.format_corres">
 								<dt><?= _t('Format'); ?></dt>
-								<dd>^ca_objects.cartographic_format</dd>
+								<dd>^ca_objects.format_corres%delimiter=,_</dd>
 							</ifdef>
-							<ifdef code="ca_objects.moving_image_type">
+							<ifdef code="ca_objects.format_ephemera">
 								<dt><?= _t('Format'); ?></dt>
-								<dd>^ca_objects.moving_image_type</dd>
+								<dd>^ca_objects.format_ephemera%delimiter=,_</dd>
 							</ifdef>
-							<ifdef code="ca_objects.sound_recording_type">
+							<ifdef code="ca_objects.photograph_format">
 								<dt><?= _t('Format'); ?></dt>
-								<dd>^ca_objects.sound_recording_type</dd>
+								<dd>^ca_objects.photograph_format%delimiter=,_</dd>
 							</ifdef>
-							<ifdef code="ca_objects.textual_format">
+							<ifdef code="ca_objects.color_bw">
+								<dt><?= _t('Color'); ?></dt>
+								<dd>^ca_objects.color_bw.colorType</dd>
+							</ifdef>
+							<ifdef code="ca_objects.format_type_press">
 								<dt><?= _t('Format'); ?></dt>
-								<dd>^ca_objects.textual_format</dd>
+								<dd>^ca_objects.format_type_press%delimiter=,_</dd>
 							</ifdef>
-							<ifdef code="ca_objects.electronic_resource_format">
+							<ifdef code="ca_objects.format_production">
 								<dt><?= _t('Format'); ?></dt>
-								<dd>^ca_objects.electronic_resource_format</dd>
+								<dd>^ca_objects.format_production%delimiter=,_</dd>
 							</ifdef>
-							<ifdef code="ca_objects.graphic_formats">
-								<dt><?= _t('Format'); ?></dt>
-								<dd>^ca_objects.graphic_formats</dd>
+							<ifdef code="ca_objects.format_av_analog">
+								<dt><?= _t('Original Format'); ?></dt>
+								<dd>^ca_objects.format_av_analog%delimiter=,_</dd>
 							</ifdef>
-							<ifdef code="ca_objects.genre">
-								<dt><?= _t('Genre'); ?></dt>
-								<dd>^ca_objects.genre</dd>
+							<ifdef code="ca_objects.TapeRuntime">
+								<dt><?= _t('Runtime'); ?></dt>
+								<dd>^ca_objects.TapeRuntime%delimiter=,_</dd>
 							</ifdef>
-							<ifdef code="ca_objects.scopecontent">
-								<dt><?= _t('Scope and Content'); ?></dt>
-								<dd>^ca_objects.scopecontent</dd>
+							<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text">
+								<dt><?= _t('Description'); ?></dt>
+								<dd>
+									^ca_occurrences.descriptionWithSource.prodesc_text
+									<ifdef code="ca_occurrences.descriptionWithSource.prodesc_source">
+										<div class="mt-3"><i>^ca_occurrences.descriptionWithSource.prodesc_source</i></div>
+									</ifdef>
+								</dd>
 							</ifdef>
-							<ifdef code="ca_objects.cultural_narrative">
-								<dt><?= _t('Cultural Narrative'); ?></dt>
-								<dd>^ca_objects.cultural_narrative</dd>
-							</ifdef>
-							<ifdef code="ca_objects.traditional_knowledge">
-								<dt><?= _t('Traditional Knowledge'); ?></dt>
-								<dd>^ca_objects.traditional_knowledge</dd>
-							</ifdef>
-							<ifdef code="ca_objects.langmaterial">
+							<ifdef code="ca_objects.language">
 								<dt><?= _t('Language'); ?></dt>
-								<dd>^ca_objects.langmaterial%delimiter=,_</dd>
+								<dd>^ca_objects.language%delimiter=,_</dd>
 							</ifdef>
-							<ifdef code="ca_objects.accessrestrict">
-								<dt><?= _t('Conditions Governing Access'); ?></dt>
-								<dd>^ca_objects.accessrestrict</dd>
+							<ifdef code="ca_objects.dimensions">
+								<dt><?= _t('Dimensions'); ?></dt>
+								<dd>^ca_objects.dimensions</dd>
 							</ifdef>
-							<ifdef code="ca_objects.reproduction">
-								<dt><?= _t('Conditions Governing Reproduction'); ?></dt>
-								<dd>^ca_objects.reproduction</dd>
+							<ifdef code="ca_objects.number_of_copies">
+								<dt><?= _t('Number of Copies'); ?></dt>
+								<dd>^ca_objects.number_of_copies</dd>
 							</ifdef>
-							<ifdef code="ca_objects.restriction_statement">
-								<dt><?= _t('Restrictions'); ?></dt>
-								<dd>^ca_objects.restriction_statement%delimiter=,_</dd>
-							</ifdef>
-							<ifdef code="ca_objects.themes">
-								<dt><?= _t('Themes'); ?></dt>
-								<dd>^ca_objects.themes</dd>
-							</ifdef>
-							<ifdef code="ca_objects.keywords_text">
-								<dt><?= _t('Keywords'); ?></dt>
-								<dd>^ca_objects.keywords_text%delimiter=,_</dd>
-							</ifdef>
-							
 						</dl>}}}
-<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>						
-						{{{<dl class="mb-0">
+						<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
+
+							
+						{{{<dl>			
 							<ifcount code="ca_collections" min="1">
-								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
+								<dt><ifcount code="ca_collections" min="1"><?= _t('Part of'); ?></ifcount></dt>
 								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 							</ifcount>
-				
-							<ifcount code="ca_places" min="1">
-								<div class="unit">
-									<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-									<unit relativeTo="ca_places" delimiter=""><dd>^ca_places.preferred_labels (^relationship_typename)</dd></unit>
-								</div>
+							<ifcount code="ca_occurrences" restrictToTypes="production" min="1">
+								<dt><ifcount code="ca_occurrences" restrictToTypes="production" min="1" max="1"><?= _t('Related Production'); ?></ifcount><ifcount code="ca_occurrences" restrictToTypes="production" min="2"><?= _t('Related Productions'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences" restrictToTypes="production" delimiter=""><dd>
+									<l>^ca_occurrences.preferred_labels</l>
+								</dd></unit>
 							</ifcount>
+							<ifcount code="ca_occurrences" restrictToTypes="event" min="1">
+								<dt><ifcount code="ca_occurrences" restrictToTypes="event" min="1" max="1"><?= _t('Related Event'); ?></ifcount><ifcount code="ca_occurrences" restrictToTypes="event" min="2"><?= _t('Related Events'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences" restrictToTypes="event" delimiter=""><dd>
+									<l>^ca_occurrences.preferred_labels</l>
+								</dd></unit>
+							</ifcount>
+							<ifcount code="ca_occurrences" restrictToTypes="education" min="1">
+								<dt><ifcount code="ca_occurrences" restrictToTypes="education" min="1" max="1"><?= _t('Related Education Program'); ?></ifcount><ifcount code="ca_occurrences" restrictToTypes="education" min="2"><?= _t('Related Education Programs'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences" restrictToTypes="education" delimiter=""><dd>
+									<l>^ca_occurrences.preferred_labels</l>
+								</dd></unit>
+							</ifcount>
+							
+							<ifdef code="ca_objects.rightsStatement.rightsStatement_text">
+								<dt><?= _t('Rights Statement'); ?></dt>
+								<dd>^ca_objects.rightsStatement.rightsStatement_text</dd>
+							</ifdef>
 						</dl>}}}
 						
 					</div>
 				</div>
 			</div>
-			<div id="map" class="py-3">{{{map}}}</div>
 		</div>
 	</div>
