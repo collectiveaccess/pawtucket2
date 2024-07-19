@@ -2448,7 +2448,7 @@ a.digExhDetailPrev, a.digExhDetailNext{
 	left:0px;
 	right:0px;
 	max-height:100%;
-	overflow-y:scroll;
+	overflow-y:auto;
 
 	margin-left: auto;
 	margin-right: auto;line-height:1.4em
@@ -2518,11 +2518,11 @@ a.digExhDetailPrev, a.digExhDetailNext{
 		font-size: 28px;
 	}
 }
-@media (min-width: 1479px) and (min-height: 700px){
+/*@media (min-width: 1479px) and (min-height: 700px){
 	.disclaimerAlert div.disclaimerAlertMessage{
 		font-size: 28px;
 	}
 	.disclaimerAlert .enterButton .btn{
 		font-size: 32px;
 	}
-}
+}*/
