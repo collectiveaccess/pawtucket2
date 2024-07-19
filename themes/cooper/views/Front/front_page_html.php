@@ -80,22 +80,39 @@
 <?php
 	#$va_sets = $this->getVar("sets");
 	#$va_first_items_from_set = $this->getVar("first_items_from_sets");
-	if(is_array($va_sets) && sizeof($va_sets)){
+	if((is_array($va_sets) && sizeof($va_sets)) || (is_array($va_occ_sets) && sizeof($va_occ_sets))){
 		$va_all_ids = array();
 ?>
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12 frontGalleries">
 <?php
-			if(sizeof($va_sets) > 1){
+				# --- loop through exhibition and student work sets and sort on set_code
+				$va_sorted_sets = $va_sorted_occ_sets = $va_object_sets_ids = $va_occ_sets_ids = array();
+				if(is_array($va_sets) && sizeof($va_sets)){
+					foreach($va_sets as $va_set){
+						$va_sorted_sets[$va_set["set_code"]] = $va_set;
+					}
+					ksort($va_sorted_sets);
+				}
+				if(is_array($va_occ_sets) && sizeof($va_occ_sets)){
+					foreach($va_occ_sets as $va_occ_set){
+						$va_sorted_occ_sets[$va_occ_set["set_code"]] = $va_occ_set;
+					}
+					ksort($va_sorted_occ_sets);
+				}
 				# mix together the exhibition and student work sets
 				$va_all_set_ids = array();
 				$c = sizeof($va_occ_sets);
 				if(sizeof($va_sets) > $c){
 					$c = sizeof($va_sets);
 				}
-				$va_object_sets_ids = array_keys($va_sets);
-				$va_occ_sets_ids = array_keys($va_occ_sets);
+				foreach($va_sorted_sets as $va_sorted_set){
+					$va_object_sets_ids[] = $va_sorted_set["set_id"];
+				}
+				foreach($va_sorted_occ_sets as $va_sorted_occ_set){
+					$va_occ_sets_ids[] = $va_sorted_occ_set["set_id"];
+				}
 				for ($x = 0; $x <= $c; $x++) {
 					if($va_object_sets_ids[$x]){
 						$va_all_set_ids[] = $va_object_sets_ids[$x];
@@ -119,7 +136,7 @@
 					if($qr_set_items->numHits()){
 						if($table == "ca_objects"){
 ?>
-						<div class="frontGallerySlideLabel"><?php print caNavLink($this->request, _t("See All")." <i class='fa fa-caret-down'></i>", "btn-default", "", "Search", "projects", array("search" => "ca_sets.set_id:".$vn_set_id)); ?><?php print $t_set->get("ca_sets.preferred_labels.name"); ?> <span class='frontGallerySlideLabelSub'>/ <?php print $qr_set_items->numHits(); ?> projects</span></div>
+						<div class="frontGallerySlideLabel"><?php print caNavLink($this->request, _t("See All")." <i class='fa fa-caret-down'></i>", "btn-default", "", "Search", "projects", array("search" => "ca_sets.set_id:".$vn_set_id)); ?><?php print  $t_set->get("ca_sets.preferred_labels.name"); ?> <span class='frontGallerySlideLabelSub'>/ <?php print $qr_set_items->numHits(); ?> projects</span></div>
 <?php
 						}else{
 ?>
@@ -258,7 +275,7 @@ $(".next<?php print $i; ?>").hover(function () {
 						</script>
 		<?php
 							$i++;
-					}
+					
 				}
 			}
 ?>		
