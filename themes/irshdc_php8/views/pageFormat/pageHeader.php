@@ -191,7 +191,7 @@
 if($this->request->getParameter('confirmEnter', pInteger)){
 	Session::setVar('visited_time', time());
 }
-#if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
+if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
 ?>
 	<div class="disclaimerAlert">
 		<div class="disclaimerAlertMessage">
@@ -216,7 +216,7 @@ if($this->request->getParameter('confirmEnter', pInteger)){
 		</div>
 	</div>
 <?php
-#}
+}
 ?>
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
