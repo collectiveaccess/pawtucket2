@@ -71,6 +71,37 @@ class AnnotationsController extends BasePawtucketController {
 			$this->notification->addNotification(($c == 1) ? _t("Deleted %1 clipping", $c) : _t("Deleted %1 clippings", $c), __NOTIFICATION_TYPE_INFO__);
 			return $this->Index();
 		} else {
+			$this->render('Annotations/delete_all_confirm_html.php');
+		}
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public function DeleteAnnotation() {
+		$confirm = $this->request->getParameter('confirm', pInteger);
+		if($confirm) {
+			$annotation_id = $this->request->getParameter('annotation_id', pInteger);
+			
+			$params = ['annotation_id' => $annotation_id];
+			if($this->request->isLoggedIn()) {
+				$params['user_id'] = $this->request->getUserID();
+			} else {
+				$params['session_id'] = Session::getSessionID();
+			}
+			
+			if($t_anno = ca_user_representation_annotations::findAsInstance($params)) {
+				if(!$t_anno->delete(true)) {
+					$this->notification->addNotification(_t("Could not delete clipping: ", join('; ', $t_anno->getErrors())), __NOTIFICATION_TYPE_ERROR__);
+				} else {
+					$this->notification->addNotification(_t("Deleted %1 clipping", $c), __NOTIFICATION_TYPE_INFO__);
+				}
+			} else {
+				$this->notification->addNotification(_t("Could not find clipping"), __NOTIFICATION_TYPE_ERROR__);
+			}
+			
+			return $this->Index();
+		} else {
 			$this->render('Annotations/delete_confirm_html.php');
 		}
 	}
@@ -78,10 +109,51 @@ class AnnotationsController extends BasePawtucketController {
 	/**
 	 *
 	 */
+	public function DeleteAnnotationsForRepresentation() {
+		$confirm = $this->request->getParameter('confirm', pInteger);
+		if($confirm) {
+			$representation_id = $this->request->getParameter('representation_id', pInteger);
+			
+			$params = ['representation_id' => $representation_id];
+			if($this->request->isLoggedIn()) {
+				$params['user_id'] = $this->request->getUserID();
+			} else {
+				$params['session_id'] = Session::getSessionID();
+			}
+			
+			$c = 0;
+			if($annos = ca_user_representation_annotations::findAsSearchResult($params)) {
+				while($annos->nextHit()) {
+					$t_anno = $annos->getInstance();
+					if(!$t_anno->delete(true)) {
+						$this->notification->addNotification(_t("Could not delete clipping: ", join('; ', $t_anno->getErrors())), __NOTIFICATION_TYPE_ERROR__);
+						continue;
+					} 
+					$c++;
+				}
+			} else {
+				$this->notification->addNotification(_t("Could not find clippings"), __NOTIFICATION_TYPE_ERROR__);
+			}
+			if($c) {
+				$this->notification->addNotification(($c == 1) ? _t("Deleted %1 clipping", $c) : _t("Deleted %1 clippings", $c), __NOTIFICATION_TYPE_INFO__);
+			}
+			return $this->Index();
+		} else {
+			$this->render('Annotations/delete_from_representation_confirm_html.php');
+		}
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	public function DownloadPDF() {
-		$annotations = ca_user_representation_annotations::getAnnotations(['request' => $this->request]);
+		$annotation_id = $this->request->getParameter('annotation_id', pInteger);
+		$representation_id = $this->request->getParameter('representation_id', pInteger);
+		
+		$annotations = ca_user_representation_annotations::getAnnotations(['request' => $this->request, 'annotation_id' => $annotation_id, 'representation_id' => $representation_id]);
 		
 		$this->view->setVar('annotations', $annotations);
+		
 		$content = $this->view->render('Annotations/export/annotations_pdf_html.php', true);
 	
 		caExportContentAsPDF($content, [

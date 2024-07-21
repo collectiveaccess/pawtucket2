@@ -279,7 +279,16 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
  		$user_id = $request->getUserID();
  		$session_id = Session::getSessionID();
  		
+ 		$representation_id = caGetOption('representation_id', $options, null);
+ 		$annotation_id = caGetOption('annotation_id', $options, null);
+ 		
  		$criteria = $session ? ['session_id' => $session] : ($user_id ? ['user_id' => $user_id] : ['session_id' => $session_id]);
+ 		if($representation_id) {
+ 			$criteria['representation_id'] = (int)$representation_id;
+ 		}
+ 		if($annotation_id) {
+ 			$criteria['annotation_id'] = (int)$annotation_id;
+ 		}
  
  		$ret = [];
  		if($qr = ca_user_representation_annotations::find($criteria, ['returnAs' => 'searchResult'])) {
@@ -315,6 +324,7 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
 							];
 						}
 						$ret[$object_id]['annotations'][$anno_id] = $anno;
+						$ret[$object_id]['representation_id'] = $representation_id;
 						break;
 					case 'ca_object_representations':
 						if(!isset($ret[$representation_id])) {
@@ -325,6 +335,7 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
 							];
 						}
 						$ret[$representation_id]['annotations'][$anno_id] = $anno;
+						$ret[$representation_id]['representation_id'] = $representation_id;
 						break;
 					default:
 						$ret[$anno_id] = $anno;
