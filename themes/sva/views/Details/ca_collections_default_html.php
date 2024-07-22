@@ -96,30 +96,6 @@ $top_level_collection_id = $va_collection_hier_ids[1];
 	</div>
 <?php
 	}
-if($collection_detail){
-?>
-{{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="featured">
-	<div id="browseResultsContainer" class="row mb-3">
-		<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" delimiter="" limit="8">
-			<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
-				<div class='card flex-grow-1 width-100 rounded-0 shadow-sm bg-white border-0 mb-4'>
-				  <l>^ca_object_representations.media.large%class='card-img-top object-fit-contain px-3 pt-3 rounded-0'</l>
-				  	<div class='card-body'>
-						<l>^ca_objects.preferred_labels.name</l>
-					</div>
-				 </div>
-			</div>
-		</unit>
-	</div>
-	<div class="row row-cols-1 mb-4">
-		<div class="col text-center"><?php print caNavLink($this->request, "Browse All Objects", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $id)); ?></div>
-	</div>
-</ifcount>}}}
-<div class="row pt-5">
-	<div class="col"><h2>Collection Information</h2><hr/></div>
-</div>
-<?php
-}
 ?>
 	<div class="row row-cols-1">
 		<div class="col">				
@@ -141,7 +117,42 @@ if($collection_detail){
 			</dl>}}}					
 		</div>
 	</div>
+
 <?php
+if($collection_detail){
+?>
+{{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="featured">
+	
+	<div class="row pt-5">
+		<div class="col"><h2 class="fs-4">Collection Highlights</h2><hr/></div>
+	</div>
+<?php
+if($vs_collections_item_availablity = $this->getVar("collections_item_availablity")){
+?>
+	<div class="pb-4 fs-4">
+		<?php print $vs_collections_item_availablity; ?>
+	</div>
+<?php
+}
+?>
+	<div id="browseResultsContainer" class="row mb-3">
+		<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" delimiter="" limit="8">
+			<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
+				<div class='card flex-grow-1 width-100 rounded-0 shadow-sm bg-white border-0 mb-4'>
+				  <l>^ca_object_representations.media.large%class='card-img-top object-fit-contain px-3 pt-3 rounded-0'</l>
+				  	<div class='card-body'>
+						<l>^ca_objects.preferred_labels.name</l>
+					</div>
+				 </div>
+			</div>
+		</unit>
+	</div>
+	<div class="row row-cols-1 mb-4 pb-4">
+		<div class="col text-center"><?php print caNavLink($this->request, "Browse All Objects", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $id)); ?></div>
+	</div>
+</ifcount>}}}
+<?php
+}
 	if ($show_hierarchy_viewer) {	
 ?>
 		<div hx-trigger="load" hx-get="<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"  ></div>
