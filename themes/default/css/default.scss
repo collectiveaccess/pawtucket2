@@ -163,6 +163,9 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 }
 #bRefine{
 	z-index:999;
+	.bRefineLetterBar{
+		height:90%;
+	}
 }
 @media(max-width:767px) {
 	#bRefine{

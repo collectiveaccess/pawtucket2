@@ -396,11 +396,9 @@ footer{
 		text-decoration:none;
 	}
 }
-@media (min-width: 768px) {
-	#bRefine{
-		.bRefineLetterBar{
-			height:90%;
-		}
+#bRefine{
+	.bRefineLetterBar{
+		height:90%;
 	}
 }
 /* --- detail ---*/
