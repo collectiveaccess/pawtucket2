@@ -427,9 +427,12 @@ footer{
 }
 
 /* accessibility changes */
-.form-control:focus, nav #navbarSearch button:focus, #searchWithin button:focus, #bMorePanel button:focus, .nav-link:focus{
-	box-shadow:0 0 2px 2px rgba(102,102,102,.5);
+.form-control:focus, nav #navbarSearch button:focus, #searchWithin button:focus{
+	box-shadow:0 0 2px 2px rgba(0,0,0,.5);
+}
+#bMorePanel button:focus, .nav-link:focus{
+	box-shadow:0 0 2px 2px rgba(0,0,0,.5);
 }
 .btn-white:focus{
-	box-shadow:0 0 2px 2px rgba(102,102,102,.5);
+	box-shadow:0 0 2px 2px rgba(0,0,0,.5);
 }

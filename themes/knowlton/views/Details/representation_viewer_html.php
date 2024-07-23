@@ -97,13 +97,12 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 		/*width: 100%;
 		height: 100%;*/
 	}
-	
 	div.mediaviewer-caption {
 		color: #fff;
 		font-size: 16px;
 	}
 	.mediaviewer-overlay-controls .btn:focus{
-		box-shadow:0 0 2px 2px rgba(256,256,256,.5);
+		box-shadow:0 0 2px 2px #FFFFFF;
 	}
 </style>
 
@@ -169,7 +168,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	}
 ?>		
 	</div>
-	<div id="loopBack" class="" onfocus="document.getElementById('mediaviewer-overlay').focus();" tabindex="0">Looping :)</div>
+	<div id="loopBack" class="" onfocus="document.getElementById('mediaviewer-overlay').focus();" tabindex="0">Looping</div>
 </div>
 <!-- END: Full-window media overlay display <div>'s -->
 

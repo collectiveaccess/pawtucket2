@@ -170,7 +170,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	}
 ?>		
 	</div>
-	<div id="loopBack" class="" onfocus="document.getElementById('mediaviewer-overlay').focus();" tabindex="0">Looping :)</div>
+	<div id="loopBack" class="" onfocus="document.getElementById('mediaviewer-overlay').focus();" tabindex="0">Looping</div>
 </div>
 <!-- END: Full-window media overlay display <div>'s -->
 

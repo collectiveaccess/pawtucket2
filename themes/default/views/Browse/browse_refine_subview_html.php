@@ -42,7 +42,7 @@ if (sizeof($va_criteria) > 0) {
 	$i = 0;
 	$vb_start_over = false;
 	foreach($va_criteria as $va_criterion) {
-		$vs_criteria .= caNavLink($this->request, $va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
+		$vs_criteria .= caNavLink($this->request, $va_criterion['value'].' <i aria-hidden="true" class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
 		$vb_start_over = true;
 		$i++;
 	}
