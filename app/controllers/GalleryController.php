@@ -89,7 +89,7 @@
 					if($this->config->get('gallery_sort_by') !== 'name') {
 						$sets = caSortArrayByKeyInValue($sets, ['rank', 'set_id']);
 					}
-					$vs_front_page_set = $o_front_config->get('front_page_set_code');
+					$vs_front_page_set = $o_front_config->get('set_code');
 					$vb_omit_front_page_set = (bool)$this->config->get('omit_front_page_set_from_gallery');
 					foreach($sets as $set_id => $va_set) {
 						if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
