@@ -305,8 +305,11 @@ let mediaViewerManager = function(options=null) {
 			if(m_id && c_id) {
 				let e = document.getElementById(m_id);
 				if(e) {
-					e.style.display = 'block';
-					e.focus();
+					//e.style.display = 'block';
+					e.showModal();
+					//e.focus();
+					document.body.style.overflow = "hidden";
+					e.setAttribute("aria-modal", "true");
 				}
 				
 				let containerDivs = viewers[that.id].containerDivs(that.id, that.media_list[that.index], that.options);
@@ -337,7 +340,10 @@ let mediaViewerManager = function(options=null) {
 			if(m_id) {
 				let e = document.getElementById(m_id);
 				if(e) {
-					e.style.display = 'none';
+					e.close();
+					//e.style.display = 'none';
+					document.body.style.overflow = "scroll";
+					e.removeAttribute("aria-modal");
 				}
 			}
 		},

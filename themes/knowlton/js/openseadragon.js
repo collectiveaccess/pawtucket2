@@ -7877,7 +7877,7 @@ $.Viewer = function( options ) {
     }(this.canvas.style));
     $.setElementTouchActionNone( this.canvas );
     if (options.tabIndex !== "") {
-        this.canvas.tabIndex = (options.tabIndex === undefined ? 0 : options.tabIndex);
+        this.canvas.tabIndex = (options.tabIndex === undefined ? -1 : options.tabIndex);
     }
 
     //the container is created through applying the ControlDock constructor above
