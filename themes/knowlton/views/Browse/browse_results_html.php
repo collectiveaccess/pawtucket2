@@ -192,7 +192,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
 			<div id="browseResultsContainer">
-				<ul class="row ps-0">
+				<ul class="row ps-0 list-unstyled">
 <?php
 } // !ajax
 
