@@ -55,11 +55,11 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 ?>		
 	<div id='bRefine' class='bg-light sticky-md-top vh-100 collapse overflow-y-auto'>
 		<div id='bMorePanel' tabindex='-1' class='position-absolute w-100 z-3 bg-light h-100 collapse'><!-- long lists of facets are loaded here --></div>
-		<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
+		<div class="text-end float-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php
 	if($qr_res->numHits() > 1){
 ?>
-		<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+		<form role="search" id="searchWithin" class="pt-1 pt-md-0" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
 			<div class="input-group p-3">
 				<label for="search-within" class="form-label visually-hidden">Search within</label>
 				<input name="search_refine" id="search-within" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?php print _t("Search within..."); ?>" aria-label="<?php print _t("Search within"); ?>">
