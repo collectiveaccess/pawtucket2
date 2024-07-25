@@ -49,7 +49,8 @@ let imageViewer = function(id, options=null) {
 					homeButton:     options['overlay'] ? "imageviewer-overlay-home" : "imageviewer-home",
 					fullPageButton: options['overlay'] ? "imageviewer-overlay-full-page" : "imageviewer-full-page",
 					nextButton:     options['overlay'] ? "imageviewer-overlay-next" : "imageviewer-next",
-					previousButton: options['overlay'] ? "imageviewer-overlay-previous" : "imageviewer-previous"
+					previousButton: options['overlay'] ? "imageviewer-overlay-previous" : "imageviewer-previous",
+					tabIndex:	-1
 				});
 			} else {
 				that[k] = null;

@@ -51,7 +51,7 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$vn_result_size 	= $qr_res->numHits();
 	
 	
 	$va_options			= $this->getVar('options');
@@ -83,7 +83,7 @@ if (!$vb_ajax) {	// !ajax
 				}else{
 					$facet_name = $va_criterion["facet"];
 				}
-				$vs_criteria .= "<span class='text-capitalize fs-5'>".$facet_name.":</span> ".caNavLink($this->request, $va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm me-4', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
+				$vs_criteria .= "<span class='text-capitalize fs-5'>".$facet_name.":</span> ".caNavLink($this->request, $va_criterion['value'].' <i aria-hidden="true" class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm me-4', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
 				$vb_start_over = true;
 			}
 		}
@@ -136,8 +136,8 @@ if (!$vb_ajax) {	// !ajax
 					print "<li class='list-inline-item me-2'>/</li>";
 				}
 			}
-			print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-arrow-down" aria-label="direction ascending"></i>', (($vs_sort_dir == 'asc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-			print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-arrow-up" aria-label="direction descending"></i>', (($vs_sort_dir == 'desc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+			print "<li class='list-inline-item'>".caNavLink($this->request, '<i aria-hidden="true" '.(($vs_sort_dir == 'asc') ? 'aria-current="true" ' : '').'class="bi bi-arrow-down"></i>', (($vs_sort_dir == 'asc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0), array("aria-label" => _t("direction ascending")))."</li>";
+			print "<li class='list-inline-item'>".caNavLink($this->request, '<i aria-hidden="true" '.(($vs_sort_dir == 'desc') ? 'aria-current="true" ' : '').'class="bi bi-arrow-up"></i>', (($vs_sort_dir == 'desc') ? '' : 'text-secondary'), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0), array("aria-label" => _t("direction descending")))."</li>";
 			print "</ul>\n";
 			print "</li>\n";
 		}
@@ -192,7 +192,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
 			<div id="browseResultsContainer">
-				<div class="row">
+				<ul class="row ps-0 list-unstyled">
 <?php
 } // !ajax
 
@@ -210,7 +210,7 @@ if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_ke
 if (!$vb_ajax) {	// !ajax
 ?>
 			
-			</div><!-- end row -->
+			</ul><!-- end row -->
 		</div><!-- end browseResultsContainer -->
 	</div><!-- end col-8 -->
 	

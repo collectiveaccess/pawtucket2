@@ -33,10 +33,10 @@
 		$gray-800: #343a40 !default;
 		$gray-900: #212529 !default;
 
-$primary:       #337A99;
-$secondary:     #0c3f55;
-		$light:         $gray-100 !default;
-$dark:          #0c3f55; /* used for .bg-dark style */
+$primary:       #3266b1;
+$secondary:     #dfe9f6;
+$light:         #f6f4f4;
+$dark:          #3266b1; /* used for .bg-dark style */
 
 		// scss-docs-start spacer-variables-maps
 		$spacer: 1rem !default;
@@ -54,13 +54,12 @@ $dark:          #0c3f55; /* used for .bg-dark style */
 		/* font */
 		// $font-size-root affects the value of `rem`, which is used for as well font sizes, paddings, and margins
 		// $font-size-base affects the font size of the body text
-		$font-size-root:              16px !default;
+$font-size-root:              17px;
 		$font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
 		$font-size-sm:                $font-size-base * .875 !default;
 		$font-size-lg:                $font-size-base * 1.25 !default;
 
-$font-family-sans-serif: "Montserrat", "Noto Sans";
-//$font-family-sans-serif: "Aleo";
+$font-family-sans-serif: "trade-gothic-next";
 		$font-weight-lighter:         lighter !default;
 		$font-weight-light:           300 !default;
 		$font-weight-normal:          300 !default;
@@ -70,23 +69,23 @@ $font-family-sans-serif: "Montserrat", "Noto Sans";
 $font-weight-bolder:          900;
 
 		$font-weight-base:            $font-weight-normal !default;
-$headings-font-family:        "Montserrat", "Noto Sans";
+$headings-font-family:        "degular";
 
-		$h1-font-size:                $font-size-base * 2 !default;
+$h1-font-size:                $font-size-base * 3.5;
 		$h2-font-size:                $font-size-base * 1.75 !default;
 		$h3-font-size:                $font-size-base * 1.5 !default;
 		$h4-font-size:                $font-size-base * 1.25 !default;
 		$h5-font-size:                $font-size-base * 1 !default;
-		$h6-font-size:                $font-size-base * .75 !default;
+$h6-font-size:                $font-size-base * .825;
 		// scss-docs-end font-sizes
 
 		// scss-docs-start headings-variables
 		$headings-margin-bottom:      $spacer * .5 !default;
 		$headings-font-family:        null !default;
 		$headings-font-style:         null !default;
-$headings-font-weight:        900;
+$headings-font-weight:        600;
 		$headings-line-height:        1.2 !default;
-$headings-color:#d36628;
+$headings-color:#3266b1;
 		// scss-docs-end headings-variables
 
 		// scss-docs-start display-headings
@@ -106,21 +105,21 @@ $headings-color:#d36628;
 		// scss-docs-end display-headings
 
 		// scss-docs-start font-sizes
-		$font-sizes: (
-		  1: $h1-font-size,
-		  2: $h2-font-size,
-		  3: $h3-font-size,
-		  4: $h4-font-size,
-		  5: $h5-font-size,
-		  6: $h6-font-size
-		) !default;
+$font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size
+);
 
-		$body-color: #000 !default;
+$body-color: #313131;
 		$body-secondary-color:      rgba($body-color, .75) !default;
-$body-secondary-bg:         #d36628; /* used for .bg-body-secondary */
+$body-secondary-bg:         #f6f4f4; /* used for .bg-body-secondary */
 
 		$body-tertiary-color:       rgba($body-color, .5) !default;
-$body-tertiary-bg: #dbe3e7; /* used for .bg-body-tertiary */
+$body-tertiary-bg: #ffedc2; /* used for .bg-body-tertiary */
 
 		$light-bg-subtle:         mix($gray-100, #FFF) !default;
 		$dark-bg-subtle:          $gray-400 !default;
@@ -131,7 +130,7 @@ $box-shadow-sm: 0 0 20px rgba(0, 0, 0, 0.05);
 		$border-radius:	0 !default;
 
 		/* links */
-		$link-color: $primary !default;
+$link-color: $primary;
 		$link-decoration: underline solid .5px  !default;
 		/* text-underline-offset: .25rem;
 		  text-decoration-thickness: .5px;*/
@@ -144,17 +143,17 @@ $box-shadow-sm: 0 0 20px rgba(0, 0, 0, 0.05);
 
 		$nav-link-padding-y:                .5rem !default;
 		$nav-link-padding-x:                1rem !default;
-		$line-height-base:            		1.5 !default;
+$line-height-base:            		1.68;
 
 		$navbar-nav-link-padding-x: 		1rem !default;
-$nav-link-font-size: 				15px;
-$nav-link-font-weight: 				$font-weight-bolder;
+$nav-link-font-size: 				18px;
+$nav-link-font-weight: 				$font-weight-bold;
 		$nav-link-color:                    $link-color !default;
 		$nav-link-transition:               color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out !default;
 
-$navbar-light-color: 				$dark;
-$navbar-light-hover-color: 			$dark;
-$navbar-light-active-color: 		$dark;
+$navbar-light-color: 				$primary;
+$navbar-light-hover-color: 			#fec02f;
+$navbar-light-active-color: 		$primary;
 
 
 		// scss-docs-start navbar-variables
@@ -180,10 +179,10 @@ $navbar-light-active-color: 		$dark;
 		$nav-pills-link-active-color: $navbar-light-active-color; /* note this is over ridden by $navbar-light-active-color so set the color there instead */
 
 		/* buttons */
-		$input-btn-font-family:       null !default;
-		$input-btn-font-size:         $font-size-base !default;
+$input-btn-font-family:       "degular";
+$input-btn-font-size:         16px;
 
-$btn-border-radius:           18px;
+$btn-border-radius:           0px;
 		$btn-border-radius-sm:        0 !default;
 		$btn-border-radius-lg:        0 !default;
 
@@ -218,3 +217,11 @@ $accordion-border-color:                  transparent;
 		$input-focus-border-color:              #000 !default;
 
 		// scss-docs-end form-label-variables
+$gutters: (
+  0: 0,
+  1: $spacer * .25,
+  2: $spacer * .5,
+  3: $spacer,
+  4: $spacer * 2,
+  5: $spacer * 5,
+);

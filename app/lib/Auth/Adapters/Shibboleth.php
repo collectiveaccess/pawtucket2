@@ -101,8 +101,8 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	/**
 	 *
 	 */
-	public function authenticate($username, $password = '', $options=null) {
-    	if(caIsRunFromCLI()) { return false; }
+	public function authenticate($username, $password='', $options=null) {
+		if(caIsRunFromCLI()) { return false; }
     	
     	$this->init();
     	
@@ -123,7 +123,7 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 		}
 		$uid = $this->mapAttribute('uid', $attrs);
 		
-		if($this->debug) { $this->log->logInfo(_t("[Shibboleth::debug] Got uid {$uid} while attemtping to authenticate with {$username}::{$password}. Attributes were %1", print_R($attrs, true))); }
+		if($this->debug) { $this->log->logInfo(_t("[Shibboleth::debug] Got uid {$uid} while attempting to authenticate with {$username}::{$password}. Attributes were %1", print_R($attrs, true))); }
 	    if (!$uid) { return false; }
 		if($this->debug) { $this->log->logInfo(_t("[Shibboleth::debug] Authentication with {$username}::{$password} was successful")); }
 	   

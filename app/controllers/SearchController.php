@@ -223,6 +223,7 @@ class SearchController extends FindController {
 			$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString, ['forcePurify' => true])));
 			if($vs_remove_criterion == "_search"){
 				$this->opo_result_context->setSearchExpression("*");
+				$vs_search_expression = $this->opo_result_context->getSearchExpression();
 			}
 		}
 		

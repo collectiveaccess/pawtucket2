@@ -145,21 +145,21 @@
 					$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 					$vs_detail_link = caDetailLink($this->request, $vs_thumbnail."<div class='card-body px-0 pt-2 pb-5'>".$vs_caption."</div>", '', $vs_table, $vn_id, null);
 					$vs_result_output = "
-			<div class='col-md-6 col-lg-4 d-flex'>
+			<li class='col-md-6 col-lg-4 d-flex'>
 				<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 border-0 mb-4'>
 				  {$vs_detail_link}
 				  	
 				 </div>	
-			</div><!-- end col -->";
+			</li><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				
 				$vn_c++;
 				$vn_results_output++;
 			}
-			
-			print "<button class='btn btn-primary w-auto mx-auto mb-4' hx-trigger='click' hx-target='this' hx-swap='outerHTML' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."'>More</button>";
-			
+			if(($vn_start + $vn_results_output) < $qr_res->numHits()){
+				print "<button class='btn btn-primary w-auto mx-auto mb-4' hx-trigger='click' hx-target='this' hx-swap='outerHTML' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."'>More</button>";
+			}
 		
 		}
 ?>
