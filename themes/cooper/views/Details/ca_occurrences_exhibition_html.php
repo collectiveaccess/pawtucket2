@@ -52,7 +52,8 @@
 		}
 	}
 
-	
+	$vb_display_faculty = false;
+	$va_faculty_by_course = array();
 	$o_browse = caGetBrowseInstance("ca_objects");
 
 	if ($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
@@ -77,6 +78,9 @@
 	$va_criteria = $o_browse->getCriteriaWithLabels();
 	$va_criteria_for_display = $va_criteria_for_display_by_facet = array();
 	foreach($va_criteria as $vs_facet_name => $va_criterion) {
+		if($vs_facet_name == "exhibition_item_course_facet"){
+			$vb_display_faculty = true;
+		}
 		if($vs_facet_name != "exhibition_facet"){
 			$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
 			foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
@@ -209,6 +213,15 @@
 											#$va_objects[$qr_objects->get("object_id")] = array("icon" => $vs_icon);
 											print "<div class='col-sm-6 col-md-3'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $qr_objects->get("ca_objects.object_id"), "representation_id" => $qr_objects->get("ca_object_representations.representation_id"), "overlay" => 1, "exhibition_id" => $vn_id))."\"); return false;'>".$vs_icon."</a></div>";
 											$va_all_object_ids[] = $qr_objects->get("ca_objects.object_id");
+											if($vb_display_faculty && $qr_objects->get("ca_objects.EOYS_Course") && !$va_faculty_by_course[$qr_objects->getWithTemplate("^ca_objects.EOYS_Course")]){
+												
+												# --- check if there is faculty on the sub exhibition record this object is linked under
+												# --- is there a sub exhibit
+												if($tmp_faculty = $qr_objects->getWithTemplate("<unit relativeTo='ca_occurrences'><unit relativeTo='ca_occurrences.hierarchy' restrictToTypes='sub_exhibition'><unit relativeTo='ca_entities' restrictToRelationshipTypes='faculty' delimiter=', '>^ca_entities.preferred_labels.displayname</unit></unit></unit>")){
+													$va_faculty_by_course[$qr_objects->getWithTemplate("^ca_objects.EOYS_Course")] = $tmp_faculty;
+												}
+												
+											}
 										}
 									}
 								}
@@ -232,6 +245,21 @@
 								<div class="row topRow">
 									<div class='col-md-4'>
 										<H6>Description</H6><div class='unitAbstract'>{{{<ifdef code="ca_occurrences.description">^ca_occurrences.description</ifdef>}}}{{{<ifnotdef code="ca_occurrences.description">N/A</ifnotdef>}}}</div>
+<?php
+												if(is_array($va_faculty_by_course) && sizeof($va_faculty_by_course)){
+?>
+													<H6>Faculty</H6>
+														<div class='unitTop'>
+<?php
+													foreach($va_faculty_by_course as $vs_course => $vs_faculty){
+														print "<div>".$vs_course.": ".$vs_faculty."</div>";
+													}
+?>
+														</div>
+<?php
+												}
+?>
+
 									</div>
 									<div class='col-md-8'>
 										<div class="row">
