@@ -145,7 +145,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 <!-- END: Media selector bar -->
 
 <!-- START: Full-window media overlay display <div>'s -->
-<dialog id="mediaviewer-overlay" class="mediaviewer-overlay position-fixed w-100 h-100 mw-100 mh-100 top-0 start-0 bg-white bg-opacity-75 p-0 m-0 display-block overflow-hidden">
+<dialog id="mediaviewer-overlay" class="mediaviewer-overlay position-fixed w-100 h-100 mw-100 mh-100 top-0 start-0 bg-white bg-opacity-75 p-0 m-0 overflow-hidden">
 	<div class="mediaviewer-overlay-controls bg-dark">
 		<div class="mediaviewer-overlay-navigation">
 			<button type="button" id="mediaviewer-overlay-previous" class="btn btn-link btn-lg p-0 text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);' role='button' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>
