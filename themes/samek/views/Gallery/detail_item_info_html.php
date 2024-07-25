@@ -54,16 +54,14 @@
 	print "<div class='small mb-1'>(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")</div>";
 
 	print "<H2>".$vs_label."</H2>";
+
+	print $vs_content;
 	
 	if($vs_set_item_content != "[BLANK]"){
 		print $vs_set_item_content;
 	}
-
-	print $vs_content;
-	
 	
 	print "<div class='text-center py-2 text-capitalize'>".caDetailLink($this->request, _t("View Detail")." <i class='bi bi-arrow-right'></i>", 'btn btn-primary', $this->getVar("table"), $this->getVar("row_id"))."</div>";
-	
 ?>	
 	</div>
 </div><!-- end row -->
