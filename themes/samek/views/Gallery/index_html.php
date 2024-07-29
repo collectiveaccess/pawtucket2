@@ -15,6 +15,12 @@ switch($vs_image_format){
 	# --------------------
 }
 $va_set_groups = $this->getVar("groups");
+$lastElement = array_pop($va_set_groups);
+array_unshift($va_set_groups, $lastElement);
+
+// print_R($va_set_groups);
+// print_R($lastElement);
+
 ?>
 <div class="row">
 	<div class='col-12'>
