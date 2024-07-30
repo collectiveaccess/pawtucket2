@@ -131,16 +131,10 @@ if($show_nav){
 
 							<hr>
 
-							<?php
-									if($t_object->get("ca_objects.on_view.on_view_type")){
-										if($links = caGetBrowseLinks($t_object, 'ca_objects.on_view.on_view_type', ['template' => '<l>^ca_objects.on_view.on_view_type</l>', 'linkTemplate' => '^LINK'])) {
-							?>
-											<dt><?= _t('On View/Off View'); ?></dt>
-											<dd><?= join(" ", $links); ?></dd>
-							<?php
-										}
-									}
-							?>
+							<ifdef code="ca_objects.on_view.on_view_type">
+								<dt><?= _t('On View/Off View'); ?></dt>
+								<dd>^ca_objects.on_view.on_view_type</dd>
+							</ifdef>
 
 							<ifdef code="ca_objects.on_view.view_location">
 								<dt><?= _t('View Location'); ?></dt>
@@ -157,7 +151,7 @@ if($show_nav){
 									if($acc_links = caGetBrowseLinks($t_object, 'ca_objects.academic_tags', ['template' => '<l>^ca_objects.academic_tags</l>', 'linkTemplate' => '^LINK'])) {
 							?>
 										<dt><?= _t('Academic Tags'); ?></dt>
-										<dd><?= join(" ", $acc_links); ?></dd>
+										<dd><?= join(",", $acc_links); ?></dd>
 							<?php
 									}
 								}
