@@ -111,7 +111,7 @@ if($vs_mode == "map"){
 					if(sizeof($va_reps) > 1){
 						print "<div><small>".sizeof($va_reps)." media</small></div>";
 					}
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "basic", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
 					
 ?>
 				</div><!-- end col -->

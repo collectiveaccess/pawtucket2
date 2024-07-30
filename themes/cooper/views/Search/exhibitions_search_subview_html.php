@@ -69,7 +69,7 @@
 ?>
 			<div class='col-sm-6 col-md-3'>
 <?php 
-						$vs_thumbnail = $qr_results->getWithTemplate("<unit relativeTo='ca_occurrences.children' sort='ca_occurrences.idno'><unit relativeTo='ca_objects' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit></unit>", array("checkAccess" => $va_access_values));
+						$vs_thumbnail = $qr_results->getWithTemplate("<unit relativeTo='ca_occurrences.children' sort='ca_occurrences.idno'><unit relativeTo='ca_objects' sort='ca_objects.idno' delimiter='|'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit></unit>", array("checkAccess" => $va_access_values));
 						if(!$vs_thumbnail){
 							$vs_thumbnail = $qr_results->getWithTemplate("<unit relativeTo='ca_occurrences.children' sort='ca_occurrences.idno' limit='1'><unit relativeTo='ca_objects' sort='ca_objects.idno' limit='1' delimiter='|'>^ca_object_representations.media.widepreview</unit></unit>", array("checkAccess" => $va_access_values));
 						}
