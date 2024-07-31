@@ -49,7 +49,7 @@ if (sizeof($annotations) > 0) {
 	</ul>
 <?php
 }
-if (sizeof($user_annotations) > 0) {
+if ((sizeof($user_annotations) > 0) && $this->request->isLoggedIn()) {
 ?>
 <h6><?= _t('Your clips (%1)', sizeof($user_annotations)); ?></h6>
 <div class='detailUserAnnotationList'>

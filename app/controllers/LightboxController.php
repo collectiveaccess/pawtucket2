@@ -1481,6 +1481,40 @@ class LightboxController extends FindController {
 		$this->render('Lightbox/compare_html.php');
 	}
 	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function playlist() {
+		$item_ids = explode(';', $this->request->getParameter('item_ids', pString));
+		
+		$items = ca_set_items::find(['item_id' => ['IN', $item_ids]], ['returnAs' => 'arrays']);
+		
+		$representations = $start_times =[];
+		foreach($items as $item) {
+			if($rep_id = $item['representation_id']) {
+				$t_rep = new ca_object_representations($rep_id);
+			} else {
+				$t_object = new ca_objects($item['row_id']);
+				$t_rep = $t_object->getPrimaryRepresentationInstance();
+			}
+			$start = $ned = null;
+			if($annotation_id = $item['annotation_id']) {
+				$t_anno = new ca_user_representation_annotations($annotation_id);
+			 	$start = $t_anno->getPropertyValue('startTimecode', ['format' => 'seraconds']);
+			 	$end = $t_anno->getPropertyValue('endTimecode', ['format' => 'seconds']);
+			}
+			$representations[] = $t_rep;
+			$start_times[] = (int)$start;
+			$end_times[] = (int)$end;
+		}
+		
+		$this->view->setVar('representations', $representations);
+		$this->view->setVar('startTimes', $start_times);
+		$this->view->setVar('endTimes', $end_times);
+		
+		$this->render('Lightbox/playlist_html.php');
+	}
+	# -------------------------------------------------------
 	
 	/** 
 	 * Return set_id from request with fallback to user var, or if nothing there then get the users' first set

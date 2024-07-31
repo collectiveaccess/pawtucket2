@@ -179,6 +179,8 @@ if (!$vb_ajax) {	// !ajax
 				</div><!-- end btn-group -->
 				
 				<a href="#" id="lbCompareSelectedButton" style='text-decoration: none; color: #fff;'><?= caNavIcon(__CA_NAV_ICON_SPREADSHEET__, '24px'); ?> <?= _t('Compare'); ?></a>
+				
+				<a href="#" id="lbPlaySelectedButton" style='text-decoration: none; color: #fff;'><?= caNavIcon(__CA_NAV_ICON_GO__, '24px'); ?> <?= _t('Play'); ?></a>
 			</H1>
 
 			<div class="row mb-5">
@@ -533,6 +535,15 @@ if (!$vb_ajax) {    // !ajax
         	}
         });
         jQuery('#lbCompareSelectedButton').hide();
+        
+        jQuery("#lbPlaySelectedButton").on('click', function(e) {
+        	let ids = [];
+        	jQuery("input.lbCompareCheckbox:checked").each(function(k, v) {
+        		ids.push(jQuery(v).val());
+        	});
+        	
+        	caMediaPanel.showPanel('<?= caNavUrl($this->request, '', 'Lightbox', 'Playlist', ['context' => 'objects', 'overlay' => 1]); ?>/item_ids/' + ids.join(';'));
+        });
     });
 <?php
 	}

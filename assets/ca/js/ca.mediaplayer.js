@@ -34,7 +34,10 @@ var caUI = caUI || {};
 		var that = jQuery.extend({
 			players: {},
 			playerTypes: {},
-			isPlaying: {}
+			isPlaying: {},
+			playerStatus: {},
+			playerCompleted: {},
+			playLists: {}
 		}, options);
 		
 		// --------------------------------------------------------------------------------
@@ -43,6 +46,7 @@ var caUI = caUI || {};
 		that.register = function(playerName, playerInstance, playerType) {
 			that.players[playerName] = playerInstance;
 			that.playerTypes[playerName] = playerType;
+			that.playerStatus[playerName] = false;
 		}
 		
 		// Start playback
@@ -91,7 +95,8 @@ var caUI = caUI || {};
 		};
 		
 		// Jump to time
-		that.seek = function(playerName, t) {
+		that.seek = function(playerName, t, e=null) {
+			let endTime = e;
 			if (!that.players[playerName]) return null;
 			switch(that.playerTypes[playerName]) {
 				case 'VideoJS':
@@ -105,7 +110,6 @@ var caUI = caUI || {};
 					
 					const c = that.players[playerName].currentTime;
 					let readyState = that.players[playerName].media.readyState;
-					
 					if(readyState >= 1) {
 						that.players[playerName].currentTime = t;
 						that.isPlaying[playerName] = true;
@@ -113,13 +117,25 @@ var caUI = caUI || {};
 					} else {
 						jQuery("#" + playerName).css("opacity", 0.2);
 						that.players[playerName].on('canplaythrough', (event) => {
-							if(that.isPlaying[playerName]) { return; }
 							that.isPlaying[playerName] = true;
 							
 							that.players[playerName].currentTime = t;
 							that.players[playerName].play();
 							
 							jQuery("#" + playerName).css("opacity", 1.0);
+							if((endTime > 0) && (endTime > t)) {
+								that.onTimeUpdate(playerName, function(e) {
+									if(that.playerCompleted[playerName]) { return; }
+									let ct = that.currentTime(playerName);
+									if(ct >= endTime) { 
+										that.stop(playerName);
+										that.onTimeUpdate(playerName, null);
+										that.playerCompleted[playerName] = true;
+										that.nextInPlaylist(playerName);
+									}
+								
+								});
+							}
 						});
 					}
 					break;
@@ -180,6 +196,47 @@ var caUI = caUI || {};
 			}
 		};
 		
+		// Register handler ready event
+		that.onReady = function(playerName, f) {
+			if (!that.players[playerName]) return null;
+			
+			switch(that.playerTypes[playerName]) {
+				case 'VideoJS':
+					that.players[playerName].addEvent('ready', f);
+					break;
+				case 'Plyr':
+					that.players[playerName].on('ready', f);
+					break;
+				case 'MediaElement':
+					that.players[playerName][0].addEventListener('ready', f);
+					break;
+				default:
+					return null;
+					break;
+			}
+		};
+		
+		// Register handler ready event
+		that.onEnd = function(playerName, f) {
+			if (!that.players[playerName]) return null;
+			
+			switch(that.playerTypes[playerName]) {
+				case 'VideoJS':
+					that.players[playerName].addEvent('end', f);
+					break;
+				case 'Plyr':
+					that.players[playerName].on('ended', f);
+					break;
+				case 'MediaElement':
+					that.players[playerName][0].addEventListener('end', f);
+					break;
+				default:
+					return null;
+					break;
+			}
+		};
+		
+		
 		//
 		that.getPlayerNames = function() {
 			return Object.keys(that.players);
@@ -199,10 +256,52 @@ var caUI = caUI || {};
 		}
 		
 		//
+		that.playAllWhenReady = function() {
+			let players=  that.getPlayers();
+			for(let p in players) {
+				let playerName = p;
+				that.onReady(p, function(e) {
+					that.playerStatus[playerName] = true;
+					
+					for(let x in that.playerStatus) {
+						if(!that.playerStatus[x]) {
+							return;
+						}
+						
+						jQuery("#" + playerName).css("opacity", 1.0);
+					}
+					that.playAll();
+				});
+			}
+		}
+		
+		//
 		that.stopAll = function() {
 			let players=  that.getPlayers();
 			for(let p in players) {
 				that.stop(p);
+			}
+		}
+		
+		that.setPlaylist = function(playerName, playList) {
+			that.playLists[playerName] = playList;
+			if(playList && (playList.length > 0)) {
+				that.onEnd(playerName, function(e) {
+					that.nextInPlaylist(playerName);
+				});
+			}
+		}
+		
+		that.nextInPlaylist = function(playerName) {
+			if(that.playLists[playerName] && (that.playLists[playerName].length > 0)) {
+				let next = that.playLists[playerName].shift();
+				console.log("Play ", next);
+				that.stop(playerName);
+				that.players[playerName].source = next;
+				if(next.sources[0].start > 0) {
+					console.log('seek to ', next.sources[0].start, next.sources[0].end);
+					that.seek(playerName, next.sources[0].start, next.sources[0].end);
+				}
 			}
 		}
 		
