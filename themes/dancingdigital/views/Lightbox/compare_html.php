@@ -10,7 +10,8 @@ if(is_array($representations)) {
 		<tr>
 <?php
 	foreach($representations as $i => $rep) {
-		
+		$mimetype = $rep->getMediaInfo('media', 'original', 'MIMETYPE');
+		if(!in_array(caGetMediaClass($mimetype), ['audio', 'video'], true)) { continue; }
 		if(($i > 0) && (($i % 2) == 0))  {
 			print "</tr><tr>";
 		}
@@ -31,6 +32,7 @@ if(is_array($representations)) {
 </div>
 
 <script type="text/javascript">
+	caUI.initMediaPlayerManager();
 	jQuery('#compareAllControl').on('click', function(e) {
 		let l = jQuery('#compareAllControl');
 		let m = l.data('mode');

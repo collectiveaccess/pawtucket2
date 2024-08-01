@@ -65,6 +65,26 @@ $vs_description_attribute 		= $this->getVar("description_attribute");
 
 
 $set_item_list = caExtractValuesByUserLocale($t_set->getItems(['checkAccess' => $va_access_values]));
+
+$av_count = 0;
+//print_R($set_item_list);die;
+$object_ids = array_map(function($v) { return $v['object_id']; }, $set_item_list);
+$av_rep_ids = [];
+if(is_array($object_ids) && sizeof($object_ids)) {
+	if($qr_objects = caMakeSearchResult('ca_objects', array_values($object_ids))) {
+		while($qr_objects->nextHit()) {
+			$rep_id = $qr_objects->get('ca_object_representations.representation_id');
+			$mimetype = $qr_objects->get('ca_object_representations.media.original.mimetype');
+			if(!$mimetype) { continue; }
+			if(in_array(caGetMediaClass($mimetype), ['audio', 'video'], true)) {
+				$av_count++;
+				$av_rep_ids[$rep_id] = true;
+			}
+		}
+	}
+}
+$this->setVar('av_rep_ids', $av_rep_ids);
+
 // 
 // $item_info = [];
 // foreach($set_item_list as $item_id => $item) {
@@ -152,9 +172,6 @@ if (!$vb_ajax) {	// !ajax
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_displayname)); ?></a></li>
 <?php
 					}
-?>
-						<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Lightbox", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
-<?php
 						if(is_array($va_export_formats) && sizeof($va_export_formats)){
 							// Export as PDF links
 							print "<li class='divider'></li>\n";
@@ -178,9 +195,20 @@ if (!$vb_ajax) {	// !ajax
 					</ul>
 				</div><!-- end btn-group -->
 				
+				<span style="margin-left: 50px;">
+<?php
+	if($av_count > 1) {	
+?>				
 				<a href="#" id="lbCompareSelectedButton" style='text-decoration: none; color: #fff;'><?= caNavIcon(__CA_NAV_ICON_SPREADSHEET__, '24px'); ?> <?= _t('Compare'); ?></a>
-				
+<?php
+	}
+	if($av_count > 0) {
+?>		
 				<a href="#" id="lbPlaySelectedButton" style='text-decoration: none; color: #fff;'><?= caNavIcon(__CA_NAV_ICON_GO__, '24px'); ?> <?= _t('Play'); ?></a>
+<?php
+	}
+?>
+				</div>
 			</H1>
 
 			<div class="row mb-5">
@@ -531,7 +559,7 @@ if (!$vb_ajax) {    // !ajax
         	
         	if(ids.length > 4) { ids.length = 4; }
         	if(ids.length > 1) {
-        		caMediaPanel.showPanel('<?= caNavUrl($this->request, '', 'Lightbox', 'Compare', ['context' => 'objects', 'overlay' => 1]); ?>/item_ids/' + ids.join(';'));
+        		caMediaPanel.showPanel('<?= caNavUrl($this->request, '', 'Lightbox', 'Compare', ['context' => 'objects', 'overlay' => 1, 'set_id' => $vn_set_id]); ?>/item_ids/' + ids.join(';'));
         	}
         });
         jQuery('#lbCompareSelectedButton').hide();
@@ -542,7 +570,7 @@ if (!$vb_ajax) {    // !ajax
         		ids.push(jQuery(v).val());
         	});
         	
-        	caMediaPanel.showPanel('<?= caNavUrl($this->request, '', 'Lightbox', 'Playlist', ['context' => 'objects', 'overlay' => 1]); ?>/item_ids/' + ids.join(';'));
+        	caMediaPanel.showPanel('<?= caNavUrl($this->request, '', 'Lightbox', 'Playlist', ['context' => 'objects', 'overlay' => 1, 'set_id' => $vn_set_id]); ?>/item_ids/' + ids.join(';'));
         });
     });
 <?php

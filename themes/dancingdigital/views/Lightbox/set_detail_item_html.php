@@ -47,9 +47,14 @@
     if($start || $end) {
     	$timecode_display = ($start && $end) ? "{$start} ➜ {$end}" : "{$start}{$end}";
     }
+    $av_rep_ids = $this->getVar('av_rep_ids');
 ?>
 <div class='lbItem'>
-	<?= caHTMLCheckboxInput('compare', ['class' => 'lbCompareCheckbox', 'value' => $vn_item_id]); ?>
+<?php
+	if($av_rep_ids[$vn_representation_id] ?? false) {
+		print caHTMLCheckboxInput('compare', ['class' => 'lbCompareCheckbox', 'value' => $vn_item_id]); 
+	}
+?>
 	<div class='lbItemContent'>
 		{{{representation}}}
 		<div id='comment{{{item_id}}}' class='lbSetItemComment'><!-- load comments here --></div>

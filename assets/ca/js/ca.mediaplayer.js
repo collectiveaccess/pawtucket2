@@ -37,7 +37,9 @@ var caUI = caUI || {};
 			isPlaying: {},
 			playerStatus: {},
 			playerCompleted: {},
-			playLists: {}
+			playLists: {},
+			playerStartEnd: {},
+			loadOpacity: 0.0
 		}, options);
 		
 		// --------------------------------------------------------------------------------
@@ -47,6 +49,7 @@ var caUI = caUI || {};
 			that.players[playerName] = playerInstance;
 			that.playerTypes[playerName] = playerType;
 			that.playerStatus[playerName] = false;
+			that.playerCompleted[playerName] = false;
 		}
 		
 		// Start playback
@@ -58,6 +61,23 @@ var caUI = caUI || {};
 					that.isPlaying[playerName] = true;
 					break;
 				case 'Plyr':
+					if(that.playerStartEnd[playerName]) {
+						that.seek(playerName, that.playerStartEnd[playerName].start);
+						
+						that.onTimeUpdate(playerName, function(e) {
+							if(that.playerCompleted[playerName]) { return; }
+							let ct = that.currentTime(playerName);
+							if(ct >= that.playerStartEnd[playerName].end) { 
+								that.stop(playerName);
+								that.playerCompleted[playerName] = true;
+								
+								that.nextInPlaylist(playerName);
+							}
+							
+						});
+					} else {
+						jQuery("#" + playerName + '_wrapper').css("opacity", 1.0);
+					}
 					that.players[playerName].play();
 					that.isPlaying[playerName] = true;
 					break;
@@ -95,8 +115,7 @@ var caUI = caUI || {};
 		};
 		
 		// Jump to time
-		that.seek = function(playerName, t, e=null) {
-			let endTime = e;
+		that.seek = function(playerName, t) {
 			if (!that.players[playerName]) return null;
 			switch(that.playerTypes[playerName]) {
 				case 'VideoJS':
@@ -105,8 +124,13 @@ var caUI = caUI || {};
 					that.isPlaying[playerName] = true;
 					break;
 				case 'Plyr':
+					jQuery("#" + playerName + '_wrapper').css("opacity", that.loadOpacity);
 					that.players[playerName].stop();
 					that.isPlaying[playerName] = false;
+					
+					that.players[playerName].on('seeked', function(e) {
+						jQuery("#" + playerName + '_wrapper').css("opacity", 1.0);
+					});
 					
 					const c = that.players[playerName].currentTime;
 					let readyState = that.players[playerName].media.readyState;
@@ -115,27 +139,12 @@ var caUI = caUI || {};
 						that.isPlaying[playerName] = true;
 						that.players[playerName].play();
 					} else {
-						jQuery("#" + playerName).css("opacity", 0.2);
 						that.players[playerName].on('canplaythrough', (event) => {
 							that.isPlaying[playerName] = true;
 							
 							that.players[playerName].currentTime = t;
 							that.players[playerName].play();
 							
-							jQuery("#" + playerName).css("opacity", 1.0);
-							if((endTime > 0) && (endTime > t)) {
-								that.onTimeUpdate(playerName, function(e) {
-									if(that.playerCompleted[playerName]) { return; }
-									let ct = that.currentTime(playerName);
-									if(ct >= endTime) { 
-										that.stop(playerName);
-										that.onTimeUpdate(playerName, null);
-										that.playerCompleted[playerName] = true;
-										that.nextInPlaylist(playerName);
-									}
-								
-								});
-							}
 						});
 					}
 					break;
@@ -262,13 +271,10 @@ var caUI = caUI || {};
 				let playerName = p;
 				that.onReady(p, function(e) {
 					that.playerStatus[playerName] = true;
-					
 					for(let x in that.playerStatus) {
 						if(!that.playerStatus[x]) {
 							return;
 						}
-						
-						jQuery("#" + playerName).css("opacity", 1.0);
 					}
 					that.playAll();
 				});
@@ -292,16 +298,24 @@ var caUI = caUI || {};
 			}
 		}
 		
+		that.setPlayerStartEnd = function(playerName, start, end) {
+			that.playerStartEnd[playerName] = {
+				'start': start,
+				'end': end
+			};
+		}
+		
 		that.nextInPlaylist = function(playerName) {
 			if(that.playLists[playerName] && (that.playLists[playerName].length > 0)) {
 				let next = that.playLists[playerName].shift();
-				console.log("Play ", next);
-				that.stop(playerName);
+				that.stop(playerName);						
 				that.players[playerName].source = next;
+				that.playerCompleted[playerName] = false;
+				jQuery("#" + playerName + '_wrapper').css("opacity", that.loadOpacity);
 				if(next.sources[0].start > 0) {
-					console.log('seek to ', next.sources[0].start, next.sources[0].end);
-					that.seek(playerName, next.sources[0].start, next.sources[0].end);
+					that.setPlayerStartEnd(playerName, next.sources[0].start, next.sources[0].end);
 				}
+				that.play(playerName);
 			}
 		}
 		

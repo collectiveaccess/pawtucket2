@@ -39,14 +39,13 @@
  	]
  ]);
  
- 
  // Generate slides
  $slides = [[
  		"type" => "overview",
 		"date" => "",
  		"text" => [
- 			"headline" => "Gesel's Journey",
- 			"text" => 'Intro goes here'
+ 			"headline" => $this->getVar('gesels_journey_map_headline') ?? "Gesel's Journey",
+ 			"text" => $this->getVar('gesels_journey_map_introtext') ?? ' '
  		]
  	]];
  foreach($stops as $stop) {

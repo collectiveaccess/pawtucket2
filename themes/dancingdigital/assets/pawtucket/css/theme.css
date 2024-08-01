@@ -1440,3 +1440,7 @@ h6 {
 #caMediaPanel {
 	background-color: #000;
 }
+
+#caFormOverlay, #caFormOverlay ul li {
+	color: #000 !important;
+}

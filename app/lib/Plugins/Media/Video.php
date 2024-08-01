@@ -1067,7 +1067,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				$autoplay =			caGetOption("autoplay", $options, false);
 				ob_start();
 ?>
-			<div class="<?= $class; ?> video-responsive" style="width: <?= $width; ?>; height:<?= $height; ?>;">
+			<div class="<?= $class; ?> video-responsive" id="<?= $id; ?>_wrapper" style="width: <?= $width; ?>; height:<?= $height; ?>;">
 				<video class="plyr__video-embed" preload="metadata" <?= $autoplay ? 'autoplay="1"' : ''; ?> id="<?= $id; ?>" playsinline="1" controls data-poster="<?= $poster_frame_url; ?>" width="<?= $width; ?>" height="<?= $height; ?>" style="object-fit: contain;">
 				  <source src="<?= $url; ?>" type="<?= $properties["mimetype"]; ?>" />
 <?php
@@ -1095,19 +1095,11 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 						if (caUI.mediaPlayerManager) { 
 							caUI.mediaPlayerManager.register("<?= $id; ?>", player, 'Plyr'); 
 							if(<?= (int)$start; ?> > 0) {
-								//caUI.mediaPlayerManager.play("<?= $id; ?>");
 								caUI.mediaPlayerManager.playAllWhenReady();
-								caUI.mediaPlayerManager.seek("<?= $id; ?>", <?= (int)$start; ?>, <?= (int)$end; ?>);
+								caUI.mediaPlayerManager.setPlayerStartEnd("<?= $id; ?>", <?= (int)$start; ?>, <?= (int)$end; ?>);
+							} else {
+								caUI.mediaPlayerManager.play("<?= $id; ?>");
 							}
-							// if((<?= (int)$end; ?> > 0) && !autostopped) {
-// 								caUI.mediaPlayerManager.onTimeUpdate('<?= $id; ?>', function() {
-// 									var ct = caUI.mediaPlayerManager.currentTime('<?= $id; ?>');
-// 									if((ct > <?= $end; ?>) && !autostopped) {
-// 										caUI.mediaPlayerManager.stop("<?= $id; ?>");
-// 										autostopped = true;
-// 									}
-// 								});
-// 							}
 						}
 					});
 				</script>

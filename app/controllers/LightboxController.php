@@ -1486,9 +1486,15 @@ class LightboxController extends FindController {
 	 */
 	public function playlist() {
 		$item_ids = explode(';', $this->request->getParameter('item_ids', pString));
+		$item_ids = array_filter($item_ids, 'strlen');
+		$set_id = $this->request->getParameter('set_id', pInteger);
 		
-		$items = ca_set_items::find(['item_id' => ['IN', $item_ids]], ['returnAs' => 'arrays']);
-		
+		if(sizeof($item_ids) > 0) {
+			$items = ca_set_items::find(['item_id' => ['IN', $item_ids]], ['returnAs' => 'arrays']);
+		} else {
+			$items = ca_set_items::find(['set_id' => $set_id], ['returnAs' => 'arrays']);
+		}
+		$items = caSortArrayByKeyInValue($items, ['rank']);
 		$representations = $start_times =[];
 		foreach($items as $item) {
 			if($rep_id = $item['representation_id']) {
