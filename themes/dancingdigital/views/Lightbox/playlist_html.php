@@ -4,15 +4,17 @@ $start_times = $this->getVar('startTimes');
 $end_times = $this->getVar('endTimes');
 
 $sources = [];
+$tag_emitted = false;
 foreach($representations as $i => $rep) {
 	if(!$rep) { continue; }
 	$mimetype = $rep->getMediaInfo('media', 'original', 'MIMETYPE');
 	if(!in_array(caGetMediaClass($mimetype), ['audio', 'video'], true)) { continue; }
-	if($i == 0) {
+	if(!$tag_emitted) {
 		print $rep->getMediaTag('media', 'original', [
 			'class' => '', 'width' => "{$percent}%", 'id' => 'comparePlayer_'.$i,
 			'start' => $start_times[$i], 'end' => $end_times[$i], 'autoplay' => true
 		]);
+		$tag_emitted = true;
 		continue;
 	}
 	$source = [
