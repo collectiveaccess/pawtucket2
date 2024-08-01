@@ -145,13 +145,7 @@ $( document ).ready(function() {
 							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><?php print caNavLink($this->request, _t('Authority File: Playwrights, translators, adaptors'), '', '', 'Listing', 'playwrights'); ?></a></li>
 							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, _t('Authority File: Printers, publishers, booksellers, bookstores'), '', '', 'Listing', 'printers');?></a></li>
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Bibliography'), '', '', 'Listing', 'bibliography');?></li>
-<?php
-if($this->request->isLoggedIn()){
-?>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Dates of Printers & Booksellers'), '', '', 'Listing', 'printers_booksellers_dates');?></li>
-<?php
-}
-?>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Glossary'), '', '', 'Listing', 'glossary');?></li>		
 <?php
 if($this->request->isLoggedIn()){
@@ -161,13 +155,7 @@ if($this->request->isLoggedIn()){
 }
 ?>
 							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Browse', 'collections');?></li>													
-							<?php
-if($this->request->isLoggedIn()){
-?>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Miscellany'), '', '', 'Listing', 'miscellanies');?></li>							
-<?php
-}
-?>
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Modernized editions of plays'), '', '', 'Listing', 'modern_editions');?></li>
 <?php
 if($this->request->isLoggedIn()){
@@ -226,11 +214,10 @@ if($this->request->isLoggedIn()){
 if($this->request->isLoggedIn()){
 ?>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'ESCUDOS Y MARCAS DE IMPRESORES', '', '', 'Pictorials', 'PrintersDevices');?></li>	
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('FECHAS DE IMPRESORES Y LIBREROS'), '', '', 'Listing', 'printers_booksellers_dates');?></li>
 <?php
 }
 ?>
-
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('FECHAS DE IMPRESORES Y LIBREROS'), '', '', 'Listing', 'printers_booksellers_dates');?></li>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'GLOSARIO', '', '', 'Listing', 'glossary');?></li>		
 <?php
 if($this->request->isLoggedIn()){
@@ -239,12 +226,11 @@ if($this->request->isLoggedIn()){
 <?php
 }
 ?>
-							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, 'INSTITUCIONES', '', '', 'Browse', 'collections');?></li>													
+							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, 'INSTITUCIONES', '', '', 'Browse', 'collections');?></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'MISCELÁNEA', '', '', 'Listing', 'miscellanies');?></li>							
 <?php
 if($this->request->isLoggedIn()){
 ?>
-
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'MISCELÁNEA', '', '', 'Listing', 'miscellanies');?></li>							
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'ORNAMENTOS', '', '', 'Pictorials', 'ornaments');?></li>
 <?php
 }
