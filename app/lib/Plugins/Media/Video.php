@@ -1097,7 +1097,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 							if(<?= (int)$start; ?> > 0) {
 								caUI.mediaPlayerManager.playAllWhenReady();
 								caUI.mediaPlayerManager.setPlayerStartEnd("<?= $id; ?>", <?= (int)$start; ?>, <?= (int)$end; ?>);
-							} else {
+							} else if(<?= $autoplay ? "true" : "false"; ?>) {
 								caUI.mediaPlayerManager.play("<?= $id; ?>");
 							}
 						}

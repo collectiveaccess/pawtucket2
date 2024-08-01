@@ -62,7 +62,7 @@
 		$rep = $t_object->getPrimaryRepresentationInstance();
 		
 		if(caGetMediaClass($rep->get('ca_object_representations.mimetype')) === 'video') {
-			$media = $rep->get('ca_object_representations.media.original');
+			$media = $rep->getMediaTag('media', 'original', ['poster_frame_url' => $rep->getMediaUrl('media', 'medium')]);
 		}
 	}
 

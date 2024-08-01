@@ -1570,6 +1570,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * @param array $pa_options An optional array of options. Supported options are:
 	 *			user_id = the user_id of the current user; used to determine which sets the user has access to
 	 *			treatRowIDsAsRIDs = use combination row_id/item_id indices in returned array instead of solely row_ids. Since a set can potentially contain multiple instances of the same row_id, only "rIDs" – a combination of the row_id and the set item_id (row_id + "_" + item_id) – are guaranteed to be unique. [Default=false]
+	 *			treatRowIDsAsItemIDs = 
 	 * @return array Array keyed on row_id with values set to ranks for each item. If the set contains duplicate row_ids then the list will only have the largest rank. If you have sets with duplicate rows use getItemRanks() instead
 	 */
 	public function getRowIDRanks($pa_options=null) {
@@ -1577,11 +1578,18 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		if (!$this->haveAccessToSet($pa_options['user_id'], __CA_SET_READ_ACCESS__)) { return false; }
 		
 		$vb_treat_row_ids_as_rids = caGetOption('treatRowIDsAsRIDs', $pa_options, false);
+		$vb_treat_row_ids_as_item_ids = caGetOption('treatRowIDsAsItemIDs', $pa_options, false);
 		
 		$va_items = caExtractValuesByUserLocale($this->getItems($pa_options));
 		$va_ranks = array();
 		foreach($va_items as $vn_item_id => $va_item) {
-			$va_ranks[$vb_treat_row_ids_as_rids ? $va_item['row_id']."_{$vn_item_id}" : $va_item['row_id']] = $va_item['rank'];
+			if($vb_treat_row_ids_as_item_ids) {
+				$va_ranks[$vn_item_id] = $va_item['rank'];
+			} elseif($vb_treat_row_ids_as_rids) {
+				$va_ranks[$va_item['row_id']."_{$vn_item_id}"] = $va_item['rank'];
+			} else {
+				$va_ranks[$va_item['row_id']] = $va_item['rank'];
+			}
 		}
 		return $va_ranks;
 	}
@@ -1594,10 +1602,12 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * @param int $pn_set_id
 	 * @param array $pa_options An optional array of options. Supported options are:
 	 *			treatRowIDsAsRIDs = use combination row_id/item_id indices in returned array instead of solely row_ids. Since a set can potentially contain multiple instances of the same row_id, only "rIDs" – a combination of the row_id and the set item_id (row_id + "_" + item_id) – are guaranteed to be unique. [Default=false]
+	 *			treatRowIDsAsItemIDs = 
 	 * @return array ray keyed on row_id with values set to ranks for each item. If the set contains duplicate row_ids then the list will only have the largest rank.
 	 */
 	static public function getRowIDRanksForSet($pn_set_id, $pa_options=null) {
 		$vb_treat_row_ids_as_rids = caGetOption('treatRowIDsAsRIDs', $pa_options, false);
+		$vb_treat_row_ids_as_item_ids = caGetOption('treatRowIDsAsItemIDs', $pa_options, false);
 		
 		$o_db = new Db();
 		$qr_res = $o_db->query("SELECT row_id, item_id, `rank` FROM ca_set_items WHERE set_id = ? AND deleted = 0 ORDER BY `rank`", [$pn_set_id]);
@@ -1606,7 +1616,13 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		
 		while($qr_res->nextRow()) {
 			$va_row = $qr_res->getRow();
-			$va_ranks[$vb_treat_row_ids_as_rids ? $va_row['row_id']."_".$va_row['item_id'] : $va_row['row_id']] = $va_row['rank'];
+			if($vb_treat_row_ids_as_item_ids) {
+				$va_ranks[$va_row['item_id']] = $va_row['rank'];
+			} elseif($vb_treat_row_ids_as_rids) {
+				$va_ranks[$va_row['row_id']."_".$va_row['item_id']] = $va_row['rank'];
+			} else {
+				$va_ranks[$va_row['row_id']] = $va_row['rank'];
+			}
 		}
 		return $va_ranks;
 	}
@@ -1618,6 +1634,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * @param array $pa_options An optional array of options. Supported options include:
 	 *			user_id = the user_id of the current user; used to determine which sets the user has access to
 	 *			treatRowIDsAsRIDs = assume combination row_id/item_id indices in $pa_row_ids array instead of solely row_ids. Since a set can potentially contain multiple instances of the same row_id, only "rIDs" – a combination of the row_id and the set item_id (row_id + "_" + item_id) – are guaranteed to be unique. [Default=false]
+	 *			treatRowIDsAsItemIDs =
 	 * 			deleteExcludedItems = should the set items not passed in pa_row_ids be deleted?  default is false
 	 * @return array An array of errors. If the array is empty then no errors occurred
 	 */
@@ -1628,8 +1645,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		
 		$pn_user_id = isset($pa_options['user_id']) ? (int)$pa_options['user_id'] : null; 
 		$vb_treat_row_ids_as_rids = caGetOption('treatRowIDsAsRIDs', $pa_options, false); 
+		$vb_treat_row_ids_as_item_ids = caGetOption('treatRowIDsAsItemIDs', $pa_options, false); 
 		$vb_delete_excluded_items = caGetOption('deleteExcludedItems', $pa_options, false);
-		
 		// does user have edit access to set?
 		if ($pn_user_id && !$this->haveAccessToSet($pn_user_id, __CA_SET_EDIT_ACCESS__)) {
 			return false;
@@ -1637,7 +1654,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	
 		$va_row_ranks = $this->getRowIDRanks($pa_options);	// get current ranks
 		$vn_i = 0;
-		
+
 		$vb_we_set_transaction = false;
 		if (!$this->inTransaction()) {
 			$o_trans = new Transaction($this->getDb());
@@ -1656,7 +1673,14 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		foreach($va_row_ranks as $vn_row_id => $va_rank) {
 			if (!in_array($vn_row_id, $pa_row_ids)) {
 				
-				if ($vb_treat_row_ids_as_rids) {
+				if($vb_treat_row_ids_as_item_ids) {
+					if ($t_set_item->load(array('set_id' => $vn_set_id, 'item_id' => $vn_row_id))) {
+						$va_excluded_item_ids[$t_set_item->get("rank")] = $t_set_item->get("item_id");
+						if($vb_delete_excluded_items){
+							$t_set_item->delete(true);
+						}
+					}
+				} elseif ($vb_treat_row_ids_as_rids) {
 					$va_tmp = explode("_", $vn_row_id);
 					if ($t_set_item->load(array('set_id' => $vn_set_id, 'row_id' => $va_tmp[0], 'item_id' => $va_tmp[1]))) {
 						$va_excluded_item_ids[$t_set_item->get("rank")] = $t_set_item->get("item_id");
@@ -1696,8 +1720,15 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				$vn_rank_inc = $vn_rank_acc;
 			}
 			
-			if ($vb_treat_row_ids_as_rids) { $va_tmp = explode("_", $vn_row_id); }
-			if (isset($va_row_ranks[$vn_row_id]) && $t_set_item->load($vb_treat_row_ids_as_rids ? array('set_id' => $vn_set_id, 'row_id' => $va_tmp[0], 'item_id' => $va_tmp[1]) : array('set_id' => $vn_set_id, 'row_id' => $vn_row_id))) {
+			if($vb_treat_row_ids_as_item_ids) {
+				$params = array('set_id' => $vn_set_id, 'item_id' => $vn_row_id);
+			} elseif($vb_treat_row_ids_as_rids) {
+				$va_tmp = explode("_", $vn_row_id);
+				$params = array('set_id' => $vn_set_id, 'row_id' => $va_tmp[0], 'item_id' => $va_tmp[1]);
+			} else {
+				$params = array('set_id' => $vn_set_id, 'row_id' => $vn_row_id);
+			}
+			if (isset($va_row_ranks[$vn_row_id]) && $t_set_item->load($params)) {
 				if ($va_row_ranks[$vn_row_id] != $vn_rank_inc) {
 					$t_set_item->set('rank', $vn_rank_inc);
 					$t_set_item->update();

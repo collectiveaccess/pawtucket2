@@ -350,10 +350,10 @@ if (!$vb_ajax) {	// !ajax
 								
 								switch($vs_current_view) {
 									case 'list':
-										print "<div class='col-xs-12 col-sm-4 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
+										print "<div class='col-xs-12 col-sm-4 lbItem{$vn_item_id}' id='item-{$vn_item_id}'><div class='lbItemContainer'>";
 										break;
 									default:
-										print "<div class='col-xs-6 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
+										print "<div class='col-xs-6 lbItem{$vn_item_id}' id='item-{$vn_item_id}'><div class='lbItemContainer'>";
 										break;
 								}
 								print $this->render("Lightbox/set_detail_item_html.php");
@@ -483,7 +483,7 @@ if (!$vb_ajax) {    // !ajax
                 var data = $(this).sortable('serialize');
                 jQuery.ajax({
                     type: 'POST',
-                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems", ['csrfToken' => caGenerateCSRFToken($this->request)]); ?>/row_ids/' + data
+                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems", ['csrfToken' => caGenerateCSRFToken($this->request)]); ?>/item_ids/' + data
                 });
             }
         });

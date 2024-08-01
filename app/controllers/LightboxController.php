@@ -1123,12 +1123,13 @@ class LightboxController extends FindController {
 			
 			$this->view->setVar("set_id", $t_set->get("set_id"));
 			
-			$va_row_ids = array();
-			$va_row_ids_raw = explode('&', $this->request->getParameter('row_ids', pString));
-			foreach($va_row_ids_raw as $vn_row_id_raw){
-				$va_row_ids[] = str_replace('row[]=', '', $vn_row_id_raw);
+			$va_item_ids = array();
+			$va_item_ids_raw = explode('&', $this->request->getParameter('item_ids', pString));
+			foreach($va_item_ids_raw as $vn_item_id_raw){
+				$va_item_ids[] = str_replace('item[]=', '', $vn_item_id_raw);
 			}
-			$va_errors = $t_set->reorderItems($va_row_ids, ['user_id' => $this->request->getUserID()]);
+			print_R($va_item_ids);
+			$va_errors = $t_set->reorderItems($va_item_ids, ['treatRowIDsAsItemIDs' => true, 'user_id' => $this->request->getUserID()]);
 		}else{
 			throw new ApplicationException(_t("You do not have access to this lightbox"));
 		}
@@ -1454,6 +1455,7 @@ class LightboxController extends FindController {
 		$item_ids = explode(';', $this->request->getParameter('item_ids', pString));
 		
 		$items = ca_set_items::find(['item_id' => ['IN', $item_ids]], ['returnAs' => 'arrays']);
+		$items = caSortArrayByKeyInValue($items, ['rank']);
 		
 		$representations = $start_times =[];
 		foreach($items as $item) {
