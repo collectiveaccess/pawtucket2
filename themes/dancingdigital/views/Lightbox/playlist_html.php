@@ -40,7 +40,6 @@ foreach($representations as $i => $rep) {
 	}
 	$sources[] = $source;
 }
-print_R($sources);
 ?>
 <div id="caMediaOverlayContent" >
 	<div class="caMediaOverlayControls">
