@@ -1128,7 +1128,6 @@ class LightboxController extends FindController {
 			foreach($va_item_ids_raw as $vn_item_id_raw){
 				$va_item_ids[] = str_replace('item[]=', '', $vn_item_id_raw);
 			}
-			print_R($va_item_ids);
 			$va_errors = $t_set->reorderItems($va_item_ids, ['treatRowIDsAsItemIDs' => true, 'user_id' => $this->request->getUserID()]);
 		}else{
 			throw new ApplicationException(_t("You do not have access to this lightbox"));
