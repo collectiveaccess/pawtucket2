@@ -17,7 +17,7 @@ if(is_array($representations)) {
 		}
 		print "<td style='width:{$percent}% !important;'>".$rep->getMediaTag('media', 'original', [
 			'class' => '', 'width' => "{$percent}%", 'id' => 'comparePlayer_'.$i,
-			'start' => $start_times[$i], 'end' => $end_times[$i], 'autoplay' => false
+			'start' => $start_times[$i], 'end' => $end_times[$i], 'autoplay' => true
 		])."</td>";
 	}
 }

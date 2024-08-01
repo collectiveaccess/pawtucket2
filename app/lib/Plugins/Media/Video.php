@@ -1068,7 +1068,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				ob_start();
 ?>
 			<div class="<?= $class; ?> video-responsive" id="<?= $id; ?>_wrapper" style="width: <?= $width; ?>; height:<?= $height; ?>;">
-				<video class="plyr__video-embed" preload="metadata" <?= $autoplay ? 'autoplay="1"' : ''; ?> id="<?= $id; ?>" playsinline="1" controls data-poster="<?= $poster_frame_url; ?>" width="<?= $width; ?>" height="<?= $height; ?>" style="object-fit: contain;">
+				<video class="plyr__video-embed" preload="metadata" id="<?= $id; ?>" playsinline="1" controls data-poster="<?= $poster_frame_url; ?>" width="<?= $width; ?>" height="<?= $height; ?>" style="object-fit: contain;">
 				  <source src="<?= $url; ?>" type="<?= $properties["mimetype"]; ?>" />
 <?php
 						if(is_array($captions)) {
@@ -1095,10 +1095,10 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 						if (caUI.mediaPlayerManager) { 
 							caUI.mediaPlayerManager.register("<?= $id; ?>", player, 'Plyr'); 
 							if(<?= (int)$start; ?> > 0) {
-								caUI.mediaPlayerManager.playAllWhenReady();
 								caUI.mediaPlayerManager.setPlayerStartEnd("<?= $id; ?>", <?= (int)$start; ?>, <?= (int)$end; ?>);
+								caUI.mediaPlayerManager.playAllWhenReady();
 							} else if(<?= $autoplay ? "true" : "false"; ?>) {
-								caUI.mediaPlayerManager.play("<?= $id; ?>");
+								caUI.mediaPlayerManager.playAllWhenReady();
 							}
 						}
 					});

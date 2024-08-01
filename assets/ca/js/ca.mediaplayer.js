@@ -225,6 +225,25 @@ var caUI = caUI || {};
 			}
 		};
 		
+		that.onCanPlay = function(playerName, f) {
+			if (!that.players[playerName]) return null;
+			
+			switch(that.playerTypes[playerName]) {
+				case 'VideoJS':
+					that.players[playerName].addEvent('ready', f);
+					break;
+				case 'Plyr':
+					that.players[playerName].on('canplay', f);
+					break;
+				case 'MediaElement':
+					that.players[playerName][0].addEventListener('ready', f);
+					break;
+				default:
+					return null;
+					break;
+			}
+		};
+		
 		// Register handler ready event
 		that.onEnd = function(playerName, f) {
 			if (!that.players[playerName]) return null;
@@ -269,7 +288,8 @@ var caUI = caUI || {};
 			let players=  that.getPlayers();
 			for(let p in players) {
 				let playerName = p;
-				that.onReady(p, function(e) {
+				
+				that.onCanPlay(p, function(e) {
 					that.playerStatus[playerName] = true;
 					for(let x in that.playerStatus) {
 						if(!that.playerStatus[x]) {
@@ -278,6 +298,8 @@ var caUI = caUI || {};
 					}
 					that.playAll();
 				});
+				that.play(p);
+				that.pause(p);
 			}
 		}
 		
