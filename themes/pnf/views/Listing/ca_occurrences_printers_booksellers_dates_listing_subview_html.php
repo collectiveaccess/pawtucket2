@@ -46,7 +46,7 @@
 				print "<H2>Fechas de Impresores y Libreros</H2>\n";	
 			
 			}		
-			#if ($g_ui_locale == 'en_US'){			
+			if ($g_ui_locale == 'en_US'){			
 ?>
 				<div class="listingSubHeading">
 					Introduction
@@ -56,18 +56,38 @@
 				</div>
 				<br/><br/>
 <?php
-			if($this->getVar("printersBooksellersDatesBibEnglish")){
+				if($this->getVar("printersBooksellersDatesBibEnglish")){
+?>
+					<div class="listingSubHeading">
+						Bibliography
+					</div>
+					<div class='trimText'>
+						{{{printersBooksellersDatesBibEnglish}}}
+					</div>
+<?php
+				}
+			}else{
 ?>
 				<div class="listingSubHeading">
-					Bibliography
+					Introducción
 				</div>
 				<div class='trimText'>
-					{{{printersBooksellersDatesBibEnglish}}}
+					{{{printersBooksellersDatesIntroSpanish}}}
 				</div>
+				<br/><br/>
 <?php
-			}
-			#}else{
-			#}		
+				if($this->getVar("printersBooksellersDatesBibSpanish")){
+?>
+					<div class="listingSubHeading">
+						Bibliografia
+					</div>
+					<div class='trimText'>
+						{{{printersBooksellersDatesBibSpanish}}}
+					</div>
+<?php
+				}
+			
+			}		
 ?>
 
 		<div class='row'>
