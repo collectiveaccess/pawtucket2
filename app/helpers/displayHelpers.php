@@ -4408,6 +4408,7 @@ function caRepresentationViewer($request, $subject, ?array $options=null) {
 	
 	$o_view->setVar('media_viewers', $viewer_html);
 	$o_view->setVar('media_viewer_overlays', $viewer_overlay_html);
+	$o_view->setVar('subject', $subject);
 
 	return $o_view->render('representation_viewer_html.php');
 }
