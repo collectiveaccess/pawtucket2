@@ -5103,3 +5103,21 @@ function caFileIsIncludable($ps_file) {
 		return $rarray; 
 	}
 	# ----------------------------------------
+	/**
+	 * Return instance attached to attribute value.
+	 *
+	 * @param int $value_id
+	 *
+	 * @return BaseModel Instance or null if no match
+	 */
+	function caGetInstanceForValueID(int $value_id) : ?BaseModel {
+		$val = ca_attribute_values::find($value_id, ['returnAs' => 'arrays']);
+		if(!is_array($val)) { return null; }
+		
+		$attribute_id = $val[0]['attribute_id'];
+		$attr = ca_attributes::find($attribute_id, ['returnAs' => 'arrays']);
+		if(!is_array($attr)) { return null; }
+		
+		return Datamodel::getInstance($attr[0]['table_num'], true, $attr[0]['row_id']);
+	}
+	# ----------------------------------------
