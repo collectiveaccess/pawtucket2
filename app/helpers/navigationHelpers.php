@@ -1392,7 +1392,7 @@
 	# ------------------------------------------------------------------------------------------------
 	/**
 	 * Redirect to given url
-	 * @param string $ps_url
+	 * @param string $url
 	 * @return bool success state
 	 */
 	function caSetRedirect($url) {
