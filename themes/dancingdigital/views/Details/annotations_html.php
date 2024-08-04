@@ -64,6 +64,8 @@ if ((sizeof($user_annotations) > 0) && $this->request->isLoggedIn()) {
 	</div>
 <?php
 }
+
+if($this->request->isLoggedIn()) {
 ?>
 <form style="margin-top: 15px;">
 	<h6><?= _t('Add clip'); ?></h6>
@@ -86,6 +88,9 @@ if ((sizeof($user_annotations) > 0) && $this->request->isLoggedIn()) {
 		</div>
 	</div>
 </form>
+<?php
+}
+?>
 </div>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
