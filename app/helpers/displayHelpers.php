@@ -35,6 +35,7 @@ require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
 require_once(__CA_LIB_DIR__.'/Parsers/DisplayTemplateParser.php');
 require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
+require_once(__CA_LIB_DIR__.'/Parsers/ganon.php');
 
 # ------------------------------------------------------------------------------------------------
 /**
@@ -4995,9 +4996,9 @@ function caDoTemplateTagSubstitution($po_view, $pm_subject, $ps_template_path, $
 		if ($pb_barcodes && ($vs_barcode_file = caParseBarcodeViewTag($vs_tag, $po_view, $pm_subject, $pa_options))) {
 			$va_barcode_files_to_delete[] = $vs_barcode_file;
 		} elseif ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
-			$po_view->setVar($vs_tag, $pm_subject->getWithTemplate($vs_tag, array('autoConvertLineBreaks' => true, 'checkAccess' => $pa_access_values)));
+			$po_view->setVar($vs_tag, $pm_subject->getWithTemplate($vs_tag, array('autoConvertLineBreaks' => true, 'checkAccess' => $pa_access_values, 'doRefSubstitution' => true)));
 		} elseif (strpos($vs_tag, ".") !== false) {
-			$po_view->setVar($vs_tag, $pm_subject->get($vs_tag, array('checkAccess' => $pa_access_values)));
+			$po_view->setVar($vs_tag, $pm_subject->get($vs_tag, array('checkAccess' => $pa_access_values, 'doRefSubstitution' => true)));
 		} else {
 			$po_view->setVar($vs_tag, "?{$vs_tag}");
 		}
@@ -5108,67 +5109,140 @@ function caExtractSettingValueByLocale($pa_settings, $ps_key, $ps_locale) {
  * @param string $ps_text
  * @param array $pa_options Options include:
  *      page = Page_id or path to evaluate media within. [Default is null]
+ *		value_id = 
  *
  * @return string
  */
-function caProcessReferenceTags($po_request, $ps_text, $pa_options=null) {
-	$pm_page = caGetOption('page', $pa_options, null);
-	$va_idnos = [];
+function caProcessReferenceTags($request, $text, $options=null) {
+	$pm_page = caGetOption('page', $options, null);
+	$idnos = [];
 
-	if (!is_array($va_access_values = caGetUserAccessValues($po_request)) || !sizeof($va_access_values)) { $va_access_values = null; }
+	$text = html_entity_decode($text);
+	$value_id = caGetOption('value_id', $options, null);
 
-	foreach([
+	if (!is_array($access_values = caGetUserAccessValues($request)) || !sizeof($access_values)) { $access_values = null; }
+
+	$tags = [
 		'object' => 'ca_objects', 'entity' => 'ca_entities', 'place' => 'ca_places',
 		'occurrence' => 'ca_occurrences', 'collection' => 'ca_collections', 'loan' => 'ca_loans',
-		'movement' => 'ca_movements', 'location' => 'ca_storage_locations', 'media' => 'ca_site_page_media', 'mediaRef' => 'ca_attributes'] as $vs_ref_tag => $vs_ref_type
+		'movement' => 'ca_movements', 'location' => 'ca_storage_locations', 'media' => 'ca_site_page_media', 'mediaRef' => 'ca_attributes'];
+	
+	// Old style (bbcode-like) tags
+	foreach($tags as $ref_tag => $ref_type
 	) {
-		if (preg_match_all("!\[{$vs_ref_tag} ([^\]]+)\]([^\[]+)\[/{$vs_ref_tag}\]!", $ps_text, $va_matches)) {
-			foreach($va_matches[1] as $i => $vs_attr_string) {
-				if (sizeof($va_vals = caParseAttributes($vs_attr_string, ['id', 'idno', 'class', 'version'])) > 0) {
-					$va_vals['content'] = $va_matches[2][$i];
-					$va_idnos[$vs_ref_type][$va_matches[0][$i]] = array_filter($va_vals, function($v) { return !is_null($v); });
+		if (preg_match_all("!\[{$ref_tag} ([^\]]+)\]([^\[]+)\[/{$ref_tag}\]!", $text, $matches)) {
+			foreach($matches[1] as $i => $attr_string) {
+				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version'])) > 0) {
+					$vals['content'] = $matches[2][$i];
+					$idnos[$ref_type][$matches[0][$i]] = array_filter($vals, function($v) { return !is_null($v); });
 				}
 			}
 		}
-		if (preg_match_all("!\[{$vs_ref_tag} ([^\]]+)/\]!", $ps_text, $va_matches)) {
-			foreach($va_matches[1] as $i => $vs_attr_string) {
-				if (sizeof($va_vals = caParseAttributes($vs_attr_string, ['id', 'idno', 'class', 'version'])) > 0) {
-					$va_idnos[$vs_ref_type][$va_matches[0][$i]] = array_filter($va_vals, function($v) { return !is_null($v); });
+		if (preg_match_all("!\[{$ref_tag} ([^\]]+)/\]!", $text, $matches)) {
+			foreach($matches[1] as $i => $attr_string) {
+				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version'])) > 0) {
+					$idnos[$ref_type][$matches[0][$i]] = array_filter($vals, function($v) { return !is_null($v); });
 				}
 			}
 		}
 	}
-	if (sizeof($va_idnos)) {
-		foreach($va_idnos as $vs_ref_type => $va_tags) {
-			switch($vs_ref_type) {
+	
+	// New style (html-like) tags 
+	// Ex. <object idno="2024.001">^ca_objects.preferred_labels.name</object>
+	$o_doc = str_get_dom($text);
+	foreach($o_doc->children as $index => $node) {
+		$tag = strtolower($node->tag);
+		if(isset($tags[$tag])) {
+			$table = $tags[$tag];
+			if($t_instance = $table::findAsInstance(['idno' => $node->idno])) {
+				$template = $node->html();
+				$node->setOuterText($t_instance->getWithTemplate($template));
+			}
+		} else {
+			switch($tag) {
+				case 'mediagroup':
+					if($t_instance = caGetInstanceForValueID($value_id)) {							
+						$group = mb_strtolower($node->group);
+						$render = strtolower($node->render);
+						$template = strtolower($node->getInnerText());
+						
+						if($qr = $t_instance->getRepresentationsAsSearchResult()) {
+							$media_group = [];
+							while($qr->nextHit()) {
+								if(mb_strtolower($qr->get('ca_object_representations.media_group')) !== $group) { continue; }
+								
+								$media_item = [
+									'representation_id' => $rep_id = $qr->get('ca_object_representations.representation_id'),
+									'caption' => $qr->get('ca_object_representations.caption'),
+								];
+								if($template) {
+									$media_item['display'] = $qr->getWithTemplate($template);
+								}
+								foreach($qr->getMediaVersions('media') as $v) {
+									$media_item['urls'][$v] = $qr->getMediaUrl('media', $v);
+									$media_item['tags'][$v] = $qr->getMediaTag('media', $v);
+								}
+								
+								$media_group[] = $media_item;
+							}
+							
+							$view = new View($request, $request->getViewsDirectoryPath()."/bundles/");
+							$view->setVar('representation_ids', $rep_ids = array_map(function($v) { return $v['representation_id']; }, $media_group));
+							$view->setVar('subject', $t_instance);
+							$view->setVar('representations', caMakeSearchResult('ca_object_representations', $rep_ids));
+							$view->setVar('media_group', $media_group);
+							$view->setVar('group', $group);
+							$view->setVar('value_id', $value_id);
+							$view->setVar('template', $template);
+							$view->setVar('width', $node->width);
+							$view->setVar('height', $node->height);
+							
+							$content = $view->render("mediagroups/{$render}_html.php");
+							$node->setOuterText($content);
+						} else {
+							$node->setOuterText("<p>ERROR</p>");
+						}	
+					} else {
+						$node->setOuterText("<p>ERROR</p>");
+					}
+					break;
+			}
+		}
+	}
+	$text = str_replace("<~root~>", "", $o_doc->html());
+	
+	
+	if (sizeof($idnos)) {
+		foreach($idnos as $ref_type => $va_tags) {
+			switch($ref_type) {
 				case 'ca_attributes':
-					foreach($va_tags as $vs_tag => $va_tag) {
+					foreach($va_tags as $tag => $va_tag) {
 						$vn_value_id = (int)$va_tag['id'];
 
 						$t_instance = ca_attributes::getRowInstanceForValueID($vn_value_id);
-						if (!$t_instance->isReadable($po_request)) { continue; }
-						if ($vs_template = $va_tag['content']) {
+						if (!$t_instance->isReadable($request)) { continue; }
+						if ($template = $va_tag['content']) {
 
 							$t_attr = ca_attributes::getAttributeForValueID($vn_value_id);
-							$ps_text = str_replace($vs_tag, caProcessTemplate($vs_template, $t_attr->getAttributeValues(['returnAs' => 'array', 'version' => caGetOption('version', $va_tag, array_shift($t_attr->getMediaVersions('value_blob')))]), []), $ps_text);
+							$text = str_replace($tag, caProcessTemplate($template, $t_attr->getAttributeValues(['returnAs' => 'array', 'version' => caGetOption('version', $va_tag, array_shift($t_attr->getMediaVersions('value_blob')))]), []), $text);
 						} else {
 							$t_val = new ca_attribute_values($vn_value_id);
-							$ps_text = str_replace($vs_tag, $t_val->getMediaTag('value_blob', caGetOption('version', $va_tag, array_shift($t_val->getMediaVersions('value_blob')))), $ps_text);
+							$text = str_replace($tag, $t_val->getMediaTag('value_blob', caGetOption('version', $va_tag, array_shift($t_val->getMediaVersions('value_blob')))), $text);
 						}
 					}
 					break;
 				case 'ca_site_page_media':
-					foreach($va_idnos[$vs_ref_type] as $vs_tag => $va_l) {
-						$va_params = ['idno' => $va_l['idno']];
+					foreach($idnos[$ref_type] as $tag => $va_l) {
+						$params = ['idno' => $va_l['idno']];
 						if ($pm_page && ((int)$pm_page > 0)) {
-							$va_params['page_id'] = (int)$pm_page;
+							$params['page_id'] = (int)$pm_page;
 						} elseif (strlen($pm_page)) {
-							$va_params['path'] = $pm_page;
+							$params['path'] = $pm_page;
 						}
-						$qr_m = ca_site_page_media::find($va_params, ['returnAs' => 'searchResult']);
+						$qr_m = ca_site_page_media::find($params, ['returnAs' => 'searchResult']);
 						while ($qr_m->nextHit()) {
-							if (is_array($va_access_values) && !in_array($qr_m->get('access'), $va_access_values)) { 
-								$ps_text = str_replace($vs_tag, '', $ps_text); // remove tag that cannot be resolved.
+							if (is_array($access_values) && !in_array($qr_m->get('access'), $access_values)) { 
+								$text = str_replace($tag, '', $text); // remove tag that cannot be resolved.
 								continue;
 							}
 
@@ -5178,14 +5252,14 @@ function caProcessReferenceTags($po_request, $ps_text, $pa_options=null) {
 
 							$alt_text = caGetOption(['caption', 'title', 'idno'], ['caption' => $caption, 'title' => $title, 'idno' => $idno], null);
 
-							if ($vs_template = $va_l['content']) {
-								$vs_template = str_replace("^title", $title, $vs_template);
-								$vs_template = str_replace("^caption", $caption, $vs_template);
-								$vs_template = str_replace("^idno", $idno, $vs_template);
-								$vs_template = str_replace("^file", $qr_m->getMediaTag('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media'))), ['alt' => $alt_text]), $vs_template);
-								$ps_text = str_replace($vs_tag, $vs_template, $ps_text);
+							if ($template = $va_l['content']) {
+								$template = str_replace("^title", $title, $template);
+								$template = str_replace("^caption", $caption, $template);
+								$template = str_replace("^idno", $idno, $template);
+								$template = str_replace("^file", $qr_m->getMediaTag('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media'))), ['alt' => $alt_text]), $template);
+								$text = str_replace($tag, $template, $text);
 							} else {
-								$ps_text = str_replace($vs_tag, $qr_m->getMediaTag('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media'))), ['alt' => $alt_text]), $ps_text);
+								$text = str_replace($tag, $qr_m->getMediaTag('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media'))), ['alt' => $alt_text]), $text);
 							}
 
 							break;
@@ -5193,30 +5267,32 @@ function caProcessReferenceTags($po_request, $ps_text, $pa_options=null) {
 					}
 					break;
 				default:
-					$va_map = call_user_func($vs_ref_type.'::getIDsForIdnos', array_map(function($v) { return $v['idno']; }, $va_idnos[$vs_ref_type]), ['forceToLowercase' => true, 'checkAccess' => $va_access_values]);
+					$va_map = call_user_func($ref_type.'::getIDsForIdnos', array_map(function($v) { return $v['idno']; }, $idnos[$ref_type]), ['forceToLowercase' => true, 'checkAccess' => $access_values]);
 
-					$va_idnos[$vs_ref_type] = array_map(function($v) use ($va_map) { $v['id'] = $va_map[$v['idno']]; return $v; }, $va_tags);
+					$idnos[$ref_type] = array_map(function($v) use ($va_map) { $v['id'] = $va_map[strtolower($v['idno'])]; return $v; }, $va_tags);
 
-					foreach($va_idnos[$vs_ref_type] as $vs_tag => $va_l) {
-						$vs_link_text = '';
+					foreach($idnos[$ref_type] as $tag => $va_l) {
+						$link_text = '';
 						if (isset($va_l['id']) && $va_l['id']) {
+							$x = caProcessTemplateForIDs($va_l['content'], $ref_type, [$va_l['id']]);
 							switch(__CA_APP_TYPE__) {
 								case 'PROVIDENCE':
-									$vs_link_text= caEditorLink($po_request, $va_l['content'], $va_l['class'], $vs_ref_type, $va_l['id']);
+									$link_text= caEditorLink($request, $va_l['content'], $va_l['class'], $ref_type, $va_l['id']);
 									break;
 								case 'PAWTUCKET':
-									$vs_link_text= caDetailLink($po_request, $va_l['content'], $va_l['class'], $vs_ref_type, $va_l['id']);
+									$link_text= caDetailLink($request, $x, $va_l['class'], $ref_type, $va_l['id']);
 									break;
 							}
 						}
-						$ps_text = str_replace($vs_tag, $vs_link_text, $ps_text);
+						
+						$text = str_replace($tag, $link_text, $text);
 					}
 					break;
 			}
 
 		}
 	}
-	return $ps_text;
+	return $text;
 }
 # ------------------------------------------------------------------
 /**
