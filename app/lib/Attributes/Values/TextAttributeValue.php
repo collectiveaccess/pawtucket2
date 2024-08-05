@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2023 Whirl-i-Gig
+ * Copyright 2008-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -282,8 +282,8 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 		global $g_request;
 		
 		// process reference tags
-		if ($g_request && caGetOption('doRefSubstitution', $pa_options, __CA_APP_TYPE__ == 'PAWTUCKET')) {
-			return caProcessReferenceTags($g_request, $this->ops_text_value);
+		if ($g_request && caGetOption('doRefSubstitution', $pa_options, false)) {
+			return caProcessReferenceTags($g_request, $this->ops_text_value, ['value_id' => $this->getValueID()]);
 		}
 	
 		return $this->ops_text_value;

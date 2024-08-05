@@ -15,16 +15,14 @@ $options = $this->getVar('options');
 
 <div class="mediaviewer-document-overlay-control-bar text-center bg-white py-2">
 	<div class="btn-group align-items-center" role="group" aria-label="Viewer Controls">
-		<a href="#" id="documentviewer-overlay-zoom-in" class="btn btn-white documentviewer-control" role="button" aria-label="Zoom in"><i class="bi bi-zoom-in"></i></a>
-		<a href="#" id="documentviewer-overlay-zoom-out" class="btn btn-white documentviewer-control" role="button" aria-label="Zoom out"><i class="bi bi-zoom-out"></i></a>
-		<a href="#" id="documentviewer-overlay-home" class="btn btn-white documentviewer-control" role="button" aria-label="Fit"><i class="bi bi-arrows-angle-contract"></i></a>
+		<button type="button" id="documentviewer-overlay-zoom-in" class="btn btn-white documentviewer-control" aria-label="Zoom in"><i class="bi bi-zoom-in"></i></button>
+		<button type="button" id="documentviewer-overlay-zoom-out" class="btn btn-white documentviewer-control" aria-label="Zoom out"><i class="bi bi-zoom-out"></i></button>
+		<button type="button" id="documentviewer-overlay-home" class="btn btn-white documentviewer-control" aria-label="Fit"><i class="bi bi-arrows-angle-contract"></i></button>
 	
-		<a href="#" id="documentviewer-overlay-previous" class="btn btn-white documentviewer-control" role="button" aria-label="Previous page"><i class="bi bi-arrow-left"></i></a>
+		<button type="button" id="documentviewer-overlay-previous" class="border-0 btn btn-white documentviewer-control" aria-label="Previous page"><i class="bi bi-arrow-left"></i></button>
 		<span id="documentviewer-overlay-currentpage"></span>
-		<a href="#" id="documentviewer-overlay-next" class="btn btn-white documentviewer-control" role="button" aria-label="Next Page"><i class="bi bi-arrow-right"></i></a>
+		<button type="button" id="documentviewer-overlay-next" class="border-0 btn btn-white documentviewer-control" aria-label="Next page"><i class="bi bi-arrow-right"></i></button>
 	</div>
 </div>
 
 <div class="mediaviewer mediaviewer-document-overlay-container"></div>
-
-

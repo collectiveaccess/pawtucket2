@@ -38,8 +38,8 @@
  		$vs_hero = rand(1, 3);
 	}
 
-	$t_set = ca_sets::findAsInstance(['set_code' => 'selina_test_set'], ['checkAccess' => caGetUserAccessValues($this->request)]);
- 	$set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'medium']) : [];
+	$t_set = ca_sets::findAsInstance(['set_code' => 'front_page_set'], ['checkAccess' => caGetUserAccessValues($this->request)]);
+ 	$set_items = array_slice($t_set ? $t_set->getItems(['thumbnailVersion' => 'medium', 'shuffle' => true]) : [], 0, 50);
 ?>
 
 <div class="container">
@@ -57,7 +57,6 @@
 			<?php
 				foreach($set_items as $item) {	
 					$item = array_shift($item);
-					// print_R($item);
 			?>
 				<div class="masonry-item">
 					<?= caDetailLink($this->request, $item['representation_tag'], 'link-text', 'ca_objects', $item['row_id']); ?>

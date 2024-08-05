@@ -52,7 +52,7 @@ if($show_nav){
 ?>
 	<div class="row mt-n3">
 		<div class="col text-center text-md-end">
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 	</div>
 <?php
@@ -103,12 +103,7 @@ if($show_nav){
 
 							<ifdef code="ca_objects.dates.dates_value">
 								<dt><?= _t('Date'); ?></dt>
-								<unit relativeTo="ca_objects.dates" delimiter=""><dd>^ca_objects.dates.dates_value (^ca_objects.dates.dates_type)</dd></unit>
-							</ifdef>
-		
-							<ifdef code="ca_objects.type_id">
-								<dt><?= _t('Item Type'); ?></dt>
-								<dd>^ca_objects.type_id</dd>
+								<unit relativeTo="ca_objects.dates" delimiter=""><dd>^ca_objects.dates.dates_value</dd></unit>
 							</ifdef>
 <?php
 							if($t_object->get("ca_objects.series")){
@@ -147,40 +142,23 @@ if($show_nav){
 								<dd>^ca_objects.idno</dd>
 							</ifdef>
 							<ifdef code="ca_objects.location">
-								<dt><?= _t('Location'); ?></dt>
-								<dd>
-									<ifdef code="ca_objects.location.box">Box ^ca_objects.location.box </ifdef>
-									<ifdef code="ca_objects.location.drawer">Drawer ^ca_objects.location.drawer </ifdef>
-									<ifdef code="ca_objects.location.folder">Folder ^ca_objects.location.folder </ifdef>
-									<ifdef code="ca_objects.location.item_location">Item ^ca_objects.location.item_location </ifdef>
-									<ifdef code="ca_objects.location.location_description"><div>^ca_objects.location.location_description</div></ifdef>
-								</dd>
-							</ifdef>
 							<ifcount code="ca_collections" min="1">
 								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Part of'); ?></ifcount></dt>
 								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 							</ifcount>
 							<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibitions">
-								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="exhibitions"><?= _t('Exhibition'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="exhibitions"><?= _t('Exhibitions'); ?></ifcount></dt>
+								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="exhibitions"><?= _t('Related Exhibition'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="exhibitions"><?= _t('Related Exhibitions'); ?></ifcount></dt>
 								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibitions"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
 							</ifcount>
 							<ifcount code="ca_occurrences" min="1" restrictToTypes="events">
-								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="events"><?= _t('Event'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="events"><?= _t('Events'); ?></ifcount></dt>
+								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="events"><?= _t('Related Event'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="events"><?= _t('Related  Events'); ?></ifcount></dt>
 								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="events"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
 							</ifcount>
 							
 						</dl>}}}
 						
 						
-						{{{<dl class="mb-0">
-							
-				
-							<ifcount code="ca_occurrences" min="1">
-								<dt><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-								<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-							</ifcount>
-
-						</dl>}}}
+						
 						
 					</div>
 				</div>

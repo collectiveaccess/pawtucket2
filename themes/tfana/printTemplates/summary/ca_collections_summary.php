@@ -60,76 +60,31 @@
 					<dt>Part of</dt>
 					<dd><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></dd>
 				</ifdef>
-				<ifdef code="ca_collections.display_date">
+				<ifdef code="ca_collections.unitDate.unitDate_value">
 					<dt><?= _t('Date'); ?></dt>
+					<unit relativeTo="ca_collections.unitDate">
 					<dd>
-						^ca_collections.display_date%delimiter=,_
+						^ca_collections.unitDate.unitDate_value<ifdef code="ca_collections.unitDate.unitDate_types"> (^ca_collections.unitDate.unitDate_types)</ifdef>
+					</dd>
+					</unit>
+				</ifdef>
+				<ifdef code="ca_collections.coll_extent.extent_number">
+					<dt>Extent</dt>
+					<dd>
+						^ca_collections.coll_extent.extent_number<ifdef code="ca_collections.coll_extent.extent_type"> ^ca_collections.coll_extent.extent_type</ifdef>
+						<ifdef code="ca_collections.coll_extent.extent_details"><div class="pt-2">ca_collections.coll_extent.extent_details</div></ifdef>
 					</dd>
 				</ifdef>
-				<ifdef code="ca_collections.extent_text">
-					<dt><?= _t('Extent and Medium'); ?></dt>
-					<dd>
-						^ca_collections.extent_text
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.material_designations">
-					<dt><?= _t('Material Designation'); ?></dt>
-					<dd>
-						^ca_collections.material_designations%delimiter=,_
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.scopecontent">
+				<ifdef code="ca_collections.scope_content">
 					<dt><?= _t('Scope and Content'); ?></dt>
 					<dd>
-						^ca_collections.scopecontent
+						^ca_collections.scope_content
 					</dd>
 				</ifdef>
-				<ifdef code="ca_collections.adminbiohist">
-					<dt><?= _t('Administrative/Biographical History'); ?></dt>
+				<ifdef code="ca_collections.historical_note">
+					<dt><?= _t('Historical Note'); ?></dt>
 					<dd>
-						^ca_collections.adminbiohist
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.arrangement">
-					<dt><?= _t('System of Arrangement'); ?></dt>
-					<dd>
-						^ca_collections.arrangement
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.accessrestrict">
-					<dt><?= _t('Conditions Governing Access'); ?></dt>
-					<dd>
-						^ca_collections.accessrestrict
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.physaccessrestrict">
-					<dt><?= _t('Physical and Technical Access Notes'); ?></dt>
-					<dd>
-						^ca_collections.physaccessrestrict
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.reproduction">
-					<dt><?= _t('Conditions Governing Reproduction'); ?></dt>
-					<dd>
-						^ca_collections.reproduction
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.langmaterial">
-					<dt><?= _t('Language'); ?></dt>
-					<dd>
-						^ca_collections.langmaterial
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.themes">
-					<dt><?= _t('Themes'); ?></dt>
-					<dd>
-						^ca_collections.themes%delimiter=",_"
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.keywords_text">
-					<dt><?= _t('Keywords'); ?></dt>
-					<dd>
-						^ca_collections.keywords_text%delimiter=",_"
+						^ca_collections.historical_note
 					</dd>
 				</ifdef>
 			</dl>}}}
@@ -152,12 +107,29 @@
 	}
 ?>
 			{{{<dl class="mb-0">
-				<ifcount code="ca_places" min="1">
-					<div class="unit">
-						<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-						<unit relativeTo="ca_places" delimiter=""><dd>^ca_places.preferred_labels (^relationship_typename)</dd></unit>
-					</div>
+				<ifcount code="ca_occurrences" restrictToTypes="production" min="1">
+					<dt><ifcount code="ca_occurrences" restrictToTypes="production" min="1" max="1"><?= _t('Related Production'); ?></ifcount><ifcount code="ca_occurrences" restrictToTypes="production" min="2"><?= _t('Related Productions'); ?></ifcount></dt>
+					<unit relativeTo="ca_occurrences" restrictToTypes="production" delimiter=""><dd>
+						^ca_occurrences.preferred_labels
+					</dd></unit>
 				</ifcount>
+				<ifcount code="ca_occurrences" restrictToTypes="event" min="1">
+					<dt><ifcount code="ca_occurrences" restrictToTypes="event" min="1" max="1"><?= _t('Related Event'); ?></ifcount><ifcount code="ca_occurrences" restrictToTypes="event" min="2"><?= _t('Related Events'); ?></ifcount></dt>
+					<unit relativeTo="ca_occurrences" restrictToTypes="event" delimiter=""><dd>
+						^ca_occurrences.preferred_labels
+					</dd></unit>
+				</ifcount>
+				<ifcount code="ca_occurrences" restrictToTypes="education" min="1">
+					<dt><ifcount code="ca_occurrences" restrictToTypes="education" min="1" max="1"><?= _t('Related Education Program'); ?></ifcount><ifcount code="ca_occurrences" restrictToTypes="education" min="2"><?= _t('Related Education Program'); ?></ifcount></dt>
+					<unit relativeTo="ca_occurrences" restrictToTypes="education" delimiter=""><dd>
+						^ca_occurrences.preferred_labels
+					</dd></unit>
+				</ifcount>
+
+				<ifdef code="ca_collections.rightsStatement.rightsStatement_text">
+					<dt><?= _t('Rights Statement'); ?></dt>
+					<dd>^ca_collections.rightsStatement.rightsStatement_text</dd>
+				</ifdef>
 			</dl>}}}					
 
 	</div>

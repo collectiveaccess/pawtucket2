@@ -116,7 +116,6 @@ class SearchController extends FindController {
 		
 		$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $function);
 		
-		
 		// Allow plugins to rewrite search prior to execution
 		$qr_res = null;
 		$this->opo_app_plugin_manager->hookReplaceSearch(['search' => $function, 'browseInfo' => &$va_browse_info, 'searchExpression' => &$vs_search_expression, 'result' => &$qr_res]);
@@ -128,7 +127,6 @@ class SearchController extends FindController {
 			$this->render("Browse/browse_results_data_json.php");
 			return;
 		}
-		
 		
 		$vs_search_expression = $this->opo_result_context->getSearchExpression();
 		if(!$this->request->isAjax()) {
@@ -146,7 +144,6 @@ class SearchController extends FindController {
 			
 			$this->opo_result_context->setAsLastFind(true);
 		}
-		
 		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_browse_info["displayName"]).$this->request->config->get("page_title_delimiter").$this->opo_result_context->getSearchExpressionForDisplay());
 		
 		//
@@ -154,9 +151,10 @@ class SearchController extends FindController {
 		//
 		if($is_advanced) { 
 			if (!$this->request->isAjax()) {
-				$this->opo_result_context->setSearchExpression(
-					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])
-				); 
+				if($adv_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])) {
+					$this->opo_result_context->setSearchExpression($adv_search_expression); 
+					$vs_search_expression = $adv_search_expression;
+				}
 			}
 			if (!$this->request->isAjax() && ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context))) {
 				$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
@@ -225,6 +223,7 @@ class SearchController extends FindController {
 			$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString, ['forcePurify' => true])));
 			if($vs_remove_criterion == "_search"){
 				$this->opo_result_context->setSearchExpression("*");
+				$vs_search_expression = $this->opo_result_context->getSearchExpression();
 			}
 		}
 		

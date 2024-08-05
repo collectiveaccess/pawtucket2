@@ -29,15 +29,8 @@
  *
  * ----------------------------------------------------------------------
  */
-
-	// print $this->render("Front/featured_set_slideshow_html.php");
-
-	$va_access_values = $this->getVar("access_values");
-	$vs_hero = $this->request->getParameter("hero", pString);
-	if(!$vs_hero){
- 		$vs_hero = rand(1, 3);
-	}
 ?>
+
 
 <div class="container" style="height: 800px;">
 	<div class="row my-5">
@@ -45,12 +38,14 @@
 		<div class="text-center" style="height: 160px; width: 100%; max-width: 950px; background-color: #f1f1f1;">
 			<h3 class="mt-2" style="max-width: 100%; font-size: 24px; background-color: #dedede; padding: 5px;">Combined search of legislation</h3>
 
-			<form action="#" class="" onsubmit="">
-				<div class="input-group">
-						<input name="s1" id="searchTerms" type="text" class="form-control" placeholder="Search terms" style="width: 80%; max-width: 500px; font-size: 20px;">
+				<div class="row justify-content-center">
+					<div class="col-8">
+						<input name="s1" id="searchTerms" type="text" class="form-control" placeholder="Search terms">
+					</div>
+					<div class="col-3">
 						<input type="submit" value="Search" class="btn btn-primary ms-2">
+					</div>
 				</div>
-			</form>
 
 			<p>
 				Searches the titles and full text (where available) of <?= caNavLink($this->request, _t("all legislation"), "", "", "Search", "advanced/combined"); ?>.<br>
@@ -61,8 +56,9 @@
 
 	</div>
 
-	<div class="row">
-		<div class="" style="">
+	<div class="row my-5">
+
+		<div class="col-6" style="">
 			<h3 class="">Legislation and meetings</h3>
 			<div class="tileTextDescription">
 				<ul>
@@ -70,17 +66,36 @@
 					<li><?= caNavLink($this->request, _t("Ordinances / Council Bills"), "", "", "Search", "advanced/bills"); ?></li>
 					<li><?= caNavLink($this->request, _t("Resolutions"), "", "", "Search", "advanced/resolutions"); ?></li>
 					<li><?= caNavLink($this->request, _t("Clerk Files"), "", "", "Search", "advanced/clerk"); ?></li>
-
-					<li><a href="/search/agendas/">Agendas</a></li>
-					<li><a href="/search/minutes/">Minutes</a></li>
-					<li><a href="/search/committees/">Committee History</a></li>
-					<li><a href="/budgetdocs/budgetsearch/budget.html" target="_blank">Budget Documents</a></li>
+					<li><?= caNavLink($this->request, _t("Agendas"), "", "", "Search", "advanced/agenda"); ?></li>
+					<li><?= caNavLink($this->request, _t("Minutes"), "", "", "Search", "advanced/minutes"); ?></li>
+					<li><?= caNavLink($this->request, _t("Committee History"), "", "", "Search", "advanced/committees"); ?></li>
+					<li><a href="https://clerk.seattle.gov/budgetdocs/budgetsearch/budget.html" target="_blank">Budget Documents</a></li>
 				</ul>
 			</div>
-    </div>
+		</div>
+
+		<div class="taxonomyTile splitTile col-6" style="height: 160px;">
+			<h3 class="tileTitle">Know what you're looking for?</h3>
+			<div class="row">
+				<div class="col-auto">
+					<input id="recordNumber" type="number" class="form-control" placeholder="Number" min="1" style="width: 100px;">
+				</div>
+				<div class="col-auto">
+					<select id="recordType" style="width: 120px;" class="form-control">
+						<option value="ordinances">Ordinance</option>
+						<option value="council-bills">Council Bill</option>
+						<option value="resolutions">Resolution</option>
+						<option value="clerk-files">Clerk File</option>
+					</select>
+				</div>
+				<div class="col-auto">
+					<input type="submit" value="Go" class="btn btn-primary">
+				</div>
+
+			</div>
+			<p>Go directly to a record by number.</p>
+		</div>
+
 	</div>
 
 </div>
-
-
-

@@ -37,7 +37,10 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =					$t_item->get('ca_collections.collection_id');
 $show_nav = 			($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = 			$this->getVar('mapOptions') ?? [];
-
+$collection_detail = null;
+if(strToLower($t_item->getWithTemplate("^ca_collections.type_id")) == "collection"){
+	$collection_detail = true;
+}
 # --- get collections configuration
 $collections_config = caGetCollectionsConfig();
 $show_hierarchy_viewer = true;
@@ -45,7 +48,9 @@ if($collections_config->get("do_not_display_collection_browser")){
 	$show_hierarchy_viewer = false;	
 }
 # --- get the collection hierarchy parent to use for exportin finding aid
-$top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
+$va_collection_hier_ids = $t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true));
+# --- collections are under archives in this system
+$top_level_collection_id = $va_collection_hier_ids[1];
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
@@ -55,7 +60,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 ?>
 	<div class="row mt-n3">
 		<div class="col text-center text-md-end">
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 	</div>
 <?php
@@ -64,7 +69,6 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
 		<div class="col-md-12">
 			<H1 class="fs-3">{{{^ca_collections.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_collections.type_id|ca_collections.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_collections.type_id">^ca_collections.type_id</ifdef><ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0">
 		</div>
 	</div>
@@ -78,8 +82,8 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $id));
 				}
-				if($pdf_enabled) {
-					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm ps-3 pe-0 fw-medium", "ca_collections", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
+				if($pdf_enabled && ($top_level_collection_id == $id)) {
+					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Collection Guide'), "btn btn-sm ps-3 pe-0 fw-medium", "ca_collections", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
 				}
 				if($copy_link_enabled){
 ?>
@@ -93,29 +97,12 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php
 	}
 ?>
-{{{<ifdef code="ca_object_representations.media.large">
-	<div class="row justify-content-center mb-3">
-		<div class="col">
-			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
-		</div>
-	</div>
-</ifdef>}}}
-	<div class="row row-cols-1 row-cols-md-2">
+	<div class="row row-cols-1">
 		<div class="col">				
 			{{{<dl class="mb-0">
 				<ifdef code="ca_collections.parent_id">
 					<dt>Part of</dt>
 					<dd><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></dd>
-				</ifdef>
-				<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
-
-				<ifdef code="ca_collections.extent.extent_amount">
-					<dt><?= _t('Extent'); ?></dt>
-					<unit relativeTo="ca_collections.extent" delimiter="">
-						<dd>
-							<ifdef code="ca_collections.extent.extent_type">^ca_collections.extent.extent_type </ifdef>^ca_collections.extent.extent_amount<ifdef code="ca_collections.extent.extent_type">^ca_collections.extent.extent_type </ifdef>
-						</dd>
-					</unit>
 				</ifdef>
 				<ifdef code="ca_collections.dates.dates_value">
 					<dt><?= _t('Date'); ?></dt>
@@ -127,89 +114,52 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 						^ca_collections.abstract
 					</dd>
 				</ifdef>
-				<ifdef code="ca_collections.biography">
-					<dt><?= _t('Biographical / Historical note'); ?></dt>
-					<dd class="overflow-y-scroll" style="max-height: 200px;">
-						^ca_collections.biography
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.scope_contents">
-					<dt><?= _t('Scope and Contents'); ?></dt>
-					<dd class="overflow-y-scroll" style="max-height: 200px;">
-						^ca_collections.scope_contents
-					</dd>
-				</ifdef>
-			</dl>}}}
-		</div>
-		<div class="col">
-			{{{<dl class="mb-0">
-				
-				<ifdef code="ca_collections.arrangement">
-					<dt><?= _t('Arrangement'); ?></dt>
-					<dd>
-						^ca_collections.arrangement
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.gen_physical_description">
-					<dt><?= _t('General Physical Description'); ?></dt>
-					<dd>
-						^ca_collections.gen_physical_description
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.restrictions">
-					<dt><?= _t('Restrictions'); ?></dt>
-					<dd>
-						^ca_collections.restrictions
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.copyright_text">
-					<dt><?= _t('Copyright'); ?></dt>
-					<dd>
-						^ca_collections.copyright_text
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.citation">
-					<dt><?= _t('Preferred Citation'); ?></dt>
-					<dd>
-						^ca_collections.citation
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.acquisition_info">
-					<dt><?= _t('Acquisition Information'); ?></dt>
-					<dd>
-						^ca_collections.acquisition_info
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.processor">
-					<dt><?= _t('Author/Processed by'); ?></dt>
-					<dd>
-						^ca_collections.processor
-					</dd>
-				</ifdef>
-				<ifcount code="ca_collections.related" min="1">
-					<dt><ifcount code="ca_collections.related" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections.related" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-					<unit relativeTo="ca_collections.related" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
-				</ifcount>
-				
-				<ifcount code="ca_occurrences" min="1">
-					<dt><ifcount code="ca_occurrences" min="1"><?= _t('Related Exhibitions & Events'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-
-				<ifcount code="ca_places" min="1">
-					<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-					<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
 			</dl>}}}					
 		</div>
 	</div>
+
 <?php
+if($collection_detail){
+?>
+{{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="featured">
+	
+	<div class="row pt-5">
+		<div class="col"><h2 class="fs-4">Collection Highlights</h2><hr/></div>
+	</div>
+<?php
+if($vs_collections_item_availablity = $this->getVar("collections_item_availablity")){
+?>
+	<div class="pb-4 fs-4">
+		<?php print $vs_collections_item_availablity; ?>
+	</div>
+<?php
+}
+?>
+	<div id="browseResultsContainer" class="row mb-3">
+		<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" delimiter="" limit="8">
+			<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
+				<div class='card flex-grow-1 width-100 rounded-0 shadow-sm bg-white border-0 mb-4'>
+				  <l>^ca_object_representations.media.large%class='card-img-top object-fit-contain px-3 pt-3 rounded-0'</l>
+				  	<div class='card-body'>
+						<l>^ca_objects.preferred_labels.name</l>
+					</div>
+				 </div>
+			</div>
+		</unit>
+	</div>
+	<div class="row row-cols-1 mb-4 pb-4">
+		<div class="col text-center"><?php print caNavLink($this->request, "Browse All Objects", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $id)); ?></div>
+	</div>
+</ifcount>}}}
+<?php
+}
 	if ($show_hierarchy_viewer) {	
 ?>
 		<div hx-trigger="load" hx-get="<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"  ></div>
 <?php				
-	}									
-?>				
+	}	
+if(!$collection_detail){								
+?>							
 
 {{{<ifcount code="ca_objects" min="1">
 <div class="row pt-5">
@@ -220,3 +170,6 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 		<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 	</div>
 </ifcount>}}}
+<?php
+}
+?>

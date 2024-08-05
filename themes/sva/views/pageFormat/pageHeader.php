@@ -65,10 +65,10 @@ if($this->request->isLoggedIn()){
 	</script>
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
-	
+	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<nav class="navbar navbar-expand-xl shadow-sm px-xl-4">
 		<div class="container-fluid">
-			<?= caNavlink($this->request, _t("<div class='lh-sm'>Milton Glacier <span>Design Study Center and Archives</span></div><div class='divide border-bottom border-black mt-2 mb-1'></div><div>SVA Archives</div>"), "text-black fs-2 navbar-brand", "", "", ""); ?>
+			<?= caNavlink($this->request, _t("<div class='lh-sm'>Glaser Design Archives</span></div><div class='divide border-bottom border-black mt-2 mb-1'></div><div>SVA Archives</div>"), "text-black fs-2 navbar-brand", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
@@ -107,7 +107,7 @@ if($this->request->isLoggedIn()){
 	$classes = caGetPageCSSClasses();
 	$classes = str_replace("='", "='z-1 ", $classes);
 ?>
-	<main <?= $classes; ?>>
+	<main <?= $classes; ?>><a name="page-content"></a>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4 pb-5 mb-5'>";
