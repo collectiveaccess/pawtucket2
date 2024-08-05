@@ -1,6 +1,6 @@
 <?php
 if(!$this->request->isLoggedIn()){
-	print "do redirect";
+	print "<div class='unit text-center'><H2 class-'uk-h1 text-center'>Please ".caNavLink($this->request, "Login", "el-link", "", "loginReg", "loginform")." to access repatriation records.</H2><br/>".caNavLink($this->request, "Login", "uk-button uk-button-default", "", "loginReg", "loginform")."</div>";
 }else{
 
 	$t_item = $this->getVar("item");
@@ -27,7 +27,7 @@ if(!$this->request->isLoggedIn()){
 				
 					{{{<ifdef code="ca_occurrences.idno"><div class="unit"><label>Identifier</label>^ca_occurrences.idno</div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.repatriation_status"><div class="unit"><label>Status</label>^ca_occurrences.repatriation_status</div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.repat_type"><div class="unit"><label>Repatriation Type</label>^ca_occurrences.repat_type</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.repat_type"><div class="unit"><label>Repatriation Type</label>^ca_occurrences.repat_type%delimiter=,_</div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.min_number"><div class="unit"><label>Minimum Number of Individuals</label>^ca_occurrences.min_number</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="repatriating_entity" min="1">
 						<div class="unit"><label>Holding Institution</label>
