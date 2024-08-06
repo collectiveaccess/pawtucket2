@@ -340,6 +340,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$this->BUNDLES['ca_user_groups'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Group access'));
 		$this->BUNDLES['ca_set_items'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Set items'));
 		
+		$this->BUNDLES['_itemCount'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Number of items in set'));
+		
 		$this->BUNDLES['hierarchy_navigation'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Hierarchy navigation'));
 		$this->BUNDLES['hierarchy_location'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Location in hierarchy'));
 	}
@@ -2141,7 +2143,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 */
 	public function getItemCount($pa_options=null) {
 		$vn_user_id = isset($pa_options['user_id']) ? (int)$pa_options['user_id'] : null;
-		if(!($vn_set_id = $this->getPrimaryKey())) { return null; }
+		$vn_set_id = caGetOption('set_id', $pa_options, null);
+		if(!$vn_set_id && !($vn_set_id = $this->getPrimaryKey())) { return null; }
 		if ($vn_user_id && !$this->haveAccessToSet($vn_user_id, __CA_SET_READ_ACCESS__)) { return 0; }
 		
 		$o_db = $this->getDb();
@@ -3369,4 +3372,17 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		return null;
 	}
 	# ---------------------------------------------------------------
+	/**
+	 *
+	 */
+	public function renderBundleForDisplay($bundle_name, $row_id, $values, $options=null) {
+		
+		switch($bundle_name) {
+			case '_itemCount':
+				return $this->getItemCount(['set_id' => $row_id]);
+				break;
+		}
+		return null;
+	}
+	# ------------------------------------------------------
 }
