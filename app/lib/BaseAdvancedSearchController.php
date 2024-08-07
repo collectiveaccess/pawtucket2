@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2023 Whirl-i-Gig
+ * Copyright 2010-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -193,7 +193,8 @@ class BaseAdvancedSearchController extends BaseRefineableSearchController {
 			if($vb_is_new_search || $vb_criteria_have_changed || $vb_sort_has_changed || $this->type_restriction_has_changed) {
 				$this->opo_result_context->setResultList($vo_result->getPrimaryKeyValues());
 
-				if ($this->opo_result_context->searchExpressionHasChanged()) { $vn_page_num = 1; }
+				$vn_page_num = 1; 
+				$this->opo_result_context->setCurrentResultsPageNumber(1);
 			}
 
 
@@ -254,7 +255,7 @@ class BaseAdvancedSearchController extends BaseRefineableSearchController {
 				break;
 			# ------------------------------------
 			case 'EXPORT':
-				caExportResult($this->request, $vo_result, $this->request->getParameter("export_format", pString), $vs_search, ['output' => 'STREAM', 'display' => $t_display]);
+				caExportResult($this->request, $vo_result, $this->request->getParameter("export_format", pString), $vs_search, ['output' => 'STREAM', 'display' => $t_display, 'browseCriteria' => $this->opo_browse->getCriteriaAsStrings(null, ['sense' => 'singular', 'returnAs' => 'array'])]);
 				break;
 			# ------------------------------------
 			case 'HTML':

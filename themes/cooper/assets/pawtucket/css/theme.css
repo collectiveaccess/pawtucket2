@@ -194,7 +194,9 @@ H6, h6{
 .navbar-nav > li > a {
     line-height: 27px;
 }   
-   
+.dropdown-menu > li > a{
+	text-transform:uppercase;
+}
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus,
 .dropdown-menu > .active > a,

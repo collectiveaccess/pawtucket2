@@ -68,6 +68,11 @@
 			<H1>The Indian Residential School History and Dialogue Centre is located on the traditional, ancestral, unceded territory of the hən̓q̓əmin̓əm̓ speaking xʷməθkʷəy̓əm (Musqueam people).</H1>
 			<br/>
 			<br/>
+			<div class="welcome">
+				{{{hp_intro}}}
+			</div>
+			<br/>
+			<br/>
 			<br/>
 		</div>
 	</div>
@@ -279,6 +284,17 @@
 						embed_id:   'timeline-embed',
 						initial_zoom: '5'
 					});
+					
+				});
+				//add target = _blank to links in descriptions
+				jQuery( window ).load(function() {
+					var checkExist = setInterval(function() {
+					   if ($('.tl-text-content').length) {
+						  console.log("Exists!");
+						  $('.tl-text-content a').attr('target','_blank');
+						  clearInterval(checkExist);
+					   }
+					}, 100);
 				});
 			</script>
 		</div>

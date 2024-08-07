@@ -50,11 +50,11 @@ if($vs_mode == "map"){
 	}elseif(strpos($vs_last_find, "search") !== false){
 		$vs_link_text = "Search";	
 	}elseif(strpos($vs_last_find, "gallery") !== false){
-		$vs_link_text = "Explore Features";	
+		$vs_link_text = "Features";	
 	}elseif(strpos($vs_last_find, "narrative") !== false){
-		$vs_link_text = "Explore Narrative Threads";	
+		$vs_link_text = "Narrative Threads";	
 	}elseif(strpos($vs_last_find, "listing") !== false){
-		$vs_link_text = "Explore Resources";	
+		$vs_link_text = "Resources";	
 	}
 	if($vs_link_text){
 		$va_params["row_id"] = $t_object->getPrimaryKey();
@@ -78,6 +78,7 @@ if($vs_mode == "map"){
 ?>
 			<div class="row">
 <?php
+				$va_transcript_rep_ids = $va_full_text_rep_ids = $va_book_cover_rep_ids = array();
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 				if($vs_representationViewer){
 ?>
@@ -88,12 +89,21 @@ if($vs_mode == "map"){
 					$t_list = new ca_lists();
 					$va_type = $t_list->getItemFromList("object_representation_types", "transcript");
 					$va_transcript_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					
+					$va_type = $t_list->getItemFromList("object_representation_types", "full_text");
+					$va_full_text_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					
+					$va_type = $t_list->getItemFromList("object_representation_types", "book_cover");
+					$va_book_cover_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					
 					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
 						print "<div id='transcriptLink' class='text-center'>";
-						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
-							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+						if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
+							foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
+								$t_rep = new ca_object_representations($vn_transcript_rep_id);
 							
-							print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
+								print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
+							}
 						}
 						print "</div>";
 					}
@@ -118,6 +128,10 @@ if($vs_mode == "map"){
 						if(!caGetOption(['download_version', 'display_version'], $va_download_display_info)){
 							$vb_show_download_all_link = false;
 						}
+					}
+					# --- if there is only a book cover disable download button
+					if((sizeof($va_book_cover_rep_ids) > 0) && ((sizeof($va_full_text_rep_ids) == 0) && (sizeof($va_transcript_rep_ids) == 0))){
+						$vb_show_download_all_link = false;
 					}
 
 				}else{
@@ -171,12 +185,22 @@ if($vs_mode == "map"){
 						</H4>
 						{{{<ifdef code="ca_objects.MARC_copyrightDate"><div class='unit'>^ca_objects.MARC_copyrightDate</div></ifdef>}}}
 						<H6>
-							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
+							{{{<if rule='^ca_objects.resource_type !~ /-/'><ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1<ifdef code="ca_objects.genre"> > </ifdef></ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef></if>}}}
 						</H6>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" excludeRelationshipTypes="subject" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" excludeRelationshipTypes="subject" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" excludeRelationshipTypes="subject" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
-						{{{<ifdef code="ca_objects.creators"><div class="unit"><H6>Creators</H6><div class="trimTextShort"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.creators</unit></div></div></ifdef>}}}
-						{{{<ifdef code="ca_objects.contributors"><div class="unit"><H6>Contributors</H6><div class="trimTextShort"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.contributors</unit></div></div></ifdef>}}}
+<?php
+						$vs_creators_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="creator" delimiter="; "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
+						$vs_creators_text = $t_object->getWithTemplate('<unit relativeTo="ca_objects" delimiter="; ">^ca_objects.creators</unit>', array("checkAccess" => $va_access_values));
+						if($vs_creators_entities || $vs_creators_text){
+							print '<div class="unit"><H6>Creators</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? "; " : "").$vs_creators_text.'</div></div>';
+						}
 						
+						$vs_contributors_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor" delimiter="; "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
+						$vs_contributors_text = $t_object->getWithTemplate('<unit relativeTo="ca_objects" delimiter="; ">^ca_objects.contributors</unit>', array("checkAccess" => $va_access_values));
+						if($vs_contributors_entities || $vs_contributors_text){
+							print '<div class="unit"><H6>Contributors</H6>'.$vs_contributors_entities.(($vs_contributors_entities && $vs_contributors_text) ? "; " : "").$vs_contributors_text.'</div>';
+						}
+?>
 						{{{<ifdef code="ca_objects.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.description_new.description_new_source"><h6>Description</h6>
 								<div class="trimText">^ca_objects.description_new.description_new_txt</div>
@@ -208,33 +232,33 @@ if($vs_mode == "map"){
 									}
 								}
 							}
-							if($vs_subjects = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="subject" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values))){
-								$va_loc[] = $vs_subjects;
-							}
-							if($va_topical = $t_object->get("ca_objects.LOC_text", array("returnAsArray" => true))){
-								foreach($va_topical as $vs_topical_term){
-									$vs_topical_term = trim($vs_topical_term);
-									if($vs_topical_term){
-										$va_loc[] = caNavLink($this->request, $vs_topical_term, "", "", "Search", "objects", array("search" => "ca_objects.LOC_text:".$vs_topical_term));
-									}
-								}
-							}
-							if($va_tgn = $t_object->get("ca_objects.tgn", array("returnAsArray" => true))){
-								foreach($va_tgn as $vs_tgn_term){
-									$vs_tgn_term = trim($vs_tgn_term);
-									if($vs_tgn_term){
-										$va_loc[] = caNavLink($this->request, $vs_tgn_term, "", "", "Search", "objects", array("search" => "ca_objects.tgn:".$vs_tgn_term));
-									}
-								}
-							}
-							if($va_local_subject = $t_object->get("ca_objects.local_subject_text", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
-								foreach($va_local_subject as $vs_local_subject_term){
-									$vs_local_subject_term = trim($vs_local_subject_term);
-									if($vs_local_subject_term){
-										$va_loc[] = caNavLink($this->request, $vs_local_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.local_subject_text:".$vs_local_subject_term));
-									}
-								}
-							}
+			#				if($vs_subjects = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="subject" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values))){
+			#					$va_loc[] = $vs_subjects;
+			#				}
+			#				if($va_topical = $t_object->get("ca_objects.LOC_text", array("returnAsArray" => true))){
+			#					foreach($va_topical as $vs_topical_term){
+			#						$vs_topical_term = trim($vs_topical_term);
+			#						if($vs_topical_term){
+			#							$va_loc[] = caNavLink($this->request, $vs_topical_term, "", "", "Search", "objects", array("search" => "ca_objects.LOC_text:".$vs_topical_term));
+			#						}
+			#					}
+			##				}
+			#				if($va_tgn = $t_object->get("ca_objects.tgn", array("returnAsArray" => true))){
+			#					foreach($va_tgn as $vs_tgn_term){
+			#						$vs_tgn_term = trim($vs_tgn_term);
+			#						if($vs_tgn_term){
+			#							$va_loc[] = caNavLink($this->request, $vs_tgn_term, "", "", "Search", "objects", array("search" => "ca_objects.tgn:".$vs_tgn_term));
+			#						}
+			#					}
+			#				}
+			#				if($va_local_subject = $t_object->get("ca_objects.local_subject_text", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
+			#					foreach($va_local_subject as $vs_local_subject_term){
+			#						$vs_local_subject_term = trim($vs_local_subject_term);
+			#						if($vs_local_subject_term){
+			#							$va_loc[] = caNavLink($this->request, $vs_local_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.local_subject_text:".$vs_local_subject_term));
+			#						}
+			#					}
+			#				}
 							
 							
 							#if(sizeof($va_loc)){
@@ -268,15 +292,21 @@ if($vs_mode == "map"){
 								<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 								<div class="collapseContent">
 									{{{<ifcount min="1" code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^ca_objects.nonpreferred_labels.name</unit></div></ifcount>}}}
-									{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
+									{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Holding Library</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
 									{{{<ifdef code="ca_objects.MARC_isbn"><div class='unit'><h6>ISBN</h6><unit delimiter="; ">^ca_objects.MARC_isbn</unit></div></ifdef>}}}
-									{{{<ifdef code="ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote"><div class='unit'><h6>Contents</h6><ifdef code="ca_objects.MARC_formattedContents">^ca_objects.MARC_formattedContents</ifdef><ifdef code="ca_objects.ISADG_titleNote">^ca_objects.ISADG_titleNote</ifdef></div></ifdef>}}}		
+									{{{<ifdef code="ca_objects.RAD_statement"><div class='unit'><h6>Statement of Responsibility</h6><unit delimiter="; ">^ca_objects.RAD_statement</unit></div></ifdef>}}}
+									{{{<ifdef code="ca_objects.MARC_edition"><div class='unit'><h6>Edition</h6><unit delimiter="; ">^ca_objects.MARC_edition</unit></div></ifdef>}}}
+									{{{<ifdef code="ca_objects.RAD_pubPlace"><div class='unit'><h6>Publication Information</h6><unit delimiter="; ">^ca_objects.RAD_pubPlace</unit></div></ifdef>}}}
+									{{{<ifdef code="ca_objects.MARC_physical"><div class='unit'><h6>Physical Description</h6>^ca_objects.MARC_physical</div></ifdef>}}}
 									{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Notes</h6><unit delimiter="<br/>">^ca_objects.MARC_generalNote</unit></div></ifdef>}}}							
+									{{{<ifdef code="ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote"><div class='unit'><h6>Contents</h6><ifdef code="ca_objects.MARC_formattedContents">^ca_objects.MARC_formattedContents</ifdef><ifdef code="ca_objects.ISADG_titleNote">^ca_objects.ISADG_titleNote</ifdef></div></ifdef>}}}		
 									{{{<ifdef code="ca_objects.electronic_location.electronic_location_materials,ca_objects.electronic_location.electronic_location_url">
 										<div class='unit'><h6>Electronic Location and Access</h6>
 											<unit relativeTo="ca_objects.electronic_location" delimiter="<br/>"><a href="^ca_objects.electronic_location.electronic_location_url" target="_blank">^ca_objects.electronic_location.electronic_location_materials <span class="glyphicon glyphicon-new-window"></span></a></unit>
 										</div></ifdef>}}}
-									
+									{{{<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>}}}
+									{{{<ifdef code="ca_objects.rights_new"><div class='unit'><h6>Terms Governing Use and Reproduction</h6>^ca_objects.rights_new</div></ifdef>}}}
+									{{{<ifdef code="ca_objects.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_objects.RAD_local_rights</div></ifdef>}}}								
 <?php
 									print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."</textarea></div>";					
 ?>						
@@ -308,10 +338,18 @@ if($vs_mode == "map"){
 					if($vb_show_download_all_link){
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caNavLink($this->request, "Download", "faDownload", "", "Detail",  "DownloadMedia", array('object_id' => $vn_id, "download" => 1))."</div>";
 					}
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
-					if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
-						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
+					if(is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids)){
+						foreach($va_full_text_rep_ids as $vn_full_text_rep_id){
+							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+							print "<div class='detailTool'><a href='#' title='"._t("Read Online")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_id, 'representation_id' => $vn_full_text_rep_id, 'item_id' => $vn_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span> Read Online</a></div>\n";
+							# --- online print one button to the first rep with read online
+							break;
+						}
 					}
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
+					#if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
+					#	print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
+					#}
 					print '</div><!-- end detailTools -->';			
 
 
@@ -377,7 +415,7 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 60
+		  maxHeight: 100
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
@@ -435,6 +473,26 @@ if($vs_mode == "map"){
 					}
 				});
 			}
+<?php		
+		if(is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids)){
+			foreach($va_full_text_rep_ids as $vn_full_text_rep_id){
+?>
+				if(!$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").hasClass("readOnlineLoaded")){
+					$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").append("<span class='readOnline'>Read Online</span>");
+					$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").addClass("readOnlineLoaded");
+				}
+<?php			
+			}
+		}
+		if(is_array($va_book_cover_rep_ids) && sizeof($va_book_cover_rep_ids)){
+			foreach($va_book_cover_rep_ids as $vn_book_cover_rep_id){
+?>
+				$("#cont<?php print $vn_book_cover_rep_id; ?> .detailMediaToolbar a.dlButton").hide();
+<?php			
+			}
+		}
+?>
+
 		});
 	});
 </script>
