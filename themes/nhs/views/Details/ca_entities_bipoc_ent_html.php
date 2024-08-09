@@ -100,19 +100,19 @@
 						}
 						print "<div class='unit'><label>Death Date</label>".implode("<br/>", $va_tmp)."</div>";
 					}
-					if($t_item->get("ca_entities.age_container.age")){
-						$va_age = $t_item->get("ca_entities.age_container.age", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
-						$va_source_text = $t_item->get("ca_entities.age_container.age_source", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
-						$va_source = $t_item->get("ca_entities.age_container.age_source", array("returnAsArray" => true));
+					if($t_item->get("ca_entities.gender_container.gender_sex")){
+						$va_gender_sex = $t_item->get("ca_entities.gender_container.gender_sex", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
+						$va_source_text = $t_item->get("ca_entities.gender_container.gender_source", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
+						$va_source = $t_item->get("ca_entities.gender_container.gender_source", array("returnAsArray" => true));
 						$va_tmp = array();
-						foreach($va_age as $vn_i => $vs_age){
+						foreach($va_gender_sex as $vn_i => $vs_gender_sex){
 							$vs_tmp = "";
 							if(is_array($va_source) && $va_source_text[$vn_i]){
 								$vs_tmp = caDetailLink($this->request, $va_source_text[$vn_i], "", "ca_occurrences", $va_source[$vn_i]);
 							}
-							$va_tmp[] = $vs_age.(($vs_tmp) ? ", Source: ".$vs_tmp : "");
+							$va_tmp[] = $vs_gender_sex.(($vs_tmp) ? ", Source: ".$vs_tmp : "");
 						}
-						print "<div class='unit'><label>Age</label>".implode("<br/>", $va_tmp)."</div>";
+						print "<div class='unit'><label>Gender</label>".implode("<br/>", $va_tmp)."</div>";
 					}
 					
 ?>
@@ -144,19 +144,20 @@
 												</unit></ifcount>", array("checkAccess" => $va_access_values));
 			$va_interstitial_info = explode(";;;", $vs_tmp);
 	
-			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities.preferred_labels.surname'>^ca_entities_x_entities.source_object</unit></ifcount>", array("checkAccess" => $va_access_values));
+			# --- a space is included in the template because otherwise it returns nothing if there is no source and the arrays no longer line up properly
+			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities.preferred_labels.surname'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values));
 			$va_source_name = explode(";;;", $vs_tmp);
-			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities.preferred_labels.surname'>^ca_entities_x_entities.source_object</unit></ifcount>", array("checkAccess" => $va_access_values, "convertCodesToDisplayText" => false));
+			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities.preferred_labels.surname'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values, "convertCodesToDisplayText" => false));
 			$va_source_id = explode(";;;", $vs_tmp);
 
 			$vs_tmp = "";
 			foreach($va_entity_names_as_links as $vn_i => $vs_entity_names_as_link){
 				$vs_source = "";
-				if($va_source_name[$vn_i]){
+				if(trim($va_source_name[$vn_i])){
 					$vs_source = "<br/><small>Source: ".caDetailLink($this->request, $va_source_name[$vn_i], "", "ca_objects", $va_source_id[$vn_i])."</small>";
 				}
 				$vs_interstitial_info = "";
-				if($va_interstitial_info[$vn_i]){
+				if(trim($va_interstitial_info[$vn_i])){
 					$vs_interstitial_info = $va_interstitial_info[$vn_i];
 				}
 				$va_entities[] = "<div class='bgLightBlue text-center'>".$vs_entity_names_as_link.$vs_source.$vs_interstitial_info."</div>";

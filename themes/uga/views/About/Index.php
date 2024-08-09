@@ -39,10 +39,10 @@
 	<div class="col-sm-3 col-sm-offset-1">
 		<h6>Useful Links</h6>
 		<ul>
-		<li><a href="http://www.libs.uga.edu/scl/visit/hours.html">Building Hours</a></li>
-		<li><a href="http://www.libs.uga.edu/scl/visit/maps.html">Maps and Directions</a></li>
-		<li><a href="http://www.libs.uga.edu/scl/visit/parking.html">Parking</a></li>
-		<li><a href="http://www.libs.uga.edu/scl/research/policies.html">Policies</a></li>
+		<li><a href="https://www.libs.uga.edu/scl/visit/hours">Building Hours</a></li>
+		<li><a href="https://www.libs.uga.edu/scl/visit/directions">Maps and Directions</a></li>
+		<li><a href="https://www.libs.uga.edu/locations/special_collections">Parking</a></li>
+		<li><a href="https://www.libs.uga.edu/scl/research/guides">Research Guide</a></li>
 		<li><a href="/index.php/Contact/Form">Staff Directory</a></li>
 		</ul>
 		

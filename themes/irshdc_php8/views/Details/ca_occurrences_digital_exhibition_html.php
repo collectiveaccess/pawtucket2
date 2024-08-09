@@ -116,6 +116,10 @@
 								$va_section_names[$qr_content_blocks->get("ca_occurrences.occurrence_id")] = $vs_link_text;
 								$vn_last_section_id = $qr_content_blocks->get("ca_occurrences.occurrence_id");
 								$vs_link = "";
+								
+								if($pn_content_block_id == $qr_content_blocks->get("ca_occurrences.occurrence_id")){
+									$vs_link_text = "<i class='fas fa-caret-right'></i> ".$vs_link_text;					
+								}
 								if($vs_nav_img){
 									$vs_link = "<div class='digExhSideNavLinkImg' style='background-image: url(\"".$vs_nav_img."\");'><div class='digExhSideNavLink'>".$vs_link_text."</div></div>";
 								}else{
