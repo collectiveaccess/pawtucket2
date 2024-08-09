@@ -100,9 +100,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<dt><?= _t('Description'); ?></dt>
 					<dd>
 						^ca_occurrences.descriptionWithSource.prodesc_text
-						<ifdef code="ca_occurrences.descriptionWithSource.prodesc_source">
-							<div class="mt-3"><i>^ca_occurrences.descriptionWithSource.prodesc_source</i></div>
-						</ifdef>
 					</dd>
 				</ifdef>
 			</dl>}}}

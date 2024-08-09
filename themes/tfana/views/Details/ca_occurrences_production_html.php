@@ -112,9 +112,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<dt><?= _t('Description'); ?></dt>
 					<dd>
 						^ca_occurrences.descriptionWithSource.prodesc_text
-						<ifdef code="ca_occurrences.descriptionWithSource.prodesc_source">
-							<div class="mt-3"><i>^ca_occurrences.descriptionWithSource.prodesc_source</i></div>
-						</ifdef>
 					</dd>
 				</ifdef>
 			</dl>}}}
@@ -158,7 +155,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					</dd></unit>
 				</ifcount>
 				<ifcount code="ca_occurrences.related" restrictToTypes="education" min="1">
-					<dt><ifcount code="ca_occurrences.related" restrictToTypes="education" min="1" max="1"><?= _t('Related Education Program'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="education" min="2"><?= _t('Related Education Program'); ?></ifcount></dt>
+					<dt><ifcount code="ca_occurrences.related" restrictToTypes="education" min="1" max="1"><?= _t('Related Education Program'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="education" min="2"><?= _t('Related Education Programs'); ?></ifcount></dt>
 					<unit relativeTo="ca_occurrences.related" restrictToTypes="education" delimiter=""><dd>
 						<l>^ca_occurrences.preferred_labels</l>
 					</dd></unit>
@@ -167,19 +164,17 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
 					<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 				</ifcount>
-				<ifcount code="ca_entities" min="1">
+				<ifcount code="ca_entities" min="1" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant">
 					<dt><ifcount code="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" min="1"><?= _t('Production Roles'); ?></ifcount></dt>
 					<dd><unit relativeTo="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
+				</ifcount>
+				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="actor">
+					<dt><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="1" max="1"><?= _t('Performer'); ?><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="2"><?= _t('Performers'); ?></ifcount></dt>
+					<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="actor" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
 				</ifcount>
 			</dl>}}}					
 		</div>
 	</div>
-	{{{<ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="1" max="1"><?= _t('Performer'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="2"><?= _t('Performers'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities" restrictToRelationshipTypes="actor" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-light h-100 w-100 text-black">^ca_entities.preferred_labels</l></dd></unit>
-		</dl>
-	</ifcount>}}}
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row">
 		<div class="col"><h2>Related Objects</h2><hr></div>
