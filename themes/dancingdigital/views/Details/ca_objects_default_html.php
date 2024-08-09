@@ -60,9 +60,9 @@
 			<div class="row object-data-row border-0">
 				<div class="col">
 
-					<h1 class="page-heading pb-5" style="font-size: 40px;">
+					<h2 class="page-heading pb-5" style="font-size: 40px;">
 						{{{^ca_objects.preferred_labels.name}}}
-					</h1>
+					</h2>
 
 					{{{<ifdef code="ca_objects.archival_item_type">
 						<div class="object-info">
@@ -89,7 +89,7 @@
 
 			{{{<ifcount code="ca_objects_x_entities" min="1" restrictToTypes="individual">
 				<div class="row works-row">
-					<label class="entity-data-label mb-3">Related People</label>
+					<h3 class="entity-data-label mb-3">Related People</h3>
 					<ul class="detail-list">
 						<unit relativeTo="ca_objects_x_entities" delimiter="" restrictToTypes="individual" sort="ca_entities.preferred_labels.displayname">
 							<li class='detail-list-item'>
@@ -108,7 +108,7 @@
 
 			{{{<ifcount code="ca_objects_x_occurrences" min="1" restrictToTypes="choreographic_work">
 				<div class="row works-row">
-					<label class="entity-data-label mb-3">Choreographic Works</label>
+					<h3 class="entity-data-label mb-3">Choreographic Works</h3>
 					<ul class="detail-list">
 						<unit relativeTo="ca_objects_x_occurrences" delimiter="" restrictToTypes="choreographic_work" sort="ca_occurrences.preferred_labels">
 							<li class='detail-list-item'>
@@ -123,7 +123,7 @@
 
 			{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="event">
 				<div class="row works-row">
-					<label class="entity-data-label mb-3">Events</label>
+					<h3 class="entity-data-label mb-3">Events</h3>
 					<ul class="detail-list">
 						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="event" sort="ca_occurrences.preferred_labels">
 							<li class='detail-list-item'>
@@ -136,18 +136,18 @@
 
 			{{{<ifcount code="ca_objects.related" min="1">
 				<div class="row items-row">
-					<label class="entity-data-label mb-3">Archival Items</label>
+					<h3 class="entity-data-label mb-3">Archival Items</h3>
 					<div class="related-items-grid">
 						<unit relativeTo="ca_objects.related" delimiter="" start="0" length=<?= $items_length ?>>
-							<div class='related-item'>
+							<l><div class='related-item'>
 								<ifdef code="ca_object_representations.media.small">
-									<div class="related-item-img"><l>^ca_object_representations.media.small</l></div>
+									<div class="related-item-img">^ca_object_representations.media.small</div>
 								</ifdef>
 								<ifnotdef code="ca_object_representations.media.small">
 									<div class="related-item-img"><div class="related-item-img-placeholder"></div></div>
 								</ifnotdef>
-								<div class='related-item-title'><l>^ca_objects.preferred_labels.name</l></div>
-							</div>
+								<div class='related-item-title'>^ca_objects.preferred_labels.name</div>
+							</div></l>
 						</unit>
 					</div>
 				</div>

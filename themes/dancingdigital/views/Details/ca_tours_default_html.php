@@ -117,7 +117,7 @@
 					<div class="modal-dialog modal-dialog-centered" style="position: unset; max-width: unset;">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h1 class="modal-title" id="journeyModalLabel" style="color: #000;font-family:Forum,sans-serif;">{{{^ca_tours.preferred_labels}}}</h1>
+								<h2 class="modal-title" id="journeyModalLabel" style="color: #000;font-family:Forum,sans-serif;">{{{^ca_tours.preferred_labels}}}</h2>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body">

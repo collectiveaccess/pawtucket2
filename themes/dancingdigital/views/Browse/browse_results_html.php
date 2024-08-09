@@ -78,6 +78,7 @@ if (!$vb_ajax) {	// !ajax
 
 				<?php
 							// print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+					if($vs_table == "ca_objects"){
 				?>		
 						<div class="btn-group browse-menu-items pt-4">
 							<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" style="color: white;" aria-label="Result options"></i></a>
@@ -125,6 +126,7 @@ if (!$vb_ajax) {	// !ajax
 							</ul>
 						</div><!-- end btn-group -->
 				<?php
+					}
 						if(is_array($va_facets) && sizeof($va_facets)){
 				?>
 						<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>

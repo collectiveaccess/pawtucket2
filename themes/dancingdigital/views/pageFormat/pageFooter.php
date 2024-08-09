@@ -28,45 +28,7 @@
 ?>
 
 <?php
-	if(false) {
-?>
-		<div style="clear:both; height:1px;"><!-- empty --></div>
-		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-		<footer id="footer" class="text-center">
-			<div class="row">
-				<div class="col-sm-4 text-center">
-					<?php
-						print caNavLink($this->request, caGetThemeGraphic($this->request, 'no-boundaries.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "", "", "","");
-					?>
-				</div>
-				<div class="col-sm-4 text-center">
-					<ul class="list-inline social">
-						<li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fab fa-twitter"></i> </a></li>
-						<li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fab fa-vimeo-v"></i></a></li>
-					</ul>
-				</div>
-				<div class="col-sm-4 text-center">
-					<?php
-						print caNavLink($this->request, caGetThemeGraphic($this->request, 'UTA_logo.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "", "", "","");
-					?>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 text-center">
-					<ul class="list-inline">
-						<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "Contact", "Form"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Support Us"), "", "", "", ""); ?></li>
-						<li><?php print caNavLink($this->request, _t("Resources"), "", "", "", ""); ?></li>
-						<li><?php print caNavLink($this->request, _t("Related Articles"), "", "", "", ""); ?></li>
-						<li><?php print caNavLink($this->request, _t("Accessibility"), "", "", "", ""); ?></li>
-					</ul>
-				</div>
-			</div>
-		</footer><!-- end footer -->
-<?php
-	}
+	
 	
 	//
 	// Output HTML for debug bar
@@ -75,7 +37,7 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	
+		</div>
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel" role="complementary"> 
 			<div id="caMediaPanelContentArea">

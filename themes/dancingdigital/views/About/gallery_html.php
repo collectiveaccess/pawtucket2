@@ -30,7 +30,7 @@
  * ----------------------------------------------------------------------
  */
  $t_set = ca_sets::findAsInstance(['set_code' => 'gallery'], ['checkAccess' => caGetUserAccessValues($this->request)]);
- $set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'small']) : [];
+ $set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'large']) : [];
  ?>
  <main data-barba="container" data-barba-namespace="gallery" class="barba-main-container gallery-section">
 	<div class="general-page">

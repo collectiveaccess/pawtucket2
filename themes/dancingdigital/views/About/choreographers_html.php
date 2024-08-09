@@ -65,10 +65,9 @@ $set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'original']) : [];
 							foreach($set_items as $item) {	
 								$item = array_shift($item);
 						?>			
-								<div class="choreo-img-container choreographer-grid-item">
-									<?= caDetailLink($this->request, $item['representation_tag'], 'choreo-img', 'ca_entities', $item['row_id']) ?>
-									<?= caDetailLink($this->request, $item['displayname'], 'text-overlay', 'ca_entities', $item['row_id']) ?>
-								</div>
+								
+									<?= caDetailLink($this->request, '<div class="choreo-img-container choreographer-grid-item"><span class="choreo-img">'.$item['representation_tag'].'</span><span class="text-overlay">'.$item['displayname'].'</span></div>', '', 'ca_entities', $item['row_id']) ?>
+									
 						<?php
 							}
 						?>

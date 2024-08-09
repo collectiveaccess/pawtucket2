@@ -51,8 +51,7 @@
 								<?= caDetailLink($this->request, '<svg xmlns="http://www.w3.org/2000/svg" width="34" height="33" viewBox="0 0 34 33" fill="none">
 										<path d="M33.0163 16.5C33.0163 25.3173 25.7498 32.4794 16.7684 32.4794C7.78704 32.4794 0.520588 25.3173 0.520588 16.5C0.520588 7.6827 7.78704 0.520588 16.7684 0.520588C25.7498 0.520588 33.0163 7.6827 33.0163 16.5Z" stroke="#E2D49F" stroke-width="1.04118"></path>
 										<path d="M24.728 16.3281L12.5267 23.2597L12.5267 9.39643L24.728 16.3281Z" fill="#E2D49F"></path>
-									</svg>', 'me-3', 'ca_objects', $item['row_id']); ?>
-								<?= caDetailLink($this->request, $item['name'], 'link-text', 'ca_objects', $item['row_id']); ?>
+									</svg> '.$item['name'], 'link-text', 'ca_objects', $item['row_id']); ?>
 							</div>
 					<?php
 						}

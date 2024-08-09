@@ -103,6 +103,7 @@
 </head> 
 
 <body data-barba="wrapper">
-
+	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
+	
 			<?= $this->render("pageFormat/sidebar.php"); ?>
-				
+				<div id="main">
