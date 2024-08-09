@@ -264,10 +264,21 @@ $yellow: #fec02f;
 		top:30px;
 		width:100%;
 	}
+	@media(max-width:1000px){
+		.display-1{
+			font-size: 70px;
+		}
+		h1{
+			top:15px;
+		}
+	}
 }	
 /* ------------------------- Navbar ------------------------- */
 .nav-top{
 	padding:10px 0px 10px 0px;
+	a{
+		padding:0px 15px 0px 15px;
+	}
 }
 .navbar{
 	background-color:#F6F4F4;
