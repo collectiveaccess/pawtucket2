@@ -41,10 +41,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	.mediaviewer-selector-control img{
 		border:2px solid transparent;
 	}
-	div.mediaviewer-overlay {
-		z-index: 50000;	
-	}
-	div.mediaviewer-overlay:focus {
+	.mediaviewer-overlay:focus {
 		box-shadow:inset 0 0 3px 3px rgba(0,0,0,.5)
 	}
 	
@@ -68,7 +65,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	div.mediaviewer-overlay-content {
 		display: block;
 		width: 100%;
-		height: 100%;
+		height: 85%;
 	}
 	
 	div.mediaviewer-overlay-close {
@@ -97,13 +94,12 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 		/*width: 100%;
 		height: 100%;*/
 	}
-	
 	div.mediaviewer-caption {
 		color: #fff;
 		font-size: 16px;
 	}
 	.mediaviewer-overlay-controls .btn:focus{
-		box-shadow:0 0 2px 2px rgba(256,256,256,.5);
+		box-shadow:0 0 2px 2px #FFFFFF;
 	}
 </style>
 
@@ -149,7 +145,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 <!-- END: Media selector bar -->
 
 <!-- START: Full-window media overlay display <div>'s -->
-<div id="mediaviewer-overlay" tabindex="-1" class="mediaviewer-overlay position-fixed w-100 h-100 top-0 start-0 bg-white bg-opacity-75">
+<dialog id="mediaviewer-overlay" class="mediaviewer-overlay position-fixed w-100 h-100 mw-100 mh-100 top-0 start-0 bg-white bg-opacity-75 p-0 m-0 overflow-hidden">
 	<div class="mediaviewer-overlay-controls bg-dark">
 		<div class="mediaviewer-overlay-navigation">
 			<button type="button" id="mediaviewer-overlay-previous" class="btn btn-link btn-lg p-0 text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);' role='button' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>
@@ -169,8 +165,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	}
 ?>		
 	</div>
-	<div id="loopBack" class="" onfocus="document.getElementById('mediaviewer-overlay').focus();" tabindex="0">Looping :)</div>
-</div>
+</dialog>
 <!-- END: Full-window media overlay display <div>'s -->
 
 <!-- START: Initialize viewer on completion of page load -->

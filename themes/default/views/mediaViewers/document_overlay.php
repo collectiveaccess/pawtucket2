@@ -21,10 +21,8 @@ $options = $this->getVar('options');
 	
 		<button type="button" id="documentviewer-overlay-previous" class="border-0 btn btn-white documentviewer-control" aria-label="Previous page"><i class="bi bi-arrow-left"></i></button>
 		<span id="documentviewer-overlay-currentpage"></span>
-		<button type="button" id="documentviewer-overlay-next" class="border-0 btn btn-white documentviewer-control" aria-label="Next Page"><i class="bi bi-arrow-right"></i></button>
+		<button type="button" id="documentviewer-overlay-next" class="border-0 btn btn-white documentviewer-control" aria-label="Next page"><i class="bi bi-arrow-right"></i></button>
 	</div>
 </div>
 
 <div class="mediaviewer mediaviewer-document-overlay-container"></div>
-
-

@@ -704,22 +704,27 @@ class DetailController extends FindController {
 					"representation_id" => null, 
 					"download_source" => "pawtucket"
 			));
-			$va_reps = $t_child_object->getRepresentations(array($ps_version), null, array("checkAccess" => $this->opa_access_values));
+			$va_reps = $t_child_object->getRepresentations([$ps_version, 'download'], null, array("checkAccess" => $this->opa_access_values));
 			$vs_idno = $t_child_object->get('idno');
 			
 			foreach($va_reps as $vn_representation_id => $va_rep) {
-				$va_rep_info = $va_rep['info'][$ps_version];
+				if(!($t_rep = ca_object_representations::findAsInstance($vn_representation_id))) { continue; }
+				if(!is_array($media_display_info = caGetMediaDisplayInfoForMimetype('download', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
 				
-				$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
+				$version = $media_display_info['download_version'] ?? $ps_version;
 				
+				$va_rep_info = $va_rep['info'][$version];
+				
+				$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
+		
 				$va_file_names[$vs_filename] = true;
 				$this->view->setVar('version_download_name', $vs_filename);
 			
 				//
 				// Perform metadata embedding
 				$t_rep = new ca_object_representations($va_rep['representation_id']);
-				if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
-					$vs_path = $t_rep->getMediaPath('media', $ps_version);
+				if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
+					$vs_path = $t_rep->getMediaPath('media', $version);
 				}
 				$va_file_paths[$vs_path] = $vs_filename;
 				

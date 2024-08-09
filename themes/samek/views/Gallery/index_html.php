@@ -15,6 +15,7 @@ switch($vs_image_format){
 	# --------------------
 }
 $va_set_groups = $this->getVar("groups");
+
 ?>
 <div class="row">
 	<div class='col-12'>
@@ -29,7 +30,15 @@ $va_set_groups = $this->getVar("groups");
 ?>
 		<div class="row">
 <?php
+		
+		//NOTE: Themes is last in the array and needed to be moved to the front of the array, these 4 lines of code does this.
+		$last_key = array_key_last($va_set_groups);
+		$last_item = $va_set_groups[$last_key];
+		unset($va_set_groups[$last_key]);
+		$va_set_groups = array($last_key => $last_item) + $va_set_groups;
+
 		foreach($va_set_groups as $vn_group_id => $va_set_group){
+
 			$vs_desc = "";
 			if($vs_desc = $va_set_group["description"]){
 				if(mb_strlen($vs_desc) > 400){
@@ -37,6 +46,7 @@ $va_set_groups = $this->getVar("groups");
 				}
 				$vs_desc = "<div class='card-text small text-body-secondary'>".$vs_desc."</div>";
 			}
+
 			print "<div class='col-sm-6 d-flex'>";
 			$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'><img src='".$va_set_group["image"]."' class='".$vs_image_class."' alt=''>
 							<div class='card-body'>

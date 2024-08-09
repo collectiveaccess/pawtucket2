@@ -52,7 +52,7 @@ if($show_nav){
 ?>
 	<div class="row mt-n3">
 		<div class="col text-center text-md-end">
-			<nav aria-label="result navigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
+			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 	</div>
 <?php
@@ -142,15 +142,6 @@ if($show_nav){
 								<dd>^ca_objects.idno</dd>
 							</ifdef>
 							<ifdef code="ca_objects.location">
-								<dt><?= _t('Location'); ?></dt>
-								<dd>
-									<ifdef code="ca_objects.location.box">Box ^ca_objects.location.box </ifdef>
-									<ifdef code="ca_objects.location.drawer">Drawer ^ca_objects.location.drawer </ifdef>
-									<ifdef code="ca_objects.location.folder">Folder ^ca_objects.location.folder </ifdef>
-									<ifdef code="ca_objects.location.item_location">Item ^ca_objects.location.item_location </ifdef>
-									<ifdef code="ca_objects.location.location_description"><div>^ca_objects.location.location_description</div></ifdef>
-								</dd>
-							</ifdef>
 							<ifcount code="ca_collections" min="1">
 								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Part of'); ?></ifcount></dt>
 								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
