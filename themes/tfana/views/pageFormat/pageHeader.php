@@ -69,8 +69,11 @@ if($this->request->isLoggedIn()){
 	<div class="bg-body-yellow w-100">
 		<div class="container-xl">
 			<div class="row">
-				<div class="col-sm-12 text-end tk-degular nav-top">
-					<a href="https://www.tfana.org/" class="fw-bold fs-5 text-uppercase text-decoration-none">Theater for a New Audience <i class="bi bi-house-fill"></i></a>
+				<div class="col-6 text-start tk-degular nav-top">
+					<?= caNavlink($this->request, "Digital Archive", "fw-bold fs-5 text-uppercase text-decoration-none", "", "", ""); ?>
+				</div>
+				<div class="col-6 text-end tk-degular nav-top">
+					<a href="https://www.tfana.org/" class="fw-bold fs-5 text-uppercase text-decoration-none" target="_blank">TFANA.org <i class="bi bi-box-arrow-in-up-right"></i></a>
 				</div>
 			</div>
 		</div>

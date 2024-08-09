@@ -86,11 +86,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-	<div class="row">
-		<div class="col">				
-			{{{<ifdef code="ca_occurrences.description"><div>^ca_occurrences.description</div></ifdef>}}}
-		</div>
-	</div>
 	{{{<ifcount code="ca_occurrences.children" min="1">
 		<dl class="row">
 			<ifcount code="ca_occurrences.children" restrictToTypes="production" min="1">
@@ -101,11 +96,15 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences.children" restrictToTypes="event" min="1" max="1"><?= _t('Event'); ?></ifcount><ifcount code="ca_occurrences.children" restrictToTypes="event" min="2"><?= _t('Events'); ?></ifcount></dt>
 				<unit relativeTo="ca_occurrences.children" restrictToTypes="event" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-light h-100 w-100 text-black">^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.date"><br>^ca_occurrences.date</ifdef></l></dd></unit>
 			</ifcount>
+			<ifcount code="ca_occurrences.children" restrictToTypes="education" min="1">
+				<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences.children" restrictToTypes="event" min="1"><?= _t('Education'); ?></ifcount></dt>
+				<unit relativeTo="ca_occurrences.children" restrictToTypes="event" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-light h-100 w-100 text-black">^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.date"><br>^ca_occurrences.date</ifdef></l></dd></unit>
+			</ifcount>
 		</dl>
 	</ifcount>}}}
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row">
-		<div class="col"><h2>Related Objects</h2><hr></div>
+		<div class="col"><h2>Objects</h2><hr></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_occurrences.occurrence_id:'.$t_item->get("ca_occurrences.occurrence_id"))); ?>">
