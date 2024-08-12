@@ -86,17 +86,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-{{{<ifdef code="ca_object_representations.media.large">
-	<div class="row justify-content-center mb-3">
-		<div class="col">
-			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
-		</div>
-	</div>
-</ifdef>}}}
-	<div class="row row-cols-1 row-cols-md-2">
-		<div class="col">
-		</div>
-	</div>
 	<div class="row row-cols-1 row-cols-md-2">
 		{{{<ifcount code="ca_objects" restrictToRelationshipTypes="select" min="1"><unit relativeTo="ca_objects" restrictToRelationshipTypes="select" limit="1" delimiter=" ">
 			<ifdef code="ca_object_representations.media.large"><div class="col featuredImage">
