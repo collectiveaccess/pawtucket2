@@ -187,7 +187,7 @@ if($show_nav){
 						}
 					}
 					if($t_object->get("ca_places", array("restrictToRelationshipTypes" => "building"))){
-						if($links = caGetBrowseLinks($t_object, 'ca_places', ['restrictToRelationshipTypes' => 'building', 'template' => '<l>^ca_places.preferred_labels</l>', 'linkTemplate' => '^LINK'])) {
+						if($links = caGetBrowseLinks($t_object, 'ca_places', ['restrictToRelationshipTypes' => 'building', 'template' => '<l>^ca_places.hierarchy.preferred_labels%delimiter=_→_</l>', 'linkTemplate' => '^LINK'])) {
 				?>
 							<dl class="mb-0">
 								<dt>Building<?= (sizeof($links) > 1 ) ? "s" : ""; ?></dt>
@@ -200,7 +200,7 @@ if($show_nav){
 						
 					</div>
 				</div>
+				<div id="map" style="height: 200px; class="py-3">{{{map}}}</div>
 			</div>
-			<div id="map" class="py-3">{{{map}}}</div>
 		</div>
 	</div>
