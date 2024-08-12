@@ -608,6 +608,10 @@ a.facetApply, button.facetApplySlider {
 .bResultListSimpleResult{
 	padding:0px 30px 30px 30px;
 }
+.miscImageList{
+	margin:0px 50px 50px 50px;
+	text-align:center;
+}
 /* Ornaments Intro */
 .ornamentsCatItem{
     padding: 35px 0px 0px 0px;
