@@ -94,29 +94,16 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	</div>
 </ifdef>}}}
 	<div class="row row-cols-1 row-cols-md-2">
-		<div class="col">				
-			{{{<dl class="mb-0">
-				<ifcount code="ca_entities" restrictToRelationshipTypes="created_by">
-					<dt><?= _t('Work by'); ?></dt>
-					<unit relativeTo="ca_entities" restrictToRelationshipTypes="created_by" delimeter=" "><dd>
-						<l>^ca_entities.preferred_labels</l>
-					</dd></unit>
-				</ifcount>
-				<ifcount code="ca_entities" restrictToRelationshipTypes="director">
-					<dt><?= _t('Director'); ?></dt>
-					<unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimeter=" "><dd>
-						<l>^ca_entities.preferred_labels</l>
-					</dd></unit>
-				</ifcount>
-				<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text">
-					<dt><?= _t('Description'); ?></dt>
-					<dd>
-						^ca_occurrences.descriptionWithSource.prodesc_text
-					</dd>
-				</ifdef>
-			</dl>}}}
-		</div>
 		<div class="col">
+		</div>
+	</div>
+	<div class="row row-cols-1 row-cols-md-2">
+		{{{<ifcount code="ca_objects" restrictToRelationshipTypes="select" min="1"><unit relativeTo="ca_objects" restrictToRelationshipTypes="select" limit="1" delimiter=" ">
+			<ifdef code="ca_object_representations.media.large"><div class="col featuredImage">
+				<l>^ca_object_representations.media.large</l>
+			</div></ifdef>
+		</unit></ifcount>}}}
+		<div class="col">				
 			{{{<dl class="mb-0">
 				<ifdef code="ca_occurrences.parent.preferred_labels">
 					<dt><?= _t('Season'); ?></dt>
@@ -142,40 +129,83 @@ $map_options = $this->getVar('mapOptions') ?? [];
 						^ca_occurrences.venue%delimiter=,_
 					</dd>
 				</ifdef>
-				<ifcount code="ca_occurrences.related" restrictToTypes="production" min="1">
-					<dt><ifcount code="ca_occurrences.related" restrictToTypes="production" min="1" max="1"><?= _t('Related Production'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="production" min="2"><?= _t('Related Productions'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences.related" restrictToTypes="production" delimiter=""><dd>
-						<l>^ca_occurrences.preferred_labels</l>
+				<ifcount code="ca_entities" restrictToRelationshipTypes="created_by" min="1">
+					<dt><?= _t('Work by'); ?></dt>
+					<unit relativeTo="ca_entities" restrictToRelationshipTypes="created_by" delimeter=" "><dd>
+						<l>^ca_entities.preferred_labels</l>
 					</dd></unit>
 				</ifcount>
-				<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1">
-					<dt><ifcount code="ca_occurrences.related" restrictToTypes="event" min="1" max="1"><?= _t('Related Event'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="event" min="2"><?= _t('Related Events'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences.related" restrictToTypes="event" delimiter=""><dd>
-						<l>^ca_occurrences.preferred_labels</l>
+				<ifcount code="ca_entities" restrictToRelationshipTypes="director" min="1">
+					<dt><?= _t('Director'); ?></dt>
+					<unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimeter=" "><dd>
+						<l>^ca_entities.preferred_labels</l>
 					</dd></unit>
 				</ifcount>
-				<ifcount code="ca_occurrences.related" restrictToTypes="education" min="1">
-					<dt><ifcount code="ca_occurrences.related" restrictToTypes="education" min="1" max="1"><?= _t('Related Education Program'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="education" min="2"><?= _t('Related Education Programs'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences.related" restrictToTypes="education" delimiter=""><dd>
-						<l>^ca_occurrences.preferred_labels</l>
-					</dd></unit>
-				</ifcount>
-				<ifcount code="ca_collections" min="1">
-					<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-					<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
-				</ifcount>
-				<ifcount code="ca_entities" min="1" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant">
-					<dt><ifcount code="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" min="1"><?= _t('Production Roles'); ?></ifcount></dt>
-					<dd><unit relativeTo="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
-				</ifcount>
-				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="actor">
-					<dt><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="1" max="1"><?= _t('Performer'); ?><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="2"><?= _t('Performers'); ?></ifcount></dt>
-					<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="actor" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
-				</ifcount>
-			</dl>}}}					
+			</dl>}}}
 		</div>
 	</div>
-{{{<ifcount code="ca_objects" min="1">
+<?php
+	if($t_item->get("ca_occurrences.descriptionWithSource.prodesc_text") || $t_item->get("ca_occurrences.related", array("checkAccess" => $access_values)) || $t_item->get("ca_collections", array("checkAccess" => $access_values)) || $t_item->get("ca_entities", array("excludeRelationshipTypes" => array("director", "created_by"), "checkAccess" => $access_values))){
+?>
+	<div class="row row-cols-1">
+		<div class="col">
+			<div class="bg-light py-3 px-4 my-4">
+				<div class="row row-cols-1 row-cols-md-2 mb-4 bg-light">
+					
+					{{{<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text">
+						<div class="col">
+							<dt><?= _t('Description'); ?></dt>
+							<dd>
+								^ca_occurrences.descriptionWithSource.prodesc_text
+							</dd>
+						</div>
+					</ifdef>}}}					
+					<div class="col">
+						{{{<dl class="mb-0">
+							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="actor">
+								<dt><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="1" max="1"><?= _t('Performer'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="2"><?= _t('Performers'); ?></ifcount></dt>
+								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="actor" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
+							</ifcount>
+							<ifcount code="ca_entities" min="1" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant">
+								<dt><ifcount code="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" min="1"><?= _t('Production Roles'); ?></ifcount></dt>
+								<dd><unit relativeTo="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
+							</ifcount>
+							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="related">
+								<dt><ifcount code="ca_entities" restrictToRelationshipTypes="related" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="related" min="2"><?= _t('Related People'); ?></ifcount></dt>
+								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="related" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
+							</ifcount>
+							<ifcount code="ca_occurrences.related" restrictToTypes="production" min="1">
+								<dt><ifcount code="ca_occurrences.related" restrictToTypes="production" min="1" max="1"><?= _t('Related Production'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="production" min="2"><?= _t('Related Productions'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences.related" restrictToTypes="production" delimiter=""><dd>
+									<l>^ca_occurrences.preferred_labels</l>
+								</dd></unit>
+							</ifcount>
+							<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1">
+								<dt><ifcount code="ca_occurrences.related" restrictToTypes="event" min="1" max="1"><?= _t('Related Event'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="event" min="2"><?= _t('Related Events'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences.related" restrictToTypes="event" delimiter=""><dd>
+									<l>^ca_occurrences.preferred_labels</l>
+								</dd></unit>
+							</ifcount>
+							<ifcount code="ca_occurrences.related" restrictToTypes="education" min="1">
+								<dt><ifcount code="ca_occurrences.related" restrictToTypes="education" min="1" max="1"><?= _t('Related Education Program'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="education" min="2"><?= _t('Related Education Programs'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences.related" restrictToTypes="education" delimiter=""><dd>
+									<l>^ca_occurrences.preferred_labels</l>
+								</dd></unit>
+							</ifcount>
+							<ifcount code="ca_collections" min="1">
+								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
+								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
+							</ifcount>
+						</dl>}}}					
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php
+	}
+?>	
+{{{<ifcount code="ca_objects" excludeRelationshipTypes="select" min="1">
 	<div class="row">
 		<div class="col"><h2>Related Objects</h2><hr></div>
 	</div>

@@ -367,3 +367,9 @@ $yellow: #fec02f;
 		}
 	}
 }
+/* -------------------------- Detail ------------------------ */
+.detail .featuredImage img{
+	object-fit: contain !important;
+	width:100%;
+	height:400px;
+}
