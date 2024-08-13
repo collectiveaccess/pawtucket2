@@ -5117,6 +5117,8 @@ function caProcessReferenceTags($request, $text, $options=null) {
 	$pm_page = caGetOption('page', $options, null);
 	$idnos = [];
 
+	$allowed_tags = ['b', 'i', 'em', 'strong', 'u', 'strike', 'img', 'video', 'audio', 'div', 'span']; // TODO: make configurable
+
 	$text = html_entity_decode($text);
 	$value_id = caGetOption('value_id', $options, null);
 
@@ -5150,6 +5152,7 @@ function caProcessReferenceTags($request, $text, $options=null) {
 	// New style (html-like) tags 
 	// Ex. <object idno="2024.001">^ca_objects.preferred_labels.name</object>
 	$o_doc = str_get_dom($text);
+	$group_count = 0;
 	foreach($o_doc->children as $index => $node) {
 		$tag = strtolower($node->tag);
 		if(isset($tags[$tag])) {
@@ -5161,12 +5164,16 @@ function caProcessReferenceTags($request, $text, $options=null) {
 		} else {
 			switch($tag) {
 				case 'mediagroup':
+					$rep_ids = [];
+					$group_count++;
 					if($t_instance = caGetInstanceForValueID($value_id)) {							
-						$group = mb_strtolower($node->group);
+						if(!($group = mb_strtolower($node->group))) { $group = "group_{$group_count}"; }
+						
 						$render = strtolower($node->render);
 						$template = strtolower($node->getInnerText());
+						$idnos = $node->idnos;
 						
-						if($qr = $t_instance->getRepresentationsAsSearchResult()) {
+						if($group && ($qr = $t_instance->getRepresentationsAsSearchResult())) {
 							$media_group = [];
 							while($qr->nextHit()) {
 								if(mb_strtolower($qr->get('ca_object_representations.media_group')) !== $group) { continue; }
@@ -5185,23 +5192,58 @@ function caProcessReferenceTags($request, $text, $options=null) {
 								
 								$media_group[] = $media_item;
 							}
-							
+							$rep_ids = array_map(function($v) { return $v['representation_id']; }, $media_group);
+						}	
+						
+						if($idnos) {
+							$idnos = preg_split('![ ]*[;,]+[ ]*!', $idnos);
+							if(sizeof($idnos = array_filter($idnos, 'strlen'))) {
+								$idnos = array_map('trim', $idnos);
+								
+								$acc = [];
+								if($qr = ca_objects::findAsSearchResult(['idno' => ['IN', $idnos]])) {
+									while($qr->nextHit()) {
+										if(!($rep_id = $qr->get('ca_object_representations.representation_id'))) { continue; }
+										$rep_ids[] = $rep_id;
+										$idno = $qr->get('ca_objects.idno');
+										$media_item = [
+											'representation_id' => $rep_id,
+											'caption' => strip_tags($qr->get('ca_object_representations.caption'), $allowed_tags),
+										];
+										if($template) {
+											$media_item['display'] = strip_tags($qr->getWithTemplate($template), $allowed_tags);
+										}
+										foreach($qr->getMediaVersions('media') as $v) {
+											$media_item['urls'][$v] = $qr->getMediaUrl('media', $v);
+											$media_item['tags'][$v] = $qr->getMediaTag('media', $v);
+										}
+										
+										$acc[$idno] = $media_item;
+									}
+									foreach($idnos as $idno) {
+										$media_group[] = $acc[$idno];
+									}
+								}
+							}
+						}
+						
+						if(sizeof($rep_ids)) {
 							$view = new View($request, $request->getViewsDirectoryPath()."/bundles/");
-							$view->setVar('representation_ids', $rep_ids = array_map(function($v) { return $v['representation_id']; }, $media_group));
+							$view->setVar('representation_ids', $rep_ids);
 							$view->setVar('subject', $t_instance);
 							$view->setVar('representations', caMakeSearchResult('ca_object_representations', $rep_ids));
 							$view->setVar('media_group', $media_group);
+							$view->setVar('idnos', $idnos);
 							$view->setVar('group', $group);
 							$view->setVar('value_id', $value_id);
 							$view->setVar('template', $template);
 							$view->setVar('width', $node->width);
 							$view->setVar('height', $node->height);
-							
 							$content = $view->render("mediagroups/{$render}_html.php");
 							$node->setOuterText($content);
 						} else {
 							$node->setOuterText("<p>ERROR</p>");
-						}	
+						}
 					} else {
 						$node->setOuterText("<p>ERROR</p>");
 					}
