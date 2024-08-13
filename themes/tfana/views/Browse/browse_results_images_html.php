@@ -142,7 +142,7 @@ if ($vn_start < $qr_res->numHits()) {
 			$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 if(strToLower($this->request->getAction()) == "seasons"){
 			$vs_result_output = "
-				<div class='col-md-6 col-lg-3 d-flex'>
+				<div class='col-md-6 col-lg-4 col-xl-4 col-xxl-3 d-flex'>
 					<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4 bg-light'>
 					  	".caDetailLink($this->request, "<div class='row g-0 align-items-center justify-content-center'>
     						<div class='col-md-5 bg-white'>
