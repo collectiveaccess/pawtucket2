@@ -1,6 +1,9 @@
 <?php
 if(!$this->request->isLoggedIn()){
-	print "<div class='unit text-center'><H2 class-'uk-h1 text-center'>Please ".caNavLink($this->request, "Login", "el-link", "", "loginReg", "loginform")." to access repatriation records.</H2><br/>".caNavLink($this->request, "Login", "uk-button uk-button-default", "", "loginReg", "loginform")."</div>";
+	$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "", "LoginReg", "LoginForm");
+	caSetRedirect($vs_url);
+	return;
+	#print "<div class='unit text-center'><H2 class-'uk-h1 text-center'>Please ".caNavLink($this->request, "Login", "el-link", "", "loginReg", "loginform")." to access repatriation records.</H2><br/>".caNavLink($this->request, "Login", "uk-button uk-button-default", "", "loginReg", "loginform")."</div>";
 }else{
 
 	$t_item = $this->getVar("item");
