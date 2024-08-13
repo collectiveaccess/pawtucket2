@@ -153,11 +153,11 @@ $map_options = $this->getVar('mapOptions') ?? [];
 						{{{<dl class="mb-0">
 							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="actor">
 								<dt><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="1" max="1"><?= _t('Performer'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="2"><?= _t('Performers'); ?></ifcount></dt>
-								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="actor" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
+								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="actor" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></dd>
 							</ifcount>
 							<ifcount code="ca_entities" min="1" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant">
 								<dt><ifcount code="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" min="1"><?= _t('Production Roles'); ?></ifcount></dt>
-								<dd><unit relativeTo="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
+								<dd><unit relativeTo="ca_entities_x_occurrences" sort="ca_entities_x_occurrences.rank" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" delimiter=", "><l>^ca_entities.preferred_labels</l> (<ifdef code="ca_entities_x_occurrences.source_info">^ca_entities_x_occurrences.source_info</ifdef><ifnotdef code="ca_entities_x_occurrences.source_info">^relationship_typename</ifnotdef>)</unit></dd>
 							</ifcount>
 							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="related">
 								<dt><ifcount code="ca_entities" restrictToRelationshipTypes="related" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="related" min="2"><?= _t('Related People'); ?></ifcount></dt>

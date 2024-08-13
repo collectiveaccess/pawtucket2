@@ -126,7 +126,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	{{{<ifcount code="ca_occurrences" restrictToTypes="production" min="1">
 		<dl class="row">
 			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" restrictToTypes="production" min="1" max="1"><?= _t('Related Production'); ?></ifcount><ifcount code="ca_occurrences" restrictToTypes="production" min="2"><?= _t('Related Productions'); ?></ifcount></dt>
-			<unit relativeTo="ca_occurrences" restrictToTypes="production" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br>(^relationship_typename)</l></dd></unit>
+			<unit relativeTo="ca_entities_x_occurrences" sort="ca_entities_x_occurrences.rank" restrictToTypes="production" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br> (<ifdef code="ca_entities_x_occurrences.source_info">^ca_entities_x_occurrences.source_info</ifdef><ifnotdef code="ca_entities_x_occurrences.source_info">^relationship_typename</ifnotdef>)</l></dd></unit>
 		</dl>
 	</ifcount>}}}
 	{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1">
