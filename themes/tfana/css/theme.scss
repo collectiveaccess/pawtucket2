@@ -348,15 +348,6 @@ $yellow: #fec02f;
 	max-width:1280px;
 }
 /* ------------------------- browse ------------------------- */
-.results.seasons{
-	.card{
-		background-color:#3266b1;
-		color:#FFF;
-	}
-	a:hover .card, a:focus .card{
-		box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 8px 0px !important;
-	}
-}
 .results.productions{
 	.card{
 		img{
@@ -365,6 +356,37 @@ $yellow: #fec02f;
 			width:100%;
 			padding:1rem;
 		}
+	}
+}
+.results.events{
+	.card{
+		img{
+			object-fit: contain !important;
+			height:200px;
+			width:100%;
+			padding:1rem;
+		}
+	}
+}
+.results.seasons{
+	.card{
+		a{
+			transition: ease all 0.3s !important;
+			text-decoration:none !important;
+		}
+		a:hover{
+			color:$yellow !important;
+		}
+		img{
+			object-fit: contain !important;
+			height:200px;
+			width:100%;
+			padding:.25rem;
+		}
+		hr{
+			opacity: 1;
+  			border-block-start: 2px solid $yellow;
+  		}
 	}
 }
 /* -------------------------- Detail ------------------------ */

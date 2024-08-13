@@ -140,18 +140,37 @@ if ($vn_start < $qr_res->numHits()) {
 				$vs_add_to_set_link = "<a href='#' class='link-dark mx-1' aria-label='Add' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 			}
 			$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
+if(strToLower($this->request->getAction()) == "seasons"){
 			$vs_result_output = "
-	<div class='col-md-6 col-lg-4 d-flex'>
-		<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
-		  {$vs_rep_detail_link}
-			<div class='card-body'>
-				{$vs_caption}
-			</div>
-			<div class='card-footer text-end bg-transparent'>
-				{$vs_detail_button_link}{$vs_add_to_set_link}
-			</div>
-		 </div>	
-	</div><!-- end col -->";
+				<div class='col-md-6 col-lg-3 d-flex'>
+					<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4 bg-light'>
+					  	".caDetailLink($this->request, "<div class='row g-0 align-items-center justify-content-center'>
+    						<div class='col-md-5 bg-white'>
+								{$vs_thumbnail}
+							</div>
+							<div class='col-md-7'>
+								<div class='card-body'>
+									".str_replace("Season", "", $vs_caption)."
+								</div>
+							</div>
+						</div>", "",$vs_table, $vn_id)." 
+					 </div>	
+				</div><!-- end col -->";
+
+}else{
+			$vs_result_output = "
+				<div class='col-md-6 col-lg-4 d-flex'>
+					<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
+					  {$vs_rep_detail_link}
+						<div class='card-body'>
+							{$vs_caption}
+						</div>
+						<div class='card-footer text-end bg-transparent'>
+							{$vs_detail_button_link}{$vs_add_to_set_link}
+						</div>
+					 </div>	
+				</div><!-- end col -->";
+}
 			ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 			print $vs_result_output;
 		}				
