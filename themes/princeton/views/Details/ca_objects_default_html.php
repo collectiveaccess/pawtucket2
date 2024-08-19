@@ -131,7 +131,7 @@ $iiif_manifest_url = caNavUrl($this->request, 'service.php', 'IIIF', 'manifest/c
 				{{{<ifdef code="ca_objects.duration"><div class="unit"><label>Duration</label>^ca_objects.duration%delimiter=,_</div></ifdef>}}}
 				
 						
-				<div class="unit"><label>IIIF Manifest</label> <a href="<?= $iiif_manifest_url; ?>"><?= $iiif_manifest_url; ?></a></unit>
+				<div class="unit"><label>IIIF Manifest</label> <a href="<?= $iiif_manifest_url; ?>"><?= $iiif_manifest_url; ?></a></unit></div>
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row">
