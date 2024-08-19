@@ -129,9 +129,7 @@ $iiif_manifest_url = caNavUrl($this->request, 'service.php', 'IIIF', 'manifest/c
 				{{{<ifdef code="ca_objects.dimensions_container.display_dimensions"><div class="unit"><label>Dimensions</label>^ca_objects.dimensions_container.display_dimensions</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.scale"><div class="unit"><label>Scale</label>^ca_objects.scale%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.duration"><div class="unit"><label>Duration</label>^ca_objects.duration%delimiter=,_</div></ifdef>}}}
-				
-						
-				<div class="unit"><label>IIIF Manifest</label> <a href="<?= $iiif_manifest_url; ?>"><?= $iiif_manifest_url; ?></a></unit></div>
+										
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row">
@@ -186,6 +184,11 @@ $iiif_manifest_url = caNavUrl($this->request, 'service.php', 'IIIF', 'manifest/c
 			<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1'>
 				<hr>
 <?php
+				if($this->getVar("representation_id")){
+?>
+				<div class="unit"><label>IIIF Manifest</label> <a href="<?= $iiif_manifest_url; ?>"><?= $iiif_manifest_url; ?></a></unit></div>
+<?php
+				}
 				$vs_rights_text = $this->getVar("rights_text");
 				if($tmp = $t_object->get("ca_objects.rights_container.rights")){
 					$vs_rights_text = $tmp;
