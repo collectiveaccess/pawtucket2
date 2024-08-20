@@ -117,7 +117,7 @@ if($show_nav){
 							</ifdef>
 							<ifdef code="ca_objects.color_bw">
 								<dt><?= _t('Color'); ?></dt>
-								<dd>^ca_objects.color_bw.colorType</dd>
+								<dd>^ca_objects.color_bw</dd>
 							</ifdef>
 							<ifdef code="ca_objects.format_type_press">
 								<dt><?= _t('Format'); ?></dt>

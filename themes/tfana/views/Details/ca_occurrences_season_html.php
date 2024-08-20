@@ -140,8 +140,30 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<div class="col"><h2>Related Objects</h2><hr></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_occurrences.occurrence_id:'.$t_item->get("ca_occurrences.occurrence_id"))); ?>">
-			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+		<unit relativeTo="ca_objects" delimiter="" limit="8">
+
+
+
+				<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
+					<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
+					  <l>^ca_object_representations.media.medium%class="card-img-top object-fit-contain px-3 pt-3 rounded-0"</l>
+						<div class='card-body'>
+							<div class='card-title'><small class='text-body-secondary'>^ca_objects.type_id, ^ca_objects.idno</small><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div><ifdef code='ca_objects.date'><p class='card-text small lh-sm text-truncate'>^ca_objects.date</p></ifdef>
+						</div>
+						<div class='card-footer text-end bg-transparent'>
+							<l class="link-dark mx-1"><i class='bi bi-arrow-right-square'></i></l>
+						</div>
+					 </div>	
+				</div><!-- end col -->
+
+		
+		</unit>
+	</div>
+	<ifcount code="ca_objects" min="9">
+		<div class="row">
+			<div class="col text-center pb-4 mb-4">
+				<?php print caNavLink($this->request, "Full Results  <i class='ps-2 bi bi-box-arrow-up-right' aria-label='link out'></i>", "btn btn-primary", "", "Browse", "objects", array("facet" => "occ_facet", "id" => $t_item->get("ca_occurrences.occurrence_id"))); ?>
+			</div>
 		</div>
 	</div>
 </ifcount>}}}
