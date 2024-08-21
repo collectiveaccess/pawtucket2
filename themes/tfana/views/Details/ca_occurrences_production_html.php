@@ -120,15 +120,11 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</ifdef>
 				<ifcount code="ca_entities" restrictToRelationshipTypes="created_by" min="1">
 					<dt><?= _t('Work by'); ?></dt>
-					<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="created_by" delimiter=", ">
-						<l>^ca_entities.preferred_labels</l>
-					</unit></dd>
+					<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="created_by" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></dd>
 				</ifcount>
 				<ifcount code="ca_entities" restrictToRelationshipTypes="director" min="1">
 					<dt><ifcount code="ca_entities" restrictToRelationshipTypes="director" min="1" max="1"><?= _t('Director'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="director" min="2"><?= _t('Directors'); ?></ifcount></dt>
-					<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimiter=", ">
-						<l>^ca_entities.preferred_labels</l>
-					</unit></dd>
+					<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></dd>
 				</ifcount>
 			</dl>}}}
 		</div>
