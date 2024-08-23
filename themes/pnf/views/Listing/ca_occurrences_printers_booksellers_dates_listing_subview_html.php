@@ -94,10 +94,10 @@
 			<div class='col-sm-12'>
 				<div style='padding:20px 10px 0px 10px;'>
 					<div class='row'>
-						<div class='col-sm-4 col-md-3 listingSubHeading'>Name</div>
-						<div class='col-sm-4 col-md-2 listingSubHeading'>Places/Dates Active</div>
-						<div class='col-sm-4 col-md-3 listingSubHeading'>Conjectured Date of Publication</div>
-						<div class='col-sm-4 col-md-4 listingSubHeading'>Notes</div>
+						<div class='col-sm-4 col-md-3 listingSubHeading'><?php print ($g_ui_locale == 'en_US') ? "Name" : "Apellido & Nombre"; ?></div>
+						<div class='col-sm-4 col-md-2 listingSubHeading'><?php print ($g_ui_locale == 'en_US') ? "Places/Dates Active" : "Lugar/Fechas de Actividad"; ?></div>
+						<div class='col-sm-4 col-md-3 listingSubHeading'><?php print ($g_ui_locale == 'en_US') ? "Conjectured Date of Publication" : "Fecha de publicación possible"; ?></div>
+						<div class='col-sm-4 col-md-4 listingSubHeading'><?php print ($g_ui_locale == 'en_US') ? "Notes" : "Notas"; ?></div>
 					</div>
 				</div>
 			</div>
