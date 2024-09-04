@@ -94,7 +94,7 @@
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>
 																<div class='hpExploreBoxDetails'>
 																	<div class='hpExploreBoxTitle'>Places</div>
-																</div>", "", "", "", ""); ?>
+																</div>", "", "", "Explore", "places"); ?>
 						
 					</div>
 				</div>

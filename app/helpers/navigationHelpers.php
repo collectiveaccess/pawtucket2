@@ -176,7 +176,7 @@
 					if ($use_query_string) { 
 					    $query_params[$vs_name] = $vs_value;
 					} else {
-					    $vs_url .= '/'.$vs_name."/".(caGetOption('dontURLEncodeParameters', $pa_options, false) ? $vs_value : urlencode($vs_value));
+					    $vs_url .= '/'.$vs_name."/".(caGetOption('dontURLEncodeParameters', $pa_options, false) ? $vs_value : rawurlencode($vs_value));
 				    }
 					$vn_i++;
 				}
@@ -1392,14 +1392,15 @@
 	# ------------------------------------------------------------------------------------------------
 	/**
 	 * Redirect to given url
-	 * @param string $ps_url
+	 * @param string $url
 	 * @return bool success state
 	 */
-	function caSetRedirect($ps_url) {
-		global $g_response;
-		if(!($g_response instanceof ResponseHTTP)) { return false; }
+	function caSetRedirect($url) {
+		$app = AppController::getInstance();
+		$resp = $app->getResponse();
+		if(!($resp instanceof ResponseHTTP)) { return false; }
 
-		$g_response->setRedirect($ps_url);
+		$resp->setRedirect($url);
 		return true;
 	}
 	# ------------------------------------------------------------------------------------------------

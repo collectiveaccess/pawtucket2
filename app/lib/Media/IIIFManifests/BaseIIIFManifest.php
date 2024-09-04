@@ -55,12 +55,7 @@ abstract class BaseIIIFManifest {
 		$this->config = \Configuration::load();
 		$this->base_url = $this->config->get('site_host').$this->config->get('ca_url_root'); //.$request->getBaseUrlPath();
 		
-		$manifest_url = '';
-		if(isset($_SERVER['REQUEST_URI'])) {
-			$this->manifest_url = $this->config->get('site_host').$_SERVER['REQUEST_URI'];
-		} else {
-			$this->manifest_url = $this->base_url."/manifest";
-		}
+		$this->manifest_url = \IIIFService::manifestUrl();
 	}
 	# -------------------------------------------------------
 	/**

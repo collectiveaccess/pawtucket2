@@ -25,15 +25,17 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	$t_object = 			$this->getVar("item");
-	$va_comments = 			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
-	$va_access_values = $this->getVar("access_values");
+$t_object = 			$this->getVar("item");
+$va_comments = 			$this->getVar("comments");
+$va_tags = 				$this->getVar("tags_array");
+$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+$vn_share_enabled = 	$this->getVar("shareEnabled");
+$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+$vn_id =				$t_object->get('ca_objects.object_id');
+$va_access_values = 	$this->getVar("access_values");
+
+$iiif_manifest_url = caNavUrl($this->request, 'service.php', 'IIIF', 'manifest/ca_objects:'.$t_object->getPrimaryKey(), [], ['absolute' => true]);
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -127,8 +129,7 @@
 				{{{<ifdef code="ca_objects.dimensions_container.display_dimensions"><div class="unit"><label>Dimensions</label>^ca_objects.dimensions_container.display_dimensions</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.scale"><div class="unit"><label>Scale</label>^ca_objects.scale%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.duration"><div class="unit"><label>Duration</label>^ca_objects.duration%delimiter=,_</div></ifdef>}}}
-				
-						
+										
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row">
@@ -183,6 +184,11 @@
 			<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1'>
 				<hr>
 <?php
+				if($this->getVar("representation_id")){
+?>
+				<div class="unit"><label>IIIF Manifest</label> <a href="<?= $iiif_manifest_url; ?>"><?= $iiif_manifest_url; ?></a></unit></div>
+<?php
+				}
 				$vs_rights_text = $this->getVar("rights_text");
 				if($tmp = $t_object->get("ca_objects.rights_container.rights")){
 					$vs_rights_text = $tmp;

@@ -31,11 +31,13 @@
 	$vs_key 			= $this->getVar('key');					// cache key for current browse
 	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
 	$vs_view			= $this->getVar('view');
+	if($vs_view) { $vs_view = 'list'; }
+	
 	$vs_browse_type		= $this->getVar('browse_type');
 	$o_browse			= $this->getVar('browse');
 	
 	$vn_facet_display_length_initial = 7;
-	$vn_facet_display_length_maximum = 14;
+	$vn_facet_display_length_maximum = 30;
 	
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";

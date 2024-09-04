@@ -896,6 +896,12 @@ div.advancedSearchField {
 	background-color: #f9f4e8;
 	line-height:2em;
 }
+.staticPage{
+	background-color: #f9f4e8;
+	line-height:2em;
+	padding-right: 15px;
+	padding-left: 15px;
+}
 .staticPageArea p{
 	line-height:2em;
 }

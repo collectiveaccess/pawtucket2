@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -118,10 +118,11 @@ class CollectionsController extends ActionController {
 	# -------------------------------------------------------
 	public function ChildList(){
 		$vn_collection_id = $this->request->getParameter('collection_id', pInteger);
+		$cache_timeout = 0;
 		if($vn_collection_id){
-			$cache_timeout = $this->opo_config->get('cache_timeout');
-			if(($cache_timeout > 0) && CompositeCache::contains('c'.$vn_collection_id, 'Collections_child_list_html', 'collections')) {
-				print CompositeCache::fetch('c'.$vn_collection_id, 'Collections_child_list_html', 'collections');
+			$cache_timeout = (int)$this->opo_config->get('cache_timeout');
+			if(($cache_timeout > 0) && CompositeCache::contains("c{$vn_collection_id}", 'Collections_child_list_html')) {
+				print CompositeCache::fetch("c{$vn_collection_id}", 'Collections_child_list_html');
 				return;
 			}
 			$t_item = new ca_collections($vn_collection_id);
@@ -131,7 +132,7 @@ class CollectionsController extends ActionController {
 			throw new ApplicationException("Invalid collection_id");
 		}
 		$content = $this->render("Collections/child_list_html.php", true);
-		CompositeCache::save('c'.$vn_collection_id, $content, 'Collections_child_list_html', 'collections', $cache_timeout);
+		CompositeCache::save("c{$vn_collection_id}", $content, 'Collections_child_list_html', $cache_timeout);
 		print $content;
 	}
 	# -------------------------------------------------------

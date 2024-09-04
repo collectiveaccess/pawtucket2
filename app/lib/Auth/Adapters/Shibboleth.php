@@ -101,8 +101,8 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	/**
 	 *
 	 */
-	public function authenticate($username, $password = '', $options=null) {
-    	if(caIsRunFromCLI()) { return false; }
+	public function authenticate($username, $password='', $options=null) {
+		if(caIsRunFromCLI()) { return false; }
     	
     	$this->init();
     	
@@ -123,7 +123,7 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 		}
 		$uid = $this->mapAttribute('uid', $attrs);
 		
-		if($this->debug) { $this->log->logInfo(_t("[Shibboleth::debug] Got uid {$uid} while attemtping to authenticate with {$username}::{$password}. Attributes were %1", print_R($attrs, true))); }
+		if($this->debug) { $this->log->logInfo(_t("[Shibboleth::debug] Got uid {$uid} while attempting to authenticate with {$username}::{$password}. Attributes were %1", print_R($attrs, true))); }
 	    if (!$uid) { return false; }
 		if($this->debug) { $this->log->logInfo(_t("[Shibboleth::debug] Authentication with {$username}::{$password} was successful")); }
 	   
@@ -191,7 +191,7 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	# --------------------------------------------------------------------------------
 	/**
 	 * @param string $username Username to create account for
-	 * @param string $passowrd Ignored
+	 * @param string $password Ignored
 	 */
 	public function createUserAndGetPassword($username, $password=null) {
     	if(caIsRunFromCLI()) { return null; }
@@ -218,7 +218,7 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 			case __CA_AUTH_ADAPTER_FEATURE_UPDATE_PASSWORDS__:
 				return false;
 			case __CA_AUTH_ADAPTER_FEATURE_AUTOCREATE_USERS__:
-			    return true;
+			    return (bool)$this->auth_config->get('shibboleth_auto_create_new_users');
 			default:
 				return false;
 		}
@@ -283,7 +283,7 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	 * return array
 	 */
 	private function getAttributeMap() : ?array {
-		if(is_array($map = $this->auth_config->get('shibboleth_field_map'))) {
+		if(is_array($map = $this->auth_config->get(['shibboleth_field_map', 'shibboleth_attribute_map']))) {
 			return $map;
 		}
 		throw new ShibbolethException(_t("shibboleth_field_map not found in configuration"));

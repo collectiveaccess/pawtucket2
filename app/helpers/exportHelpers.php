@@ -560,7 +560,7 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 		
 		print $content;
 		return $content;
-	} elseif(!$display_id || !is_numeric($display_id)) {
+	} elseif((!$display_id || !is_numeric($display_id)) && (!is_array($display_list) || !sizeof($display_list))) {
 		// Generate default display list when no display is specified
 		$display_list = $placements = caExportGetDefaultDisplay($table);
 		$view->setVar('display_list', $display_list);
@@ -607,10 +607,10 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 					$b = $display_item['bundle_name'] ?? null;
 					if($t) {
 						$value = $result->getWithTemplate($t);
+					} elseif($t_display) {
+						$value = html_entity_decode($t_display->getDisplayValue($result, $placement_id, ['forReport' => true, 'convert_codes_to_display_text' => true, 'convertLineBreaks' => false]), ENT_QUOTES, 'UTF-8');
 					} elseif($b) {
 						$value = $result->get($b, ['convertCodesToDisplayText' => true, 'delimiter' => '; ']);
-					} elseif($t_display) {
-						$value = html_entity_decode($t_display->getDisplayValue($result, $placement_id, ['convert_codes_to_display_text' => true, 'convertLineBreaks' => false]), ENT_QUOTES, 'UTF-8');
 					} else {
 						$value = '';
 					}
@@ -643,13 +643,12 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 			}
 			break;
 		case 'xlsx':
-
 			$precision = ini_get('precision');
 			ini_set('precision', 12);
 	
 			$t_display				= $view->getVar('display');
-			$va_display_list 		= $view->getVar('display_list');
-
+			$display_list 		= $view->getVar('display_list');
+			
 			$ratio_pixels_to_excel_height = 0.85;
 			$ratio_pixels_to_excel_width = 0.135;
 
@@ -788,7 +787,11 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 
 						}
 					} else { 
-						$display_text = $t_display->getDisplayValue($result, $placement_id, array_merge(['request' => $request, 'purify' => true], is_array($info['settings']) ? $info['settings'] : []));	
+						$display_text = $t_display ? 
+							$t_display->getDisplayValue($result, $placement_id, array_merge(['request' => $request, 'purify' => true], is_array($info['settings']) ? $info['settings'] : []))
+							:
+							$result->get($info['bundle_name']);
+						;	
 					}
 					
 					$o_sheet->setCellValue($supercol.$column.$line, html_entity_decode(strip_tags(br2nl($display_text)), ENT_QUOTES | ENT_HTML5));
@@ -828,13 +831,6 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 				$o_sheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1,1);
 		
 				if($request && $config->get('excel_report_header_enabled')){
-					if(file_exists($request->getThemeDirectoryPath()."/graphics/logos/".$request->config->get('report_img'))){
-						$logo_path = $request->getThemeDirectoryPath().'/graphics/logos/'.$request->config->get('report_img');
-					}
-					$objDrawing = new \PhpOffice\PhpSpreadsheet\Worksheet\HeaderFooterDrawing();
-					$objDrawing->setName('Image');
-					$objDrawing->setHeight(36);
-					$o_sheet->getHeaderFooter()->addImage($objDrawing, \PhpOffice\PhpSpreadsheet\Worksheet\HeaderFooter::IMAGE_HEADER_LEFT);
 					$criteria_summary = str_replace("&", "+", strip_tags(html_entity_decode($criteria_summary)));
 					$criteria_summary = (strlen($criteria_summary) > 90) ? mb_substr($criteria_summary, 0, 90)."..." : $criteria_summary;
 					$criteria_summary = wordwrap($criteria_summary, 50, "\n", true);
@@ -858,7 +854,8 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 				$o_writer->save('php://output');
 				exit;
 			} else {
-				$o_writer->save($path = ($output_filename ? $output_filename : './output.xlsx'));
+				$path = file_exists($output_filename) ? $output_filename : caGetTempFileName('caExport', 'xlsx');
+				$o_writer->save($path);
 				return [
 					'mimetype' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 					'path' => $path,
@@ -1030,7 +1027,8 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 				$o_writer->save('php://output');
 				return;
 			} else {
-				$o_writer->save($path = ($output_filename ? $output_filename : './output.xlsx'));
+				$path = file_exists($output_filename) ? $output_filename : caGetTempFileName('caExport', 'xlsx');
+				$o_writer->save($path);
 				return [
 					'mimetype' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 					'path' => $path,
