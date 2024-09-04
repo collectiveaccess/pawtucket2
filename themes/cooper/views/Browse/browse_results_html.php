@@ -151,7 +151,7 @@ if (!$vb_ajax) {	// !ajax
 								$vs_faculty_text = "";
 								ksort($va_faculty_texts_by_year);
 								foreach($va_faculty_texts_by_year as $va_year_texts){
-									$vs_faculty_text .= join($va_year_texts, "\n");
+									$vs_faculty_text .= join("\n", $va_year_texts);
 								}
 							}
 		

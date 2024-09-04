@@ -1062,8 +1062,9 @@ ul.menuItems {
 	margin:0px;
 }
 .detail .unitTop{
-	font-family:Gotham-light;
-	font-size:18px;
+	/*font-family:Gotham-light;
+	font-size:18px;*/
+	font-size: 15px;
 	padding-bottom:25px;
 }
 .detail .unitBottom{

@@ -36,26 +36,7 @@
 	$va_access_values = 	$this->getVar("access_values");
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
-	# --- use a browse with no criteria to get all facets
-	$o_browse_all = caGetBrowseInstance("ca_objects");
-	$o_browse_all->setTypeRestrictions(array("exhibition_item"), array('dontExpandHierarchically' => false));
-	$o_browse_all->addCriteria("exhibition_facet", $vn_id);
-	$o_browse_all->addCriteria("has_media_facet", 1);
-	$o_browse_all->execute(array('checkAccess' => $va_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => false));
-	$va_facets = array();
-	$va_available_facets = $o_browse_all->getInfoForAvailableFacets(['checkAccess' => $va_access_values, 'request' => $this->request]);
-	foreach($va_available_facets as $vs_facet_name => $va_facet_info) {
-		if(in_array($vs_facet_name, array("exh_item_type_facet", "exhibition_item_course_facet"))){
-			$va_facets[$vs_facet_name] = $va_available_facets[$vs_facet_name];
-			$va_facets[$vs_facet_name]['content'] = $o_browse_all->getFacet($vs_facet_name, array('checkAccess' => $va_access_values, 'request' => $this->request, 'checkAvailabilityOnly' => false));
-		
-		}
-	}
-
-	$vb_display_faculty = false;
-	$va_faculty_by_course = array();
 	$o_browse = caGetBrowseInstance("ca_objects");
-
 	if ($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
 		$o_browse->reload($ps_cache_key);
 	}
@@ -74,18 +55,24 @@
 	
 	$qr_objects = $o_browse->getResults(array('sort' => 'ca_objects.idno', 'sort_direction' => 'asc'));
 	$vs_key = $o_browse->getBrowseID();
-	
+	$va_facets = array();
+	$va_available_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $va_access_values, 'request' => $this->request]);
+	foreach($va_available_facets as $vs_facet_name => $va_facet_info) {
+		if(in_array($vs_facet_name, array("exh_item_type_facet", "exhibition_item_course_facet"))){
+			$va_facets[$vs_facet_name] = $va_available_facets[$vs_facet_name];
+			$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array('checkAccess' => $va_access_values, 'request' => $this->request, 'checkAvailabilityOnly' => false));
+		}
+	}
 	$va_criteria = $o_browse->getCriteriaWithLabels();
-	$va_criteria_for_display = $va_criteria_for_display_by_facet = array();
+	$va_criteria_for_display = array();
 	foreach($va_criteria as $vs_facet_name => $va_criterion) {
 		if($vs_facet_name == "exhibition_item_course_facet"){
 			$vb_display_faculty = true;
 		}
-		if($vs_facet_name != "exhibition_facet"){
+		if(!in_array($vs_facet_name, array("has_media_facet", "exhibition_facet"))){
 			$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
 			foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
 				$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
-				$va_criteria_for_display_by_facet[$vs_facet_name][] = $vn_criterion_id;
 			}
 		}
 	}
@@ -106,21 +93,23 @@
 			<div class="row">
 				<div class="col-sm-3 detailRefine browse">
 					<div id="bRefine">
-						<h3>Filter Results By:</h3>
-			
 <?php
+					if ((sizeof($va_criteria_for_display) > 0) || (is_array($va_facets) && sizeof($va_facets))){
+?>
+						<h3>Filter Results By:</h3>			
+<?php
+					}
 					
-						#if (sizeof($va_criteria_for_display) > 0) {
-						#	foreach($va_criteria_for_display as $va_criterion) {
-						#		print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span>'.$va_criterion['value'].' </button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'key' => $vs_key));
-						#	}
-						#}
+						if (sizeof($va_criteria_for_display) > 0) {
+							foreach($va_criteria_for_display as $va_criterion) {
+								print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span>'.$va_criterion['value'].' </button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'key' => $vs_key));
+							}
+						}
 						if(is_array($va_facets) && sizeof($va_facets)){
 							foreach($va_facets as $vs_facet_name => $va_facet_info) {
-								$va_multiple_selection_facet_list[$vs_facet_name] = caGetOption('multiple', $va_facet_info, false, ['castTo' => 'boolean']);
-			
+								
 								if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-								print "<div class='bRefineFacet'  id='{$vs_facet_name}_facet_container'>";
+								print "<div class='bRefineFacet'>";
 									
 									print "<H5>".$va_facet_info['label_singular']."</H5>"; 
 									switch($va_facet_info["group_mode"]){
@@ -132,65 +121,16 @@
 											foreach($va_facet_info['content'] as $va_item) {
 												$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? $va_item['content_count'] : "";
 												$vs_label = $va_item['label'];
-												if(is_array($va_criteria_for_display_by_facet[$vs_facet_name]) && in_array($va_item['id'], $va_criteria_for_display_by_facet[$vs_facet_name])){
-													print '<div>'.caNavLink($this->request, '<span>'.$vs_content_count.'</span><i class="far fa-check-square"></i> '.$vs_label, 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $vs_facet_name, 'removeID' => $va_item['id'], 'key' => $vs_key)).'</div>';
-							
-												}else{
-													#print "<div class='facetItem' data-facet='".$vs_facet_name."' data-facet_item_id='".$va_item['id']."'>".caNavLink($this->request, "<span>".$vs_content_count."</span>".$vs_label, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id']))."</div>";
-													print "<div>".caNavLink($this->request, "<span>".$vs_content_count."</span><i class='far fa-square'></i> ".$vs_label, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id']))."</div>";
-												}
+												print "<div>".caNavLink($this->request, "<span>".$vs_content_count."</span>".$vs_label, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id']))."</div>";
 												$vn_c++;
 											}
 										break;
 										# ---------------------------------------------
 									}
-								if ($va_multiple_selection_facet_list[$vs_facet_name]) {
-?>
-									<!--<a href="#" id="<?php print $vs_facet_name; ?>_facet_apply" data-facet="<?php print $vs_facet_name; ?>" class="facetApply">Apply</a>-->
-<?php
-								}
-				
-								
 								print "</div><!-- end bRefineFacet -->";
 							}	
 						}
 ?>
-<script type="text/javascript">
-		jQuery(document).ready(function() {
-            var multiple_selection_facet_list = <?php print json_encode($va_multiple_selection_facet_list); ?>;
-            
-            jQuery(".facetApply").hide();
-            
-            jQuery(".facetItem").on('click', function(e) { 
-            	if (!multiple_selection_facet_list[jQuery(this).data('facet')]) { return; }
-            	if (jQuery(this).attr('facet_item_selected') == '1') {
-            		jQuery(this).attr('facet_item_selected', '');
-            	} else {
-            		jQuery(this).attr('facet_item_selected', '1');
-            	}
-            	
-            	if (jQuery("div.facetItem[facet_item_selected='1']").length > 0) {
-            		jQuery("#" + jQuery(this).data('facet') + "_facet_apply").show();
-            	} else {
-            		jQuery("#" + jQuery(this).data('facet') + "_facet_apply").hide();
-            	}
-            	
-            	e.preventDefault();
-            	return false;
-            });
-            
-            jQuery(".facetApply").on('click', function(e) { 
-            	var facet = jQuery(this).data('facet');
-            	
-            	var ids = [];
-            	jQuery.each(jQuery("#" + facet + "_facet_container").find("[facet_item_selected=1]"), function(k,v) {
-            		ids.push(jQuery(v).data('facet_item_id'));
-            	});
-				window.location = '<?php print caNavUrl($this->request, '*', '*','*', array('key' => $vs_key)); ?>/facet/' + facet + '/id/' + ids.join('|');
-            	e.preventDefault();
-            });
-	});
-</script>
 					</div>
 				</div>
 				<div class="col-sm-9 exhibitionRightCol">
@@ -217,8 +157,13 @@
 												
 												# --- check if there is faculty on the sub exhibition record this object is linked under
 												# --- is there a sub exhibit
-												if($tmp_faculty = $qr_objects->getWithTemplate("<unit relativeTo='ca_occurrences'><unit relativeTo='ca_occurrences.hierarchy' restrictToTypes='sub_exhibition'><unit relativeTo='ca_entities' restrictToRelationshipTypes='faculty' delimiter=', '>^ca_entities.preferred_labels.displayname</unit></unit></unit>")){
-													$va_faculty_by_course[$qr_objects->getWithTemplate("^ca_objects.EOYS_Course")] = $tmp_faculty;
+												if($tmp_faculty = $qr_objects->getWithTemplate("<unit relativeTo='ca_occurrences'><unit relativeTo='ca_occurrences.hierarchy' restrictToTypes='sub_exhibition'><unit relativeTo='ca_entities' restrictToRelationshipTypes='faculty' delimiter=';'>^ca_entities.preferred_labels.displayname:^ca_entities.entity_id</unit></unit></unit>")){
+													foreach(explode(";", $tmp_faculty) as $each_tmp_faculty){
+														$parts = explode(":", $each_tmp_faculty);
+														$va_faculty_by_course[$qr_objects->getWithTemplate("^ca_objects.EOYS_Course")][] = caNavLink($this->request, $parts[0], "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $parts[1]));
+													}
+													
+													#$va_faculty_by_course[$qr_objects->getWithTemplate("^ca_objects.EOYS_Course")] = $tmp_faculty;
 												}
 												
 											}
@@ -251,8 +196,8 @@
 													<H6>Faculty</H6>
 														<div class='unitTop'>
 <?php
-													foreach($va_faculty_by_course as $vs_course => $vs_faculty){
-														print "<div>".$vs_course.": ".$vs_faculty."</div>";
+													foreach($va_faculty_by_course as $vs_course => $va_faculty){
+														print "<div>".join("<br/>", $va_faculty)."</div>";
 													}
 ?>
 														</div>
@@ -282,7 +227,7 @@
 														}
 														$va_year_display[] = caNavLink($this->request, $va_year["name"], "", "", "Browse", "exhibitions", array("facet" => "year_facet", "id" => $va_year["occurrence_id"]));
 													}
-													print join($va_year_display, "; ");
+													print join("; ", $va_year_display);
 												}else{
 													print "N/A";
 												}
@@ -322,7 +267,7 @@
 																$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 															}
 															ksort($va_entity_display);
-															print join($va_entity_display, "<br/>");
+															print join("<br/>", $va_entity_display);
 														}else{
 															print "N/A";
 														}
@@ -358,7 +303,7 @@
 																	}
 																}
 																
-																print join($va_terms, "<br/>");
+																print join("<br/>", $va_terms);
 															}else{
 																print "N/A";
 															}
@@ -376,7 +321,7 @@
 																$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 															}
 															ksort($va_entity_display);
-															print join($va_entity_display, "<br/>");
+															print join("<br/>", $va_entity_display);
 														}else{
 															print "N/A";
 														}
@@ -396,7 +341,7 @@
 																$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 															}
 															ksort($va_entity_display);
-															print join($va_entity_display, "<br/>");
+															print join("<br/>", $va_entity_display);
 														}else{
 															print "N/A";
 														}
