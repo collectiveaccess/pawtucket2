@@ -1582,8 +1582,10 @@ div.caMediaOverlayControls{
 	font-size:14px;
 }
 /* exhibition detail */
-.exhibitionRightCol{
-	border-left: 1px solid #939598;
+@media(min-width:769px){
+	.exhibitionRightCol{
+		border-left: 1px solid #939598;
+	}
 }
 .black{
 	color:#000;
