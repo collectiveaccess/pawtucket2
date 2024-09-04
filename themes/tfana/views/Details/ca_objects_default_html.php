@@ -135,12 +135,12 @@ if($show_nav){
 								<dt><?= _t('Runtime'); ?></dt>
 								<dd>^ca_objects.TapeRuntime%delimiter=,_</dd>
 							</ifdef>
-							<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text">
+							<ifdef code="ca_objects.descriptionWithSource.prodesc_text">
 								<dt><?= _t('Description'); ?></dt>
 								<dd>
-									^ca_occurrences.descriptionWithSource.prodesc_text
-									<ifdef code="ca_occurrences.descriptionWithSource.prodesc_source">
-										<div class="mt-3"><i>^ca_occurrences.descriptionWithSource.prodesc_source</i></div>
+									^ca_objects.descriptionWithSource.prodesc_text
+									<ifdef code="ca_objects.descriptionWithSource.prodesc_source">
+										<div class="mt-3"><i>^ca_objects.descriptionWithSource.prodesc_source</i></div>
 									</ifdef>
 								</dd>
 							</ifdef>

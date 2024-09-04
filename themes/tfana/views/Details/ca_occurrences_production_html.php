@@ -162,7 +162,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 							<ifcount code="ca_occurrences.related" restrictToTypes="production" min="1">
 								<dt><ifcount code="ca_occurrences.related" restrictToTypes="production" min="1" max="1"><?= _t('Related Production'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="production" min="2"><?= _t('Related Productions'); ?></ifcount></dt>
 								<unit relativeTo="ca_occurrences.related" restrictToTypes="production" delimiter=""><dd>
-									<l>^ca_occurrences.preferred_labels</l>
+									<l><unit relativeTo="ca_occurrences.parent">^ca_occurrences.preferred_labels: </unit>^ca_occurrences.preferred_labels</l>
 								</dd></unit>
 							</ifcount>
 							<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1">
