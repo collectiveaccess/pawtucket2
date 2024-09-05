@@ -87,6 +87,8 @@ if ($representation_count > 1) {
 			
 			jQuery('.repThumb').removeClass('active');
 			jQuery('#repThumb_' + index).addClass('active');
+			
+			index = i;
 		}
 		return false;
 	};
