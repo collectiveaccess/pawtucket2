@@ -43,6 +43,8 @@ class IIIFService {
 	 * @throws Exception
 	 */
 	public static function dispatch(string $identifier, RequestHTTP $request, ResponseHTTP $response) {
+		$response->addHeader('Cache-Control', 'max-age=3600, private', true); // Cache all responses for 1 hour.
+
 		$va_path = array_filter(array_slice(explode("/", $request->getPathInfo()), 3), 'strlen');
 		$vs_key = $identifier."/".join("/", $va_path);
 		

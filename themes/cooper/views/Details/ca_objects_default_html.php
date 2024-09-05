@@ -97,7 +97,7 @@ if($vb_ajax){
 // 										$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 // 									}
 // 									ksort($va_entity_display);
-// 									$vs_photographer = join($va_entity_display, ", ");
+// 									$vs_photographer = join(", ", $va_entity_display);
 // 									if($vs_photographer){
 // 										$vs_photographer = " Photography by: ".$vs_photographer;
 // 									}	
@@ -211,7 +211,7 @@ if($vb_ajax){
 											$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 										}
 										ksort($va_entity_display);
-										print join($va_entity_display, "<br/>");
+										print join("<br/>", $va_entity_display);
 									}else{
 										print "N/A";
 									}
@@ -225,7 +225,7 @@ if($vb_ajax){
 										foreach($va_courses as $va_course){
 											$va_course_display[] = caNavLink($this->request, $va_course["name"], "", "", "Browse", "projects", array("facet" => "course_facet", "id" => $va_course["occurrence_id"]));
 										}
-										print join($va_course_display, "; ");
+										print join("; ", $va_course_display);
 									}else{
 										print "N/A";
 									}
@@ -242,7 +242,7 @@ if($vb_ajax){
 										foreach($va_years as $va_year){
 											$va_year_display[] = caNavLink($this->request, $va_year["name"], "", "", "Browse", "projects", array("facet" => "year_facet", "id" => $va_year["occurrence_id"]));
 										}
-										print join($va_year_display, "; ");
+										print join("; ", $va_year_display);
 									}else{
 										print "N/A";
 									}
@@ -259,7 +259,7 @@ if($vb_ajax){
 											$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 										}
 										ksort($va_entity_display);
-										print join($va_entity_display, "<br/>");
+										print join("<br/>", $va_entity_display);
 									}else{
 										print "N/A";
 									}
@@ -316,7 +316,7 @@ if($vb_ajax){
 		 											foreach($va_list_items as $va_list_item){
 		 												$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "projects", array("facet" => $va_voc["facet"], "id" => urlencode($va_list_item["item_id"])));
 		 											}
-		 											print join($va_terms, "; ");
+		 											print join("; ", $va_terms);
 												}else{
 													print "N/A";
 												}
@@ -338,7 +338,7 @@ if($vb_ajax){
 													$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 												}
 												ksort($va_entity_display);
-												print join($va_entity_display, "<br/>");
+												print join("<br/>", $va_entity_display);
 											}else{
 												print "N/A";
 											}
@@ -373,7 +373,7 @@ if($vb_ajax){
 														}
 													}
 													
-		 											print join($va_terms, "<br/>");
+		 											print join("<br/>", $va_terms);
 												}else{
 													print "N/A";
 												}
