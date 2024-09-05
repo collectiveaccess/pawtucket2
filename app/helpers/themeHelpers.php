@@ -594,7 +594,7 @@ function caDetailItemComments($po_request, $pn_item_id, $t_item, $va_comments, $
 	if(is_array($va_tags) && sizeof($va_tags) > 0){
 		$va_tag_links = array();
 		foreach($va_tags as $vs_tag){
-			$va_tag_links[] = caNavLink($po_request, $vs_tag, '', '', 'MultiSearch', 'Index', array('search' => $vs_tag));
+			$va_tag_links[] = caNavLink($po_request, $vs_tag, '', '', 'MultiSearch', 'Index', array('search' => "tags:$vs_tag"));
 		}
 		$vs_tmp .= "<h2>"._t("Tags")."</h2>\n
 			<div id='tags'>".implode(", ", $va_tag_links)."</div>";
