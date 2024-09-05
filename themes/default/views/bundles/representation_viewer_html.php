@@ -81,9 +81,9 @@ if ($representation_count > 1) {
 		}
 		return false;
 	};
-	function setItem(index) {
-		if((index >= 0) && (index < slide_list.length)) {
-			jQuery('#repViewerItemDisplay').html(slide_list[index]);
+	function setItem(i) {
+		if((o >= 0) && (i < slide_list.length)) {
+			jQuery('#repViewerItemDisplay').html(slide_list[i]);
 			
 			jQuery('.repThumb').removeClass('active');
 			jQuery('#repThumb_' + index).addClass('active');
