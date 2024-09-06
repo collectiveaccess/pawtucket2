@@ -1,0 +1,3 @@
+import { TypeConstant, ActionCreatorBuilder, ActionBuilder } from './type-helpers';
+export declare function createAction<TType extends TypeConstant>(type: TType): <TPayload = undefined, TMeta = undefined>() => ActionCreatorBuilder<TType, TPayload, TMeta>;
+export declare function createAction<TType extends TypeConstant, TCreatorPayload extends any = undefined, TCreatorMeta extends any = undefined, TArgs extends any[] = any[]>(type: TType, payloadCreator: undefined | ((...args: TArgs) => TCreatorPayload), metaCreator?: (...args: TArgs) => TCreatorMeta): <TPayload extends TCreatorPayload = TCreatorPayload, TMeta extends TCreatorMeta = TCreatorMeta>() => (...args: TArgs) => ActionBuilder<TType, TPayload, TMeta>;

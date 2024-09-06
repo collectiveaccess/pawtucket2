@@ -40,8 +40,9 @@
 							<div class="myClippingsIssueTitle"><?= _t('From %1', caDetailLink($this->request, $annotations_for_object['label'], '', 'ca_objects', $object_id)); ?></div>
 						</div>
 						<div class="col-md-3 myClippingsIssueButtons">
-							<form style="display: inline;" action="<?= caNavUrl($this->request, '*', '*', 'DownloadPDF', ['representation_id' => $annotations_for_object['representation_id']]); ?>"><button class="btn btn-sm" title="Download PDF of issue"><i class="fas fa-download"></i> PDF</button></form>
-							<form style="display: inline;" action="<?= caNavUrl($this->request, '*', '*', 'DeleteAnnotationsForRepresentation', ['representation_id' => $annotations_for_object['representation_id']]); ?>"><button class="btn btn-sm" title="Delete all clippings from issue"><i class="fas fa-trash-alt"></i> Delete Clippings</button></form>
+							<?= caNavLink($this->request, '<i class="fas fa-download"></i> Images', 'btn btn-sm', '*', '*', 'DownloadFiles', ['representation_id' => $annotations_for_object['representation_id']], ['title' => 'Download images of issue clippings']); ?>
+							<?= caNavLink($this->request, '<i class="fas fa-download"></i> PDF', 'btn btn-sm', '*', '*', 'DownloadPDF', ['representation_id' => $annotations_for_object['representation_id']], ['title' => 'Download PDF of issue clippings']); ?>
+							<?= caNavLink($this->request, '<i class="fas fa-trash-alt"></i> Delete Clippings', 'btn btn-sm', '*', '*', 'DeleteAnnotationsForRepresentation', ['representation_id' => $annotations_for_object['representation_id']], ['title' => 'Delete all clippings from issue']); ?>
 						</div>
 					</div>
 					<div class="row">
@@ -61,10 +62,10 @@
 										<div class="clippingButtons">
 											<div class="row">
 												<div class="col-xs-6 text-left">
-													<form action="<?= caNavUrl($this->request, '*', '*', 'DownloadPDF', ['annotation_id' => $anno['annotation_id']]); ?>"><button class="btn btn-sm" title="Download PDF of clipping"><i class="fas fa-download"></i></button></form>
+													<?= caNavLink($this->request, '<i class="fas fa-download"></i>', 'btn btn-sm', '*', '*', 'DownloadPDF', ['annotation_id' => $anno['annotation_id']], ['title' => 'Download PDF of clipping']); ?>
 												</div>
 												<div class="col-xs-6 text-right">
-													<form action="<?= caNavUrl($this->request, '*', '*', 'DeleteAnnotation', ['annotation_id' => $anno['annotation_id']]); ?>"><button class="btn btn-sm" title="Delete clipping"><i class="fas fa-trash-alt"></i></button></form>
+													<?= caNavLink($this->request, '<i class="fas fa-trash-alt" aria-label="delete clippings"></i>', 'btn btn-sm', '*', '*', 'DeleteAnnotation', ['annotation_id' => $anno['annotation_id']], ['title' => 'Delete clipping']); ?>
 												</div>
 											</div>
 										</div>

@@ -1,0 +1,94 @@
+.r6o-widget.comment {
+  font-size:14px;
+  min-height:3em;
+  background-color:#fff;
+  position:relative;
+
+  .r6o-editable-text,
+  .r6o-readonly-comment {
+    padding:10px;
+    width:100%;
+    box-sizing:border-box;
+    outline:none;
+    border:none;
+    background-color:transparent;
+    resize:none;
+  }
+
+  .r6o-readonly-comment {
+    white-space: pre-line; 
+  }
+
+  .r6o-editable-text::-webkit-input-placeholder { color:#c2c2c2; }
+  .r6o-editable-text::-moz-placeholder { color:#c2c2c2; }
+  .r6o-editable-text:-moz-placeholder { color:#c2c2c2; }
+  .r6o-editable-text:-ms-input-placeholder { color:#c2c2c2; }
+
+  .r6o-lastmodified {
+    border:1px solid $lightgrey-border;
+    display:inline-block;
+    border-radius:2px;
+    margin:0 10px 8px 10px;
+    padding:4px 5px;
+    line-height:100%;
+    font-size:12px;
+
+    .r6o-lastmodified-at {
+      color:$lightgrey-type;
+      padding-left:3px;
+    }
+    
+  }
+
+  .r6o-arrow-down {
+    position:absolute;
+    height: 20px;
+    width: 20px;
+    top: 9px;
+    right: 9px;
+    line-height: 22px;
+    background-color:#fff;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+    border: 1px solid $lightgrey-border;
+    cursor: pointer;
+    @include rounded-corners(1px);
+  }
+
+  .r6o-arrow-down.r6o-menu-open {
+    border-color:$ocean;
+  }
+
+  .r6o-comment-dropdown-menu {
+    position:absolute;
+    top:32px;
+    right:8px;
+    background-color:#fff;
+    border:1px solid $lightgrey-border;
+    list-style-type:none;
+    margin:0;
+    padding:5px 0;
+    z-index:9999;
+    @include box-shadow(0, 2px, 4px, 0.2);
+
+    li {
+      padding:0 15px;
+      cursor:pointer;
+    }
+
+    li:hover {
+      background-color:$blueish-white;
+    }
+
+  }
+
+  .r6o-purposedropdown {
+    position:relative;
+    z-index:2;
+  }
+
+}
+
+.r6o-widget.comment.editable {
+  background-color:$blueish-white;
+}

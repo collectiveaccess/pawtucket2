@@ -46,7 +46,7 @@
 .content-search-form p input{
 	margin-right:0px !important;
 }
-.content-search-results button, .clipping button{
+.content-search-results button, .clipping button, .clippingDownload button{
 	background: none;
     background-color: #EBEBEB;
 	border: 0px;

@@ -98,7 +98,7 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 
 		$t_list_item = new ca_list_items();
 		$rcriteria = $this->getVar('criteria_raw');
-		$terms = caExtractTermsForSearch(join(' ', array_keys($rcriteria['_search']) ?? []));
+		$terms = caExtractTermsForSearch(join(' ', array_keys($rcriteria['_search'] ?? [])));
 		$terms = array_map(function($v) {
 			$v = preg_replace('!["\']+!', '', $v);
 			$v = preg_replace('![^A-Za-z0-9]+[0-9]*!', '', $v);
@@ -150,7 +150,11 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 					$type_code = $qr_res->get('ca_objects.type_id', ['convertCodesToIdno' => true]);
 					$rep_ids = $qr_res->get('ca_object_representations.representation_id', ['returnAsArray' => true]);
 					if($anno_count = ca_user_representation_annotations::find(['representation_id' => ['IN', $rep_ids]], ['returnAs' => 'count'])) {
-						$has_anno = "<div style='position: absolute; top: 5px; right: 20px;'><i class='fa fa-clipboard fa-2x' alt='Has clippings' title='Has clippings'></i></div>";
+						if(strToLower($this->request->getAction()) == "publications"){
+							$has_anno = caDetailLink($this->request, "<i class='fa fa-clipboard' alt='Has clippings' title='Has clippings'></i> <small>Has Clippings</small>", 'clippingsLink', $vs_table, $vn_id);
+						}else{
+							$has_anno = "<div style='position: absolute; top: 5px; right: 20px; text-shadow: 0px 0px 5px white;'><i class='fa fa-clipboard fa-2x' alt='Has clippings' title='Has clippings'></i></div>";
+						}
 					}
 					
 					if($type_code === 'newspaper') {
@@ -194,6 +198,27 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 				}
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 				# TG Added to string below: 1) hover text if collection 2) remove collection id
+if(strToLower($this->request->getAction()) == "publications"){
+				$vs_result_output = "
+					<div class='row publicationResult'>
+						<div class='col-xs-8 col-sm-7 col-md-5' {$vs_hover_text}>
+							<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
+							<div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+							<div>{$vs_add_to_set_link}</div>
+						</div>
+						<div class='col-xs-4 col-sm-5 col-md-7'>
+							<div>
+								<small>{$vs_idno_detail_link}</small>
+								<div class='pubTitle'>{$vs_label_detail_link}</div>
+								<div>{$has_anno}</div>
+							</div>
+						</div>
+					</div>
+					<div class='row'>
+						<hr>
+					</div>
+				";
+}else{
 				$vs_result_output = "
 	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}' {$vs_hover_text}>
 		<div class='bResultItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
@@ -209,6 +234,8 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 			</div><!-- bResultItemExpandedInfo -->
 		</div><!-- end bResultItem -->
 	</div><!-- end col -->";
+
+}
 				ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 				print $vs_result_output;
 				$vs_hover_text = ""; #erase hover text before next round

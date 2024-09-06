@@ -1,0 +1,53 @@
+{
+  "name": "node-polyglot",
+  "version": "2.5.0",
+  "description": "Give your JavaScript the ability to speak many languages.",
+  "main": "index.js",
+  "scripts": {
+    "prepublishOnly": "safe-publish-latest",
+    "prepublish": "not-in-publish || npm run prepublishOnly",
+    "pretest": "npm run lint",
+    "test": "npm run tests-only",
+    "tests-only": "nyc mocha test/*.js --reporter spec",
+    "posttest": "aud --production",
+    "lint": "eslint .",
+    "docs": "docco -o docs/ index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/airbnb/polyglot.js.git"
+  },
+  "keywords": [
+    "i18n",
+    "internationalization",
+    "internationalisation",
+    "translation",
+    "interpolation",
+    "translate",
+    "polyglot"
+  ],
+  "author": "Spike Brehm <spike@airbnb.com>",
+  "dependencies": {
+    "array.prototype.foreach": "^1.0.2",
+    "has": "^1.0.3",
+    "object.entries": "^1.1.5",
+    "string.prototype.trim": "^1.2.6",
+    "warning": "^4.0.3"
+  },
+  "devDependencies": {
+    "aud": "^2.0.0",
+    "chai": "^3.5.0",
+    "docco": "^0.7.0",
+    "eslint": "^8.18.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.23.4",
+    "in-publish": "^2.0.1",
+    "iterate-iterator": "^1.0.2",
+    "mocha": "^3.5.3",
+    "nyc": "^10.3.2",
+    "safe-publish-latest": "^2.0.0",
+    "string.prototype.matchall": "^4.0.7",
+    "uglify-js": "^2.7.3"
+  },
+  "license": "BSD-2-Clause"
+}

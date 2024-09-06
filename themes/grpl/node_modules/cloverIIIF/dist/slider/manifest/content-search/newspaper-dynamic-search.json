@@ -1,0 +1,197 @@
+{
+  "@context": ["http://iiif.io/api/presentation/3/context.json"],
+  "id": "http://localhost:3000/manifest/content-search/newspaper-dynamic-search.json",
+  "type": "Manifest",
+  "label": {
+    "de": ["Berliner Tageblatt - 1925-02-16"]
+  },
+  "thumbnail": [
+    {
+      "id": "https://api.europeana.eu/api/v2/thumbnail-by-url.json?uri=https%3A%2F%2Fiiif.europeana.eu%2Fimage%2F2YMIN6YXMQ6COVM5AO2XKB5KMCKPMT2YKEKNMAGHVRBIHOOY4AVA%2Fpresentation_images%2F9340afd0-ffe2-11e5-b68d-fa163e60dd72%2Fnode-2%2Fimage%2FSBB%2FBerliner_Tageblatt%2F1925%2F02%2F16%2F0%2FF_SBB_00001_19250216_054_079_0_001%2Ffull%2Ffull%2F0%2Fdefault.jpg&type=TEXT",
+      "type": "Image",
+      "format": "image/jpeg",
+      "height": 300,
+      "width": 300
+    }
+  ],
+  "metadata": [
+    {
+      "label": {
+        "en": ["type"]
+      },
+      "value": {
+        "none": [
+          "http://schema.org/PublicationIssue",
+          "http://data.europeana.eu/concept/base/18"
+        ],
+        "en": ["Analytic serial", "Newspaper", "Newspaper Issue"]
+      }
+    },
+    {
+      "label": {
+        "en": ["language"]
+      },
+      "value": {
+        "none": ["de"],
+        "en": ["German"]
+      }
+    }
+  ],
+  "navDate": "1925-02-16T00:00:00Z",
+  "rights": "http://creativecommons.org/publicdomain/mark/1.0/",
+  "requiredStatement": {
+    "label": {
+      "en": ["Attribution"]
+    },
+    "value": {
+      "en": [
+        "<a href='https://www.europeana.eu/portal/record/9200355/BibliographicResource_3000096302605.html'>Berliner Tageblatt</a> - Staatsbibliothek zu Berlin - Preußischer Kulturbesitz. Public Domain Mark - http://creativecommons.org/publicdomain/mark/1.0/"
+      ]
+    }
+  },
+  "provider": [
+    {
+      "id": "https://www.europeana.eu/",
+      "type": "Agent",
+      "label": {
+        "en": ["Europeana"]
+      },
+      "logo": [
+        {
+          "id": "https://style.europeana.eu/images/europeana-logo-default.png",
+          "type": "Image",
+          "format": "image/png",
+          "height": 310,
+          "width": 100
+        }
+      ]
+    }
+  ],
+  "seeAlso": [
+    {
+      "id": "https://www.europeana.eu/api/v2/record/9200355/BibliographicResource_3000096302513.json-ld",
+      "type": "Dataset",
+      "format": "application/ld+json",
+      "profile": "http://www.europeana.eu/schemas/edm/"
+    }
+  ],
+
+  "items": [
+    {
+      "id": "http://localhost:3000/manifest/content-search/canvas/i1p1",
+      "type": "Canvas",
+      "height": 5000,
+      "width": 3602,
+      "label": {
+        "none": ["p. 1"]
+      },
+      "items": [
+        {
+          "id": "http://localhost:3000/manifest/content-search/annotation_page_painting/ap1",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:3000/manifest/content-search/annotation/p1",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": "https://iiif.io/api/image/3.0/example/reference/4ce82cef49fb16798f4c2440307c3d6f-newspaper-p1/full/max/0/default.jpg",
+                "type": "Image",
+                "format": "image/jpeg",
+                "service": [
+                  {
+                    "id": "https://iiif.io/api/image/3.0/example/reference/4ce82cef49fb16798f4c2440307c3d6f-newspaper-p1",
+                    "type": "ImageService3",
+                    "profile": "level1"
+                  }
+                ]
+              },
+              "target": "http://localhost:3000/manifest/content-search/canvas/i1p1"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "id": "http://localhost:3000/manifest/content-search/newspaper-anno_p1.json",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:3000/manifest/content-search/newspaper-anno_p1.json-1",
+              "type": "Annotation",
+              "motivation": "commenting",
+              "body": {
+                "type": "TextualBody",
+                "format": "text/plain",
+                "language": "en",
+                "value": "This is issue 1, page 1"
+              },
+              "target": "http://localhost:3000/manifest/content-search/canvas/i1p1#xywh=1300,400,200,400"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "http://localhost:3000/manifest/content-search/canvas/i1p2",
+      "type": "Canvas",
+      "height": 4999,
+      "width": 3536,
+      "label": {
+        "none": ["p. 2"]
+      },
+      "items": [
+        {
+          "id": "http://localhost:3000/manifest/content-search/annotation_page_painting/ap2",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:3000/manifest/content-search/annotation/p2",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": "https://iiif.io/api/image/3.0/example/reference/4ce82cef49fb16798f4c2440307c3d6f-newspaper-p2/full/max/0/default.jpg",
+                "type": "Image",
+                "format": "image/jpeg",
+                "service": [
+                  {
+                    "id": "https://iiif.io/api/image/3.0/example/reference/4ce82cef49fb16798f4c2440307c3d6f-newspaper-p2",
+                    "type": "ImageService3",
+                    "profile": "level1"
+                  }
+                ]
+              },
+              "target": "http://localhost:3000/manifest/content-search/canvas/i1p2"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "id": "http://localhost:3000/manifest/content-search/newspaper-anno_p2.json",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:3000/manifest/content-search/newspaper-anno_p2.json-1",
+              "type": "Annotation",
+              "motivation": "commenting",
+              "body": {
+                "type": "TextualBody",
+                "format": "text/plain",
+                "language": "en",
+                "value": "This is issue 1, page 2"
+              },
+              "target": "http://localhost:3000/manifest/content-search/canvas/i1p2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "service": [
+    {
+      "id": "http://localhost:3000/api/fixtures/content-search/1",
+      "type": "SearchService2"
+    }
+  ]
+}

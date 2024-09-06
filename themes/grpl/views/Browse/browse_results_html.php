@@ -111,7 +111,7 @@ if (!$vb_ajax) {	// !ajax
 			print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? _t("Result") : _t("Results"));
 ?>
 			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
+				<a href="#" data-toggle="dropdown"><i class="fa fa-cog bGear" aria-label="Result options"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
@@ -173,7 +173,7 @@ if (!$vb_ajax) {	// !ajax
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				print "<strong>".$va_criterion['facet'].':  </strong>';
-				if ($va_criterion['facet_name'] != '_search') {
+				if (($va_criterion['facet_name'] != '_search') || (($va_criterion['facet_name'] == '_search')) && ($i > 0)) {
 					# If a TGM Subject heading, then display only the title (not the url)
 					if ($va_criterion['facet_name'] == 'subject_facet'){
 						$temp_cri = explode(" [",$va_criterion['value']);

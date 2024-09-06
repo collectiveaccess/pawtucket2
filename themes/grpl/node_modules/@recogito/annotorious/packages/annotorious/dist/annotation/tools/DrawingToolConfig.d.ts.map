@@ -1,0 +1,1 @@
+{"version":3,"file":"DrawingToolConfig.d.ts","sourceRoot":"","sources":["../../../src/annotation/tools/DrawingToolConfig.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,QAAQ,CAAC;AAE9C,MAAM,WAAW,UAAU;IAEzB,SAAS,EAAE,OAAO,eAAe,CAAC;IAElC,IAAI,CAAC,EAAE;QAAE,CAAC,GAAG,EAAE,MAAM,GAAG,GAAG,CAAA;KAAE,CAAA;CAE9B"}

@@ -80,13 +80,13 @@
 		<div class="col-xs-12 col-sm-10 col-sm-offset-1">
 			<div class="row collectionLinks">
 				<div class="col-xs-12 col-sm-4">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'GRHistory-BronemasMidcenturyHomes-620x620.png'), "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => 178, "view" => "images")); ?>
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'GRHistory-BronemasMidcenturyHomes-620x620.png', array("alt" => "Featured Collection: Bronkema's Midcentury Homes")), "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => 178, "view" => "images")); ?>
 				</div>
 				<div class="col-xs-12 col-sm-4">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, '2 Blackhistory 2.png'), "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => 176, "view" => "images")); ?>
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, '2 Blackhistory 2.png', array("alt" => "Featured Collection: Grand Rapids Black History")), "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => 176, "view" => "images")); ?>
 				</div>
 				<div class="col-xs-12 col-sm-4">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, '3 NRFP.png'), "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => 6, "view" => "images")); ?>
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, '3 NRFP.png', array("alt" => "Featured Collection: New River Free Press")), "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => 6, "view" => "images")); ?>
 				</div>
 			</div>
 		</div>

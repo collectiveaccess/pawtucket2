@@ -1,0 +1,1 @@
+{"version":3,"file":"ImageAnnotation.d.ts","sourceRoot":"","sources":["../../../src/model/core/ImageAnnotation.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,gBAAgB,EAAE,MAAM,mBAAmB,CAAC;AACtE,OAAO,KAAK,EAAE,KAAK,EAAE,MAAM,SAAS,CAAC;AAErC,MAAM,WAAW,eAAgB,SAAQ,UAAU;IAEjD,MAAM,EAAE,qBAAqB,CAAC;CAE/B;AAED,MAAM,WAAW,qBAAsB,SAAQ,gBAAgB;IAE7D,QAAQ,EAAE,KAAK,CAAA;CAEhB"}

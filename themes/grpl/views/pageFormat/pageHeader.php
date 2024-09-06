@@ -76,7 +76,7 @@ $vb_has_user_links = (sizeof($va_user_links) > 0);
 <?php
 # --- what should the image to share be?
 # --- default to logo --- use image from detail page if on object page
-$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'archives.png'); # --- replace this with logos for institutions
+$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'grpl_logo_2024.png'); # --- replace this with logos for institutions
 if((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "objects")){
 	$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra()));
 	$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls("ca_objects");
@@ -158,7 +158,7 @@ if((strToLower($this->request->getController()) == "detail") && (strToLower($thi
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'grpl_logo.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'grpl_logo_2024.png', array("alt" => "Grand Rapids Public Library Logo")), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -213,16 +213,20 @@ if((strToLower($this->request->getController()) == "detail") && (strToLower($thi
 							<li <?= ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?= caNavLink($this->request, _t("View exhibits"), "", "", "Gallery", "Index"); ?></li>
 							<li><?= caNavLink($this->request, "<span>"._t("Browse images")."</span>", "", "", "Browse", "Objects", array("facet" => "type_facet", "id" => 33, "view" => "images")); ?></li>
 							<li><?= caNavLink($this->request, "<span>"._t("View map")."</span>", "", "", "Browse", "Objects", array("facet" => "type_facet", "id" => 37, "view" => "map")); ?></li>
-							<li <?= (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced/publications")) ? 'class="active"' : ''; ?>><?= caNavLink($this->request, _t("Search newspapers"), "", "", "Search", "advanced/publications"); ?></li>
+							<li <?= (($this->request->getController() == "Search") && ($this->request->getActionExtra() == "objects")) ? 'class="active"' : ''; ?>><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></li>
 							<li><?= caNavLink($this->request, "<span>"._t("Browse all items")."</span>", "", "", "Browse", "Objects"); ?></li>
 						</ul>
 					</li>
 
 					<?php #print $this->render("pageFormat/browseMenu.php"); ?>
-					<li <?php #print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php #print caNavLink($this->request, _t("Digital Exhibits"), "", "", "Gallery", "Index"); ?></li>
 					<li <?= ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?= caNavLink($this->request, _t("Digital collections"), "", "", "Browse", "Collections"); ?></li>
-					<li <?= (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php #print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php #print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?= (($this->request->getController() == "Search") && ($this->request->getActionExtra() == "publications")) ? 'class="active"' : ''; ?>><?= caNavLink($this->request, _t("Search newspapers"), "", "Search", "advanced", "publications"); ?></li>
+<?php
+					$annotations = ca_user_representation_annotations::getAnnotations(['request' => $this->request, 'groupBy' => 'ca_objects']);
+					if(is_array($annotations) && sizeof($annotations)){
+						print "<li".(($this->request->getController() == "Annotations") ? ' class="active"' : '').">".caNavLink($this->request, _t('My clippings'), '', '', 'Annotations', 'Index')."</li>";
+					}
+?>	
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

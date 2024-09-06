@@ -1,0 +1,329 @@
+{
+  "@context": "http://iiif.io/api/presentation/3/context.json",
+  "id": "http://localhost:3000/manifest/annotations/transcribing-translating.json",
+  "type": "Manifest",
+  "label": {
+    "none": ["مقامات الدين الثلاثة"]
+  },
+  "metadata": [
+    {
+      "label": {
+        "none": ["Contributor"]
+      },
+      "value": {
+        "none": [
+          "Malik al-Manṣūr, Muḥammad ibn ʻUmar, -1221 (Contributor)",
+          "Paden, John N. (Collector)",
+          "عيسي فري ابو بكر طن ديب كماشي غانه (Contributor)",
+          "`Isa Fari Abu Bakr Dan Dibi, Kumasi Ghana (Contributor)"
+        ]
+      }
+    },
+    {
+      "label": {
+        "none": ["Department"]
+      },
+      "value": {
+        "none": ["Herskovits Library of African Studies"]
+      }
+    },
+    {
+      "label": {
+        "none": ["Dimensions"]
+      },
+      "value": {
+        "none": ["18 x 23 cm"]
+      }
+    },
+    {
+      "label": {
+        "none": ["Genre"]
+      },
+      "value": {
+        "none": ["Prose: response", "نثر: جواب"]
+      }
+    },
+    {
+      "label": {
+        "none": ["Language"]
+      },
+      "value": {
+        "none": ["Arabic"]
+      }
+    },
+    {
+      "label": {
+        "none": ["Materials"]
+      },
+      "value": {
+        "none": ["11 pages"]
+      }
+    },
+    {
+      "label": {
+        "none": ["Rights Statement"]
+      },
+      "value": {
+        "none": ["No Copyright - United States"]
+      }
+    },
+    {
+      "label": {
+        "none": ["Series"]
+      },
+      "value": {
+        "none": [
+          "Arabic Manuscripts from West Africa--The John Paden Collection"
+        ]
+      }
+    },
+    {
+      "label": {
+        "none": ["Subject"]
+      },
+      "value": {
+        "none": ["Belief: foundations", "عقيدة: أصول"]
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/2",
+      "type": "Canvas",
+      "height": 2764,
+      "width": 2190,
+      "label": {
+        "none": ["recto"]
+      },
+      "thumbnail": [
+        {
+          "id": "https://iiif.dc.library.northwestern.edu/iiif/2/1a403893-ad64-4de9-8248-56d589baed57/full/!300,300/0/default.jpg",
+          "type": "Image",
+          "format": "image/jpeg",
+          "height": 300,
+          "width": 300,
+          "service": [
+            {
+              "@id": "https://iiif.dc.library.northwestern.edu/iiif/2/1a403893-ad64-4de9-8248-56d589baed57",
+              "@type": "ImageService2",
+              "profile": "http://iiif.io/api/image/2/level2.json"
+            }
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/2/page",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/2/annotation/0",
+              "type": "Annotation",
+              "motivation": "painting",
+              "target": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/2",
+              "body": {
+                "id": "https://iiif.dc.library.northwestern.edu/iiif/2/1a403893-ad64-4de9-8248-56d589baed57/full/600,/0/default.jpg",
+                "type": "Image",
+                "format": "image/tiff",
+                "height": 2764,
+                "width": 2190,
+                "service": [
+                  {
+                    "@id": "https://iiif.dc.library.northwestern.edu/iiif/2/1a403893-ad64-4de9-8248-56d589baed57",
+                    "@type": "ImageService2",
+                    "profile": "http://iiif.io/api/image/2/level2.json"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "placeholderCanvas": {
+        "id": "https://api.dc.library.northwestern.edu/api/v2/works/4044e95f-8cf1-45e0-9c94-87722d9a1b3a?as=iiif/canvas/access/2/placeholder",
+        "type": "Canvas",
+        "width": 640,
+        "height": 807,
+        "items": [
+          {
+            "id": "https://api.dc.library.northwestern.edu/api/v2/works/4044e95f-8cf1-45e0-9c94-87722d9a1b3a?as=iiif/canvas/access/2/placeholder/annotation-page/0",
+            "type": "AnnotationPage",
+            "items": [
+              {
+                "id": "https://api.dc.library.northwestern.edu/api/v2/works/4044e95f-8cf1-45e0-9c94-87722d9a1b3a?as=iiif/canvas/access/2/placeholder/annotation/0",
+                "type": "Annotation",
+                "motivation": "painting",
+                "body": {
+                  "id": "https://iiif.dc.library.northwestern.edu/iiif/2/1a403893-ad64-4de9-8248-56d589baed57/full/!640,807/0/default.jpg",
+                  "type": "Image",
+                  "format": "image/tiff",
+                  "width": 640,
+                  "height": 807,
+                  "service": [
+                    {
+                      "@id": "https://iiif.dc.library.northwestern.edu/iiif/2/1a403893-ad64-4de9-8248-56d589baed57",
+                      "@type": "ImageService2",
+                      "profile": "http://iiif.io/api/image/2/level2.json"
+                    }
+                  ]
+                },
+                "target": "https://api.dc.library.northwestern.edu/api/v2/works/4044e95f-8cf1-45e0-9c94-87722d9a1b3a?as=iiif/canvas/access/2/placeholder"
+              }
+            ]
+          }
+        ]
+      },
+      "annotations": [
+        {
+          "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/2/annotations",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/2/annotations/transcription",
+              "type": "Annotation",
+              "motivation": "transcribing",
+              "body": {
+                "type": "TextualBody",
+                "language": "ar",
+                "format": "text/plain",
+                "value": "بسم الله الرحمن الرحيم وصلي الله على نبيه الكريم محمد خير الانام وعلى آله وأصحابه النجوم الحمد لله السلام المؤمن المحسن سبحانه هو الملك التواب الرحيم الرقيب المهيمن  .\n\n‏والسلمان على الصراط المستقيم التقي النقي الصادق المخلص المتخلق بالخلق العظيم المراقب المشاهد عين المعرف الأقو العبد المتصف بصفات سيد الأعظم ورضوان الاتم عن ناصر الحق بالحق الهادي إلى صراطك المستقيم وعلى آله حق قدره ومقداره العظيم اما بعد .\n \n‏ فقد وقفت على كتابك الكريم و خطابك السليم أيها المحب الأرضى والقدوة المرتضى عمر بن مالك لطف بنا وبك المالك ووقفت على سؤالكم عن مقامات الدين الثلاث وما لها من المنازل وما حقيقة تلك الخصال وقد تكلم السيد العارف بالله عبيدة ابن انبوجة فيه في الميزاب في مباحث طويلة وحيث لم نجد فيه مقنعا في ذلك فهاك مني ما امكن لي كتبه مما يتعلق به خاطري و نصه.\n"
+              },
+              "target": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/2"
+            },
+            {
+              "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/2/annotations/translation",
+              "type": "Annotation",
+              "motivation": "translating",
+              "body": {
+                "type": "TextualBody",
+                "language": "en",
+                "format": "text/plain",
+                "value": "[Foreword] \n\nIn the Name of God, the Merciful, the Compassionate. May God bless our Noble Prophet Muḥammad, the best of all creation, and his family and his companions, the stars.1 \n\nAll praise is due to God, the (source of) peace, the grantor of faith, the guide to excellence, Exalted is He. He is the King, the Acceptor of Repentance, the Merciful, the Watchful, and the Protector. \n\nMay peace and blessings (al-salāmān) be upon (Muḥammad,) the straight path, the consciously aware, the pure, the truthful, the sincere, endowed with magnificent character, the contemplative, the witness, the source of the most perfect divine knowledge, the servant2 described with the attributes of the Greatest Master. May God’s utmost satisfaction be upon the one who makes the Truth victorious by the Truth, the guide to the straight path, and upon his family, in accordance with his rank and his immense degree.3 \n\nI have received your noble letter and your cogent message, O ʿUmar, son of Mālik,4 most pleasing lover and model of God’s satisfaction, may the Proprietor (al-Mālik)5 treat us and you with kindness. I have also received your questions concerning the three stations (maqāmāt) of religion, the corresponding abodes (manāzil), and the realities of these properties. The knower of God Sayyid ʿUbayda ibn Anbūja spoke about this in (his book) al-Mīzāb6 in long sections. As you have not found there what satisfied you regarding these matters, here is what I was able to write down from my recollection. \n\nThis is the text: "
+              },
+              "target": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/3",
+      "type": "Canvas",
+      "height": 2749,
+      "width": 2182,
+      "label": {
+        "none": ["verso"]
+      },
+      "thumbnail": [
+        {
+          "id": "https://iiif.dc.library.northwestern.edu/iiif/2/acc02fba-6537-4c4d-ac78-b8a0cde33178/full/!300,300/0/default.jpg",
+          "type": "Image",
+          "format": "image/jpeg",
+          "height": 300,
+          "width": 300,
+          "service": [
+            {
+              "@id": "https://iiif.dc.library.northwestern.edu/iiif/2/acc02fba-6537-4c4d-ac78-b8a0cde33178",
+              "@type": "ImageService2",
+              "profile": "http://iiif.io/api/image/2/level2.json"
+            }
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/3/page",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/3/annotation/0",
+              "type": "Annotation",
+              "motivation": "painting",
+              "target": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/3",
+              "body": {
+                "id": "https://iiif.dc.library.northwestern.edu/iiif/2/acc02fba-6537-4c4d-ac78-b8a0cde33178/full/600,/0/default.jpg",
+                "type": "Image",
+                "format": "image/tiff",
+                "height": 2749,
+                "width": 2182,
+                "service": [
+                  {
+                    "@id": "https://iiif.dc.library.northwestern.edu/iiif/2/acc02fba-6537-4c4d-ac78-b8a0cde33178",
+                    "@type": "ImageService2",
+                    "profile": "http://iiif.io/api/image/2/level2.json"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "placeholderCanvas": {
+        "id": "https://api.dc.library.northwestern.edu/api/v2/works/4044e95f-8cf1-45e0-9c94-87722d9a1b3a?as=iiif/canvas/access/3/placeholder",
+        "type": "Canvas",
+        "width": 640,
+        "height": 806,
+        "items": [
+          {
+            "id": "https://api.dc.library.northwestern.edu/api/v2/works/4044e95f-8cf1-45e0-9c94-87722d9a1b3a?as=iiif/canvas/access/3/placeholder/annotation-page/0",
+            "type": "AnnotationPage",
+            "items": [
+              {
+                "id": "https://api.dc.library.northwestern.edu/api/v2/works/4044e95f-8cf1-45e0-9c94-87722d9a1b3a?as=iiif/canvas/access/3/placeholder/annotation/0",
+                "type": "Annotation",
+                "motivation": "painting",
+                "body": {
+                  "id": "https://iiif.dc.library.northwestern.edu/iiif/2/acc02fba-6537-4c4d-ac78-b8a0cde33178/full/!640,806/0/default.jpg",
+                  "type": "Image",
+                  "format": "image/tiff",
+                  "width": 640,
+                  "height": 806,
+                  "service": [
+                    {
+                      "@id": "https://iiif.dc.library.northwestern.edu/iiif/2/acc02fba-6537-4c4d-ac78-b8a0cde33178",
+                      "@type": "ImageService2",
+                      "profile": "http://iiif.io/api/image/2/level2.json"
+                    }
+                  ]
+                },
+                "target": "https://api.dc.library.northwestern.edu/api/v2/works/4044e95f-8cf1-45e0-9c94-87722d9a1b3a?as=iiif/canvas/access/3/placeholder"
+              }
+            ]
+          }
+        ]
+      },
+      "annotations": [
+        {
+          "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/3/annotations",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/3/annotations/transcription",
+              "type": "Annotation",
+              "motivation": "transcribing",
+              "body": {
+                "type": "TextualBody",
+                "language": "ar",
+                "format": "text/plain",
+                "value": "ونصه لا اله الا الله مقامات الدين ثلاث\n الإسلام والإيمان والإحسان. فالإسلام قول لا اله الا الله والإيمان العلم بأنه لا اله الا الله والإحسان الجريان في مقتضى لا اله الا الله وهو أن تقول كلام حال ومقال الله.\n \n‏والكلمة الشريفة هي كلمة التوبة و كلمة التقوى وكلمة الإخلاص و كلمة التوحيد وكلمة الطيبة ولها ثلاثة مراتب \nو مرتبتها الأولى هي مقام الإسلام وهو القيام بمقتضى خطاب الحكمة في حضرة الناسوت \n‏والمرتبة الثانية التي هي العلم بأنه لا اله الا الله هي مقام الايمان\n‏والمرتبة الثالثة التي هي قول الله مقام الإحسان \nفالمقامات إذا متبانية غير متباينة حيث أن المضار على لا اله الا الله\n‏واما المنازل فأول منازل الإسلام التوبة هي الخروج من كفر النعمة فكل نعمة شكرها صرفها في مرضات المنعم و ضد الشكر كفر وقال علماء\n"
+              },
+              "target": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/3"
+            },
+            {
+              "id": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/3/annotations/translation",
+              "type": "Annotation",
+              "motivation": "translating",
+              "body": {
+                "type": "TextualBody",
+                "language": "en",
+                "format": "text/plain",
+                "value": "[Introduction] \n\n“There is no deity but God” constitutes the three stations of religion, (which are) submission (islām), faith (īmān), and excellence (iḥsān). Submission is pronouncing (the words) “there is no deity but God,” faith is knowing that there is no deity but God, and excellence is moving in accordance with “there is no deity but God,”which means that, when you make an utterance in a spiritual state (ḥāl), what you say is (the word) “God.” \n\nThe noble word (i.e., the phrase “There is no deity but God”) is the word of repentance (tawba), the word of God-consciousness (taqwā), the word of sincerity (ikhlāṣ), the word of Divine Unity (tawḥīd), and the good word. It has three levels (marātib). Its first level is the station of submission, and it is acting in the earthly plane (ḥaḍrat al-nāsūt) according to the exigencies of the speech of wisdom. The second level, which is knowing that there is no deity but God, is the station of faith. The third level, which is uttering the word “God,” is the station of excellence. Thus, the stations are different and (at the same time) not different as they all revolve around “There is no deity but God.” "
+              },
+              "target": "http://localhost:3000/manifest/annotations/transcribing-translating/canvas/3"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

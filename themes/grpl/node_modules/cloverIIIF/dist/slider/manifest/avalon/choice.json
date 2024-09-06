@@ -1,0 +1,79 @@
+{
+  "@context": "http://iiif.io/api/presentation/3/context.json",
+  "id": "https://samvera-labs.github.io/clover-iiif/manifest/avalon/choice.json",
+  "type": "Manifest",
+  "label": {
+    "none": ["Manifest with choice painting annotations"]
+  },
+  "items": [
+    {
+      "id": "https://samvera-labs.github.io/clover-iiif/manifest/avalon/choice/canvas/1",
+      "type": "Canvas",
+      "height": 360,
+      "width": 480,
+      "duration": 572.034,
+      "items": [
+        {
+          "id": "https://samvera-labs.github.io/clover-iiif/manifest/avalon/choice/canvas/1/page/1",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "https://samvera-labs.github.io/clover-iiif/manifest/avalon/choice/canvas/1/page/1/annotation/1",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": [
+                {
+                  "type": "Choice",
+                  "choiceHint": "user",
+                  "items": [
+                    {
+                      "id": "https://samvera-labs.github.io/clover-iiif/media/video/dickson_greeting.ogv.120p.vp9.webm",
+                      "type": "Video",
+                      "format": "video/webm",
+                      "label": {
+                        "en": ["VP9 120P"]
+                      }
+                    },
+                    {
+                      "id": "https://samvera-labs.github.io/clover-iiif/media/video/dickson_greeting.ogv.180p.vp9.webm",
+                      "type": "Video",
+                      "format": "video/webm",
+                      "label": {
+                        "en": ["VP9 180P"]
+                      }
+                    },
+                    {
+                      "id": "https://samvera-labs.github.io/clover-iiif/media/video/dickson_greeting.ogv.240p.vp9.webm",
+                      "type": "Video",
+                      "format": "video/webm",
+                      "label": {
+                        "en": ["VP9 240P"]
+                      }
+                    },
+                    {
+                      "id": "https://samvera-labs.github.io/clover-iiif/media/video/dickson_greeting.ogv.160p.webm",
+                      "type": "Video",
+                      "format": "video/webm",
+                      "label": {
+                        "en": ["WebM 160P"]
+                      }
+                    },
+                    {
+                      "id": "https://samvera-labs.github.io/clover-iiif/media/video/dickson_greeting.ogv.240p.webm",
+                      "type": "Video",
+                      "format": "video/webm",
+                      "label": {
+                        "en": ["WebM 240P"]
+                      }
+                    }
+                  ]
+                }
+              ],
+              "target": "https://samvera-labs.github.io/clover-iiif/manifest/avalon/choice/canvas/1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

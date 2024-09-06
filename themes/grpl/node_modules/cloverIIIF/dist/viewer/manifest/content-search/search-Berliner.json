@@ -1,0 +1,63 @@
+{
+  "@context": "http://iiif.io/api/search/2/context.json",
+  "id": "http://localhost:3000/api/newspaper_search/1?q=Berliner",
+  "type": "AnnotationPage",
+  "items": [
+    {
+      "id": "http://localhost:3000/manifest/content-search/annotation/584",
+      "type": "Annotation",
+      "motivation": "highlighting",
+      "body": {
+        "type": "TextualBody",
+        "value": "Berliner",
+        "format": "text/plain"
+      },
+      "label": {
+        "none": ["p. 1"]
+      },
+      "target": "http://localhost:3000/manifest/content-search/canvas/i1p1#xywh=839,3259,118,27"
+    },
+    {
+      "id": "http://localhost:3000/manifest/content-search/annotation/920",
+      "type": "Annotation",
+      "motivation": "highlighting",
+      "body": {
+        "type": "TextualBody",
+        "value": "Berliner",
+        "format": "text/plain"
+      },
+      "label": {
+        "none": ["p. 1"]
+      },
+      "target": "http://localhost:3000/manifest/content-search/canvas/i1p1#xywh=161,459,1063,329"
+    },
+    {
+      "id": "http://localhost:3000/manifest/content-search/annotation/1272",
+      "type": "Annotation",
+      "motivation": "highlighting",
+      "body": {
+        "type": "TextualBody",
+        "value": "Berliner",
+        "format": "text/plain"
+      },
+      "label": {
+        "none": ["p. 1"]
+      },
+      "target": "http://localhost:3000/manifest/content-search/canvas/i1p1#xywh=1942,1579,106,23"
+    },
+    {
+      "id": "http://localhost:3000/manifest/content-search/annotation/2650",
+      "type": "Annotation",
+      "motivation": "highlighting",
+      "body": {
+        "type": "TextualBody",
+        "value": "Berliner",
+        "format": "text/plain"
+      },
+      "label": {
+        "none": ["p. 2"]
+      },
+      "target": "http://localhost:3000/manifest/content-search/canvas/i1p2#xywh=2468,4313,106,26"
+    }
+  ]
+}

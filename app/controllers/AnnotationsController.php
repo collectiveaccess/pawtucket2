@@ -168,7 +168,8 @@ class AnnotationsController extends BasePawtucketController {
 	 *
 	 */
 	public function DownloadFiles() {
-		$annotations = ca_user_representation_annotations::getAnnotations(['request' => $this->request]);
+		$representation_id = $this->request->getParameter('representation_id', pInteger);
+		$annotations = ca_user_representation_annotations::getAnnotations(['request' => $this->request, 'representation_id' => $representation_id]);
 		
 		$this->view->setVar('annotations', $annotations);
 		$content = $this->view->render('Annotations/export/annotations_pdf_html.php', true);

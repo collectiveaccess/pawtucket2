@@ -84,6 +84,8 @@ export default function _init(appData) {
 				  label: { none: ["Clippings"] },
 				  componentProps: {
 					annotationServer: appData.clipUrl,
+					annotationDownloadUrl: appData.clipDownloadUrl,
+					annotationDownloadLabel: "Download clippings",
 					token: "abc123"
 				  },
 				},
@@ -119,6 +121,15 @@ export default function _init(appData) {
 						tabLabel: "Search",
 						formPlaceholder: "Search",
 						noSearchResults: "No results found"
+					}
+				},
+				pages: {
+					toggleLabel: "Pages",
+					show: false
+				},
+				contentSearch: {
+					overlays: {
+						zoomLevel: 20
 					}
 				}
 			  }}

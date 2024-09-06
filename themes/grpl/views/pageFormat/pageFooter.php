@@ -30,10 +30,10 @@
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
 			<ul class="list-inline pull-right social">
-				<li><a href="https://www.instagram.com/grandrapidspubliclibrary/?hl=en"><i class="fab fa-instagram"></i></a></li>
-				<li><a href="https://www.facebook.com/GrandRapidsPublicLibrary/"><i class="fab fa-facebook"></i></a></li>
-				<li><a href="https://twitter.com/grpl/"><i class="fab fa-twitter"></i></a></li>
-				<li><a href="https://www.youtube.com/user/grpublib/featured"><i class="fab fa-youtube"></i></a></li>
+				<li><a href="https://www.instagram.com/grandrapidspubliclibrary/?hl=en"><i class="fab fa-instagram" aria-label="Instagram"></i></a></li>
+				<li><a href="https://www.facebook.com/GrandRapidsPublicLibrary/"><i class="fab fa-facebook" aria-label="Facebook"></i></a></li>
+				<li><a href="https://twitter.com/grpl/"><i class="fab fa-twitter" aria-label="Twitter"></i></a></li>
+				<li><a href="https://www.youtube.com/user/grpublib/featured"><i class="fab fa-youtube" aria-label="YouTube"></i></a></li>
 			</ul>
 			<div>
 			</div>

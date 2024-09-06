@@ -1,0 +1,1 @@
+{"version":3,"file":"PixiLayerClickEvent.d.ts","sourceRoot":"","sources":["../../../src/annotation/pixi/PixiLayerClickEvent.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,8BAA8B,CAAC;AAEpE,MAAM,WAAW,mBAAmB;IAElC,aAAa,EAAE,YAAY,CAAC;IAE5B,UAAU,CAAC,EAAE,eAAe,CAAC;CAE9B"}

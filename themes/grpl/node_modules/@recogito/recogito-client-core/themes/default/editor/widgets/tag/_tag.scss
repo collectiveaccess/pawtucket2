@@ -1,0 +1,124 @@
+.r6o-widget.r6o-tag:empty {
+  display:none;
+}
+
+/* IE11-specific hackery */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+
+  .r6o-widget.tag .r6o-taglist li {
+    height:27px;
+
+    .r6o-delete-wrapper .r6o-delete {
+      position:relative;
+      top:-4px;
+    }
+  }
+
+}
+
+.r6o-widget.r6o-tag {
+  background-color:$blueish-white;
+  border-bottom:1px solid $lightgrey-border;
+  padding:1px 3px;
+  display:flex;
+
+  ul {
+    margin:0;
+    padding:0;
+    list-style-type:none;
+    z-index:1;
+  }
+
+  ul.r6o-taglist {
+    flex:0;
+    white-space:nowrap;
+
+    li {
+      margin:0;
+      display:inline-block;
+      margin:1px 1px 1px 0;
+      padding:0;
+      vertical-align:middle;
+      overflow:hidden;
+      font-size:12px;
+      background-color:#fff;
+      border:1px solid $lightgrey-border-darker;
+      cursor:pointer;
+      position:relative;
+      line-height:180%;
+      @include r6o-noselect();
+      @include rounded-corners(2px);
+      @include box-shadow(0, 0, 4px, 0.1);
+
+      .r6o-label {
+        padding:2px 8px;
+        display:inline-block;
+      }
+
+      .r6o-delete-wrapper {
+        display:inline-block;
+        padding:2px 0;
+        color:#fff;
+        width:0;
+        height:100%;
+        background-color:$ocean;
+        @include rounded-corners-right(2px);
+
+        .r6o-delete {
+          padding:2px 6px;
+        }
+
+        svg {
+          vertical-align:text-top;
+        }
+
+      }
+
+      .r6o-delete-enter-active {
+        width:24px;
+        transition:width 200ms;
+      }
+
+      .r6o-delete-enter-done {
+        width:24px;
+      }
+
+      .r6o-delete-exit {
+        width:24px;
+      }
+
+      .r6o-delete-exit-active {
+        width:0;
+        transition:width 200ms;
+      }
+
+    }
+
+  }
+
+  .r6o-autocomplete {
+    flex:1;
+    position:relative;
+
+    li {
+      font-size:14px;
+    }
+  }
+
+  input {
+    width:100%;
+    padding:0 3px;
+    min-width:80px;
+    outline:none;
+    border:none;
+    line-height:170%;
+    background-color:transparent;
+    color:$standard-type;
+  }
+
+  input::-webkit-input-placeholder { color:#c2c2c2; }
+  input::-moz-placeholder { color:#c2c2c2; }
+  input:-moz-placeholder { color:#c2c2c2; }
+  input:-ms-input-placeholder { color:#c2c2c2; }
+
+}

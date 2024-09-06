@@ -63,6 +63,8 @@ if($previous_id) {
 if($next_id) { 
 	$tmp[] = caNavLink($this->request, _t('Next issue'), 'issueNav issueNavNext', '*', '*', 'newspapers/'.$next_id); 
 }
+$tmp[] = caNavLink($this->request, _t('Help'), 'issueNav', '', 'about', 'newspaperhelp');
+
 $navigation_header = (sizeof($tmp) > 0) ? _t('%1', join(' ', $tmp)) : '';
 ?>
 <div id="clover<?= $display_type; ?>"></div>
@@ -74,6 +76,7 @@ $navigation_header = (sizeof($tmp) > 0) ? _t('%1', join(' ', $tmp)) : '';
     	url: <?= json_encode($this->getVar('data_url').'/render/Newspaper'); ?>,
     	searchUrl: <?= json_encode($this->getVar('search_url')); ?>,
     	clipUrl: <?= json_encode($this->getVar('clip_url').'/mode/iiif'); ?>,
+    	clipDownloadUrl: <?= json_encode(caNavUrl($this->request, '', 'Annotations', 'DownloadPDF', ['representation_id' => $t_subject->get('ca_object_representations.representation_id')])); ?>,
     	renderAbout: false,
     	renderResources: false,
     	renderClips: true,   	

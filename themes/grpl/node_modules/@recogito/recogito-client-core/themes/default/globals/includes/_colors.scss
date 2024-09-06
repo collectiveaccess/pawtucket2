@@ -1,0 +1,33 @@
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+/** Base background colors         **/
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+
+// Recogito's light blue signature colour
+$ocean:#4483c4;
+
+// Slightly lighter version for hover effects on ocean-coloured buttons
+$ocean-hover:#4f92d7;
+
+// 'Pale' version of ocean for disabled buttons
+$ocean-disabled:#a3c2e2;
+
+// Pale blue used as alternative background colour
+$blueish-white:#ecf0f1;
+$blueish-white-hi:lighten($blueish-white, 3%);
+
+// Used for accent borders on white background - e.g. annotation area header
+$lightgrey-border:#e5e5e5;
+$lightgrey-border-darker:#d6d7d9;
+
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+/** Type colors                    **/
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+
+// Standard 'black' (well, not quite) type
+$standard-type:#3f3f3f;
+
+// Icons, links, emphasized type on white background - e.g. in annotation area header
+$lightblue-type:#9ca4b1;
+
+// A slightly darker shade than lightblue-type
+$lightgrey-type:#757575;

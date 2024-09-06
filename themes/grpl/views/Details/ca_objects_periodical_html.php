@@ -138,7 +138,7 @@ $vo_rights_idno = $vo_rights->get('idno');
 				
 <?php
 	$rep = $t_object->getPrimaryRepresentationInstance();
-	if(caObjectsDisplayDownloadLink($this->request, $vn_id, rep)){
+	if(caObjectsDisplayDownloadLink($this->request, $vn_id, $rep)){
 		# -- get version to download configured in media_display.conf
 		$download_version = caGetAvailableDownloadVersions($this->request, $rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'), ['returnVersionForUser' => true]);
 		

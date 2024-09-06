@@ -1,0 +1,72 @@
+{
+  "name": "line-height",
+  "description": "Calculate line-height of an HTML element (IE6 compatible)",
+  "version": "0.3.1",
+  "homepage": "https://github.com/twolfson/line-height",
+  "author": {
+    "name": "Todd Wolfson",
+    "email": "todd@twolfson.com",
+    "url": "http://twolfson.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/twolfson/line-height.git"
+  },
+  "bugs": {
+    "url": "https://github.com/twolfson/line-height/issues"
+  },
+  "license": "MIT",
+  "main": "lib/line-height",
+  "engines": {
+    "node": ">= 4.0.0"
+  },
+  "scripts": {
+    "build": "browserify lib/line-height.js --standalone line-height --outfile dist/line-height.js",
+    "lint": "twolfson-style lint lib/ test/",
+    "test": "npm run build && npm run test-karma-single && npm run lint",
+    "_test-karma-comment": "`xvfb-maybe` checks for DISPLAY environment variable but we hate non-headless browsers so we always shut it off",
+    "test-karma-continuous": "DISPLAY=\"\" xvfb-maybe karma start --no-single-run",
+    "test-karma-single": "DISPLAY=\"\" xvfb-maybe karma start"
+  },
+  "dependencies": {
+    "computed-style": "~0.1.3"
+  },
+  "devDependencies": {
+    "brfs": "~1.4.3",
+    "browserify": "~13.1.1",
+    "css-controls": "~0.1.0",
+    "domify": "~1.0.0",
+    "foundry": "~4.3.3",
+    "foundry-release-component": "~2.0.0",
+    "foundry-release-git": "~2.0.2",
+    "foundry-release-npm": "~2.0.2",
+    "jscs": "~3.0.7",
+    "jshint": "~2.9.4",
+    "karma": "~1.4.1",
+    "karma-browserify": "~5.1.1",
+    "karma-chrome-launcher": "~2.0.0",
+    "karma-mocha": "~1.3.0",
+    "karma-phantomjs-launcher": "~1.0.2",
+    "mocha": "~3.2.0",
+    "proclaim": "~3.4.4",
+    "twolfson-style": "~1.6.1",
+    "xvfb-maybe": "~0.1.3"
+  },
+  "keywords": [
+    "line-height",
+    "lineHeight",
+    "getComputedStyle",
+    "css"
+  ],
+  "foundry": {
+    "releaseCommands": [
+      {
+        "type": "customCommand",
+        "updateFiles": "npm run build"
+      },
+      "foundry-release-git",
+      "foundry-release-npm",
+      "foundry-release-component"
+    ]
+  }
+}

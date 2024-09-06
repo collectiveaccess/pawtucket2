@@ -1,0 +1,43 @@
+.r6o-btn {
+  background-color:$ocean;
+  border:1px solid $ocean;
+  box-sizing:border-box;
+  color:#fff;
+  cursor:pointer;
+  display:inline-block;
+  font-size:14px;
+  margin:0;
+  outline:none;
+  text-decoration:none;
+  white-space:nowrap;
+  padding:6px 18px;
+  min-width:70px;
+  vertical-align:middle;
+  @include rounded-corners(2px);
+
+  * { 
+    vertical-align:middle; 
+    cursor:pointer;
+  }
+
+  .r6o-icon { 
+    margin-right:4px; 
+  }
+}
+
+.r6o-btn:disabled {
+  border-color:$ocean-disabled !important;
+  background-color:$ocean-disabled !important;
+}
+
+.r6o-btn:hover {
+  background-color:$ocean-hover;
+  border-color:$ocean-hover;
+}
+
+.r6o-btn.outline {
+  border:1px solid $ocean;
+  color:$ocean;
+  background-color:transparent;
+  text-shadow:none;
+}
