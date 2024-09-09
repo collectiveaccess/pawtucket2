@@ -67,7 +67,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 ?>
 	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
 		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_collections.preferred_labels.name}}}</H1>
+			<H1 class="fs-2">{{{^ca_collections.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_collections.idno"><div class="fw-medium mb-3 text-capitalize">^ca_collections.idno</div></ifdef>}}}
 			<hr class="mb-0 opacity-100">
 		</div>
@@ -138,7 +138,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 ?>				
 {{{<ifcount code="ca_objects" min="1">
 <div class="row">
-	<div class="col"><h2>Related Objects</h2><hr/></div>
+	<div class="col"><h2 class="fs-3">Related Objects</h2><hr/></div>
 </div>
 <div class="row" id="browseResultsContainer">	
 	<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id"))); ?>">
