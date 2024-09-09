@@ -151,14 +151,14 @@ if (!$vb_ajax) {	// !ajax
 		}
 
 		if($vb_showLetterBar){
-			print "<div id='bLetterBar'>";
+			print "<ul id='bLetterBar' class='list-inline p-0 mb-3'>";
 			foreach(array_keys($va_letter_bar) as $vs_l){
 				if(trim($vs_l)){
-					print caNavLink($this->request, $vs_l, ($vs_letter == $vs_l) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))." ";
+					print "<li class='list-inline-item p-0 m-0'>".caNavLink($this->request, $vs_l, 'btn p-1 fw-medium'.(($vs_letter == $vs_l) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))."</li>";
 				}
 			}
-			print " | ".caNavLink($this->request, _t("All"), (!$vs_letter) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all')); 
-			print "</div>";
+			print "<li class='list-inline-item py-0 my-0'> | </li><li class='list-inline-item p-0 m-0'>".caNavLink($this->request, _t("All"), 'btn p-1 fw-medium'.((!$vs_letter) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all'))."</li>"; 
+			print "</ul>";
 		}
 ?>
 			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
