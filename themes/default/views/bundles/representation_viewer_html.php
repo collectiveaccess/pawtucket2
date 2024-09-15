@@ -55,7 +55,7 @@ if ($representation_count > 1) {
 	let index = 0;
 	let slide_list = <?= json_encode($slide_list); ?>;
 	jQuery(document).ready(function() {
-		setItem(0);
+		setByIndex(0);
 		
 		jQuery('#detailRepNavPrev').on('click', function(e) {
 			previousItem();
@@ -70,25 +70,39 @@ if ($representation_count > 1) {
 	function nextItem() {
 		if(index < (slide_list.length - 1)) {
 			index = index + 1;
-			setItem(index);
+			setByIndex(index);
 		}
 		return false;
 	};
 	function previousItem() {
 		if(index > 0) {
 			index = index - 1;
-			setItem(index);
+			setByIndex(index);
+		}
+		return false;
+	};
+	function setByIndex(i) {
+		if((i >= 0) && (i < slide_list.length)) {
+			jQuery('#repViewerItemDisplay').html(slide_list[i]);
+
+			let repid = jQuery('#repViewerItemDisplay').children(":first").attr('data-representation_id');
+			let thumbid = jQuery('.repThumb[data-representation_id="' + repid + '"]').attr('id');
+
+			jQuery('.repThumb').removeClass('active');
+			jQuery('#' + thumbid).addClass('active');
+
+			index = i;
 		}
 		return false;
 	};
 	function setItem(i) {
-		if((i >= 0) && (i < slide_list.length)) {
-			jQuery('#repViewerItemDisplay').html(slide_list[i]);
-			
-			jQuery('.repThumb').removeClass('active');
-			jQuery('#repThumb_' + index).addClass('active');
-			
-			index = i;
+		let repid = jQuery('#repThumb_' + i).attr('data-representation_id');
+
+		for (let newindex = 0; newindex < slide_list.length; newindex++) {
+			if (slide_list[newindex].includes("data-representation_id='" + repid + "'")) {
+				setByIndex(newindex);
+				break;
+			}
 		}
 		return false;
 	};
