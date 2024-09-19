@@ -272,7 +272,7 @@ if (!$vb_ajax) {	// !ajax
 					if($t_collection->get("ca_collections.parent_id")){
 						print "<div class='unit'>From the collection: ";
 						#print $t_collection->getWithTemplate('<ifdef code="ca_collections.parent_id"><div class="unit">From the collection: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>');
-						$va_ancestors = $t_collection->getHierarchyAncestors();
+						$va_ancestors = array_reverse($t_collection->getHierarchyAncestors());
 						foreach($va_ancestors as $va_ancestor){
 							$t_collection_ancestor = new ca_collections($va_ancestor["NODE"]["collection_id"]);
 							print caNavLink($this->request, $t_collection_ancestor->get("ca_collections.preferred_labels.name"), "", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_collection_ancestor->get("ca_collections.collection_id")))." > ";
