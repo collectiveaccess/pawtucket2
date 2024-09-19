@@ -886,7 +886,13 @@ body.frontContainer #footer{
   margin-top: 10%;
   font-size: 18px;
 }
-
+.collectionShowHideBrowser{
+	background-color: #8f8d8d !important;
+	text-decoration: none;
+	font-size: 12px;
+	padding: 4px 5px;
+	text-transform: none;
+}
 .form-control:focus {
 	border-color: #000;
 }
