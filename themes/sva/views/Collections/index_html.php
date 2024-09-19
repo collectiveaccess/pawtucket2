@@ -2,7 +2,7 @@
 	$o_collections_config = $this->getVar("collections_config");
 	$qr_archives = $this->getVar("collection_results");
 	$va_access_values = $this->getVar("access_values");
-	
+	$landing_page_sort_collections = $o_collections_config->get("landing_page_sort_collections");
 
 	$vs_item_display_template = ($o_collections_config->get("landing_page_item_display_template")) ? $o_collections_config->get("landing_page_item_display_template") : "<div class='card-title'><div class='fw-medium lh-sm fs-5'><l>^ca_collections.preferred_labels</l></div></div>";
 ?>
@@ -18,12 +18,18 @@
 	if($qr_archives && $qr_archives->numHits()) {
 		while($qr_archives->nextHit()) { 
 			# --- display all collections under the top level archive records
-			$collection_ids = $qr_archives->get("ca_collections.children.collection_id", array("restrictToTypes" => "collection", "checkAccess" => $access_values, "returnAsArray" => true));
+			$collection_ids = $qr_archives->get("ca_collections.children.collection_id", array("sort" => $landing_page_sort_collections, "restrictToTypes" => "collection", "checkAccess" => $access_values, "returnAsArray" => true));
 			if(is_array($collection_ids) && sizeof($collection_ids)){
 				$qr_collections = caMakeSearchResult("ca_collections", $collection_ids);
 ?>
 			<div class="row">
-				<div class='col-sm-12 mt-4 pt-2'><h2><?php print $qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"); ?></h2><hr></div>
+				<div class='col-sm-12 mt-4 pt-2'><h2><?php print $qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"); ?></h2><hr>
+<?php
+				if($this->getVar("sva_collection_message") && (strpos($qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"), "Visual") !== false)){
+					print "<div class='mb-3'>".$this->getVar("sva_collection_message")."</div>";
+				}
+?>
+				</div>
 			</div>
 			<div class="row">
 <?php
