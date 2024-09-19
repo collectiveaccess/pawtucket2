@@ -27,7 +27,7 @@
 			$top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 			$t_top_level_collection = new ca_collections($top_level_collection_id);
 ?>					
-			<div style="padding-bottom:5px;"><a href='#' onclick='$("#collectionsWrapper").toggle(300);return false;' class='showHide collectionShowHideBrowser btn btn-default'>Show/Hide Collection Browser</a></div>
+			<div style="padding:10px 0px 5px 0px;"><a href='#' onclick='$("#collectionsWrapper").toggle(300);return false;' class='showHide collectionShowHideBrowser btn btn-default'>Show/Hide Collection Browser</a></div>
 				<div class="row" id="collectionsWrapper" <?php print ($t_top_level_collection->getWithTemplate("^ca_collections.hide_coll_hierarchy") == "Yes") ? "style='display:none;'" : ""; ?>>			
 					<div class='col-sm-12'>
 					
