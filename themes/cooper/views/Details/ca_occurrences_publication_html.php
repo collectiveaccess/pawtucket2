@@ -102,7 +102,7 @@
 											$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 										}
 										ksort($va_entity_display);
-										print join($va_entity_display, "<br/>");
+										print join("<br/>", $va_entity_display);
 									}else{
 										print "N/A";
 									}
@@ -117,7 +117,7 @@
 											$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 										}
 										ksort($va_entity_display);
-										print join($va_entity_display, "<br/>");
+										print join("<br/>", $va_entity_display);
 									}else{
 										print "N/A";
 									}
@@ -132,7 +132,7 @@
 											$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 										}
 										ksort($va_entity_display);
-										print join($va_entity_display, "<br/>");
+										print join("<br/>", $va_entity_display);
 									}else{
 										print "N/A";
 									}
@@ -147,7 +147,7 @@
 											$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 										}
 										ksort($va_entity_display);
-										print join($va_entity_display, "<br/>");
+										print join("<br/>", $va_entity_display);
 									}else{
 										print "N/A";
 									}
@@ -164,7 +164,7 @@
 											$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 										}
 										ksort($va_entity_display);
-										print join($va_entity_display, "<br/>");
+										print join("<br/>", $va_entity_display);
 									}else{
 										print "N/A";
 									}

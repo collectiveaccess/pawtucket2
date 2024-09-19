@@ -35,7 +35,6 @@ require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
 require_once(__CA_LIB_DIR__.'/Parsers/DisplayTemplateParser.php');
 require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
-require_once(__CA_LIB_DIR__.'/Parsers/ganon.php');
 
 # ------------------------------------------------------------------------------------------------
 /**
@@ -130,6 +129,7 @@ function caExtractValuesByLocale($pa_locale_rules, $pa_values, $pa_options=null)
 	if (!is_array($pa_values)) { return array(); }
 	$va_values = array();
 	foreach($pa_values as $vm_id => $va_value_list_by_locale) {
+		if(!is_array($va_value_list_by_locale)) { continue; }
 		if (sizeof($va_value_list_by_locale) == 1) {		// Don't bother looking if there's just a single value
 			$va_values[$vm_id] = array_pop($va_value_list_by_locale);
 			continue;
@@ -1213,10 +1213,10 @@ function caEditorInspector($po_view, $pa_options=null) {
 			if(is_array($vs_additional_info)){
 				$vs_buf .= "<br/>";
 				foreach($vs_additional_info as $vs_info){
-					$vs_buf .= caProcessTemplateForIDs($vs_info, $vs_table_name, array($t_item->getPrimaryKey()),array('requireLinkTags' => true))."<br/>\n";
+					$vs_buf .= caProcessTemplateForIDs($vs_info, $vs_table_name, array($t_item->getPrimaryKey()), ['requireLinkTags' => true])."<br/>\n";
 				}
 			} else {
-				$vs_buf .= "<br/>".caProcessTemplateForIDs($vs_additional_info, $vs_table_name, array($t_item->getPrimaryKey()),array('requireLinkTags' => true))."<br/>\n";
+				$vs_buf .= "<br/>".caProcessTemplateForIDs($vs_additional_info, $vs_table_name, array($t_item->getPrimaryKey()), ['requireLinkTags' => true])."<br/>\n";
 			}
 		}
 
@@ -2105,17 +2105,21 @@ function caParseTableTypesFromSpecification(string $table, string $spec, ?array 
 /**
  * Generates access control list (ACL) editor for item
  *
- * @param View $po_view Inspector view object
- * @param BaseModel $pt_instance Model instance representing the item for which ACL is being managed
- * @param array $pa_options None implemented yet
+ * @param View $view Inspector view object
+ * @param BaseModel $t_instance Model instance representing the item for which ACL is being managed
+ * @param array $options None implemented yet
  *
  * @return string HTML implementing the inspector
  */
-function caEditorACLEditor($po_view, $pt_instance, $pa_options=null) {
-	$vs_view_path = (isset($pa_options['viewPath']) && $pa_options['viewPath']) ? $pa_options['viewPath'] : $po_view->request->getViewsDirectoryPath();
-	$o_view = new View($po_view->request, "{$vs_view_path}/bundles/");
+function caEditorACLEditor(View $view, BaseModel $t_instance, ?array $options=null) : ?string {
+	$view_path = (isset($options['viewPath']) && $options['viewPath']) ? $options['viewPath'] : $view->request->getViewsDirectoryPath();
+	$o_view = new View($view->request, "{$view_path}/bundles/");
 
-	$o_view->setVar('t_instance', $pt_instance);
+	$o_view->setVar('t_instance', $t_instance);
+	
+	// Get inheritance usage stats
+	$o_view->setVar('statistics', ca_acl::getStatisticsForRow($t_instance, $t_instance->getPrimaryKey()));
+	
 	return $o_view->render('ca_acl_access.php');
 }
 # ------------------------------------------------------------------------------------------------
@@ -2128,7 +2132,7 @@ function caEditorACLEditor($po_view, $pt_instance, $pa_options=null) {
  *
  * @return string HTML implementing the inspector
  */
-function caBatchEditorInspector($po_view, $pa_options=null) {
+function caBatchEditorInspector(View $po_view, ?array $pa_options=null) : ?string {
 	$rs 					= $po_view->getVar('record_selection');
 	$t_item 				= $po_view->getVar('t_item');
 	$vs_table_name = $t_item->tableName();
@@ -2138,8 +2142,7 @@ function caBatchEditorInspector($po_view, $pa_options=null) {
 
 	$o_result_context		= $po_view->getVar('result_context');
 	$t_ui 					= $po_view->getVar('t_ui');
-
-
+	
 	$vs_buf = '<h3 class="nextPrevious"><span class="resultCount" style="padding-top:10px;">'.$rs->getResultsLink($po_view->request)."</span></h3>\n";
 
 	$vs_color = $vs_type_name = null;
@@ -2426,6 +2429,7 @@ function caGetDefaultMediaViewer($ps_mimetype) {
  * @return array An array of tags, or an array of arrays when parseOptions option is set.
  */
 function caGetTemplateTags($ps_template, $pa_options=null) {
+	if(!strlen($ps_template)) { return []; }
 	$key = caMakeCacheKeyFromOptions($pa_options ?? [], $ps_template);
 	if(MemoryCache::contains($key, 'DisplayTemplateParserUtils')) { return MemoryCache::fetch($key, 'DisplayTemplateParserUtils'); }
 	
@@ -3162,8 +3166,15 @@ function caProcessRelationshipLookupLabel($qr_rel_items, $pt_rel, $pa_options=nu
 		}
 		$va_items = $va_tmp;
 		unset($va_tmp);
+	} elseif(method_exists($pt_rel, 'isSelfRelationship') && $pt_rel->isSelfRelationship()) {
+		foreach($va_items as $k => $item) {
+			if(!isset($item['relation_id'])) { continue; }
+			if($pt_rel->load($item['relation_id'])) {
+				$va_items[$k]['direction'] = strtolower($pt_rel->getOrientationForRelationship($va_primary_ids));
+				$va_items[$k]['relationship_type_id'] = $va_items[$k]['type_id'] = (($va_items[$k]['type_id'] ?? null) ? ($va_items[$k]['direction'] ? $va_items[$k]['direction'].'_'.$va_items[$k]['type_id'] : $va_items[$k]['type_id']) : null);
+			}
+		}
 	}
-
 	if(is_array($pa_options['sortOrder'] ?? null)) {
 		$va_items_sorted = [];
 		foreach($pa_options['sortOrder'] as $id) {
@@ -4215,6 +4226,7 @@ function caRepresentationViewer($po_request, $po_data, $pt_subject, $pa_options=
 	$default_annotation_id		 		= caGetOption('defaultAnnotationID', $pa_options, null);
 	$start_timecode		 				= caGetOption('startTimecode', $pa_options, null);
 	$ps_display_type		 			= caGetOption('display', $pa_options, false);
+	$always_use_clover_viewer		 	= caGetOption('alwaysUseCloverViewer', $pa_options, false);
 
 	$vs_slides = '';
 	$slide_list = [];
@@ -4296,7 +4308,7 @@ function caRepresentationViewer($po_request, $po_data, $pt_subject, $pa_options=
 				$vn_index = null;
 				if($vn_rep_id == $vn_primary_id){
 					$vn_index = 0;
-				}elseif (!($vn_index = (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($qr_reps->tableName()).'.rank'))) {
+				}elseif (!($vn_index = (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($pt_subject->tableName()).'.rank'))) {
 					$vn_index = $qr_reps->get('ca_object_representations.representation_id');
 				}
 				$va_rep_info[$vn_index] = array("rep_id" => $vn_rep_id, "tag" => $va_rep_tags[$vn_rep_id]);
@@ -5711,6 +5723,8 @@ function caGetReferenceToExistingRepresentationMedia(ca_object_representations $
  *
  */
 function caGetTextExcerpt(?string $content, array $search_terms, ?array $options=null) : ?string {
+	require_once(__CA_LIB_DIR__.'/Parsers/ganon.php');
+	
 	$before = caGetOption('before', $options, 100);
 	$after = caGetOption('after', $options, 100);
 	$search_terms = array_map(function($v) {
@@ -5731,8 +5745,30 @@ function caGetTextExcerpt(?string $content, array $search_terms, ?array $options
 					$index = mb_strpos($content, $m[0]);
 					$start = (($index-$before) > 0) ? ($index-$before) : 0;
 					$length = $before + $after + mb_strlen($m[0]);
-					if($length > (mb_strlen($content) - $start)) { $length = (mb_strlen($content) - $start); }
-					$extext = mb_substr($content, $start, $length);
+					
+					$str = mb_substr($content, $start);
+					if($o_doc = str_get_dom($str)) {
+						$extext = '';
+						foreach($o_doc->children as $i => $node) {
+							switch($node->tag) {
+								case '~text~':
+									$t = $node->html();
+									if(mb_strlen($extext.$t) > $length) {
+										$t = mb_substr($t, 0, $length - mb_strlen($extext));
+									}
+									$extext .= $t;
+									break;
+								default:
+									$extext .= $node->html();
+									break;
+							}
+							
+							if(mb_strlen($extext) >= $length) { break; }
+						}
+					} else {
+						$extext = mb_substr(strip_tags($str), 0, $length);
+					}
+					
 					$excerpts[] = "<p>... {$extext} ...</p>";
 					$content = mb_substr($content, $start + $length);
 				}
@@ -5773,5 +5809,49 @@ function caHighlightText($content, $highlight_words) {
 	$content = preg_replace("/(?<![A-Za-z0-9])(".join('|', $highlight_words).")/i", "<span class=\"highlightText\">\\1</span>", $content);
 	
 	return $content;
+}
+# ------------------------------------------------------------------
+/**
+ *
+ */
+function caApplyFindViewUserRestrictions(ca_users $t_user, string $table, ?array $options=null) : array {
+	$views = caGetFindViewList($table);
+	if(!is_a($t_user, 'ca_users', )) { return $views; }
+	if(!$t_user->isValidPreference("find_{$table}_available_result_views")) { return $views; }
+	
+	$allowed_views = $t_user->getPreference("find_{$table}_available_result_views");
+	
+	$type_id = caGetOption('type_id', $options, null);
+	if(is_array($allowed_views[$table][$type_id]) && sizeof($allowed_views[$table][$type_id])) {
+		foreach($views as $i => $v) {
+			if(!in_array($v, $allowed_views[$table][$type_id], true)) {
+				unset($views[$i]);
+			}
+		}
+	}
+	return $views;
+}
+# ------------------------------------------------------------------
+/**
+ *
+ */
+function caGetFindViewList($table_name_or_num) : ?array {
+	if(!($t_instance = Datamodel::getInstance($table_name_or_num, true))) { return null; }
+	$table = $t_instance->tableName();
+	
+	switch($table) {
+		case 'ca_objects':
+			return [
+				'list' => _t('list'),
+				'full' => _t('full'),
+				'thumbnail' => _t('thumbnails'),
+			];
+			break;
+		default:
+			return [
+				'list' => _t('list')
+			];
+			break;
+	}	
 }
 # ------------------------------------------------------------------
