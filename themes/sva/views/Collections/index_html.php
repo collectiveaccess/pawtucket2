@@ -22,52 +22,71 @@
 			if(is_array($collection_ids) && sizeof($collection_ids)){
 				$qr_collections = caMakeSearchResult("ca_collections", $collection_ids);
 ?>
-			<div class="row">
-				<div class='col-sm-12 mt-4 pt-2'><h2><?php print $qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"); ?></h2><hr>
-<?php
-				if($this->getVar("sva_collection_message") && (strpos($qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"), "Visual") !== false)){
-					print "<div class='mb-3'>".$this->getVar("sva_collection_message")."</div>";
-				}
-?>
+				<div class="row">
+					<div class='col-sm-12 mt-4 pt-2'><h2><?php print $qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"); ?></h2><hr>
+	<?php
+					if($this->getVar("sva_collection_message") && (strpos($qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"), "Visual") !== false)){
+						print "<div class='mb-3'>".$this->getVar("sva_collection_message")."</div>";
+					}
+	?>
+					</div>
 				</div>
-			</div>
-			<div class="row">
-<?php
-			$i = 0;
-			while($qr_collections->nextHit()) { 
-				if($i == 8){
-					print "</div>";
-					print "<div class='collapse' id='collapseArchive".$qr_archives->get("ca_collections.collection_id")."'>";
-					print "<div class='row'>";
-
-				}
-				# --- image on collection record
-				$vs_thumbnail = "";
-				if($vs_thumbnail = $qr_collections->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values))){
-					$vs_thumbnail = "<div class='pt-3 img-fluid'>".$vs_thumbnail."</div>";
-				}			
-				
-				print "<div class='col-sm-6 col-md-3 d-flex'>";
-				$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 bg-white border-0 pb-3 px-3 mb-4'>".$vs_thumbnail."
-								<div class='card-body px-0 pb-0'>".$qr_collections->getWithTemplate($vs_item_display_template)."</div>
-							</div>";
-				print caDetailLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
-				print "</div>";
-				$i++;
-			}
-			if($i > 8){
-				# --- close the collapse div
-				print "</div></div>";
-				print "<div class='row'>
-							<div class='col-sm-12 text-center'>
-								<button class='btn btn-primary' type='button' data-bs-toggle='collapse' data-bs-target='#collapseArchive".$qr_archives->get("ca_collections.collection_id")."' aria-expanded='false' aria-controls='collapseArchive".$qr_archives->get("ca_collections.collection_id")."'>More</button>
-							</div>
-						</div>";
+				<div class="row">
+	<?php
+				$i = 0;
+				while($qr_collections->nextHit()) { 
+					if($i == 8){
+						print "</div>";
+						print "<div class='collapse' id='collapseArchive".$qr_archives->get("ca_collections.collection_id")."'>";
+						print "<div class='row'>";
+	
+					}
+					# --- image on collection record
+					$vs_thumbnail = "";
+					if($vs_thumbnail = $qr_collections->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values))){
+						$vs_thumbnail = "<div class='pt-3 img-fluid'>".$vs_thumbnail."</div>";
+					}			
 					
-			}
+					print "<div class='col-sm-6 col-md-3 d-flex'>";
+					$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 bg-white border-0 pb-3 px-3 mb-4'>".$vs_thumbnail."
+									<div class='card-body px-0 pb-0'>".$qr_collections->getWithTemplate($vs_item_display_template)."</div>
+								</div>";
+					print caDetailLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
+					print "</div>";
+					$i++;
+				}
+				if($i > 8){
+					# --- close the collapse div
+					print "</div></div>";
+					print "<div class='row'>
+								<div class='col-sm-12 text-center'>
+									<button class='btn btn-primary' type='button' id='collapseArchiveButton".$qr_archives->get("ca_collections.collection_id")."' data-bs-toggle='collapse' data-bs-target='#collapseArchive".$qr_archives->get("ca_collections.collection_id")."' aria-expanded='false' aria-controls='collapseArchive".$qr_archives->get("ca_collections.collection_id")."'>More</button>
+								</div>
+							</div>";
 ?>
-			</div>
-<?php
+					<script>
+						htmx.onLoad(function(content) {
+							const myCollapsible = document.getElementById('collapseArchive<?php print $qr_archives->get("ca_collections.collection_id"); ?>');
+							myCollapsible.addEventListener('show.bs.collapse', event => {
+								var button = document.getElementById('collapseArchiveButton<?php print $qr_archives->get("ca_collections.collection_id"); ?>');
+								// Set HTML content
+								button.innerHTML = 'Show Less';
+	
+							});
+							myCollapsible.addEventListener('hide.bs.collapse', event => {
+								var button = document.getElementById('collapseArchiveButton<?php print $qr_archives->get("ca_collections.collection_id"); ?>');
+								// Set HTML content
+								button.innerHTML = 'More';
+	
+							});
+						})
+					</script>
+<?php			
+				}else{
+	?>
+				</div>
+	<?php
+				}
 			}
 		}
 	} else {
