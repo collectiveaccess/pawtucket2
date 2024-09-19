@@ -101,7 +101,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	</div>
 	<ifcount code="ca_objects" min="9">
 		<div class="row row-cols-1 mb-4">
-			<div class="col text-center"><?php print caNavLink($this->request, "Browse All Objects", "btn btn-primary", "", "Browse", "objects", array("facet" => "occurrence_facet", "id" => $id)); ?></div>
+			<div class="col text-center"><?php print caNavLink($this->request, "Browse All Objects", "btn btn-primary", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $id)); ?></div>
 		</div>
 	</ifcount>
 	<ifdef code="ca_entities.life_dates|ca_entities.biography|ca_entities.historical_note">

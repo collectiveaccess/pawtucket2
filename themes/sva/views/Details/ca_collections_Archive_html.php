@@ -38,7 +38,7 @@ $id =					$t_item->get('ca_collections.collection_id');
 $show_nav = 			($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = 			$this->getVar('mapOptions') ?? [];
 
-$collection_ids = $t_item->get("ca_collections.children.collection_id", array("restrictToTypes" => "collection", "checkAccess" => $access_values, "returnAsArray" => true));
+$collection_ids = $t_item->get("ca_collections.children.collection_id", array("sort" => "ca_collections.preferred_labels.name_sort", "restrictToTypes" => "collection", "checkAccess" => $access_values, "returnAsArray" => true));
 if(is_array($collection_ids) && sizeof($collection_ids)){
 	$qr_collections = caMakeSearchResult("ca_collections", $collection_ids);
 }
