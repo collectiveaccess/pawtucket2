@@ -121,13 +121,6 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
       <tr>
         <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Legislative History</span></th>
       </tr>
-			
-			<!-- {{{<ifdef code="ca_objects.SPON">
-				<tr>
-					<td>Sponsor:</td>
-					<td>^ca_objects.SPON</td>
-				</tr>
-			</ifdef>}}} -->
 
 			<?php
 				if($t_object->get("ca_objects.SPON")){
@@ -269,21 +262,21 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 		</em>
 	<ifnotdef/>}}}
 
-	<!-- TODO: Add attachments -->
-	<table class="record table table-striped table-responsive">
-		<tbody>
-			<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
-			<tr>
-				<td class="empty"></td>
-				<td>
-					<!-- <p><a href="https://legistar2.granicus.com/seattle/attachments/2ab35e1c-0097-45c0-aaf4-46c45392de7d.pdf">Att 1 - SIR Hostage Negotiation Throw Phone</a></p>
-					<p><a href="https://legistar2.granicus.com/seattle/attachments/d8ea96a5-cce6-4765-a61c-caf2a2c195c2.pdf">Att 2 - SIR Hostage Negotiation Throw Phone Executive Overview</a></p> -->
-					????????????
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
+	{{{<ifdef code="ca_object_representations.media.small">
+		<unit filterNonPrimaryRepresentations="0">
+			<table class="record table table-striped table-responsive">
+				<tbody>
+					<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
+					<tr>
+						<td class="empty"></td>
+						<td>
+							<a href="^ca_object_representations.URL" target="_blank">^ca_object_representations.media.small</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</unit>
+	</ifdef>}}}
   <hr>
 
   <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>

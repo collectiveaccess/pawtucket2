@@ -148,11 +148,11 @@ if($show_nav){
 							</ifcount>
 							<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibitions">
 								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="exhibitions"><?= _t('Related Exhibition'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="exhibitions"><?= _t('Related Exhibitions'); ?></ifcount></dt>
-								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibitions"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
+								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibitions"><dd><l>^ca_occurrences.preferred_labels</l></dd></unit>
 							</ifcount>
 							<ifcount code="ca_occurrences" min="1" restrictToTypes="events">
 								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="events"><?= _t('Related Event'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="events"><?= _t('Related  Events'); ?></ifcount></dt>
-								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="events"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
+								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="events"><dd><l>^ca_occurrences.preferred_labels</l></dd></unit>
 							</ifcount>
 							
 						</dl>}}}

@@ -44,12 +44,15 @@ $created = $t_object->get("ca_objects.created");
 $email_subject = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 $email_body;
 
+$action = $this->request->getAction();
+// print_r($action);
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 
 	<a id="h0"></a>
+
   <h3>City of Seattle Combined Legislative Records Search</h3>
   <em>Information modified on <?= $last_modified; ?></em> <em><?= $created; ?></em>
   <hr>

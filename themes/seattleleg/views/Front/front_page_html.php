@@ -32,20 +32,18 @@
 ?>
 
 
-<div class="container" style="height: 800px;">
+<div class="container" >
 	<div class="row my-5">
 
-		<div class="text-center" style="height: 160px; width: 100%; max-width: 950px; background-color: #f1f1f1;">
-			<h3 class="mt-2" style="max-width: 100%; font-size: 24px; background-color: #dedede; padding: 5px;">Combined search of legislation</h3>
+		<div class="text-center" style="background-color: #f1f1f1;">
+			<h3 class="mt-2" style="font-size: 24px; background-color: #dedede; padding: 5px;">Combined search of legislation</h3>
 
-				<div class="row justify-content-center">
-					<div class="col-8">
-						<input name="s1" id="searchTerms" type="text" class="form-control" placeholder="Search terms">
-					</div>
-					<div class="col-3">
-						<input type="submit" value="Search" class="btn btn-primary ms-2">
-					</div>
-				</div>
+			<form class="row g-1 align-items-center" action="<?= caNavUrl($this->request, '', 'Search', 'combined'); ?>">
+				<input name="_fulltext" id="searchTerms" type="text" class="form-control col-10" style="width: 79%;" placeholder="Search terms">
+				<input type="submit" value="Search" class="ms-2 col-2 btn btn-primary" style="width: 20%;">
+				<input type="hidden" name="_advanced" value="1">
+				<input type="hidden" name="_formElements" value="_fulltext">
+			</form>
 
 			<p>
 				Searches the titles and full text (where available) of <?= caNavLink($this->request, _t("all legislation"), "", "", "Search", "advanced/combined"); ?>.<br>
@@ -58,8 +56,9 @@
 
 	<div class="row my-5">
 
-		<div class="col-6" style="">
+		<div class="col-5" style="">
 			<h3 class="">Legislation and meetings</h3>
+			
 			<div class="tileTextDescription">
 				<ul>
 					<li><?= caNavLink($this->request, _t("Combined Search"), "", "", "Search", "advanced/combined"); ?></li>
@@ -69,30 +68,46 @@
 					<li><?= caNavLink($this->request, _t("Agendas"), "", "", "Search", "advanced/agenda"); ?></li>
 					<li><?= caNavLink($this->request, _t("Minutes"), "", "", "Search", "advanced/minutes"); ?></li>
 					<li><?= caNavLink($this->request, _t("Committee History"), "", "", "Search", "advanced/committees"); ?></li>
-					<li><a href="https://clerk.seattle.gov/budgetdocs/budgetsearch/budget.html" target="_blank">Budget Documents</a></li>
+					<li><?= caNavLink($this->request, _t("Meeting History"), "", "", "Search", "advanced/meetings"); ?></li>
 				</ul>
 			</div>
 		</div>
 
-		<div class="taxonomyTile splitTile col-6" style="height: 160px;">
+		<div class="text-center taxonomyTile splitTile col-7" style="height: 160px;">
 			<h3 class="tileTitle">Know what you're looking for?</h3>
+			<form id="numberSearch" action="<?= caNavUrl($this->request, '', 'Search', 'combined'); ?>">
 			<div class="row">
-				<div class="col-auto">
-					<input id="recordNumber" type="number" class="form-control" placeholder="Number" min="1" style="width: 100px;">
+				<div class="col-4 mb-1">
+					<input id="recordNumber" name="number" type="number" class="form-control" placeholder="Number" min="1">
 				</div>
-				<div class="col-auto">
-					<select id="recordType" style="width: 120px;" class="form-control">
-						<option value="ordinances">Ordinance</option>
-						<option value="council-bills">Council Bill</option>
-						<option value="resolutions">Resolution</option>
-						<option value="clerk-files">Clerk File</option>
+				<div class="col-6 mb-1">
+					<select id="recordType" name="field" class="form-select">
+						<option value="ca_objects_ORDN">Ordinance</option>
+						<option value="ca_objects_CBN">Council Bill</option>
+						<option value="ca_objects_RESN">Resolution</option>
+						<option value="ca_objects.CFN">Clerk File</option>
 					</select>
 				</div>
-				<div class="col-auto">
+				<div class="col-2 mb-1 text-start">
 					<input type="submit" value="Go" class="btn btn-primary">
 				</div>
-
 			</div>
+				<input id="advQuery" type="hidden" name="advQuery" value="">
+				<input type="hidden" name="_advanced" value="1">
+				<input type="hidden" name="_formElements" value="ca_objects.ORDN|ca_objects.RESN|ca_objects.CFN|ca_objects.CBN">
+				<script>
+					const numberForm = document.getElementById('numberSearch');
+					numberForm.addEventListener('submit', (e) => {
+						 //e.preventDefault();
+						 let recordNumber = document.getElementById("recordNumber").value;
+						 let recordType = document.getElementById("recordType").value;
+						 document.getElementById('advQuery').value = recordNumber;
+						 document.getElementById('advQuery').name = recordType;
+						// alert("recordNumber" + recordNumber);
+						 //alert("recordType" + recordType);
+					});
+				</script>
+			</form>
 			<p>Go directly to a record by number.</p>
 		</div>
 
