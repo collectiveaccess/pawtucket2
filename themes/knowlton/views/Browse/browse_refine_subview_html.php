@@ -40,13 +40,15 @@ $vn_facet_display_length_maximum = 12;
 
 if((is_array($va_facets) && sizeof($va_facets)) || ($qr_res->numHits() > 1)){
 ?>		
-	<div id='bRefine' class='sticky-md-top vh-100 collapse overflow-y-auto bg-white'>
-		<div id='bMorePanel' class='position-absolute w-100 z-3 bg-light h-100 collapse fs-5'><!-- long lists of facets are loaded here --></div>
-		<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
+	<div id='bRefine' class='sticky-md-top vh-100 collapse bg-white'>
+		<div id='bMorePanel' tabindex="-1" class='position-absolute w-100 z-3 bg-light h-100 collapse fs-5'><!-- long lists of facets are loaded here --></div>
+		<div class="h-100 overflow-y-auto">
+		<div class="text-end float-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
+		
 <?php
 	if($qr_res->numHits() > 1){
 ?>
-		<form id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+		<form id="searchWithin" class="pt-1 pt-md-0" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
 			<div class="input-group px-3 pb-3">
 				<label for="search-within" class="form-label visually-hidden">Search within</label>
 				<input name="search_refine" id="search-within" type="text" class="bg-white form-control rounded-0 border-black" placeholder="<?php print _t("Search within..."); ?>" aria-label="<?php print _t("Search within"); ?>">
@@ -86,7 +88,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($qr_res->numHits() > 1)){
 							$vn_c++;
 					
 							if(($vn_c == $vn_facet_display_length_maximum) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
-								print "<li class='list-group-item border-0 bg-transparent px-0 py-1'><a hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' aria-label='"._t("View More")."' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel' role='button'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</a></li>";
+								print "<li class='list-group-item border-0 bg-transparent px-0 py-1'><button class='bMoreButton btn btn-sm btn-secondary' hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel' role='button' onClick='document.getElementById(\"bMorePanel\").focus();'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</button></li>";
 								break;
 							}
 						}
@@ -96,5 +98,5 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($qr_res->numHits() > 1)){
 		}
 		print "</div><!-- end browseRefineFacets -->";
 	}
-	print "</div><!-- end bRefine -->\n";	
+	print "</div></div><!-- end bRefine -->\n";	
 }

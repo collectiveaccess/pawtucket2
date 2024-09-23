@@ -52,7 +52,7 @@ if($show_nav){
 ?>
 	<div class="row mt-n3">
 		<div class="col text-center text-md-end">
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 	</div>
 <?php

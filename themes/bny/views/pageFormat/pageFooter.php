@@ -67,9 +67,8 @@ if($this->request->isLoggedIn()){
 							Building 77
 							<br/>141 Flushing Avenue, Suite 801
 							<br/>Brooklyn, NY 11205
-							<br><br><a href="mailto:info@bnydc.org" class="text-secondary">info@bnydc.org</a><br>
-							718-907-5900 (phone)<br>
-							718-643-9296 (fax)</p>
+							<br><br><a href="mailto:archives@bnydc.org" class="text-secondary">archives@bnydc.org</a><br>
+							718-907-5982</p>
 						</div>
 					</div>
 					<div class="col-sm-12 col-md-2 text-md-start">

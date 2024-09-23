@@ -65,7 +65,7 @@ $media_options = array_merge($media_options, [
 if($show_nav){
 ?>
 		<div class="col-sm-12 col-md-4 text-center text-md-end">
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 <?php
 }
@@ -104,10 +104,9 @@ if($show_nav){
 				{{{media_viewer}}}
 			</div>
 		</div>
-		<div class="col-md-6">
-			<div class="row pt-1">
-				<div class="col-sm-6 col-md-12 col-lg-6">				
-					{{{<dl class="mb-3">
+		<div class="col-md-6 pt-1">
+							
+					{{{<dl class="mb-3 twocol">
 <?php						
 						if($t_object->get("ca_objects.department")){
 							if($links = caGetBrowseLinks($t_object, 'ca_objects.department', ['template' => '<l><div class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.department</div></l>', 'linkTemplate' => '^LINK'])) {
@@ -145,10 +144,7 @@ if($show_nav){
 							}
 						}
 ?>
-					</dl>}}}
-				</div>
-				<div class="col-sm-6 col-md-12 col-lg-6">
-					{{{<dl class="mb-3">
+					
 <?php
 						print $this->render("Details/snippets/related_entities_by_rel_type_html.php");
 						if($t_object->get("ca_objects.geonames", array("checkAccess" => $access_values))){
@@ -163,12 +159,10 @@ if($show_nav){
 
 						
 					</dl>}}}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					{{{
-						<dl>
+				
+				
+				{{{<ifdef code="ca_objects.descriptionSet.discriptionText|ca_objects.notes|ca_objects.rightsSet.rightText">
+					<dl>
 						<ifdef code="ca_objects.descriptionSet.discriptionText">
 							<dt class="serif fw-medium pb-1"><?= _t('Description'); ?></dt>
 							<dd class="pb-4 fs-5">
@@ -190,11 +184,6 @@ if($show_nav){
 						</ifdef>
 						</dl>
 					
-					}}}
-						
-
-					
-				</div>
-			</div>
+				</ifdef>}}}
 		</div>
 	</div>

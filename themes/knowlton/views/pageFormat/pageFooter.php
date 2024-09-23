@@ -30,7 +30,7 @@
 </div> <!-- end container -->
 		<footer id="footer" class="mt-auto bg-black text-light">
 			<div class="footerBrand">
-				<?= caGetThemeGraphic($this->request, 'coe-logo-white.svg', array("alt" => "College of Engineering")); ?>
+				<?= caGetThemeGraphic($this->request, 'coe-logo-white.svg', array("alt" => "The Ohio State University College of Engineering logo")); ?>
 				<div>	
 					275 West Woodruff Avenue<br>
 					Columbus, Ohio 43210
@@ -41,7 +41,7 @@
 				<ul>
         			<li><a href="https://knowlton.osu.edu/siteinfo/accessibility" class="text-light">Accessibility</a></li>
                 	<li><a href="https://it.osu.edu/privacy" class="text-light">Privacy Policy</a></li>
-        			<li><a hreff="https://equity.osu.edu/sites/default/files/documents/non-discrimination-notice.pdf">Non-Discrimination Notice</a></li>
+        			<li><a href="https://equity.osu.edu/sites/default/files/documents/non-discrimination-notice.pdf" class="text-light">Non-Discrimination Notice (PDF)</a></li>
         			<li><?= caNavlink($this->request, _t('About'), "text-light", "", "AboutCollection", ""); ?></li>
         			<li><?= caNavlink($this->request, _t('Contact'), "text-light", "", "ContactKnowltonArchives", ""); ?></li>
                     <li><?= ($this->request->isLoggedIn()) ? caNavlink($this->request, _t('Logout'), "text-light", "", "LoginReg", "Logout", "") : caNavlink($this->request, _t('Login'), "text-light", "", "LoginReg", "LoginForm", ""); ?></li>
@@ -71,7 +71,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="col-12 col-md-3 offset-md-3"><div class="give-cta-btn"><a href="/support-knowlton">Give <span>to Knowlton</span></a></div></div>
+				<div class="col-12 col-md-3 offset-md-3"><div class="give-cta-btn"><a href="https://knowlton.osu.edu/support-knowlton">Give <span class="visually-hidden">to Knowlton</span></a></div></div>
 			</div>
 			<div class="row w-100">
 				<div class="col-12 text-body-tertiary">©<?= date("Y"); ?> The Ohio State University</div>

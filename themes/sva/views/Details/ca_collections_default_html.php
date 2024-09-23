@@ -60,7 +60,7 @@ $top_level_collection_id = $va_collection_hier_ids[1];
 ?>
 	<div class="row mt-n3">
 		<div class="col text-center text-md-end">
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 	</div>
 <?php
@@ -68,7 +68,7 @@ $top_level_collection_id = $va_collection_hier_ids[1];
 ?>
 	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
 		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_collections.preferred_labels.name}}}</H1>
+			<H1 class="fs-2">{{{^ca_collections.preferred_labels.name}}}</H1>
 			<hr class="mb-0">
 		</div>
 	</div>
@@ -96,9 +96,57 @@ $top_level_collection_id = $va_collection_hier_ids[1];
 	</div>
 <?php
 	}
+if($t_item->get("ca_collections.parent_id") || $t_item->get("ca_collections.dates.dates_value") || $t_item->get("ca_collections.abstract")){
+?>
+	<div class="row row-cols-1">
+		<div class="col">				
+			<dl class="mb-0">
+<?php
+			if($t_item->get("ca_collections.parent_id")){
+				$hier_path = $t_item->getWithTemplate('<unit relativeTo="ca_collections.hierarchy" delimiter=";"><l>^ca_collections.preferred_labels.name</l></unit>', array("checkAccess" => $access_values));
+				$hier_parts = explode(";", $hier_path);
+				array_pop($hier_parts);				
+?>
+				<ifdef code="ca_collections.parent_id">
+					<dt>Part of</dt>
+					<dd><?php print join(" > ", $hier_parts); ?></dd>
+				</ifdef>
+<?php
+			}
+?>				
+			{{{
+				<ifdef code="ca_collections.dates.dates_value">
+					<dt><?= _t('Date'); ?></dt>
+					<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value (^ca_collections.dates.dates_type)</dd></unit>
+				</ifdef>
+				<ifdef code="ca_collections.abstract">
+					<dt><?= _t('Abstract'); ?></dt>
+					<dd class="overflow-y-scroll" style="max-height: 200px;">
+						^ca_collections.abstract
+					</dd>
+				</ifdef>
+			}}}	
+			</dl>				
+		</div>
+	</div>
+<?php
+}
 if($collection_detail){
 ?>
 {{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="featured">
+	
+	<div class="row pt-5">
+		<div class="col"><h2 class="fs-4">Sample Images</h2><hr/></div>
+	</div>
+<?php
+if($vs_collections_item_availablity = $this->getVar("collections_item_availablity")){
+?>
+	<div class="pb-4 fs-4 fst-italic">
+		<?php print $vs_collections_item_availablity; ?>
+	</div>
+<?php
+}
+?>
 	<div id="browseResultsContainer" class="row mb-3">
 		<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" delimiter="" limit="8">
 			<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
@@ -111,37 +159,12 @@ if($collection_detail){
 			</div>
 		</unit>
 	</div>
-	<div class="row row-cols-1 mb-4">
-		<div class="col text-center"><?php print caNavLink($this->request, "Browse All Objects", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $id)); ?></div>
+	<div class="row row-cols-1 mb-4 pb-4">
+		<div class="col text-center"><?php print caNavLink($this->request, "Browse All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $id)); ?></div>
 	</div>
 </ifcount>}}}
-<div class="row pt-5">
-	<div class="col"><h2>Collection Information</h2><hr/></div>
-</div>
 <?php
 }
-?>
-	<div class="row row-cols-1">
-		<div class="col">				
-			{{{<dl class="mb-0">
-				<ifdef code="ca_collections.parent_id">
-					<dt>Part of</dt>
-					<dd><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></dd>
-				</ifdef>
-				<ifdef code="ca_collections.dates.dates_value">
-					<dt><?= _t('Date'); ?></dt>
-					<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value (^ca_collections.dates.dates_type)</dd></unit>
-				</ifdef>
-				<ifdef code="ca_collections.abstract">
-					<dt><?= _t('Abstract'); ?></dt>
-					<dd class="overflow-y-scroll" style="max-height: 200px;">
-						^ca_collections.abstract
-					</dd>
-				</ifdef>
-			</dl>}}}					
-		</div>
-	</div>
-<?php
 	if ($show_hierarchy_viewer) {	
 ?>
 		<div hx-trigger="load" hx-get="<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"  ></div>
@@ -152,7 +175,7 @@ if(!$collection_detail){
 
 {{{<ifcount code="ca_objects" min="1">
 <div class="row pt-5">
-	<div class="col"><h2>Related Objects</h2><hr/></div>
+	<div class="col"><h2 class="fs-3">Related Objects</h2><hr/></div>
 </div>
 <div class="row" id="browseResultsContainer">	
 	<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id"))); ?>">

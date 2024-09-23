@@ -48,7 +48,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 	<div class="row mt-n3">
 		<div class="col text-center text-md-end">
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 	</div>
 <?php
@@ -56,7 +56,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
 		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_entities.preferred_labels.displayname}}}</H1>
+			<H1 class="fs-2">{{{^ca_entities.preferred_labels.displayname}}}</H1>
 			{{{<ifdef code="ca_entities.type_id"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_entities.type_id">^ca_entities.type_id</ifdef></div></ifdef>}}}
 			<hr class="mb-0 opacity-100">
 		</div>
@@ -101,7 +101,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	</div>
 	<ifcount code="ca_objects" min="9">
 		<div class="row row-cols-1 mb-4">
-			<div class="col text-center"><?php print caNavLink($this->request, "Browse All Objects", "btn btn-primary", "", "Browse", "objects", array("facet" => "occurrence_facet", "id" => $id)); ?></div>
+			<div class="col text-center"><?php print caNavLink($this->request, "Browse All Objects", "btn btn-primary", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $id)); ?></div>
 		</div>
 	</ifcount>
 	<ifdef code="ca_entities.life_dates|ca_entities.biography|ca_entities.historical_note">

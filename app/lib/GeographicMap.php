@@ -30,7 +30,7 @@
  * ----------------------------------------------------------------------
  */
 require_once(__CA_LIB_DIR__.'/GeographicMapItem.php');
-
+	
 class GeographicMap {
 	# -------------------------------------------------------------------
 	private $opo_mapping_engine;
@@ -125,7 +125,7 @@ class GeographicMap {
 		
 		$vn_point_count = 0;
 		$vn_item_count = 0;
-
+	
 		$va_tmp = explode('.', $ps_georeference_field_name);
 		$t_georef_instance = Datamodel::getInstance($va_tmp[0], true);
 		$vs_field_name = array_pop($va_tmp);

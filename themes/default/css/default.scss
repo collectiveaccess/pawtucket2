@@ -163,6 +163,9 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 }
 #bRefine{
 	z-index:999;
+	.bRefineLetterBar{
+		height:90%;
+	}
 }
 @media(max-width:767px) {
 	#bRefine{
@@ -171,6 +174,9 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 		width: 100%;
 		left: 0px;
 		display:none;
+		#searchWithin{
+			width:80%;
+		}
 	}	
 	#bRefine.show{
 		display:block !important;
@@ -222,4 +228,37 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 			}
 		}
 	}
+}
+/* ------------------------- Accessibility ------------------------------ */
+#skip:focus{
+	border: 2px solid #000 !important;
+	left: 0px;
+	top: 0px;
+	background-color: #000;
+	width: auto !important;
+	height: auto !important;
+	color: #FFF;
+	clip: unset !important;
+	padding: 5px !important;
+	z-index: 1;
+}
+#skipBrowse:focus{
+	border: 2px solid #000 !important;
+	background-color: #000;
+	width: auto !important;
+	height: auto !important;
+	color: #FFF;
+	clip: unset !important;
+	padding: 5px !important;
+	z-index: 1;
+  	margin-top: -40px !important;
+}
+.form-control:focus, nav #navbarSearch button:focus, #searchWithin button:focus{
+	box-shadow:0 0 2px 2px rgba(0,0,0,.5);
+}
+#bMorePanel button:focus, .nav-link:focus{
+	box-shadow:0 0 2px 2px rgba(0,0,0,.5);
+}
+.btn-white:focus, .btn:focus{
+	box-shadow:0 0 2px 2px rgba(0,0,0,.5);
 }

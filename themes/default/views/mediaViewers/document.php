@@ -33,13 +33,13 @@ $options = $this->getVar('options');
 ?>
 	<div class="documentviewer-control-bar">
 		<div id="documentviewer-currentpage"></div>
-		<a href="#" id="documentviewer-zoom-in" class="documentviewer-control" role="button" aria-label="zoom in"><i class="bi bi-zoom-in"></i></a>
-		<a href="#" id="documentviewer-zoom-out" class="documentviewer-control" role="button" aria-label="zoom out"><i class="bi bi-zoom-out"></i></a>
-		<a href="#" id="documentviewer-home" class="documentviewer-control" role="button" aria-label="fit"><i class="bi bi-arrows-angle-contract"></i></a>
-		<!--<a href="#" id="documentviewer-full-page" class="documentviewer-control" role="button" aria-label="expand"><i class="bi bi-fullscreen"></i></a>-->
+		<button type="button" id="documentviewer-zoom-in" class="btn btn-white documentviewer-control" aria-label="zoom in"><i class="bi bi-zoom-in"></i></button>
+		<button type="button" id="documentviewer-zoom-out" class="btn btn-white documentviewer-control" aria-label="zoom out"><i class="bi bi-zoom-out"></i></button>
+		<button type="button" id="documentviewer-home" class="btn btn-white documentviewer-control" aria-label="fit"><i class="bi bi-arrows-angle-contract"></i></button>
+		<!--<button id="documentviewer-full-page" class="documentviewer-control" aria-label="expand"><i class="bi bi-fullscreen"></i></button>-->
 		
-		<a href="#" id="documentviewer-previous" class="documentviewer-control" role="button" aria-label="previous"><i class="bi bi-arrow-left"></i></a>
-		<a href="#" id="documentviewer-next" class="documentviewer-control" role="button" aria-label="next"><i class="bi bi-arrow-right"></i></a>
+		<button type="button" id="documentviewer-previous" class="border-0 btn btn-white documentviewer-control" aria-label="previous page"><i class="bi bi-arrow-left"></i></button>
+		<button type="button" id="documentviewer-next" class="border-0 btn btn-white documentviewer-control" aria-label="next page"><i class="bi bi-arrow-right"></i></button>
 	</div>
 <?php
 	}

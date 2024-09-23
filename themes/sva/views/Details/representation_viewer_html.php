@@ -30,12 +30,19 @@ $media_viewers = $this->getVar('media_viewers');
 $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 ?>
 <style>
-	.mediaviewer-selector-control-active img {
+	.mediaviewer-selector-control, .mediaviewer-selector-control-active{
+		border: 0px;
+		padding: 0px;
+		background-color: transparent;
+	}
+  	.mediaviewer-selector-control-active img {
 		border: 2px solid #000 !important;
 	}
-	
-	div.mediaviewer-overlay {
-		z-index: 50000;	
+	.mediaviewer-selector-control img{
+		border:2px solid transparent;
+	}
+	.mediaviewer-overlay:focus {
+		box-shadow:inset 0 0 3px 3px rgba(0,0,0,.5)
 	}
 	
 	div.mediaviewer-overlay-display {
@@ -58,7 +65,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	div.mediaviewer-overlay-content {
 		display: block;
 		width: 100%;
-		height: 100%;
+		height: 85%;
 	}
 	
 	div.mediaviewer-overlay-close {
@@ -67,7 +74,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 		color: #fff;
 		
 		right: 10px;
-		top: 5px;
+		top: 0px;
 		z-index: 150000;
 		font-size: 20px;
 	}
@@ -78,7 +85,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 		color: #fff;
 		
 		left: 10px;
-		top: 5px;
+		top: 0px;
 		z-index: 150000;
 		font-size: 20px;
 	}
@@ -87,10 +94,12 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 		/*width: 100%;
 		height: 100%;*/
 	}
-	
 	div.mediaviewer-caption {
 		color: #fff;
 		font-size: 16px;
+	}
+	.mediaviewer-overlay-controls .btn:focus{
+		box-shadow:0 0 2px 2px #FFFFFF;
 	}
 </style>
 
@@ -111,12 +120,12 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 <!-- START: Media viewer controls -->
 <div class="row">
 	<div class="col-6">
-		<button class='btn btn-md ps-0 ms-0 pe-2 me-1 mediaviewer-control' id="mediaviewer-show-overlay" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();'><i class="bi bi-zoom-in"></i></button>
-		<button class='btn btn-md ps-0 ms-0 mediaviewer-control' id="mediaviewer-download"><i class="bi bi-download"></i></button>
+		<button class='btn btn-md ps-0 ms-0 pe-2 me-1 mediaviewer-control' id="mediaviewer-show-overlay" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();' aria-label='enlarge'><i class="bi bi-zoom-in"></i></button>
+		<button class='btn btn-md ps-0 ms-0 mediaviewer-control' id="mediaviewer-download" aria-label="download"><i class="bi bi-download"></i></button>
 	</div>
 	<div class="col-6 text-end">
-		<button class='btn btn-lg ms-0 ps-0 pe-1 me-0 mediaviewer-control' id="mediaviewer-previous" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();'><i class="bi bi-arrow-left"></i></button>
-		<button class='btn btn-lg ps-1 ms-0 pe-0 me-0 mediaviewer-control' id="mediaviewer-next" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext();'><i class="bi bi-arrow-right"></i></button>
+		<button class='btn btn-lg ms-0 ps-0 pe-1 me-0 mediaviewer-control' id="mediaviewer-previous" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>
+		<button class='btn btn-lg ps-1 ms-0 pe-0 me-0 mediaviewer-control' id="mediaviewer-next" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext();' aria-label='next slide'><i class="bi bi-arrow-right"></i></button>
 	</div>
 </div>
 <!-- END: Media viewer controls -->
@@ -126,7 +135,8 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	if(sizeof($media_list) > 1) {
 		$media_icons = [];
 		foreach($media_list as $i => $m) {
-			$media_icons[] = "<div class='col-2 img-fluid mb-3'><a class='mediaviewer-selector-control' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".caHTMLImage($m['icon'], ['class' => 'mediaIcon border border-white border-2']).'</a></div>';
+			#$media_icons[] = "<div class='col-2 img-fluid mb-3'><a class='mediaviewer-selector-control' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".caHTMLImage($m['icon'], ['class' => 'mediaIcon border border-white border-2']).'</button></div>';
+			$media_icons[] = "<div class='col-2 img-fluid mb-3'><button class='mediaviewer-selector-control mediaIcon' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".$m['icon_tag'].'</button></div>';
 		}
 ?>
 <div id="mediaviewer-selector" class='row my-3 gx-3 justify-content-center'><?= join(" ", $media_icons); ?></div>
@@ -136,15 +146,15 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 <!-- END: Media selector bar -->
 
 <!-- START: Full-window media overlay display <div>'s -->
-<div id="mediaviewer-overlay" class="mediaviewer-overlay position-fixed w-100 h-100 top-0 start-0 bg-white bg-opacity-75">
+<dialog id="mediaviewer-overlay" class="mediaviewer-overlay position-fixed w-100 h-100 mw-100 mh-100 top-0 start-0 bg-white bg-opacity-75 p-0 m-0 overflow-hidden">
 	<div class="mediaviewer-overlay-controls bg-dark">
 		<div class="mediaviewer-overlay-navigation">
-			<a href="#" id="mediaviewer-overlay-previous" class="text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);'><i class="bi bi-arrow-left"></i></a>
-			<a href="#" id="mediaviewer-overlay-next" class="text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);'><i class="bi bi-arrow-right"></i></a>
+			<button type="button" id="mediaviewer-overlay-previous" class="btn btn-link btn-lg p-0 text-light mediaviewer-control pt-2" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);' role='button' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>
+			<button type="button" id="mediaviewer-overlay-next" class="btn btn-link btn-lg p-0 text-light mediaviewer-control pt-2" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);' role='button' aria-label='next slide'><i class="bi bi-arrow-right"></i></button>
 		</div>
 		<div id="mediaviewer-overlay-caption" class="mediaviewer-caption"></div>
-		<div class="mediaviewer-overlay-close pt-1">
-			<a href="#" class="text-light" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();'><i class="bi bi-x-lg"></i></a>
+		<div class="mediaviewer-overlay-close">
+			<button type="button" class="btn btn-link btn-lg p-0 text-light pt-2" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();' role='button' aria-label='close dialog'><i class="bi bi-x-lg"></i></button>
 		</div>
 	</div>
 	<div id="mediaviewer-overlay-content" class="mediaviewer-overlay-content">
@@ -156,7 +166,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	}
 ?>		
 	</div>
-</div>
+</dialog>
 <!-- END: Full-window media overlay display <div>'s -->
 
 <!-- START: Initialize viewer on completion of page load -->
