@@ -65,7 +65,7 @@ if($this->request->isLoggedIn()){
 	</script>
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
-	
+	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<div class="bg-body-yellow w-100">
 		<div class="container-xl">
 			<div class="row">
@@ -117,7 +117,7 @@ if($this->request->isLoggedIn()){
 		</div>
 	</nav>	
 
-	<main <?= caGetPageCSSClasses(); ?>>
+	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4'>";
