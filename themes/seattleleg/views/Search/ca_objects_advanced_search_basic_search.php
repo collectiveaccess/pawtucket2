@@ -1,6 +1,6 @@
 <?php
 	$va_browse_info = $this->getVar("browseInfo");
-	$action = $this->request->getActionExtra();	// form type (Eg. "combined")
+	$action = strToLower($this->request->getActionExtra());	// form type (Eg. "combined")
 
 	$page_title;
 	$description;
@@ -84,12 +84,18 @@
 					<p>This database contains descriptions, membership information, and dates of existence for Seattle City Council committees from 1946 to the present.</p>
 			";
 		break;
+		case 'meetings':
+			$page_title = 'City Council Meeting History';
+			$description = "
+					<p>This database contains descriptions, membership information, and dates of existence for Seattle City Council committees from 1946 to the present.</p>
+			";
+		break;
 	}	
 ?>
 
 	<h1 class="pageTitle"><?= $page_title; ?></h1><br>
 
-	<a class="" data-bs-toggle="collapse" href="#description" role="button" aria-expanded="true" aria-controls="description">Description <i class="bi bi-caret-down-fill"></i></a>
+	<a class="description-btn" data-bs-toggle="collapse" href="#description" role="button" aria-expanded="true" aria-controls="description">Description <i class="bi bi-caret-right-fill"></i></a>
 
 	<div class="collapse show mb-3" id="description"><?= $description; ?><hr></div>
 
@@ -138,10 +144,15 @@
 				<h4>Retrieve File by Number</h4><br>
 				<div class="d-flex text-center">
 					<div class="input-group">
-						<label for="s3" class="me-1">File No.</label>
-						<?= $this->formElement('ca_objects.CFN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
+						<label for="s3" class="me-1">File No.</label><br/>
+						<?= $this->formElement('ca_objects.CFN', ['size' => "50px", 'label' => '', 'description' => _t("")]); ?>
+					</div>
+					<div class="input-group">
+						<label for="appointment" class="me-1">Appointment?</label><br/>
+						<?= $this->formElement('ca_objects.appointment', ['class' => 'form-select']); ?>
 					</div>
 					<input type="submit" value="Go" class="btn btn-primary">
+					
 				</div>
 			</div>
 	<?php
@@ -156,7 +167,7 @@
 		<div class="basic-search">
 			<div class="input-group">
 				<label class="col-12 control-label me-1">Terms Anywhere:</label>
-				<div class="col-12">
+				<div class="col-12 basic-search-terms-input">
 					<?= $this->formElement('_fulltext', ['size' => 60, 'label' => '', 'description' => _t("All fields; includes full text where available")]); ?>
 				</div>
 			</div>
@@ -172,7 +183,7 @@
 			<br>
 			<div class="input-group">
 				<label class="col-12 control-label me-1">Terms in Title:</label>
-				<div class="col-12" style="padding-bottom: 10px;">
+				<div class="col-12 basic-search-terms-input" style="padding-bottom: 10px;">
 					<?= $this->formElement('ca_objects.preferred_labels', ['size' => 60, 'label' => '', 'description' => _t("Include text only within the title")]); ?>
 				</div>
 			</div>
@@ -220,97 +231,6 @@
 				</div>
 
 			</div>
-
-			<!-- <div class="collapse mb-3" id="filterfield">
-
-				<p>Use as many fields as needed. Each text field can contain either one or multiple terms. Months are optional in date fields.</p><br>
-
-				<div id="field-item" class="input-group advanced-fields mb-1 align-items-center">
-
-					<label for="s7target" class="col-sm-3 control-label">Search by Field:</label>
-
-					<div class="col-sm-3 me-1">
-
-					<?php
-							switch($action) {
-								case 'combined':
-								case 'bills':
-								case 'resolutions':
-					?>
-
-						<select class="form-control s7target" aria-label="select">
-							<option value="">Select a Field</option>
-							<option value="TI" data-type="text">Title</option>
-							<option value="TX" data-type="text">Text</option>
-							<option value="SPON" data-type="text">Sponsor</option>
-							<option value="COMM" data-type="text">Committee</option>
-							<option value="INDX" data-type="text">Index Terms</option>
-							<option value="DTIR" data-type="date">Introduced</option>
-							<option value="DTSI" data-type="date">Passed by Council</option>
-							<option value="DTA" data-type="date">Signed by Mayor</option>
-							<option value="DTF" data-type="date">Filed with Clerk</option>
-							<option value="SCAN" data-type="boolean">Scan Available</option>
-						</select>
-
-					<?php
-							break;
-								case 'clerk':
-					?>
-						<select class="form-control s7target">
-							<option value="">Select a Field</option>
-							<option value="TI" data-type="text">Title</option>
-							<option value="TX" data-type="text">Text</option>
-							<option value="INDX" data-type="text">Index Terms</option>
-							<option value="DTF" data-type="date">Filed with Clerk</option>
-							<option value="SCAN" data-type="boolean">Scan Available</option>
-						</select>
-
-					<?php
-							break;
-								case 'agenda':
-								case 'minutes':
-					?>
-
-						<select class="form-control s7target">
-							<option value="">Select a Field</option>
-							<option value="MDAT" data-type="date">Meeting Date</option>
-							<option value="TX" data-type="text">Text of Minutes</option>
-							<option value="COMM" data-type="text">Committee Name</option>
-							<option value="TYPE" data-type="text">Meeting Type</option>
-						</select>
-
-					<?php
-							break;
-								case 'committees':
-					?>
-						<select class="form-control s7target">
-							<option value="">Select a Field</option>
-							<option value="COMM" data-type="text">Committee Name</option>
-							<option value="MEMB" data-type="text">Councilmember</option>
-							<option value="BGDT" data-type="date">Beginning Date</option>
-							<option value="ENDT" data-type="date">Ending Date</option>
-							<option value="SCOP" data-type="text">Description</option>
-						</select>
-					
-					<?php
-							break;
-						}
-					?>
-
-					</div>
-
-
-					<div class="col-sm-3 me-3 s7choices s7text">
-						<input type="text" class="form-control s7terms" placeholder="Terms">
-					</div>
-
-					<div class="col-sm-2 d-flex align-items-center" id="addBtnCol">
-						<a role="button" onclick="cloneElement();" title="Add Row" id="addBtn"><i class="bi bi-plus-lg"></i></a>
-					</div>
-
-				</div>
-
-			</div> -->
 
 		</div>
 

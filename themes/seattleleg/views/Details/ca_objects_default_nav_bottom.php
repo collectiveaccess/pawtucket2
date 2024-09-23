@@ -47,7 +47,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			<i class="bi bi-house-door-fill"></i>
     </a>
     
-    <a href="index.php/Search/advanced/combined" aria-label="search">
+    <a href="/index.php/Search/advanced/combined" aria-label="search">
 			<i class="bi bi-search"></i>
     </a>
 

@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
@@ -38,6 +37,8 @@
 	if(!$vn_row_id){
 		$vb_row_id_loaded = true;
 	}
+
+	$action = $this->request->getAction();	// form type (Eg. "combined")
 	
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
@@ -160,19 +161,117 @@
 						$number = $qr_res->get("idno");
 						$filed = $qr_res->get("DTF");
 						$title = $qr_res->get("preferred_labels");
+
+
+						$meeting_date = $qr_res->get("DATE");
+						$committee = $qr_res->get("COMM");
+
+						$ordinance_num = $qr_res->get("ORDN");
+						$council_bill_num = $qr_res->get("CBN");
+						$passed = $qr_res->get("DTSI");
+
+						$occurrence_meeting_date = $qr_res->get("ca_occurrences.DATE");
+						$committee_date = $qr_res->get("ca_entities.comm_date");
 						
 						$type_idno = $qr_res->get("type_id", ['convertCodesToIdno' => true]);
 						$id_num = $qr_res->get($id_field_codes[$type_idno] ?? null);
 						
-						$vs_result_output = "
-							<tr>
-								<td>{$result}</td>
-								<td>{$file_type}</td>
-								<td>{$id_num}</td>
-								<td>{$filed}</td>
-								<td>{$vs_caption}</td>
-							</tr>
-						";
+					
+								switch(strToLower($action)) {
+									case 'combined':
+										$vs_result_output = "
+											<tr>
+												<td>{$result}</td>
+												<td>{$file_type}</td>
+												<td>{$id_num}</td>
+												<td>{$filed}</td>
+												<td>{$vs_caption}</td>
+											</tr>
+										";
+									break;
+									case 'agenda':
+										$vs_result_output = "
+											<tr>
+												<td>{$result}</td>
+												<td>{$meeting_date}</td>
+												<td>{$committee}</td>
+												<td>{$vs_caption}</td>
+											</tr>
+										";
+									break;
+									case 'bills':
+										$vs_result_output = "
+											<tr>
+												<td>{$result}</td>
+												<td>{$ordinance_num}</td>
+												<td>{$council_bill_num}</td>
+												<td>{$filed}</td>
+												<td>{$passed}</td>
+												<td>{$vs_caption}</td>
+											</tr>
+										";
+									break;
+									case 'resolutions':
+										$vs_result_output = "
+											<tr>
+												<td>{$result}</td>
+												<td>{$id_num}</td>
+												<td>{$filed}</td>
+												<td>{$vs_caption}</td>
+											</tr>
+										";
+									break;
+									case 'clerk':
+										$vs_result_output = "
+											<tr>
+												<td>{$result}</td>
+												<td>{$file_type}</td>
+												<td>{$id_num}</td>
+												<td>{$filed}</td>
+												<td>{$vs_caption}</td>
+											</tr>
+										";
+									break;
+									case 'minutes':
+										$vs_result_output = "
+											<tr>
+												<td>{$result}</td>
+												<td>{$meeting_date}</td>
+												<td>{$committee}</td>
+												<td>{$vs_caption}</td>
+											</tr>
+										";
+									break;
+									case 'meetings':
+										$vs_result_output = "
+											<tr>
+												<td>{$result}</td>
+												<td>{$occurrence_meeting_date}</td>
+												<td>{$vs_caption}</td>
+											</tr>
+										";
+									break;
+									case 'committees':
+										$vs_result_output = "
+											<tr>
+												<td>{$result}</td>
+												<td>{$committee_date}</td>
+												<td>{$vs_caption}</td>
+											</tr>
+										";
+								}
+							
+
+						// $vs_result_output = "
+						// 	<tr>
+						// 		<td>{$result}</td>
+						// 		<td>{$file_type}</td>
+						// 		<td>{$id_num}</td>
+						// 		<td>{$filed}</td>
+						// 		<td>{$vs_caption}</td>
+						// 	</tr>
+						// ";
+
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				

@@ -47,16 +47,20 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
 
-	<p>
-		<a href="{{{ca_objects.PDFLNK}}}" target="_blank">
-			<img src="http://clerk.seattle.gov/public/img/pdf.gif" height="40" alt="PDF">
-			Printable Version of this Agenda
-		</a>
-	</p>
+	{{{<ifdef code="ca_objects.PDFLNK">
+		<p>
+			<a href="ca_objects.PDFLNK" target="_blank">
+				<img src="http://clerk.seattle.gov/public/img/pdf.gif" height="40" alt="PDF">
+				Printable Version of this Agenda
+			</a>
+		</p>
+		<hr>
+	<ifdef/>}}}
 
-	<hr>
 
-	{{{ca_objects.TX}}}
+	{{{<ifdef code="ca_objects.TX">
+	  ^ca_objects.TX
+	<ifdef/>}}}
 
   <hr>
 

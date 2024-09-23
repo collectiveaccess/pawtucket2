@@ -46,12 +46,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <div id="detail">
 
 	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
-
+	
 	<p>
-		<a href="{{{ca_objects.PDFLNK}}}" target="_blank">
+		<a href="{{{^ca_object_representations.URL}}}" target="_blank">
 			<img src="http://clerk.seattle.gov/public/img/pdf.gif" height="40" alt="PDF">
 			Printable Version of this Agenda
-		</a>
+		</a>		
 	</p>
 
 	<hr>

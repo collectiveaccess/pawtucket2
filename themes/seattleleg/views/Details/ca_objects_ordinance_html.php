@@ -85,10 +85,17 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.FN">
+			<!-- {{{<ifdef code="ca_objects.FN">
 				<tr>
 					<td>Fiscal Note</td>
 					<td>^ca_objects.FN</td>
+				</tr>
+			</ifdef>}}} -->
+
+			{{{<ifdef code="ca_objects.fiscal.fiscal_link">
+				<tr>
+					<td>Fiscal Note</td>
+					<td><a href="^ca_objects.fiscal.fiscal_link" target="_blank">^ca_objects.fiscal.fiscal_link</a></td>
 				</tr>
 			</ifdef>}}}
 
@@ -104,7 +111,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 					}
 				}
 			?>
-
+			
 			{{{<ifdef code="ca_objects.REF">
 				<tr>
 					<td>References:</td>
@@ -127,7 +134,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 			<!-- {{{<ifdef code="ca_objects.SPON">
 				<tr>
 					<td>Sponsor:</td>
-					<td>^ca_objects.SPON</td>
+					<td><l>^ca_objects.SPON</l></td>
 				</tr>
 			</ifdef>}}} -->
 
@@ -242,11 +249,12 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			<tr>
-				<td>Signed Copy:</td>
-				????
-				<!-- <td><a href="/~archives/Ordinances/Ord_126376.pdf">PDF scan of Ordinance No. 126376</a></td> -->
-			</tr>
+			{{{<ifdef code="ca_objects.document.doc_link">
+				<tr>
+					<td>Signed Copy:</td>
+					<td><a href="^ca_objects.document.doc_link" target="_blank">^ca_objects.document.doc_link</a></td>
+				</tr>
+			</ifdef>}}}
 
     </tbody>
   </table>
@@ -277,20 +285,21 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 		</em>
 	<ifnotdef/>}}}
 
-	<!-- TODO: Add attachments -->
-	<table class="record table table-striped table-responsive">
-		<tbody>
-			<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
-			<tr>
-				<td class="empty"></td>
-				<td>
-					<!-- <p><a href="https://legistar2.granicus.com/seattle/attachments/2ab35e1c-0097-45c0-aaf4-46c45392de7d.pdf">Att 1 - SIR Hostage Negotiation Throw Phone</a></p>
-					<p><a href="https://legistar2.granicus.com/seattle/attachments/d8ea96a5-cce6-4765-a61c-caf2a2c195c2.pdf">Att 2 - SIR Hostage Negotiation Throw Phone Executive Overview</a></p> -->
-					????????????
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	{{{<ifdef code="ca_object_representations.media.small">
+		<unit filterNonPrimaryRepresentations="0">
+			<table class="record table table-striped table-responsive">
+				<tbody>
+					<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
+					<tr>
+						<td class="empty"></td>
+						<td>
+							<a href="^ca_object_representations.URL" target="_blank">^ca_object_representations.media.small</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</unit>
+	</ifdef>}}}
 
   <hr>
 
