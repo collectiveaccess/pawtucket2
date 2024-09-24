@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -288,6 +288,9 @@ class LoginRegController extends BasePawtucketController {
 				}
 				$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
 				$this->notification->addNotification(_t("You have been logged in").($vs_group_message ? "<br/>{$vs_group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
+				
+				ca_ip_whitelist::whitelist($this->request, 24*60*60, 'Login');
+				
 				$this->response->setRedirect($vs_url);
 			}
 		}
