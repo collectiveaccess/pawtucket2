@@ -35,22 +35,22 @@
 		<footer id="footer" class="p-5 mt-auto bg-secondary">
 			<div class="container-xxl">
 				<div class="row">
-					<div class="col-sm-3">
+					<div class="col-sm-6  text-center text-sm-start">
 						<div class="text-primary fw-semibold pb-2">Polonsky Shakespeare Center</div>
 						<div class="fs-6">
 							262 Ashland Place<br/>
 							Brooklyn, NY 11217
 						</div>
 					</div>
-					<div class="col-sm-3 fw-semibold text-uppercase">
+					<!--<div class="col-sm-3 fw-semibold text-uppercase">
 						<div class="px-4 text-center"><a href="#" class="small link-underline-light">Link</a></div>
 						<div class="px-4 text-center"><a href="#" class="small link-underline-light">Link</a></div>
 					</div>
 					<div class="col-sm-3 fw-semibold text-uppercase">
 						<div class="px-4 text-center"><a href="#" class="small link-underline-light">Link</a></div>
 						<div class="px-4 text-center"><a href="#" class="small link-underline-light">Link</a></div>
-					</div>
-					<div class="col-sm-3 fw-semibold text-uppercase">
+					</div>-->
+					<div class="col-sm-6 fw-semibold text-uppercase text-center text-sm-end">
 						<ul class="list-inline pt-3">
 							<li class="list-inline-item fs-4 px-2"><a href="https://www.instagram.com/theatreforanewa/?hl=en" aria-label="Instagram Link" target="_blank"><i class="bi bi-instagram"></i></a></li>
 							<li class="list-inline-item fs-4 px-2"><a href="https://www.facebook.com/TheatreforaNewAudience" aria-label="Facebook Link" target="_blank"><i class="bi bi-facebook"></i></a></li>

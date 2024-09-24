@@ -65,7 +65,7 @@ if($this->request->isLoggedIn()){
 	</script>
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
-	
+	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<div class="bg-body-yellow w-100">
 		<div class="container-xl">
 			<div class="row">
@@ -95,7 +95,7 @@ if($this->request->isLoggedIn()){
 						<?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
@@ -117,7 +117,7 @@ if($this->request->isLoggedIn()){
 		</div>
 	</nav>	
 
-	<main <?= caGetPageCSSClasses(); ?>>
+	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4'>";
