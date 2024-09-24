@@ -81,7 +81,7 @@ if($this->request->isLoggedIn()){
 <div class="titleTopNavBreadcrumbWrapper border-bottom border-black">
 	<div class="container">
 		<div class="deptTitle mb-3">
-			<a href="https://www.seattle.gov/cityclerk" class="active">Legislation Search</a>
+			<a href="/" class="active">Legislation Search</a>
 		</div>
 	</div>
 </div>
