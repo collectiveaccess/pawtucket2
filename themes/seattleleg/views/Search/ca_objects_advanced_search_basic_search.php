@@ -95,9 +95,10 @@
 
 	<h1 class="pageTitle"><?= $page_title; ?></h1><br>
 
-	<a class="description-btn" data-bs-toggle="collapse" href="#description" role="button" aria-expanded="true" aria-controls="description">Description <i class="bi bi-caret-right-fill"></i></a>
+	<a class="description-btn collapseControl" data-bs-toggle="collapse" href="#description" role="button" aria-expanded="true" aria-controls="description">Description <i class="bi bi-caret-down-fill"></i></a>
 
 	<div class="collapse show mb-3" id="description"><?= $description; ?><hr></div>
+<?= $this->formTag([]); ?>
 
 	<?php
 		switch($action) {
@@ -160,6 +161,10 @@
 		}
 	?>
 
+	<?= $this->formHiddenElements(); ?>
+</form>
+<?= $this->formTag([]); ?>
+
 	<div class="well">
 
 		<h4>Basic Search</h4><br>
@@ -203,8 +208,7 @@
 		<div class="advanced-search">
 
 			<h4 class="expandable-controls">
-				<a data-bs-toggle="collapse" href="#filterfield" role="button" aria-expanded="false" aria-controls="filterfield">Filter by Field</a>
-				<i class="bi bi-caret-right-fill"></i>
+				<a data-bs-toggle="collapse" data-bs-target="#filterfield" class="collapseControl" href="#filterfield" role="button" aria-expanded="false" aria-controls="filterfield">Filter by Field <i class="bi bi-caret-right-fill"></i></a>
 			</h4>
 
 			<div class="collapse mb-3" id="filterfield">
@@ -277,8 +281,8 @@
 		<div class="advanced-search">
 
 			<h4 class="expandable-controls">
-				<a data-bs-toggle="collapse" href="#filterdate" role="button" aria-expanded="false" aria-controls="filterdate">Filter by Date</a>
-				<i class="bi bi-caret-right-fill"></i>
+				<a data-bs-toggle="collapse" class="collapseControl"  href="#filterdate" role="button" aria-expanded="false" aria-controls="filterdate">Filter by Date <i class="bi bi-caret-right-fill"></i></a>
+				
 			</h4>
 
 			<div class="collapse mb-3" id="filterdate">
@@ -346,8 +350,8 @@
 	?>
 		<div class="advanced-search">
 			<h4 class="expandable-controls">
-				<a data-bs-toggle="collapse" href="#includeexclude" role="button" aria-expanded="false" aria-controls="includeexclude">Include and Exclude</a>
-				<i class="bi bi-caret-right-fill"></i>
+				<a data-bs-toggle="collapse" class="collapseControl"  href="#includeexclude" role="button" aria-expanded="false" aria-controls="includeexclude">Include and Exclude <i class="bi bi-caret-right-fill"></i></a>
+				
 			</h4>
 
 			<div class="collapse mb-3" id="includeexclude">
@@ -378,8 +382,8 @@
 
 		<div class="advanced-search">
 			<h4 class="expandable-controls">
-				<a data-bs-toggle="collapse" href="#settings" role="button" aria-expanded="false" aria-controls="settings">Settings</a>
-				<i class="bi bi-caret-right-fill"></i>
+				<a data-bs-toggle="collapse" class="collapseControl"  href="#settings" role="button" aria-expanded="false" aria-controls="settings">Settings <i class="bi bi-caret-right-fill"></i></a>
+				
 			</h4>
 
 			<div class="collapse mb-3" id="settings">
@@ -450,3 +454,20 @@
 		</div>
 
 	</div>
+	<?= $this->formHiddenElements(); ?>
+</form>
+
+<script>
+		htmx.onLoad(function(content) {
+			const collapseButtons = document.querySelectorAll(".collapseControl");
+			collapseButtons.forEach(function(collapseButton) {
+			  collapseButton.addEventListener("click", function() {
+				var icon = collapseButton.querySelector(".bi");
+				icon.classList.toggle("bi-caret-right-fill");
+				icon.classList.toggle("bi-caret-down-fill");				
+			  });
+			});
+
+			
+		})
+	</script>

@@ -1,8 +1,6 @@
-<?= $this->formTag(['class' => 'row g-4']); ?>
-
 <div class="advSearchContainer">
 
-	<div class="row">
+	<div class="row g-4">
 
 		<?= $this->render("/data/seattleleg/themes/seattleleg/views/Search/ca_objects_advanced_search_navLeft.php"); ?>
 
@@ -14,6 +12,3 @@
 
 	</div>
 </div>
-
-	<?= $this->formHiddenElements(); ?>
-</form>
