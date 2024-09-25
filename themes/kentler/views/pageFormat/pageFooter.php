@@ -50,7 +50,7 @@
 							<span class="openSansBold">PHONE</span>&nbsp;&nbsp; 718<span class="openSansBold">&middot;</span>875<span class="openSansBold">&middot;</span>2098
 							<br/><ul class="list-inline pull-right social">
 								<li><a href="https://twitter.com/KentlerDrawing" target="_blank"><i class="fa fa-twitter"></i></a></li>
-								<li><a href="https://www.facebook.com/kentlergallery/?fref=ts" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+								<li><a href="https://www.facebook.com/kentlerdrawing" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
 								<li><a href="https://www.instagram.com/kentlerdrawing" target="_blank"><i class="fa fa-instagram"></i></a></li>
 								<li><a href="mailto:drawing@kentlergallery.org"><i class="fa fa-envelope"></i></a></li>
 							</ul>
