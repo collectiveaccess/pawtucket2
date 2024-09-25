@@ -130,24 +130,19 @@ if (!$vb_ajax) {	// !ajax
 		<div class="nav-icons">
 			<a name="h0" role="button" aria-label="anchor"></a>
 
-			<a href="/" aria-label="home">
-				<i class="bi bi-house-door-fill"></i>
-			</a>
+<?php
+				print caNavLink($this->request, "<i class='bi bi-house-door-fill' aria-label='Home' title='Home'></i>", "", "", "", "");
+				print caNavLink($this->request, "<i class='bi bi-search'></i>", "", "Search", "advanced", $action, null, array("title" => "Back to Search Form", "aria-label" => "Back to Search Form"));
 
-			<a href="/index.php/Search/advanced/<?= $action; ?>" aria-label="search">
-				<i class="bi bi-search"></i>
-			</a>
+				$pagebar = $this->render("Browse/paging_bar_html.php"); 
+				print $pagebar;
+?>
 
-			<?php
-				 $pagebar = $this->render("Browse/paging_bar_html.php"); 
-				 print $pagebar;
-			?>
-
-			<a href="#hb" aria-label="page down">
+			<a href="#hb" aria-label="page down" title="Jump to bottom">
 				<i class="bi bi-chevron-double-down"></i>
 			</a>
 
-			<a href="https://clerk.seattle.gov/search/help/" aria-label="help">
+			<a href="https://clerk.seattle.gov/search/help/" aria-label="help" title="Help">
 				<i class="bi bi-question-lg"></i>
 			</a>
 		</div>
@@ -394,20 +389,19 @@ if (!$vb_ajax) {	// !ajax
   <hr>
 
   <p id="bottom-search-nav">
-    <a href="/" aria-label="home">
-      <i class="bi bi-house-door-fill"></i>
-    </a>
-    <a href="/index.php/Search/advanced/<?= $action; ?>" aria-label="search">
-      <i class="bi bi-search"></i>
-    </a>
-		
-		<?= $pagebar; ?>
+<?php 
+		print caNavLink($this->request, "<i class='bi bi-house-door-fill' aria-label='Home' title='Home'></i>", "", "", "", "");
+		print caNavLink($this->request, "<i class='bi bi-search'></i>", "", "Search", "advanced", $action, null, array("title" => "Back to Search Form", "aria-label" => "Back to Search Form"));
 
-    <a href="#h0" aria-label="page up">
+		
+		print $pagebar;
+?>
+
+    <a href="#h0" aria-label="page up" title="Back to Top">
       <i class="bi bi-chevron-double-up"></i>
     </a>
 
-    <a href="https://clerk.seattle.gov/search/help/" aria-label="help">
+    <a href="https://clerk.seattle.gov/search/help/" aria-label="help" title="help">
       <i class="bi bi-question-lg"></i>
     </a>
   </p>

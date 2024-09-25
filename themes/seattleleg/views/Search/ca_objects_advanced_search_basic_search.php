@@ -98,12 +98,13 @@
 	<a class="description-btn collapseControl" data-bs-toggle="collapse" href="#description" role="button" aria-expanded="true" aria-controls="description">Description <i class="bi bi-caret-down-fill"></i></a>
 
 	<div class="collapse show mb-3" id="description"><?= $description; ?><hr></div>
-<?= $this->formTag([]); ?>
-
-	<?php
+<?php
+		if(in_array($action, array("bills", "resolutions", "clerk"))){
+			print $this->formTag(["method" => "get"]);
+		}
 		switch($action) {
 			case 'bills':
-	?>
+?>
 			<div class="well">
 				<h4>Retrieve Council Bill or Ordinance by Number</h4><br>
 				<div class="row">
@@ -159,11 +160,13 @@
 	<?php
 			break;
 		}
-	?>
-
-	<?= $this->formHiddenElements(); ?>
-</form>
-<?= $this->formTag([]); ?>
+		if(in_array($action, array("bills", "resolutions", "clerk"))){
+			print $this->formHiddenElements();
+			print "</form>";
+		}
+		
+	print $this->formTag(["method" => "get"]);
+?>
 
 	<div class="well">
 

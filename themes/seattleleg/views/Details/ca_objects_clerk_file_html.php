@@ -47,7 +47,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 <div id="detail">
 
-	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
+	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
   <h2 class="record-number">
 		<?= $type_idno; ?> {{{ca_objects.CFN}}}
@@ -213,6 +213,6 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 	
   <hr>
 
-  <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
+  <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
 
 </div>

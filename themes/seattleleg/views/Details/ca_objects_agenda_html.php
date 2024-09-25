@@ -45,7 +45,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 <div id="detail">
 
-	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
+	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
 	{{{<ifdef code="ca_objects.PDFLNK">
 		<p>
@@ -64,6 +64,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
   <hr>
 
-  <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
+  <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
 
 </div>

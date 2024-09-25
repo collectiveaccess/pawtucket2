@@ -45,6 +45,11 @@ $email_subject = $t_object->get("type_id", ['convertCodesToDisplayText' => true]
 $email_body;
 
 $action = $this->request->getAction();
+
+$last_advanced_search = ResultContextStorage::getVar('result_last_context_ca_objects_action');		
+if(!$last_advanced_search){
+	$last_advanced_search = "combined";
+}		
 // print_r($action);
 ?>
 <script>
@@ -53,29 +58,66 @@ $action = $this->request->getAction();
 
 	<a id="h0"></a>
 
-  <h3>City of Seattle Combined Legislative Records Search</h3>
+<?php
+	switch($last_advanced_search){
+		case "combined":
+		default:
+			$heading_text = "City of Seattle Combined Legislative Records Search";
+		break;	
+		# -----------
+		case "bills":
+			$heading_text = "Seattle City Council Bills and Ordinances";			
+		break;	
+		# -----------
+		case "resolutions":
+			$heading_text = "Seattle City Council Resolutions";			
+		break;	
+		# -----------
+		case "clerk":
+			$heading_text = "Seattle Comptroller/Clerk Files Index Search";			
+		break;	
+		# -----------
+		case "agenda":
+			$heading_text = "Seattle City Council Committee Agendas";			
+		break;	
+		# -----------
+		case "minutes":
+			$heading_text = "Seattle City Council Minutes";			
+		break;	
+		# -----------
+		case "meetings":
+			$heading_text = "City Council Meeting History";			
+		break;	
+		# -----------
+		case "committees":
+			$heading_text = "City Council Committee History Database";			
+		break;	
+		# -----------
+	}
+?>
+  
+  <H3><?php print $heading_text; ?></H3>
   <em>Information modified on <?= $last_modified; ?></em> <em><?= $created; ?></em>
   <hr>
 
   <div id="top-search-nav" class="d-md-flex d-md-inline-block justify-content-between">
 
 		<div class="nav-icons mb-2 mb-md-0">
-			<a href="/" aria-label="home">
-				<i class="bi bi-house-door-fill"></i>
-			</a>
-			<a href="/index.php/Search/advanced/combined" aria-label="search">
-				<i class="bi bi-search"></i>
-			</a>
+<?php
+			print caNavLink($this->request, "<i class='bi bi-house-door-fill' aria-label='Home' title='Home'></i>", "", "", "", "");
+			print caNavLink($this->request, "<i class='bi bi-search' aria-label='search' title='Back to Search Form'></i>", "", "Search", "advanced", $last_advanced_search);
+
+
+?> 			
+			{{{resultsLink}}}
+			{{{previousLink}}}
+			{{{nextLink}}}
 			
-			<a href="" aria-label="results">{{{resultsLink}}}</a>
-			<a href="" aria-label="prev">{{{previousLink}}}</a>
-			<a href="" aria-label="next">{{{nextLink}}}</a>
-			
-			<a href="#hb" aria-label="page down">
+			<a href="#hb" aria-label="page down" title="Jump to Bottom">
 				<i class="bi bi-chevron-double-down"></i>
 			</a>
 			
-			<a href="https://clerk.seattle.gov/search/help/" aria-label="help">
+			<a href="https://clerk.seattle.gov/search/help/" aria-label="help" title="Help">
 				<i class="bi bi-question-lg"></i>
 			</a>
 		</div>

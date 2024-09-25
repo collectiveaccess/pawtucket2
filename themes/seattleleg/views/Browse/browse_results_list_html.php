@@ -164,6 +164,7 @@
 
 
 						$meeting_date = $qr_res->get("DATE");
+						$minutes_meeting_date = $qr_res->get("MDAT");
 						$committee = $qr_res->get("COMM");
 
 						$ordinance_num = $qr_res->get("ORDN");
@@ -236,7 +237,7 @@
 										$vs_result_output = "
 											<tr>
 												<td>{$result}</td>
-												<td>{$meeting_date}</td>
+												<td>{$minutes_meeting_date}</td>
 												<td>{$committee}</td>
 												<td>{$vs_caption}</td>
 											</tr>
