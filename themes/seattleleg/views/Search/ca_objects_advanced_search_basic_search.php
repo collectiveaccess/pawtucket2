@@ -229,11 +229,14 @@
 						'selectClass' => 'form-control s7target'
 					]); ?>
 				
-					<div id="field-item-select" class="col-auto me-1"></div>
-					<div id="field-item-input" class="col-auto me-3 s7choices s7text"></div>
-					<div id="field-item-add" class="col-auto d-flex align-items-center">
-						<a role="button" title="Add Row" id="field-item-add-button"><i class="bi bi-plus-lg"></i></a>
+					<div id="field-item-template" class="input-group advanced-fields mb-1 align-items-center" style="display: none;">
+						<div class="field-item-select col-auto me-1"></div>
+						<div class="field-item-input col-auto me-3 s7choices s7text"></div>
+						<div class="field-item-add col-auto d-flex align-items-center">
+							<a role="button" title="Add Row" class="field-item-add-button"><i class="bi bi-plus-lg"></i></a>
+						</div>
 					</div>
+
 
 				</div>
 
