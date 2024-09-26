@@ -1,3 +1,4 @@
+<div class="pe-lg-4">
 <?php
 	$va_browse_info = $this->getVar("browseInfo");
 	$action = strToLower($this->request->getActionExtra());	// form type (Eg. "combined")
@@ -97,7 +98,7 @@
 
 	<a class="description-btn collapseControl" data-bs-toggle="collapse" href="#description" role="button" aria-expanded="true" aria-controls="description">Description <i class="bi bi-caret-down-fill"></i></a>
 
-	<div class="collapse show mb-3" id="description"><?= $description; ?><hr></div>
+	<div class="collapse show mb-2 pb-2" id="description"><?= $description; ?></div>
 <?php
 		if(in_array($action, array("bills", "resolutions", "clerk"))){
 			print $this->formTag(["method" => "get"]);
@@ -109,16 +110,16 @@
 				<h4>Retrieve Council Bill or Ordinance by Number</h4><br>
 				<div class="row">
 					<div class="col-6">
-						<label for="s3" class="me-1">Council Bill No.</label>
-						<?= $this->formElement('ca_objects.CBN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
+						<label for="s3" class="control-label">Council Bill No.</label>
+						<?= $this->formElement('ca_objects.CBN', ['label' => '', 'description' => _t("")]); ?>
 					</div>
-					<br>
 					<div class="col-6">
-						<label for="s4" class="me-1">Ordinance No.</label>
+						<label for="s4" class="control-label">Ordinance No.</label>
 						
-						<?= $this->formElement('ca_objects.ORDN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
+						<?= $this->formElement('ca_objects.ORDN', ['label' => '', 'description' => _t("")]); ?>
 					</div>
-
+				</div>
+				<div class="row mt-3">
 					<div class="col-12">
 						<input type="submit" value="Go" class="btn btn-primary">
 					</div>
@@ -130,11 +131,9 @@
 	?>
 			<div class="well">
 				<h4>Retrieve Resolution by Number</h4><br>
-				<div class="d-flex text-center">
-					<div class="input-group">
-						<label for="s3" class="me-1">Resolution No.</label>
+						<label for="s3" class="control-label">Resolution No.</label>
 						<?= $this->formElement('ca_objects.RESN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
-					</div>
+				<div class="mt-3">
 					<input type="submit" value="Go" class="btn btn-primary">
 				</div>
 			</div>
@@ -144,18 +143,23 @@
 	?>
 			<div class="well">
 				<h4>Retrieve File by Number</h4><br>
-				<div class="d-flex text-center">
-					<div class="input-group">
-						<label for="s3" class="me-1">File No.</label><br/>
-						<?= $this->formElement('ca_objects.CFN', ['size' => "50px", 'label' => '', 'description' => _t("")]); ?>
+					<div class="row">
+						<div class="col-sm-6">
+							<label for="s3" class="control-label">File No.</label><br/>
+							<?= $this->formElement('ca_objects.CFN', ['size' => "50px", 'label' => '', 'description' => _t("")]); ?>
+						</div>
+						<div class="col-sm-6">
+							<label for="appointment" class="control-label">Appointment?</label><br/>
+							<?= $this->formElement('ca_objects.appointment', ['class' => 'form-select']); ?>
+						</div>
 					</div>
-					<div class="input-group">
-						<label for="appointment" class="me-1">Appointment?</label><br/>
-						<?= $this->formElement('ca_objects.appointment', ['class' => 'form-select']); ?>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="mt-3">
+								<input type="submit" value="Go" class="btn btn-primary">
+							</div>
+						</div>
 					</div>
-					<input type="submit" value="Go" class="btn btn-primary">
-					
-				</div>
 			</div>
 	<?php
 			break;
@@ -173,11 +177,9 @@
 		<h4>Basic Search</h4><br>
 
 		<div class="basic-search">
-			<div class="input-group">
-				<label class="col-12 control-label me-1">Terms Anywhere:</label>
-				<div class="col-12 basic-search-terms-input">
-					<?= $this->formElement('_fulltext', ['size' => 60, 'label' => '', 'description' => _t("All fields; includes full text where available")]); ?>
-				</div>
+			<div class="mb-3">
+				<label class="control-label me-1">Terms Anywhere:</label>
+				<?= $this->formElement('_fulltext', ['size' => 60, 'label' => '', 'description' => _t("All fields; includes full text where available")]); ?>
 			</div>
 
 	<?php
@@ -188,12 +190,9 @@
 				case 'clerk':
 	?>
 
-			<br>
-			<div class="input-group">
-				<label class="col-12 control-label me-1">Terms in Title:</label>
-				<div class="col-12 basic-search-terms-input" style="padding-bottom: 10px;">
-					<?= $this->formElement('ca_objects.preferred_labels', ['size' => 60, 'label' => '', 'description' => _t("Include text only within the title")]); ?>
-				</div>
+			<div class="mb-3">
+				<label class="control-label me-1">Terms in Title:</label>
+				<?= $this->formElement('ca_objects.preferred_labels', ['size' => 60, 'label' => '', 'description' => _t("Include text only within the title")]); ?>
 			</div>
 
 	<?php
@@ -206,185 +205,67 @@
 		<hr class="advanced-separator">
 		
 
-		<h4>Advanced Search</h4><br>
-
+		<h4>Additional Options</h4><br>
 		<div class="advanced-search">
 
-			<h4 class="expandable-controls">
-				<a data-bs-toggle="collapse" data-bs-target="#filterfield" class="collapseControl" href="#filterfield" role="button" aria-expanded="false" aria-controls="filterfield">Filter by Field <i class="bi bi-caret-right-fill"></i></a>
-			</h4>
-
-			<div class="collapse mb-3" id="filterfield">
-
-				<p>Use as many fields as needed. Each text field can contain either one or multiple terms. Months are optional in date fields.</p>
-				
-				<br>
-
-				<label class="col-12 control-label">Search by Field:</label>
-				<div id="field-item" class="input-group advanced-fields mb-1 align-items-center">
-
-					
-					<?= $this->formBundle($action, [
-						'id' => 'field-item', 
-						'selectClass' => 'form-control s7target'
-					]); ?>
-				
-					<div id="field-item-template" class="input-group advanced-fields mb-1 align-items-center" style="display: none;">
-						<div class="field-item-select col-auto me-1"></div>
-						<div class="field-item-input col-auto me-3 s7choices s7text"></div>
-						<div class="field-item-add col-auto d-flex align-items-center">
-							<a role="button" title="Add Row" class="field-item-add-button"><i class="bi bi-plus-lg"></i></a>
-						</div>
-					</div>
-
-
-				</div>
-
+			<div class="mb-3" id="filterdate">
+				<!-- Change description text for each search type -->
+				<label class="control-label d-block">Date:</label>
+			
+<?php
+				switch($action) {
+						case 'combined':
+							$vs_desc = "Date range refers to date of filing or legislative action, depending on the type of record.";
+					break;
+						case 'bills':
+							$vs_desc = "Searches introduction date, approval date, date of Mayor's signature, and date filed with the City Clerk.";
+					break;
+						case 'resolutions':
+							$vs_desc = "Searches introduction date, approval date, and date filed with the City Clerk.";
+					break;
+						case 'clerk':
+							$vs_desc = "Searches date filed with the City Clerk.";
+					break;
+						case 'agenda':
+						case 'minutes':
+						case 'meetings':
+							$vs_desc = "Searches meeting date.";
+					break;
+						case 'committees':
+							$vs_desc = "Searches beginning and ending dates.";
+					break;
+				}
+				print $this->formElement('date', ['label' => 'Date!!!', 'description' => $vs_desc]);
+						
+?>
 			</div>
-
-		</div>
-
-
-		<script>
-			function cloneElement() {
-					// Get the element to be cloned
-					var original = document.getElementById('field-item');
-
-					// Clone the element
-					var clone = original.cloneNode(true);
-
-					// Create a remove button
-					var removeBtn = document.createElement('a');
-
-					// Create icon
-					var removeIcon = document.createElement('i');
-					removeIcon.classList.add("bi");
-					removeIcon.classList.add("bi-dash-lg");
-
-					// Append the remove icon to the remove button
-					removeBtn.appendChild(removeIcon);
-
-					// Function to remove entire elment on click
-					removeBtn.onclick = function() {
-							this.parentNode.parentNode.remove();
-					};
-
-					// Remove exisiting add button in clone
-					var subParent = clone.querySelector('#addBtnCol');
-					var addBtn = subParent.querySelector('#addBtn');
-					if (addBtn) {
-						subParent.removeChild(addBtn);
-					}
-
-					// Append the remove button to the subparent
-					subParent.appendChild(removeBtn);
-
-					// Append the clone to the container
-					document.getElementById('filterfield').appendChild(clone);
-			}
-		</script>
-
-		<div class="advanced-search">
-
-			<h4 class="expandable-controls">
-				<a data-bs-toggle="collapse" class="collapseControl"  href="#filterdate" role="button" aria-expanded="false" aria-controls="filterdate">Filter by Date <i class="bi bi-caret-right-fill"></i></a>
-				
-			</h4>
-
-			<div class="collapse mb-3" id="filterdate">
-				<p>A date range can be combined with other search terms, or submitted independently. Months are optional.</p><br>
-
-				<div class="input-group ">
-					<label class="col-12 control-label">Date:</label>
-					<div class="col-12">
-
-
-						<?= $this->formElement('date', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
-
-
-						<!-- Change description text for each search type -->
-						<p>
-							<?php
-									switch($action) {
-										case 'combined':
-							?>
-								<em>Date range refers to date of filing or legislative action, depending on the type of record.</em>
-							<?php
-									break;
-										case 'bills':
-							?>
-							  <em>Searches introduction date, approval date, date of Mayor's signature, and date filed with the City Clerk.</em>
-							<?php
-									break;
-										case 'resolutions':
-							?>
-								<em>Searches introduction date, approval date, and date filed with the City Clerk.</em>
-							<?php
-									break;
-										case 'clerk':
-							?>
-								<em>Searches date filed with the City Clerk.</em>
-							<?php
-									break;
-										case 'agenda':
-										case 'minutes':
-							?>
-								<em>Searches meeting date.</em>
-							<?php
-									break;
-										case 'committees':
-							?>
-								<em>Searches beginning and ending dates.</em>
-							<?php
-									break;
-								}
-							?>
-						</p>
-					</div>
-
-				</div>
-
+<?php
+		if(!in_array($action, array("agenda", "minutes", "meetings"))){
+?>
+			<div class="mb-3" id="filtersponsor">
+				<label class="control-label">Sponsor:</label>
+				<?= $this->formElement('SPON', ['label' => '', 'description' => _t("Search the sponsor of council bills, ordinances, resolutions, comptroller files, and cleark files.")]); ?>
 			</div>
-		</div>
-
-	<?php
-			switch($action) {
-				case 'combined':
-				case 'bills':
-				case 'resolutions':
-				case 'clerk':
-	?>
-		<div class="advanced-search">
-			<h4 class="expandable-controls">
-				<a data-bs-toggle="collapse" class="collapseControl"  href="#includeexclude" role="button" aria-expanded="false" aria-controls="includeexclude">Include and Exclude <i class="bi bi-caret-right-fill"></i></a>
-				
-			</h4>
-
-			<div class="collapse mb-3" id="includeexclude">
-				<p>Enter terms in this section to either broaden or narrow your search.</p><br>
-
-				<div class="input-group">
-					<label for="s2" class="col-sm-3 control-label">Index Terms:</label>
-					<div class="col-sm-9">
-						<input name="s2" id="s2" type="text" class="form-control">
-						<p><em>From <a href="/search/thesaurus/">City Clerk's Thesaurus</a>.</em></p>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="s8exclude" class="col-sm-3 control-label">Exclude Terms:</label>
-					<div class="col-sm-9">
-						<input id="s8exclude" type="text" class="form-control">
-						<p><em>All fields; includes full text where available.</em></p>
-					</div>
-				</div>
-			</div>
-
-		</div>
-	<?php
-			break;
+<?php
 		}
-	?>
+		if(!in_array($action, array("meetings"))){
+?>
+			<div class="mb-3" id="filtersponsor">
+				<label class="control-label">Committee:</label>
+				<?= $this->formElement('COMM', ['size' => "70px", 'label' => '', 'description' => _t("Enter committee name.")]); ?>
+			</div>
+<?php
+		}
+		if(!in_array($action, array("meetings", "agenda"))){
+?>
+			<div class="mb-3" id="filtersponsor">
+				<label class="control-label">Index Terms:</label>
+				<?= $this->formElement('index', ['' => '', 'description' => _t("Search by terms.")]); ?>
+			</div>
+<?php
+		}
+?>				
+		</div>
 
 		<div class="advanced-search">
 			<h4 class="expandable-controls">
@@ -394,25 +275,10 @@
 
 			<div class="collapse mb-3" id="settings">
 
-				<p>These optional settings apply to all combinations of fields above. Adjacency only applies to multiple terms within the same field.</p><br>
-
-				<div class="input-group">
-					<label for="Sect4" class="col-12 control-label">Default Operator:</label>
-					<div class="col-12">
-						<select name="Sect4" id="Sect4" class="form-control" aria-label="select">
-							<option value="OR">Or</option>
-							<option value="AND" selected="">And</option>
-							<option value="ADJ">Adjacent</option>
-						</select>
-					</div>
-				</div>
-
-				<br>
-
 				<div class="input-group">
 					<label for="l" class="col-12 control-label">Results Per Page:</label>
 					<div class="col-12">
-						<select name="l" class="form-control" aria-label="select">
+						<select name="l" class="form-select" aria-label="select">
 							<option value="5">5</option>
 							<option value="10">10</option>
 							<option value="25">25</option>
@@ -423,28 +289,6 @@
 							<option value="1000">1000</option>
 							<option value="2500">2500</option>
 						</select>
-					</div>
-				</div>
-
-				<br>
-
-				<div class="input-group radio-group">
-					<label for="Sect2" class="col-sm-3 control-label">Thesaurus:</label>
-					<div class="col-sm-9">
-						<label><input type="radio" name="Sect2" value="THESON" checked=""> On</label>
-						&nbsp;
-						<label><input type="radio" name="Sect2" value="THESOFF"> Off</label>
-					</div>
-				</div>
-
-				<br>
-
-				<div class="input-group radio-group">
-					<label for="Sect3" class="col-sm-3 control-label">Plurals:</label>
-					<div class="col-sm-9">
-						<label><input type="radio" name="Sect3" value="PLURON" checked=""> On</label>
-						&nbsp;
-						<label><input type="radio" name="Sect3" value="PLUROFF"> Off</label>
 					</div>
 				</div>
 
@@ -477,3 +321,4 @@
 			
 		})
 	</script>
+</div>

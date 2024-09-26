@@ -45,7 +45,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 <div id="detail">
 
-	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
+	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
 	<p class="fs-3">Name: {{{^ca_entities.preferred_labels}}}</p>
 
@@ -184,6 +184,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<br>
 	</ifcount>}}}
 
-  <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
+  <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
 
 </div>

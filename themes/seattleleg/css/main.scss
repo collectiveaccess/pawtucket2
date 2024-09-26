@@ -193,7 +193,7 @@ a:hover {
 .titleTopNavBreadcrumbWrapper{
 
 	.deptTitle{
-		margin-top: 15px;
+		margin-top: 22px;
 		line-height: 1.1; 
 	}
 	
@@ -343,7 +343,8 @@ footer a{
 .advancedSearch {
 
 	.advSearchContainer{
-		padding: 66px 32px;
+		/*padding: 66px 32px;*/
+		padding: 66px 0px;
 	}
 
 	a {
@@ -368,7 +369,7 @@ footer a{
 	// 	}
 	// }
 
-	.expandable-controls {
+	/*.expandable-controls {
 
 		a[data-bs-toggle="collapse"] {
 
@@ -382,13 +383,13 @@ footer a{
 				transition: transform 0.3s ease;
 			}
 		}
-	}
+	}*/
 
 	h1.pageTitle {
 		background: #000;
 		color: #fff;
 		display: inline-block;
-		padding: 3px 20px 7px 20px;
+		padding: 12px 20px 7px 20px;
 		font-size: 36px;
 		line-height: 40px;
 		margin-bottom: 40px;
@@ -411,6 +412,15 @@ footer a{
 		font-size: 16px !important;
 		padding: 0px 5px 20px 0px !important;
 		max-width: 75%;
+	}
+	#leftNav ul li.active a {
+		color: #003dab;
+	}
+	#leftNav ul li.active i.bi{
+		margin-left:-20px;
+	}
+	#leftNav hr, #rightCol hr{
+		width:75%;
 	}
 
 	img {
