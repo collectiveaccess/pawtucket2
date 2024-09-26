@@ -79,9 +79,9 @@ if($this->request->isLoggedIn()){
 
 
 <div class="titleTopNavBreadcrumbWrapper border-bottom border-black">
-	<div class="container">
+	<div class="container ps-0 pe-0">
 		<div class="deptTitle mb-3">
-			<a href="/" class="active">Legislation Search</a>
+			<?php print caNavLink($this->request, "Legislation Search", "", "", "", ""); ?>
 		</div>
 	</div>
 </div>
