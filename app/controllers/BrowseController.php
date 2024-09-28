@@ -412,15 +412,20 @@
  			
  			// map
 			if ($ps_view === 'map') {
-				$va_opts = array(
+				$va_opts = [
 				    'renderLabelAsLink' => false, 
 				    'request' => $this->request, 
 				    'color' => '#cc0000', 
 				    'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
 				    'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
-				    'ajaxContentUrl' => (caGetOption('title_template', $va_view_info['display'], null) || caGetOption('description_template', $va_view_info['display'], null)) ? caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view)) : null,
+				    'ajaxContentUrl' => caGetOption('ajaxContentUrl', $va_view_info['display'], null),
 				    'excludeRelationshipTypes' => caGetOption('excludeRelationshipTypes', $va_view_info['display'], null)
-				);
+				];
+				if(!$va_opts['ajaxContentUrl']) {
+					$va_opts['ajaxContentUrl'] = (caGetOption('title_template', $va_view_info['display'], null) || caGetOption('description_template', $va_view_info['display'], null))
+						? 
+						caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view)) : null;
+				}
 				
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$qr_res->seek(0);
