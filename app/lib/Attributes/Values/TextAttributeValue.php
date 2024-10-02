@@ -361,12 +361,12 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 		$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '');
 		$vs_element = '';
 		
-		if (!preg_match("!^[\d\.]+px$!i", $vs_width)) {
-			$vs_width = ((int)$vs_width * 6)."px";
-		}
-		if (!preg_match("!^[\d\.]+px$!i", $vs_height) && ((int)$vs_height > 1)) {
-			$vs_height = ((int)$vs_height * 16)."px";
-		}
+		// if (!preg_match("!^[\d\.]+px$!i", $vs_width)) {
+// 			$vs_width = ((int)$vs_width * 6)."px";
+// 		}
+// 		if (!preg_match("!^[\d\.]+px$!i", $vs_height) && ((int)$vs_height > 1)) {
+// 			$vs_height = ((int)$vs_height * 16)."px";
+// 		}
 		
 		if ($va_settings['usewysiwygeditor'] ?? null) {
 			$o_config = Configuration::load();
@@ -404,8 +404,8 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 		}
 		
 		$va_opts = array(
-				'size' => $vs_width, 
-				'height' => $vs_height, 
+				//'width' => $vs_width, 
+				//'height' => $vs_height, 
 				'value' => '{{'.$pa_element_info['element_id'].'}}', 
 				'maxlength' => $va_settings['maxChars'],
 				'id' => '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 'class' => "{$vs_class}".(($va_settings['usewysiwygeditor'] ?? null) ? " ckeditor-element" : '')

@@ -50,16 +50,13 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
-  <h2 class="record-number">
-		<?= $type_idno; ?> {{{ca_objects.ORDN}}}
-	</h2>
-	<h2 class="record-number" style="font-size: 20px; line-height: 30px;">Introduced as Council Bill {{{ca_objects.CBN}}}
-	</h2>
+	<h3 class="record-number"><?= $type_idno; ?> {{{ca_objects.ORDN}}}</h3>
+	<h3 class="record-number">Introduced as Council Bill {{{ca_objects.CBN}}}</h3>
 
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Title</span></th>
+        <th colspan="2"><H4>Title</H4></th>
       </tr>
       <tr>
         <td class="empty"></td>
@@ -75,7 +72,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Description and Background</span></th>
+        <th colspan="2"><H4>Description and Background</H4></th>
       </tr>
 
 			{{{<ifdef code="ca_objects.STAT">
@@ -101,7 +98,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.index")){
-					if($links = caGetBrowseLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Index Terms:'); ?></td>
@@ -128,7 +125,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Legislative History</span></th>
+        <th colspan="2"><H4>Legislative History</H4></th>
       </tr>
 			
 			<!-- {{{<ifdef code="ca_objects.SPON">
@@ -140,7 +137,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.SPON")){
-					if($links = caGetBrowseLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Sponsor:'); ?></td>
@@ -160,7 +157,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.COMM")){
-					if($comm = caGetBrowseLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
+					if($comm = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Committee Referral:'); ?></td>
@@ -217,17 +214,17 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				<tr>
 					<td>
 						Date Signed by Mayor:<br>
-						<a href="#" data-bs-toggle="modal" data-bs-target="#MayorsSignatureApprovalDate"><small>(About the signature date)</small></a>
+						<button class="modalButtonLink" data-bs-toggle="modal" data-bs-target="#MayorsSignatureApprovalDate">(About the signature date)</button>
 					</td>
 					<td>^ca_objects.DTA</td>
 				</tr>
 			</ifdef>}}}
 
-			<div class="modal fade" id="MayorsSignatureApprovalDate">
+			<div class="modal fade" id="MayorsSignatureApprovalDate" aria-labelledby="MayorsSignatureApprovalDateLabel">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-body">
-							<h3 class="centered">Mayor's signature / approval date</h3>
+							<div id="MayorsSignatureApprovalDateLabel" class="fw-bold fs-4 centered">Mayor's signature / approval date</div>
 							<p>The date displayed here is the ordinance approval date.</p>
 							<p>Approval date for an ordinance is ordinarily the date the bill was signed by the Mayor. There are certain exceptions:</p>
 							<ul>
@@ -264,7 +261,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 		<table class="record table table-striped table-responsive">
 			<tbody>
 				<tr>
-					<th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Text</span></th>
+					<th colspan="2"><H4>Text</H4></th>
 				</tr>
 				<tr>
 					<td class="empty"></td>
@@ -289,7 +286,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 		<unit filterNonPrimaryRepresentations="0">
 			<table class="record table table-striped table-responsive">
 				<tbody>
-					<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
+					<tr><th colspan="2"><H4>Attachments</H4></th></tr>
 					<tr>
 						<td class="empty"></td>
 						<td>

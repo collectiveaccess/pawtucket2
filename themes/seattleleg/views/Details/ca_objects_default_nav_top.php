@@ -26,6 +26,7 @@
  * ----------------------------------------------------------------------
  */
 $t_object = 		$this->getVar("item");
+$table = $t_object->tableName();
 $access_values = 	$this->getVar("access_values");
 $options = 			$this->getVar("config_options");
 $comments = 		$this->getVar("comments");
@@ -34,22 +35,41 @@ $comments_enabled = $this->getVar("commentsEnabled");
 $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
 $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
-$id =				$t_object->get('ca_objects.object_id');
+
+switch($table){
+	case "ca_entities":
+		$id = $t_object->get('ca_entities.entity_id');
+		$last_advanced_search = ResultContextStorage::getVar('result_last_context_ca_entities_action');		
+		
+	break;
+	# ------------------------------------------------
+	case "ca_occurrences":
+		$id = $t_object->get('ca_occurrences.occurrence_id');
+		$last_advanced_search = ResultContextStorage::getVar('result_last_context_ca_occurrences_action');		
+		
+	break;
+	# ------------------------------------------------
+	case "ca_objects":
+		$id = $t_object->get('ca_objects.object_id');
+		$last_advanced_search = ResultContextStorage::getVar('result_last_context_ca_objects_action');		
+		if(!$last_advanced_search){
+			$last_advanced_search = "combined";
+		}
+	break;
+	# ------------------------------------------------
+}
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
 
-$last_modified = $t_object->get("ca_objects.lastmodified");
-$created = $t_object->get("ca_objects.created");
+$last_modified = $t_object->get($table.".lastmodified");
+$created = $t_object->get($table.".created");
 
 $email_subject = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 $email_body;
 
 $action = $this->request->getAction();
 
-$last_advanced_search = ResultContextStorage::getVar('result_last_context_ca_objects_action');		
-if(!$last_advanced_search){
-	$last_advanced_search = "combined";
-}		
+		
 // print_r($action);
 ?>
 <script>
@@ -59,68 +79,77 @@ if(!$last_advanced_search){
 	<a id="h0"></a>
 
 <?php
-	switch($last_advanced_search){
-		case "combined":
-		default:
-			$heading_text = "City of Seattle Combined Legislative Records Search";
-		break;	
-		# -----------
-		case "bills":
-			$heading_text = "Seattle City Council Bills and Ordinances";			
-		break;	
-		# -----------
-		case "resolutions":
-			$heading_text = "Seattle City Council Resolutions";			
-		break;	
-		# -----------
-		case "clerk":
-			$heading_text = "Seattle Comptroller/Clerk Files Index Search";			
-		break;	
-		# -----------
-		case "agenda":
-			$heading_text = "Seattle City Council Committee Agendas";			
-		break;	
-		# -----------
-		case "minutes":
-			$heading_text = "Seattle City Council Minutes";			
-		break;	
-		# -----------
-		case "meetings":
-			$heading_text = "City Council Meeting History";			
-		break;	
-		# -----------
-		case "committees":
-			$heading_text = "City Council Committee History Database";			
-		break;	
-		# -----------
+	# committees - ca_entities
+	if($table == "ca_entities"){
+		$heading_text = "City Council Committee History Database";
+	}elseif($table == "ca_occurrences"){
+		$heading_text = "City Council Meeting History";
+	}else{
+		switch($last_advanced_search){
+			case "combined":
+			default:
+				$heading_text = "City of Seattle Combined Legislative Records Search";
+			break;	
+			# -----------
+			case "bills":
+				$heading_text = "Seattle City Council Bills and Ordinances";			
+			break;	
+			# -----------
+			case "resolutions":
+				$heading_text = "Seattle City Council Resolutions";			
+			break;	
+			# -----------
+			case "clerk":
+				$heading_text = "Seattle Comptroller/Clerk Files Index Search";			
+			break;	
+			# -----------
+			case "agenda":
+				$heading_text = "Seattle City Council Committee Agendas";			
+			break;	
+			# -----------
+			case "minutes":
+				$heading_text = "Seattle City Council Minutes";			
+			break;	
+			# -----------
+		}
 	}
 ?>
   
-  <H3><?php print $heading_text; ?></H3>
+  <H2 class="fs-3"><?php print $heading_text; ?></H2>
   <em>Information modified on <?= $last_modified; ?></em> <em><?= $created; ?></em>
   <hr>
 
-  <div id="top-search-nav" class="d-md-flex d-md-inline-block justify-content-between">
+  <div id="top-search-nav" class="d-md-flex justify-content-between">
 
-		<div class="nav-icons mb-2 mb-md-0">
+		<nav class="nav-icons mb-2 mb-md-0" aria-label="top search results">
+			<ul class="nav">
+				<li>
 <?php
-			print caNavLink($this->request, "<i class='bi bi-house-door-fill' aria-label='Home' title='Home'></i>", "", "", "", "");
-			print caNavLink($this->request, "<i class='bi bi-search' aria-label='search' title='Back to Search Form'></i>", "", "Search", "advanced", $last_advanced_search);
-
-
+					print caNavLink($this->request, "<i class='bi bi-house-door-fill' aria-label='Home' title='Home'></i>", "", "", "", "");
+?>
+				</li>
+				<li>
+<?php
+					print caNavLink($this->request, "<i class='bi bi-search' aria-label='search' title='Back to Search Form'></i>", "", "Search", "advanced", $last_advanced_search);
 ?> 			
-			{{{resultsLink}}}
-			{{{previousLink}}}
-			{{{nextLink}}}
-			
-			<a href="#hb" aria-label="page down" title="Jump to Bottom">
-				<i class="bi bi-chevron-double-down"></i>
-			</a>
-			
-			<a href="https://clerk.seattle.gov/search/help/" aria-label="help" title="Help">
-				<i class="bi bi-question-lg"></i>
-			</a>
-		</div>
+				</li>
+				<li>
+					{{{resultsLink}}}
+				</li>
+				<li>
+					{{{previousLink}}}
+				</li>
+				<li>
+					{{{nextLink}}}
+				</li>
+				<li>
+					<a href="#hb" aria-label="page down" title="Jump to Bottom"><i class="bi bi-chevron-double-down"></i></a>
+				</li>
+				<li>
+					<a href="https://clerk.seattle.gov/search/help/" aria-label="help" title="Help"><i class="bi bi-question-lg"></i></a>
+				</li>
+			</ul>
+		</nav>
 
 		<div id="link-controls">
 			<div class="dropdown">
