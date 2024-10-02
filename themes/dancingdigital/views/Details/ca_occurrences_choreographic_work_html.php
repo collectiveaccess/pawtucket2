@@ -67,7 +67,12 @@
 	}
 
 	if($media) {
-		print $media;
+?>
+	<div class="related-item">
+		<div class="related-item-image"><?= $media; ?></div>
+		<div class="related-item-title"><?= $t_object->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>'); ?></div>
+	</div>
+<?php
 	} else {
 ?>
 		<l>^ca_object_representations.media.medium</l>
