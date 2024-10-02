@@ -37,7 +37,19 @@
 	<div class="general-page">
 		<div class="container">
 			<div class="row justify-content-center">
-				<h1 class="page-heading heading-size-2 ps-0">Performances</h1>
+				<div class="row align-items-baseline" style="padding-bottom: 50px;">
+					<div class="col-auto">
+						<h1 class="page-heading heading-size-2 pb-0 me-5">Performances</h1>
+					</div>
+					<div class="col-auto">
+						<a class="browse-link" href="<?= caNavUrl($this->request, '', 'Search', 'objects', ['search' => 'performance audiovisual']); ?>">
+						View All Performances
+						<svg xmlns="http://www.w3.org/2000/svg" width="37" height="8" viewBox="0 0 37 8" fill="none">
+							<path d="M36.5735 4.12211C36.7688 3.92685 36.7688 3.61027 36.5735 3.415L33.3916 0.233024C33.1963 0.0377615 32.8797 0.0377615 32.6845 0.233024C32.4892 0.428286 32.4892 0.744868 32.6845 0.94013L35.5129 3.76856L32.6845 6.59698C32.4892 6.79225 32.4892 7.10883 32.6845 7.30409C32.8797 7.49935 33.1963 7.49935 33.3916 7.30409L36.5735 4.12211ZM0.109985 4.26855L36.22 4.26856L36.22 3.26856L0.109985 3.26855L0.109985 4.26855Z" fill="white"></path>
+						</svg>
+					</a>
+					</div>
+				</div>
 				<div class="col-auto">
 					<p class="page-content content-size-2 mb-5">
 						<?= $t_set->get('ca_sets.set_description'); ?>
