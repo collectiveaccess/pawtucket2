@@ -353,7 +353,7 @@ ul{
 	left: 160px;
 }
 
-.ourstory-section, .gallery-section, .performances-section, .object-detail-section, .browse-section {
+.ourstory-section, .gallery-section, .performances-section, .object-detail-section, .browse-section, .tools_to_explore-section {
 	background: linear-gradient(to bottom, rgba(26, 8, 40, 1) 0%, rgba(42, 10, 66, 1) 50%, rgba(31, 9, 49, 1) 100%);
 }
 

@@ -26,6 +26,7 @@
 			<ul class="navbar-nav">
 				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'Front', 'front_page_html'); ?>">About</a></li>
 				<li class="nav-item ps-5"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'ourstory_html'); ?>">Our Story</a></li>
+				<li class="nav-item ps-5"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'tools_to_explore'); ?>">Tools to Explore</a></li>
 				<li class="nav-item ps-5"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'gallery_html'); ?>">Gallery</a></li>
 
 				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'choreographers_html'); ?>">Choreographers</a></li>
@@ -96,7 +97,8 @@
 			<div class="collapse show ps-5">
 				<ul class="list-unstyled pb-1">
 					<li class="mb-0"><a href="<?= caNavUrl($this->request, '', 'About', 'ourstory_html'); ?>" style="font-size: 16px;">Our Story</a></li>
-					<li><a href="<?= caNavUrl($this->request, '', 'About', 'gallery_html'); ?>" style="font-size: 16px;">Gallery</a></li>
+					<li class="mb-0"><a href="<?= caNavUrl($this->request, '', 'About', 'tools_to_explore'); ?>" style="font-size: 16px;">Tools to Explore</a></li>
+					<li class="mb-0"><a href="<?= caNavUrl($this->request, '', 'About', 'gallery_html'); ?>" style="font-size: 16px;">Gallery</a></li>
 				</ul>
 			</div>
 		</li>
