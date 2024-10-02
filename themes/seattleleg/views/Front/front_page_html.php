@@ -34,30 +34,32 @@
 
 <div class="container" >
 	<div class="row my-5">
-
-		<div class="text-center" style="background-color: #f1f1f1;">
-			<h3 class="mt-2" style="font-size: 24px; background-color: #dedede; padding: 5px;">Combined search of legislation</h3>
-
-			<form class="row g-1 align-items-center" action="<?= caNavUrl($this->request, '', 'Search', 'combined'); ?>">
-				<input name="_fulltext" id="searchTerms" type="text" class="form-control col-10" style="width: 79%;" placeholder="Search terms">
-				<input type="submit" value="Search" class="ms-2 col-2 btn btn-primary" style="width: 20%;">
-				<input type="hidden" name="_advanced" value="1">
-				<input type="hidden" name="_formElements" value="_fulltext">
-			</form>
-
-			<p>
-				Searches the titles and full text (where available) of <?= caNavLink($this->request, _t("all legislation"), "", "", "Search", "advanced/combined"); ?>.<br>
-				<small>(Legislation acted on by the City Council from 1869 to 30 days ago.)</small>
-			</p>
-
+		<div class="col">
+			<div class="text-center bg-light-gray py-2 px-3 shadow">
+				<h2 class="mt-2 fs-3 bg-gray pt-3 p-2">Combined search of legislation</h2>
+	
+				<form class="row g-1 align-items-center" action="<?= caNavUrl($this->request, '', 'Search', 'combined'); ?>">
+					<label for="searchTerms" class="visually-hidden">Search Terms</label>
+					<input name="_fulltext" id="searchTerms" type="text" class="form-control col-10" style="width: 79%;" placeholder="Search terms">
+					<input type="submit" value="Search" class="ms-2 col-2 btn btn-primary" style="width: 20%;">
+					<input type="hidden" name="_advanced" value="1">
+					<input type="hidden" name="_formElements" value="_fulltext">
+				</form>
+	
+				<p>
+					Searches the titles and full text (where available) of <?= caNavLink($this->request, _t("all legislation"), "", "", "Search", "advanced/combined"); ?>.<br>
+					<small>(Legislation acted on by the City Council from 1869 to 30 days ago.)</small>
+				</p>
+	
+			</div>
 		</div>
 
 	</div>
 
 	<div class="row my-5">
 
-		<div class="col-5" style="">
-			<h3 class="">Legislation and meetings</h3>
+		<div class="col-5">
+			<h3>Legislation and meetings</h3>
 			
 			<div class="tileTextDescription">
 				<ul>
@@ -78,9 +80,11 @@
 			<form id="numberSearch" action="<?= caNavUrl($this->request, '', 'Search', 'combined'); ?>">
 			<div class="row">
 				<div class="col-4 mb-1">
+					<label for="recordNumber" class="visually-hidden">Record Number</label>
 					<input id="recordNumber" name="number" type="number" class="form-control" placeholder="Number" min="1">
 				</div>
 				<div class="col-6 mb-1">
+					<label for="recordType" class="visually-hidden">Record Type</label>
 					<select id="recordType" name="field" class="form-select">
 						<option value="ca_objects_ORDN">Ordinance</option>
 						<option value="ca_objects_CBN">Council Bill</option>

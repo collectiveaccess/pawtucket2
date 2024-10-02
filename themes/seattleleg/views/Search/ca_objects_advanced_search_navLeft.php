@@ -3,43 +3,41 @@
 ?>
 
 <div class="col-lg-3 d-none d-lg-block">
-	<nav>
+	<nav aria-label="Search form">
 		<div id="leftNav" >
-				<h2 style="margin-top:40px;">Legislation </h2>
-				<h4>Acted on by Council</h4>
+				<h2 style="margin-top:40px;">Legislation<div class="fs-4 pt-2">Acted on by Council</div></h2>
 				<hr>
 				<ul id="primaryTier" class="list-unstyled activeParent">
 
-					<li id="left-combined" class="<?= ($action == "combined") ? "active" : ""; ?>">
+					<li id="left-combined" <?= ($action == "combined") ? "class='active' aria-current='page'" : ""; ?>>
 						<?= (($action == "combined") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("Combined Legislative Records Search"), "", "", "Search", "advanced/combined"); ?>
 					</li>
-					<li id="left-ordinances" class="<?= ($action == "bills") ? "active" : ""; ?>">
+					<li id="left-ordinances" <?= ($action == "bills") ? "class='active' aria-current='page'" : ""; ?>>
 						<?= (($action == "bills") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Bills/Ordinances"), "", "", "Search", "advanced/bills"); ?>
 					</li>
-					<li id="left-resolutions" class="<?= ($action == "resolutions") ? "active" : ""; ?>">
+					<li id="left-resolutions" <?= ($action == "resolutions") ? "class='active' aria-current='page'" : ""; ?>>
 						<?= (($action == "resolutions") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Resolutions"), "", "", "Search", "advanced/resolutions"); ?>
 					</li>
-					<li id="left-clerk-files" class="<?= ($action == "clerk") ? "active" : ""; ?>">
+					<li id="left-clerk-files" <?= ($action == "clerk") ? "class='active' aria-current='page'" : ""; ?>>
 						<?= (($action == "clerk") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("Comptroller/Clerk Files Index"), "", "", "Search", "advanced/clerk"); ?>
 					</li>
 				</ul>
 
 				<hr>
-				<h2 style="margin-top:40px;">Legislative Process</h2>
-				<h4>Acted on by Council</h4>
+				<h2 class="mt-4 pt-3">Legislative Process <div class="fs-4 pt-2">Acted on by Council</div></h2>
 				<hr>
 				<ul id="primaryTier" class="list-unstyled activeParent">
 
-					<li id="left-agenda" class="<?= ($action == "agenda") ? "active" : ""; ?>">
+					<li id="left-agenda" <?= ($action == "agenda") ? "class='active' aria-current='page'" : ""; ?>>
 						<?= (($action == "agenda") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Agendas"), "", "", "Search", "advanced/agenda"); ?>
 					</li>
-					<li id="left-minutes" class="<?= ($action == "minutes") ? "active" : ""; ?>">
+					<li id="left-minutes" <?= ($action == "minutes") ? "class='active' aria-current='page'" : ""; ?>>
 						<?= (($action == "minutes") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Minutes"), "", "", "Search", "advanced/minutes"); ?>
 					</li>
-					<li id="left-history" class="<?= ($action == "committees") ? "active" : ""; ?>">
+					<li id="left-history" <?= ($action == "committees") ? "class='active' aria-current='page'" : ""; ?>>
 						<?= (($action == "committees") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Committee History"), "", "", "Search", "advanced/committees"); ?>
 					</li>
-					<li id="left-history" class="<?= ($action == "meetings") ? "active" : ""; ?>">
+					<li id="left-history" <?= ($action == "meetings") ? "class='active' aria-current='page'" : ""; ?>>
 						<?= (($action == "meetings") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Meeting History"), "", "", "Search", "advanced/meetings"); ?>
 					</li>
 					<!-- <li id="left-documents" class="">

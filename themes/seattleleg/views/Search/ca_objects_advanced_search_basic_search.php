@@ -1,6 +1,7 @@
 <div class="pe-lg-4">
 <?php
-	$va_browse_info = $this->getVar("browseInfo");
+	$va_search_info = $this->getVar("searchInfo");
+	$table = $va_search_info["table"];
 	$action = strToLower($this->request->getActionExtra());	// form type (Eg. "combined")
 
 	$page_title;
@@ -94,7 +95,7 @@
 	}	
 ?>
 
-	<h1 class="pageTitle"><?= $page_title; ?></h1><br>
+	<h2 class="pageTitle"><?= $page_title; ?></h2><br>
 
 	<a class="description-btn collapseControl" data-bs-toggle="collapse" href="#description" role="button" aria-expanded="true" aria-controls="description">Description <i class="bi bi-caret-down-fill"></i></a>
 
@@ -107,16 +108,16 @@
 			case 'bills':
 ?>
 			<div class="well">
-				<h4>Retrieve Council Bill or Ordinance by Number</h4><br>
+				<h3 class="fs-4 mb-4">Retrieve Council Bill or Ordinance by Number</h3>
 				<div class="row">
 					<div class="col-6">
-						<label for="s3" class="control-label">Council Bill No.</label>
-						<?= $this->formElement('ca_objects.CBN', ['label' => '', 'description' => _t("")]); ?>
+						<label for="ca_objects_CBN" class="control-label">Council Bill No.</label>
+						<?= $this->formElement('ca_objects.CBN'); ?>
 					</div>
 					<div class="col-6">
-						<label for="s4" class="control-label">Ordinance No.</label>
+						<label for="ca_objects_ORDN" class="control-label">Ordinance No.</label>
 						
-						<?= $this->formElement('ca_objects.ORDN', ['label' => '', 'description' => _t("")]); ?>
+						<?= $this->formElement('ca_objects.ORDN'); ?>
 					</div>
 				</div>
 				<div class="row mt-3">
@@ -130,9 +131,9 @@
 			case 'resolutions':
 	?>
 			<div class="well">
-				<h4>Retrieve Resolution by Number</h4><br>
-						<label for="s3" class="control-label">Resolution No.</label>
-						<?= $this->formElement('ca_objects.RESN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
+				<h3 class="fs-4 mb-4">Retrieve Resolution by Number</h3>
+						<label for="ca_objects_RESN" class="control-label">Resolution No.</label>
+						<?= $this->formElement('ca_objects.RESN'); ?>
 				<div class="mt-3">
 					<input type="submit" value="Go" class="btn btn-primary">
 				</div>
@@ -142,14 +143,14 @@
 			case 'clerk':
 	?>
 			<div class="well">
-				<h4>Retrieve File by Number</h4><br>
+				<h3 class="fs-4 mb-4">Retrieve File by Number</h3>
 					<div class="row">
 						<div class="col-sm-6">
-							<label for="s3" class="control-label">File No.</label><br/>
-							<?= $this->formElement('ca_objects.CFN', ['size' => "50px", 'label' => '', 'description' => _t("")]); ?>
+							<label for="ca_objects_CFN" class="control-label">File No.</label><br/>
+							<?= $this->formElement('ca_objects.CFN'); ?>
 						</div>
 						<div class="col-sm-6">
-							<label for="appointment" class="control-label">Appointment?</label><br/>
+							<label for="ca_objects_appointment" class="control-label">Appointment?</label><br/>
 							<?= $this->formElement('ca_objects.appointment', ['class' => 'form-select']); ?>
 						</div>
 					</div>
@@ -174,12 +175,12 @@
 
 	<div class="well">
 
-		<h4>Basic Search</h4><br>
+		<h3 class="fs-4 mb-4">Basic Search</h3>
 
 		<div class="basic-search">
 			<div class="mb-3">
-				<label class="control-label me-1">Terms Anywhere:</label>
-				<?= $this->formElement('_fulltext', ['size' => 60, 'label' => '', 'description' => _t("All fields; includes full text where available")]); ?>
+				<label for="adv-_fulltext" class="control-label me-1">Terms Anywhere:</label>
+				<?= $this->formElement('_fulltext', ['label' => '', 'description' => _t("All fields; includes full text where available")]); ?>
 			</div>
 
 	<?php
@@ -191,8 +192,8 @@
 	?>
 
 			<div class="mb-3">
-				<label class="control-label me-1">Terms in Title:</label>
-				<?= $this->formElement('ca_objects.preferred_labels', ['size' => 60, 'label' => '', 'description' => _t("Include text only within the title")]); ?>
+				<label for="adv-ca_objects_preferred_labels" class="control-label me-1">Terms in Title:</label>
+				<?= $this->formElement('ca_objects.preferred_labels', ['label' => '', 'description' => _t("Include text only within the title")]); ?>
 			</div>
 
 	<?php
@@ -205,12 +206,11 @@
 		<hr class="advanced-separator">
 		
 
-		<h4>Additional Options</h4><br>
+		<h3 class="fs-4 mb-4">Additional Options</h3>
 		<div class="advanced-search">
 
 			<div class="mb-3" id="filterdate">
 				<!-- Change description text for each search type -->
-				<label class="control-label d-block">Date:</label>
 			
 <?php
 				switch($action) {
@@ -235,32 +235,51 @@
 							$vs_desc = "Searches beginning and ending dates.";
 					break;
 				}
-				print $this->formElement('date', ['label' => 'Date!!!', 'description' => $vs_desc]);
+				switch($action) {
+					case 'committees':
+						# --- entities
+						print '<label for="ca_entities_comm_date" class="control-label d-block">Date:</label>';
+						print $this->formElement('ca_entities.comm_date', ['description' => $vs_desc]);
+					break;
+					# ---------
+					case 'meetings':
+						# --- occ
+						
+						print '<label for="ca_occurrences_DATE" class="control-label d-block">Date:</label>';
+						print $this->formElement('ca_occurrences.DATE', ['description' => $vs_desc]);
+					break;
+					# ---------
+					default:
+						print '<label for="'.$table.'_DATE" class="control-label d-block">Date:</label>';
+						print $this->formElement($table.'.date', ['description' => $vs_desc]);
+					break;
+					# ---------
+				}
 						
 ?>
 			</div>
 <?php
-		if(!in_array($action, array("agenda", "minutes", "meetings"))){
+		if(!in_array($action, array("agenda", "minutes", "meetings", "committees"))){
 ?>
 			<div class="mb-3" id="filtersponsor">
-				<label class="control-label">Sponsor:</label>
-				<?= $this->formElement('SPON', ['label' => '', 'description' => _t("Search the sponsor of council bills, ordinances, resolutions, comptroller files, and cleark files.")]); ?>
+				<label class="control-label" for="ca_objects_SPON">Sponsor:</label>
+				<?= $this->formElement('ca_objects.SPON', ['label' => '', 'description' => _t("Search the sponsor of council bills, ordinances, resolutions, comptroller files, and cleark files.")]); ?>
 			</div>
 <?php
 		}
-		if(!in_array($action, array("meetings"))){
+		if(!in_array($action, array("meetings", "committees"))){
 ?>
 			<div class="mb-3" id="filtersponsor">
-				<label class="control-label">Committee:</label>
-				<?= $this->formElement('COMM', ['size' => "70px", 'label' => '', 'description' => _t("Enter committee name.")]); ?>
+				<label class="control-label" for="ca_objects_COMM">Committee:</label>
+				<?= $this->formElement('ca_objects.COMM', ['label' => '', 'description' => _t("Enter committee name.")]); ?>
 			</div>
 <?php
 		}
-		if(!in_array($action, array("meetings", "agenda"))){
+		if(!in_array($action, array("meetings", "agenda", "committees"))){
 ?>
 			<div class="mb-3" id="filtersponsor">
-				<label class="control-label">Index Terms:</label>
-				<?= $this->formElement('index', ['' => '', 'description' => _t("Search by terms.")]); ?>
+				<label class="control-label" for="ca_objects_index">Index Terms:</label>
+				<?= $this->formElement('ca_objects.index', ['class' => 'form-select', 'label' => '', 'description' => _t("Search by terms.")]); ?>
 			</div>
 <?php
 		}
@@ -268,17 +287,17 @@
 		</div>
 
 		<div class="advanced-search">
-			<h4 class="expandable-controls">
+			<h3 class="fs-4 mb-4 expandable-controls">
 				<a data-bs-toggle="collapse" class="collapseControl"  href="#settings" role="button" aria-expanded="false" aria-controls="settings">Settings <i class="bi bi-caret-right-fill"></i></a>
 				
-			</h4>
+			</h3>
 
 			<div class="collapse mb-3" id="settings">
 
 				<div class="input-group">
 					<label for="l" class="col-12 control-label">Results Per Page:</label>
 					<div class="col-12">
-						<select name="l" class="form-select" aria-label="select">
+						<select id="l" name="l" class="form-select" aria-label="select">
 							<option value="5">5</option>
 							<option value="10">10</option>
 							<option value="25">25</option>
@@ -296,7 +315,6 @@
 		</div>
 
 		<div class="form-group" style="margin-top: 5px;">
-			<label class="col-sm-3 control-label"></label>
 			<div class="col-sm-9">
 				<input type="submit" value="Search" class="btn btn-primary">
 				<input type="reset" value="Reset" class="btn btn-sm btn-default" style="margin-left: 10px;" onclick="resetAdvForm();">

@@ -73,6 +73,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 
 <div class="row" style="clear:both;">
+	<div class="col-sm-12">
 
 
 <div id="search_results">
@@ -124,28 +125,37 @@ if (!$vb_ajax) {	// !ajax
 	?>
 
   <hr>
-
-  <div id="top-search-nav" class="d-flex inline-block justify-content-between">
-
-		<div class="nav-icons">
-			<a name="h0" role="button" aria-label="anchor"></a>
-
+	<a name="h0" role="button" aria-label="anchor"></a>		
+  <div id="top-search-nav" class="d-flex justify-content-between">
+		<nav class="nav-icons mb-2 mb-md-0" aria-label="top search results">
+			<ul class="nav">
+				<li>
 <?php
 				print caNavLink($this->request, "<i class='bi bi-house-door-fill' aria-label='Home' title='Home'></i>", "", "", "", "");
-				print caNavLink($this->request, "<i class='bi bi-search'></i>", "", "Search", "advanced", $action, null, array("title" => "Back to Search Form", "aria-label" => "Back to Search Form"));
-
+?>
+				</li>
+				<li>
+<?php
+				print caNavLink($this->request, "<i class='bi bi-search' aria-label='Back to Search Form'></i>", "", "Search", "advanced", $action, null, array("title" => "Back to Search Form", "aria-label" => "Back to Search Form"));
+?>
+				</li>
+<?php
 				$pagebar = $this->render("Browse/paging_bar_html.php"); 
 				print $pagebar;
 ?>
 
-			<a href="#hb" aria-label="page down" title="Jump to bottom">
-				<i class="bi bi-chevron-double-down"></i>
-			</a>
-
-			<a href="https://clerk.seattle.gov/search/help/" aria-label="help" title="Help">
-				<i class="bi bi-question-lg"></i>
-			</a>
-		</div>
+				<li>
+					<a href="#hb" aria-label="page down" title="Jump to bottom">
+						<i class="bi bi-chevron-double-down" aria-label="Jump to bottom"></i>
+					</a>
+				</li>
+				<li>
+					<a href="https://clerk.seattle.gov/search/help/" title="Help">
+						<i class="bi bi-question-lg" aria-label="Help" ></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
 
 		<div id="export-controls">
 			<button onclick="document.location='<?= caNavUrl($this->request, '*', '*', '*', ['view' => 'xlsx', 'export_format' => 'excel']); ?>'; return false;" class="btn btn-sm btn-primary">
@@ -153,12 +163,12 @@ if (!$vb_ajax) {	// !ajax
 			</button>
 			<br />
 
-				<small><a role="button" class="" style="font-size: unset;" data-bs-toggle="modal" data-bs-target="#ExportingResults">What's this?</a></small>
-				<div class="modal fade" id="ExportingResults">
+				<button class="modalButtonLink" data-bs-toggle="modal" data-bs-target="#ExportingResults">What's this?</button>
+				<div class="modal fade" id="ExportingResults" aria-labelledby="ExportModalTitle">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-body">
-								<h3 class="centered">Exporting Search Results</h3>
+								<div id="ExportModalTitle" class="centered fw-bold fs-3 pb-1">Exporting Search Results</div>
 								<p>Clicking the button will download your results to a CSV (comma-separated values) file, which can be opened in Microsoft Excel or most other spreadsheet software.</p>
 								<ul>
 									<li>Data is continually added and revised for accuracy. Your results will not be automatically updated after you export, until you do a new search and export again.</li>
@@ -174,8 +184,6 @@ if (!$vb_ajax) {	// !ajax
 
 		</div>
   </div>
-
-
 <?php
 	$s = $vn_start + 1;
 	$e = $vn_start + $vn_hits_per_block;
@@ -184,24 +192,20 @@ if (!$vb_ajax) {	// !ajax
 	$search_str = $va_criteria[0]['value'];
 ?>
   <strong>Documents:</strong> <?= $s; ?> - <?= $e; ?> of <?= $vn_result_size ?> &nbsp; <strong>Search String</strong> <span class="queries"> : <?= $search_str; ?> </span>
-	<br>
+  <br>
+	<hr>
 
-  <hr>
-
-	<!-- <div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'> -->
-	<div class='col-sm-12'>
 		<div class="row">
 			<div class="col-md-12">
 			<!-- <div class="col-md-12 col-lg-5"> -->
-				<H1 class="text-capitalize">
+				<H3 class="text-capitalize fs-1">
 					<?php
 							print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 					?>		
-				</H1>
+				</H3>
 			</div>
-
-			<div id="browseResultsContainer">
-				<div class="row">
+		</div>
+		<div id="browseResultsContainer">
 					<table style="width: 100%;" class="table table-striped overflow-x-auto">
 						<tbody>
 
@@ -371,15 +375,7 @@ if (!$vb_ajax) {	// !ajax
 							?>
 						</tbody>
 					</table>
-
-
-				</div><!-- end row -->
 			</div><!-- end browseResultsContainer -->
-	</div><!-- end col-8 -->
-
-
-
-
 
 	<hr>
 
@@ -388,28 +384,40 @@ if (!$vb_ajax) {	// !ajax
 
   <hr>
 
-  <p id="bottom-search-nav">
+  <div id="bottom-search-nav">
+	<nav class="nav-icons mb-2 mb-md-0" aria-label="bottom search results">
+		<ul class="nav">
+			<li>
 <?php 
-		print caNavLink($this->request, "<i class='bi bi-house-door-fill' aria-label='Home' title='Home'></i>", "", "", "", "");
-		print caNavLink($this->request, "<i class='bi bi-search'></i>", "", "Search", "advanced", $action, null, array("title" => "Back to Search Form", "aria-label" => "Back to Search Form"));
-
-		
+				print caNavLink($this->request, "<i class='bi bi-house-door-fill' aria-label='Home' title='Home'></i>", "", "", "", "");
+?>
+			</li>
+			<li>
+<?php
+				print caNavLink($this->request, "<i class='bi bi-search' aria-label='Back to Search Form'></i>", "", "Search", "advanced", $action, null, array("title" => "Back to Search Form", "aria-label" => "Back to Search Form"));
+?>
+			</li>
+<?php		
 		print $pagebar;
 ?>
-
-    <a href="#h0" aria-label="page up" title="Back to Top">
-      <i class="bi bi-chevron-double-up"></i>
-    </a>
-
-    <a href="https://clerk.seattle.gov/search/help/" aria-label="help" title="help">
-      <i class="bi bi-question-lg"></i>
-    </a>
-  </p>
+			<li>
+				<a href="#h0" aria-label="page up" title="Back to Top">
+				  <i class="bi bi-chevron-double-up" aria-label="Back to Top"></i>
+				</a>
+			</li>
+			<li>
+				<a href="https://clerk.seattle.gov/search/help/" aria-label="help" title="Help">
+				  <i class="bi bi-question-lg" aria-label="Help"></i>
+				</a>
+			</li>
+		</ul>
+	</nav>
+  </div>
 
   <a id="hb" role="button" aria-label="anchor"></a>
 
 </div>
 
 
-		
+	</div><!-- end col -->
 </div><!-- end row -->
