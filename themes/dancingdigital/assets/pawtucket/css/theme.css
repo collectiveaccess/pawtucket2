@@ -384,8 +384,13 @@ ul{
 	margin: 40px 0;
 }
 
-.archives-section {
-	background: linear-gradient(180deg, #1B090D 0%, #360B15 52.54%, #1B090D 100%);
+.archives-section {		
+	background-size: cover;
+	background: linear-gradient(rgba(42, 10, 66, 0.6), rgba(42, 10, 66, 0.8)), url("../graphics/archives-bg.png");
+	background-position: center;
+	background-repeat: repeat;
+	background-color: rgba(42, 10, 66, 1);
+	/* background: linear-gradient(180deg, #1B090D 0%, #360B15 52.54%, #1B090D 100%); */
 }
 .archive-landing-img img{
 	border-radius: 10px;
@@ -1297,9 +1302,26 @@ a.browseRemoveFacet img {
 	margin-top: 5px;
 }
 
+.lbSet:hover{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	position:relative;
+	padding:15px 15px 5px 15px;
+	margin-bottom:30px;
+	background-color:#FFFFFF;
+	font-size:12px;
+}
+.lbItemContainer .lbItem:hover .lbItemContent{
+	min-height:inherit;
+	height:inherit;
+}
+.lbItem:hover .lbExpandedInfo, .lbSet:hover .lbSetExpandedInfo{
+	display:none;
+}
 
-
-
+.lbItem:hover .lbItemImg{
+	max-height:inherit;
+}
 
 /* Login Form */
 .login-form h1, .login-form label, .login-form button, .login-form p{
