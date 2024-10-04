@@ -81,12 +81,14 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.fiscal.fiscal_link">
+			{{{<unit relativeTo="ca_objects.fiscal"><if rule="^ca_objects.fiscal.fiscal_note =~ /Yes/">
+				<ifdef code="ca_objects.fiscal.fiscal_link">
 				<tr>
 					<td>Fiscal Note</td>
-					<td><a href="^ca_objects.fiscal.fiscal_link" target="_blank">^ca_objects.fiscal.fiscal_link</a></td>
+					<td><a href="^ca_objects.fiscal.fiscal_link">Fiscal Note</a></td>
 				</tr>
-			</ifdef>}}}
+				</ifdef>
+			</if></unit>}}}
 
 			<?php
 				if($t_object->get("ca_objects.index")){
@@ -144,13 +146,6 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			<!-- {{{<ifdef code="ca_objects.COMM">
-				<tr>
-					<td>Committee Referral:</td>
-					<td>^ca_objects.COMM</td>
-				</tr>
-			</ifdef>}}} -->
-
 			<?php
 				if($t_object->get("ca_objects.COMM")){
 					if($links = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
@@ -164,17 +159,29 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				}
 			?>
 
-			{{{<ifdef code="ca_objects.DTSI">
-				<tr>
-					<td>City Council Action Date:</td>
-					<td>^ca_objects.DTSI</td>
-				</tr>
-			</ifdef>}}}
 
 			{{{<ifdef code="ca_objects.DCMR">
 				<tr>
 					<td>Committee Action Date:</td>
 					<td>^ca_objects.DCMR</td>
+				</tr>
+			</ifdef>}}}
+			{{{<ifdef code="ca_objects.CMR">
+				<tr>
+					<td>Committee Recommendation:</td>
+					<td>^ca_objects.CMR</td>
+				</tr>
+			</ifdef>}}}
+			{{{<ifdef code="ca_objects.CMV">
+				<tr>
+					<td>Committee Vote:</td>
+					<td>^ca_objects.CMV</td>
+				</tr>
+			</ifdef>}}}
+			{{{<ifdef code="ca_objects.DTSI">
+				<tr>
+					<td>City Council Action Date:</td>
+					<td>^ca_objects.DTSI</td>
 				</tr>
 			</ifdef>}}}
 
@@ -199,12 +206,15 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.document.doc_link">
+			
+			{{{<unit relativeTo="ca_objects.document"><if rule="^ca_objects.document.avail =~ /Yes/">
+				<ifdef code="ca_objects.document.doc_link">
 				<tr>
 					<td>Signed Copy:</td>
-					<td><a href="^ca_objects.document.doc_link" target="_blank">^ca_objects.document.doc_link</a></td>
+					<td><a href="^ca_objects.document.doc_link">Signed Copy</a></td>
 				</tr>
-			</ifdef>}}}
+				</ifdef>
+			</if></unit>}}}
 
     </tbody>
   </table>

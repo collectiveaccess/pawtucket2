@@ -250,8 +250,9 @@
 					break;
 					# ---------
 					default:
+						# --- use access point that searches across various date fields for objects
 						print '<label for="'.$table.'_DATE" class="control-label d-block">Date:</label>';
-						print $this->formElement($table.'.date', ['description' => $vs_desc]);
+						print $this->formElement('date_combined', ['description' => $vs_desc]);
 					break;
 					# ---------
 				}

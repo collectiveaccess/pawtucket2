@@ -35,11 +35,13 @@ $comments_enabled = $this->getVar("commentsEnabled");
 $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
 $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
-
+$mod_create_retrieve = array();
 switch($table){
 	case "ca_entities":
 		$id = $t_object->get('ca_entities.entity_id');
 		$last_advanced_search = ResultContextStorage::getVar('result_last_context_ca_entities_action');		
+		$last_modified = $t_object->get("ca_entities.DATM");
+		$created = $t_object->get("ca_entities.DATC");
 		
 	break;
 	# ------------------------------------------------
@@ -55,14 +57,24 @@ switch($table){
 		if(!$last_advanced_search){
 			$last_advanced_search = "combined";
 		}
+		#$last_modified = $t_object->get($table.".lastmodified");
+		$last_modified = $t_object->get($table.".DATM"); # --- bills
+		$created = $t_object->get($table.".DATC");
+
 	break;
 	# ------------------------------------------------
 }
+if($last_modified){
+	$mod_create_retrieved[] = "last modified ".$last_modified;
+}
+if($created){
+	$mod_create_retrieved[] = "created ".$created;
+}
+$mod_create_retrieved[] = "retrieved ".date("F j, Y g:i A");
+
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
 
-$last_modified = $t_object->get($table.".lastmodified");
-$created = $t_object->get($table.".created");
 
 $email_subject = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 $email_body;
@@ -104,7 +116,7 @@ $action = $this->request->getAction();
 			break;	
 			# -----------
 			case "agenda":
-				$heading_text = "Seattle City Council Committee Agendas";			
+				$heading_text = "Seattle City Council Agendas";			
 			break;	
 			# -----------
 			case "minutes":
@@ -116,7 +128,7 @@ $action = $this->request->getAction();
 ?>
   
   <H2 class="fs-3"><?php print $heading_text; ?></H2>
-  <em>Information modified on <?= $last_modified; ?></em> <em><?= $created; ?></em>
+  <em>Information <?php print join("; ", $mod_create_retrieved); ?></em>
   <hr>
 
   <div id="top-search-nav" class="d-md-flex justify-content-between">

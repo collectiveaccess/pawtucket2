@@ -50,7 +50,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	{{{<ifdef code="ca_objects.PDFLNK">
 		<p>
 			<a href="ca_objects.PDFLNK" target="_blank">
-				<img src="http://clerk.seattle.gov/public/img/pdf.gif" height="40" alt="PDF">
+				<?php print caGetThemeGraphic($this->request, 'pdf.gif', array("alt" => "PDF Icon", "height" => "40px")); ?>
 				Printable Version of this Agenda
 			</a>
 		</p>

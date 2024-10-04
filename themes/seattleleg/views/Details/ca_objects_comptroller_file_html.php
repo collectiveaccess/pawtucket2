@@ -39,8 +39,8 @@ $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || 
 $map_options = $this->getVar('mapOptions') ?? [];
 
 $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
-
 ?>
+
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
@@ -92,7 +92,12 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 					}
 				}
 			?>
-
+			{{{<ifdef code="ca_objects.REF">
+				<tr>
+					<td>References:</td>
+					<td>^ca_objects.REF</td>
+				</tr>
+			</ifdef>}}}
     </tbody>
   </table>
 
@@ -155,7 +160,6 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 					<td>^ca_objects.DTF</td>
 				</tr>
 			</ifdef>}}}
-
     </tbody>
   </table>
 

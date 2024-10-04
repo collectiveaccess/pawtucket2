@@ -80,15 +80,6 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.STAT">
-				<tr>
-					<td>Notes:</td>
-					<td><em>
-						<span class="insert-related-links">Clerk's Office Note: PDF updated 4/30/2024.</span>
-					</em></td>
-				</tr>
-			</ifdef>}}}
-
 			<?php
 				if($t_object->get("ca_objects.index")){
 					if($links = caGetSearchLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
@@ -101,7 +92,12 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 					}
 				}
 			?>
-
+			{{{<ifdef code="ca_objects.REF">
+				<tr>
+					<td>References:</td>
+					<td>^ca_objects.REF</td>
+				</tr>
+			</ifdef>}}}
     </tbody>
   </table>
 

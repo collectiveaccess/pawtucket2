@@ -50,7 +50,8 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
-  <h3 class="record-number"><?= $type_idno; ?> {{{ca_objects.CBN}}}</h3>
+ 	{{{<ifdef code="ca_objects.ORDN"><h3 class="record-number">Ordinance ^ca_objects.ORDN</h3></ifdef>}}}
+	{{{<ifdef code="ca_objects.CBN"><h3 class="record-number">Introduced as Council Bill ^ca_objects.CBN</h3></ifdef>}}}
 
   <table class="record table table-striped table-responsive">
     <tbody>
@@ -81,12 +82,14 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.FN">
+			{{{<unit relativeTo="ca_objects.fiscal"><if rule="^ca_objects.fiscal.fiscal_note =~ /Yes/">
+				<ifdef code="ca_objects.fiscal.fiscal_link">
 				<tr>
 					<td>Fiscal Note</td>
-					<td>^ca_objects.FN</td>
+					<td><a href="^ca_objects.fiscal.fiscal_link">Fiscal Note</a></td>
 				</tr>
-			</ifdef>}}}
+				</ifdef>
+			</if></unit>}}}
 
 			<?php
 				if($t_object->get("ca_objects.index")){
@@ -142,11 +145,11 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.COMM")){
-					if($links = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
+					if($comm = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Committee Referral:'); ?></td>
-						<td><?= join(",", $links); ?></td>
+						<td><?= join(",", $comm); ?></td>
 					</tr>
 			<?php
 					}
@@ -224,12 +227,35 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</div>
 			</div>
 
+			{{{<ifdef code="ca_objects.DTV">
+				<tr>
+					<td>Veto Date:</td>
+					<td>^ca_objects.DTV</td>
+				</tr>
+			</ifdef>}}}
+			
+
+			{{{<ifdef code="ca_objects.DTS">
+				<tr>
+					<td>Date Sustained:</td>
+					<td>^ca_objects.DTS</td>
+				</tr>
+			</ifdef>}}}
+
 			{{{<ifdef code="ca_objects.DTF">
 				<tr>
 					<td>Date Filed with Clerk:</td>
 					<td>^ca_objects.DTF</td>
 				</tr>
 			</ifdef>}}}
+			{{{<unit relativeTo="ca_objects.document"><if rule="^ca_objects.document.avail =~ /Yes/">
+				<ifdef code="ca_objects.document.doc_link">
+				<tr>
+					<td>Signed Copy:</td>
+					<td><a href="^ca_objects.document.doc_link">Signed Copy</a></td>
+				</tr>
+				</ifdef>
+			</if></unit>}}}
 
     </tbody>
   </table>
@@ -275,6 +301,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 			</table>
 		</unit>
 	</ifdef>}}}
+	
   <hr>
 
   <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
