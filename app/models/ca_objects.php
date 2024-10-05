@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2023 Whirl-i-Gig
+ * Copyright 2008-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -31,17 +31,9 @@
  */
 require_once(__CA_LIB_DIR__."/IBundleProvider.php");
 require_once(__CA_LIB_DIR__."/RepresentableBaseModel.php");
-require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
-require_once(__CA_MODELS_DIR__."/ca_objects_x_object_representations.php");
-require_once(__CA_MODELS_DIR__."/ca_loans_x_objects.php");
-require_once(__CA_MODELS_DIR__."/ca_movements_x_objects.php");
-require_once(__CA_MODELS_DIR__."/ca_objects_x_storage_locations.php");
-require_once(__CA_MODELS_DIR__."/ca_object_checkouts.php");
-require_once(__CA_MODELS_DIR__."/ca_object_lots.php");
 require_once(__CA_APP_DIR__."/helpers/mediaPluginHelpers.php");
 require_once(__CA_LIB_DIR__."/HistoryTrackingCurrentValueTrait.php");
 require_once(__CA_LIB_DIR__."/DeaccessionTrait.php");
-
 
 BaseModel::$s_ca_models_definitions['ca_objects'] = array(
  	'NAME_SINGULAR' 	=> _t('object'),
@@ -317,10 +309,10 @@ BaseModel::$s_ca_models_definitions['ca_objects'] = array(
 			'DEFAULT' => 0,
 			'ALLOW_BUNDLE_ACCESS_CHECK' => false,
 			'BOUNDS_CHOICE_LIST' => array(
-				_t('Do not inherit item-level access control settings from parent') => 0,
-				_t('Inherit item-level access control settings from parent') => 1
+				_t('Do not inherit item-level access control settings from parents') => 0,
+				_t('Inherit item-level access control settings from parents') => 1
 			),
-			'LABEL' => _t('Inherit item-level access control settings from parent?'), 'DESCRIPTION' => _t('Determines whether item-level access control settings set for parent object is applied to this object.')
+			'LABEL' => _t('Inherit item-level access control settings from parents?'), 'DESCRIPTION' => _t('Determines whether item-level access control settings set from parent objects are applied to this object.')
 		),
 		'access_inherit_from_parent' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
@@ -770,14 +762,13 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 					$va_reps[$qr_res->get('representation_id')] = $qr_res->getRow();
 				}
 				
-				$t_object_x_rep = new ca_objects_x_object_representations();
-				$t_object_x_rep->setTransaction($o_t);
 				foreach($va_reps as $vn_representation_id => $va_rep) {
-					$t_object_x_rep->setMode(ACCESS_WRITE);
 					$va_rep['object_id'] = $t_dupe->getPrimaryKey();
+					
+					$t_object_x_rep = new ca_objects_x_object_representations();
+					$t_object_x_rep->setTransaction($o_t);
 					$t_object_x_rep->set($va_rep);
 					$t_object_x_rep->insert();
-					
 					if ($t_object_x_rep->numErrors()) {
 						$this->errors = $t_object_x_rep->errors;
 						if ($vb_we_set_transaction) { $o_t->rollback();}
