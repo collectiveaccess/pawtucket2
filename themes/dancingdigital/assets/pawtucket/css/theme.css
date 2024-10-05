@@ -1545,3 +1545,29 @@ h6 {
 #caFormOverlay, #caFormOverlay ul li {
 	color: #000 !important;
 }
+
+
+.plyr {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+.plyr .plyr__video-wrapper {
+	width: 100%;
+	height: 100%;
+}
+.plyr video {
+	height: 100%;
+	width: 100%;
+	object-fit: contain;
+}
+.plyr__poster {
+	background-size: contain;
+}
+.video-responsive {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}

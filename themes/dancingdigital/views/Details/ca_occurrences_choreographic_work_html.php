@@ -53,8 +53,6 @@
 			</div>
 
 			<div class="row justify-content-center" style="padding-top: 20px; padding-bottom: 40px;">
-				{{{<ifdef code="ca_object_representations.media.medium">
-					<div class="col occurrence-img align-self-center mb-4">
 <?php
 	$media = null;
 	if(($objects = $t_item->getRelatedItems('ca_objects', ['restrictToRelationshipTypes' => ['featured'], 'returnAs' => 'searchResult'])) && $objects->nextHit()) {
@@ -65,7 +63,9 @@
 			$media = $rep->getMediaTag('media', 'original', ['poster_frame_url' => $rep->getMediaUrl('media', 'medium')]);
 		}
 	}
-
+?>
+<div class="col occurrence-img align-self-center mb-4">
+<?php
 	if($media) {
 ?>
 	<div class="related-item">
@@ -75,12 +75,13 @@
 <?php
 	} else {
 ?>
-		<l>^ca_object_representations.media.medium</l>
+	<div class="related-item">
+		<div class="related-item-title"><?= $t_object->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>'); ?></div>
+	</div>
 <?php
 	}
 ?>
-					</div> 
-				</ifdef>}}}
+</div> 
 				<div class="col align-self-center">
 					<h2 class="page-heading pb-3" style="font-size: 30px">
 						{{{^ca_occurrences.preferred_labels.name}}} 
