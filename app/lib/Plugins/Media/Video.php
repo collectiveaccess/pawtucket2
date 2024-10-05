@@ -1065,6 +1065,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				$captions = 		caGetOption("captions", $options, [], array('castTo' => 'array'));	
 				$controls = 		caGetOption("controls", $options, ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'fullscreen'], ['castTo' => 'array']);
 				$autoplay =			caGetOption("autoplay", $options, false);
+				$init =				caGetOption("init", $options, false);
 				ob_start();
 ?>
 			<div class="<?= $class; ?> video-responsive" id="<?= $id; ?>_wrapper" style="width: <?= $width; ?>; height:<?= $height; ?>;">
@@ -1090,9 +1091,15 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 							controls: [<?= join(',', array_map(function($v) { return "'".addslashes(preg_replace("![\"']+!", '', $v))."'"; }, $controls)); ?>],
 						};
 						const player = new Plyr('#<?= $id; ?>', options);
-						//let autostopped = false;
 						jQuery('#<?= $id; ?>').data('player', player);
 						if (caUI.mediaPlayerManager) { 
+<?php
+	if($init) {
+?>
+		caUI.mediaPlayerManager.clear(true);
+<?php
+	}
+?>
 							caUI.mediaPlayerManager.register("<?= $id; ?>", player, 'Plyr'); 
 							if(<?= (int)$start; ?> > 0) {
 								caUI.mediaPlayerManager.setPlayerStartEnd("<?= $id; ?>", <?= (int)$start; ?>, <?= (int)$end; ?>);

@@ -12,7 +12,7 @@ foreach($representations as $i => $rep) {
 	if(!$tag_emitted) {
 		print $rep->getMediaTag('media', 'original', [
 			'class' => '', 'width' => "{$percent}%", 'id' => 'comparePlayer_'.$i,
-			'start' => $start_times[$i], 'end' => $end_times[$i], 'autoplay' => true
+			'start' => $start_times[$i], 'end' => $end_times[$i], 'autoplay' => true, 'init' => true
 		]);
 		$tag_emitted = true;
 		continue;

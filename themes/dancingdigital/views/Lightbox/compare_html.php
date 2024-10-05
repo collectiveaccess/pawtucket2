@@ -9,6 +9,7 @@ if(is_array($representations)) {
 	<table style="width: 100%">
 		<tr>
 <?php
+	$init = true;
 	foreach($representations as $i => $rep) {
 		$mimetype = $rep->getMediaInfo('media', 'original', 'MIMETYPE');
 		if(!in_array(caGetMediaClass($mimetype), ['audio', 'video'], true)) { continue; }
@@ -17,8 +18,9 @@ if(is_array($representations)) {
 		}
 		print "<td style='width:{$percent}% !important;'>".$rep->getMediaTag('media', 'original', [
 			'class' => '', 'width' => "{$percent}%", 'id' => 'comparePlayer_'.$i,
-			'start' => $start_times[$i], 'end' => $end_times[$i], 'autoplay' => true
+			'start' => $start_times[$i], 'end' => $end_times[$i], 'autoplay' => true, 'init' => $init
 		])."</td>";
+		$init = false;
 	}
 }
 ?>
