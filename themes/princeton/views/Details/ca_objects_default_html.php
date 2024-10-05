@@ -125,6 +125,13 @@ $iiif_manifest_url = caNavUrl($this->request, 'service.php', 'IIIF', 'manifest/c
 						<span class="trimText">^ca_objects.transcription</span>
 					</div>
 				</ifdef>}}}
+				
+				{{{<ifdef code="ca_objects.exhibition_publication">
+					<div class='unit'><label>Exhibition and Publication History </label>
+						<span class="trimText">^ca_objects.exhibition_publication</span>
+					</div>
+				</ifdef>}}}
+				
 				{{{<ifdef code="ca_objects.materials_techniques"><div class="unit"><label>Materials and Techniques</label>^ca_objects.materials_techniques%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.dimensions_container.display_dimensions"><div class="unit"><label>Dimensions</label>^ca_objects.dimensions_container.display_dimensions</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.scale"><div class="unit"><label>Scale</label>^ca_objects.scale%delimiter=,_</div></ifdef>}}}
