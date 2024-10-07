@@ -176,12 +176,18 @@
 					if(is_array($va_reps) && sizeof($va_reps)){
 						foreach($va_reps as $va_rep){
 							$vs_image = "";
+							$vb_download = true;
 							if($va_rep["type_id"] == $vn_promo_type_id){
 								$vs_image = $va_rep["tags"]["large"];
+								# --- load the rep and see if download is blocked
+								$t_rep = new ca_object_representations($va_rep["representation_id"]);
+								if(strToLower($t_rep->get("ca_object_representations.no_download", array("convertCodesToDisplayText" => true))) == "no"){
+									$vb_download = false;
+								}
 							}else{
 								$vs_image = $va_rep["tags"][$vs_version];
 							}
-							$va_tmp = array("image" => $vs_image, "label" => $va_rep["label"], "image_link" => "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'exhibitions', 'id' => $t_item->getPrimaryKey(), 'representation_id' => $va_rep["representation_id"], 'overlay' => 1))."\"); return false;' >".$vs_image."</a>", "download_link" => caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download", "pull-right btn-small", "", "Detail", "DownloadRepresentation", array("context" => "exhibitions", "representation_id" => $va_rep["representation_id"], "id" => $t_item->getPrimaryKey(), "download" => "1",  "version" => "original")));
+							$va_tmp = array("image" => $vs_image, "label" => $va_rep["label"], "image_link" => "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'exhibitions', 'id' => $t_item->getPrimaryKey(), 'representation_id' => $va_rep["representation_id"], 'overlay' => 1))."\"); return false;' >".$vs_image."</a>", "download_link" => (($vb_download) ? caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download", "pull-right btn-small", "", "Detail", "DownloadRepresentation", array("context" => "exhibitions", "representation_id" => $va_rep["representation_id"], "id" => $t_item->getPrimaryKey(), "download" => "1",  "version" => "original")) : ""));
 							$vs_sort_key = "";
 							if(trim($va_rep["idno_sort"])){
 								$vs_sort_key = $va_rep["idno_sort"];
