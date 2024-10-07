@@ -23,7 +23,7 @@ All CollectiveAccess components are freely available under the open source GNU P
 
 ### About CollectiveAccess 1.8
 
-Pawtucket 1.8 is compatible with PHP 7.2, 7.3 and 7.4. It is not yet compatible with PHP 8.
+Pawtucket is compatible with PHP 7.4, 8.0, 8.1, 8.2 and 8.3.
 
 
 ### Updating from a previous version
