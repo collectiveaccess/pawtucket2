@@ -44,26 +44,6 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="pull-right">
-							<div class="socialButtons">
-								<?php $current_url = $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]; ?>
-								<div id="fb-root"></div>
-								<script>(function(d, s, id) {
-								  var js, fjs = d.getElementsByTagName(s)[0];
-								  if (d.getElementById(id)) return;
-								  js = d.createElement(s); js.id = id;
-								  js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10';
-								  fjs.parentNode.insertBefore(js, fjs);
-								}(document, 'script', 'facebook-jssdk'));</script>
-								<div class="fb-like" data-href="<?php echo $current_url; ?>" data-width="60" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
-								<div class="fb-share-button" data-href="<?php print $current_url; ?>" data-layout="button" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<?php print urlencode($current_url); ?>%2F&amp;src=sdkpreparse">Share</a></div>
-								<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a>
-								<a href="https://www.pinterest.com/pin/create/button/">
-    								<img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" />
-								</a>
-								<g:plusone size="medium" data-align="right"></g:plusone>
-								<script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: en_US</script>
-								<script type="IN/Share"></script>
-							</div>
 							<div class="inpageButtons"><a href="#" onclick="window.print();return false;"><i class="fa fa-print fa-2x" style="font-size: 1.25em"></i></a>				
 							<a href="mailto:?subject=I wanted you to see this site&amp;body=Check out this site: <?php print $current_url; ?>" title="Share by Email"><i class="fa fa-envelope fa-2x" style="font-size: 1.25em"></i></a>
 							</div>
