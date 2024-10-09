@@ -131,6 +131,7 @@
 	 *		dontURLEncodeParameters = Don't apply url encoding to parameters in URL [Default is false]
 	 *		absolute = return absolute URL. [Default is to return relative URL]
 	 *      useQueryString = encode other parameters as query string rather than in url path [Default is false]
+	 *		isServiceUrl = assume URL is a web-services call (Eg. use service.php rather than index.php) [Default is false]
 	 *
 	 * @return string
 	 */
@@ -138,6 +139,8 @@
 
 		if(caUseCleanUrls()) {
 			$vs_url = $po_request->getBaseUrlPath();
+		} elseif(caGetOption('isServiceUrl', $pa_options, false, ['castTo' => 'boolean'])) {
+			$vs_url = $po_request->getBaseUrlPath().'/service.php';
 		} else {
 			$s = $po_request->getScriptName();
 			$vs_url = $po_request->getBaseUrlPath().'/'.(($s === 'service.php') ? 'index.php' : $s);
