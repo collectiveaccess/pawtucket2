@@ -1,0 +1,15 @@
+/* ------------------------- Navbar ------------------------- */
+.navbar-brand {
+    width: 300px !important;
+}
+
+#nav-search-input, #nav-search-btn{
+    background-color: #505150;
+    border: none;
+    box-shadow: none;
+    color: #EDEDEB;
+}
+
+#nav-search-input::placeholder {
+    color: #EDEDEB;
+}
