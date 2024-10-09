@@ -117,7 +117,12 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					<dt><?= _t('Description'); ?></dt>
 					<dd>^ca_collections.description</dd>
 				</ifdef>
-
+			</dl>}}}
+			
+			<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
+		</div>
+		<div class="col">
+			{{{<dl class="mb-0">
 				<?php
 					if($t_item->get("ca_collections.bio_regions")){
 						if($bio_links = caGetBrowseLinks($t_item, 'ca_collections.bio_regions', ['template' => '<l>^ca_collections.bio_regions</l>', 'linkTemplate' => '^LINK'])) {
@@ -129,13 +134,17 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					}
 				?>
 
-			</dl>}}}
-			
-			<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
-		</div>
-		<div class="col">
-			{{{<dl class="mb-0">
-				<ifcount code="ca_collections.related" min="1">
+				<?php
+					if($t_item->get("ca_collections.subject")){
+						if($subs = caGetBrowseLinks($t_item, 'ca_collections.subject', ['template' => '<l>^ca_collections.subject</l>', 'linkTemplate' => '^LINK'])) {
+				?>
+							<dt><?= _t('Themes'); ?></dt>
+							<dd><?= join(", ", $subs); ?></dd>
+				<?php
+						}
+					}
+				?>
+				<!-- <ifcount code="ca_collections.related" min="1">
 					<dt><ifcount code="ca_collections.related" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections.related" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
 					<unit relativeTo="ca_collections.related" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 				</ifcount>
@@ -155,7 +164,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				<ifcount code="ca_occurrences" min="1">
 					<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="publication"><?= _t('Publication'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="publication"><?= _t('Publications'); ?></ifcount></dt>
 					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="publication"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
+				</ifcount> -->
 
 			</dl>}}}					
 		</div>

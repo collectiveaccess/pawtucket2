@@ -104,6 +104,11 @@ if($show_nav){
 							
 						{{{<dl class="mb-0">
 
+							<ifdef code="ca_objects.date">
+								<dt><?= _t('Date'); ?></dt>
+								<dd>^ca_objects.date%delimiter=,_</dd>
+							</ifdef>
+
 							<ifdef code="ca_objects.idno">
 								<dt><?= _t('Identifier'); ?></dt>
 								<dd>^ca_objects.idno</dd>

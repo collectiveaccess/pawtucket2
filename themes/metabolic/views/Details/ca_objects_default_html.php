@@ -204,7 +204,7 @@ if($show_nav){
 									<div class="col"><h2>Related Objects</h2><hr></div>
 								</div>
 								<div class="row" id="browseResultsContainer">	
-									<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.object_id:'.$t_object->get("ca_objects.object_id"))); ?>">
+									<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.parent_id:'.$t_object->get("ca_objects.parent_id"))); ?>">
 										<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 									</div>
 								</div>
