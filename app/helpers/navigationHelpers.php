@@ -136,10 +136,11 @@
 	 * @return string
 	 */
 	function caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_options=null) {
-
+		$is_service_url = caGetOption('isServiceUrl', $pa_options, false, ['castTo' => 'boolean']);
 		if(caUseCleanUrls()) {
 			$vs_url = $po_request->getBaseUrlPath();
-		} elseif(caGetOption('isServiceUrl', $pa_options, false, ['castTo' => 'boolean'])) {
+			if($is_service_url) { $vs_url .'/service'; }
+		} elseif($is_service_url) {
 			$vs_url = $po_request->getBaseUrlPath().'/service.php';
 		} else {
 			$s = $po_request->getScriptName();
