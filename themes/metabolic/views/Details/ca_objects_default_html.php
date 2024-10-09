@@ -198,22 +198,21 @@ if($show_nav){
 								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="publication"><?= _t('Publication'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="publication"><?= _t('Publications'); ?></ifcount></dt>
 								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="publication"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
 							</ifcount>
-
-							<ifcount code="ca_objects" min="1">
-								<div class="row">
-									<div class="col"><h2>Related Objects</h2><hr></div>
-								</div>
-								<div class="row" id="browseResultsContainer">	
-									<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.parent_id:'.$t_object->get("ca_objects.parent_id"))); ?>">
-										<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
-									</div>
-								</div>
-							</ifcount>
 						</dl>}}}
-						
 					</div>
 				</div>
 			</div>
 			<!-- <div id="map" class="map py-3">{{{map}}}</div> -->
 		</div>
 	</div>
+
+	{{{<ifcount code="ca_objects" min="1">
+		<div class="row">
+			<div class="col"><h2>Assets</h2><hr></div>
+		</div>
+		<div class="row" id="browseResultsContainer">	
+			<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'children', array('search' => 'ca_objects.parent_id:'.$t_object->get("ca_objects.parent_id"))); ?>">
+				<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+			</div>
+		</div>
+	</ifcount>}}}
