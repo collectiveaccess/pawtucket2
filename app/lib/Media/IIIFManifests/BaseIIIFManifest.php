@@ -90,10 +90,10 @@ abstract class BaseIIIFManifest {
 				case 'label':
 					if (is_array($item)) {
 						foreach($item as $lang => $t) {
-							$md['label'][$lang] = $t_instance->getWithTemplate($t);
+							$md['label'][$lang] = [$t_instance->getWithTemplate($t)];
 						}
 					} else {
-						$md['label']['none'] = $t_instance->getWithTemplate($item);
+						$md['label']['none'] = [$t_instance->getWithTemplate($item)];
 					}
 					break;
 				case 'metadata':
