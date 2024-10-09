@@ -13,3 +13,19 @@
 #nav-search-input::placeholder {
     color: #EDEDEB;
 }
+
+
+/* Front Page */
+
+.carousel-item a img{
+    height: 375px;
+    width: auto;
+}
+
+#heroSearchInput {
+    background-color: #EDEDEB;
+    border: 0px;
+    box-shadow: none;
+    font-family: "Raleway", sans-serif;
+    color: #414141;
+}
