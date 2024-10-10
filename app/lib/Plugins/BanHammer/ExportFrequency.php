@@ -48,7 +48,6 @@ class WLPlugBanHammerExportFrequency Extends BaseBanHammerPlugin  {
 		if ((($ban_probability = (float)($config['ban_probability'] ?? 0)) < 0) || ($ban_probability > 1.0)) {
 			$ban_probability = 1.0;
 		}
-		
 		// Frequency ban
 		if (!($ip = RequestHTTP::ip())) { return 0; }
 		$export_count = ExternalCache::fetch($ip, 'BanHammer_ExportCounts');
@@ -96,7 +95,7 @@ class WLPlugBanHammerExportFrequency Extends BaseBanHammerPlugin  {
 	 * Ban is partial or global?
 	 */
 	static public function isPartial() {
-		return false;	
+		return true;	
 	}
 	# ------------------------------------------------------
 }

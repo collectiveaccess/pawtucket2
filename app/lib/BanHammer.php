@@ -104,7 +104,7 @@ class BanHammer {
 		$non_zero_plugins = [];
 		foreach($plugin_names as $p) {
 			$classname = "WLPlugBanHammer{$p}";
-			if(!$use_plugin && $classname::isPartial()) { continue; }	// skip partial ban plugins here - are invoked specificlly 
+			if(!$use_plugin && $classname::isPartial()) { continue; }	// skip partial ban plugins here - are invoked specifically 
 			if($use_plugin && ($use_plugin !== $p)) { continue; }
 			$prob = $classname::evaluate($request, $options);
 			

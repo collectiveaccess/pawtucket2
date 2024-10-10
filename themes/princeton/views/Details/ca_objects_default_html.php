@@ -34,7 +34,7 @@ $vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 $vn_id =				$t_object->get('ca_objects.object_id');
 $va_access_values = 	$this->getVar("access_values");
 
-$iiif_manifest_url = caNavUrl($this->request, 'service.php', 'IIIF', 'manifest/ca_objects:'.$t_object->getPrimaryKey(), [], ['absolute' => true]);
+$iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'.$t_object->getPrimaryKey(), ['pretty' => 1], ['absolute' => true, 'isServiceUrl' => true]);
 
 ?>
 <div class="row">

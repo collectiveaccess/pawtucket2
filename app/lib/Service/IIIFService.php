@@ -43,7 +43,7 @@ class IIIFService {
 	 * @throws Exception
 	 */
 	public static function dispatch(string $identifier, RequestHTTP $request, ResponseHTTP $response) {
-		$response->addHeader('Cache-Control', 'max-age=3600, private', true); // Cache all responses for 1 hour.
+		$response->addHeader('Cache-Control', 'max-age=86400, private', true); // Cache all responses for 1 day.
 
 		$va_path = array_filter(array_slice(explode("/", $request->getPathInfo()), 3), 'strlen');
 		$vs_key = $identifier."/".join("/", $va_path);
@@ -665,6 +665,10 @@ class IIIFService {
 	 *
 	 */
 	public static function manifest($identifiers, ?array $options=null) : array {
+		header("Access-Control-Allow-Origin: *");
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Max-Age: 86400');    // cache for 1 day
+        
 		if(!$identifiers) { return null; }
 		if(!is_array($identifiers)) { $identifiers = [$identifiers]; }
 		

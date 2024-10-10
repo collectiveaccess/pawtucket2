@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2021 Whirl-i-Gig
+ * Copyright 2007-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,11 +29,6 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
-  /**
-   *
-   */
-   
  	require_once(__CA_APP_DIR__.'/helpers/htmlFormHelpers.php');
  	require_once(__CA_APP_DIR__.'/helpers/themeHelpers.php');
  	
@@ -131,13 +126,17 @@
 	 *		dontURLEncodeParameters = Don't apply url encoding to parameters in URL [Default is false]
 	 *		absolute = return absolute URL. [Default is to return relative URL]
 	 *      useQueryString = encode other parameters as query string rather than in url path [Default is false]
+	 *		isServiceUrl = assume URL is a web-services call (Eg. use service.php rather than index.php) [Default is false]
 	 *
 	 * @return string
 	 */
 	function caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_options=null) {
-
+		$is_service_url = caGetOption('isServiceUrl', $pa_options, false, ['castTo' => 'boolean']);
 		if(caUseCleanUrls()) {
 			$vs_url = $po_request->getBaseUrlPath();
+			if($is_service_url) { $vs_url .= '/service.php'; }
+		} elseif($is_service_url) {
+			$vs_url = $po_request->getBaseUrlPath().'/service.php';
 		} else {
 			$s = $po_request->getScriptName();
 			$vs_url = $po_request->getBaseUrlPath().'/'.(($s === 'service.php') ? 'index.php' : $s);
