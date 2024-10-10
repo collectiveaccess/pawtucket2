@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2019-2023 Whirl-i-Gig
+ * Copyright 2019-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -78,6 +78,7 @@ class BanHammer {
 	 */
 	static public function verdict($request, $options=null) {
 		self::init();
+		if($request && $request->isLoggedIn()) { return true; }
 		if (!self::$config->get('enabled')) { return true; }
 		if (ca_ip_whitelist::isWhitelisted($options)) { return true; }
 		if (ca_ip_bans::isBanned($request)) { return false; }
