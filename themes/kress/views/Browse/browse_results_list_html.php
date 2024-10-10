@@ -55,7 +55,7 @@
 	
 	$vb_ajax			= (bool)$this->request->isAjax();
 	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
-	$vn_acquisition_movement_id = $this->request->getParameter("acquisition_movement_id", pInteger);
+	$vn_acquisition_movement_id = (int)$this->request->getParameter("acquisition_movement_id", pInteger);
 	$vs_detail_type = $this->request->getParameter("detailType", pString);
 	if($vs_detail_type){
 		$vb_dontSetFind = 1;
