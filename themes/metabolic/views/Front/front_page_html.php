@@ -51,21 +51,24 @@
 
 ?>
 
+<h1 class="visually-hidden">Metabolic Home Page</h1>
 
 <?php
 	# --- display slideshow of random images
 	print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 
-<div class="row justify-content-center my-5 py-5">
-	<div class="col-md-9 col-lg-6 col-xl-5 d-flex">
-		<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
-			<div class="input-group pb-3">
-				<label for="heroSearchInput" class="form-label mb-0 me-2 fs-3 pt-2">Search The Archive</label>
-				<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="" aria-label="Search Bar">
-				<button type="submit" class="btn rounded-0 bg-white fs-3" id="heroSearchButton" aria-label="Search button">GO</button>
-			</div>
-		</form>
+<div class="container-fluid">
+	<div class="row justify-content-center my-5 py-5">
+		<div class="col-md-9 col-lg-6 col-xl-5 d-flex">
+			<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
+				<div class="input-group pb-3">
+					<label for="heroSearchInput" class="form-label mb-0 me-3 display-5 pt-2">Search The Archive</label>
+					<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="" aria-label="Search Bar">
+					<button type="submit" class=" border-0 rounded-0 ms-1 bg-white display-5 pt-2" id="heroSearchButton" aria-label="Search button">GO</button>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>
 

@@ -63,10 +63,22 @@
 
 	if(is_array($va_sets) && sizeof($va_sets)){
 ?>
-<div class="container">
+<div class="container-fluid">
 	<div class="row justify-content-center">
-		<div class="col"> 
-			<H2><?php print $section_name; ?></H2>
+		<div class="col">
+			<div class="row">
+				<div class="col">
+					<H2><?php print $section_name; ?></H2>
+				</div>
+				<div class="col">
+					<?php 
+						if(sizeof($va_sets) > 4){
+							print "<div class='text-end'>".caNavLink($this->request, _t("View All"), "btn btn-primary mb-2", "", "Gallery", "Index")."</div>";
+						}
+					?>
+				</div>
+
+			</div> 
 <?php
 		
 					foreach($va_sets as $vn_set_id => $va_set){
@@ -93,9 +105,7 @@
 					if($vn_col > 0){
 						print "</div><!-- end row -->";
 					}
-					if(sizeof($va_sets) > 4){
-						print "<div class='text-center'>".caNavLink($this->request, _t("View All"), "btn btn-primary mb-2", "", "Gallery", "Index")."</div>";
-					}
+
 ?>
 		
 		</div>

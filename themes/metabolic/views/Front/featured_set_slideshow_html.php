@@ -38,7 +38,7 @@
 	}
 	if($qr_res && $qr_res->numHits()){
 ?>
-<div class="container-xl">
+<div class="container-fluid">
 	<div class="row justify-content-center">
 		<div class="col">
 			<!-- <H2 class="mb-3"><?php print _t("Highlights"); ?></H2>   -->			
