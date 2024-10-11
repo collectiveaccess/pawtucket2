@@ -105,6 +105,10 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<dt><?= _t('About'); ?></dt>
 					<dd>^ca_occurrences.description</dd>
 				</ifdef>
+				<ifdef code="ca_occurrences.curatorial_statement">
+					<dt><?= _t('Curatorial Statement'); ?></dt>
+					<dd>^ca_occurrences.curatorial_statement</dd><hr/>
+				</ifdef>
 			</dl>}}}
 		</div>
 		<div class="col">
