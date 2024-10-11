@@ -10,87 +10,35 @@
 	switch($action) {
 		case 'combined':
 			$page_title = 'Combined Legislative Records Search';
-			$description = "
-				<p class='mt-4'>Use this page to search council bills, ordinances, resolutions and Clerk/Comptroller Files. See individual database pages at left for details of the scope of each collection. For narrower results or advanced searching, you may wish to search the databases separately.</p>
-			";
+			$description = $this->getVar("combined_search_description");
 		break;
 		case 'bills':
 			$page_title = 'City Council Bills/Ordinances';
-			$description = "
-					<p>
-						This database contains basic information about <a href='http://www.seattle.gov/cityclerk/agendas-and-legislative-resources/legislative-process/legislative-glossary'>council bills and ordinances</a> that have been <a href='http://www.seattle.gov/cityclerk/agendas-and-legislative-resources/legislative-process/how-a-bill-becomes-a-law'>acted on</a> by the <a href='http://www.seattle.gov/council'>Seattle City Council</a> since <a href='http://www.seattle.gov/cityarchives/seattle-facts/quick-city-info#incorporationdate'>1869</a>. New items are added within 30 days of Council action; items under consideration by Council are available in our <a href='http://seattle.legistar.com/'>Legislative Information Center</a>.
-					</p>
-					<p>
-						Records for items introduced in 1996 or later include full text (plain text). Scans of earlier items have been posted if we have them; if they are not posted, the documents can be reviewed on <a href='https://www.nedcc.org/free-resources/preservation-leaflets/6.-reformatting/6.1-microfilm-and-microfiche'>microfiche</a> in our research room or scanned on request (<a href='http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services'>copy fees may apply</a>). Scans of signed legislation are also posted for items passed from 2009 forward.
-					</p>
-			";
+			$description = $this->getVar("council_bills_ordinances_search_description");
 		break;	
 		case 'resolutions':
 			$page_title = 'City Council Resolutions';
-			$description = "
-					<p>This database contains basic information about <a href='http://www.seattle.gov/cityclerk/agendas-and-legislative-resources/legislative-process/legislative-glossary'>resolutions</a> that have been <a href='http://www.seattle.gov/cityclerk/agendas-and-legislative-resources/legislative-process/how-a-bill-becomes-a-law'>acted on</a> by the <a href='http://www.seattle.gov/council'>Seattle City Council</a> since 1894. New items are added within 30 days of Council action; items under consideration by Council are available in our <a href='http://seattle.legistar.com/'>Legislative Information Center</a>.</p>
-					<p>Records for items introduced in 1996 or later include full text (plain text). Scans of earlier items have been posted if we have them; if they are not posted, the documents can be reviewed on <a href='https://www.nedcc.org/free-resources/preservation-leaflets/6.-reformatting/6.1-microfilm-and-microfiche'>microfiche</a> in our research room or scanned on request (<a href='http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services'>copy fees may apply</a>). Scans of signed legislation are also posted for items passed from 2009 forward.</p>
-			";
+			$description = $this->getVar("resolutions_search_description");
 		break;	
 		case 'clerk':
 			$page_title = 'Comptroller/Clerk Files Index';
-			$description = "
-					<p>This database contains basic information about documents that have been filed with the Office of the City Clerk since 1891 and added as numbered entries to the Clerk File (known as the Comptroller File until <a href='http://www.seattle.gov/cityclerk/about/historical-perspective'>1992</a>). Some are items that have been <a href='http://www.seattle.gov/cityclerk/agendas-and-legislative-resources/legislative-process/how-a-bill-becomes-a-law'>acted on</a> by the <a href='http://www.seattle.gov/council'>Seattle City Council</a>; others were filed due to legal requirements or City business practices.  New items are added within a month of Council action; items under consideration by Council are available in our <a href='http://seattle.legistar.com/'>Legislative Information Center</a>.</p>
-
-					<p>Types of documents in this collection include:</p>
-
-					<ul>
-						<li>Reports</li>
-						<li>Appointments to City boards and commissions (before 2015)</li>
-						<li>Appointments of City officials</li>
-						<li>Rules</li>
-						<li>Agreements (interlocal and interdepartmental)</li>
-						<li>Initiatives, referenda, charter amendment proposals</li>
-						<li>Department responses to Statements of Legislative Intent</li>
-					</ul>
-
-					<p>Records for select document types include full text (plain text). Scans of earlier items have been posted if we have them; if they are not posted, the documents can be reviewed on <a href='https://www.nedcc.org/free-resources/preservation-leaflets/6.-reformatting/6.1-microfilm-and-microfiche'>microfiche</a> in our research room or scanned on request (<a href='http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services'>copy fees may apply</a>).</p>
-			";
+			$description = $this->getVar("comptroller_clerk_files_search_description");
 		break;
 		case 'agenda':
 			$page_title = 'City Council Agendas';
-			$description = "
-					<p>This database contains plain text of published agendas for City Council and committee meetings held from 2002 to 30 days ago. New items are added within a month of the meeting taking place.
-					</p>
-
-					<p>Agendas available here are generally the same as the published agenda that was circulated prior to a meeting. Actual proceedings at a meeting may differ from the published agenda, as agendas are subject to amendment.
-					</p>
-
-					<p>Published agendas for upcoming meetings are available from the Meetings section of our 
-						<a href='http://seattle.legistar.com/Calendar.aspx'>Legislative Information Center</a>.
-					</p>
-
-					<p>Some earlier agendas (currently 1964-1991) are available on the Seattle Municipal Archives 	
-						<a href='http://archives.seattle.gov/digital-collections/index.php/Detail/collections/801'>Digital Collections website</a>.
-					</p>
-			";
+			$description = $this->getVar("agendas_search_description");
 		break;
 		case 'minutes':
 			$page_title = 'City Council Minutes';
-			$description = "
-					<p>This database contains plain text of Seattle City Council meeting minutes (also known as the Journal of Proceedings of the Seattle City Council) from 2002 to present. New items are added within 30 days of being adopted.</p>
-					
-					<p>More recent minutes are available in our <a href='http://seattle.legistar.com/Calendar.aspx'>Legislative Information Center</a>.</p>
-
-					<p>Minutes from 1869 through 2001 are available in our research room. <a href='http://archives.seattle.gov/digital-collections/index.php/Search/objects/search/collection%3A1801-12'>Selected early minutes</a> are available online. For copies of signed minutes, please <a href='mailto:cityclerk@seattle.gov'>contact us</a>.</p>
-			";
+			$description = $this->getVar("minutes_search_description");
 		break;
 		case 'committees':
 			$page_title = 'City Council Committee History';
-			$description = "
-					<p>This database contains descriptions, membership information, and dates of existence for Seattle City Council committees from 1946 to the present.</p>
-			";
+			$description = $this->getVar("committee_search_description");
 		break;
 		case 'meetings':
 			$page_title = 'City Council Meeting History';
-			$description = "
-					<p>This database contains descriptions, membership information, and dates of existence for Seattle City Council committees from 1946 to the present.</p>
-			";
+			$description = $this->getVar("meeting_search_description");
 		break;
 	}	
 ?>

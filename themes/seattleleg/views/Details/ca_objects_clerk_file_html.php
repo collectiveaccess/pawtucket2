@@ -162,7 +162,8 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 			</ifdef>}}}
     </tbody>
   </table>
-
+<?= $this->render("Details/attachments_html.php"); ?>
+	
 
 	{{{<ifdef code="ca_objects.TX">
 		<table class="record table table-striped table-responsive">
@@ -183,27 +184,9 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 	</ifdef>}}}
 
 	{{{<ifnotdef code="ca_objects.TX">
-		<em>No text for this document is available online. You may view this document at
-			<a href="http://www.seattle.gov/cityclerk/legislation-and-research/research-assistance">the Office of the City Clerk</a>.	If you are unable to visit the Clerk's Office, you may request a copy or scan be made for you by Clerk staff.	Scans and copies provided by the Office of the City Clerk are subject to <a href="http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services">copy fees</a>, and the timing of service
-			is dependent on the availability of staff.
-		</em>
+		<?php print $this->getVar("detail_text_not_online"); ?>
 	<ifnotdef/>}}}
 
-	{{{<ifdef code="ca_object_representations.media.small">
-		<unit filterNonPrimaryRepresentations="0">
-			<table class="record table table-striped table-responsive">
-				<tbody>
-					<tr><th colspan="2"><H4>Attachments</H4></th></tr>
-					<tr>
-						<td class="empty"></td>
-						<td>
-							<a href="^ca_object_representations.URL" target="_blank">^ca_object_representations.media.small</a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</unit>
-	</ifdef>}}}
 	
   <hr>
 

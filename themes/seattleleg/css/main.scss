@@ -204,7 +204,17 @@ a:hover {
 /* ------------------------- Sub-Header ------------------------- */
 
 .titleTopNavBreadcrumbWrapper{
-
+	@media (max-width: 767px) {
+		.container{
+			max-width:100% !important;
+		}
+	}
+	@media (min-width: 1199px) and (max-width: 1298px) {
+		.container{
+			max-width:1170px !important;
+			width:1170px !important;
+		}
+	}
 	.deptTitle{
 		margin-top: 22px;
 		line-height: 1.1; 
@@ -356,7 +366,12 @@ footer a{
 .advancedSearch {
 
 	.advSearchContainer{
-		padding: 62px 32px;
+		padding: 32px 0px;
+	}
+	@media (min-width: 576px) {
+		.advSearchContainer{
+			padding: 62px 32px;
+		}
 	}
 
 	a {
@@ -469,7 +484,7 @@ footer a{
 
 #detail{
 
-	padding: 62px 32px;
+	padding: 32px 0px 32px 0px;
 
 
 
@@ -532,7 +547,11 @@ footer a{
 	}
 
 }
-
+@media (min-width: 576px) {
+	#detail{
+		padding: 62px 32px;
+	}
+}
 .detail{
 	.detailPrimaryImage{
 		img{
@@ -549,8 +568,8 @@ footer a{
 /* ------------------------- browse results ------------------------- */
 
 #search_results{
-	padding: 62px 32px;
-
+	padding-top: 62px;
+	padding-bottom: 62px;
 	table a{
 		text-decoration: none !important;
 	}
@@ -560,6 +579,11 @@ footer a{
 		font-size: 24px;
 		margin-right: 10px;
 		display:inline-block;
+	}
+}
+@media (min-width: 576px) {
+	#search_results{
+		padding: 32px 32px;
 	}
 }
 

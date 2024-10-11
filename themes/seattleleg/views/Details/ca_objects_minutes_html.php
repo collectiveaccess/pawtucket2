@@ -47,13 +47,18 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 	
+	<?= $this->render("Details/attachments_html.php"); ?>
 	
-		{{{<ifcount code="ca_object_representations" min="1">
-			<unit relativeTo="ca_object_representations" delimiter=""><p>
-				<ifdef code="ca_object_representations.URL"><a href="^ca_object_representations.URL" target="_blank"><?php print caGetThemeGraphic($this->request, 'pdf.gif', array("alt" => "PDF Icon", "height" => "40px")); ?> <ifdef code="ca_object_representations.preferred_labels">^ca_object_representations.preferred_labels</ifdef><ifnotdef code="ca_object_representations.preferred_labels">Printable Version of this Agenda</ifnotdef></a>
-				</ifdef>
-			</p></unit>
-		</ifcount>}}}
+		<!--{{{<ifdef code="ca_object_representations.media.small">
+		<unit filterNonPrimaryRepresentations="0">
+					
+			<a href="<?= caNavUrl($this->request, '*', '*', 'DownloadRepresentation', ['representation_id' => '^ca_object_representations.representation_id']); ?>" rel="noopener noreferrer" target="_blank">
+			<?= caGetThemeGraphic($this->request, 'pdf.gif', array("alt" => "PDF Icon", "height" => "40px")); ?> <ifdef code="ca_object_representations.preferred_labels">^ca_object_representations.preferred_labels</ifdef><ifnotdef code="ca_object_representations.preferred_labels">Printable Version of this Agenda</ifnotdef
+			</a>
+
+		</unit>
+	</ifdef>}}}-->
+	
 
 	<hr>
 

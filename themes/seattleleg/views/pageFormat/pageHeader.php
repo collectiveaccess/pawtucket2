@@ -82,10 +82,12 @@ if($this->request->isLoggedIn()){
 
 <main <?= caGetPageCSSClasses(); ?>>
 <div class="titleTopNavBreadcrumbWrapper border-bottom border-black">
-	<div class="container ps-0 pe-0">
-		<H1 class="deptTitle mb-3">
-			<?php print caNavLink($this->request, "Legislation Search", "", "", "", ""); ?>
-		</H1>
+	<div class="container px-md-0">
+		<div class="row g-0"><div class="col">
+			<H1 class="deptTitle mb-3">
+				<?php print caNavLink($this->request, "Legislation Search", "", "", "", ""); ?>
+			</H1>
+		</div></div>
 	</div>
 </div>
 

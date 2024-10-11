@@ -85,42 +85,18 @@ if (!$vb_ajax) {	// !ajax
 	<?php
 			switch($action) {
 				case 'combined':
-	?>
-						<p>
-							<strong style="color: maroon;">This database contains legislation that has already been acted on by Council (passed, retired, etc.).
-							Legislation currently in process can be found here: <a class="text-decoration-underline" href="https://seattle.legistar.com/Legislation.aspx" target="_blank">Current Legislation</a>.</strong>
-							Please visit our <a class="text-decoration-underline" href="http://www.seattle.gov/cityclerk/legislation-rules-records-and-resources/a-new-way-to-view-legislation-and-agendas" target="_blank">FAQ</a> page for additional information.
-						</p>
-						<p>
-							To narrow your results or for advanced searching, you may wish to search on each database separately. Refer to the list of
-							<a class="text-decoration-underline" href="/">all Clerk and Municipal Archives records indexes</a> to navigate.
-						</p>
-	<?php
-					break;
+					print $this->getVar("combined_results_description");
+				break;
+				# ------------------------
 				case 'bills':
-	?>
-						<p>
-							<strong style="color: maroon">This database contains legislation that has already been acted on by Council (passed, retired, etc.). Legislation currently in process can be found here: <a href="https://seattle.legistar.com/Legislation.aspx" target="_blank">Current Legislation</a>.</strong>
-						</p>
-	<?php
-					break;
+					print $this->getVar("council_bills_ordinances_results_description");
+				break;
+				# ------------------------
 				case 'resolutions':
-	?>
-						<p>
-							<strong style="color: maroon">This database contains legislation that has already been acted on by Council (passed, retired, etc.).
-							Legislation currently in process can be found here: <a href="https://seattle.legistar.com/Legislation.aspx" target="_blank">Current Legislation</a>.</strong>
-							Please visit our <a href="http://www.seattle.gov/cityclerk/legislation-rules-records-and-resources/a-new-way-to-view-legislation-and-agendas" target="_blank">FAQ</a> page for additional information.
-						</p>
-	<?php
-					break;
 				case 'clerk':
-	?>
-						<p>
-							<strong style="color: maroon">This database contains legislation that has already been acted on by Council (passed, retired, etc.).
-							Legislation currently in process can be found here: <a href="https://seattle.legistar.com/Legislation.aspx" target="_blank">Current Legislation</a>.</strong>
-							Please visit our <a href="http://www.seattle.gov/cityclerk/legislation-rules-records-and-resources/a-new-way-to-view-legislation-and-agendas" target="_blank">FAQ</a> page for additional information.
-						</p>
-	<?php
+						print $this->getVar("resolutions_comptroller_clerk_files_result_description");
+				break;
+				# ------------------------
 		}
 	?>
 
@@ -169,14 +145,7 @@ if (!$vb_ajax) {	// !ajax
 						<div class="modal-content">
 							<div class="modal-body">
 								<div id="ExportModalTitle" class="centered fw-bold fs-3 pb-1">Exporting Search Results</div>
-								<p>Clicking the button will download your results to a CSV (comma-separated values) file, which can be opened in Microsoft Excel or most other spreadsheet software.</p>
-								<ul>
-									<li>Data is continually added and revised for accuracy. Your results will not be automatically updated after you export, until you do a new search and export again.</li>
-									<li>This feature is only enabled for legislation at the present time.</li>
-									<li>Exporting includes all public data fields except for full text.</li>
-									<li>Even if your search spans multiple pages, your export will contain everything.</li>
-									<li>Exports are currently limited to a maximum of 25,000 records per download.</li>
-								</ul>
+								<?php print $this->getVar("results_export_info"); ?>
 							</div>
 						<button class="btn btn-primary" data-bs-dismiss="modal">Close</button></div>
 					</div>
@@ -226,11 +195,12 @@ if (!$vb_ajax) {	// !ajax
 									case 'combined':
 						?>
 								<tr>
-									<th class="text-nowrap">Result</th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "File Type".(($vs_current_sort == "Type") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Type") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Type', 'direction' => (($vs_current_sort == "Type") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap">Number</th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Filed / Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "File Type".(($vs_current_sort == "Type") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Type") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Type', 'direction' => (($vs_current_sort == "Type") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Number</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Filed / Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Filed / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 								</tr>
 						<?php
 								break;
@@ -245,9 +215,10 @@ if (!$vb_ajax) {	// !ajax
 									// 7) Sort on "Meeting Date" (ca_objects.DATE)
 						?>
 								<tr>
-									<th class="text-nowrap">Result</th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Committee".(($vs_current_sort == "Committee") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Committee") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Committee', 'direction' => (($vs_current_sort == "Committee") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Committee".(($vs_current_sort == "Committee") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Committee") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Committee', 'direction' => (($vs_current_sort == "Committee") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Meeting Date / Committee".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 								</tr>
 						<?php
 								break;
@@ -260,12 +231,13 @@ if (!$vb_ajax) {	// !ajax
 								// 6) Sort on "Passed" (ca_objects.DTSI — descending
 						?>
 								<tr>
-									<th class="text-nowrap">Result</th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Ordinance Number".(($vs_current_sort == "Ordinance_Number") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Ordinance_Number") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Ordinance_Number', 'direction' => (($vs_current_sort == "Ordinance_Number") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Council Bill Number".(($vs_current_sort == "Council_Bill_Number") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Council_Bill_Number") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Council_Bill_Number', 'direction' => (($vs_current_sort == "Council_Bill_Number") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Filed") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Filed") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Filed', 'direction' => (($vs_current_sort == "Filed") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Passed".(($vs_current_sort == "Passed") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Passed") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Passed', 'direction' => (($vs_current_sort == "Passed") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Ordinance Number".(($vs_current_sort == "Ordinance_Number") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Ordinance_Number") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Ordinance_Number', 'direction' => (($vs_current_sort == "Ordinance_Number") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Council Bill Number".(($vs_current_sort == "Council_Bill_Number") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Council_Bill_Number") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Council_Bill_Number', 'direction' => (($vs_current_sort == "Council_Bill_Number") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Filed") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Filed") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Filed', 'direction' => (($vs_current_sort == "Filed") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Passed".(($vs_current_sort == "Passed") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Passed") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Passed', 'direction' => (($vs_current_sort == "Passed") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Filed / Passed / Title".(($vs_current_sort == "Filed") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Filed") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Filed', 'direction' => (($vs_current_sort == "Filed") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 								</tr>
 						<?php
 								break;
@@ -276,10 +248,11 @@ if (!$vb_ajax) {	// !ajax
 								// 3) Sort by date filed (ca_objects.DTF — descending)
 						?>
 								<tr>
-									<th class="text-nowrap">Result</th>
-									<th class="text-nowrap">Number</th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell">Number</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Filed / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 								</tr>
 						<?php
 								break;
@@ -289,11 +262,12 @@ if (!$vb_ajax) {	// !ajax
 								// 2) Sort by date filed (ca_objects.DTF — descending)
 						?>
 								<tr>
-									<th class="text-nowrap">Result</th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "File Type".(($vs_current_sort == "Type") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Type") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Type', 'direction' => (($vs_current_sort == "Type") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap">Number</th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "File Type".(($vs_current_sort == "Type") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Type") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Type', 'direction' => (($vs_current_sort == "Type") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Number</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Filed / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 								</tr>	
 						<?php
 								break;
@@ -308,9 +282,10 @@ if (!$vb_ajax) {	// !ajax
 								// 7) Sort on "Meeting Date" (ca_objects.DATE)
 						?>
 								<tr>
-									<th class="text-nowrap">Result</th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Committee".(($vs_current_sort == "Committee") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Committee") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Committee', 'direction' => (($vs_current_sort == "Committee") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Committee".(($vs_current_sort == "Committee") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Committee") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Committee', 'direction' => (($vs_current_sort == "Committee") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Meeting Date / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 								</tr>
 						<?php
 								break;
@@ -323,9 +298,10 @@ if (!$vb_ajax) {	// !ajax
 								// 5) Sory on "Meeting Date" (ca_occurrences.DATE)
 						?>
 								<tr>
-									<th class="text-nowrap">Result</th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Meeting Date / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 								</tr>
 						<?php
 								break;
@@ -339,22 +315,14 @@ if (!$vb_ajax) {	// !ajax
 								// 6) Sort on "Dates" (ca_entities.comm_date)
 						?>
 								<tr>
-									<th class="text-nowrap">Result</th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Dates".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-									<th class="text-nowrap"><?php print caNavLink($this->request, "Committee Name".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Dates".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Committee Name".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Dates / Committee Name".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 								</tr>
 						<?php
 							}
 						?>
-
-
-							<!-- <tr>
-								<th class="text-nowrap">Result</th>
-								<th class="text-nowrap"><?php print caNavLink($this->request, "File Type".(($vs_current_sort == "Type") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Type") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Type', 'direction' => (($vs_current_sort == "Type") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-								<th class="text-nowrap">Number</th>
-								<th class="text-nowrap"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-								<th class="text-nowrap"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
-							</tr> -->
 
 					
 							<?php

@@ -36,6 +36,7 @@ $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
 $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $mod_create_retrieve = array();
+$last_modified = $created = "";
 switch($table){
 	case "ca_entities":
 		$id = $t_object->get('ca_entities.entity_id');

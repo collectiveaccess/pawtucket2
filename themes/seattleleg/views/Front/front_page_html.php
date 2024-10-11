@@ -39,11 +39,15 @@
 				<h2 class="mt-2 fs-3 bg-gray pt-3 p-2">Combined search of legislation</h2>
 	
 				<form class="row g-1 align-items-center" action="<?= caNavUrl($this->request, '', 'Search', 'combined'); ?>">
-					<label for="searchTerms" class="visually-hidden">Search Terms</label>
-					<input name="_fulltext" id="searchTerms" type="text" class="form-control col-10" style="width: 79%;" placeholder="Search terms">
-					<input type="submit" value="Search" class="ms-2 col-2 btn btn-primary" style="width: 20%;">
-					<input type="hidden" name="_advanced" value="1">
-					<input type="hidden" name="_formElements" value="_fulltext">
+					<div class="col-sm-10">
+						<label for="searchTerms" class="visually-hidden">Search Terms</label>
+						<input name="_fulltext" id="searchTerms" type="text" class="form-control" placeholder="Search terms">
+					</div>
+					<div class="col-sm-2">
+						<input type="submit" value="Search" class="ms-2 btn btn-primary">
+						<input type="hidden" name="_advanced" value="1">
+						<input type="hidden" name="_formElements" value="_fulltext">
+					</div>
 				</form>
 	
 				<p>
@@ -56,9 +60,9 @@
 
 	</div>
 
-	<div class="row my-5">
+	<div class="row">
 
-		<div class="col-5">
+		<div class="col-md-5 my-3">
 			<h3>Legislation and meetings</h3>
 			
 			<div class="tileTextDescription">
@@ -75,7 +79,7 @@
 			</div>
 		</div>
 
-		<div class="text-center taxonomyTile splitTile col-7" style="height: 160px;">
+		<div class="text-center taxonomyTile splitTile col-md-7 my-3">
 			<h3 class="tileTitle">Know what you're looking for?</h3>
 			<form id="numberSearch" action="<?= caNavUrl($this->request, '', 'Search', 'combined'); ?>">
 			<div class="row">

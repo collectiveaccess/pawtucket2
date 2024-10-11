@@ -182,94 +182,92 @@
 									case 'combined':
 										$vs_result_output = "
 											<tr>
-												<td>{$result}</td>
-												<td>{$file_type}</td>
-												<td>{$id_num}</td>
-												<td>{$filed}{$meeting_date}{$minutes_meeting_date}</td>
-												<td>{$vs_caption}</td>
+												<td class='d-none d-md-table-cell'>{$result}</td>
+												<td class='d-none d-md-table-cell'>{$file_type}</td>
+												<td class='d-none d-md-table-cell'>{$id_num}</td>
+												<td class='d-none d-md-table-cell'>{$filed}{$meeting_date}{$minutes_meeting_date}</td>
+												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>{$filed}{$meeting_date}{$minutes_meeting_date}<br/>{$vs_caption}</td>
 											</tr>
 										";
 									break;
 									case 'agenda':
 										$vs_result_output = "
 											<tr>
-												<td>{$result}</td>
-												<td>{$meeting_date}</td>
-												<td>{$committee}</td>
+												<td class='d-none d-md-table-cell'>{$result}</td>
+												<td class='d-none d-md-table-cell'>{$meeting_date}</td>
+												<td class='d-none d-md-table-cell'>{$committee}</td>
+												<td class='d-table-cell d-md-none'>{$meeting_date}<br/>{$committee}</td>
 											</tr>
 										";
 									break;
 									case 'bills':
 										$vs_result_output = "
 											<tr>
-												<td>{$result}</td>
-												<td>{$ordinance_num}</td>
-												<td>{$council_bill_num}</td>
-												<td>{$filed}</td>
-												<td>{$passed}</td>
-												<td>{$vs_caption}</td>
+												<td class='d-none d-md-table-cell'>{$result}</td>
+												<td class='d-none d-md-table-cell'>{$ordinance_num}</td>
+												<td class='d-none d-md-table-cell'>{$council_bill_num}</td>
+												<td class='d-none d-md-table-cell'>{$filed}</td>
+												<td class='d-none d-md-table-cell'>{$passed}</td>
+												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>{$filed}<br/>{$passed}<br/>{$vs_caption}</td>
 											</tr>
 										";
 									break;
 									case 'resolutions':
 										$vs_result_output = "
 											<tr>
-												<td>{$result}</td>
-												<td>{$id_num}</td>
-												<td>{$filed}</td>
-												<td>{$vs_caption}</td>
+												<td class='d-none d-md-table-cell'>{$result}</td>
+												<td class='d-none d-md-table-cell'>{$id_num}</td>
+												<td class='d-none d-md-table-cell'>{$filed}</td>
+												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>{$filed}<br>{$vs_caption}</td>
 											</tr>
 										";
 									break;
 									case 'clerk':
 										$vs_result_output = "
 											<tr>
-												<td>{$result}</td>
-												<td>{$file_type}</td>
-												<td>{$id_num}</td>
-												<td>{$filed}</td>
-												<td>{$vs_caption}</td>
+												<td class='d-none d-md-table-cell'>{$result}</td>
+												<td class='d-none d-md-table-cell'>{$file_type}</td>
+												<td class='d-none d-md-table-cell'>{$id_num}</td>
+												<td class='d-none d-md-table-cell'>{$filed}</td>
+												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>{$filed}<br/>{$vs_caption}</td>
 											</tr>
 										";
 									break;
 									case 'minutes':
 										$vs_result_output = "
 											<tr>
-												<td>{$result}</td>
-												<td>{$minutes_meeting_date}</td>
-												<td>{$committee}</td>
+												<td class='d-none d-md-table-cell'>{$result}</td>
+												<td class='d-none d-md-table-cell'>{$minutes_meeting_date}</td>
+												<td class='d-none d-md-table-cell'>{$committee}</td>
+												<td class='d-table-cell d-md-none'>{$minutes_meeting_date}<br/>{$committee}</td>
 											</tr>
 										";
 									break;
 									case 'meetings':
 										$vs_result_output = "
 											<tr>
-												<td>{$result}</td>
-												<td>{$occurrence_meeting_date}</td>
-												<td>{$vs_caption}</td>
+												<td class='d-none d-md-table-cell'>{$result}</td>
+												<td class='d-none d-md-table-cell'>{$occurrence_meeting_date}</td>
+												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>{$occurrence_meeting_date}<br/>{$vs_caption}</td>
 											</tr>
 										";
 									break;
 									case 'committees':
 										$vs_result_output = "
 											<tr>
-												<td>{$result}</td>
-												<td>{$committee_date}</td>
-												<td>{$vs_caption}</td>
+												<td class='d-none d-md-table-cell'>{$result}</td>
+												<td class='d-none d-md-table-cell'>{$committee_date}</td>
+												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>{$committee_date}<br/>{$vs_caption}</td>
 											</tr>
 										";
 								}
-							
 
-						// $vs_result_output = "
-						// 	<tr>
-						// 		<td>{$result}</td>
-						// 		<td>{$file_type}</td>
-						// 		<td>{$id_num}</td>
-						// 		<td>{$filed}</td>
-						// 		<td>{$vs_caption}</td>
-						// 	</tr>
-						// ";
 
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
