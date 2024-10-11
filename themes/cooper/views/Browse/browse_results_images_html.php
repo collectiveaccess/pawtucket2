@@ -119,7 +119,7 @@
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
 					if ($vs_table == 'ca_objects') {
-						$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' limit='1' delimiter='|'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
+						$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
 						if(!$vs_thumbnail){
 							$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' limit='1' delimiter='|'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values));
 						}
@@ -137,26 +137,7 @@
 						}
 						$vs_info = null;
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
-					} elseif($vs_table == "ca_occurrences") { # --- exhibitions
-						$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_occurrences.children' sort='ca_occurrences.idno' limit='1' delimiter='|'><unit relativeTo='ca_objects' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit></unit>", array("checkAccess" => $va_access_values));
-						if(!$vs_thumbnail){
-							$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_occurrences.children' sort='ca_occurrences.idno' limit='1'><unit relativeTo='ca_objects' sort='ca_objects.idno' limit='1' delimiter='|'>^ca_object_representations.media.widepreview</unit></unit>", array("checkAccess" => $va_access_values));
-						}
-						if($vn_p = strpos($vs_thumbnail, "|")){
-							$vs_thumbnail = substr($vs_thumbnail, 0, $vn_p);
-						}
-						if(!$vs_thumbnail){
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
-							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png').$vs_type_placeholder."</div>";
-							}else{
-								$vs_thumbnail = $vs_default_placeholder_tag;
-							}
-						}
-						$vs_info = null;
-						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
-					}else{
+					} else {
 						if($va_images[$vn_id]){
 							$vs_thumbnail = $va_images[$vn_id];
 						}else{
@@ -170,15 +151,9 @@
 					}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
-					if($vs_table == "ca_objects"){
-						$vs_result_output = "<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+					$vs_result_output = "<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 											<div class='slide'>".caDetailLink($this->request, $vs_thumbnail, "", "ca_objects", $qr_res->get("ca_objects.object_id"))."<div class='slideCaption'>".caDetailLink($this->request, $qr_res->get("ca_objects.preferred_labels.name"), "", "ca_objects", $qr_res->get("ca_objects.object_id"))."</div></div>
 										</div><!-- end col -->";
-					}elseif($vs_table == "ca_occurrences"){
-						$vs_result_output = "<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-											<div class='slide'>".caDetailLink($this->request, $vs_thumbnail, "", "ca_occurrences", $qr_res->get("ca_occurrences.occurrence_id"))."<div class='slideCaption'>".caDetailLink($this->request, $qr_res->get("ca_occurrences.preferred_labels.name"), "", "ca_occurrences", $qr_res->get("ca_occurrences.occurrence_id"))."</div></div>
-										</div><!-- end col -->";
-					}
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				
