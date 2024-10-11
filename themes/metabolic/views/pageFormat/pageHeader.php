@@ -66,17 +66,17 @@ if($this->request->isLoggedIn()){
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
-	<nav class="navbar navbar-expand-lg shadow-sm bg-dark">
-		<div class="container-xl my-2">
-			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'metabolicStudioLogo.png', array("alt" => "Site logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	<nav class="navbar navbar-expand-lg shadow-sm bg-dark py-0 px-3">
+		<div class="container-fluid p-0">
+			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'metabolicStudioLogo.png', array("alt" => "Site logo", "role" => "banner")), "navbar-brand img-fluid", "", "", ""); ?>
+			<button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <!-- <span class="navbar-toggler-icon"></span> -->
 			  <i class="bi bi-list"></i>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">				
+				<ul class="navbar-nav ms-auto me-3">				
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Actions'), "nav-link".((strToLower($this->request->getController()) == "listing") ? " active" : ""), "", "Listing", "Actions", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Actions'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					
 					<li class="nav-item">
@@ -104,6 +104,6 @@ if($this->request->isLoggedIn()){
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
-		print "<div class='container-xl pt-4'>";
+		print "<div class='container-fluid pt-4'>";
 	}
 ?>

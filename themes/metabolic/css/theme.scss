@@ -1,7 +1,26 @@
 /* ------------------------- Navbar ------------------------- */
 .navbar-brand {
-    width: 300px !important;
+    width: 220px !important;
 }
+
+@media (min-width: 768px) {
+    .navbar-brand {
+        width: 300px !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .navbar-brand img {
+        max-width: 200px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .navbar-brand img {
+        max-width: 300px;
+    }
+}
+
 
 #nav-search-input, #nav-search-btn{
     background-color: #505150;
@@ -14,8 +33,13 @@
     color: #EDEDEB;
 }
 
+/* Footer */
 
-/* Front Page */
+#footer{
+    height: 250px;
+}
+
+/* ------------------------- Front Page ------------------------- */
 
 .carousel-item a img{
     height: 375px;
@@ -26,6 +50,6 @@
     background-color: #EDEDEB;
     border: 0px;
     box-shadow: none;
-    font-family: "Raleway", sans-serif;
+    // font-family: "Raleway", sans-serif;
     color: #414141;
 }

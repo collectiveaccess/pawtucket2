@@ -98,7 +98,7 @@ $headings-color:        $gray-600;
 	  6: 1.5rem
 	) !default;
 	
-	$display-font-family: null !default;
+$display-font-family: "Crimson Text", sans-serif;
 	$display-font-style:  null !default;
 	$display-font-weight: 300 !default;
 	$display-line-height: $headings-line-height !default;
@@ -139,12 +139,12 @@ $link-color: $gray-600;
 	
 	/* nav bar */
 	
-	$nav-link-padding-y:                .5rem !default;
-	$nav-link-padding-x:                1rem !default;
+$nav-link-padding-y:                33px;
+$nav-link-padding-x:                24px;
 	$line-height-base:            		1.5 !default;
 	
-	$navbar-nav-link-padding-x: 		1rem !default;
-	$nav-link-font-size: 				$font-size-base !default;
+$navbar-nav-link-padding-x: 		20px;
+$nav-link-font-size: 				$font-size-base !default;
 	$nav-link-font-weight: 				$font-weight-medium !default;
 $nav-link-color:                    $link-color;
 	$nav-link-transition:               color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out !default;
@@ -153,6 +153,9 @@ $navbar-light-color: #FFFFFF;
 $navbar-light-hover-color: 			$primary;
 $navbar-light-active-color: 		$primary;
 	
+$navbar-toggler-padding-y: 			.25rem;
+$navbar-toggler-padding-x: 			.75rem;
+$navbar-toggler-font-size: 			34px;
 	
 	// scss-docs-start navbar-variables
 	$navbar-padding-y:                  $spacer * .5 !default;
@@ -164,7 +167,7 @@ $navbar-light-active-color: 		$primary;
 	// Compute the navbar-brand padding-y so the navbar-brand will have the same height as navbar-text and nav-link
 	$nav-link-height:                   $nav-link-font-size * $line-height-base + $nav-link-padding-y * 2 !default;
 	$navbar-brand-height:               $navbar-brand-font-size * $line-height-base !default;
-	$navbar-brand-padding-y:            ($nav-link-height - $navbar-brand-height) * .5 !default;
+$navbar-brand-padding-y:            	19px;
 	$navbar-brand-margin-end:           1rem !default;
 	
 	
