@@ -220,54 +220,112 @@
 
   
     <div class="header-nav-item header-nav-item--folder">
-      <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.116129s;">Projects</a>
+      <a class="header-nav-folder-title preFade fadeIn" href="/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.116667s;">
+        Projects
+      </a>
       <div class="header-nav-folder-content">
         
-			<div class="header-nav-folder-item">
-				  <a href="https://chesapeakeheartland.org/historical-signage-and-visualization-project">
-					<span class="header-nav-folder-item-content">
-					  Historical Signage &amp; Visualization Project
-					</span>
-				  </a>
+          
+            <div class="header-nav-folder-item">
+              <a href="/curation-fellow-karen-somerville">
+                <span class="header-nav-folder-item-content">
+                  Curation Fellow: Karen Somerville
+                </span>
+              </a>
             </div>
-			<div class="header-nav-folder-item">
-				  <a href="https://chesapeakeheartland.org/kca-ch-artist-fellowship">
-					<span class="header-nav-folder-item-content">
-					  KCA/CH Artist Fellowship
-					</span>
-				  </a>
-			</div>
-			<div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/aashm">
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="/kca-ch-artist-fellowship">
+                <span class="header-nav-folder-item-content">
+                  KCA/CH Artist Fellowship
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="/aashm">
                 <span class="header-nav-folder-item-content">
                   Worton Point Schoolhouse
                 </span>
               </a>
             </div>
+          
+          
+        
+          
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/commodore-collection">The Commodore Collection</a>
+              <a href="/commodore-collection">
+                <span class="header-nav-folder-item-content">
+                  The Commodore Collection
+                </span>
+              </a>
             </div>
           
           
         
           
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/exhibit-main">Jason Patterson Exhibit</a>
+              <a href="/exhibit-main">
+                <span class="header-nav-folder-item-content">
+                  Jason Patterson Exhibit
+                </span>
+              </a>
             </div>
           
           
         
           
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers">Ebony &amp; Ivory Towers</a>
+              <a href="/ebony-and-ivory-towers">
+                <span class="header-nav-folder-item-content">
+                  Ebony &amp; Ivory Towers
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="/gordon-wallace-documentary">
+                <span class="header-nav-folder-item-content">
+                  Georgetown Documentary
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="/get-on-the-bus">
+                <span class="header-nav-folder-item-content">
+                  Get On The Bus
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="/get-on-the-bus-film">
+                <span class="header-nav-folder-item-content">
+                  Get On The Bus Film
+                </span>
+              </a>
             </div>
           
           
         
       </div>
-    </div>
-  
-  
+    </div> 
 
 
     <div class="header-nav-item header-nav-item--collection">
