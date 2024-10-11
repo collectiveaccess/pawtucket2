@@ -53,7 +53,13 @@
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
-	<!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYCQPXB7QY"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-PYCQPXB7QY'); </script>
+	<!-- Google Tag Manager -->
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-M7NLT4K');</script>
+	<!-- End Google Tag Manager -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
@@ -78,6 +84,10 @@
 ?>
 </head>
 <body class="initial">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M7NLT4K"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <?php
 
 
@@ -285,32 +295,20 @@
 <?php
 	}
 ?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'projects'); ?>">
 					<div class="formOutline">
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Keyword" name="search" id="searchFormHeader">
+							<input type="text" class="form-control" placeholder="Search" name="search" id="searchFormHeader">
 						</div>
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li><?php print caNavLink($this->request, _t("Exhibitions"), "", "", "Browse", "exhibitions"); ?></li>
-					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Student Work</span></a>
-						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Projects"), "", "", "Browse", "projects"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Courses"), "", "", "Listing", "Courses"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Locations"), "", "", "Browse", "location"); ?></li>
-						</ul>
-					</li>
-					<li class="navSpace"><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
+					<li <?php print (strToLower($this->request->getAction()) == "courses") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Courses"), "", "", "Listing", "Courses"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "projects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Projects"), "", "", "Browse", "projects"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "people")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "location")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Locations"), "", "", "Browse", "location"); ?></li>
 				</ul>
-				
-
-
-
-
-
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>

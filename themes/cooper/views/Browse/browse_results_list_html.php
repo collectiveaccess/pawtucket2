@@ -95,9 +95,7 @@
 				$vs_letter = "";
 				$vb_show_letter = false;
 				if(($vs_current_sort == "Name") && ($vs_table == 'ca_entities')){
-					$sort_name = trim($qr_res->get("ca_entities.preferred_labels.name_sort"));
-					$sort_name = str_replace(array("Á"), array("A"), $sort_name);
-					$vs_letter = strToUpper(mb_substr($sort_name, 0 , 1));
+					$vs_letter = strToUpper(mb_substr($qr_res->get("ca_entities.preferred_labels.surname"), 0 , 1));
 					if($vs_letter && ($vs_letter != Session::getVar('lastLetter'))){
 						Session::setVar('lastLetter', $vs_letter);
 						$vb_show_letter = true;

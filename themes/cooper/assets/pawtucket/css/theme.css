@@ -194,9 +194,7 @@ H6, h6{
 .navbar-nav > li > a {
     line-height: 27px;
 }   
-.dropdown-menu > li > a{
-	text-transform:uppercase;
-}
+   
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus,
 .dropdown-menu > .active > a,
@@ -262,46 +260,28 @@ H6, h6{
 body.initial .headerText{
 	display:inline;
 }
-.navbar-nav > li > a, .menuItems.navbar-nav > li > a{
+.navbar-nav > li > a{
 	padding-top: 8px;
-	padding-bottom: 21px;
+	padding-bottom: 8px;
 }
 body.initial .navbar-nav > li > a{
+	padding-top: 15px;
 	padding-bottom: 15px;
-}
-@media(min-width:1011px){
-	body.initial .navbar-nav > li > a{
-		padding-top: 15px;
-	}
-	body.initial .navbar-form {
-		margin-top:10px;
-	}
-	body.initial .nav > li.dropdown > a.icon{
-		padding-top:17px;
-	}
 }
 .navbar-form {
 	margin-top:3px;
 }
-
+body.initial .navbar-form {
+	margin-top:10px;
+}
 
 
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
 	background-color: transparent;
 }
-.nav > li.dropdown > a.icon{
-	padding-top:8px;
-}
-
-@media(min-width:1010px){
-	.navSpace{
-		padding-left:100px;
-	}
-}
 /* search form */
 .navbar-form{
-	margin-left: 0px;
-	padding-left: 0px;
+	margin-left:20px;
 }
 .navbar .form-control {
 	font-family:Gotham;
@@ -368,12 +348,9 @@ body.initial .navbar-nav > li > a{
 	font-size:12px;
 	text-shadow: 0px 0px 6px #888;
 }
-ul.menuItems {
-    width: auto;
-    border-top: none;
-  }
-@media(max-width:1010px){
-  	body.initial{
+
+@media (max-width: 1010px) {
+	body.initial{
 		padding-top:103px !Important;
 	}
 	.navbar-brand, .navbar-brand.initialLogo {
@@ -383,12 +360,6 @@ ul.menuItems {
 	.navbar-header .headerText{
 		display:none !important;
 	}
-	.navbar-header{
-		width:70px;
-	}
-}
-@media (max-width: 767px) {
-	
 	.container.menuBar {
 		padding-right: 15px;
 		padding-left: 15px !important;
@@ -400,8 +371,7 @@ ul.menuItems {
 		display:block;
 		border: 0px;
 		color:#FFF;
-		margin-top: 18px;
-		font-size: 15px;	
+		margin-top: 18px;	
 	}
 	.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
 		background-color: #000;
@@ -411,10 +381,10 @@ ul.menuItems {
 		background-color: #FFF;
 		border-radius:0px;
 	}
-	/*.navbar-collapse {
+	.navbar-collapse {
     	padding-right:0px;
     	padding-left:0px;
-	}*/
+	}
 	.navbar-toggle .icon-bar + .icon-bar {
 		margin-top: 5px;
 	}
@@ -471,13 +441,7 @@ ul.menuItems {
 		position:relative;
 		right:auto;
 	}
-	  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
-		color: #FFFFFF;
-	  }
-	  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
-		color: #ededed;
-		text-decoration:underline;
-	  }
+	
 }
 
 /* hero images */
@@ -570,7 +534,7 @@ ul.menuItems {
 	bottom:auto;
 	height:auto;
 }
-@media (min-width: 1320px) {
+@media (min-width: 1010px) {
 	#footer{
 		position:fixed;
 		bottom:0px;
@@ -627,7 +591,7 @@ ul.menuItems {
 	margin-right:0px;
 }
 
-@media (max-width: 1320px) {
+@media (max-width: 1010px) {
 	#footer .pull-right{
 		float:none !important;
 	}
@@ -641,7 +605,6 @@ ul.menuItems {
 	#footer{
 		text-align:center;
 		padding-top:20px;
-		height:auto;
 	}
 	#footer ul{
 		margin-right:0px;
@@ -790,7 +753,7 @@ ul.menuItems {
 		margin-right:20px;
 	}
 }
-.front .slide, .detail.student_project .slide, .detail.exhibition .slide{
+.front .slide, .detail.student_project .slide{
 	width:330px;
 	position:relative;
 }
@@ -798,7 +761,7 @@ ul.menuItems {
 	width:100%;
 	height:auto;
 }
-.front .slideCaption, .detail.student_project .slideCaption, .detail.exhibition .slideCaption{
+.front .slideCaption, .detail.student_project .slideCaption{
 	position:absolute;
 	z-index:10;
 	background-color: rgba(0,0,0,.5);
@@ -808,13 +771,13 @@ ul.menuItems {
 	padding-bottom:10px;
 	padding-top:10px;
 }
-.front .slideCaption a, .front .slideCaption a:hover, .detail.student_project .slideCaption a, .detail.student_project .slideCaption a:hover, .detail.exhibition .slideCaption a, .detail.exhibition .slideCaption a:hover{
+.front .slideCaption a, .front .slideCaption a:hover, .detail.student_project .slideCaption a, .detail.student_project .slideCaption a:hover{
 	color:#FFF;
 }
-.front .slide:hover .slideCaption, .detail.student_project .slide:hover .slideCaption, .detail.exhibition .slide:hover .slideCaption{
+.front .slide:hover .slideCaption, .detail.student_project .slide:hover .slideCaption{
 	display:block;
 }
-#browseResultsContainer .slideCaption, #multisearchResultsContainer .slideCaption{
+#browseResultsContainer .slideCaption{
 	margin-bottom: 30px;
 	height: 3.8em;
 	overflow: hidden;
@@ -875,15 +838,6 @@ ul.menuItems {
 }
 .detail .detailImages{
 	margin-bottom:65px;
-}
-.detail .detailImages.detailImagesGrid{
-	max-height:500px;
-	overflow-y: scroll;
-}
-.detail .detailImages.detailImagesGrid img{
-	width:100%;
-	height:auto;
-	margin-bottom:30px;
 }
 .detail .detailImagesThumbs img{
 	height:72px;
@@ -1062,9 +1016,8 @@ ul.menuItems {
 	margin:0px;
 }
 .detail .unitTop{
-	/*font-family:Gotham-light;
-	font-size:18px;*/
-	font-size: 15px;
+	font-family:Gotham-light;
+	font-size:18px;
 	padding-bottom:25px;
 }
 .detail .unitBottom{
@@ -1141,10 +1094,6 @@ ul.menuItems {
 	border-bottom:1px solid #FFF;
 	text-transform:capitalize;
 }
-.tabBorderRight{
-	border-right: 1px solid #939598;
-	margin-right:0px;
-}
 .detail .tab-content, .browse .tab-content{
 	padding-top:30px;
 }
@@ -1174,7 +1123,7 @@ ul.menuItems {
 	}
 }
 .browse .nav-tabs{
-	margin-top:20px;
+	margin-top:50px;
 }
 .listing H2{
 	margin-bottom:55px;
@@ -1212,7 +1161,7 @@ ul.menuItems {
 	height:auto;
 	margin-top:5px;
 }
-/* BROWSE + Multisearch */
+/* BROWSE */
 @media(min-width:1010px){
 	#pageArea.results{
 		padding-top:40px;
@@ -1229,32 +1178,6 @@ ul.menuItems {
     font-size:15px;
     font-family: 'Gotham-medium';
     color:#939598;
-}
-#multisearchResultsContainer H1{
-	font-size: 30px;
-	padding-bottom:0px;
-	margin-bottom:0px;
-	padding-top:30px;
-}
-#multisearchResultsContainer H2{
-	font-size: 26px;
-	font-family: 'Gotham-medium';
-	padding-left: 3px;
-	padding-bottom: 20px;
-	color:#000;
-	padding-top:55px;
-}
-#multisearchResultsContainer H2 a{
-	color:#000;
-}
-#multisearchResultsContainer H2 .resultCount{
-	font-size:15px;
-    font-family: 'Gotham-medium';
-    color:#939598;
-}
-.multisearchViewAll{
-	float:right;
-	margin-right:20px;
 }
 @media (max-width: 768px) {
 	#bSortByList{
@@ -1312,24 +1235,6 @@ ul.menuItems {
 	margin-top:15px !important;
 	margin-bottom:15px !important;
 }
-/* refine column on exhibition detail page */
-.detailRefine #bRefine{
-	border-right:none;
-}
-.detailRefine .bRefineFacet > div{
-	display:block;
-}
-.detailRefine .bRefineFacet{
-	border-top: 1px solid #939598;
-	border-bottom:0px;
-}
-.detailRefine #bRefine .bRefineFacet H5 {
-	cursor: default;
-	color:#000;
-}
-.detailRefine H3{
-	border-bottom:0px !important;
-}
 .bRefineFacet > div a span{
 	color: #939598;
 	float:right;
@@ -1338,7 +1243,7 @@ ul.menuItems {
 .bRefineFacet > div a, .bRefineFacet > div a span{
 	line-height:1.2em !important;
 }
-.search .btn, .browse .btn, .sets .btn, .detailRefine .btn {
+.search .btn, .browse .btn, .sets .btn {
     background-color: #000;
     color: #fff !important;
     margin-left: 0px;
@@ -1480,7 +1385,7 @@ ul.menuItems {
 }
 
 /* course detail */
-.courseEntityList, .textsList {
+.courseEntityList, .textsList{
 	padding:30px 30px 50px 30px;
 }
 .detail .textsList{
@@ -1489,10 +1394,6 @@ ul.menuItems {
 .browse .textsList {
     border-bottom: 1px solid #939598;
     margin-right: 15px;
-    padding:30px 0px 50px 0px;
-}
-.studentWorkHeading{
-	padding:30px 0px 0px 0px;
 }
 .courseEntityListOverflow{
 	max-height:600px;
@@ -1580,31 +1481,4 @@ div.caMediaOverlayControls{
 }
 .staticPage {
 	font-size:14px;
-}
-/* exhibition detail */
-@media(min-width:769px){
-	.exhibitionRightCol{
-		border-left: 1px solid #939598;
-	}
-}
-.black{
-	color:#000;
-}
-
-
-div.caMediaOverlayControls{
-	position: absolute;
-	padding: 10px 0px 10px 0px;
-	width: 100%;
-	bottom: 0px;
-	left: 0px;
-	z-index: 32000;
-	top: auto;
-	opacity: .8;
-}
-.detail.publication #detailRepNav{
-	display:none;
-}
-#caMediaPanelContentArea{
-	margin-top:0px;
 }
