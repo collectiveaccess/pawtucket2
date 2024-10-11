@@ -33,27 +33,27 @@
 	}
 ?>
 
-		<footer id="footer" class="p-2 text-center mt-auto bg-secondary text-bg-light">
-			<div class="container-xl">
-				<H1 class="pt-3 pb-1 display-4">&copy; Metabolic Studio</H1>
+		<footer id="footer" class="py-4 text-center mt-auto bg-secondary text-bg-light">
+			<div class="container-fluid">
+				<H1 class="pt-3 pb-1 display-5">&copy; Metabolic Studio</H1>
 				<div class="pt-0 pb-3">
 					1745 N. SPRING STREET UNIT 4 LOS ANGELES, CA 90012
 				</div>
-				<ul class="list-inline pt-2">
-  					<li class="list-inline-item fs-2 me-5"><a href="https://www.facebook.com/metabolicstudio" target="_blank" rel="noopener" aria-label="Facebook Link"><i class="bi bi-facebook"></i></a></li>
-					<li class="list-inline-item fs-2 me-5"><a href="https://www.instagram.com/metabolicstudio/" target="_blank" rel="noopener" aria-label="Instagram Link"><i class="bi bi-instagram"></i></a></li>
-					<li class="list-inline-item fs-2"><a href="https://twitter.com/metabolic1745" target="_blank" rel="noopener" aria-label="Twitter Link"><i class="bi bi-twitter-x"></i></a></li>
+				<ul class="list-inline py-2 m-0">
+  					<li class="list-inline-item fs-2 px-3"><a href="https://www.facebook.com/metabolicstudio" target="_blank" rel="noopener" aria-label="Facebook Link"><i class="bi bi-facebook"></i></a></li>
+					<li class="list-inline-item fs-2 px-3"><a href="https://www.instagram.com/metabolicstudio/" target="_blank" rel="noopener" aria-label="Instagram Link"><i class="bi bi-instagram"></i></a></li>
+					<li class="list-inline-item fs-2 px-3"><a href="https://twitter.com/metabolic1745" target="_blank" rel="noopener" aria-label="Twitter Link"><i class="bi bi-twitter-x"></i></a></li>
 				</ul>
-				<ul class="list-inline pt-2 fw-medium">
+				<ul class="list-inline pt-3 pb-0 m-0 fw-medium">
 					<li class="list-inline-item">
-						<?= caNavlink($this->request, _t('About The Studio'), "nav-link text-uppercase".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('About The Studio'), "nav-link text-uppercase px-3".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
-					<li class="list-inline-item"><a href="mailto:info@metabolicstudio.org" class="nav-link text-uppercase">Contact</a></li>
+					<li class="list-inline-item"><a href="mailto:info@metabolicstudio.org" class="nav-link text-uppercase px-3">Contact</a></li>
 					<li class="list-inline-item">
-						<?= caNavlink($this->request, _t('Terms of Service'), "nav-link text-uppercase".((strToLower($this->request->getController()) == "terms") ? " active" : ""), "", "Terms", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Terms of Service'), "nav-link text-uppercase px-3".((strToLower($this->request->getController()) == "terms") ? " active" : ""), "", "Terms", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="list-inline-item">
-						<?= caNavlink($this->request, _t('Privacy Policy'), "nav-link text-uppercase".((strToLower($this->request->getController()) == "privacy") ? " active" : ""), "", "Privacy", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Privacy Policy'), "nav-link text-uppercase px-3".((strToLower($this->request->getController()) == "privacy") ? " active" : ""), "", "Privacy", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
 				</ul>
 			</div> 
