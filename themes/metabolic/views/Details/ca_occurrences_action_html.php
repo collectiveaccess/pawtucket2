@@ -108,10 +108,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<dt><?= _t('About'); ?></dt>
 					<dd>^ca_occurrences.description</dd>
 				</ifdef>
-				<ifdef code="ca_occurrences.description">
-					<dt><?= _t('About'); ?></dt>
-					<dd>^ca_occurrences.description</dd>
-				</ifdef>
 				<ifdef code="ca_occurrences.external_link">
 					<dt><?= _t('External Link'); ?></dt>
 					<dd>

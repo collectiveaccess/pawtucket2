@@ -107,10 +107,10 @@ if($show_nav){
 										
 						{{{<dl class="mb-0">
 
-							<ifdef code="ca_objects.parent_id">
+							<ifdef code="ca_objects.parent_id"><unit relativeTo="ca_objects.parent">
 								<dt><?= _t('Part of Album'); ?></dt>
-								<dd><unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit></dd>
-							</ifdef>
+								<dd><l>^ca_objects.preferred_labels.name</l></dd>
+							</unit></ifdef>
 
 							<ifdef code="ca_objects.date">
 								<dt><?= _t('Date'); ?></dt>
@@ -182,19 +182,19 @@ if($show_nav){
 								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 							</ifcount>
 
-							<ifcount code="ca_occurrences" min="1">
+							<ifcount code="ca_occurrences" min="1" restrictToTypes="action">
 								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="action"><?= _t('Event'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="action"><?= _t('Events'); ?></ifcount></dt>
 								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="action"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
 							</ifcount>
-							<ifcount code="ca_occurrences" min="1">
+							<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition">
 								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="exhibition"><?= _t('Exhibition'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="exhibition"><?= _t('Exhibitions'); ?></ifcount></dt>
 								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
 							</ifcount>
-							<ifcount code="ca_occurrences" min="1">
+							<ifcount code="ca_occurrences" min="1" restrictToTypes="lecture_presentation">
 								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="lecture_presentation"><?= _t('Lecture/Presentation'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="lecture_presentation"><?= _t('Lectures/Presentations'); ?></ifcount></dt>
 								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="lecture_presentation"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
 							</ifcount>
-							<ifcount code="ca_occurrences" min="1">
+							<ifcount code="ca_occurrences" min="1" restrictToTypes="publication">
 								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="publication"><?= _t('Publication'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="publication"><?= _t('Publications'); ?></ifcount></dt>
 								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="publication"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
 							</ifcount>
@@ -206,13 +206,13 @@ if($show_nav){
 		</div>
 	</div>
 
-	{{{<ifcount code="ca_objects.related" min="1">
+	{{{<ifdef code="ca_objects.parent_id"><unit relativeTo="ca_objects.parent"><ifcount code="ca_objects.children" min="2"> 
 		<div class="row">
-			<div class="col"><h2>Assets</h2><hr></div>
+			<div class="col"><h2>^ca_objects.type_id: ^ca_objects.preferred_labels.name</h2><l>View ^ca_objects.type_id</l><hr></div>
 		</div>
 		<div class="row" id="browseResultsContainer">	
-			<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('search' => 'ca_objects.object_id:'.$t_object->get("ca_objects.object_id"))); ?>">
+			<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.parent_id:'.$t_object->get("ca_objects.parent_id"))); ?>">
 				<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 			</div>
 		</div>
-	</ifcount>}}}
+	</ifcount></unit></ifdef>}}}
