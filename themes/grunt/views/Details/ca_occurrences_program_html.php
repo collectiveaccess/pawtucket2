@@ -92,12 +92,11 @@ if($vb_2_col){
 						print "<div class='unit'><H3>".$vs_type."</H3>".join(", ", $va_entity_links)."</div>";
 					}
 				}
-
-?>				
-
-					{{{<ifdef code="ca_occurrences.credits"><div class="unit"><H3>Credits</H3><span class="trimText">^ca_occurrences.credits</span></div></ifdef>}}}
-					
-<?php
+				if($credits = caConvertLineBreaks($t_item->get("ca_occurrences.credits"))){
+?>
+					<div class="unit"><H3>Credits</H3><span class="trimText"><?php print $credits; ?></span></div>
+<?php				
+				}
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
 						
