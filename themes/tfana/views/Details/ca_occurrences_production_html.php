@@ -86,40 +86,13 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-{{{<ifdef code="ca_object_representations.media.large">
-	<div class="row justify-content-center mb-3">
-		<div class="col">
-			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
-		</div>
-	</div>
-</ifdef>}}}
 	<div class="row row-cols-1 row-cols-md-2">
+		{{{<ifcount code="ca_objects" restrictToRelationshipTypes="select" min="1"><unit relativeTo="ca_objects" restrictToRelationshipTypes="select" limit="1" delimiter=" ">
+			<ifdef code="ca_object_representations.media.large"><div class="col featuredImage">
+				<l>^ca_object_representations.media.large</l>
+			</div></ifdef>
+		</unit></ifcount>}}}
 		<div class="col">				
-			{{{<dl class="mb-0">
-				<ifcount code="ca_entities" restrictToRelationshipTypes="created_by">
-					<dt><?= _t('Work by'); ?></dt>
-					<unit relativeTo="ca_entities" restrictToRelationshipTypes="created_by" delimeter=" "><dd>
-						<l>^ca_entities.preferred_labels</l>
-					</dd></unit>
-				</ifcount>
-				<ifcount code="ca_entities" restrictToRelationshipTypes="director">
-					<dt><?= _t('Director'); ?></dt>
-					<unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimeter=" "><dd>
-						<l>^ca_entities.preferred_labels</l>
-					</dd></unit>
-				</ifcount>
-				<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text">
-					<dt><?= _t('Description'); ?></dt>
-					<dd>
-						^ca_occurrences.descriptionWithSource.prodesc_text
-						<ifdef code="ca_occurrences.descriptionWithSource.prodesc_source">
-							<div class="mt-3"><i>^ca_occurrences.descriptionWithSource.prodesc_source</i></div>
-						</ifdef>
-					</dd>
-				</ifdef>
-			</dl>}}}
-		</div>
-		<div class="col">
 			{{{<dl class="mb-0">
 				<ifdef code="ca_occurrences.parent.preferred_labels">
 					<dt><?= _t('Season'); ?></dt>
@@ -145,48 +118,107 @@ $map_options = $this->getVar('mapOptions') ?? [];
 						^ca_occurrences.venue%delimiter=,_
 					</dd>
 				</ifdef>
-				<ifcount code="ca_occurrences.related" restrictToTypes="production" min="1">
-					<dt><ifcount code="ca_occurrences.related" restrictToTypes="production" min="1" max="1"><?= _t('Related Production'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="production" min="2"><?= _t('Related Productions'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences.related" restrictToTypes="production" delimiter=""><dd>
-						<l>^ca_occurrences.preferred_labels</l>
-					</dd></unit>
+				<ifcount code="ca_entities" restrictToRelationshipTypes="created_by" min="1">
+					<dt><?= _t('Work by'); ?></dt>
+					<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="created_by" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></dd>
 				</ifcount>
-				<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1">
-					<dt><ifcount code="ca_occurrences.related" restrictToTypes="event" min="1" max="1"><?= _t('Related Event'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="event" min="2"><?= _t('Related Events'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences.related" restrictToTypes="event" delimiter=""><dd>
-						<l>^ca_occurrences.preferred_labels</l>
-					</dd></unit>
+				<ifcount code="ca_entities" restrictToRelationshipTypes="director" min="1">
+					<dt><ifcount code="ca_entities" restrictToRelationshipTypes="director" min="1" max="1"><?= _t('Director'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="director" min="2"><?= _t('Directors'); ?></ifcount></dt>
+					<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></dd>
 				</ifcount>
-				<ifcount code="ca_occurrences.related" restrictToTypes="education" min="1">
-					<dt><ifcount code="ca_occurrences.related" restrictToTypes="education" min="1" max="1"><?= _t('Related Education Program'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="education" min="2"><?= _t('Related Education Program'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences.related" restrictToTypes="education" delimiter=""><dd>
-						<l>^ca_occurrences.preferred_labels</l>
-					</dd></unit>
-				</ifcount>
-				<ifcount code="ca_collections" min="1">
-					<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-					<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
-				</ifcount>
-				<ifcount code="ca_entities" min="1">
-					<dt><ifcount code="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" min="1"><?= _t('Production Roles'); ?></ifcount></dt>
-					<dd><unit relativeTo="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
-				</ifcount>
-			</dl>}}}					
+			</dl>}}}
 		</div>
 	</div>
-	{{{<ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="1" max="1"><?= _t('Performer'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="2"><?= _t('Performers'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities" restrictToRelationshipTypes="actor" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-light h-100 w-100 text-black">^ca_entities.preferred_labels</l></dd></unit>
-		</dl>
-	</ifcount>}}}
-{{{<ifcount code="ca_objects" min="1">
+<?php
+	if($t_item->get("ca_occurrences.descriptionWithSource.prodesc_text") || $t_item->get("ca_occurrences.related", array("checkAccess" => $access_values)) || $t_item->get("ca_collections", array("checkAccess" => $access_values)) || $t_item->get("ca_entities", array("excludeRelationshipTypes" => array("director", "created_by"), "checkAccess" => $access_values))){
+?>
+	<div class="row row-cols-1">
+		<div class="col">
+			<div class="bg-light py-3 px-4 my-4">
+				<div class="row row-cols-1 row-cols-md-2 mb-4 bg-light">
+					
+					{{{<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text">
+						<div class="col">
+							<dt><?= _t('Description'); ?></dt>
+							<dd>
+								^ca_occurrences.descriptionWithSource.prodesc_text
+							</dd>
+						</div>
+					</ifdef>}}}					
+					<div class="col">
+						{{{<dl class="mb-0">
+							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="actor">
+								<dt><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="1" max="1"><?= _t('Performer'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="2"><?= _t('Performers'); ?></ifcount></dt>
+								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="actor" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></dd>
+							</ifcount>
+							<ifcount code="ca_entities" min="1" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant">
+								<dt><ifcount code="ca_entities" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" min="1"><?= _t('Production Roles'); ?></ifcount></dt>
+								<dd><unit relativeTo="ca_entities_x_occurrences" sort="ca_entities_x_occurrences.rank" excludeRelationshipTypes="actor,created_by,director,related,presented_by,premiere,trainer,curator,honoree,host,moderator,speaker,sponsor,inspired_by,default,premiere_cast,participant" delimiter=", "><l>^ca_entities.preferred_labels</l> (<ifdef code="ca_entities_x_occurrences.source_info">^ca_entities_x_occurrences.source_info</ifdef><ifnotdef code="ca_entities_x_occurrences.source_info">^relationship_typename</ifnotdef>)</unit></dd>
+							</ifcount>
+							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="related">
+								<dt><ifcount code="ca_entities" restrictToRelationshipTypes="related" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="related" min="2"><?= _t('Related People'); ?></ifcount></dt>
+								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="related" delimiter=", "><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></dd>
+							</ifcount>
+							<ifcount code="ca_occurrences.related" restrictToTypes="production" min="1">
+								<dt><ifcount code="ca_occurrences.related" restrictToTypes="production" min="1" max="1"><?= _t('Related Production'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="production" min="2"><?= _t('Related Productions'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences.related" restrictToTypes="production" delimiter=""><dd>
+									<l><unit relativeTo="ca_occurrences.parent">^ca_occurrences.preferred_labels: </unit>^ca_occurrences.preferred_labels</l>
+								</dd></unit>
+							</ifcount>
+							<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1">
+								<dt><ifcount code="ca_occurrences.related" restrictToTypes="event" min="1" max="1"><?= _t('Related Event'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="event" min="2"><?= _t('Related Events'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences.related" restrictToTypes="event" delimiter=""><dd>
+									<l>^ca_occurrences.preferred_labels</l>
+								</dd></unit>
+							</ifcount>
+							<ifcount code="ca_occurrences.related" restrictToTypes="education" min="1">
+								<dt><ifcount code="ca_occurrences.related" restrictToTypes="education" min="1" max="1"><?= _t('Related Education Program'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToTypes="education" min="2"><?= _t('Related Education Programs'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences.related" restrictToTypes="education" delimiter=""><dd>
+									<l>^ca_occurrences.preferred_labels</l>
+								</dd></unit>
+							</ifcount>
+							<ifcount code="ca_collections" min="1">
+								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
+								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
+							</ifcount>
+						</dl>}}}					
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php
+	}
+?>	
+{{{<ifcount code="ca_objects" excludeRelationshipTypes="select" min="1">
 	<div class="row">
 		<div class="col"><h2>Related Objects</h2><hr></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_occurrences.occurrence_id:'.$t_item->get("ca_occurrences.occurrence_id"))); ?>">
-			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+		<unit relativeTo="ca_objects" excludeRelationshipTypes="select" delimiter="" limit="8">
+
+
+
+				<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
+					<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
+					  <l>^ca_object_representations.media.medium%class="card-img-top object-fit-contain px-3 pt-3 rounded-0"</l>
+						<div class='card-body'>
+							<div class='card-title'><small class='text-body-secondary'>^ca_objects.type_id, ^ca_objects.idno</small><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div><ifdef code='ca_objects.date'><p class='card-text small lh-sm text-truncate'>^ca_objects.date</p></ifdef>
+						</div>
+						<div class='card-footer text-end bg-transparent'>
+							<l class="link-dark mx-1"><i class='bi bi-arrow-right-square'></i></l>
+						</div>
+					 </div>	
+				</div><!-- end col -->
+
+		
+		</unit>
+	</div>
+	<ifcount code="ca_objects" excludeRelationshipTypes="select" min="9">
+		<div class="row">
+			<div class="col text-center pb-4 mb-4">
+				<?php print caNavLink($this->request, "Full Results  <i class='ps-2 bi bi-box-arrow-up-right' aria-label='link out'></i>", "btn btn-primary", "", "Browse", "objects", array("facet" => "production_facet", "id" => $t_item->get("ca_occurrences.occurrence_id"))); ?>
+			</div>
 		</div>
 	</div>
 </ifcount>}}}

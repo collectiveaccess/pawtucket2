@@ -16,9 +16,9 @@ $is_ajax			= (bool)$this->request->isAjax();
 $num_pages 			= ceil($result_size/$hits_per_block);
 
 
-$prev_button = '<i class="bi bi-chevron-double-left"></i>';
+$prev_button = '<i class="bi bi-chevron-left" aria-label="previous page"></i>';
 			
-$next_button = '<i class="bi bi-chevron-double-right"></i>';
+$next_button = '<i class="bi bi-chevron-right" aria-label="next page"></i>';
 
 ?>
 
@@ -76,10 +76,10 @@ $next_button = '<i class="bi bi-chevron-double-right"></i>';
 			
 			// if(sizeof($paginatedNumbers) > 1) {
 				if($current_page > 1) {
-					array_unshift($paginatedNumbers, caNavLink($this->request, $prev_button, "pageLink", '*', '*', '*', ['s' => ($current_page - 2) * $hits_per_block, 'key' => $browse_key, '_advanced' => $is_advanced]));
+					array_unshift($paginatedNumbers, "<li>".caNavLink($this->request, $prev_button, "pageLink", '*', '*', '*', ['s' => ($current_page - 2) * $hits_per_block, 'key' => $browse_key, '_advanced' => $is_advanced], ['title' => 'Previous Page'])."</li>");
 				}
 				if($current_page < $num_pages) {
-					array_push($paginatedNumbers, caNavLink($this->request, $next_button, "pageLink", '*', '*', '*', ['s' => $current_page * $hits_per_block, 'key' => $browse_key, '_advanced' => $is_advanced]));
+					array_push($paginatedNumbers, "<li>".caNavLink($this->request, $next_button, "pageLink", '*', '*', '*', ['s' => $current_page * $hits_per_block, 'key' => $browse_key, '_advanced' => $is_advanced], ['title' => 'Next Page'])."</li>");
 				}
 				print join(' ', $paginatedNumbers);
 			// }

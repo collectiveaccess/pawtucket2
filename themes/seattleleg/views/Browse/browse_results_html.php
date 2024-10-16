@@ -69,11 +69,11 @@ $va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 			
 $action = $this->request->getAction();	// form type (Eg. "combined")
 
-
 if (!$vb_ajax) {	// !ajax
 ?>
 
 <div class="row" style="clear:both;">
+	<div class="col-sm-12">
 
 
 <div id="search_results">
@@ -83,78 +83,55 @@ if (!$vb_ajax) {	// !ajax
   <h2><?= $va_browse_info['displayName'] ?? '???'; ?></h2>
 
 	<?php
-			//
-			// Output form-specific header text here
-			//
 			switch($action) {
 				case 'combined':
-	?>
-						<p>
-							<strong style="color: maroon;">This database contains legislation that has already been acted on by Council (passed, retired, etc.).
-							Legislation currently in process can be found here: <a class="text-decoration-underline" href="https://seattle.legistar.com/Legislation.aspx" target="_blank">Current Legislation</a>.</strong>
-							Please visit our <a class="text-decoration-underline" href="http://www.seattle.gov/cityclerk/legislation-rules-records-and-resources/a-new-way-to-view-legislation-and-agendas" target="_blank">FAQ</a> page for additional information.
-						</p>
-						<p>
-							To narrow your results or for advanced searching, you may wish to search on each database separately. Refer to the list of
-							<a class="text-decoration-underline" href="/">all Clerk and Municipal Archives records indexes</a> to navigate.
-						</p>
-	<?php
-					break;
+					print $this->getVar("combined_results_description");
+				break;
+				# ------------------------
 				case 'bills':
-	?>
-						<p>
-							<strong style="color: maroon">This database contains legislation that has already been acted on by Council (passed, retired, etc.). Legislation currently in process can be found here: <a href="https://seattle.legistar.com/Legislation.aspx" target="_blank">Current Legislation</a>.</strong>
-						</p>
-	<?php
-					break;
+					print $this->getVar("council_bills_ordinances_results_description");
+				break;
+				# ------------------------
 				case 'resolutions':
-	?>
-						<p>
-							<strong style="color: maroon">This database contains legislation that has already been acted on by Council (passed, retired, etc.).
-							Legislation currently in process can be found here: <a href="https://seattle.legistar.com/Legislation.aspx" target="_blank">Current Legislation</a>.</strong>
-							Please visit our <a href="http://www.seattle.gov/cityclerk/legislation-rules-records-and-resources/a-new-way-to-view-legislation-and-agendas" target="_blank">FAQ</a> page for additional information.
-						</p>
-	<?php
-					break;
 				case 'clerk':
-	?>
-						<p>
-							<strong style="color: maroon">This database contains legislation that has already been acted on by Council (passed, retired, etc.).
-							Legislation currently in process can be found here: <a href="https://seattle.legistar.com/Legislation.aspx" target="_blank">Current Legislation</a>.</strong>
-							Please visit our <a href="http://www.seattle.gov/cityclerk/legislation-rules-records-and-resources/a-new-way-to-view-legislation-and-agendas" target="_blank">FAQ</a> page for additional information.
-						</p>
-	<?php
+						print $this->getVar("resolutions_comptroller_clerk_files_result_description");
+				break;
+				# ------------------------
 		}
 	?>
 
   <hr>
+	<a name="h0" role="button" aria-label="anchor"></a>		
+  <div id="top-search-nav" class="d-flex justify-content-between">
+		<nav class="nav-icons mb-2 mb-md-0" aria-label="top search results">
+			<ul class="nav">
+				<li>
+<?php
+				print caNavLink($this->request, "<i class='bi bi-house-door-fill' aria-label='Home' title='Home'></i>", "", "", "", "");
+?>
+				</li>
+				<li>
+<?php
+				print caNavLink($this->request, "<i class='bi bi-search' aria-label='Back to Search Form'></i>", "", "Search", "advanced", $action, null, array("title" => "Back to Search Form", "aria-label" => "Back to Search Form"));
+?>
+				</li>
+<?php
+				$pagebar = $this->render("Browse/paging_bar_html.php"); 
+				print $pagebar;
+?>
 
-  <div id="top-search-nav" class="d-flex inline-block justify-content-between">
-
-		<div class="nav-icons">
-			<a name="h0" role="button" aria-label="anchor"></a>
-
-			<a href="/" aria-label="home">
-				<i class="bi bi-house-door-fill"></i>
-			</a>
-
-			<a href="/index.php/Search/advanced/<?= $action; ?>" aria-label="search">
-				<i class="bi bi-search"></i>
-			</a>
-
-			<?php
-				 $pagebar = $this->render("Browse/paging_bar_html.php"); 
-				 print $pagebar;
-			?>
-
-			<a href="#hb" aria-label="page down">
-				<i class="bi bi-chevron-double-down"></i>
-			</a>
-
-			<a href="https://clerk.seattle.gov/search/help/" aria-label="help">
-				<i class="bi bi-question-lg"></i>
-			</a>
-		</div>
+				<li>
+					<a href="#hb" aria-label="page down" title="Jump to bottom">
+						<i class="bi bi-chevron-double-down" aria-label="Jump to bottom"></i>
+					</a>
+				</li>
+				<li>
+					<a href="https://clerk.seattle.gov/search/help/" title="Help">
+						<i class="bi bi-question-lg" aria-label="Help" ></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
 
 		<div id="export-controls">
 			<button onclick="document.location='<?= caNavUrl($this->request, '*', '*', '*', ['view' => 'xlsx', 'export_format' => 'excel']); ?>'; return false;" class="btn btn-sm btn-primary">
@@ -162,20 +139,13 @@ if (!$vb_ajax) {	// !ajax
 			</button>
 			<br />
 
-				<small><a role="button" class="" style="font-size: unset;" data-bs-toggle="modal" data-bs-target="#ExportingResults">What's this?</a></small>
-				<div class="modal fade" id="ExportingResults">
+				<button class="modalButtonLink" data-bs-toggle="modal" data-bs-target="#ExportingResults">What's this?</button>
+				<div class="modal fade" id="ExportingResults" aria-labelledby="ExportModalTitle">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-body">
-								<h3 class="centered">Exporting Search Results</h3>
-								<p>Clicking the button will download your results to a CSV (comma-separated values) file, which can be opened in Microsoft Excel or most other spreadsheet software.</p>
-								<ul>
-									<li>Data is continually added and revised for accuracy. Your results will not be automatically updated after you export, until you do a new search and export again.</li>
-									<li>This feature is only enabled for legislation at the present time.</li>
-									<li>Exporting includes all public data fields except for full text.</li>
-									<li>Even if your search spans multiple pages, your export will contain everything.</li>
-									<li>Exports are currently limited to a maximum of 25,000 records per download.</li>
-								</ul>
+								<div id="ExportModalTitle" class="centered fw-bold fs-3 pb-1">Exporting Search Results</div>
+								<?php print $this->getVar("results_export_info"); ?>
 							</div>
 						<button class="btn btn-primary" data-bs-dismiss="modal">Close</button></div>
 					</div>
@@ -183,8 +153,6 @@ if (!$vb_ajax) {	// !ajax
 
 		</div>
   </div>
-
-
 <?php
 	$s = $vn_start + 1;
 	$e = $vn_start + $vn_hits_per_block;
@@ -193,35 +161,170 @@ if (!$vb_ajax) {	// !ajax
 	$search_str = $va_criteria[0]['value'];
 ?>
   <strong>Documents:</strong> <?= $s; ?> - <?= $e; ?> of <?= $vn_result_size ?> &nbsp; <strong>Search String</strong> <span class="queries"> : <?= $search_str; ?> </span>
-	<br>
+  <br>
+	<hr>
 
-  <hr>
-
-	<!-- <div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'> -->
-	<div class='col-sm-12'>
 		<div class="row">
 			<div class="col-md-12">
 			<!-- <div class="col-md-12 col-lg-5"> -->
-				<H1 class="text-capitalize">
+				<H3 class="text-capitalize fs-1">
 					<?php
 							print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 					?>		
-				</H1>
+				</H3>
 			</div>
-
-			<div id="browseResultsContainer">
-				<div class="row">
-
+		</div>
+		<div id="browseResultsContainer">
 					<table style="width: 100%;" class="table table-striped overflow-x-auto">
 						<tbody>
-							<tr>
-								<th>Result</th>
-								<th>File Type</th>
-								<th>Number</th>
-								<th>Filed</th>
-								<th>Title</th>
-							</tr>
 
+						<!-- TODO: For each type alter columns
+						 	Combined
+						 	Agendas
+							Council bills and ordinances
+							Resolution
+							Comptroller / Clerk file 
+							Minutes
+							Committee history
+							Meeting
+						-->
+						 
+
+						<?php
+								switch($action) {
+									case 'combined':
+						?>
+								<tr>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "File Type".(($vs_current_sort == "Type") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Type") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Type', 'direction' => (($vs_current_sort == "Type") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Number</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Filed / Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Filed / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+								</tr>
+						<?php
+								break;
+								case 'agenda':
+									// Agendas search results: 
+									// 1) Remove "File Type"
+									// 2) Remove "Number"  
+									// 3) Remove "Filed"
+									// 5) Remove Title
+									// 4) Add "Meeting Date" (ca_objects.DATE)
+									// 6) Add "Committee" (ca_objects.COMM)
+									// 7) Sort on "Meeting Date" (ca_objects.DATE)
+						?>
+								<tr>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Committee".(($vs_current_sort == "Committee") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Committee") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Committee', 'direction' => (($vs_current_sort == "Committee") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Meeting Date / Committee".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+								</tr>
+						<?php
+								break;
+								case 'bills':
+								// 1) Remove "File Type"
+								// 2) Change label "Number" to "Ordinance Number" 
+								// 3) Add "Council Bill Number" (ca_objects.CBN)
+								// 4) Add "Passed" (ca_objects.DTSI)
+								// 5) Truncate title field
+								// 6) Sort on "Passed" (ca_objects.DTSI — descending
+						?>
+								<tr>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Ordinance Number".(($vs_current_sort == "Ordinance_Number") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Ordinance_Number") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Ordinance_Number', 'direction' => (($vs_current_sort == "Ordinance_Number") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Council Bill Number".(($vs_current_sort == "Council_Bill_Number") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Council_Bill_Number") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Council_Bill_Number', 'direction' => (($vs_current_sort == "Council_Bill_Number") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Filed") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Filed") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Filed', 'direction' => (($vs_current_sort == "Filed") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Passed".(($vs_current_sort == "Passed") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Passed") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Passed', 'direction' => (($vs_current_sort == "Passed") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Filed / Passed / Title".(($vs_current_sort == "Filed") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Filed") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Filed', 'direction' => (($vs_current_sort == "Filed") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+								</tr>
+						<?php
+								break;
+								case 'resolutions':
+								// Resolution search results: 
+								// 1) Remove "File Type"
+								// 2) Truncate title field
+								// 3) Sort by date filed (ca_objects.DTF — descending)
+						?>
+								<tr>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell">Number</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Filed / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+								</tr>
+						<?php
+								break;
+								case 'clerk':
+								// Comptroller / Clerk file search results: 
+								// 1) Truncate title field
+								// 2) Sort by date filed (ca_objects.DTF — descending)
+						?>
+								<tr>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "File Type".(($vs_current_sort == "Type") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Type") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Type', 'direction' => (($vs_current_sort == "Type") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell">Number</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Filed / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+								</tr>	
+						<?php
+								break;
+								case 'minutes':
+								// Minutes search results: 
+								// 1) Remove "File Type" 
+								// 2) Remove "Number" 
+								// 3) Remove "Filed" 
+								// 4) Add "Meeting Date" (ca_objects.DATE) 
+								// 5) Remove Title 
+								// 6) Add "Committee" (ca_objects.COMM) 
+								// 7) Sort on "Meeting Date" (ca_objects.DATE)
+						?>
+								<tr>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Committee".(($vs_current_sort == "Committee") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Committee") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Committee', 'direction' => (($vs_current_sort == "Committee") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Meeting Date / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+								</tr>
+						<?php
+								break;
+								case 'meetings':
+								// Meeting search results:
+								// 1) Remove "File Type"
+								// 2) Remove "Number"
+								// 3) Remove "Filed"
+								// 4) Add "Meeting Date" (ca_occurrences.DATE)
+								// 5) Sory on "Meeting Date" (ca_occurrences.DATE)
+						?>
+								<tr>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Meeting Date / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+								</tr>
+						<?php
+								break;
+								case 'committees':
+								// Committee history search results:
+								// 1) Remove "File Type"
+								// 2) Remove "Number"
+								// 3) Remove "Filed"
+								// 4) Add "Dates" (ca_entities.comm_date)
+								// 5) Change label "Title" to "Committee Name"
+								// 6) Sort on "Dates" (ca_entities.comm_date)
+						?>
+								<tr>
+									<th class="text-nowrap d-none d-md-table-cell">Result</th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Dates".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Committee Name".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Dates / Committee Name".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+								</tr>
+						<?php
+							}
+						?>
+
+					
 							<?php
 								} // !ajax
 								# --- check if this result page has been cached
@@ -238,46 +341,49 @@ if (!$vb_ajax) {	// !ajax
 							?>
 						</tbody>
 					</table>
-
-
-				</div><!-- end row -->
 			</div><!-- end browseResultsContainer -->
-	</div><!-- end col-8 -->
-
-
-
-
 
 	<hr>
 
-  <strong>Documents:</strong> <?= $s; ?> - <?= $e; ?> of <?= $vn_result_size ?> &nbsp; <strong>Search String</strong> <span class="queries"> : <?= $search_str; ?> </span>
+  <strong>Documents:</strong> <?= $s; ?> - <?= $e; ?> of <?= $vn_result_size ?> &nbsp; <strong>Search String</strong><span class="queries">: <?= $search_str; ?> </span>
 	<br>
 
   <hr>
 
-  <p id="bottom-search-nav">
-    <a href="/" aria-label="home">
-      <i class="bi bi-house-door-fill"></i>
-    </a>
-    <a href="/index.php/Search/advanced/<?= $action; ?>" aria-label="search">
-      <i class="bi bi-search"></i>
-    </a>
-		
-		<?= $pagebar; ?>
-
-    <a href="#h0" aria-label="page up">
-      <i class="bi bi-chevron-double-up"></i>
-    </a>
-
-    <a href="https://clerk.seattle.gov/search/help/" aria-label="help">
-      <i class="bi bi-question-lg"></i>
-    </a>
-  </p>
+  <div id="bottom-search-nav">
+	<nav class="nav-icons mb-2 mb-md-0" aria-label="bottom search results">
+		<ul class="nav">
+			<li>
+<?php 
+				print caNavLink($this->request, "<i class='bi bi-house-door-fill' aria-label='Home' title='Home'></i>", "", "", "", "");
+?>
+			</li>
+			<li>
+<?php
+				print caNavLink($this->request, "<i class='bi bi-search' aria-label='Back to Search Form'></i>", "", "Search", "advanced", $action, null, array("title" => "Back to Search Form", "aria-label" => "Back to Search Form"));
+?>
+			</li>
+<?php		
+		print $pagebar;
+?>
+			<li>
+				<a href="#h0" aria-label="page up" title="Back to Top">
+				  <i class="bi bi-chevron-double-up" aria-label="Back to Top"></i>
+				</a>
+			</li>
+			<li>
+				<a href="https://clerk.seattle.gov/search/help/" aria-label="help" title="Help">
+				  <i class="bi bi-question-lg" aria-label="Help"></i>
+				</a>
+			</li>
+		</ul>
+	</nav>
+  </div>
 
   <a id="hb" role="button" aria-label="anchor"></a>
 
 </div>
 
 
-		
+	</div><!-- end col -->
 </div><!-- end row -->

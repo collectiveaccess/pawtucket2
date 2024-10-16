@@ -59,7 +59,7 @@ if($show_nav){
 ?>
 	<div class="row">
 		<div class="col-md-12">
-			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
+			<H1 class="fs-3">{{{^ca_objects.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0">
 		</div>
@@ -117,7 +117,7 @@ if($show_nav){
 							</ifdef>
 							<ifdef code="ca_objects.color_bw">
 								<dt><?= _t('Color'); ?></dt>
-								<dd>^ca_objects.color_bw.colorType</dd>
+								<dd>^ca_objects.color_bw</dd>
 							</ifdef>
 							<ifdef code="ca_objects.format_type_press">
 								<dt><?= _t('Format'); ?></dt>
@@ -135,12 +135,12 @@ if($show_nav){
 								<dt><?= _t('Runtime'); ?></dt>
 								<dd>^ca_objects.TapeRuntime%delimiter=,_</dd>
 							</ifdef>
-							<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text">
+							<ifdef code="ca_objects.descriptionWithSource.prodesc_text">
 								<dt><?= _t('Description'); ?></dt>
 								<dd>
-									^ca_occurrences.descriptionWithSource.prodesc_text
-									<ifdef code="ca_occurrences.descriptionWithSource.prodesc_source">
-										<div class="mt-3"><i>^ca_occurrences.descriptionWithSource.prodesc_source</i></div>
+									^ca_objects.descriptionWithSource.prodesc_text
+									<ifdef code="ca_objects.descriptionWithSource.prodesc_source">
+										<div class="mt-3"><i>^ca_objects.descriptionWithSource.prodesc_source</i></div>
 									</ifdef>
 								</dd>
 							</ifdef>

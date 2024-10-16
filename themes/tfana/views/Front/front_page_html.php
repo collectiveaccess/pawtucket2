@@ -39,35 +39,14 @@
 	}
 ?>
 
-<div>		
-			<div class="img-fluid">
-		<?php
-			print caGetThemeGraphic($this->request, 'tfana_front.png', array("alt" => "Collage of imagery from various TFANA productions"))
-		?>
-			</div>
-</div>
 <div class="bg-dark">
-<div class="container-xxl mb-4">
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="bg-dark text-center py-4 my-2">
-				<div class="row justify-content-center">
-					<div class="col-sm-12 col-md-8 col-lg-6">
-						<div class="echoHeading">
-							<span tabindex="-1" class="display-1 opacity-25 text-white text-uppercase fw-bolder">{{{hp_intro_title}}}</span>
+	<div class="container-xxl pb-4">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="bg-dark text-center pt-4 mt-2">
+					<div class="row justify-content-center">
+						<div class="col-sm-12">
 							<h1 class="text-light">{{{hp_intro_title}}}</h1>
-						</div>
-						<div class="text-white pt-3 pb-4">{{{hp_intro}}}</div>
-						<div class="row justify-content-center">
-							<div class="col-sm-12 col-md-8 col-lg-6">
-								<form role="search" class='py-4' action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
-									<div class="input-group pb-3">
-										<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
-										<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search the archive" aria-label="Search Bar">
-										<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
-									</div>
-								</form>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -75,6 +54,39 @@
 		</div>
 	</div>
 </div>
+<div>		
+	<div class="img-fluid">
+<?php
+			print caGetThemeGraphic($this->request, 'tfana_front.png', array("alt" => "Collage of imagery from various TFANA productions"))
+?>
+	</div>
+</div>
+<div class="bg-dark">
+	<div class="container-xxl mb-4">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="bg-dark text-center pb-4 mb-2">
+					<div class="row justify-content-center">
+						<div class="col-sm-12 col-md-8 col-lg-6">
+	
+							<div class="text-white display-6 pt-4 mt-4 pb-4">{{{hp_intro}}}</div>
+							<div class="row justify-content-center">
+								<div class="col-sm-12 col-md-8 col-lg-6">
+									<form role="search" class='py-4' action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
+										<div class="input-group pb-3">
+											<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
+											<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search the archive" aria-label="Search Bar">
+											<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <?php
 

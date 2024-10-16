@@ -50,7 +50,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
   <p></p>
   <hr />
 
-	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
+	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
   <hr />
 
@@ -184,7 +184,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
   <hr />
 
-  <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
+  <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
 
 </div>
 

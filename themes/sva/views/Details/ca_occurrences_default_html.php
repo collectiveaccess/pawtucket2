@@ -56,7 +56,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
 		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_occurrences.preferred_labels.name}}}</H1>
+			<H1 class="fs-2">{{{^ca_occurrences.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_occurrences.type_id|ca_occurrences.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_occurrences.type_id">^ca_occurrences.type_id</ifdef><ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0">
 		</div>
@@ -94,18 +94,29 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				<ifdef code="ca_occurrences.Ex_type">
 					<dt><?= _t('Exhibition Type'); ?></dt>
 					<dd>
-						^ca_occurrences.Ex_type
-					</dd>
-				</ifdef><ifdef code="ca_occurrences.event_type">
-					<dt><?= _t('Event Type'); ?></dt>
-					<dd>
-						^ca_occurrences.event_type
+						^ca_occurrences.Ex_type%delimiter=,_
 					</dd>
 				</ifdef>
+				<ifdef code="ca_occurrences.event_type">
+					<dt><?= _t('Event Type'); ?></dt>
+					<dd>
+						^ca_occurrences.event_type%delimiter=,_
+					</dd>
+				</ifdef>
+				<!--<ifdef code="ca_occurrences.exhibition_event_type">
+					<dt><?= _t('Exhibition / Event Type (used for browse filter - remove)'); ?></dt>
+					<dd>
+						^ca_occurrences.exhibition_event_type%delimiter=,_
+					</dd>
+				</ifdef>-->
 				<ifcount code="ca_places" min="1">
 					<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Places'); ?></ifcount></dt>
 					<unit relativeTo="ca_places" delimiter=""><dd>^ca_places.preferred_labels</dd></unit>
 				</ifcount>
+				<ifdef code="ca_occurrences.place_as_text">
+					<dt><?= _t('Place'); ?></dt>
+					<unit relativeTo="ca_occurrences.place_as_text" delimiter=" "><dd>^ca_occurrences.place_as_text</dd></if></unit>
+				</ifdef>
 				<ifdef code="ca_occurrences.dates.dates_value">
 					<dt><?= _t('Date'); ?></dt>
 					<unit relativeTo="ca_occurrences.dates" delimiter=""><if rule="^ca_occurrences.dates.dates_type !~ /Reception/"><dd>^ca_occurrences.dates.dates_value (^ca_occurrences.dates.dates_type)</dd></if></unit>
@@ -126,7 +137,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</ifcount>
 				<ifcount code="ca_occurrences" min="1">
 					<dt><ifcount code="ca_occurrences.related" min="1"><?= _t('Related Exhibitions & Events'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences.related" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
+					<unit relativeTo="ca_occurrences.related" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l></dd></unit>
 				</ifcount>
 			</dl>}}}
 		</div>

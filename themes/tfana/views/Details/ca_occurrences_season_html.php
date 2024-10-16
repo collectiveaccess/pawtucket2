@@ -86,20 +86,52 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-	<div class="row">
-		<div class="col">				
-			{{{<ifdef code="ca_occurrences.description"><div>^ca_occurrences.description</div></ifdef>}}}
-		</div>
-	</div>
 	{{{<ifcount code="ca_occurrences.children" min="1">
 		<dl class="row">
 			<ifcount code="ca_occurrences.children" restrictToTypes="production" min="1">
 				<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences.children" restrictToTypes="production" min="1" max="1"><?= _t('Production'); ?></ifcount><ifcount code="ca_occurrences.children" restrictToTypes="production" min="2"><?= _t('Productions'); ?></ifcount></dt>
-				<unit relativeTo="ca_occurrences.children" restrictToTypes="production" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-light h-100 w-100 text-black">^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.date"><br>^ca_occurrences.date</ifdef></l></dd></unit>
+				<unit relativeTo="ca_occurrences.children" restrictToTypes="production" delimiter="">
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center">
+						<l class="pt-3 pb-4 px-3 align-items-center justify-content-center h-100 w-100 text-black detailRelatedImage d-block bg-light">
+							<ifcount code="ca_objects" restrictToRelationshipTypes="select" min="1"><unit relativeTo="ca_objects" restrictToRelationshipTypes="select" limit="1" delimiter=" ">
+								<ifdef code="ca_object_representations.media.large"><div>
+									^ca_object_representations.media.large
+								</div></ifdef>
+							</unit></ifcount>
+							<div class="fw-bold">^ca_occurrences.preferred_labels</div><ifdef code="ca_occurrences.date"><div class="small">^ca_occurrences.date</div></ifdef>
+						</l>
+					</dd>
+				</unit>
 			</ifcount>
 			<ifcount code="ca_occurrences.children" restrictToTypes="event" min="1">
 				<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences.children" restrictToTypes="event" min="1" max="1"><?= _t('Event'); ?></ifcount><ifcount code="ca_occurrences.children" restrictToTypes="event" min="2"><?= _t('Events'); ?></ifcount></dt>
-				<unit relativeTo="ca_occurrences.children" restrictToTypes="event" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-light h-100 w-100 text-black">^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.date"><br>^ca_occurrences.date</ifdef></l></dd></unit>
+				<unit relativeTo="ca_occurrences.children" restrictToTypes="event" delimiter="">
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center">
+						<l class="pt-3 pb-4 px-3 align-items-center justify-content-center h-100 w-100 text-black detailRelatedImage d-block bg-light">
+							<ifcount code="ca_objects" restrictToRelationshipTypes="select" min="1"><unit relativeTo="ca_objects" restrictToRelationshipTypes="select" limit="1" delimiter=" ">
+								<ifdef code="ca_object_representations.media.large"><div>
+									^ca_object_representations.media.large
+								</div></ifdef>
+							</unit></ifcount>
+							<div class="fw-bold">^ca_occurrences.preferred_labels</div><ifdef code="ca_occurrences.date"><div class="small">^ca_occurrences.date</div></ifdef>
+						</l>
+					</dd>
+				</unit>
+			</ifcount>
+			<ifcount code="ca_occurrences.children" restrictToTypes="education" min="1">
+				<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences.children" restrictToTypes="education" min="1" max="1"><?= _t('Education Program'); ?></ifcount><ifcount code="ca_occurrences.children" restrictToTypes="education" min="2"><?= _t('Education Programs'); ?></ifcount></dt>
+				<unit relativeTo="ca_occurrences.children" restrictToTypes="education" delimiter="">
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center">
+						<l class="pt-3 pb-4 px-3 align-items-center justify-content-center h-100 w-100 text-black detailRelatedImage d-block bg-light">
+							<ifcount code="ca_objects" restrictToRelationshipTypes="select" min="1"><unit relativeTo="ca_objects" restrictToRelationshipTypes="select" limit="1" delimiter=" ">
+								<ifdef code="ca_object_representations.media.large"><div>
+									^ca_object_representations.media.large
+								</div></ifdef>
+							</unit></ifcount>
+							<div class="fw-bold">^ca_occurrences.preferred_labels</div><ifdef code="ca_occurrences.date"><div class="small">^ca_occurrences.date</div></ifdef>
+						</l>
+					</dd>
+				</unit>
 			</ifcount>
 		</dl>
 	</ifcount>}}}
@@ -108,8 +140,30 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<div class="col"><h2>Related Objects</h2><hr></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_occurrences.occurrence_id:'.$t_item->get("ca_occurrences.occurrence_id"))); ?>">
-			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+		<unit relativeTo="ca_objects" delimiter="" limit="8">
+
+
+
+				<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
+					<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
+					  <l>^ca_object_representations.media.medium%class="card-img-top object-fit-contain px-3 pt-3 rounded-0"</l>
+						<div class='card-body'>
+							<div class='card-title'><small class='text-body-secondary'>^ca_objects.type_id, ^ca_objects.idno</small><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div><ifdef code='ca_objects.date'><p class='card-text small lh-sm text-truncate'>^ca_objects.date</p></ifdef>
+						</div>
+						<div class='card-footer text-end bg-transparent'>
+							<l class="link-dark mx-1"><i class='bi bi-arrow-right-square'></i></l>
+						</div>
+					 </div>	
+				</div><!-- end col -->
+
+		
+		</unit>
+	</div>
+	<ifcount code="ca_objects" min="9">
+		<div class="row">
+			<div class="col text-center pb-4 mb-4">
+				<?php print caNavLink($this->request, "Full Results  <i class='ps-2 bi bi-box-arrow-up-right' aria-label='link out'></i>", "btn btn-primary", "", "Browse", "objects", array("facet" => "occ_facet", "id" => $t_item->get("ca_occurrences.occurrence_id"))); ?>
+			</div>
 		</div>
 	</div>
 </ifcount>}}}

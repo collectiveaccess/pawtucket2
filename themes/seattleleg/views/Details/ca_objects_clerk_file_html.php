@@ -47,16 +47,14 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 <div id="detail">
 
-	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
+	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
-  <h2 class="record-number">
-		<?= $type_idno; ?> {{{ca_objects.CFN}}}
-	</h2>
+  <h3 class="record-number"><?= $type_idno; ?> {{{ca_objects.CFN}}}</h3>
 
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Title</span></th>
+        <th colspan="2"><H4>Title</H4></th>
       </tr>
       <tr>
         <td class="empty"></td>
@@ -72,7 +70,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Description and Background</span></th>
+        <th colspan="2"><H4>Description and Background</H4></th>
       </tr>
 
 			{{{<ifdef code="ca_objects.STAT">
@@ -82,18 +80,9 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.STAT">
-				<tr>
-					<td>Notes:</td>
-					<td><em>
-						<span class="insert-related-links">Clerk's Office Note: PDF updated 4/30/2024.</span>
-					</em></td>
-				</tr>
-			</ifdef>}}}
-
 			<?php
 				if($t_object->get("ca_objects.index")){
-					if($links = caGetBrowseLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Index Terms:'); ?></td>
@@ -103,26 +92,24 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 					}
 				}
 			?>
-
+			{{{<ifdef code="ca_objects.REF">
+				<tr>
+					<td>References:</td>
+					<td>^ca_objects.REF</td>
+				</tr>
+			</ifdef>}}}
     </tbody>
   </table>
 
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Legislative History</span></th>
+        <th colspan="2"><H4>Legislative History</H4></th>
       </tr>
-			
-			<!-- {{{<ifdef code="ca_objects.SPON">
-				<tr>
-					<td>Sponsor:</td>
-					<td>^ca_objects.SPON</td>
-				</tr>
-			</ifdef>}}} -->
 
 			<?php
 				if($t_object->get("ca_objects.SPON")){
-					if($links = caGetBrowseLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Sponsor:'); ?></td>
@@ -140,9 +127,16 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
+			{{{<ifdef code="ca_objects.DTCA">
+				<tr>
+					<td>City Council Action Date:</td>
+					<td>^ca_objects.DTCA</td>
+				</tr>
+			</ifdef>}}}
+
 			<?php
 				if($t_object->get("ca_objects.COMM")){
-					if($comm = caGetBrowseLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
+					if($comm = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Committee Referral:'); ?></td>
@@ -166,23 +160,16 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 					<td>^ca_objects.DTF</td>
 				</tr>
 			</ifdef>}}}
-
-			{{{<ifdef code="ca_object_representations">
-				<tr>
-					<td>PDF Copy:</td>
-					<!-- <td><a href="/~CFS/CF_323014.pdf">Clerk File 323014</a></td> -->
-					<!-- TODO: link to pdf -->
-				</tr>
-			</ifdef>}}}
     </tbody>
   </table>
-
+<?= $this->render("Details/attachments_html.php"); ?>
+	
 
 	{{{<ifdef code="ca_objects.TX">
 		<table class="record table table-striped table-responsive">
 			<tbody>
 				<tr>
-					<th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Text</span></th>
+					<th colspan="2"><H4>Text</H4></th>
 				</tr>
 				<tr>
 					<td class="empty"></td>
@@ -197,28 +184,12 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 	</ifdef>}}}
 
 	{{{<ifnotdef code="ca_objects.TX">
-		<em>No text for this document is available online. You may view this document at
-			<a href="http://www.seattle.gov/cityclerk/legislation-and-research/research-assistance">the Office of the City Clerk</a>.	If you are unable to visit the Clerk's Office, you may request a copy or scan be made for you by Clerk staff.	Scans and copies provided by the Office of the City Clerk are subject to <a href="http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services">copy fees</a>, and the timing of service
-			is dependent on the availability of staff.
-		</em>
+		<?php print $this->getVar("detail_text_not_online"); ?>
 	<ifnotdef/>}}}
 
-	<table class="record table table-striped table-responsive">
-		<tbody>
-			<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
-			<tr>
-				<td class="empty"></td>
-				<td>
-					<!-- <p><a href="https://legistar2.granicus.com/seattle/attachments/2ab35e1c-0097-45c0-aaf4-46c45392de7d.pdf">Att 1 - SIR Hostage Negotiation Throw Phone</a></p>
-					<p><a href="https://legistar2.granicus.com/seattle/attachments/d8ea96a5-cce6-4765-a61c-caf2a2c195c2.pdf">Att 2 - SIR Hostage Negotiation Throw Phone Executive Overview</a></p> -->
-					????????????
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
+	
   <hr>
 
-  <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
+  <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
 
 </div>
