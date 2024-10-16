@@ -2450,6 +2450,30 @@ function caGetMediaDisplayConfig() {
  *
  * @return
  */
+function caGetMediaDisplayInfo($ps_context, $ps_mimetype) {
+	$o_config = Configuration::load();
+	$o_media_display_config = caGetMediaDisplayConfig();
+
+	if (!is_array($va_context = $o_media_display_config->getAssoc($ps_context))) { return null; }
+
+	if (!$ps_mimetype) { return $va_context; }
+	foreach($va_context as $vs_media_class => $va_media_class_info) {
+		if (!is_array($va_mimetypes = $va_media_class_info['mimetypes'])) { continue; }
+
+		if (in_array($ps_mimetype, $va_mimetypes)) {
+			return $va_media_class_info;
+		}
+	}
+	return null;
+}
+# ------------------------------------------------------------------------------------------------
+/**
+ *
+ *
+ * @param
+ *
+ * @return
+ */
 function caGetMediaDisplayInfoForMimetype(string $context, string $mimetype) : ?array {
 	$o_config = Configuration::load();
 	$o_media_display_config = caGetMediaDisplayConfig();

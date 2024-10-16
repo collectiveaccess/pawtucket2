@@ -1790,7 +1790,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 */
 	public function getItemsAsSearchResult($options=null) {
 		if(!$this->isLoaded()) { return null; }
-		$ids = $this->getItems(['idsOnly' => true]);
+		$ids = $this->getItems(array_merge($options, ['idsOnly' => true]));
 
 		return caMakeSearchResult(Datamodel::getTableName($this->get('ca_sets.table_num')), $ids, $options);
 	}

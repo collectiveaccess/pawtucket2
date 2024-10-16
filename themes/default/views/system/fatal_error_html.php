@@ -32,7 +32,7 @@ $path = join("/", $tmp);
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>CollectiveAccess error</title>
-	<link href="<?= $path; ?>/themes/default/assets/pawtucket/css/error.css" rel="stylesheet" type="text/css" />
+	<link href="<?= $path; ?>/themes/default/assets/npm/css/error.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div id='errorDetails'>

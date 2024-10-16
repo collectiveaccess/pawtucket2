@@ -71,6 +71,7 @@ class LightboxController extends FindController {
 	 */
 	protected $ops_view_prefix = 'Lightbox';
 	
+	
 	# -------------------------------------------------------
 	/**
 	 * @param RequestHTTP $request
@@ -99,7 +100,7 @@ class LightboxController extends FindController {
 		$this->config = caGetLightboxConfig();
 		$this->view->setVar('lightbox_config', $this->config);
 		
-		// Lightbox displayname
+		// Lightbox display name
 		$display_name = caGetLightboxDisplayName($this->config);
 		
 		$this->lightbox_display_name_singular = $display_name["singular"] ?? _t('Lightbox');
@@ -107,6 +108,11 @@ class LightboxController extends FindController {
 		
 		$this->view->setVar('lightbox_displayname_singular', $this->lightbox_display_name_singular);
 		$this->view->setVar('lightbox_displayname_plural', $this->lightbox_display_name_plural);
+		
+		
+ 		$this->opa_access_values = caGetOption('checkAccess', $va_browse_info, $this->opa_access_values);
+ 		
+ 		$this->view->setVar('access_values', $this->opa_access_values);
 		
 		caSetPageCSSClasses(["lightbox"]);
 		
@@ -182,7 +188,10 @@ class LightboxController extends FindController {
 		$t_set = ca_sets::findAsInstance($set_id);
 		$this->view->setVar('t_set', $t_set);
 		$this->view->setVar('set_id', $set_id);
+		$this->view->setVar('table_num', $table_num = $t_set->get('ca_sets.table_num'));
+		$this->view->setVar('table', Datamodel::getTableName($table_num));
 		
+		$this->view->setVar('items', $t_set->getItemsAsSearchResult(['checkAccess' => $this->opa_access_values]));
 		
 		$this->render(caGetOption("view", $options, "Lightbox/detail_html.php"));
 	}

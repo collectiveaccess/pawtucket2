@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2022 Whirl-i-Gig
+ * Copyright 2011-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,23 +29,23 @@
  *
  * ----------------------------------------------------------------------
  */
-		$va_tmp = explode("/", str_replace("\\", "/", $_SERVER['SCRIPT_NAME']));
-		array_pop($va_tmp);
-		$vs_path = join("/", $va_tmp);
-		
-		if (!is_array($opa_error_messages)) {
-			$opa_error_messages = self::$opa_error_messages;
-		}
+$tmp = explode("/", str_replace("\\", "/", $_SERVER['SCRIPT_NAME']));
+array_pop($tmp);
+$path = join("/", $tmp);
+
+if (!is_array($error_messages)) {
+	$error_messages = self::$error_messages;
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>CollectiveAccess configuration error display</title>
-	<link href="<?= $vs_path; ?>/themes/default/assets/pawtucket/css/error.css" rel="stylesheet" type="text/css" />
+	<link href="<?= $path; ?>/themes/default/assets/pawtucket/css/error.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div id='box'>
-	<div id="logo"><img src="<?= $vs_path ?>/themes/default/assets/pawtucket/graphics/logos/logo.svg"  width="350" height="35" alt="CollectiveAccess"/></div><!-- end logo -->
+	<div id="logo"><img src="<?= $path ?>/themes/default/assets/pawtucket/graphics/logos/logo.svg"  width="350" height="35" alt="CollectiveAccess"/></div><!-- end logo -->
 	<div id="content">
 		<?= "<div class='error'>An error in your system configuration has been detected</div>
 			General installation instructions can be found
@@ -53,11 +53,11 @@
 			For more specific hints on the existing issues please have a look at the messages below."; ?>
 		<br/><br/>
 <?php
-foreach ($opa_error_messages as $vs_message):
+foreach ($error_messages as $message):
 ?>
 		<div class="permissionError">
-			<img src='<?= $vs_path; ?>/themes/default/assets/pawtucket/graphics/glyphicons_078_warning_sign.png' class="permissionErrorIcon"/>
-			<?= $vs_message; ?>
+			<img src='<?= $path; ?>/themes/default/assets/pawtucket/graphics/glyphicons_078_warning_sign.png' class="permissionErrorIcon"/>
+			<?= $message; ?>
 			<div style='clear:both; height:1px;'><!-- empty --></div>
 		</div>
 		<br/>

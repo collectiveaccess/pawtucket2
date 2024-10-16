@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
-$t_set 								= new ca_sets();
+$qr_sets 							= $this->getVar('qr_sets');
 $write_sets 						= $this->getVar("write_sets");
 $read_sets 							= $this->getVar("read_sets");
 $set_ids 							= $this->getVar("set_ids");
@@ -39,9 +39,6 @@ $lightbox_displayname_plural 		= $this->getVar("lightbox_displayname_plural");
 $o_lightbox_config 					= $this->getVar("set_config");
 $current_sort 						= $this->getVar('sort');
 $current_sort_dir 					= $this->getVar('direction');
-
-$qr_sets = $this->getVar('qr_sets');
-
 ?>
 <h1>
 	<?= ucfirst($lightbox_displayname_plural); ?>
@@ -57,8 +54,10 @@ $qr_sets = $this->getVar('qr_sets');
 <?php
 	} else {
 		while($qr_sets->nextHit()) {
+			$set_id = $qr_sets->get('ca_sets.set_id');
 			$table = $qr_sets->get('table_num');
 			$caption = $qr_sets->get('ca_sets.preferred_labels.name');
+			$detail_link = caNavLink($this->request, _t('View'), '', '*', '*', "Detail/{$set_id}");
 ?>
 			<div class='col-md-6 col-lg-4 d-flex'>
 				<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
@@ -68,6 +67,7 @@ $qr_sets = $this->getVar('qr_sets');
 					</div>
 					<div class='card-footer text-end bg-transparent'>
 						<?= $detail_link; ?>
+						<?= $qr_sets->getWithTemplate('^ca_sets._itemCount').' '.Datamodel::getTableProperty($table, 'NAME_PLURAL'); ?>
 					</div>
 				 </div>	
 			</div><!-- end col -->
