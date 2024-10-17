@@ -1,4 +1,6 @@
 <?php
+	# --- initial design Collapsable list hierarchy on archival collection detail (fonds)
+	
 	$va_access_values = $this->getVar("access_values");
 	$o_collections_config = $this->getVar("collections_config");
 	$vs_desc_template = $o_collections_config->get("description_template");
