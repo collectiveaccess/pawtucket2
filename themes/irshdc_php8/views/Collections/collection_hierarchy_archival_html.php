@@ -1,4 +1,5 @@
 <?php
+	# --- outputs original indented list format of hierarchy on archival collection detail pages (fonds) - replaced by panel display 8/24
 	$va_access_values = $this->getVar("access_values");
 	$o_collections_config = $this->getVar("collections_config");
 	$vs_desc_template = $o_collections_config->get("description_template");

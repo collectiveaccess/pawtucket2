@@ -959,6 +959,132 @@ a.readmore-js-toggle {
 .detail .noToolBar .detailMediaToolbar, .detail .noToolBar .repViewerCont:hover .detailMediaToolbar{
 	display:none;
 }
+/* archival collections */
+@media(min-width:768px){
+	#detailTools.archival{
+		text-align:right;
+	}
+}
+.detail #detailTools.archival .detailTool.detailToolInline{
+	float:right;
+	margin-right: 5px;
+}
+#detailTools.archival .detailTool{
+	clear:right;
+}
+.detail .detailArchivalCollections H1, .detail .detailArchivalCollections H2{
+	font-size: 18px;
+	color: #262626;
+	line-height: 135%;
+	text-transform: none;
+	margin-bottom:10px;
+	font-family: lato;
+	font-weight: normal;
+	font-style: normal;
+}
+.detailArchivalCollections img{
+	border-radius:10px !Important;
+}
+.detailArchivalCollections .repViewerCont{
+	text-align:center;
+}
+.detailArchivalCollections .repViewerCont img{
+	width: auto !important;
+	height: auto !important;
+	max-height: 500px;
+	max-width:100%;
+	object-fit:unset !important;
+}
+.detail .collectionContentsGridItem{
+	padding-bottom:15px;
+}
+.detail .collectionContentsGridItem a{
+	color:#000;
+	font-size:14px;	
+}
+.detail .detailArchivalCollections H6{
+	margin: 0px 0px 2px 0px;
+}
+.collectionContentsGridItem img{
+	width: 100%;
+	height:200px;
+	object-fit: cover;
+	border-radius:10px;
+	margin-bottom:10px;
+	display:block;
+}
+.collectionContentsGridItem .placeholder{
+	width: 100%;
+	height:200px;
+	background-color:#f0ede4;
+	border-radius:10px;
+	margin-bottom:10px;
+}
+.waysToEngage{
+	padding: 10px;
+	
+}
+.jumpTop{
+	position: fixed;
+	right:0px;
+	bottom: 0px;
+	z-index:1000;
+}
+.detail .detailArchivalCollections .collapseBlock H3{
+	margin-bottom:10px;
+}
+#collectionsWrapper .btn-small{
+	text-transform: none;
+    font-weight: normal;
+    background-color: #fff;
+	color: #454545;
+    font-size: 11px !important;
+    padding: 3px 4px;
+    display: inline-block;
+    margin-left: 10px;
+    font-family: lato;
+    
+}
+#collectionsOverview .btn-default{
+	text-transform: none;
+    font-weight: normal;
+    background-color: #ededed;
+    color: #757575;
+    font-size: 14px !important;
+    padding: 8px 9px;
+    display: inline-block;
+    margin: 7px 10px 7px 10px;
+    font-family: lato;   
+}
+#collectionsOverview .hierarchyPath{
+	font-size: 20px;
+	font-weight: bold;
+}
+#collectionsOverviewHierarchyPath HR {
+	border-top: 2px solid #454545 !important;
+	margin-bottom:0px;
+	margin-top:3px;
+}
+#collectionsOverviewHierarchyPath .rightCol{
+	border-left: 2px solid #454545;
+	margin-top: 10px;
+	margin-bottom:10px;
+}
+#collectionsOverviewHierarchyPath .leftCol{
+	margin-top: 10px;
+	margin-bottom:10px;
+}
+#collectionsOverviewHierarchyPath .btn-default{
+	text-transform: none;
+    font-weight: normal;
+    background-color: #FFF;
+    color: #454545;
+    font-size: 14px !important;
+    padding: 8px 9px;
+    display: inline-block;
+    margin: 7px 10px 7px 10px;
+    font-family: lato;   
+}
 /* remove ? */
 .detail a .narrativeThreadLink{
 	margin-top:10px;
@@ -1154,7 +1280,12 @@ h3.popover-title{
     width: 100%;
     display: inline-block;
     padding: 5px 30px 5px 5px;
-    font-size: 14px;
+    font-size: 18px;
+    font-weight:bold;
+}
+.collectionsContainer a.openCollection.active, .collectionsContainer a.openCollection.active small {
+	color: #fff;
+	background-color: #757575;
 }
 #collectionsWrapperArchival .glyphicon{
 	font-size:10px;
@@ -1170,6 +1301,10 @@ h3.popover-title{
 	font-size: 18px;
 	color: #262626;
 }
+.subCollectionName{
+	font-weight: 600;
+	font-size: 15px;
+}
 .collectionsContainer .label a.openCollectionContents, #collectionLoad .label a.openCollectionContents {
 	white-space: normal !important;
 	font-family: lato;
@@ -1178,6 +1313,16 @@ h3.popover-title{
 	color: #262626;
 	display:inline;
 	padding:0px;
+}
+#collectionLoad div a{
+	font-weight:600;
+	font-size:15px;
+}
+#collectionLoad p{
+	font-size:15px;
+}
+#collectionLoad .label a{
+	font-weight:normal;
 }
 .collectionsContainer .label a.openCollectionContents .glyphicon{
 	top:-1px;
@@ -1238,7 +1383,7 @@ h3.popover-title{
 	text-decoration: none;
 }
 .collectionsContainer a.openCollection.active small {
-  color: #757575;
+  color: #FFF;
 }
 #collectionsWrapperArchival .collectionLoad a{
 	display:inline-block;
