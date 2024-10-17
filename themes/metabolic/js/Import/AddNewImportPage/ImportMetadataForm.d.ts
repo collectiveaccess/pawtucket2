@@ -1,0 +1,1 @@
+declare module 'react-jsonschema-form-extras/lib/TypeaheadField';
