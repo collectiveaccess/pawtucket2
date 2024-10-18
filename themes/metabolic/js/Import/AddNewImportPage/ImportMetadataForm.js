@@ -3,10 +3,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import { ImportContext } from '../ImportContext';
 //import Form from '@rjsf/bootstrap-4';
 import Form from "@rjsf/core";
+import validator from "@rjsf/validator-ajv8";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 //import { TypeaheadField } from "react-jsonschema-form-extras/lib/TypeaheadField";
-var _ = require('lodash');
+import _ from 'lodash';
+// var _ = require('lodash');
 
 import { getNewSession, getFormList, getForm, updateSession, submitSession } from '../ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
@@ -18,8 +20,7 @@ let debounce_saveFormDataForSession;
 const ImportMetadataForm = (props) => {
 
   const { uploadStatus, setIsSubmitted, formData, setFormData, setViewMode, schema, setSchema, formCode, setFormCode, sessionKey, setSessionKey, viewMode } = useContext(ImportContext);
-
-  const [uiSchema, setUiSchema] = useState({})
+  const [uiSchema, setUiSchema] = useState({})  
   
   useEffect(() => {
     if(formCode !== null){
@@ -91,7 +92,7 @@ const ImportMetadataForm = (props) => {
   // NOTE: session_key has to be passed in here, otherwise it'll be a closure and stuck on the value set when this component is first loaded.
   const checkSessionKey = (sessionKey, formData, callback) => {
     // console.log("save session is", sessionKey, formData);
-    if (sessionKey == null && (formData !== null && formData !== { })) {  //if there is no sessionkey but there is formdata, create new session
+    if (sessionKey == null && (formData !== null && !_.isEmpty(formData))) {  //if there is no sessionkey but there is formdata, create new session
       // console.log("initNewSession");
       initNewSession(callback);
     } else {							// Callback with existing session
@@ -102,7 +103,7 @@ const ImportMetadataForm = (props) => {
   // NOTE: session_key has to be passed in here, otherwise it'll be a closure and stuck on the value set when this component is first loaded.
   const saveFormDataForSession = (sessionKey, formData) => {
   	checkSessionKey(sessionKey, formData, () => {	// wait until session key has been resolved
-      if (sessionKey !== null && (formData !== null && formData !== { })){ //with sessionkey, updateform on changes
+      if (sessionKey !== null && (formData !== null && !_.isEmpty(formData))){ //with sessionkey, updateform on changes
         updateSession(baseUrl, sessionKey, formData, function (data) {	// write new data to session
         })
       }
@@ -120,8 +121,9 @@ const ImportMetadataForm = (props) => {
     debounce_saveFormDataForSession(sessionKey, formData); // write data to session
   }
   
-  // console.log("formData: ", formData);
-  // console.log("schema: ", schema, uiSchema);
+  console.log("formData: ", formData);
+  console.log("schema: ", schema, uiSchema);
+  console.log("uploadStatus: ", uploadStatus);
   
   const transformErrors = function(errors) {
   	//console.log("errors!", errors, schema);
@@ -146,9 +148,10 @@ const ImportMetadataForm = (props) => {
       
       <div className='form-container mt-3 mb-3'>
         {(schema) ? 
-          <Form liveValidate
+          <Form 
+          validator={validator}
           schema={schema}
-          formData={formData}
+          formData={formData || {}}
           uiSchema={uiSchema}
           onChange={(e) => {saveFormData(e.formData)}}
           autoComplete="on"
@@ -158,7 +161,7 @@ const ImportMetadataForm = (props) => {
           >
             <div>
               {/* TODO: User should only submit if there is at least 1 file uploaded and the required form metadata is filled out */}
-              {(uploadStatus == 'complete' && (formData !== null && formData !== {}))?
+              {(uploadStatus === 'complete' && (formData !== null && !_.isEmpty(formData)))?
                 <button id="form-submit-button" type="submit" className="btn btn-primary mt-3">Submit</button>
                 :
                 <button id="form-submit-button" type="submit" className="btn btn-primary mt-3" disabled>Upload files before submitting</button>

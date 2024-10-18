@@ -83,14 +83,14 @@ const ImportDropZone = (props) => {
           //https://master.tus.io/files/
           let tusEndpoint = siteBaseUrl + '/tus';
           
-          
           let n = file.name;
           n = n.replace(/[, &\?#:\/\\\"\']+/, '_');
           
+          console.log("ENDPONT", tusEndpoint, file, sessionKey);
           var upload = new tus.Upload(file, {
             endpoint: tusEndpoint,
             retryDelays: [0, 1000, 3000, 5000],
-            chunkSize: 52428800,      // TODO: make configurable
+            chunkSize: 1048576,      // TODO: make configurable
             metadata: {
               filename: n,
               filetype: file.type,

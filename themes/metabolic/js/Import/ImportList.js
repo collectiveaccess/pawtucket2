@@ -2,21 +2,22 @@ import React, { useContext, useState, useEffect } from 'react';
 import { ImportContext } from './ImportContext';
 import ImportedItem from './ImportList/ImportedItem';
 
+import Dropdown from 'react-bootstrap/Dropdown';
+
 import { getSessionList, getFormList } from './ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
 
 const ImportList = (props) => {
 
-  const { isSubmitted, setIsSubmitted, sessionList, setSessionList, setFormCode } = useContext(ImportContext);
-  const { setViewMode } = useContext(ImportContext);
+  const { isSubmitted, setIsSubmitted, sessionList, setSessionList, setFormCode, setViewMode } = useContext(ImportContext);
 
   const [ submittedImports, setSubmittedImports ] = useState([]);  
   const [ unsubmittedImports, setUnsubmittedImports ] = useState([]);
   const [ formsList, setFormsList ] = useState([]);
 
-  console.log('====================================');
-  console.log("submittedImports: ", submittedImports);
-  console.log('====================================');
+  // console.log('====================================');
+  // console.log("submittedImports: ", submittedImports);
+  // console.log('====================================');
   
   useEffect(() => {
     getSessionList(baseUrl, function(data){
@@ -26,12 +27,12 @@ const ImportList = (props) => {
       setFormsList(data.forms);
     });
 
-  }, [setSessionList])
+  }, [setSessionList, baseUrl])
 
   useEffect(() => {
     let data = [...sessionList];
 
-    const current = data.filter(sub => sub.status == 'IN_PROGRESS');
+    const current = data.filter(sub => sub.status === 'IN_PROGRESS');
     setUnsubmittedImports(current);
 
     const submitted = data.filter(sub => sub.status !== 'IN_PROGRESS');
@@ -62,7 +63,7 @@ const ImportList = (props) => {
             <h1>Your Imports</h1>
           </div>
           <div className='col text-right'>
-           <div className="dropdown">
+           {/* <div className="dropdown">
               <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 + New Import
               </button>
@@ -73,7 +74,21 @@ const ImportList = (props) => {
                   )
                 })}
               </div>
-            </div>
+            </div> */}
+
+            <Dropdown>
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                + New Import
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {formsList.map((form, index) => (
+                  <Dropdown.Item key={index} onClick={(e) => openNewImportPage(e, form.code)}>
+                    {form.title}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </div>
 
@@ -90,7 +105,7 @@ const ImportList = (props) => {
           </div>
           <div className='col text-right'>
             {/* <a href='#' className='btn btn-primary' onClick={(e) => openNewImportPage(e)}>+ New Import</a> */}
-            <div className="dropdown">
+            {/* <div className="dropdown">
               <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 + New Import
               </button>
@@ -101,7 +116,20 @@ const ImportList = (props) => {
                   )
                 })}
               </div>
-            </div>
+            </div> */}
+            <Dropdown>
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                + New Import
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {formsList.map((form, index) => (
+                  <Dropdown.Item key={index} onClick={(e) => openNewImportPage(e, form.code)}>
+                    {form.title}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </div>
 

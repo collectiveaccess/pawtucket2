@@ -15,9 +15,9 @@ const ViewImportPage = (props) => {
   // console.log("previousFilesUploaded: ", previousFilesUploaded);
   // console.log('====================================');
 
-  console.log('====================================');
-  console.log("sessionList: ", sessionList);
-  console.log('====================================');
+  // console.log('====================================');
+  // console.log("sessionList: ", sessionList);
+  // console.log('====================================');
 
   useEffect(() => {
     getFormList(baseUrl, function (data) {
@@ -89,9 +89,9 @@ const ViewImportPage = (props) => {
     }
   }
 
-  console.log('====================================');
-  console.log("prevFiles: ", prevFiles);
-  console.log('====================================');
+  // console.log('====================================');
+  // console.log("prevFiles: ", prevFiles);
+  // console.log('====================================');
 
 
   if(formData !== null && schemaProperties){
