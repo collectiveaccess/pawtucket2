@@ -8,9 +8,9 @@ function makeMap(options) {
 	let mapElement = document.getElementById(id);
 
 	L.Icon.Default.mergeOptions({
-	  iconRetinaUrl: options.themePath + '/node_modules/leaflet/dist/images/marker-icon-2x.png',
-	  iconUrl: options.themePath + '/node_modules/leaflet/dist/images/marker-icon.png',
-	  shadowUrl: options.themePath + '/node_modules/leaflet/dist/images/marker-shadow.png'
+	  iconRetinaUrl: options.themePath + '/assets/markers/marker-icon-2x.png',
+	  iconUrl: options.themePath + '/assets/markers/marker-icon.png',
+	  shadowUrl: options.themePath + '/assets/markers/marker-shadow.png'
 	});
 
 	let map = L.map(options.id ?? 'map', { 
