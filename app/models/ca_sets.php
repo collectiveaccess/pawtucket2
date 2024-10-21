@@ -1824,6 +1824,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * 			template =
 	 *			templateDescription = 
 	 *			item_ids = array of set item_ids to limit results to -> used by getPrimaryItemsFromSets so don't have to replicate all the functionality in this function
+	 *			class = CSS class to apply to representation tags. [Default is null]
 	 *
 	 * @return array An array of items. The format varies depending upon the options set. If returnRowIdsOnly or returnItemIdsOnly are set then the returned array is a 
 	 *			simple list of ids. The full return array is key'ed on ca_set_items.item_id and then on locale_id. The values are arrays with keys set to a number of fields including:
@@ -1844,6 +1845,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$o_db = $this->getDb();
 		
 		$sort = caGetOption('sort', $pa_options, null);
+		$class = caGetOption('class', $pa_options, null);
 		
 		$t_rel_label_table = null;
 		if (!($t_rel_table = Datamodel::getInstanceByTableNum($this->get('table_num'), true))) { return null; }
@@ -2032,7 +2034,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 					$vs_alt_text = array_shift($va_alt_tags);
 				}
 				if (isset($pa_options['thumbnailVersion'])) {
-					$va_row['representation_tag'] = $qr_res->getMediaTag('media', $pa_options['thumbnailVersion'], array("alt" => $vs_alt_text));
+					$va_row['representation_tag'] = $qr_res->getMediaTag('media', $pa_options['thumbnailVersion'], ["class" => $class, "alt" => $vs_alt_text]);
 					$va_row['representation_url'] = $qr_res->getMediaUrl('media', $pa_options['thumbnailVersion']);
 					$va_row['representation_path'] = $qr_res->getMediaPath('media', $pa_options['thumbnailVersion']);
 					$va_row['representation_width'] = $qr_res->getMediaInfo('media',  $pa_options['thumbnailVersion'], 'WIDTH');
@@ -2042,7 +2044,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				
 				if (isset($pa_options['thumbnailVersions']) && is_array($pa_options['thumbnailVersions'])) {
 					foreach($pa_options['thumbnailVersions'] as $vs_version) {
-						$va_row['representation_tag_'.$vs_version] = $qr_res->getMediaTag('media', $vs_version, array("alt" => $vs_alt_text));
+						$va_row['representation_tag_'.$vs_version] = $qr_res->getMediaTag('media', $vs_version, ["class" => $class, "alt" => $vs_alt_text]);
 						if(!defined('__CA_IS_SERVICE_REQUEST__')) {
 							global $g_request;
 							$va_row['representation_tag_'.$vs_version.'_as_link'] = caDetailLink($g_request, $qr_res->getMediaTag('media', $vs_version, array("alt" => $vs_alt_text)), '', $t_rel_table->tableName(), $qr_res->get("ca_set_items.row_id"));

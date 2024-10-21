@@ -229,6 +229,30 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 		}
 	}
 }
+/* ------------------------- Lightbox ------------------------------ */
+.lightbox{
+	#lightboxLanding {
+		.card{
+			img.object-fit-cover{
+				object-position:middle center;
+			}
+			img, .ca-placeholder{
+				height:200px;
+				width:100%
+			}
+		}
+	}
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img{
+			height:200px;
+			width:100%
+		}
+	}
+}
+
 /* ------------------------- Accessibility ------------------------------ */
 #skip:focus{
 	border: 2px solid #000 !important;

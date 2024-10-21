@@ -43,8 +43,7 @@ $current_sort_dir 					= $this->getVar('direction');
 <h1>
 	<?= ucfirst($lightbox_displayname_plural); ?>
 </h1>
-<div id="browseResultsContainer">
-	<div class="row">
+<div class="row">
 <?php
 	if(!$qr_sets) {
 ?>
@@ -61,7 +60,7 @@ $current_sort_dir 					= $this->getVar('direction');
 ?>
 			<div class='col-md-6 col-lg-4 d-flex'>
 				<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
-				  <?= caGetLightboxPreviewImage($qr_sets->getPrimaryKey(), $qr_sets, ['checkAccess' => $access_values]); ?>
+				  <?= caGetLightboxPreviewImage($qr_sets->getPrimaryKey(), $qr_sets, ['checkAccess' => $access_values, 'class' => 'object-fit-cover']); ?>
 				  	<div class='card-body'>
 						<?= $caption; ?>
 					</div>
@@ -75,5 +74,4 @@ $current_sort_dir 					= $this->getVar('direction');
 		}
 	}
 ?>
-	</div>
 </div>
