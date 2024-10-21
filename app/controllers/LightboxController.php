@@ -109,7 +109,6 @@ class LightboxController extends FindController {
 		$this->view->setVar('lightbox_displayname_singular', $this->lightbox_display_name_singular);
 		$this->view->setVar('lightbox_displayname_plural', $this->lightbox_display_name_plural);
 		
-		
  		$this->opa_access_values = caGetOption('checkAccess', $va_browse_info, $this->opa_access_values);
  		
  		$this->view->setVar('access_values', $this->opa_access_values);

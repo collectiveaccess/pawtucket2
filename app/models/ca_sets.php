@@ -2644,7 +2644,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$pa_public_access = array_map(function($v) { return (int)$v; }, $pa_public_access);
 		
 		if($pn_user_id){
-			$va_extra_joins = array();
 			$va_sql_wheres = array("(cs.deleted = 0)");
 			$va_sql_params = array();
 			$o_db = $this->getDb();
@@ -2758,7 +2757,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 									INNER JOIN ca_users AS cu ON cs.user_id = cu.user_id
 									INNER JOIN ca_set_labels AS csl ON csl.set_id = cs.set_id
 									LEFT JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
-									".join("\n", $va_extra_joins)."
 									".(sizeof($va_sql_wheres) ? "WHERE " : "")." ".join(" AND ", $va_sql_wheres)."
 									{$sort_sql}
 									", $va_sql_params);

@@ -1498,7 +1498,7 @@ function caFileIsIncludable($ps_file) {
 	 * @param array $pa_sort_keys An array of keys in the second-level array to sort by
 	 * @param array $pa_options Options include:
 	 * 		dontRemoveKeyPrefixes = By default keys that are period-delimited will have the prefix before the first period removed (this is to ease sorting by field names). Set to true to disable this behavior. [Default is false]
-	 *      caseInsenstive = Sort case insensitively. [Default is true]
+	 *      caseInsensitive = Sort case insensitively. [Default is true]
 	 *      naturalSort = Sort case insensitively and only considers letters and numbers in sort, stripping punctuation and other characters. [Default is false]
 	 *		mode = PHP sort mode to use. [Default is null; use string sort]
 	 * @return array The sorted array
