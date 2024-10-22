@@ -23,7 +23,7 @@
 					$vb_has_grandchildren = true;
 				}
 				$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('excludeTypes' => array('archival_file'), 'returnAsArray' => true, 'checkAccess' => $va_access_values)));
-				$va_collection_contents[] = array("table" => "ca_collections", "id" => $qr_collection_children->get("ca_collections.collection_id"), "name" => $qr_collection_children->get("ca_collections.type_id", array("convertCodesToDisplayText" => true)).": ".$qr_collection_children->get("ca_collections.preferred_labels.name"), "type" => $qr_collection_children->get("ca_collections.type_id", array("convertCodesToDisplayText" => true)), "has_grandchildren" => $vb_has_grandchildren, "num_objects" => $vn_rel_object_count);
+				$va_collection_contents[] = array("table" => "ca_collections", "id" => $qr_collection_children->get("ca_collections.collection_id"), "name" => $qr_collection_children->get("ca_collections.preferred_labels.name"), "type" => $qr_collection_children->get("ca_collections.type_id", array("convertCodesToDisplayText" => true)), "has_grandchildren" => $vb_has_grandchildren, "num_objects" => $vn_rel_object_count);
 				
 			}
 		}
@@ -36,7 +36,7 @@
 			while($qr_collection_children->nextHit()){
 				$vb_has_grandchildren = false;
 				$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.related.object_id", array('excludeTypes' => array('archival_file'), 'returnAsArray' => true, 'checkAccess' => $va_access_values)));
-				$va_collection_contents[] = array("table" => "ca_objects", "id" => $qr_collection_children->get("ca_objects.object_id"), "name" => $qr_collection_children->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)).": ".$qr_collection_children->get("ca_objects.preferred_labels.name"), "type" => $qr_collection_children->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)), "has_grandchildren" => $vb_has_grandchildren, "num_objects" => $vn_rel_object_count);
+				$va_collection_contents[] = array("table" => "ca_objects", "id" => $qr_collection_children->get("ca_objects.object_id"), "name" => $qr_collection_children->get("ca_objects.preferred_labels.name"), "type" => $qr_collection_children->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)), "has_grandchildren" => $vb_has_grandchildren, "num_objects" => $vn_rel_object_count);
 				
 			}
 		}

@@ -151,10 +151,10 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>Learn</span></a>
 						<ul class="dropdown-menu">
 							<!--<li><?php print caNavLink($this->request, "<span>"._t("Narrative Threads")."</span>", "", "", "Explore", "narrativethreads"); ?></li>-->
-							<li><?php print caNavLink($this->request, "<span>"._t("BC Schools")."</span>", "", "", "Explore", "schools"); ?></li>
-							<li><?php print caNavLink($this->request, "<span>"._t("Featured")."</span>", "", "", "Gallery", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, "<span>"._t("Map")."</span>", "", "", "Browse", "schools", array("view" => "map")); ?></li>
-							<li><?php print caNavLink($this->request, "<span>"._t("Resources")."</span>", "", "", "Listing", "Resources"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("BC Residential Schools")."</span>", "", "", "Explore", "schools"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Residential Schools Map")."</span>", "", "", "Browse", "schools", array("view" => "map")); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Featured Collections")."</span>", "", "", "Gallery", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Learning Resources")."</span>", "", "", "Listing", "Resources"); ?></li>
 <?php
 	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewDigExh")){
 ?>
@@ -175,13 +175,13 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>About</span></a>
 						<ul class="dropdown-menu">
 							<li><a href='/AboutCollections' <?php print ($this->request->getController() == "AboutCollections") ? 'class="active"' : ''; ?>><span><?php print _t("About the Collections "); ?></span></a></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Contact Us")."</span>", "", "", "Contact", "Form"); ?></li>
 							<li><a href='/CurrentProjects' <?php print ($this->request->getController() == "CurrentProjects") ? 'class="active"' : ''; ?>><span><?php print _t("Current Projects"); ?></span></a></li>
 							<li><a href='/InformationResources' <?php print ($this->request->getController() == "InformationResources") ? 'class="active"' : ''; ?>><span><?php print _t("Resources for Information Professionals"); ?></span></a></li>
 						</ul>
 					</li>
 					
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "<span>"._t("Contact")."</span>", "", "", "Contact", "Form"); ?></li>
-					<li><a href="http://irshdc.ubc.ca" target="_blank"><span>Centre Home</span></a></li>
+					<li class='navLinkBorder'><a href="https://collections.irshdc.ubc.ca/WhereToFindRecords"><span>Find BC Residential School Records</span></a></li>
 					<li class='navLinkBorder'><a href="https://irshdc.ubc.ca/for-survivors/healing-and-wellness-resources/" target="_blank"><span>Wellness & Support</span></a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->

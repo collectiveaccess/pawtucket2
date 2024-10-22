@@ -224,7 +224,7 @@
 			$qr_collection_children = caMakeSearchResult("ca_objects", $va_collection_children);
 			if($qr_collection_children->numHits()){
 				while($qr_collection_children->nextHit()){
-					$va_collection_contents[] = array("table" => "ca_objects", "id" => $qr_collection_children->get("ca_objects.object_id"), "name" => $qr_collection_children->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)).": ".$qr_collection_children->get("ca_objects.preferred_labels.name"), "type" => $qr_collection_children->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)), "media" => $qr_collection_children->get("ca_object_representations.media.large"));
+					$va_collection_contents[] = array("table" => "ca_objects", "id" => $qr_collection_children->get("ca_objects.object_id"), "name" => $qr_collection_children->get("ca_objects.preferred_labels.name"), "type" => $qr_collection_children->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)), "media" => $qr_collection_children->get("ca_object_representations.media.large"));
 					
 				}
 			}
@@ -270,7 +270,7 @@
 					<div class="col-sm-12"><hr/></div>
 				</div>
 				<div class="row">
-					<div class="col-sm-12"><H2>Collection Overview</H2><div class="unit">This archival file is part of the following collection.</div></div>
+					<div class="col-sm-12"><H2>Collection Overview</H2><div class="unit">Click to see how this file relates to the Collection.</div></div>
 				</div>
 				<!--<div class="row">
 					<div class="col-sm-12">
@@ -281,11 +281,11 @@
 					<unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>">
 					<hr>
 					<div class="row">
-						<div class="col-sm-3 text-center leftCol">
-							<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=""><if rule="^ca_collections.type_id =~ /Archival Collection/"><l class="btn btn-default">^ca_collections.type_id:<br/>^ca_collections.preferred_labels.name</l></if></unit></ifdef></div>
+						<div class="col-sm-3 leftCol">
+							<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=""><if rule="^ca_collections.type_id =~ /Archival Collection/"><l class="btn btn-default">^ca_collections.preferred_labels.name</l></if></unit></ifdef></div>
 						</div>
 						<div class="col-sm-9 rightCol">
-							<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" restrictToTypes="series,sub_series,file" delimiter=" &gt; "><l class="btn btn-default">^ca_collections.type_id:<br/>^ca_collections.preferred_labels.name</l></unit></ifdef></div>
+							<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" restrictToTypes="series,sub_series,file" delimiter=""><div class="hier-indent-^index"><l class="btn btn-default">^ca_collections.preferred_labels.name</l><ifdef code="ca_collections.scope_content_preview"><br>^ca_collections.scope_content_preview</ifdef></div></unit></ifdef></div>
 						</div>	
 					</div>
 					<hr>
@@ -375,15 +375,15 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 100
+		  maxHeight: 110
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 18
+		  maxHeight: 22
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
-		  maxHeight: 80,
+		  maxHeight: 85,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});

@@ -136,7 +136,7 @@
 							print '<div id="detailTools" class="archival">';
 						
 							print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "collection_id" => $t_item->get("collection_id")))."</div>";
-							if(strpos(strtolower($t_item->getWithTemplate("^ca_collections.type_id")), "fond") !== false){
+							if(strpos(strtolower($t_item->getWithTemplate("^ca_collections.type_id")), "archival collection") !== false){
 								print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Finding Aid PDF", "faDownload", "ca_collections",  $t_item->get("ca_collections.collection_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 					
 							}
@@ -242,7 +242,7 @@
 		$qr_collection_children = caMakeSearchResult("ca_collections", $va_collection_children);
 		if($qr_collection_children->numHits()){
 			while($qr_collection_children->nextHit()){
-				$va_collection_contents[] = array("table" => "ca_collections", "id" => $qr_collection_children->get("ca_collections.collection_id"), "name" => $qr_collection_children->get("ca_collections.type_id", array("convertCodesToDisplayText" => true)).": ".$qr_collection_children->get("ca_collections.preferred_labels.name"), "type" => $qr_collection_children->get("ca_collections.type_id", array("convertCodesToDisplayText" => true)), "media" => $qr_collection_children->get("ca_object_representations.media.large"));
+				$va_collection_contents[] = array("table" => "ca_collections", "id" => $qr_collection_children->get("ca_collections.collection_id"), "name" => $qr_collection_children->get("ca_collections.preferred_labels.name"), "type" => $qr_collection_children->get("ca_collections.type_id", array("convertCodesToDisplayText" => true)), "media" => $qr_collection_children->get("ca_object_representations.media.large"));
 				
 			}
 		}
@@ -253,7 +253,7 @@
 		$qr_collection_children = caMakeSearchResult("ca_objects", $va_collection_children);
 		if($qr_collection_children->numHits()){
 			while($qr_collection_children->nextHit()){
-				$va_collection_contents[] = array("table" => "ca_objects", "id" => $qr_collection_children->get("ca_objects.object_id"), "name" => $qr_collection_children->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)).": ".$qr_collection_children->get("ca_objects.preferred_labels.name"), "type" => $qr_collection_children->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)), "media" => $qr_collection_children->get("ca_object_representations.media.large"));
+				$va_collection_contents[] = array("table" => "ca_objects", "id" => $qr_collection_children->get("ca_objects.object_id"), "name" => $qr_collection_children->get("ca_objects.preferred_labels.name"), "type" => $qr_collection_children->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)), "media" => $qr_collection_children->get("ca_object_representations.media.large"));
 				
 			}
 		}
@@ -399,15 +399,15 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 100
+		  maxHeight: 110
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 18
+		  maxHeight: 22
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
-		  maxHeight: 80,
+		  maxHeight: 85,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});
