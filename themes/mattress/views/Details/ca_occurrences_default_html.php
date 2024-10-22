@@ -32,7 +32,7 @@
 		<div id='mediaArea' style="margin-left:-10px;">
 <?php
 	if (($t_item->getTypeCode() == 'mf_exhibition') | ($t_item->getTypeCode() == 'external_exhibition')) {
-		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
+		$va_collections = $t_item->get('ca_collections', array('returnWithStructure' => true, 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 		if (sizeof($va_collections) > 0) {
 			print "<div class='mediaThumbs scrollBlock'>";
 					print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
@@ -181,12 +181,12 @@
 		</div><!-- end infoArea-->
 	</div><!-- end contentArea-->
 <?php
-	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
-	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_occurrences.preferred_labels'));
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor', 'artist'), 'checkAccess' => $va_access_values, 'sort' => 'ca_entities.preferred_labels.surname'));
-	$va_funders = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('funder'), 'checkAccess' => $va_access_values));
-	$va_collections = $t_item->get('ca_collections', array('restrictToTypes' => array('installation'), 'returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.preferred_labels'));
-	$va_objects = $t_item->get('ca_objects', array('excludeTypes' => array('image'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_occurrences = $t_item->get('ca_occurrences', array('returnWithStructure' => true, 'restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_events = $t_item->get('ca_occurrences', array('returnWithStructure' => true, 'restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_occurrences.preferred_labels'));
+	$va_entities = $t_item->get('ca_entities', array('returnWithStructure' => true, 'returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor', 'artist'), 'checkAccess' => $va_access_values, 'sort' => 'ca_entities.preferred_labels.surname'));
+	$va_funders = $t_item->get('ca_entities', array('returnWithStructure' => true, 'returnAsArray' => true, 'restrictToRelationshipTypes' => array('funder'), 'checkAccess' => $va_access_values));
+	$va_collections = $t_item->get('ca_collections', array('returnWithStructure' => true, 'restrictToTypes' => array('installation'), 'returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.preferred_labels'));
+	$va_objects = $t_item->get('ca_objects', array('returnWithStructure' => true, 'excludeTypes' => array('image'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 
 
 	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_events) > 0) | (sizeof($va_collections) > 0) | (sizeof($va_funders) > 0) | (sizeof($va_objects) > 0)) {
@@ -202,7 +202,7 @@
 			print "<div class='blockResults exhibitions'>";
 				print "<div>";
 
-				foreach ($va_occurrences as $occurrence_id => $va_occurrence) {
+				foreach ($va_occurrences as $relation_id => $va_occurrence) {
 					$vn_occurrence_id = $va_occurrence['occurrence_id'];
 					$t_occurrence = new ca_occurrences($vn_occurrence_id);
 					$va_artworks = $t_occurrence->get('ca_collections.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
@@ -254,7 +254,7 @@
 				print "<div class='scrollBlock'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;
-				foreach ($va_entities as $entity_id => $va_entity) {
+				foreach ($va_entities as $relation_id => $va_entity) {
 					$vn_entity_id = $va_entity['entity_id'];
 					if ($vn_i == 0) {print "<div class='entitySet'>";}
 					if ($va_entity['relationship_type_code'] == "curator") {
@@ -282,7 +282,7 @@
 			print "<div class='blockResults'>";
 				print "<div>";
 				$vn_i = 0;
-				foreach ($va_funders as $funder_id => $va_funder) {
+				foreach ($va_funders as $relation_id => $va_funder) {
 					$vn_funder_id = $va_funder['entity_id'];
 					if ($vn_i == 0) {print "<div class='entitySet'>";}
 					print caNavLink($this->request, "<div class='entitiesResult'>".$va_funder['displayname']."</div>", '', '','Detail', 'Entities/'.$va_funder['entity_id']);
@@ -304,7 +304,7 @@
 			print "<div class='blockResults scrollBlock'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					$vn_i = 0;
-					foreach ($va_events as $event_id => $va_event) {
+					foreach ($va_events as $relation_id => $va_event) {
 						$vn_event_idno = $va_event['idno'];
 						$vn_event_id = $va_event['occurrence_id'];
 						$t_occurrence = new ca_occurrences($vn_event_id);
@@ -329,7 +329,7 @@
 	}	
 	# Related Objects Block
 	if (sizeof($va_objects) > 0) {
-		foreach ($va_objects as $va_object_id => $va_object) {
+		foreach ($va_objects as $relation_id => $va_object) {
 			$vn_object_ids[] = $va_object['object_id'];
 		}
 		$qr_res = caMakeSearchResult('ca_objects', $vn_object_ids);
@@ -362,7 +362,7 @@
 			print "<div class='scrollBlock'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					$vn_i = 0;
-					foreach ($va_collections as $collection_id => $va_collection) {
+					foreach ($va_collections as $relation_id => $va_collection) {
 						$vn_collection_id = $va_collection['collection_id'];
 						$t_collection = new ca_collections($vn_collection_id);
 

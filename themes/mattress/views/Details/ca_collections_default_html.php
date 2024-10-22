@@ -159,14 +159,14 @@
 	<div id='relatedInfo'>
 <?php
 	# Related Exhibitions Block
-	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_occurrences = $t_item->get('ca_occurrences', array('returnWithStructure' => true, 'restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 	if (sizeof($va_occurrences) > 0) {
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Exhibitions')."</div>";
 			print "<div class='blockResults exhibitions'>";
 				print "<div>";
-
-				foreach ($va_occurrences as $occurrence_id => $occurrence) {
+				foreach ($va_occurrences as $relation_id => $occurrence) {
+					$occurrence_id = $occurrence['occurrence_id'];
 					$t_occurrence = new ca_occurrences($occurrence_id);
 					$va_artworks = $t_occurrence->get('ca_collections.collection_id', array('returnAsArray' => true));
 					
@@ -204,7 +204,7 @@
 							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('exsingle'), 'return' => array('tags')));
 							print "<div class='exImageSingle'>".caNavLink($this->request, array_shift(array_values($va_object_reps)), '', '', 'Detail', 'Occurrences/'.$occurrence_id)."</div>";
 					}
-					print "<div class='exTitle'>".caNavLink($this->request, $occurrence, '', '', 'Detail', 'Occurrences/'.$occurrence_id)."</div>";
+					print "<div class='exTitle'>".caNavLink($this->request, $occurrence['name'], '', '', 'Detail', 'Occurrences/'.$occurrence_id)."</div>";
 					print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 					print "</div><!-- end occurrenceResult -->";
 				}
@@ -214,17 +214,18 @@
 	}
 
 	# Related Events Block
-	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_events = $t_item->get('ca_occurrences', array('returnWithStructure' => true, 'restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 	if (sizeof($va_events) > 0) {
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Events')."</div>";
 			print "<div class='blockResults'>";
 				print "<div>";
 					$vn_i = 0;
-					foreach ($va_events as $event_id => $event) {
+					foreach ($va_events as $relation_id => $event) {
+						$event_id = $event['occurrence_id'];
 						if ($vn_i == 0) {print "<div class='eventSet'>";}
 						print "<div class='eventsResult'>";
-						print "<div>".caNavLink($this->request, $event, '', '', 'Detail', 'Occurrences/'.$event_id)."</div>";
+						print "<div>".caNavLink($this->request, $event['name'], '', '', 'Detail', 'Occurrences/'.$event_id)."</div>";
 						print "</div>";
 						$vn_i++;
 						if ($vn_i == 5) {
@@ -240,16 +241,17 @@
 	}
 	
 	# Related Entities Block
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_entities = $t_item->get('ca_entities', array('returnWithStructure' => true, 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 	if (sizeof($va_entities) > 0) {
 		print "<div id='entitiesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related People')."</div>";
 			print "<div class='blockResults scrollBlock'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;
-				foreach ($va_entities as $entity_id => $entity) {
+				foreach ($va_entities as $relation_id => $entity) {
+					$entity_id = $entity['entity_id'];
 					if ($vn_i == 0) {print "<div class='entitiesSet'>";}
-					print caNavLink($this->request, "<div class='entitiesResult'>".$entity."</div>", '', '','Detail', 'Entities/'.$entity_id);
+					print caNavLink($this->request, "<div class='entitiesResult'>".$entity['name']."</div>", '', '','Detail', 'Entities/'.$entity_id);
 					$vn_i++;
 					if ($vn_i == 5) {
 						print "</div>";

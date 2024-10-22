@@ -26,13 +26,13 @@
 		if ($t_item->get('ca_entities.nationality') != 211)	{$va_subtitle[] = $t_item->get('ca_entities.nationality', array('convertCodesToDisplayText' => true));}
 		if ($t_item->get('ca_entities.vital_dates')) {$va_subtitle[] = $t_item->get('ca_entities.vital_dates');}
 		
-		print "<div class='detailSubtitle'>".join($va_subtitle, ', ')."</div>";
+		print "<div class='detailSubtitle'>".join(",", $va_subtitle)."</div>";
 ?>
 		</div>
 		
 		<div id='mediaArea'>
 <?php
-		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('artist')));
+		$va_collections = $t_item->get('ca_collections', array('returnWithStructure' => true, 'returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('artist')));
 		if (sizeof($va_collections) > 0) {
 			print "<div class='mediaThumbs scrollBlock'>";
 					print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
@@ -88,11 +88,11 @@
 	
 	</div><!-- end contentArea-->
 	<?php	
-	$va_occurrences = $t_item->get('ca_occurrences', array('returnAsArray' => true, 'restrictToTypes' => array('mf_exhibition'), 'checkAccess' => $va_access_values));
-	$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true, 'restrictToTypes' => array('installation'), 'checkAccess' => $va_access_values));	
-	$va_events = $t_item->get('ca_occurrences', array('returnAsArray' => true, 'restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'checkAccess' => $va_access_values));
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'excludeRelationshipTypes' => array('partner')));
-	$va_objects = $t_item->get('ca_objects', array('returnAsArray' => true, 'restrictToTypes' => array('limited_edition', 'av', 'document', 'anecdote', 'image'), 'checkAccess' => $va_access_values));
+	$va_occurrences = $t_item->get('ca_occurrences', array('returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('mf_exhibition'), 'checkAccess' => $va_access_values));
+	$va_collections = $t_item->get('ca_collections', array('returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('installation'), 'checkAccess' => $va_access_values));	
+	$va_events = $t_item->get('ca_occurrences', array('returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'checkAccess' => $va_access_values));
+	$va_entities = $t_item->get('ca_entities', array('returnWithStructure' => true, 'returnAsArray' => true, 'checkAccess' => $va_access_values, 'excludeRelationshipTypes' => array('partner')));
+	$va_objects = $t_item->get('ca_objects', array('returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('limited_edition', 'av', 'document', 'anecdote', 'image'), 'checkAccess' => $va_access_values));
 	
 
 	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_events) > 0) | (sizeof($va_objects) > 0)) {
@@ -126,7 +126,7 @@
 	}
 		
 	# Related Exhibitions Block
-	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_occurrences = $t_item->get('ca_occurrences', array('returnWithStructure' => true, 'restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 	if (sizeof($va_occurrences) > 0) {
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Exhibitions')."</div>";
