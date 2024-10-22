@@ -167,8 +167,7 @@
 				print "<div>";
 
 				foreach ($va_occurrences as $occurrence_id => $va_occurrence) {
-					$vn_occurrence_id = $va_occurrence['occurrence_id'];
-					$t_occurrence = new ca_occurrences($vn_occurrence_id);
+					$t_occurrence = new ca_occurrences($occurrence_id);
 					$va_artworks = $t_occurrence->get('ca_collections.collection_id', array('returnAsArray' => true));
 					
 					
@@ -183,7 +182,7 @@
 							if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
 
 							if ($va_primary_rep = array_shift(array_values($va_object_reps))){
-								print "<div class='exImage' {$vs_style}>".caNavLink($this->request, $va_primary_rep, '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
+								print "<div class='exImage' {$vs_style}>".caNavLink($this->request, $va_primary_rep, '', '', 'Detail', 'Occurrences/'.$occurrence_id)."</div>";
 								$vn_i++;
 								$vn_ii++;
 							}
@@ -203,9 +202,9 @@
 							$t_collection = new ca_collections($va_artworks[0]);
 							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
 							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('exsingle'), 'return' => array('tags')));
-							print "<div class='exImageSingle'>".caNavLink($this->request, array_shift(array_values($va_object_reps)), '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
+							print "<div class='exImageSingle'>".caNavLink($this->request, array_shift(array_values($va_object_reps)), '', '', 'Detail', 'Occurrences/'.$occurrence_id)."</div>";
 					}
-					print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
+					print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$occurrence_id)."</div>";
 					print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 					print "</div><!-- end occurrenceResult -->";
 				}
@@ -223,10 +222,9 @@
 				print "<div>";
 					$vn_i = 0;
 					foreach ($va_events as $event_id => $va_event) {
-						$vn_event_id = $va_event['occurrence_id'];
 						if ($vn_i == 0) {print "<div class='eventSet'>";}
 						print "<div class='eventsResult'>";
-						print "<div>".caNavLink($this->request, $va_event['label'], '', '', 'Detail', 'Occurrences/'.$vn_event_id)."</div>";
+						print "<div>".caNavLink($this->request, $va_event['label'], '', '', 'Detail', 'Occurrences/'.$event_id)."</div>";
 						print "</div>";
 						$vn_i++;
 						if ($vn_i == 5) {
