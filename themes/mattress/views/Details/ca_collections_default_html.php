@@ -166,7 +166,7 @@
 			print "<div class='blockResults exhibitions'>";
 				print "<div>";
 
-				foreach ($va_occurrences as $occurrence_id => $va_occurrence) {
+				foreach ($va_occurrences as $occurrence_id => $occurrence) {
 					$t_occurrence = new ca_occurrences($occurrence_id);
 					$va_artworks = $t_occurrence->get('ca_collections.collection_id', array('returnAsArray' => true));
 					
@@ -204,7 +204,7 @@
 							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('exsingle'), 'return' => array('tags')));
 							print "<div class='exImageSingle'>".caNavLink($this->request, array_shift(array_values($va_object_reps)), '', '', 'Detail', 'Occurrences/'.$occurrence_id)."</div>";
 					}
-					print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$occurrence_id)."</div>";
+					print "<div class='exTitle'>".caNavLink($this->request, $occurrence, '', '', 'Detail', 'Occurrences/'.$occurrence_id)."</div>";
 					print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 					print "</div><!-- end occurrenceResult -->";
 				}
@@ -221,10 +221,10 @@
 			print "<div class='blockResults'>";
 				print "<div>";
 					$vn_i = 0;
-					foreach ($va_events as $event_id => $va_event) {
+					foreach ($va_events as $event_id => $event) {
 						if ($vn_i == 0) {print "<div class='eventSet'>";}
 						print "<div class='eventsResult'>";
-						print "<div>".caNavLink($this->request, $va_event['label'], '', '', 'Detail', 'Occurrences/'.$event_id)."</div>";
+						print "<div>".caNavLink($this->request, $event, '', '', 'Detail', 'Occurrences/'.$event_id)."</div>";
 						print "</div>";
 						$vn_i++;
 						if ($vn_i == 5) {
@@ -232,7 +232,7 @@
 							$vn_i = 0;
 						}
 					}
-					if ((end($va_events) == $va_event) && ($vn_i < 5) && ($vn_i != 0)){print "</div>";}								
+					if ((end($va_events) == $event) && ($vn_i < 5) && ($vn_i != 0)){print "</div>";}								
 
 				print "</div>";	
 			print "</div><!-- end blockResults -->";
