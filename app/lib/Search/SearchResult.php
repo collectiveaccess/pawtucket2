@@ -3990,10 +3990,10 @@ class SearchResult extends BaseObject {
 			}
 			if(!strlen($v)) { array_pop($c); return $c; }
 			if(mb_substr($v, -1, 1) == 's') {
-				array_push($c, (mb_substr($v, 0, mb_strlen($v) - 1)."'s"));
-				array_push($c, (mb_substr($v, 0, mb_strlen($v) - 1)."’s"));
+				array_push($c, preg_quote(mb_substr($v, 0, mb_strlen($v) - 1)."'s", '/'));
+				array_push($c, preg_quote(mb_substr($v, 0, mb_strlen($v) - 1)."’s", '/'));
 			}
-			array_push($c, $v);
+			array_push($c, preg_quote($v, '/'));
 			return $c;
 		}, []);
 		if(!sizeof($highlight_text)) { return $content; }
