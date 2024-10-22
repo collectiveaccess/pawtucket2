@@ -247,17 +247,16 @@
 			print "<div class='blockResults scrollBlock'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;
-				foreach ($va_entities as $entity_id => $va_entity) {
-					$vn_entity_id = $va_entity['entity_id'];
+				foreach ($va_entities as $entity_id => $entity) {
 					if ($vn_i == 0) {print "<div class='entitiesSet'>";}
-					print caNavLink($this->request, "<div class='entitiesResult'>".$va_entity['displayname']."</div>", '', '','Detail', 'Entities/'.$va_entity['entity_id']);
+					print caNavLink($this->request, "<div class='entitiesResult'>".$entity."</div>", '', '','Detail', 'Entities/'.$entity_id);
 					$vn_i++;
 					if ($vn_i == 5) {
 						print "</div>";
 						$vn_i = 0;
 					}
 				}
-				if ((end($va_entities) == $va_entity) && ($vn_i < 5)){print "</div>";}								
+				if ((end($va_entities) == $entity) && ($vn_i < 5)){print "</div>";}								
 				print "</div></div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
