@@ -90,7 +90,7 @@
 			  </ul>
 			  <form class="navbar-form pull-right" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 				<div class="input-group">
-					<input type="search" class="form-control" placeholder="" name="search"/>
+					<input type="search" class="form-control" placeholder="" name="search" style="background-color: white;"/>
 					<span class="input-group-btn">
 						<button type="submit" class="btn btn-default"></button>
 					</span> 
