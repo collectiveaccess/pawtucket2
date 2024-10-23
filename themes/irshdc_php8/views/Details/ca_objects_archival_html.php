@@ -308,9 +308,9 @@ if($vs_mode == "map"){
 							print '<div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? "; " : "").$vs_creators_text.'</div></div>';
 						}
 ?>
-						{{{<ifdef code="ca_collections.RAD_admin_hist">
+						{{{<ifdef code="ca_objects.RAD_admin_hist">
 							<div class="unit"><h6>Administrative/Biographical History</h6>
-								<div class="trimText">^ca_collections.RAD_admin_hist</div>
+								<div class="trimText">^ca_objects.RAD_admin_hist</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.scope_new.scope_new_text">
@@ -449,11 +449,11 @@ if($x){
 						<unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>">
 						<hr>
 						<div class="row">
-							<div class="col-sm-3 text-center leftCol">
-								<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=""><if rule="^ca_collections.type_id =~ /Archival Collection/"><l class="btn btn-default">^ca_collections.type_id:<br/>^ca_collections.preferred_labels.name</l></if></unit></ifdef></div>
+							<div class="col-sm-3 leftCol">
+								<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=""><if rule="^ca_collections.type_id =~ /Archival Collection/"><l class="btn btn-default">^ca_collections.preferred_labels.name</l></if></unit></ifdef></div>
 							</div>
 							<div class="col-sm-9 rightCol">
-								<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" restrictToTypes="series,sub_series,file" delimiter=" &gt; "><l class="btn btn-default">^ca_collections.type_id:<br/>^ca_collections.preferred_labels.name</l></unit></ifdef></div>
+								<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" restrictToTypes="series,sub_series,file" delimiter=""><div class="hier-indent-^index"><l class="btn btn-default">^ca_collections.preferred_labels.name</l><ifdef code="ca_collections.scope_content_preview"><br>^ca_collections.scope_content_preview</ifdef></div></unit></ifdef></div>
 							</div>	
 						</div>
 						<hr>
@@ -464,18 +464,19 @@ if($x){
 			if(is_array($va_parent_files) && sizeof($va_parent_files)){
 				foreach($va_parent_files as $vn_parent_file_id){
 					$t_file = new ca_objects($vn_parent_file_id);
-					$tmp = $t_file->getWithTemplate('<div id="collectionsOverviewHierarchyPath"><hr><l class="btn btn-default">^ca_objects.type_id:<br/>^ca_objects.preferred_labels.name</l><hr></div>');
-					$file_link = $t_file->getWithTemplate('<l class="btn btn-default">^ca_objects.type_id:<br/>^ca_objects.preferred_labels.name</l>');
+					$tmp = $t_file->getWithTemplate('<div id="collectionsOverviewHierarchyPath"><hr><l class="btn btn-default">^ca_objects.preferred_labels.name</l><hr></div>');
+					$file_link = $t_file->getWithTemplate('<l class="btn btn-default">^ca_objects.preferred_labels.name</l><ifdef code="ca_objects.scope_content_preview"><br>^ca_objects.scope_content_preview</ifdef>');
+					$file_indent = $t_file->getWithTemplate('<unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="" limit="1"><unit relativeTo="ca_collections.hierarchy" restrictToTypes="series,sub_series,file" delimiter="" limit="1">^count</unit></unit>');
 					$tmp2 = $t_file->getWithTemplate('
 						<div id="collectionsOverviewHierarchyPath">
 							<unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>">
 							<hr>
 							<div class="row">
-								<div class="col-sm-3 text-center leftCol">
-									<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=""><if rule="^ca_collections.type_id =~ /Archival Collection/"><l class="btn btn-default">^ca_collections.type_id:<br/>^ca_collections.preferred_labels.name</l></if></unit></ifdef></div>
+								<div class="col-sm-3 leftCol">
+									<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=""><if rule="^ca_collections.type_id =~ /Archival Collection/"><l class="btn btn-default">^ca_collections.preferred_labels.name</l></if></unit></ifdef></div>
 								</div>
 								<div class="col-sm-9 rightCol">
-									<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" restrictToTypes="series,sub_series,file" delimiter=" &gt; "><l class="btn btn-default">^ca_collections.type_id:<br/>^ca_collections.preferred_labels.name</l></unit> > </ifdef>'.$file_link.'</div>
+									<div class="unit hierarchyPath"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" restrictToTypes="series,sub_series,file" delimiter=""><div class="hier-indent-^index"><l class="btn btn-default">^ca_collections.preferred_labels.name</l><ifdef code="ca_collections.scope_content_preview"><br>^ca_collections.scope_content_preview</ifdef></div></unit></ifdef><div class="hier-indent-file-'.$file_indent.'">'.$file_link.'</div></div>
 								</div>	
 							</div>
 							<hr>
@@ -497,7 +498,7 @@ if($x){
 					<div class="col-sm-12"><hr/></div>
 				</div>
 				<div class="row">
-					<div class="col-sm-12"><H2>Collection Overview</H2><div class="unit">This archival item is part of the following collection.</div></div>
+					<div class="col-sm-12"><H2>Collection Overview</H2><div class="unit">Click to see how this item relates to the Collection.</div></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12">
@@ -552,15 +553,15 @@ if($x){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 100
+		  maxHeight: 110
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 18
+		  maxHeight: 22
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
-		  maxHeight: 80,
+		  maxHeight: 85,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});

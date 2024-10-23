@@ -147,8 +147,7 @@ if($vs_mode == "map"){
 				}
 ?>
 				<!--<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>-->
-				<div class='col-sm-12 col-md-5'>
-					<div class="stoneBg">				
+				<div class='col-sm-12 col-md-5'>		
 <?php
 						$vs_source = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>', array("checkAccess" => $va_access_values));						
 						$vs_source_link = $t_object->get("ca_objects.link");
@@ -203,7 +202,6 @@ if($vs_mode == "map"){
 								^ca_objects.language
 							</div>
 						</ifdef>}}}
-					</div><!-- end stoneBg -->
 <?php
 						include("themes_html.php");
 ?>
@@ -352,15 +350,15 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 100
+		  maxHeight: 110
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 18
+		  maxHeight: 22
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
-		  maxHeight: 80,
+		  maxHeight: 85,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});

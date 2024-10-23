@@ -133,7 +133,8 @@ body{
 		margin-bottom:400px;
 	}
 }
-@media (min-width: 1244px) {
+/*@media (min-width: 1244px) {*/
+@media (min-width: 1340px){
 	body{
 		margin-top:100px;
 	}
@@ -172,14 +173,16 @@ body{
 		padding-top:13px;
 	}
 }
-@media (min-width: 1245px){
+/*@media (min-width: 1245px){*/
+@media (min-width: 1340px){
 	.navbar-default .navbar-brand{
 		font-size:22px;
 		font-size:16px;
 		width: 360px;
 	}
 }
-@media (min-width: 1245px){
+/*@media (min-width: 1245px){*/
+@media (min-width: 1340px){
 	.nav > li > a {
 		padding-top: 28px !important;
 		padding-bottom: 28px !important;
@@ -196,7 +199,8 @@ body{
 .navbar-default .navbar-nav > li > a:hover span, .navbar-default .navbar-nav > li > a:focus span {
     border-bottom: 2px solid #d20000;
 }
-@media (min-width: 1245px){
+/*@media (min-width: 1245px){*/
+@media (min-width: 1340px){
 	.navbar-default .navbar-nav > li.navLinkBorder > a > span{
 		border: 2px solid #d20000;
 		padding:10px;
@@ -213,12 +217,14 @@ body{
 		font-size:18px;
 	}
 }
-@media (min-width: 1245px) {
+/*@media (min-width: 1245px) {*/
+@media (min-width: 1340px){
 	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus{
 		font-size:16px;
 	}
 }
-@media (min-width: 1245px) {
+/*@media (min-width: 1245px) {*/
+@media (min-width: 1340px){
 	.navbar-default .navbar-form {
 		margin-top: 22px;
 	}
@@ -235,16 +241,21 @@ body{
 		margin:0px;
 	}
 }
-/*@media (min-width: 1011px) and (max-width: 1050px) {
-	.navbar-form .form-group {
-		width: 105px;
+@media (min-width: 768px) and (max-width: 1339px) {
+	#user-navbar.nav > li.dropdown > a.icon{
+		padding-top:28px;
+		padding-bottom:30px;
 	}
-}*/
+	.navbar-form{
+		padding-top:12px;
+	}
+}
 .menuBar .dropdown-menu > li > a {
     color: #000000;
     font-family: lato;
 }
-@media (min-width: 768px) and (max-width: 1244px) {
+/*@media (min-width: 768px) and (max-width: 1244px) {*/
+@media (min-width: 768px) and (max-width: 1339px) {
 	ul.menuItems {
 		width:100%;
 		border-top:solid 1px #ddd;
@@ -670,7 +681,7 @@ div.browseFacetItem a:hover {
 /* details */
 .detail{
 	padding-bottom:40px;
-	font-size:14px;
+	font-size:16px;
 }
 .detail .navTop a{
 	background-color:transparent;
@@ -692,7 +703,7 @@ div.browseFacetItem a:hover {
 .detail H6{
 	text-transform:none;
 	margin: 15px 0px 2px 0px;
-	font-size:14px;
+	font-size:16px;
 	line-height: 1.3em;
 }
 .detail H6.inline{
@@ -716,7 +727,7 @@ div.browseFacetItem a:hover {
 .detail .collapseBlock, .detail .block, .detail .relatedBlock{
 	border-color:#efefef;
 	border-top:1px solid #efefef;
-	padding:10px;
+	padding:10px 0px;
 	clear:both;
 }
 .detail .collapseBlock.last{
@@ -769,17 +780,17 @@ div.browseFacetItem a:hover {
 }
 .detail .relatedBlock .relatedBlockContent a, .detail .relatedBlock .relatedBlockContent .placePlaceholder{
 	display:inline-block;
-	background-color:#f0ede4;
-	font-size:11px;
+	background-color:#ececec;
+	font-size:14px;
 	margin-bottom:2px;
 	font-family:latoLight;
-	padding:10px;
+	padding:10px 10px 0px 10px;
 	width: 100%;
 	text-decoration: none;
 	color:#454545;
 }
 .detail .relatedBlock .relatedBlockContent a:hover{
-	background-color:#e0d7ba;
+	background-color:#f0ede4;
 }
 .detail .relatedBlock .relatedBlockContent img{
 	width:100%;
@@ -1024,6 +1035,10 @@ a.readmore-js-toggle {
 	padding: 10px;
 	
 }
+.detail .detailArchivalCollections .collapseBlock.discussion{
+	padding-left:10px;
+	padding-right:10px;
+}
 .jumpTop{
 	position: fixed;
 	right:0px;
@@ -1057,8 +1072,7 @@ a.readmore-js-toggle {
     font-family: lato;   
 }
 #collectionsOverview .hierarchyPath{
-	font-size: 20px;
-	font-weight: bold;
+	font-size: 15px;
 }
 #collectionsOverviewHierarchyPath HR {
 	border-top: 2px solid #454545 !important;
@@ -1076,14 +1090,58 @@ a.readmore-js-toggle {
 }
 #collectionsOverviewHierarchyPath .btn-default{
 	text-transform: none;
-    font-weight: normal;
+    font-weight: 600;
     background-color: #FFF;
     color: #454545;
-    font-size: 14px !important;
-    padding: 8px 9px;
+    font-size: 15px !important;
+    padding: 8px 0px 0px 0px;
     display: inline-block;
-    margin: 7px 10px 7px 10px;
-    font-family: lato;   
+    margin: 7px 0px 0px 0px;
+    font-family: LatoLight;   
+}
+#collectionsOverviewHierarchyPath .leftCol .btn-default{
+	color:#8a0000;
+	font-size: 18px !important;
+}
+.hier-indent-2{
+	padding-left:25px;
+}
+.hier-indent-3{
+	padding-left:50px;
+}
+.hier-indent-4{
+	padding-left:75px;
+}
+.hier-indent-5{
+	padding-left:100px;
+}
+.hier-indent-6{
+	padding-left:125px;
+}
+.hier-indent-7{
+	padding-left:150px;
+}
+
+.hier-indent-file-1{
+	padding-left:25px;
+}
+.hier-indent-file-2{
+	padding-left:50px;
+}
+.hier-indent-file-3{
+	padding-left:75px;
+}
+.hier-indent-file-4{
+	padding-left:100px;
+}
+.hier-indent-file-5{
+	padding-left:125px;
+}
+.hier-indent-file-6{
+	padding-left:150px;
+}
+.hier-indent-file-7{
+	padding-left:175px;
 }
 /* remove ? */
 .detail a .narrativeThreadLink{
@@ -1132,6 +1190,10 @@ a.readmore-js-toggle {
 	padding: 3px 5px 3px 5px;
 	font-size:10px;
 	margin-top:10px;
+}
+.detailArchivalCollections #detailDiscussion .btn-default{
+	padding: 6px 7px 5px 7px;
+	font-size:13px;
 }
 .detail #detailDiscussion, .detail #detailComments {
     font-family: latoLight;
@@ -1317,6 +1379,7 @@ h3.popover-title{
 #collectionLoad div a{
 	font-weight:600;
 	font-size:15px;
+	color: #454545;
 }
 #collectionLoad p{
 	font-size:15px;

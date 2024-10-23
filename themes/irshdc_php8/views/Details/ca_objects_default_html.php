@@ -165,8 +165,7 @@ if($vs_mode == "map"){
 ?>
 				<!--<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>-->
 				<div class='col-sm-12 col-md-5'>
-					<div class="stoneBg">				
-
+					
 						<H4>{{{^ca_objects.preferred_labels.name}}}
 						{{{<ifdef code="ca_objects.dc_website"><br/><unit delimiter="<br/>"><a href="^ca_objects.dc_website" class="redLink" target="_blank">^ca_objects.dc_website <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
 						</H4>
@@ -174,7 +173,6 @@ if($vs_mode == "map"){
 						
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						{{{<ifdef code="ca_objects.description"><div class='unit'>^ca_objects.description</div></ifdef>}}}
-					</div><!-- end stoneBg -->
 <?php
 						include("themes_html.php");
 ?>
@@ -289,15 +287,15 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 100
+		  maxHeight: 110
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 18
+		  maxHeight: 22
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
-		  maxHeight: 80,
+		  maxHeight: 85,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});
