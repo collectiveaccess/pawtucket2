@@ -202,7 +202,10 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 						<div class="enterButton"><a href="https://irshdc.ubc.ca/for-survivors/healing-and-wellness-resources/" class="btn btn-default">Wellness Resources</a></div>
 					</div>
 					<div class="col-md-6 col-lg-5 col-lg-offset-2">
-						<div class="enterButton"><?php print caNavLink($this->request, "Enter", "btn btn-default", "*", "*", "*", array("confirmEnter" => 1)); ?></div>
+<?php
+	$url = caNavLink($this->request, "Enter", "btn btn-default", "*", "*", "*", ["confirmEnter" => 1]);
+?>
+						<div class="enterButton"><?= $url; ?></div>
 					</div>
 				</div>
 			</div>
