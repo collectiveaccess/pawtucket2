@@ -89,8 +89,7 @@ const ImportedItem = (props) => {
         {(props.data.status !== 'IN_PROGRESS') ?
         <>
           <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => viewImport(e)}>Info</a></td>
-          <td><a href={`/MultiSearch/Index?search=${props.data.sessionKey}`} type='button' className='btn btn-secondary btn-sm'>View</a></td>
-          {/* <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td> */}
+          <td><a href={`/Search/GeneralSearch?search=${props.data.sessionKey}`} type='button' className='btn btn-secondary btn-sm'>View</a></td>
         </>
           : null}
       </tr>

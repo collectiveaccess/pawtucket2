@@ -59,10 +59,10 @@ const ImportList = (props) => {
     return(
       <div className='container-fluid' style={{ maxWidth: '85%' }}>
         <div className='row mb-5'>
-          <div className='col text-left'>
+          <div className='col text-start'>
             <h1>Your Imports</h1>
           </div>
-          <div className='col text-right'>
+          <div className='col text-end'>
            {/* <div className="dropdown">
               <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 + New Import
@@ -100,10 +100,10 @@ const ImportList = (props) => {
       <div className='container-fluid' style={{maxWidth: '85%'}}>
 
         <div className='row mb-5'>
-          <div className='col text-left'>
+          <div className='col text-start'>
             <h1>Your Imports</h1>
           </div>
-          <div className='col text-right'>
+          <div className='col text-end'>
             {/* <a href='#' className='btn btn-primary' onClick={(e) => openNewImportPage(e)}>+ New Import</a> */}
             {/* <div className="dropdown">
               <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -151,7 +151,7 @@ const ImportList = (props) => {
                   <th scope="col">Status</th>
                   <th scope="col">Number Of Files</th>
                   <th scope="col">Size</th>
-                  <th scope="col">Percentage Done</th>
+                  <th scope="col">Percent Done</th>
                   <th scope="col"> </th>
                 </tr>
               </thead>
@@ -192,7 +192,7 @@ const ImportList = (props) => {
                   <th scope="col">Last Activity On</th>
                   <th scope="col">Status</th>
                   <th scope="col" data-toggle="tooltip" data-placement="top" title="Files imported / Files dropped">Number Of Files</th>
-                  <th scope="col" data-toggle="tooltip" data-placement="top" title="Errors and warnings with this import">Errors</th>
+                  {/* <th scope="col" data-toggle="tooltip" data-placement="top" title="Errors and warnings with this import">Errors</th> */}
                   <th scope="col">Size</th>
                   <th scope="col">Percent Done</th>
                   <th scope="col"> </th>

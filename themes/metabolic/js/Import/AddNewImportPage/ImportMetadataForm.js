@@ -8,7 +8,6 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 //import { TypeaheadField } from "react-jsonschema-form-extras/lib/TypeaheadField";
 import _ from 'lodash';
-// var _ = require('lodash');
 
 import { getNewSession, getFormList, getForm, updateSession, submitSession } from '../ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
@@ -30,17 +29,17 @@ const ImportMetadataForm = (props) => {
   
   const loadForm = () => {
   	getForm(baseUrl, formCode, function(data){
-        console.log("getForm", data.uiSchema)
-        let form = { ...data }
-        let jsonProperties = JSON.parse(data.properties);
-        form.properties = jsonProperties;
-        setSchema(form);
-        
-        if(data.uiSchema) {
-			let uiSchemaData = JSON.parse(data.uiSchema);
-			setUiSchema(uiSchemaData);
-		}
-      });
+      console.log("getForm", data.uiSchema)
+      let form = { ...data }
+      let jsonProperties = JSON.parse(data.properties);
+      form.properties = jsonProperties;
+      setSchema(form);
+      
+      if(data.uiSchema) {
+        let uiSchemaData = JSON.parse(data.uiSchema);
+        setUiSchema(uiSchemaData);
+		  }
+    });
   };
 
   const initNewSession = (callback) => {
@@ -55,13 +54,11 @@ const ImportMetadataForm = (props) => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
-          <div className='col info text-gray'>
-            <p>Would you like to submit this import? It <strong>CANNOT</strong> be undone and may take a while.</p>
-            <div className='button' style={{ cursor: "pointer" }}
-              onClick={(e) => { submitForm(); }}>
-              <strong>Yes, Submit Import</strong></div>
+          <div className='col info bg-light p-5'>
+            <div className='fs-4'>Would you like to submit this import? It <strong>CANNOT</strong> be undone and may take a while.</div><br></br>
+            <div className='btn btn-primary' onClick={(e) => { submitForm(); }}> <strong>Yes, Submit Import</strong></div>
             &nbsp;
-            <div className='button' style={{ cursor: "pointer" }} onClick={(e) => { onClose(); }}>No</div>
+            <div className='btn btn-primary' onClick={(e) => { onClose(); }}>No</div>
           </div>
         );
       }
@@ -76,13 +73,11 @@ const ImportMetadataForm = (props) => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
-          <div className='col info text-gray'>
-            <p>Import submitted. Would you like to start a new import?</p>
-            <div className='button' style={{ cursor: "pointer" }} 
-            onClick={(e) => { props.setInitialState(e); setViewMode("add_new_import_page"); initNewSession(); loadForm(); onClose(); }}>
-              Yes</div>
+          <div className='col info bg-light p-5'>
+            <div className='fs-4'>Import submitted. Would you like to start a new import?</div><br></br>
+            <div className='btn btn-primary' onClick={(e) => { props.setInitialState(e); setViewMode("add_new_import_page"); initNewSession(); loadForm(); onClose(); }}>Yes</div>
 						&nbsp;
-            <div className='button' style={{ cursor: "pointer" }} onClick={(e) => { props.setInitialState(e); setIsSubmitted('true'); onClose();}}>No</div>
+            <div className='btn btn-primary' onClick={(e) => { props.setInitialState(e); setIsSubmitted('true'); onClose();}}>No</div>
           </div>
         );
       }
@@ -117,12 +112,17 @@ const ImportMetadataForm = (props) => {
   
   // NOTE: made this callable in realtime - only network portion is debounced
   const saveFormData = (formData) => {
+    // if (formData?.ca_entities) {
+    //   // Convert ca_entities values to strings if they exist
+    //   formData.ca_entities = formData.ca_entities.map(entity => String(entity));
+    // }
     setFormData(formData);	// set context state
     debounce_saveFormDataForSession(sessionKey, formData); // write data to session
   }
   
   console.log("formData: ", formData);
-  console.log("schema: ", schema, uiSchema);
+  console.log("schema: ", schema);
+  console.log("UI Schema: ", uiSchema);
   console.log("uploadStatus: ", uploadStatus);
   
   const transformErrors = function(errors) {
@@ -149,6 +149,7 @@ const ImportMetadataForm = (props) => {
       <div className='form-container mt-3 mb-3'>
         {(schema) ? 
           <Form 
+          liveValidate
           validator={validator}
           schema={schema}
           formData={formData || {}}

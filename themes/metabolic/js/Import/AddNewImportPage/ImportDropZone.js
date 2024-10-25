@@ -159,7 +159,7 @@ const ImportDropZone = (props) => {
   }
   
   return (
-    <div className="sticky-top">
+    <div className="sticky-top" style={{zIndex: 'auto'}}>
       <div className="mb-1" style={{ backgroundColor: '#D8D7CE', padding: '5px' }}>Import Media</div>
 
       <div className="row justify-content-center mt-3 mb-3 importUploaderDropZone">
@@ -168,10 +168,8 @@ const ImportDropZone = (props) => {
             <div {...getRootProps()} className='row importUploaderDropZoneInput'>
               <div className='col align-self-center'>
                 <input {...getInputProps()} />
-                <div>
-                  <h4 style={{ textAlign: 'center' }}>
-                    <span className="material-icons md-48">add_circle_outline</span> {' '}
-                    Drag media here or click to browse</h4>
+                <div className='text-center'>
+                  <h4><i class="bi bi-plus-circle"></i> Drag media here or click to browse</h4>
                 </div>
               </div>                  
             </div>

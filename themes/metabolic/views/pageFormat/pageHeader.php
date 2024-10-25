@@ -39,6 +39,7 @@ if($this->request->isLoggedIn()){
 	if(caDisplayLightbox($this->request)){
 		$user_links .= "<li>".caNavLink($this->request, $lightbox_sectionHeading, 'dropdown-item', '', 'Lightbox', 'Index', array())."</li>";
 	}
+	$user_links .= "<li>".caNavLink($this->request, _t('Importer'), 'dropdown-item', '', 'Import', 'Index', array())."</li>";
 	$user_links .= "<li>".caNavLink($this->request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array())."</li>";
 	
 	if ($this->request->config->get('use_submission_interface')) {

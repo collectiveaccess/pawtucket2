@@ -43,36 +43,16 @@ const AddNewImportPage = (props) => {
   // console.log('uploadStatus: ', uploadStatus);
 
   return (
-    // <div className='container-fluid' style={{ maxWidth: '90%' }}>
-
-    //   {(uploadStatus == 'in_progress') ?
-    //     <button type='button' className='btn btn-secondary' style={{ marginBottom: "10px" }} disabled onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
-    //     :
-    //     <button type='button' className='btn btn-secondary' style={{ marginBottom: "10px" }} onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
-    //   }
-    //   <div className="row justify-content-center">
-    //     <div className="col-5" >
-    //       <ImportDropZone />
-    //     </div>
-
-    //     <div className="col-7">
-    //       <ImportMetadataForm setInitialState={props.setInitialState} />
-    //     </div>
-    //   </div>
-
-      
-    // </div>
-
     <div className='container-fluid' style={{ maxWidth: '90%' }}>
 
       {(uploadStatus === 'in_progress') ?
         <button type='button' className='btn btn-secondary' style={{ marginBottom: "10px" }} disabled onClick={(e) => props.setInitialState(e)}>
-          <ion-icon name="ios-arrow-back"></ion-icon>Your Imports
+          <i class="bi bi-arrow-left"></i> Your Imports
         </button>
         :
         <button 
           type='button' className='btn btn-secondary' style={{ marginBottom: "10px" }} onClick={(e) => props.setInitialState(e)}>
-          <ion-icon name="ios-arrow-back"></ion-icon>Your Imports
+          <i class="bi bi-arrow-left"></i> Your Imports
         </button>
       }
       <div className="row justify-content-center">
