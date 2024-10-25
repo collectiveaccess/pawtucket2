@@ -187,7 +187,7 @@
 												<td class='d-none d-md-table-cell'>{$id_num}</td>
 												<td class='d-none d-md-table-cell'>{$filed}{$meeting_date}{$minutes_meeting_date}</td>
 												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
-												<td class='d-table-cell d-md-none'>{$filed}{$meeting_date}{$minutes_meeting_date}<br/>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>{$filed}<br/>{$vs_caption}</td>
 											</tr>
 										";
 									break;

@@ -34,6 +34,11 @@
 
 <div class="container" >
 	<div class="row my-5">
+		<div class="col-12 display-6 lh-base text-center">
+			{{{front_preamble}}}
+		</div>
+	</div>
+	<div class="row my-5">
 		<div class="col">
 			<div class="text-center bg-light-gray py-2 px-3 shadow">
 				<h2 class="mt-2 fs-3 bg-gray pt-3 p-2">Combined search of legislation</h2>
@@ -71,10 +76,9 @@
 					<li><?= caNavLink($this->request, _t("Ordinances / Council Bills"), "", "", "Search", "advanced/bills"); ?></li>
 					<li><?= caNavLink($this->request, _t("Resolutions"), "", "", "Search", "advanced/resolutions"); ?></li>
 					<li><?= caNavLink($this->request, _t("Clerk Files"), "", "", "Search", "advanced/clerk"); ?></li>
-					<li><?= caNavLink($this->request, _t("Agendas"), "", "", "Search", "advanced/agenda"); ?></li>
-					<li><?= caNavLink($this->request, _t("Minutes"), "", "", "Search", "advanced/minutes"); ?></li>
 					<li><?= caNavLink($this->request, _t("Committee History"), "", "", "Search", "advanced/committees"); ?></li>
-					<li><?= caNavLink($this->request, _t("Meeting History"), "", "", "Search", "advanced/meetings"); ?></li>
+					<li><?= caNavLink($this->request, _t("Meeting History and Agendas"), "", "", "Search", "advanced/meetings"); ?></li>
+					<li><?= caNavLink($this->request, _t("Minutes"), "", "", "Search", "advanced/minutes"); ?></li>
 				</ul>
 			</div>
 		</div>
@@ -87,7 +91,7 @@
 					<label for="recordNumber" class="visually-hidden">Record Number</label>
 					<input id="recordNumber" name="number" type="number" class="form-control" placeholder="Number" min="1">
 				</div>
-				<div class="col-6 mb-1">
+				<div class="col-5 col-sm-6 mb-1">
 					<label for="recordType" class="visually-hidden">Record Type</label>
 					<select id="recordType" name="field" class="form-select">
 						<option value="ca_objects_ORDN">Ordinance</option>
@@ -96,7 +100,7 @@
 						<option value="ca_objects.CFN">Clerk File</option>
 					</select>
 				</div>
-				<div class="col-2 mb-1 text-start">
+				<div class="col-3 col-sm-2 mb-1 text-start">
 					<input type="submit" value="Go" class="btn btn-primary">
 				</div>
 			</div>
@@ -119,6 +123,11 @@
 			<p>Go directly to a record by number.</p>
 		</div>
 
+	</div>
+	<div class="row my-5">
+		<div class="col-12">
+			{{{front_addendum}}}
+		</div>
 	</div>
 
 </div>

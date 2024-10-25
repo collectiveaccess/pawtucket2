@@ -48,11 +48,23 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 	<?= $this->render("Details/attachments_html.php"); ?>
 
-
+	<table class="record table table-striped table-responsive">
+    	<tbody>
+    		{{{<ifcount code="ca_occurrences" restrictToTypes="meeting" min="1">
+				<tr>
+					<td>Meeting:</td>
+					<td><unit relativeTo="ca_occurrences" restrictToTypes="meeting" delimiter="<br/>"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.DATE">, ^ca_occurrences.DATE</ifdef></l></unit></td>
+				</tr>
+			</ifcount>}}}
 	{{{<ifdef code="ca_objects.TX">
-	  ^ca_objects.TX
+	  	<tr>
+			<td>Agenda:</td>
+			<td>^ca_objects.TX</td>
+		</tr>
 	<ifdef/>}}}
 	
+			</tbody>
+		</table>
 	
   <hr>
 

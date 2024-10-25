@@ -177,19 +177,6 @@ if (!$vb_ajax) {	// !ajax
 		<div id="browseResultsContainer">
 					<table style="width: 100%;" class="table table-striped overflow-x-auto">
 						<tbody>
-
-						<!-- TODO: For each type alter columns
-						 	Combined
-						 	Agendas
-							Council bills and ordinances
-							Resolution
-							Comptroller / Clerk file 
-							Minutes
-							Committee history
-							Meeting
-						-->
-						 
-
 						<?php
 								switch($action) {
 									case 'combined':
@@ -198,21 +185,14 @@ if (!$vb_ajax) {	// !ajax
 									<th class="text-nowrap d-none d-md-table-cell">Result</th>
 									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "File Type".(($vs_current_sort == "Type") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Type") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Type', 'direction' => (($vs_current_sort == "Type") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 									<th class="text-nowrap d-none d-md-table-cell">Number</th>
-									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Filed / Meeting Date".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
+									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Filed".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 									<th class="text-nowrap d-none d-md-table-cell"><?php print caNavLink($this->request, "Title".(($vs_current_sort == "Title") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Title") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Title', 'direction' => (($vs_current_sort == "Title") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 									<th class="text-nowrap d-table-cell d-md-none"><?php print caNavLink($this->request, "Filed / Title".(($vs_current_sort == "Date") ? ' <i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>' : ''), (($vs_current_sort == "Date") ? "link-secondary" : ""), '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => 'Date', 'direction' => (($vs_current_sort == "Date") ? (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")) : "desc"), '_advanced' => $vn_is_advanced ? 1 : 0)); ?></th>
 								</tr>
 						<?php
 								break;
 								case 'agenda':
-									// Agendas search results: 
-									// 1) Remove "File Type"
-									// 2) Remove "Number"  
-									// 3) Remove "Filed"
-									// 5) Remove Title
-									// 4) Add "Meeting Date" (ca_objects.DATE)
-									// 6) Add "Committee" (ca_objects.COMM)
-									// 7) Sort on "Meeting Date" (ca_objects.DATE)
+									// Agendas search results - no longer linked to in UI - keeping in case need to bring back: 
 						?>
 								<tr>
 									<th class="text-nowrap d-none d-md-table-cell">Result</th>
@@ -223,12 +203,6 @@ if (!$vb_ajax) {	// !ajax
 						<?php
 								break;
 								case 'bills':
-								// 1) Remove "File Type"
-								// 2) Change label "Number" to "Ordinance Number" 
-								// 3) Add "Council Bill Number" (ca_objects.CBN)
-								// 4) Add "Passed" (ca_objects.DTSI)
-								// 5) Truncate title field
-								// 6) Sort on "Passed" (ca_objects.DTSI — descending
 						?>
 								<tr>
 									<th class="text-nowrap d-none d-md-table-cell">Result</th>
@@ -242,10 +216,6 @@ if (!$vb_ajax) {	// !ajax
 						<?php
 								break;
 								case 'resolutions':
-								// Resolution search results: 
-								// 1) Remove "File Type"
-								// 2) Truncate title field
-								// 3) Sort by date filed (ca_objects.DTF — descending)
 						?>
 								<tr>
 									<th class="text-nowrap d-none d-md-table-cell">Result</th>
@@ -258,8 +228,6 @@ if (!$vb_ajax) {	// !ajax
 								break;
 								case 'clerk':
 								// Comptroller / Clerk file search results: 
-								// 1) Truncate title field
-								// 2) Sort by date filed (ca_objects.DTF — descending)
 						?>
 								<tr>
 									<th class="text-nowrap d-none d-md-table-cell">Result</th>
@@ -272,14 +240,7 @@ if (!$vb_ajax) {	// !ajax
 						<?php
 								break;
 								case 'minutes':
-								// Minutes search results: 
-								// 1) Remove "File Type" 
-								// 2) Remove "Number" 
-								// 3) Remove "Filed" 
-								// 4) Add "Meeting Date" (ca_objects.DATE) 
-								// 5) Remove Title 
-								// 6) Add "Committee" (ca_objects.COMM) 
-								// 7) Sort on "Meeting Date" (ca_objects.DATE)
+								// Minutes search results:
 						?>
 								<tr>
 									<th class="text-nowrap d-none d-md-table-cell">Result</th>
@@ -291,11 +252,6 @@ if (!$vb_ajax) {	// !ajax
 								break;
 								case 'meetings':
 								// Meeting search results:
-								// 1) Remove "File Type"
-								// 2) Remove "Number"
-								// 3) Remove "Filed"
-								// 4) Add "Meeting Date" (ca_occurrences.DATE)
-								// 5) Sory on "Meeting Date" (ca_occurrences.DATE)
 						?>
 								<tr>
 									<th class="text-nowrap d-none d-md-table-cell">Result</th>
@@ -307,12 +263,6 @@ if (!$vb_ajax) {	// !ajax
 								break;
 								case 'committees':
 								// Committee history search results:
-								// 1) Remove "File Type"
-								// 2) Remove "Number"
-								// 3) Remove "Filed"
-								// 4) Add "Dates" (ca_entities.comm_date)
-								// 5) Change label "Title" to "Committee Name"
-								// 6) Sort on "Dates" (ca_entities.comm_date)
 						?>
 								<tr>
 									<th class="text-nowrap d-none d-md-table-cell">Result</th>

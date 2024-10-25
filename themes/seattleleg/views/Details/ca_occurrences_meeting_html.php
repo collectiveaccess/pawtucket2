@@ -51,17 +51,10 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<H3>{{{^ca_occurrences.preferred_labels}}}</H3>
 <table class="record table table-striped table-responsive">
     <tbody>
-	{{{<ifdef code="ca_occurrences.DATE">
+	{{{<ifdef code="ca_occurrences.DATE|ca_occurrences.STRTTIME">
 		<tr>
 			<td>Meeting date:</td>
-			<td>^ca_occurrences.DATE</td>
-		</tr>
-	</ifdef>}}}
-
-	{{{<ifdef code="ca_occurrences.STRTTIME">
-		<tr>
-			<td>Start time:</td>
-			<td>^ca_occurrences.STRTTIME</td>
+			<td><ifdef code="ca_occurrences.DATE">^ca_occurrences.DATE </ifdef><ifdef code="ca_occurrences.STRTTIME">^ca_occurrences.STRTTIME</ifdef></td>
 		</tr>
 	</ifdef>}}}
 
@@ -88,15 +81,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</tr>
 	</ifdef>}}}
 
-	{{{<ifcount code="ca_objects" min="1" restrictToTypes="agenda">
-		<tr><td>
-			<ifcount code="ca_objects" min="1" max="1" restrictToTypes="agenda"><?= _t('Agenda'); ?></ifcount>
-			<ifcount code="ca_objects" min="2" restrictToTypes="agenda"><?= _t('Agendas'); ?></ifcount>
-			</td>
-			<td><unit relativeTo="ca_objects" delimiter="<br>" restrictToTypes="agenda"><l>^ca_objects.preferred_labels</l></unit>
-		</td></tr>
-	</ifcount>}}}
-
 
 	{{{<ifcount code="ca_objects" min="1" restrictToTypes="minutes">
 		<tr><td><?= _t('Minutes'); ?></td>
@@ -111,6 +95,16 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			<td><unit relativeTo="ca_occurrences.media_link" delimetr="<br/><br/>"><a href="^ca_occurrences.media_link">^ca_occurrences.media_link</a></unit></td>
 		</tr>
 	</ifdef>}}}
+	{{{<ifcount code="ca_objects" min="1" restrictToTypes="agenda">
+		<tr><td>
+			<ifcount code="ca_objects" min="1" max="1" restrictToTypes="agenda"><?= _t('Agenda'); ?></ifcount>
+			<ifcount code="ca_objects" min="2" restrictToTypes="agenda"><?= _t('Agendas'); ?></ifcount>
+			</td>
+			<td><unit relativeTo="ca_objects" delimiter="<br>" restrictToTypes="agenda"><ifdef code="ca_object_representations.media"><div class="mb-2"><a href="^ca_object_representations.media.original.url"><i class='bi bi-file-earmark-arrow-down-fill' aria-label='Download' title='Download'></i> ^ca_objects.preferred_labels</a></div></ifdef>
+					^ca_objects.TX
+				</unit>
+		</td></tr>
+	</ifcount>}}}
 </tbody>
 </table>
   <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>

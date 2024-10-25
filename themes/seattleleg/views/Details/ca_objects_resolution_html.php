@@ -151,47 +151,46 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 					}
 				}
 			?>
-
-
-			{{{<ifdef code="ca_objects.DCMR">
-				<tr>
-					<td>Committee Action Date:</td>
-					<td>^ca_objects.DCMR</td>
-				</tr>
-			</ifdef>}}}
-			{{{<ifdef code="ca_objects.CMR">
-				<tr>
-					<td>Committee Recommendation:</td>
-					<td>^ca_objects.CMR</td>
-				</tr>
-			</ifdef>}}}
-			{{{<ifdef code="ca_objects.CMV">
-				<tr>
-					<td>Committee Vote:</td>
-					<td>^ca_objects.CMV</td>
-				</tr>
-			</ifdef>}}}
-			{{{<ifdef code="ca_objects.DTSI">
-				<tr>
-					<td>City Council Action Date:</td>
-					<td>^ca_objects.DTSI</td>
-				</tr>
-			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.STAT">
+			{{{<ifdef code="ca_objects.CMR|ca_objects.CMV|ca_objects.DCMR">
 				<tr>
 					<td>Committee Action:</td>
-					<td>^ca_objects.STAT</td>
+					<td><ifdef code="ca_objects.CMR">^ca_objects.CMR </ifdef><ifdef code="ca_objects.CMV"> ^ca_objects.CMV </ifdef><ifdef code="ca_objects.DCMR">^ca_objects.DCMR</ifdef></td>
 				</tr>
 			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.VOTE">
+			
+			{{{<ifdef code="ca_objects.STAT|ca_objects.VOTE|ca_objects.DTSI">
 				<tr>
-					<td>City Council Vote:</td>
-					<td>^ca_objects.VOTE</td>
+					<td>City Council Action:</td>
+					<td><ifdef code="ca_objects.STAT">^ca_objects.STAT </ifdef><ifdef code="ca_objects.VOTE"> ^ca_objects.VOTE </ifdef><ifdef code="ca_objects.DTSI">^ca_objects.DTSI</ifdef></td>
+				</tr>
+			</ifdef>}}}
+			{{{<ifdef code="ca_objects.DTMY">
+				<tr>
+					<td>Date Delivered to Mayor:</td>
+					<td>^ca_objects.DTMY</td>
 				</tr>
 			</ifdef>}}}
 
+			{{{<ifdef code="ca_objects.DTA">
+				<tr>
+					<td>
+						Date Signed by Mayor:<br>
+						<button class="modalButtonLink" data-bs-toggle="modal" data-bs-target="#MayorsSignatureApprovalDate">(About the signature date)</button>
+					</td>
+					<td>^ca_objects.DTA</td>
+				</tr>
+			</ifdef>}}}
+
+			<div class="modal fade" id="MayorsSignatureApprovalDate" aria-labelledby="MayorsSignatureApprovalDateLabel">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div id="MayorsSignatureApprovalDateLabel" class="fw-bold fs-4 centered">Mayor's signature / approval date</div>
+							{{{mayor_signature_approval_date}}}
+						</div>
+					<button class="btn btn-primary" data-bs-dismiss="modal">Close</button></div>
+				</div>
+			</div>
 			{{{<ifdef code="ca_objects.DTF">
 				<tr>
 					<td>Date Filed with Clerk:</td>

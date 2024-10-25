@@ -28,26 +28,20 @@
 				<hr>
 				<ul id="primaryTier" class="list-unstyled activeParent">
 
-					<li id="left-agenda" <?= ($action == "agenda") ? "class='active' aria-current='page'" : ""; ?>>
-						<?= (($action == "agenda") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Agendas"), "", "", "Search", "advanced/agenda"); ?>
-					</li>
-					<li id="left-minutes" <?= ($action == "minutes") ? "class='active' aria-current='page'" : ""; ?>>
-						<?= (($action == "minutes") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Minutes"), "", "", "Search", "advanced/minutes"); ?>
-					</li>
 					<li id="left-history" <?= ($action == "committees") ? "class='active' aria-current='page'" : ""; ?>>
 						<?= (($action == "committees") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Committee History"), "", "", "Search", "advanced/committees"); ?>
 					</li>
 					<li id="left-history" <?= ($action == "meetings") ? "class='active' aria-current='page'" : ""; ?>>
-						<?= (($action == "meetings") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Meeting History"), "", "", "Search", "advanced/meetings"); ?>
+						<?= (($action == "meetings") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Meeting History and Agendas"), "", "", "Search", "advanced/meetings"); ?>
 					</li>
-					<!-- <li id="left-documents" class="">
-						<a href="https://clerk.seattle.gov/budgetdocs/budgetsearch/budget.html" target="_blank">Budget Documents</a>
-					</li> -->
+					<li id="left-minutes" <?= ($action == "minutes") ? "class='active' aria-current='page'" : ""; ?>>
+						<?= (($action == "minutes") ? "<i class='bi bi-caret-right-fill'></i> " : "").caNavLink($this->request, _t("City Council Minutes"), "", "", "Search", "advanced/minutes"); ?>
+					</li>
 				</ul>
 			<hr>
 			<a href="https://clerk.seattle.gov/search/help/">Search Tips and Options</a>
 			<hr>
-			<?= caNavLink($this->request, "« Back to Online Information Resources", "", "", "", ""); ?>
+			<?= caNavLink($this->request, "« Back to Legislation Search", "", "", "", ""); ?>
 		</div>
 	</nav>
 </div>

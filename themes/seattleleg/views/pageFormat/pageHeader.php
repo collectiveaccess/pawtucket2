@@ -95,6 +95,6 @@ if($this->request->isLoggedIn()){
 
 <?php
 	if(strToLower($this->request->getController()) != "front"){
-		print "<div class='container'>";
+		print "<div class='container-md'>";
 	}
 	

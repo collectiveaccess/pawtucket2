@@ -75,13 +75,6 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
         <th colspan="2"><H4>Description and Background</H4></th>
       </tr>
 
-			{{{<ifdef code="ca_objects.STAT">
-				<tr>
-					<td>Current Status:</td>
-					<td>^ca_objects.STAT</td>
-				</tr>
-			</ifdef>}}}
-
 			<?php
 				if($t_object->get("ca_objects.index")){
 					if($links = caGetSearchLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
@@ -147,38 +140,17 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				}
 			?>
 
-			{{{<ifdef code="ca_objects.DCMR">
+			{{{<ifdef code="ca_objects.CMR|ca_objects.CMV|ca_objects.DCMR">
 				<tr>
-					<td>Committee Action Date:</td>
-					<td>^ca_objects.DCMR</td>
+					<td>Committee Action:</td>
+					<td><ifdef code="ca_objects.CMR">^ca_objects.CMR </ifdef><ifdef code="ca_objects.CMV"> ^ca_objects.CMV </ifdef><ifdef code="ca_objects.DCMR">^ca_objects.DCMR</ifdef></td>
 				</tr>
 			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.CMR">
+			
+			{{{<ifdef code="ca_objects.STAT|ca_objects.VOTE|ca_objects.DTSI">
 				<tr>
-					<td>Committee Recommendation:</td>
-					<td>^ca_objects.CMR</td>
-				</tr>
-			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.CMV">
-				<tr>
-					<td>Committee Vote:</td>
-					<td>^ca_objects.CMV</td>
-				</tr>
-			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.DTSI">
-				<tr>
-					<td>City Council Action Date:</td>
-					<td>^ca_objects.DTSI</td>
-				</tr>
-			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.VOTE">
-				<tr>
-					<td>City Council Vote:</td>
-					<td>^ca_objects.VOTE</td>
+					<td>City Council Action:</td>
+					<td><ifdef code="ca_objects.STAT">^ca_objects.STAT </ifdef><ifdef code="ca_objects.VOTE"> ^ca_objects.VOTE </ifdef><ifdef code="ca_objects.DTSI">^ca_objects.DTSI</ifdef></td>
 				</tr>
 			</ifdef>}}}
 
