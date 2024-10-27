@@ -264,7 +264,7 @@
 			}
 		}
 ?>		
-		{{{<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part">
+		{{{<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part" min="1">
 			<div id="collectionsOverview">
 				<div class="row" style="margin-top:30px;">
 					<div class="col-sm-12"><hr/></div>

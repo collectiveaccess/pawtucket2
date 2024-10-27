@@ -232,11 +232,11 @@ if($vs_mode == "map"){
 					if ($this->getVar("nextLink")) {
 						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("nextLink").'</div><!-- end detailTool -->';
 					}
-					if ($this->getVar("resultsLink")) {
-						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("resultsLink").'</div><!-- end detailTool -->';
-					}
 					if ($this->getVar("previousLink")) {
 						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("previousLink").'</div><!-- end detailTool -->';
+					}
+					if ($this->getVar("resultsLink")) {
+						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("resultsLink").'</div><!-- end detailTool -->';
 					}
 					#if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
 						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
@@ -444,7 +444,8 @@ if($x){
 }						
 
 			# --- the collections the item is a direct part of
-			$vs_rel_collections = $t_object->getWithTemplate('
+			$vs_rel_collections = trim($t_object->getWithTemplate('
+				<ifcount code="ca_collections" restrictToRelationshipTypes="archival_part" min="1">
 					<div id="collectionsOverviewHierarchyPath">
 						<unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>">
 						<hr>
@@ -458,7 +459,8 @@ if($x){
 						</div>
 						<hr>
 						</unit>
-					</div>', array("checkAccess" => $va_access_values));
+					</div>
+				</ifcount>', array("checkAccess" => $va_access_values)));
 			$va_parent_files = $t_object->get("ca_objects.related.object_id", array("restrictToRelationshipTypes" => "archival_part", "checkAccess" => $va_access_values, "returnAsArray" => true));
 			$va_rel_files = array();
 			if(is_array($va_parent_files) && sizeof($va_parent_files)){
@@ -567,7 +569,7 @@ if($x){
 		});
 		$('.trimTextAboutPhotos').readmore({
 		  speed: 75,
-		  maxHeight: 58
+		  maxHeight: 70
 		});
 		var options = {
 			placement: function () {

@@ -5263,7 +5263,7 @@ function caProcessReferenceTags($request, $text, $options=null) {
 			}
 		}
 	}
-	$text = str_replace("<~root~>", "", $o_doc->html());
+	$text = str_replace(array("<~root~>", "</~root~>"), "", $o_doc->html());
 	
 	
 	if (sizeof($idnos)) {
