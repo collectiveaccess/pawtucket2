@@ -48,18 +48,15 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 <div id="detail">
 
-	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
+	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
-  <h2 class="record-number">
-		<?= $type_idno; ?> {{{ca_objects.ORDN}}}
-	</h2>
-	<h2 class="record-number" style="font-size: 20px; line-height: 30px;">Introduced as Council Bill {{{ca_objects.CBN}}}
-	</h2>
+ 	{{{<ifdef code="ca_objects.ORDN"><h3 class="record-number">Ordinance ^ca_objects.ORDN</h3></ifdef>}}}
+	{{{<ifdef code="ca_objects.CBN"><h3 class="record-number">Introduced as Council Bill ^ca_objects.CBN</h3></ifdef>}}}
 
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Title</span></th>
+        <th colspan="2"><H4>Title</H4></th>
       </tr>
       <tr>
         <td class="empty"></td>
@@ -75,33 +72,12 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Description and Background</span></th>
+        <th colspan="2"><H4>Description and Background</H4></th>
       </tr>
-
-			{{{<ifdef code="ca_objects.STAT">
-				<tr>
-					<td>Current Status:</td>
-					<td>^ca_objects.STAT</td>
-				</tr>
-			</ifdef>}}}
-
-			<!-- {{{<ifdef code="ca_objects.FN">
-				<tr>
-					<td>Fiscal Note</td>
-					<td>^ca_objects.FN</td>
-				</tr>
-			</ifdef>}}} -->
-
-			{{{<ifdef code="ca_objects.fiscal.fiscal_link">
-				<tr>
-					<td>Fiscal Note</td>
-					<td><a href="^ca_objects.fiscal.fiscal_link" target="_blank">^ca_objects.fiscal.fiscal_link</a></td>
-				</tr>
-			</ifdef>}}}
 
 			<?php
 				if($t_object->get("ca_objects.index")){
-					if($links = caGetBrowseLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Index Terms:'); ?></td>
@@ -111,7 +87,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 					}
 				}
 			?>
-			
+
 			{{{<ifdef code="ca_objects.REF">
 				<tr>
 					<td>References:</td>
@@ -128,19 +104,12 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Legislative History</span></th>
+        <th colspan="2"><H4>Legislative History</H4></th>
       </tr>
-			
-			<!-- {{{<ifdef code="ca_objects.SPON">
-				<tr>
-					<td>Sponsor:</td>
-					<td><l>^ca_objects.SPON</l></td>
-				</tr>
-			</ifdef>}}} -->
 
 			<?php
 				if($t_object->get("ca_objects.SPON")){
-					if($links = caGetBrowseLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Sponsor:'); ?></td>
@@ -160,7 +129,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.COMM")){
-					if($comm = caGetBrowseLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
+					if($comm = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Committee Referral:'); ?></td>
@@ -171,38 +140,17 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				}
 			?>
 
-			{{{<ifdef code="ca_objects.DCMR">
+			{{{<ifdef code="ca_objects.CMR|ca_objects.CMV|ca_objects.DCMR">
 				<tr>
-					<td>Committee Action Date:</td>
-					<td>^ca_objects.DCMR</td>
+					<td>Committee Action:</td>
+					<td><ifdef code="ca_objects.CMR">^ca_objects.CMR </ifdef><ifdef code="ca_objects.CMV"> ^ca_objects.CMV </ifdef><ifdef code="ca_objects.DCMR">^ca_objects.DCMR</ifdef></td>
 				</tr>
 			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.CMR">
+			
+			{{{<ifdef code="ca_objects.STAT|ca_objects.VOTE|ca_objects.DTSI">
 				<tr>
-					<td>Committee Recommendation:</td>
-					<td>^ca_objects.CMR</td>
-				</tr>
-			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.CMV">
-				<tr>
-					<td>Committee Vote:</td>
-					<td>^ca_objects.CMV</td>
-				</tr>
-			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.DTSI">
-				<tr>
-					<td>City Council Action Date:</td>
-					<td>^ca_objects.DTSI</td>
-				</tr>
-			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.VOTE">
-				<tr>
-					<td>City Council Vote:</td>
-					<td>^ca_objects.VOTE</td>
+					<td>City Council Action:</td>
+					<td><ifdef code="ca_objects.STAT">^ca_objects.STAT </ifdef><ifdef code="ca_objects.VOTE"> ^ca_objects.VOTE </ifdef><ifdef code="ca_objects.DTSI">^ca_objects.DTSI</ifdef></td>
 				</tr>
 			</ifdef>}}}
 
@@ -217,30 +165,37 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				<tr>
 					<td>
 						Date Signed by Mayor:<br>
-						<a href="#" data-bs-toggle="modal" data-bs-target="#MayorsSignatureApprovalDate"><small>(About the signature date)</small></a>
+						<button class="modalButtonLink" data-bs-toggle="modal" data-bs-target="#MayorsSignatureApprovalDate">(About the signature date)</button>
 					</td>
 					<td>^ca_objects.DTA</td>
 				</tr>
 			</ifdef>}}}
 
-			<div class="modal fade" id="MayorsSignatureApprovalDate">
+			<div class="modal fade" id="MayorsSignatureApprovalDate" aria-labelledby="MayorsSignatureApprovalDateLabel">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-body">
-							<h3 class="centered">Mayor's signature / approval date</h3>
-							<p>The date displayed here is the ordinance approval date.</p>
-							<p>Approval date for an ordinance is ordinarily the date the bill was signed by the Mayor. There are certain exceptions:</p>
-							<ul>
-								<li>In a case where the Mayor returns a bill without signature, the approval date is the date it was returned to the City Clerk.</li>
-								<li>If a bill is not returned to the City Clerk by the Mayor, the effective approval date is fifteen days after its passage by the City Council.</li>
-								<li>In the case of a bill vetoed by the Mayor and subsequently reconsidered and passed over the Mayor's veto, approval date is the date of final passage by the City Council.</li>
-								<li>In the case of initiatives and referenda passed by the voters, approval date is the date of the Mayor's proclamation of the election results.</li>
-							</ul>
-							<p>City of Seattle Charter IV. 12.<br>Seattle Municipal Code 1.04.020</p>
+							<div id="MayorsSignatureApprovalDateLabel" class="fw-bold fs-4 centered">Mayor's signature / approval date</div>
+							{{{mayor_signature_approval_date}}}
 						</div>
 					<button class="btn btn-primary" data-bs-dismiss="modal">Close</button></div>
 				</div>
 			</div>
+
+			{{{<ifdef code="ca_objects.DTV">
+				<tr>
+					<td>Veto Date:</td>
+					<td>^ca_objects.DTV</td>
+				</tr>
+			</ifdef>}}}
+			
+
+			{{{<ifdef code="ca_objects.DTS">
+				<tr>
+					<td>Date Sustained:</td>
+					<td>^ca_objects.DTS</td>
+				</tr>
+			</ifdef>}}}
 
 			{{{<ifdef code="ca_objects.DTF">
 				<tr>
@@ -249,22 +204,16 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 				</tr>
 			</ifdef>}}}
 
-			{{{<ifdef code="ca_objects.document.doc_link">
-				<tr>
-					<td>Signed Copy:</td>
-					<td><a href="^ca_objects.document.doc_link" target="_blank">^ca_objects.document.doc_link</a></td>
-				</tr>
-			</ifdef>}}}
-
     </tbody>
   </table>
 
-
+<?= $this->render("Details/attachments_html.php"); ?>
+	
 	{{{<ifdef code="ca_objects.TX">
 		<table class="record table table-striped table-responsive">
 			<tbody>
 				<tr>
-					<th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Text</span></th>
+					<th colspan="2"><H4>Text</H4></th>
 				</tr>
 				<tr>
 					<td class="empty"></td>
@@ -279,30 +228,12 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 	</ifdef>}}}
 
 	{{{<ifnotdef code="ca_objects.TX">
-		<em>No text for this document is available online. You may view this document at
-			<a href="http://www.seattle.gov/cityclerk/legislation-and-research/research-assistance">the Office of the City Clerk</a>.	If you are unable to visit the Clerk's Office, you may request a copy or scan be made for you by Clerk staff.	Scans and copies provided by the Office of the City Clerk are subject to <a href="http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services">copy fees</a>, and the timing of service
-			is dependent on the availability of staff.
-		</em>
+		<?php print $this->getVar("detail_text_not_online"); ?>
 	<ifnotdef/>}}}
 
-	{{{<ifdef code="ca_object_representations.media.small">
-		<unit filterNonPrimaryRepresentations="0">
-			<table class="record table table-striped table-responsive">
-				<tbody>
-					<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
-					<tr>
-						<td class="empty"></td>
-						<td>
-							<a href="^ca_object_representations.URL" target="_blank">^ca_object_representations.media.small</a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</unit>
-	</ifdef>}}}
-
+	
   <hr>
 
-  <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
+  <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
 
 </div>

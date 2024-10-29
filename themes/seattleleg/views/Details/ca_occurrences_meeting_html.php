@@ -46,24 +46,16 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 <div id="detail">
 
-	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
+	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
-	<p class="fs-3">Name: {{{^ca_occurrences.preferred_labels}}}</p>
-
-	{{{<ifdef code="ca_occurrences.DATE">
+	<H3>{{{^ca_occurrences.preferred_labels}}}</H3>
+<table class="record table table-striped table-responsive">
+    <tbody>
+	{{{<ifdef code="ca_occurrences.DATE|ca_occurrences.STRTTIME">
 		<tr>
 			<td>Meeting date:</td>
-			<td>^ca_occurrences.DATE</td>
+			<td><ifdef code="ca_occurrences.DATE">^ca_occurrences.DATE </ifdef><ifdef code="ca_occurrences.STRTTIME">^ca_occurrences.STRTTIME</ifdef></td>
 		</tr>
-		<br><br>
-	</ifdef>}}}
-
-	{{{<ifdef code="ca_occurrences.STRTTIME">
-		<tr>
-			<td>Start time:</td>
-			<td>^ca_occurrences.STRTTIME</td>
-		</tr>
-		<br><br>
 	</ifdef>}}}
 
 	{{{<ifdef code="ca_occurrences.location">
@@ -71,53 +63,50 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			<td>Meeting location:</td>
 			<td>^ca_occurrences.location</td>
 		</tr>
-		<br><br>
-	</ifdef>}}}
-
-	{{{<ifdef code="ca_occurrences.note">
-		<tr>
-			<td>Meeting Notes:</td>
-			<td>^ca_occurrences.note</td>
-		</tr>
-		<br><br>
-	</ifdef>}}}
-
-	{{{<ifdef code="ca_occurrences.media_link">
-		<tr>
-			<td>Meeting Notes:</td>
-			<td>^ca_occurrences.media_link</td>
-		</tr>
-		<br><br>
 	</ifdef>}}}
 
 	{{{<ifcount code="ca_entities" min="1">
-		<dt>
-			<ifcount code="ca_entities" min="1" max="1"><?= _t('Related Committee'); ?></ifcount>
-			<ifcount code="ca_entities" min="2"><?= _t('Related Committees'); ?></ifcount>
-		</dt>
-		<unit relativeTo="ca_entities" delimiter="<br>"><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
-		<br>
+		<tr><td>
+			<ifcount code="ca_entities" min="1" max="1"><?= _t('Committee'); ?></ifcount>
+			<ifcount code="ca_entities" min="2"><?= _t('Committees'); ?></ifcount>
+			</td>
+			<td><unit relativeTo="ca_entities" delimiter="<br>"><l>^ca_entities.preferred_labels</l></unit>
+		</td></tr>
 	</ifcount>}}}
 
-	{{{<ifcount code="ca_objects" min="1" restrictToTypes="agenda">
-		<dt>
-			<ifcount code="ca_objects" min="1" max="1"><?= _t('Related Agenda'); ?></ifcount>
-			<ifcount code="ca_objects" min="2"><?= _t('Related Agendas'); ?></ifcount>
-		</dt>
-		<unit relativeTo="ca_objects" delimiter="<br>"><dd><l>^ca_objects.preferred_labels</l> (^relationship_typename)</dd></unit>
-		<br>
-	</ifcount>}}}
+	{{{<ifdef code="ca_occurrences.note">
+		<tr>
+			<td>Meeting notes:</td>
+			<td><unit relativeTo="ca_occurrences.note" delimiter="<br><br/>">^ca_occurrences.note</unit></td>
+		</tr>
+	</ifdef>}}}
 
 
 	{{{<ifcount code="ca_objects" min="1" restrictToTypes="minutes">
-		<dt>
-			<ifcount code="ca_objects" min="1" max="1"><?= _t('Related Minute'); ?></ifcount>
-			<ifcount code="ca_objects" min="2"><?= _t('Related Minutes'); ?></ifcount>
-		</dt>
-		<unit relativeTo="ca_objects" delimiter="<br>"><dd><l>^ca_objects.preferred_labels</l> (^relationship_typename)</dd></unit>
-		<br>
+		<tr><td><?= _t('Minutes'); ?></td>
+			<td>
+				<unit relativeTo="ca_objects" delimiter="<br>" restrictToTypes="minutes"><l>^ca_objects.preferred_labels</l></unit>
+		</td></tr>
 	</ifcount>}}}
 
-  <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
+	{{{<ifdef code="ca_occurrences.media_link">
+		<tr>
+			<td>Media:</td>
+			<td><unit relativeTo="ca_occurrences.media_link" delimetr="<br/><br/>"><a href="^ca_occurrences.media_link">^ca_occurrences.media_link</a></unit></td>
+		</tr>
+	</ifdef>}}}
+	{{{<ifcount code="ca_objects" min="1" restrictToTypes="agenda">
+		<tr><td>
+			<ifcount code="ca_objects" min="1" max="1" restrictToTypes="agenda"><?= _t('Agenda'); ?></ifcount>
+			<ifcount code="ca_objects" min="2" restrictToTypes="agenda"><?= _t('Agendas'); ?></ifcount>
+			</td>
+			<td><unit relativeTo="ca_objects" delimiter="<br>" restrictToTypes="agenda"><ifdef code="ca_object_representations.media"><div class="mb-2"><a href="^ca_object_representations.media.original.url"><i class='bi bi-file-earmark-arrow-down-fill' aria-label='Download' title='Download'></i> ^ca_objects.preferred_labels</a></div></ifdef>
+					^ca_objects.TX
+				</unit>
+		</td></tr>
+	</ifcount>}}}
+</tbody>
+</table>
+  <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
 
 </div>

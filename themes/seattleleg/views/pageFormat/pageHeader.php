@@ -71,25 +71,30 @@ if($this->request->isLoggedIn()){
 
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
-
+<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
+	
 
 <header id="sgHead" class="sg-grid">
     <a class="sgLogo" href="https://www.seattle.gov" target="_blank">Seattle.gov</a>
 </header>
 
 
+
+<main <?= caGetPageCSSClasses(); ?>>
 <div class="titleTopNavBreadcrumbWrapper border-bottom border-black">
-	<div class="container">
-		<div class="deptTitle mb-3">
-			<a href="https://www.seattle.gov/cityclerk" class="active">Legislation Search</a>
-		</div>
+	<div class="container px-md-0">
+		<div class="row g-0"><div class="col">
+			<H1 class="deptTitle mb-3">
+				<?php print caNavLink($this->request, "Legislation Search", "", "", "", ""); ?>
+			</H1>
+		</div></div>
 	</div>
 </div>
 
-<main <?= caGetPageCSSClasses(); ?>>
+<a name="page-content"></a>
 
 <?php
 	if(strToLower($this->request->getController()) != "front"){
-		print "<div class='container'>";
+		print "<div class='container-md'>";
 	}
 	

@@ -1,19 +1,17 @@
-<?= $this->formTag(['class' => 'row g-4']); ?>
+<a href="#search-form-content" id="skipSearch" class="visually-hidden">Skip to search form</a>
 
 <div class="advSearchContainer">
 
-	<div class="row">
+	<div class="row g-4">
 
-		<?= $this->render("/data/seattleleg/themes/seattleleg/views/Search/ca_objects_advanced_search_navLeft.php"); ?>
+		<?= $this->render("Search/ca_objects_advanced_search_navLeft.php"); ?>
 
 		<div class="col-md-12 col-lg-6">
-				<?= $this->render("/data/seattleleg/themes/seattleleg/views/Search/ca_objects_advanced_search_basic_search.php"); ?>
+				<a name="search-form-content"></a>
+				<?= $this->render("Search/ca_objects_advanced_search_basic_search.php"); ?>
 		</div>
 		
-		<?= $this->render("/data/seattleleg/themes/seattleleg/views/Search/ca_objects_advanced_search_navRight.php"); ?>
+		<?= $this->render("Search/ca_objects_advanced_search_navRight.php"); ?>
 
 	</div>
 </div>
-
-	<?= $this->formHiddenElements(); ?>
-</form>

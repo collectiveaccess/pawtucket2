@@ -45,25 +45,29 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 <div id="detail">
 
-	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
+	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
+	<?= $this->render("Details/attachments_html.php"); ?>
 
-	{{{<ifdef code="ca_objects.PDFLNK">
-		<p>
-			<a href="ca_objects.PDFLNK" target="_blank">
-				<img src="http://clerk.seattle.gov/public/img/pdf.gif" height="40" alt="PDF">
-				Printable Version of this Agenda
-			</a>
-		</p>
-		<hr>
-	<ifdef/>}}}
-
-
+	<table class="record table table-striped table-responsive">
+    	<tbody>
+    		{{{<ifcount code="ca_occurrences" restrictToTypes="meeting" min="1">
+				<tr>
+					<td>Meeting:</td>
+					<td><unit relativeTo="ca_occurrences" restrictToTypes="meeting" delimiter="<br/>"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.DATE">, ^ca_occurrences.DATE</ifdef></l></unit></td>
+				</tr>
+			</ifcount>}}}
 	{{{<ifdef code="ca_objects.TX">
-	  ^ca_objects.TX
+	  	<tr>
+			<td>Agenda:</td>
+			<td>^ca_objects.TX</td>
+		</tr>
 	<ifdef/>}}}
-
+	
+			</tbody>
+		</table>
+	
   <hr>
 
-  <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
+  <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
 
 </div>

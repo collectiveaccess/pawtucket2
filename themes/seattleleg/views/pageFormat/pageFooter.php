@@ -33,8 +33,8 @@
 	}
 ?>
 
-		<footer id="sgFooter">
-			<div class="cosLogo sealth__black"></div>  
+		<footer id="sgFooter" class="mt-auto pb-4">
+			<div class="cosLogo sealth__black mb-3"></div>  
 			<ul>
 				<li><a href="//www.seattle.gov/about-our-digital-properties" target="_blank">About Our Digital Properties</a></li>
 				<li><a href="//www.seattle.gov/tech/data-privacy/privacy-statement" target="_blank">Privacy Policy</a></li>
