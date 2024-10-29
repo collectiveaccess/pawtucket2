@@ -189,7 +189,13 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	</div>
 <?php
 	}
-?>	
+if($rel_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $access_values))){
+	$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
+	$o_context->setAsLastFind();
+	$o_context->setResultList($rel_object_ids);
+	$o_context->saveContext();
+}
+?>
 {{{<ifcount code="ca_objects" excludeRelationshipTypes="select" min="1">
 	<div class="row">
 		<div class="col"><h2>Related Objects</h2><hr></div>

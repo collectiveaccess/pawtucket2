@@ -171,7 +171,13 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 ?>
 		<div hx-trigger="load" hx-get="<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"  ></div>
 <?php				
-	}									
+	}
+if($rel_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $access_values))){
+	$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
+	$o_context->setAsLastFind();
+	$o_context->setResultList($rel_object_ids);
+	$o_context->saveContext();
+}
 ?>
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row">

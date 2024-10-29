@@ -151,6 +151,14 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			<unit relativeTo="ca_places" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br>^relationship_typename</l></dd></unit>
 		</dl>
 	</ifcount>}}}
+<?php
+if($rel_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $access_values))){
+	$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
+	$o_context->setAsLastFind();
+	$o_context->setResultList($rel_object_ids);
+	$o_context->saveContext();
+}
+?>
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row">
 		<div class="col"><h2>Related Objects</h2><hr></div>
