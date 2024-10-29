@@ -22,7 +22,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 	$va_access_values = caGetUserAccessValues($po_request);
 	$vs_output = "";
 	$vs_desc_template = $o_config->get("description_template_archival");
-	$vs_desc_template = $o_config->get("description_template_archival_file");
+	$vs_desc_template_file = $o_config->get("description_template_archival_file");
 	$vs_rel_objects_template = $o_config->get("rel_objects_template_archival");
 	$vs_rel_objects_template_file = $o_config->get("rel_objects_template_archival_file");
 	
