@@ -195,7 +195,7 @@ if($rel_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" 
 							<div class='card-title'><small class='text-body-secondary'>^ca_objects.type_id, ^ca_objects.idno</small><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div><ifdef code='ca_objects.date'><p class='card-text small lh-sm text-truncate'>^ca_objects.date</p></ifdef>
 						</div>
 						<div class='card-footer text-end bg-transparent'>
-							<l class="link-dark mx-1"><i class='bi bi-arrow-right-square'></i></l>
+							<l class="link-dark mx-1"><i class='bi bi-arrow-right-square' aria-label='view record'></i></l>
 						</div>
 					 </div>	
 				</div><!-- end col -->
