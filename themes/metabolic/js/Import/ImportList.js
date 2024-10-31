@@ -63,19 +63,6 @@ const ImportList = (props) => {
             <h1>Your Imports</h1>
           </div>
           <div className='col text-end'>
-           {/* <div className="dropdown">
-              <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                + New Import
-              </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {formsList.map((form, index) => {
-                  return (
-                    <a className="dropdown-item" key={index} href="#" onClick={(e) => openNewImportPage(e, form.code)}>{form.title}</a>
-                  )
-                })}
-              </div>
-            </div> */}
-
             <Dropdown>
               <Dropdown.Toggle variant="primary" id="dropdown-basic">
                 + New Import
@@ -91,7 +78,6 @@ const ImportList = (props) => {
             </Dropdown>
           </div>
         </div>
-
         <h2 style={{textAlign: 'center'}}>To create an import, click + New Import</h2>
       </div>
     )
@@ -104,19 +90,6 @@ const ImportList = (props) => {
             <h1>Your Imports</h1>
           </div>
           <div className='col text-end'>
-            {/* <a href='#' className='btn btn-primary' onClick={(e) => openNewImportPage(e)}>+ New Import</a> */}
-            {/* <div className="dropdown">
-              <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                + New Import
-              </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {formsList.map((form, index) => {
-                  return (
-                    <a className="dropdown-item" key={index} href="#" onClick={(e) => openNewImportPage(e, form.code)}>{form.title}</a>
-                  )
-                })}
-              </div>
-            </div> */}
             <Dropdown>
               <Dropdown.Toggle variant="primary" id="dropdown-basic">
                 + New Import

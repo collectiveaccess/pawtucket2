@@ -22,11 +22,11 @@ const ImportedItem = (props) => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
-          <div className='col info text-gray'>
-            <p>Would you like to delete this import?</p>
-            <div className='button' style={{ cursor: "pointer" }} onClick={() => { callback(); onClose(); }}>Yes, Delete It!</div>
+          <div className='col info bg-light p-5'>
+            <div className='fs-4'>Would you like to delete this import?</div><br></br>
+            <div className='btn btn-primary' onClick={() => { callback(); onClose(); }}>Yes, Delete It!</div>
 						&nbsp;
-            <div className='button' style={{ cursor: "pointer" }} onClick={() => { onClose() }}>No</div>
+            <div className='btn btn-primary' onClick={() => { onClose() }}>No</div>
           </div>
         );
       }
