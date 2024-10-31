@@ -26,7 +26,6 @@
  * ----------------------------------------------------------------------
  */
 require_once(__CA_LIB_DIR__."/ApplicationError.php");
-require_once(__CA_LIB_DIR__."/Datamodel.php");
 require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/lightboxHelpers.php');
 require_once(__CA_APP_DIR__."/controllers/FindController.php");
@@ -105,13 +104,17 @@ class LightboxController extends FindController {
 		
 		$this->lightbox_display_name_singular = $display_name["singular"] ?? _t('Lightbox');
 		$this->lightbox_display_name_plural = $display_name["plural"] ?? _t('Lightboxes');
+		$this->lightbox_description_element_code = $this->config->get('lightbox_description_element_code');
 		
 		$this->view->setVar('lightbox_displayname_singular', $this->lightbox_display_name_singular);
 		$this->view->setVar('lightbox_displayname_plural', $this->lightbox_display_name_plural);
-		
+		$this->view->setVar('lightbox_description_element_code', $this->lightbox_description_element_code);
+				
  		$this->opa_access_values = caGetOption('checkAccess', $va_browse_info, $this->opa_access_values);
  		
  		$this->view->setVar('access_values', $this->opa_access_values);
+ 		
+		$this->view->setVar('errors', []);
 		
 		caSetPageCSSClasses(["lightbox"]);
 		
@@ -123,7 +126,11 @@ class LightboxController extends FindController {
 	 */
 	function Index(?array $options=null) {
 		if($this->is_login_redirect) { return; }
-				
+		
+		// @TODO generalize for all tables
+		$o_context = new ResultContext($this->request, 'ca_objects', 'lightbox');
+		$o_context->setAsLastFind();
+		
 		if($sort = $this->request->getParameter('sort', pString)) {
 			Session::setVar('lightbox_list_sort', $sort);
 		} else {
@@ -182,17 +189,171 @@ class LightboxController extends FindController {
 	 */
 	function Detail(?array $options=null) {
 		if($this->is_login_redirect) { return; }
+		$set_id = caGetOption('set_id', $options, $this->request->getActionExtra());
 		
-		$set_id = $this->request->getActionExtra();
+		// @TODO generalize for all tables
+		$o_context = new ResultContext($this->request, 'ca_objects', 'lightbox');
+		$o_context->setAsLastFind();
+		
+		// Sort list
+		$loptions = $this->config->getAssoc('lightbox_options');
+		$tconfig = $loptions['ca_objects'] ?? [];
+		$this->view->setVar('sorts', $available_sorts = $tconfig['sorts'] ?? []);
+		$this->view->setVar('sort_directions', $tconfig['sort_directions'] ?? []);
+		
+		// Load set
 		$t_set = ca_sets::findAsInstance($set_id);
 		$this->view->setVar('t_set', $t_set);
 		$this->view->setVar('set_id', $set_id);
 		$this->view->setVar('table_num', $table_num = $t_set->get('ca_sets.table_num'));
 		$this->view->setVar('table', Datamodel::getTableName($table_num));
 		
-		$this->view->setVar('items', $t_set->getItemsAsSearchResult(['checkAccess' => $this->opa_access_values]));
+		
+		// Set current sort
+		if(($current_sort_name = $this->request->getParameter('sort', pString)) && isset($available_sorts[$current_sort_name])) {
+			$o_context->setCurrentSort($current_sort = $available_sorts[$current_sort_name]);
+		} else {
+			$current_sort = $o_context->getCurrentSort();
+			$tmp = array_flip($available_sorts);
+			$current_sort_name = $tmp[$current_sort] ?? '?';
+		}
+		if(($current_sort_direction = strtolower($this->request->getParameter('sortDirection', pString))) && in_array($current_sort_direction, ['asc', 'desc'])) {
+			$o_context->setCurrentSortDirection($current_sort_direction);
+		} else {
+			$current_sort_direction = $o_context->getCurrentSortDirection();
+		}
+		$this->view->setVar('current_sort', $current_sort_name);
+		$this->view->setVar('current_sort_direction', $current_sort_direction);
+	
+		$this->view->setVar('items', $qr = $t_set->getItemsAsSearchResult(['sort' => $current_sort, 'sortDirection' => $current_sort_direction, 'checkAccess' => $this->opa_access_values]));
+	
+		$max_result_count = 50;
+		$o_context->setResultList($qr->getPrimaryKeyValues($max_result_count));
+		$qr->seek(0);
+		
+		$o_context->saveContext();
+		
+		$this->view->setVar('modalValues', [
+			'name' => $t_set->get('ca_sets.preferred_labels.name'),
+			'description' => $this->lightbox_description_element_code ? $t_set->get('ca_sets.'.$this->lightbox_description_element_code) : ''
+		]);
+		
 		
 		$this->render(caGetOption("view", $options, "Lightbox/detail_html.php"));
+	}
+	# -------------------------------------------------------
+	/**
+	 * Add new lightbox
+	 */
+	function Add(?array $options=null) {
+		global $g_ui_locale_id;
+		$name = $this->request->getParameter('name', pString);
+		$description = $this->request->getParameter('description', pString);
+		
+		$errors = [];
+		$preserve_model_values = false;
+		
+		$t_set = new ca_sets();
+		$t_set->set([
+			'table_num' => 57,			// @TODO: allow set by user
+			'type_id' => 'user',	// @TODO: make configurable
+			'user_id' => $this->request->getUserID(),
+			'set_code' => $this->request->getUserID().'_'.time(),
+			'parent_id' => null
+		]);
+		
+		if($this->lightbox_description_element_code) {
+			$t_set->addAttribute([$this->lightbox_description_element_code => $description, 'locale_id' => $g_ui_locale_id], $this->lightbox_description_element_code);
+		}
+		if(!$t_set->insert()) {
+			$errors[] = _t('Could not create %1: %2', $this->lightbox_display_name_singular, join('; ', $t_set->getErrors()));
+			$preserve_model_values = true;
+		} elseif(!$t_set->addLabel(['name' => $name], $g_ui_locale_id, null, true)) {
+			$errors[] = _t(strlen($name) ? 'Could not label %1 as %2: %3' : 'Could not label %1: %3', $this->lightbox_display_name_singular, $name, join('; ', $t_set->getErrors()));
+			$preserve_model_values = true;
+			$t_set->delete(true);
+		}
+		
+		$this->view->setVar('modalValues', [
+			'name' => $name, 'description' => $description
+		]);
+		$this->view->setVar('preserveModalValues', $preserve_model_values);
+		$this->view->setVar('errors', $errors);
+		
+		$this->Index();
+	}
+	# -------------------------------------------------------
+	/**
+	 * Edit lightbox
+	 */
+	function Edit(?array $options=null) {
+		global $g_ui_locale_id;
+		$id = $this->request->getParameter('id', pInteger);
+		$name = $this->request->getParameter('name', pString);
+		$description = $this->request->getParameter('description', pString);
+		
+		$errors = [];
+		$preserve_model_values = false;
+		
+		if(!($t_set = ca_sets::findAsInstance(['set_id' => $id]))) {
+			$errors[] = _t('Invalid %1 id %2', $this->lightbox_display_name_singular, $id);
+		} else {
+			$user_id = $this->request->getUserID();
+			if(!$t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__)) {
+				$errors[] = _t('You do not have access to this %1', $this->lightbox_display_name_singular);
+			}
+			
+			if(strlen($name)) {
+				if(!$t_set->replaceLabel(['name' => $name], $g_ui_locale_id, null, true)) {
+					$errors[] = _t('Could not update %1 name: %2', $this->lightbox_display_name_singular, join('; ', $t_set->getErrors()));
+				}
+			}
+			
+			$this->view->setVar('modalValues', $z=[
+				'name' => $name, 'description' => $description
+			]);
+			if($this->lightbox_description_element_code) {
+				$t_set->replaceAttribute([$this->lightbox_description_element_code => $description, 'locale_id' => $g_ui_locale_id], $this->lightbox_description_element_code);
+				if(!$t_set->update()) {
+					$errors[] = _t('Could not update %1 description: %2', $this->lightbox_display_name_singular, join('; ', $t_set->getErrors()));
+				}
+			}
+		}
+			
+		$this->view->setVar('errors', $errors);
+		$this->Detail(['set_id' => $id]);
+	}
+	# -------------------------------------------------------
+	/**
+	 * Delete lightbox
+	 */
+	function Delete(?array $options=null) {
+		$id = $this->request->getParameter('id', pInteger);
+		
+		$errors = [];
+		
+		if(!($t_set = ca_sets::findAsInstance(['set_id' => $id]))) {
+			$errors[] = _t('Invalid %1 id %2', $this->lightbox_display_name_singular, $id);
+		} else {
+			$user_id = $this->request->getUserID();
+			if(!$t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__)) {
+				$errors[] = _t('You do not have access to this %1', $this->lightbox_display_name_singular);
+			} elseif(!$t_set->delete()) {
+				$errors[] = _t('Could not delete %1: %2', $this->lightbox_display_name_singular, $name, join('; ', $t_set->getErrors()));
+			}
+		}
+		
+		$this->view->setVar('errors', $errors);
+		$this->Index();
+	}
+	# -------------------------------------------------------
+	/**
+	 * Export
+	 */
+	function Export(?array $options=null) {
+		$id = $this->request->getParameter('id', pInteger);
+		
+		$this->Detail(['set_id' => $id]);
 	}
 	# -------------------------------------------------------
 	/** 

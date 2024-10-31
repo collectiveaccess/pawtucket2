@@ -921,34 +921,6 @@ function caGetPlaceholder($vs_type_code, $vs_placeholder_type = "placeholder_med
 	return $vs_placeholder;
 }
 # ---------------------------------------
-/**
- *
- */
-function caGetLightboxDisplayName($o_lightbox_config = null){
-	if(!$o_lightbox_config){ $o_lightbox_config = caGetLightboxConfig(); }
-	$vs_lightbox_displayname = $o_lightbox_config->get("lightboxDisplayName");
-	if(!$vs_lightbox_displayname){
-		$vs_lightbox_displayname = _t("lightbox");
-	}
-	$vs_lightbox_displayname_plural = $o_lightbox_config->get("lightboxDisplayNamePlural");
-	if(!$vs_lightbox_displayname_plural){
-		$vs_lightbox_displayname_plural = _t("lightboxes");
-	}
-	$vs_lightbox_section_heading = $o_lightbox_config->get("lightboxSectionHeading");
-	if(!$vs_lightbox_section_heading){
-		$vs_lightbox_section_heading = _t("lightboxes");
-	}
-	return array("singular" => $vs_lightbox_displayname, "plural" => $vs_lightbox_displayname_plural, "section_heading" => $vs_lightbox_section_heading);
-}
-# ---------------------------------------
-function caDisplayLightbox($po_request){
-	if($po_request->isLoggedIn() && !$po_request->config->get("disable_lightbox")) {
-		return true;
-	}else{
-		return false;
-	}
-}
-# ---------------------------------------
 function caGetAddToSetInfo($po_request){
 	$va_link_info = array();
 	if(!$po_request->isLoggedIn() && !$po_request->config->get("disable_lightbox")){

@@ -97,7 +97,7 @@ if($show_nav){
 
 	<div class="row">
 		<div class="col-md-6">
-				{{{media_viewer}}}
+			{{{media_viewer}}}
 		</div>
 		<div class="col-md-6">
 			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->

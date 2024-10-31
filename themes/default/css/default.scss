@@ -248,8 +248,13 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 		}
 		img{
 			height:200px;
-			width:100%
+			width:100%;
 		}
+	}
+	
+	#errors ul {
+		margin: 0px;
+		list-style: none;
 	}
 }
 

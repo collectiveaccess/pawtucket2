@@ -120,4 +120,36 @@ function caGetLightboxesForItem(BaseModel $t_subject) {
 	$sets = caExtractValuesByUserLocale($sets);
 	return $sets;
 }
+
+# ---------------------------------------
+/**
+ *
+ */
+function caGetLightboxDisplayName($o_lightbox_config = null){
+	if(!$o_lightbox_config){ $o_lightbox_config = caGetLightboxConfig(); }
+	$lightbox_displayname_singular = $o_lightbox_config->get(["lightbox_displayname_singular", "lightboxDisplayName"]);
+	if(!$lightbox_displayname_singular){
+		$lightbox_displayname_singular = _t("lightbox");
+	}
+	$lightbox_displayname_plural = $o_lightbox_config->get(["lightbox_displayname_plural", "lightboxDisplayNamePlural"]);
+	if(!$lightbox_displayname_plural){
+		$lightbox_displayname_plural = _t("lightboxes");
+	}
+	$lightbox_section_heading = $o_lightbox_config->get(["lightbox_section_heading", "lightboxSectionHeading"]);
+	if(!$lightbox_section_heading){
+		$lightbox_section_heading = _t("lightboxes");
+	}
+	return ["singular" => $lightbox_displayname_singular, "plural" => $lightbox_displayname_plural, "section_heading" => $lightbox_section_heading];
+}
+# ---------------------------------------
+/** 
+ *
+ */
+function caDisplayLightbox(RequestHTTP $request) : bool {
+	if($request->isLoggedIn() && !$request->config->get("disable_lightbox")) {
+		return true;
+	} else {
+		return false;
+	}
+}
 # ---------------------------------------
