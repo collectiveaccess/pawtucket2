@@ -74,7 +74,8 @@ function caGetLightboxPreviewImage(int $id, SearchResult $qr_res, ?array $option
 /**
  *
  */
-function caGetLightboxesForUser(int $user_id, ?array $check_access, ?array $options=null) : ?SearchResult {
+function caGetLightboxesForUser(?int $user_id, ?array $check_access, ?array $options=null) : ?SearchResult {
+	if(!$user_id) { return null; }
 	$t_sets = new ca_sets();
 	
 	$sort = caGetOption('sort', $options, null);
