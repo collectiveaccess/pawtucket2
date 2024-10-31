@@ -141,10 +141,9 @@ const ImportList = (props) => {
 
         {(isSubmitted) ?
           <div className='row justify-content-center'>
-            <div className="alert alert-success alert-dismissible mb-5">
-              <br />
-              <button type="button" className="close" data-dismiss="alert" onClick={(e) => {closeAlert(e)}}>&times;</button>
-              <p><strong>Your import has been submitted</strong> and will be reviewed by an archivist! You can track the status here.</p>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={(e) => { closeAlert(e) }}></button>
+              <div><strong>Your import has been submitted </strong>and will be reviewed by an archivist! You can track the status here.</div>
             </div>
           </div>
         : null}
