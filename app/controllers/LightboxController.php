@@ -142,9 +142,8 @@ class LightboxController extends FindController {
 			$sort_direction = Session::getVar('lightbox_list_sort_direction');
 		}
 		
-		$lightbox_types = $this->config->get('lightboxTypes');
-		$configured_tables = array_values(array_map(function($v) { return $v['table'] ?? null; }, $lightbox_types));
-	
+		// @TODO: generalize
+		$configured_tables = ['ca_objects'];
 
 		# Get sets for display
 		$t_sets = new ca_sets();
@@ -213,14 +212,18 @@ class LightboxController extends FindController {
 		if(($current_sort_name = $this->request->getParameter('sort', pString)) && isset($available_sorts[$current_sort_name])) {
 			$o_context->setCurrentSort($current_sort = $available_sorts[$current_sort_name]);
 		} else {
-			$current_sort = $o_context->getCurrentSort();
+			if(!($current_sort = $o_context->getCurrentSort())) {
+				$current_sort = array_shift(array_values($available_sorts));
+			}
 			$tmp = array_flip($available_sorts);
 			$current_sort_name = $tmp[$current_sort] ?? '?';
 		}
 		if(($current_sort_direction = strtolower($this->request->getParameter('sortDirection', pString))) && in_array($current_sort_direction, ['asc', 'desc'])) {
 			$o_context->setCurrentSortDirection($current_sort_direction);
 		} else {
-			$current_sort_direction = $o_context->getCurrentSortDirection();
+			if(!($current_sort_direction = $o_context->getCurrentSortDirection())) {
+				$current_sort_direction = 'asc';
+			}
 		}
 		$this->view->setVar('current_sort', $current_sort_name);
 		$this->view->setVar('current_sort_direction', $current_sort_direction);

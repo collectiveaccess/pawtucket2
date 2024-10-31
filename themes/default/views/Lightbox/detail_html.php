@@ -85,7 +85,7 @@ $current_sort = $this->getVar('current_sort');
 $current_sort_direction = $this->getVar('current_sort_direction');
 ?>
 
-<div class="dropdown">
+<div class="dropdown mx-3">
 	  <button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"  id="sortList" data-bs-toggle="dropdown" aria-expanded="false">
 		<?= _t('Sort by %1', $current_sort); ?>
 	  </button>
@@ -100,7 +100,7 @@ $current_sort_direction = $this->getVar('current_sort_direction');
 		}
 ?>
 	  </ul>
-	<a href="#" hx-post="<?= caNavUrl($this->request, '*', '*', 'Detail/'.$set_id, ['sort' => $current_sort, 'sortDirection' => ($current_sort_direction === 'asc') ? 'desc' : 'asc']); ?>" hx-trigger="click" hx-target="#lightboxContent" hx-swap="innerHTML">
+	<a href="#" class="align-middle" hx-post="<?= caNavUrl($this->request, '*', '*', 'Detail/'.$set_id, ['sort' => $current_sort, 'sortDirection' => ($current_sort_direction === 'asc') ? 'desc' : 'asc']); ?>" hx-trigger="click" hx-target="#lightboxContent" hx-swap="innerHTML">
 	 <i class='bi bi-sort-alpha-<?= (($current_sort_direction == 'asc') ? "up" : "down"); ?>'></i>
 	</a>
 </div>
