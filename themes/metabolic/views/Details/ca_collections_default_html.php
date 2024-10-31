@@ -61,12 +61,17 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
-		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_collections.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_collections.type_id|ca_collections.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_collections.type_id">^ca_collections.type_id</ifdef><ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef></div></ifdef>}}}
-			<hr class="mb-0">
+	<div class="row justify-content-center<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+		<div class="col-sm-12 col-md-8">
+			<H1 class="fs-2">
+				{{{<ifdef code="ca_collections.type_id">
+					^ca_collections.type_id: 
+					</ifdef>
+					^ca_collections.preferred_labels.name
+				}}}
+			</H1>
 		</div>
+		<hr class="mb-0">
 	</div>
 <?php
 	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
@@ -100,8 +105,8 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 		</div>
 	</div>
 </ifdef>}}}
-	<div class="row row-cols-1 row-cols-md-2">
-		<div class="col">				
+	<div class="row justify-content-center">
+		<div class="col-sm-12 col-md-8">				
 			{{{<dl class="mb-0">
 				<ifdef code="ca_collections.parent_id">
 					<dt>Part of</dt>
@@ -113,28 +118,49 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					<dd class="label">^ca_collections.date</dd>
 				</ifcount>
 
-				<ifdef code="ca_collections.description">
+				<!-- <ifdef code="ca_collections.description">
 					<dt><?= _t('Description'); ?></dt>
 					<dd>^ca_collections.description</dd>
+				</ifdef> -->
+
+				<ifdef code="ca_collections.description">
+					<div class="collapse-text collapse" id="readMoreCollapse">
+						<dt><?= _t('Description'); ?></dt>
+						<dd>^ca_collections.description</dd>
+					</div>
+					
+					<a class="btn btn-link p-0" data-bs-toggle="collapse" href="#readMoreCollapse" role="button" aria-expanded="false" aria-controls="readMoreCollapse">
+						<span class="expand-text">+ Read more</span>
+						<span class="collapse-text">- Read less</span>
+					</a>
 				</ifdef>
 			</dl>}}}
 			
 			<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
-		</div>
-		<div class="col">
+
 			{{{<dl class="mb-0">
 				<?php
 					if($t_item->get("ca_collections.bio_regions")){
 						if($bio_links = caGetBrowseLinks($t_item, 'ca_collections.bio_regions', ['template' => '<l>^ca_collections.bio_regions</l>', 'linkTemplate' => '^LINK'])) {
 				?>
-							<dt><?= _t('Bio Regions'); ?></dt>
-							<dd><?= join(", ", $bio_links); ?></dd>
+							<dt>
+								<?= _t('Bio Regions'); ?>
+								<a data-bs-toggle="collapse" href="#collapseBioRegions" role="button" aria-expanded="false" aria-controls="collapseBioRegions">
+									<i class="bi bi-info-circle-fill"></i>
+								</a>
+							</dt>
+							<dd>
+								<div class="collapse" id="collapseBioRegions">
+									<p>A region defined by characteristics of the natural environment rather than man-made division.</p>
+								</div>
+								<?= join(", ", $bio_links); ?>
+							</dd>
 				<?php
 						}
 					}
 				?>
 
-				<?php
+				<!-- <?php
 					if($t_item->get("ca_collections.subject")){
 						if($subs = caGetBrowseLinks($t_item, 'ca_collections.subject', ['template' => '<l>^ca_collections.subject</l>', 'linkTemplate' => '^LINK'])) {
 				?>
@@ -143,30 +169,9 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				<?php
 						}
 					}
-				?>
-				<!-- <ifcount code="ca_collections.related" min="1">
-					<dt><ifcount code="ca_collections.related" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections.related" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-					<unit relativeTo="ca_collections.related" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
-				</ifcount>
+				?> -->
 
-				<ifcount code="ca_occurrences" min="1">
-					<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="action"><?= _t('Event'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="action"><?= _t('Events'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="action"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-				<ifcount code="ca_occurrences" min="1">
-					<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="exhibition"><?= _t('Exhibition'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="exhibition"><?= _t('Exhibitions'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-				<ifcount code="ca_occurrences" min="1">
-					<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="lecture_presentation"><?= _t('Lecture/Presentation'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="lecture_presentation"><?= _t('Lectures/Presentations'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="lecture_presentation"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-				<ifcount code="ca_occurrences" min="1">
-					<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="publication"><?= _t('Publication'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="publication"><?= _t('Publications'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="publication"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount> -->
-
-			</dl>}}}					
+			</dl>}}}		
 		</div>
 	</div>
 
@@ -178,11 +183,32 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	}									
 ?>				
 
-<!-- {{{<ifcount code="ca_occurrences" min="1">
-	<dl class="row">
-		<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-		<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br>^relationship_typename</l></dd></unit>
-	</dl>
+
+{{{<ifcount code="ca_collections.subject" min="1">
+	<div class="row">
+		<div class="col"><h2>Themes</h2><hr/></div>
+	</div>
+	<div class="row bg-light mb-5 pt-4">
+		<?php
+			if($t_item->get("ca_collections.subject")){
+				if($subs = caGetBrowseLinks($t_item, 'ca_collections.subject', ['template' => '<div class="col-sm-6 col-md-3 pb-4"><div class="bg-secondary text-center py-2 text-uppercase"><l>^ca_collections.subject</l></div></div>', 'linkTemplate' => '^LINK'])) {
+		?>
+					<?= join("", $subs); ?>
+		<?php
+				}
+			}
+		?>
+	</div>
+</ifcount>}}}
+
+<!-- {{{<ifcount code="ca_objects" min="1">
+	<div class="row">
+		<div class="col"><h2>Albums</h2><hr/></div>
+	</div>
+	<div class="row" id="browseResultsContainer">	
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id"))); ?>">
+			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+		</div>
 </ifcount>}}} -->
 
 {{{<ifcount code="ca_objects" min="1">
