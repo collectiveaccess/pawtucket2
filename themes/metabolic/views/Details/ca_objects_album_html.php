@@ -58,22 +58,27 @@ if($show_nav){
 <?php
 }
 ?>
-	<div class="row">
-		<div class="col-md-12">
-			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
-			<hr class="mb-0">
+	<div class="row justify-content-center">
+		<div class="col-sm-12 col-md-8">
+			<H1 class="fs-2">{{{^ca_objects.preferred_labels.name}}}</H1>
+			{{{<ifdef code="ca_objects.type_id|ca_objects.idno">
+				<div class="fw-medium mb-3">
+					<!-- <ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef>
+					<ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef> -->
+				</div>
+			</ifdef>}}}
 		</div>
+		<hr class="mb-0">
 	</div>
 <?php
 	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
-	<div class="row">
-		<div class="col text-center text-md-end">
+	<div class="row justify-content-center">
+		<div class="col-sm-12 col-md-8">
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
 				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
+					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-0 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
 				}
 				if($pdf_enabled) {
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
@@ -91,16 +96,14 @@ if($show_nav){
 	}
 ?>
 
-	<div class="row">
-		<div class="col-md-6">
-				{{{media_viewer}}}
-		</div>
-		<div class="col-md-6">
-			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->
+	<div class="row justify-content-center">
+		<div class="col-sm-12 col-md-8">
+			{{{media_viewer}}}
+			<hr>
+			<!-- <div class="bg-light py-3 px-4 mb-3 h-100">height is to make the gray background of box same height as the containing row -->
+			<div class="bg-light py-3 px-4 mb-3">
 				<div class="row">
-					<div class="col">
-
-						<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>		
+					<div class="col">	
 							
 						{{{<dl class="mb-0">
 
@@ -123,6 +126,8 @@ if($show_nav){
 								<dt><?= _t('Description'); ?></dt>
 								<dd>^ca_objects.description</dd>
 							</ifdef>
+
+							<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>	
 
 							<ifdef code="ca_objects.url">
 								<dd>
@@ -185,7 +190,7 @@ if($show_nav){
 			</div>
 		</div>
 	</div>
-
+		
 	{{{<ifcount code="ca_objects.children" min="1">
 		<div class="row">
 			<div class="col"><h2>Assets</h2><hr></div>

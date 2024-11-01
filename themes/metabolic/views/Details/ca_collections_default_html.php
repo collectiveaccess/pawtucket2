@@ -76,12 +76,12 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php
 	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
-	<div class="row">
-		<div class="col text-center text-md-end">
+	<div class="row justify-content-center">
+		<div class="col-sm-12 col-md-8">
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
 				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $id));
+					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-0 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $id));
 				}
 				if($pdf_enabled) {
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_collections", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
@@ -118,18 +118,13 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					<dd class="label">^ca_collections.date</dd>
 				</ifcount>
 
-				<!-- <ifdef code="ca_collections.description">
-					<dt><?= _t('Description'); ?></dt>
-					<dd>^ca_collections.description</dd>
-				</ifdef> -->
-
 				<ifdef code="ca_collections.description">
 					<div class="collapse-text collapse" id="readMoreCollapse">
 						<dt><?= _t('Description'); ?></dt>
 						<dd>^ca_collections.description</dd>
 					</div>
 					
-					<a class="btn btn-link p-0" data-bs-toggle="collapse" href="#readMoreCollapse" role="button" aria-expanded="false" aria-controls="readMoreCollapse">
+					<a class="btn btn-link btn-sm pb-2" data-bs-toggle="collapse" href="#readMoreCollapse" role="button" aria-expanded="false" aria-controls="readMoreCollapse">
 						<span class="expand-text">+ Read more</span>
 						<span class="collapse-text">- Read less</span>
 					</a>
@@ -185,13 +180,11 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 
 
 {{{<ifcount code="ca_collections.subject" min="1">
-	<div class="row">
-		<div class="col"><h2>Themes</h2><hr/></div>
-	</div>
+	<div class="row"><div class="col"><h2>Themes</h2><hr/></div></div>
 	<div class="row bg-light mb-5 pt-4">
 		<?php
 			if($t_item->get("ca_collections.subject")){
-				if($subs = caGetBrowseLinks($t_item, 'ca_collections.subject', ['template' => '<div class="col-sm-6 col-md-3 pb-4"><div class="bg-secondary text-center py-2 text-uppercase"><l>^ca_collections.subject</l></div></div>', 'linkTemplate' => '^LINK'])) {
+				if($subs = caGetBrowseLinks($t_item, 'ca_collections.subject', ['template' => '<div class="col-sm-6 col-md-3 pb-4"><div class="bg-info text-center py-2 text-uppercase"><l>^ca_collections.subject</l></div></div>', 'linkTemplate' => '^LINK'])) {
 		?>
 					<?= join("", $subs); ?>
 		<?php
@@ -201,7 +194,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	</div>
 </ifcount>}}}
 
-<!-- {{{<ifcount code="ca_objects" min="1">
+<!-- {{{<ifcount code="ca_objects" min="1" restrictToTypes="album">
 	<div class="row">
 		<div class="col"><h2>Albums</h2><hr/></div>
 	</div>
@@ -209,7 +202,9 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id"))); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
+	</div>
 </ifcount>}}} -->
+<!-- TODO: restrict to types by album -->
 
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row">
