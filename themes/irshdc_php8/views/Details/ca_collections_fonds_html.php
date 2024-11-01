@@ -271,11 +271,13 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12"><H2>Collection Contents</H2><div class="unit">Click the images below to see more records.</div></div>
-			</div>
-			<div class="row collectionContentsGrid">
-					
+			</div>					
 <?php					
+				$i = 0;
 				foreach($va_collection_contents as $va_collection_content) {
+					if($i == 0){
+						print '<div class="row collectionContentsGrid">';
+					}
 ?>
 					<div class="col-sm-6 col-md-3 collectionContentsGridItem">	
 <?php
@@ -291,10 +293,15 @@
 ?>
 					</div>
 <?php						
+					$i++;
+					if($i == 4){
+						$i = 0;
+						print "</div>";
+					}
 				}
-?>				
-			</div>
-<?php
+				if($i > 0){
+					print "</div>";
+				}
 		}
 		if ($vb_show_hierarchy_viewer) {	
 ?>
