@@ -166,11 +166,11 @@ if($vs_mode == "map"){
 						if ($vn_comments_enabled) {
 							$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
 ?>				
-							<div class="collapseBlock last discussion">
-								<h3>Discussion</H3>
-								<div class="collapseContent open">
-									<div id='detailDiscussion'>
-										Do you have a story to contribute related to these records or a comment about this item?<br/>
+							<h2>Contribute</H2>
+								<div class="collapseBlock last discussion" style="border:0px;">
+									<div class="collapseContent open">
+										<div id='detailDiscussion'>
+											Do you have a story or comment to contribute?<br/>											
 <?php
 										
 										if($this->request->isLoggedIn()){
@@ -182,9 +182,9 @@ if($vs_mode == "map"){
 											print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
 										}
 ?>
-									</div><!-- end itemComments -->
+										</div><!-- end itemComments -->
+									</div>
 								</div>
-							</div>
 <?php				
 						}
 ?>

@@ -10,6 +10,10 @@
 	$va_non_linkable_collection_type_ids = $this->getVar("non_linkable_collection_type_ids");
 	$va_collection_type_icons = $this->getVar("collection_type_icons");	
 	$vb_show_right_panel = false;
+	$type = $t_item->get("ca_collections.type_id", array("convertCodesToDisplayText" => true));
+	if($type == "Archival Collection"){
+		$type = "Collection";
+	}
 	
 	# --- get sub collections that are collection records
 	if($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.idno_sort'))){
@@ -64,7 +68,7 @@
 						</div>
 						<div class='unit row'>
 							<div class='col-xs-12<?php print ($vb_show_right_panel) ? "col-sm-4 col-md-4 col-lg-4" : ""; ?>'>
-								<div class='collectionsContainer'><div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
+								<div class='collectionsContainer'><div class='label'><?php print ucFirst($type); ?> Contents</div>
 <?php
 					if(is_array($va_collection_contents) && sizeof($va_collection_contents)){
 						foreach($va_collection_contents as $va_collection_content) {
@@ -130,7 +134,7 @@
 					if($vb_show_right_panel){
 ?>
 							<div id='collectionLoad' class='col-xs-12 col-sm-8 col-md-8 col-lg-8'>
-								<i class='fa fa-arrow-left'></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.
+								<i class='fa fa-arrow-left'></i> Click a <?php print ucFirst($type); ?> container to the left to see its contents.
 							</div>
 <?php
 							if($right_col_id){

@@ -121,11 +121,12 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 						$qr_collection_children_file = caMakeSearchResult("ca_objects", $va_child_file_ids);
 						if($qr_collection_children_file->numHits()){
 							while($qr_collection_children_file->nextHit()){
+								$rand = rand(1,1000);
 								$vs_output .= "<div style='margin-left:".(20*($vn_level))."px;'>";
 								$vn_rel_object_count_file = sizeof($qr_collection_children_file->get("ca_objects.related.object_id", array('excludeTypes' => array('archival_file'), "restrictToRelationshipTypes" => array('archival_part'), 'returnAsArray' => true, 'checkAccess' => $va_access_values)));
 								$vs_rel_objects_file = $qr_collection_children_file->getWithTemplate($vs_rel_objects_template_file);
 								if($va_options["collapse_levels"] && $vs_rel_objects_file){
-									$vs_output .= "<a href='#' onClick='jQuery(\"#levelFile".$qr_collection_children_file->get('ca_objects.object_id')."\").toggle(); $(this).children(\".glyphicon\").toggleClass(\"glyphicon-collapse-up\"); $(this).children(\".glyphicon\").toggleClass(\"glyphicon-collapse-down\"); return false;'>".$qr_collection_children_file->get("ca_objects.preferred_labels.name")." <span class='glyphicon glyphicon-collapse-down' aria-hidden='true'></span></a>";
+									$vs_output .= "<a href='#' onClick='jQuery(\"#".$rand."levelFile".$qr_collection_children_file->get('ca_objects.object_id')."\").toggle(); $(this).children(\".glyphicon\").toggleClass(\"glyphicon-collapse-up\"); $(this).children(\".glyphicon\").toggleClass(\"glyphicon-collapse-down\"); return false;'>".$qr_collection_children_file->get("ca_objects.preferred_labels.name")." <span class='glyphicon glyphicon-collapse-down' aria-hidden='true'></span></a>";
 								}else{
 									#$vs_output .= caDetailLink($po_request, $qr_collection_children_file->get("ca_objects.preferred_labels.name"), '', 'ca_objects',  $qr_collection_children_file->get("ca_objects.object_id"));
 									$vs_output .= "<span class='subCollectionName'>".$qr_collection_children_file->get("ca_objects.preferred_labels.name")."</span>";
@@ -139,7 +140,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 									$vs_output .= "<p>".$vs_desc."</p>";
 								}
 								if($va_options["collapse_levels"] && $vs_rel_objects_file){
-									$vs_output .= "<div id='levelFile".$qr_collection_children_file->get('ca_objects.object_id')."' style='display:none; padding-top:5px;'>";
+									$vs_output .= "<div id='".$rand."levelFile".$qr_collection_children_file->get('ca_objects.object_id')."' style='display:none; padding-top:5px;'>";
 								}
 								$vs_output .= $vs_rel_objects_file;
 								if($va_options["collapse_levels"] && $vs_rel_objects_file){

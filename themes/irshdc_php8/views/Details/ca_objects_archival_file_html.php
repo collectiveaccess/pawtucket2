@@ -60,25 +60,25 @@
 						if ($vn_comments_enabled) {
 							$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
 	?>				
-							<div class="collapseBlock last discussion" style="border:0px;">
-								<h3>Contribute</H3>
-								<div class="collapseContent open">
-									<div id='detailDiscussion'>
-										Do you have a story or comment to contribute?<br/>
-	<?php
-										
-										if($this->request->isLoggedIn()){
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
-										}else{
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
-										}
-										if($vn_num_comments){
-											print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
-										}
-	?>
-									</div><!-- end itemComments -->
+							<h2>Contribute</H2>
+								<div class="collapseBlock last discussion" style="border:0px;">
+									<div class="collapseContent open">
+										<div id='detailDiscussion'>
+											Do you have a story or comment to contribute?<br/>
+		<?php
+											
+											if($this->request->isLoggedIn()){
+												print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
+											}else{
+												print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
+											}
+											if($vn_num_comments){
+												print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
+											}
+		?>
+										</div><!-- end itemComments -->
+									</div>
 								</div>
-							</div>
 	<?php				
 						}
 ?>
