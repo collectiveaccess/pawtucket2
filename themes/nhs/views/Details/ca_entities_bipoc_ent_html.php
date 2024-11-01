@@ -108,7 +108,7 @@
 						foreach($va_gender_sex as $vn_i => $vs_gender_sex){
 							$vs_tmp = "";
 							if(is_array($va_source) && $va_source_text[$vn_i]){
-								$vs_tmp = caDetailLink($this->request, $va_source_text[$vn_i], "", "ca_occurrences", $va_source[$vn_i]);
+								$vs_tmp = caDetailLink($this->request, $va_source_text[$vn_i], "", "ca_objects", $va_source[$vn_i]);
 							}
 							$va_tmp[] = $vs_gender_sex.(($vs_tmp) ? ", Source: ".$vs_tmp : "");
 						}
