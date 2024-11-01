@@ -48,7 +48,7 @@
 <?php
 						$active = true;
 						while($qr_res->nextHit()){
-							if($vs_media = $qr_res->getWithTemplate('<l aria-label="go to detail page"><img src="^ca_object_representations.media.large.url" class="d-block" alt="^ca_objects.preferred_labels.name"></l>', array("checkAccess" => $va_access_values))){
+							if($vs_media = $qr_res->getWithTemplate('<l aria-label="go to detail page"><img src="^ca_object_representations.media.large.url" class="" alt="^ca_objects.preferred_labels.name"></l>', array("checkAccess" => $va_access_values))){
 								print "<div class='carousel-item".(($active) ? " active" : "")."'>".$vs_media;
 								$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
 								// if($vs_caption){
