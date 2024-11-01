@@ -33,7 +33,7 @@
     color: #EDEDEB;
 }
 
-/* Footer */
+/* ------------------------- Footer ------------------------- */
 
 #footer{
     height: 250px;
@@ -41,6 +41,10 @@
 
 /* ------------------------- Front Page ------------------------- */
 
+.carousel-item {
+    height: 375px;
+    width: auto;
+}
 .carousel-item a img{
     height: 375px;
     width: auto;
@@ -52,6 +56,40 @@
     box-shadow: none;
     color: #414141;
 }
+
+/* ------------------------- Detail Pages ------------------------- */
+
+// READMORE READLESS Collapse Styles
+#readMoreCollapse {
+    display: block; // Override Bootstrap's display:none
+    height: 150px; // Initial height to show some content
+    overflow: hidden;
+    transition: height 0.7s ease;
+
+    &.show {
+        height: unset; // Expand to show full content
+    }
+}
+
+a[href="#readMoreCollapse"] {
+    .expand-text {
+        display: inline; // Show "Read more" by default
+    }
+
+    .collapse-text {
+        display: none; // Hide "Read less" by default
+    }
+
+    &[aria-expanded="true"] .expand-text {
+        display: none; // Hide "Read more" when expanded
+    }
+
+    &[aria-expanded="true"] .collapse-text {
+        display: inline; // Show "Read less" when expanded
+    }
+}
+
+
 
 /*------------------------------------
  Styles for Metabolic Import Uploader
