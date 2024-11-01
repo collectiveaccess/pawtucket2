@@ -218,9 +218,11 @@ let mediaViewerManager = function(options=null) {
 			let index = parseInt(that.index);
 			
 			if(media_count_id) {
-				e = document.getElementById(media_count_id);
-				if(e) {
-					e.innerHTML = index + '/' + media_list.length;
+				if(media_count > 1){
+					e = document.getElementById(media_count_id);
+					if(e) {
+						e.innerHTML = (index + 1) + '/' + media_count;
+					}
 				}
 			}
 			if(show_overlay_button_id) {
