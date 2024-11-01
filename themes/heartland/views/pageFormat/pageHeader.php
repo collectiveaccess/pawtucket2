@@ -199,12 +199,6 @@
               <a href="<?php print caNavUrl($this->request, "", "gallery", "index"); ?>" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0947368s;">Featured Collections</a>
             </div>
           
-        
-          
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/history-now" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">History Now</a>
-            </div>
-          
           
         
       </div>
@@ -220,16 +214,16 @@
 
   
     <div class="header-nav-item header-nav-item--folder">
-      <a class="header-nav-folder-title preFade fadeIn" href="/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.116667s;">
+      <a class="header-nav-folder-title preFade fadeIn" href="#" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.116667s;">
         Projects
       </a>
       <div class="header-nav-folder-content">
         
           
             <div class="header-nav-folder-item">
-              <a href="/curation-fellow-karen-somerville">
+              <a href="https://chesapeakeheartland.org/african-american-signage-and-visualization-project">
                 <span class="header-nav-folder-item-content">
-                  Curation Fellow: Karen Somerville
+                  African American Signage and Visualization Project 
                 </span>
               </a>
             </div>
@@ -238,18 +232,7 @@
         
           
             <div class="header-nav-folder-item">
-              <a href="/kca-ch-artist-fellowship">
-                <span class="header-nav-folder-item-content">
-                  KCA/CH Artist Fellowship
-                </span>
-              </a>
-            </div>
-          
-          
-        
-          
-            <div class="header-nav-folder-item">
-              <a href="/aashm">
+              <a href="https://chesapeakeheartland.org/aashm">
                 <span class="header-nav-folder-item-content">
                   Worton Point Schoolhouse
                 </span>
@@ -260,51 +243,7 @@
         
           
             <div class="header-nav-folder-item">
-              <a href="/commodore-collection">
-                <span class="header-nav-folder-item-content">
-                  The Commodore Collection
-                </span>
-              </a>
-            </div>
-          
-          
-        
-          
-            <div class="header-nav-folder-item">
-              <a href="/exhibit-main">
-                <span class="header-nav-folder-item-content">
-                  Jason Patterson Exhibit
-                </span>
-              </a>
-            </div>
-          
-          
-        
-          
-            <div class="header-nav-folder-item">
-              <a href="/ebony-and-ivory-towers">
-                <span class="header-nav-folder-item-content">
-                  Ebony &amp; Ivory Towers
-                </span>
-              </a>
-            </div>
-          
-          
-        
-          
-            <div class="header-nav-folder-item">
-              <a href="/gordon-wallace-documentary">
-                <span class="header-nav-folder-item-content">
-                  Georgetown Documentary
-                </span>
-              </a>
-            </div>
-          
-          
-        
-          
-            <div class="header-nav-folder-item">
-              <a href="/get-on-the-bus">
+              <a href="https://chesapeakeheartland.org/get-on-the-bus">
                 <span class="header-nav-folder-item-content">
                   Get On The Bus
                 </span>
@@ -315,7 +254,7 @@
         
           
             <div class="header-nav-folder-item">
-              <a href="/get-on-the-bus-film">
+              <a href="https://chesapeakeheartland.org/get-on-the-bus-film">
                 <span class="header-nav-folder-item-content">
                   Get On The Bus Film
                 </span>
@@ -324,8 +263,63 @@
           
           
         
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/gordon-wallace-documentary">
+                <span class="header-nav-folder-item-content">
+                  Georgetown Documentary
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers">
+                <span class="header-nav-folder-item-content">
+                  Ebony &amp; Ivory Towers
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/exhibit-main">
+                <span class="header-nav-folder-item-content">
+                  Jason Patterson Exhibit
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/commodore-collection">
+                <span class="header-nav-folder-item-content">
+                  The Commodore Collection
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/kca-ch-artist-fellowship">
+                <span class="header-nav-folder-item-content">
+                  KCA/CH Artist Fellowship
+                </span>
+              </a>
+            </div>
+          
+          
+        
       </div>
-    </div> 
+    </div>
 
 
     <div class="header-nav-item header-nav-item--collection">
@@ -333,6 +327,91 @@
         
         Humanities Truck
       </a>
+    </div>
+    <div class="header-nav-item header-nav-item--folder">
+      <a class="header-nav-folder-title preFade fadeIn" href="#" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.15s;">
+        Educational Resources
+      </a>
+      <div class="header-nav-folder-content">
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/educational-resources-introduction-menu">
+                <span class="header-nav-folder-item-content">
+                  Resource Introduction
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/unit-2-the-african-american-experience-in-colonial-america">
+                <span class="header-nav-folder-item-content">
+                  African American Experience in Colonial America
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/unit-3-the-african-american-experience-in-the-antebellum-period">
+                <span class="header-nav-folder-item-content">
+                  African American Experience in the Antebellum Period
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/unit-4-the-african-american-experience-in-the-reconstruction-era">
+                <span class="header-nav-folder-item-content">
+                  African American Experience in the Reconstruction Era 
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/unit-5-the-african-american-experience-in-the-20th-century">
+                <span class="header-nav-folder-item-content">
+                  African American Experience in the 20th Century
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/unit-6-african-american-contributions-to-american-culture">
+                <span class="header-nav-folder-item-content">
+                  African American Contributions to American Culture
+                </span>
+              </a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/the-african-american-contributions-to-american-culture">
+                <span class="header-nav-folder-item-content">
+                  African American Contributions to American Culture 2
+                </span>
+              </a>
+            </div>
+          
+          
+        
+      </div>
     </div>
   
   
@@ -481,14 +560,11 @@
           
         
           
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/history-now" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.273684s;">History Now</a>
-            </div>
-          
           
         
       </div>
     </div>
+
 
 	<div class="header-nav-item header-nav-item--folder">
       <a class="header-nav-folder-title preFade" href="https://chesapeakeheartland.org/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0454545s;">Projects</a>
@@ -639,16 +715,16 @@
     </a>
   </div>
 
-  <div class="container header-menu-nav-item header-menu-nav-item--active">
-    <a data-folder-id="/projects" href="/projects" aria-current="true">
-      <div class="header-menu-nav-item-content">
-        <span class="visually-hidden">Folder:</span>
-        <span>Projects</span>
-        <span class="chevron chevron--right"></span>
-      </div>
-    </a>
-  </div>
-  
+
+  <div class="container header-menu-nav-item">
+            <a data-folder-id="/projects" href="https://chesapeakeheartland.org/projects" tabindex="0">
+              <div class="header-menu-nav-item-content">
+                <span class="visually-hidden">Folder:</span>
+                <span>Projects</span>
+                <span class="chevron chevron--right"></span>
+              </div>
+            </a>
+          </div>
 
   <div class="container header-menu-nav-item header-menu-nav-item--collection">
     <a href="https://chesapeakeheartland.org/african-american-humanities-truck">
@@ -657,6 +733,16 @@
       </div>
     </a>
   </div>
+  
+  <div class="container header-menu-nav-item header-menu-nav-item--active">
+            <a data-folder-id="https://chesapeakeheartland.org/educational_resources-2" href="https://chesapeakeheartland.org/educational_resources-2" aria-current="true">
+              <div class="header-menu-nav-item-content">
+                <span class="visually-hidden">Folder:</span>
+                <span>Educational Resources</span>
+                <span class="chevron chevron--right"></span>
+              </div>
+            </a>
+          </div>
 
 
 </div>
@@ -747,73 +833,120 @@
     <div class="container header-menu-nav-item header-menu-nav-item--external">
       <a href="https://archive.chesapeakeheartland.org/index.php/Gallery/Index" tabindex="-1">Featured Collections</a>
     </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/history-now" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          History Now
-        </div>
-      </a>
     </div>
-    
-    </div>
-  </div><div data-folder="/projects" class="header-menu-nav-folder">
-    <div class="header-menu-nav-folder-content">
-    <div class="header-menu-controls container header-menu-nav-item">
-      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
-        <span class="chevron chevron--left"></span><span>Back</span>
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/historical-signage-and-visualization-project" tabindex="0">
-        <div class="header-menu-nav-item-content">
-          Historical Signage &amp; Visualization Project
-        </div>
-      </a>
-    </div>
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/kca-ch-artist-fellowship" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          KCA/CH Artist Fellowship
-        </div>
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/aashm" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          Worton Point Schoolhouse
-        </div>
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/commodore-collection" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          The Commodore Collection
-        </div>
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/exhibit-main" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          Jason Patterson Exhibit
-        </div>
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          Ebony &amp; Ivory Towers
-        </div>
-      </a>
-    </div>
-    
-    </div>
-  </div></nav>
+  </div>
+  
+  <div data-folder="https://chesapeakeheartland.org/projects" class="header-menu-nav-folder header-menu-nav-folder--active">
+            <div class="header-menu-nav-folder-content">
+              <div class="header-menu-controls container header-menu-nav-item">
+                <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="0">
+                  <span class="chevron chevron--left"></span><span>Back</span>
+                </a>
+              </div>
+              
+                
+                  <div class="container header-menu-nav-item">
+                    <a href="https://chesapeakeheartland.org/african-american-signage-and-visualization-project" tabindex="0">
+                      <div class="header-menu-nav-item-content">
+                        African American Signage and Visualization Project 
+                      </div>
+                    </a>
+                  </div>
+                
+                
+              
+                
+                  <div class="container header-menu-nav-item">
+                    <a href="https://chesapeakeheartland.org/aashm" tabindex="0">
+                      <div class="header-menu-nav-item-content">
+                        Worton Point Schoolhouse
+                      </div>
+                    </a>
+                  </div>
+                
+                
+              
+                
+                  <div class="container header-menu-nav-item">
+                    <a href="https://chesapeakeheartland.org/get-on-the-bus" tabindex="0">
+                      <div class="header-menu-nav-item-content">
+                        Get On The Bus
+                      </div>
+                    </a>
+                  </div>
+                
+                
+              
+                
+                  <div class="container header-menu-nav-item">
+                    <a href="https://chesapeakeheartland.org/get-on-the-bus-film" tabindex="0">
+                      <div class="header-menu-nav-item-content">
+                        Get On The Bus Film
+                      </div>
+                    </a>
+                  </div>
+                
+                
+              
+                
+                  <div class="container header-menu-nav-item">
+                    <a href="https://chesapeakeheartland.org/gordon-wallace-documentary" tabindex="0">
+                      <div class="header-menu-nav-item-content">
+                        Georgetown Documentary
+                      </div>
+                    </a>
+                  </div>
+                
+                
+              
+                
+                  <div class="container header-menu-nav-item">
+                    <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers" tabindex="0">
+                      <div class="header-menu-nav-item-content">
+                        Ebony &amp; Ivory Towers
+                      </div>
+                    </a>
+                  </div>
+                
+                
+              
+                
+                  <div class="container header-menu-nav-item">
+                    <a href="https://chesapeakeheartland.org/exhibit-main" tabindex="0">
+                      <div class="header-menu-nav-item-content">
+                        Jason Patterson Exhibit
+                      </div>
+                    </a>
+                  </div>
+                
+                
+              
+                
+                  <div class="container header-menu-nav-item">
+                    <a href="https://chesapeakeheartland.org/commodore-collection" tabindex="0">
+                      <div class="header-menu-nav-item-content">
+                        The Commodore Collection
+                      </div>
+                    </a>
+                  </div>
+                
+                
+              
+                
+                  <div class="container header-menu-nav-item">
+                    <a href="https://chesapeakeheartland.org/kca-ch-artist-fellowship" tabindex="0">
+                      <div class="header-menu-nav-item-content">
+                        KCA/CH Artist Fellowship
+                      </div>
+                    </a>
+                  </div>
+                
+                
+              
+            </div>
+          </div>
+  
+  </nav>
     </div>
   </div>
 </header>
