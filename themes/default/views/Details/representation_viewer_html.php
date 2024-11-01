@@ -123,6 +123,7 @@ $subject = $this->getVar("subject");
 	<div class="col-6">
 		<button class='btn btn-md btn-white ps-0 ms-0 pe-2 me-1 mediaviewer-control' id="mediaviewer-show-overlay" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();' aria-label='enlarge'><i class="bi bi-zoom-in"></i></button>
 		<button class='btn btn-md btn-white ps-0 ms-0 mediaviewer-control' id="mediaviewer-download" aria-label="download" hx-on:click="window.location='<?= caNavUrl($this->request, '*', '*', 'DownloadMedia', [$subject->primaryKey() => $subject->getPrimaryKey()]); ?>'"><i class="bi bi-download"></i></button>
+		<span id="media-count" class="fs-5 ps-3"></span>
 	</div>
 	<div class="col-6 text-end">
 		<button class='btn btn-lg btn-white ms-0 ps-0 pe-1 me-0 mediaviewer-control' id="mediaviewer-previous" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>

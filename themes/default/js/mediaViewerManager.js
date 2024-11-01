@@ -158,6 +158,12 @@ let mediaViewerManager = function(options=null) {
 			if(index > 0) {
 				that.render(index-1);
 				if(overlay) { that.showOverlay(); }
+				let overlay_previous_button_id = that.options['overlay_previous_button_id'];
+				let e = null;
+				e = document.getElementById(overlay_previous_button_id);
+				if(e) {
+					e.focus();
+				}
 			} else {
 				return;
 			}
@@ -174,6 +180,12 @@ let mediaViewerManager = function(options=null) {
 			if((index + 1) < media_list.length) {
 				that.render(index+1);
 				if(overlay) { that.showOverlay(); }
+				let overlay_next_button_id = that.options['overlay_next_button_id'];
+				let e = null;
+				e = document.getElementById(overlay_next_button_id);
+				if(e) {
+					e.focus();
+				}
 			} else {
 				return
 			}
@@ -201,8 +213,16 @@ let mediaViewerManager = function(options=null) {
 			let show_overlay_button_id = that.options['show_overlay_button_id'];
 			let download_button_id = that.options['download_button_id'];
 			
+			let media_count_id = that.options['media_count_id'];
+			
 			let index = parseInt(that.index);
 			
+			if(media_count_id) {
+				e = document.getElementById(media_count_id);
+				if(e) {
+					e.innerHTML = index + '/' + media_list.length;
+				}
+			}
 			if(show_overlay_button_id) {
 				e = document.getElementById(show_overlay_button_id);
 				if(e) {
