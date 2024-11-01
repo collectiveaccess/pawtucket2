@@ -103,7 +103,7 @@
 							 }
 						break;
 						# ------------
-						case "Commodore license":
+						case "commodore license":
 							 if($vs_tmp = $this->getVar("commodore_license")){
 							 	print $vs_tmp;
 							 }else{
@@ -111,7 +111,7 @@
 							 }
 						break;
 						# ------------
-						case "Trumpington license":
+						case "crumpington license":
 							 if($vs_tmp = $this->getVar("trumpington_license")){
 							 	print $vs_tmp;
 							 }else{
