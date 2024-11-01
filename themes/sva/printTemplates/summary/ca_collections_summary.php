@@ -78,7 +78,7 @@
 		</ifdef>
 		<ifdef code="ca_collections.dates.dates_value">
 			<dt><?= _t('Date'); ?></dt>
-			<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value (^ca_collections.dates.dates_type)</dd></unit>
+			<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value<ifdef code="ca_collections.dates.dates_type"> (^ca_collections.dates.dates_type)</ifdef></dd></unit>
 		</ifdef>
 		<ifdef code="ca_collections.abstract">
 			<dt><?= _t('Abstract'); ?></dt>
