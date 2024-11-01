@@ -111,7 +111,7 @@
 							 }
 						break;
 						# ------------
-						case "crumpington license":
+						case "trumpington license":
 							 if($vs_tmp = $this->getVar("trumpington_license")){
 							 	print $vs_tmp;
 							 }else{
