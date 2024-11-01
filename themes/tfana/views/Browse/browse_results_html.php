@@ -136,10 +136,12 @@ if (!$vb_ajax) {	// !ajax
 <?php
 				}
 
-				if(is_array($va_all_facets) && sizeof($va_all_facets)){
+				if(strToLower($this->request->getAction()) != "seasons"){
+					if(is_array($va_all_facets) && sizeof($va_all_facets)){
 ?>
-					<li class='list-group-item border-0 px-0 pt-0 d-md-none'><button class="btn btn-light btn-sm small ms-1" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine" aria-label="<?php print _t("Filter Results"); ?>"><i class="bi bi-sliders"></i></button></li>
+						<li class='list-group-item border-0 px-0 pt-0 d-md-none'><button class="btn btn-light btn-sm small ms-1" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine" ><i class="bi bi-sliders" aria-label="<?php print _t("Filter Results"); ?>"></i></button></li>
 <?php
+					}
 				}
 ?>
 				</ul>
@@ -160,8 +162,12 @@ if (!$vb_ajax) {	// !ajax
 			print "<li class='list-inline-item py-0 my-0'> | </li><li class='list-inline-item p-0 m-0'>".caNavLink($this->request, _t("All"), 'btn p-1 fw-medium'.((!$vs_letter) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all'))."</li>"; 
 			print "</ul>";
 		}
+		if(strToLower($this->request->getAction()) != "seasons"){
 ?>
 			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
+<?php
+		}
+?>
 			<div id="browseResultsContainer">
 				<div class="row">
 <?php

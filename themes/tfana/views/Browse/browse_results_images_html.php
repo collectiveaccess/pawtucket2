@@ -139,7 +139,7 @@ if ($vn_start < $qr_res->numHits()) {
 			if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 				$vs_add_to_set_link = "<a href='#' class='link-dark mx-1' aria-label='Add' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 			}
-			$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
+			$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square' aria-label='view record'></i>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 if(strToLower($this->request->getAction()) == "seasons"){
 			$vs_result_output = "
 				<div class='col-md-6 col-lg-4 col-xl-4 col-xxl-3 d-flex'>

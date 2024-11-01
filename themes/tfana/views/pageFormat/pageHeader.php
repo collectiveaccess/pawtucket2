@@ -66,7 +66,7 @@ if($this->request->isLoggedIn()){
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
-	<div class="bg-body-yellow w-100">
+	<nav class="bg-body-yellow w-100" aria-label="Institutional">
 		<div class="container-xl">
 			<div class="row">
 				<div class="col-6 text-start tk-degular nav-top">
@@ -77,9 +77,9 @@ if($this->request->isLoggedIn()){
 				</div>
 			</div>
 		</div>
-	</div>
+	</nav>
 		
-	<nav class="navbar navbar-expand-lg shadow-sm py-3">
+	<nav class="navbar navbar-expand-lg shadow-sm py-3" aria-label="Site">
 		<div class="container-xl">
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'tfana-logo.jpg', array("alt" => "TFANA logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
