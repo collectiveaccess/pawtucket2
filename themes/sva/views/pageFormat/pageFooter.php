@@ -56,7 +56,7 @@
 						</div>
 						<div class="text-center">
 							<ul class="list-inline pt-3 mb-0">
-								<li class="list-inline-item fs-4 px-2"><?php print caNavlink($this->request, '<i class="bi bi-envelope"></i>', '', '', "Contact", 'form'); ?></li>
+								<li class="list-inline-item fs-4 px-2"><?php print caNavlink($this->request, '<i class="bi bi-envelope" aria-label="contact"></i>', '', '', "Contact", 'form'); ?></li>
 								<li class="list-inline-item fs-4 px-2"><a href="https://www.instagram.com/glaserarchives/" class="" aria-label="Instagram Link"><i class="bi bi-instagram"></i></a></li>
 								<li class="list-inline-item fs-4 px-2"><a href="https://twitter.com/glaserarchives" class="" aria-label="X Link"><i class="bi bi-twitter-x"></i></a></li>
 							</ul>

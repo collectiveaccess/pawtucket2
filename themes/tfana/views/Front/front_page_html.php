@@ -57,7 +57,7 @@
 <div>		
 	<div class="img-fluid">
 <?php
-			print caGetThemeGraphic($this->request, 'tfana_front.png', array("alt" => "Collage of imagery from various TFANA productions"))
+			print caGetThemeGraphic($this->request, 'homeCollage3.jpg', array("alt" => "Collage of imagery from the TFANA collections"))
 ?>
 	</div>
 </div>
@@ -120,7 +120,7 @@
 			<div class="hpExplore">
 				<div class="row gx-5">
 					<div class="col-md-6 mb-md-4 pb-md-4 mb-4 pb-4">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, "tfana_front.png", array("alt" => "explore image", "class" => "object-fit-cover w-100")), "", "", "Gallery", "Index"); ?>
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, "featured.jpg", array("alt" => "black and white production still of dancers", "class" => "object-fit-cover w-100")), "", "", "Gallery", "Index"); ?>
 						<hr/>
 						<h3 class="mb-4">{{{hp_gallery_title}}}</h3>
 						<div class="pb-4 mb-4">{{{hp_gallery_text}}}</div>
@@ -129,7 +129,7 @@
 ?>
 					</div>
 					<div class="col-md-6">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, "tfana_front.png", array("alt" => "explore image", "class" => "object-fit-cover w-100")), "", "", "Collections", "index"); ?>
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, "collection.jpg", array("alt" => "black and white contact sheet", "class" => "object-fit-cover object-position-top w-100")), "", "", "Collections", "index"); ?>
 						<hr/>
 						<h3 class="mb-4">{{{hp_collections_title}}}</h3>
 						<div class="pb-4 mb-4">{{{hp_collections_text}}}</div>

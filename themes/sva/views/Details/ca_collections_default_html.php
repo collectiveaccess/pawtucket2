@@ -107,17 +107,15 @@ if($t_item->get("ca_collections.parent_id") || $t_item->get("ca_collections.date
 				$hier_parts = explode(";", $hier_path);
 				array_pop($hier_parts);				
 ?>
-				<ifdef code="ca_collections.parent_id">
-					<dt>Part of</dt>
-					<dd><?php print join(" > ", $hier_parts); ?></dd>
-				</ifdef>
+				<dt>Part of</dt>
+				<dd><?php print join(" > ", $hier_parts); ?></dd>
 <?php
 			}
 ?>				
 			{{{
 				<ifdef code="ca_collections.dates.dates_value">
 					<dt><?= _t('Date'); ?></dt>
-					<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value (^ca_collections.dates.dates_type)</dd></unit>
+					<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value<ifdef code="ca_collections.dates.dates_type"> (^ca_collections.dates.dates_type)</ifdef></dd></unit>
 				</ifdef>
 				<ifdef code="ca_collections.abstract">
 					<dt><?= _t('Abstract'); ?></dt>

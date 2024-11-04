@@ -16,9 +16,9 @@
 	<div class="col-2 col-sm-1 text-center">
 <?php
 	if($pn_previous_item_id > 0){
-		print "<button class='btn btn-sm btn-primary align-content-center' hx-target='#galleryDetailItemInfo' hx-trigger='click' hx-get='".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pn_previous_item_id, 'set_id' => $pn_set_id))."'><i class='bi bi-chevron-left' role='graphics-document' aria-label='previous'></i></button>";
+		print "<button id='galleryPreviousButton' class='btn btn-sm btn-primary align-content-center' hx-target='#galleryDetailItemInfo' hx-trigger='click' hx-get='".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pn_previous_item_id, 'set_id' => $pn_set_id))."'><i class='bi bi-chevron-left' aria-label='previous'></i></button>";
 	}else{
-		print "<button class='btn btn-sm btn-primary' disabled><i class='bi bi-chevron-left' role='graphics-document' aria-label='previous'></i></button>";
+		print "<button id='galleryPreviousButton' class='btn btn-sm btn-primary' disabled><i class='bi bi-chevron-left' aria-label='previous'></i></button>";
 	}
 ?>
 	</div>
@@ -30,9 +30,9 @@
 	<div class="col-2 col-sm-1 text-center">
 <?php
 	if($pn_next_item_id > 0){
-		print "<button class='btn btn-sm btn-primary' hx-target='#galleryDetailItemInfo' hx-trigger='click' hx-get='".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pn_next_item_id, 'set_id' => $pn_set_id))."'><i class='bi bi-chevron-right' role='graphics-document' aria-label='next'></i></button>";
+		print "<button id='galleryNextButton' class='btn btn-sm btn-primary' hx-target='#galleryDetailItemInfo' hx-trigger='click' hx-get='".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pn_next_item_id, 'set_id' => $pn_set_id))."'><i class='bi bi-chevron-right' aria-label='next'></i></button>";
 	}else{
-		print "<button class='btn btn-sm btn-primary' disabled><i class='bi bi-chevron-right' role='graphics-document' aria-label='next'></i></button>";
+		print "<button id='galleryNextButton' class='btn btn-sm btn-primary' disabled><i class='bi bi-chevron-right' aria-label='next'></i></button>";
 	}
 ?>
 	</div><!--end col-sm-1-->

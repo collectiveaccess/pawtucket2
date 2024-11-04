@@ -79,7 +79,7 @@ if($pn_id && $t_item->getPrimaryKey()){
 <div class="bg-light px-4 pt-4 pb-2 mb-4">		
 	<div class="row mt-2">
 		<div class="col-md-3 mb-4">
-			<label for="name" class="form-label"><?= _t("Name"); ?></label>
+			<label for="name" class="form-label"><?= _t("First and Last Name"); ?></label>
 			<input type="text" class="form-control<?= (($va_errors["name"]) ? " is-invalid" : ""); ?>" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
 		</div><!-- end col -->
 		<div class="col-md-3 mb-4">
@@ -93,8 +93,9 @@ if($pn_id && $t_item->getPrimaryKey()){
 ?>
 			<select class="form-select<?= (($va_errors["inquiry_type"]) ? " is-invalid" : ""); ?>" id="inquiry_type" name="inquiry_type">
 				<option value="">Choose an option</option>
-				<option value="Schedule a visit"<?php print ($inquiry_type == "Schedule a visit") ? " selected" : ""; ?>>Schedule a visit</option>
+				<option value="Request access"<?php print ($inquiry_type == "Request access") ? " selected" : ""; ?>>Request access</option>
 				<option value="Request media"<?php print ($inquiry_type == "Request media") ? " selected" : ""; ?>>Request media</option>
+				<option value="General inquiry"<?php print ($inquiry_type == "General inquiry") ? " selected" : ""; ?>>General inquiry</option>
 			</select>
 		</div><!-- end col -->
 <?php

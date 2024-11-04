@@ -51,7 +51,7 @@ function caGetCollectionLevelSummarySVA($po_request, $va_collection_ids, $vn_lev
 				$vs_icon = $va_collection_type_icons[$qr_collections->get("ca_collections.type_id")];
 			}			
 			# --- related objects?
-			$va_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_object_access_values));
+			$va_object_ids = $qr_collections->get("ca_objects.object_id", array("excludeRelationshipTypes" => array("featured"), "returnAsArray" => true, 'checkAccess' => $va_object_access_values));
 			$vn_rel_object_count = sizeof($va_object_ids);
 			$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => $vs_sub_collection_sort));
 			$vs_output .= "<div class='unit' style='margin-left:".(40*($vn_level - 1))."px;'>";

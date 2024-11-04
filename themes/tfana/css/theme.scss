@@ -272,12 +272,16 @@ $yellow: #fec02f;
 			top:15px;
 		}
 	}
+}
+.object-position-top{
+	object-position:top;
 }	
 /* ------------------------- Navbar ------------------------- */
 .nav-top{
 	padding:10px 0px 10px 0px;
 	a{
 		padding:0px 15px 0px 15px;
+		color:#275597;
 	}
 }
 .navbar{
