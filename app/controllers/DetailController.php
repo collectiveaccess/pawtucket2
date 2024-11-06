@@ -125,6 +125,9 @@ class DetailController extends FindController {
 		if ($this->request->getActionExtra() == 'GetMediaData') {
 			return $this->GetMediaData();
 		}
+		if ($this->request->getActionExtra() == 'DownloadAttributeMedia') {
+			return $this->DownloadAttributeMedia();
+		}
 		
 		$function = strtolower($function);
 		$id = urldecode($this->request->getActionExtra()); 
@@ -1235,14 +1238,18 @@ class DetailController extends FindController {
 		$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
 	
 		$t_element = new ca_metadata_elements($t_attr->get('element_id'));
-		$this->request->setParameter(Datamodel::primaryKey($table_num), $t_attr->get('row_id'));
+		$table = $this->request->getParameter('table', pString);
+		$this->request->setParameter(Datamodel::primaryKey($table), $t_attr->get('row_id'));
 		
-		$subject_id = $this->request->getParameter("subject_id", pInteger);
-		list($subject_id, $t_subject) = $this->_initView($options);
+		if(!($t_subject = Datamodel::getInstance($table))) {
+			throw new ApplicationException(_t('Invalid table'));
+		}
+		$subject_id = $this->request->getParameter($t_subject->primaryKey(), pInteger);
+		$t_subject->load($subject_id);
+		
 		$version = $this->request->getParameter('version', pString);
 			
-		if (!$this->_checkAccess($t_subject)) { return false; }
-
+		//if (!$this->_checkAccess($t_subject)) { return false; }
 		
 		//
 		// Does user have access to bundle?
