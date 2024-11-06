@@ -1038,6 +1038,7 @@ a.readmore-js-toggle {
 .detail .detailArchivalCollections .collapseBlock.discussion{
 	padding-left:10px;
 	padding-right:10px;
+	padding-top:0px;
 }
 .jumpTop{
 	position: fixed;

@@ -48,7 +48,7 @@
 							}
 						}
 ?>
-						<li><?php print caDetailLink($this->request, "Loyie Brissenden Collection", "", "ca_collections", 48); ?></li>
+						<li><?php print caDetailLink($this->request, "The Loyie-Brissenden Collection", "", "ca_collections", 48); ?></li>
 					</ul>	
 				</li>
 <?php				

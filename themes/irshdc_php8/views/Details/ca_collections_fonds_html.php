@@ -71,25 +71,25 @@
 						if ($vn_comments_enabled) {
 							$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
 	?>				
-							<div class="collapseBlock last discussion" style="border:0px;">
-								<h3>Contribute</H3>
-								<div class="collapseContent open">
-									<div id='detailDiscussion'>
-										Do you have a story or comment to contribute?<br/>
-	<?php
-										
-										if($this->request->isLoggedIn()){
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_collections", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
-										}else{
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
-										}
-										if($vn_num_comments){
-											print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
-										}
-	?>
-									</div><!-- end itemComments -->
+								<h2>Contribute</H2>
+								<div class="collapseBlock last discussion" style="border:0px;">
+									<div class="collapseContent open">
+										<div id='detailDiscussion'>
+											Do you have a story or comment to contribute?<br/>
+		<?php
+											
+											if($this->request->isLoggedIn()){
+												print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_collections", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
+											}else{
+												print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
+											}
+											if($vn_num_comments){
+												print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
+											}
+		?>
+										</div><!-- end itemComments -->
+									</div>
 								</div>
-							</div>
 	<?php				
 						}
 ?>
@@ -116,9 +116,13 @@
 							}
 							print $vs_source_link;
 							print "</H1>";
+							$type = $t_item->get("ca_collections.type_id", array("convertCodesToDisplayText" => true));
+							if($type == "Archival Collection"){
+								$type = "Collection";
+							}
 ?>
 							<div class="unit">
-								<div class="uppercase">{{{^ca_collections.type_id}}}</div>
+								<div class="uppercase"><?= $type; ?></div>
 							</div>
 							{{{<ifdef code="ca_collections.displayDate">
 								<ifdef code="ca_collections.ISADG_dateNote"><div class="unit" data-toggle="popover" title="Note" data-content="^ca_collections.ISADG_dateNote">
@@ -267,11 +271,13 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12"><H2>Collection Contents</H2><div class="unit">Click the images below to see more records.</div></div>
-			</div>
-			<div class="row collectionContentsGrid">
-					
+			</div>					
 <?php					
+				$i = 0;
 				foreach($va_collection_contents as $va_collection_content) {
+					if($i == 0){
+						print '<div class="row collectionContentsGrid">';
+					}
 ?>
 					<div class="col-sm-6 col-md-3 collectionContentsGridItem">	
 <?php
@@ -287,10 +293,15 @@
 ?>
 					</div>
 <?php						
+					$i++;
+					if($i == 4){
+						$i = 0;
+						print "</div>";
+					}
 				}
-?>				
-			</div>
-<?php
+				if($i > 0){
+					print "</div>";
+				}
 		}
 		if ($vb_show_hierarchy_viewer) {	
 ?>
