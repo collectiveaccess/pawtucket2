@@ -43,11 +43,11 @@
 
 .carousel-item {
     height: 375px;
-    width: auto;
+    // width: auto;
 }
 .carousel-item a img{
     height: 375px;
-    width: auto;
+    // width: auto;
 }
 
 #heroSearchInput {
@@ -160,4 +160,175 @@ a[href="#readMoreCollapse"] {
     margin: 5px 0 0 0;
     padding: 0px;
     font-weight: bold;
+}
+
+/*------------------------------------
+ Styles for Metabolic Chronology
+------------------------------------*/
+
+.chronology-list {
+
+    // .main-title {
+    //     margin: 75px 0px 75px 0px;
+    // }
+
+    // padding-left: 10%;
+    // padding-right: 10%;
+    // padding-bottom: 5%;
+
+    // .card-horizontal {
+    //   display: flex;
+    //   flex: 1 1 auto;
+    // }
+
+    .card {
+        min-height: 200px;
+        width: 100%;
+
+        .list-img {
+            max-height: 250px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .list-img-rr {
+            margin: auto;
+            max-height: 250px;
+            width: 70%;
+            object-fit: cover;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-family: "Raleway", sans-serif;
+            text-decoration: none;
+            line-height: 2em;
+        }
+    }
+
+}
+
+.metabolic-chronology {
+
+    margin: 30px 0px 30px 0px;
+
+    .chronology-title {
+        margin-bottom: 40px;
+    }
+
+    #media-div,
+    #info-div {
+        overflow: auto;
+
+        // padding-left: 10px;
+        // padding-right: 10px;
+        a {
+            text-decoration: none;
+        }
+    }
+
+    #media-div {
+        background-color: #f1f1f1;
+    }
+
+    img {
+        min-height: 150px;
+        max-height: 400px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .disable-scrollbars::-webkit-scrollbar {
+        background: transparent;
+        /* make scrollbar transparent */
+    }
+
+    .text-container {
+        min-height: 250px;
+    }
+
+    #action {
+        padding: 10px;
+        // display: flex;
+        // align-items: center;
+    }
+
+    #curr-action {
+        padding: 10px;
+        // display: flex;
+        // align-items: center;
+
+        -webkit-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.4);
+        box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.4);
+        background-color: #fff;
+    }
+
+    p {
+        margin: 0
+    }
+
+    #year-bar {
+        background-color: #F1F1F1;
+        padding-bottom: 5px;
+        height: auto;
+        width: 75px;
+        position: fixed;
+        z-index: 1;
+        // top: 300px; 
+        right: 10px;
+        overflow-x: hidden;
+
+        .year-bar-cont {
+            margin: 10px 0px 10px 0px;
+
+            .curr-year {
+                font-weight: bold;
+            }
+
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+
+                li {
+                    margin: 5px 0px 5px 0px;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+}
+
+@media only screen and (max-width: 767px) {
+
+    .metabolic-chronology {
+        margin: 15px 0px 15px 0px;
+
+        .chronology-title {
+            margin-bottom: 10px;
+        }
+    }
+
+    @media (orientation: landscape) {
+        .metabolic-chronology {
+            #year-bar {
+                display: none;
+            }
+        }
+    }
+
+    @media (orientation: portrait) {
+        .metabolic-chronology {
+            .portrait {
+                width: 100%;
+            }
+
+            #media-div,
+            #year-bar {
+                display: none;
+            }
+        }
+    }
+
 }

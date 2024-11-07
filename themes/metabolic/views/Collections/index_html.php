@@ -18,7 +18,7 @@
 	$vs_item_display_template = ($o_collections_config->get("landing_page_item_display_template")) ? $o_collections_config->get("landing_page_item_display_template") : "<div class='card-title'><div class='fw-medium lh-sm fs-5'><l>^ca_collections.preferred_labels</l></div></div>";
 ?>
 	<div class="row justify-content-center">
-		<div class='col-10'>
+		<div class='col-lg-10'>
 			<h1 class="my-5"><?php print $this->getVar("section_name"); ?></h1>
 <?php
 	if($vs_intro_global_value = $o_collections_config->get("landing_page_intro_text_global_value")){
@@ -38,9 +38,9 @@
 				}
 			}			
 			
-			print "<div class='col-sm-6 col-lg-4 d-flex'>";
-			$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>".$vs_thumbnail."
-							<div class='card-body'>".$qr_collections->getWithTemplate($vs_item_display_template)."</div>
+			print "<div class='col-sm-6 col-md-4 px-3 d-flex'>";
+			$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 border-0 mb-4'>".$vs_thumbnail."
+							<div class='pt-1'>".$qr_collections->getWithTemplate($vs_item_display_template)."</div>
 						</div>";
 			print caDetailLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
 			print "</div>";

@@ -80,7 +80,7 @@ const Import = () => {
 
 export default function _init() {
   const container = document.querySelector(selector);
-  const root = createRoot(container); // createRoot(container!) if TypeScript
+  const root = createRoot(container);
   root.render(
     <ImportContextProvider>
       <Import />

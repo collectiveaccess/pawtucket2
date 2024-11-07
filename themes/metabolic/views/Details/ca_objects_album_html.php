@@ -102,7 +102,7 @@ if($show_nav){
 			<hr>
 			<!-- <div class="bg-light py-3 px-4 mb-3 h-100">height is to make the gray background of box same height as the containing row -->
 			<div class="bg-light py-3 px-4 mb-3">
-				<div class="row">
+				<div class="row row-cols-1 row-cols-md-2">
 					<div class="col">	
 							
 						{{{<dl class="mb-0">
@@ -127,8 +127,6 @@ if($show_nav){
 								<dd>^ca_objects.description</dd>
 							</ifdef>
 
-							<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>	
-
 							<ifdef code="ca_objects.url">
 								<dd>
 									<unit relativeTo="ca_objects.url" delimiter="<br/>">
@@ -136,13 +134,31 @@ if($show_nav){
 									</unit>
 								</dd>
 							</ifdef>
+						</dl>}}}
+					</div>		
+						
+					<div class="col">
 
+						{{{<dl class="mb-0">
+
+							<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
+							
 							<?php
 								if($t_object->get("ca_objects.bio_regions")){
 									if($bio_links = caGetBrowseLinks($t_object, 'ca_objects.bio_regions', ['template' => '<l>^ca_objects.bio_regions</l>', 'linkTemplate' => '^LINK'])) {
 							?>
-										<dt><?= _t('Bio Regions'); ?></dt>
-										<dd><?= join(", ", $bio_links); ?></dd>
+										<dt>
+											<?= _t('Bio Regions'); ?>
+											<a data-bs-toggle="collapse" href="#collapseBioRegions" role="button" aria-expanded="false" aria-controls="collapseBioRegions">
+												<i class="bi bi-info-circle-fill"></i>
+											</a>
+										</dt>
+										<dd>
+											<div class="collapse" id="collapseBioRegions">
+												<p>A region defined by characteristics of the natural environment rather than man-made division.</p>
+											</div>
+											<?= join(", ", $bio_links); ?>
+										</dd>
 							<?php
 									}
 								}
@@ -158,10 +174,7 @@ if($show_nav){
 									}
 								}
 							?>
-
-						</dl>}}}
 						
-						{{{<dl class="mb-0">
 							<ifcount code="ca_collections" min="1">
 								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Actions'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Actions'); ?></ifcount></dt>
 								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
@@ -190,13 +203,71 @@ if($show_nav){
 			</div>
 		</div>
 	</div>
+
+	<!-- <div class="row">
+		<div class="col-sm-12">
+	<?php
+		# --- Album items (children)
+		$va_related_items = array();
+		$va_related_item_ids = $t_object->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+		if(sizeof($va_related_item_ids)){
+			$q_objects = caMakeSearchResult("ca_objects", $va_related_item_ids);
+	?>
+			<div class="row mt-3">
+				<div class="col-4 mt-5 text-right">
+	<?php
+					if($q_objects->numHits() > 100){
+						print caNavLink($this->request, "View All", "btn btn-primary", "", "Search", "objects", array("search" => "ca_objects.parent_id:".$t_object->get("ca_objects.object_id")));		
+					}
+	?>
+				</div>
+			</div>
+	<?php		
+
+		}
+	?>
+		</div>
+	</div> -->
 		
 	{{{<ifcount code="ca_objects.children" min="1">
 		<div class="row">
-			<div class="col"><h2>Assets</h2><hr></div>
+			<div class="col"><h2>Assets</h2></div>
+
+			<div class="col text-center text-md-end">
+				<div class="btn-group mb-2" role="group" aria-label="Detail Controls">
+					<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium">
+						<i class="bi bi-check2-circle"></i>
+					</button>
+					<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium">
+						<i class="bi bi-folder-fill"></i>
+					</button>
+
+					<div class="dropdown">
+						<button type="button" class="btn btn-sm btn-white px-2 fw-medium"  id="sortList" data-bs-toggle="dropdown" aria-expanded="false">
+							<?= _t('Sort by'); ?> <i class='bi bi-sort-alpha-up'></i>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+							<li hx-post="<?= caNavUrl($this->request, '', 'Browse', 'objects', array('browse' => 'ca_objects.parent_id:'.$t_object->get("ca_objects.object_id"), 'sort' => 'Identifier')); ?>" hx-trigger="click" hx-target="#browseResultsContainer" hx-swap="innerHTML">
+								<div class="dropdown-item">Identifier</div>
+							</li>	
+
+							<li hx-post="<?= caNavUrl($this->request, '', 'Browse', 'objects', array('browse' => 'ca_objects.parent_id:'.$t_object->get("ca_objects.object_id"), 'sort' => 'Title')); ?>" hx-trigger="click" hx-target="#browseResultsContainer" hx-swap="innerHTML">
+								<div class="dropdown-item">Title</div>
+							</li>		
+						</ul>
+						</a>
+					</div>
+
+					<button type="button" class="btn p-0">
+						<i class="bi bi-download"></i>
+					</button>
+				</div>
+			</div>
 		</div>
+
+
 		<div class="row" id="browseResultsContainer">	
-			<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.parent_id:'.$t_object->get("ca_objects.object_id"))); ?>">
+			<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('browse' => 'ca_objects.parent_id:'.$t_object->get("ca_objects.object_id"))); ?>">
 				<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 			</div>
 		</div>
