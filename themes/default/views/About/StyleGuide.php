@@ -108,33 +108,13 @@
 <div class="container text-center my-3">
     <h2 class="font-weight-light">Bootstrap Multi Slide Carousel</h2>
     <div class="row mx-auto my-auto justify-content-center">
-        <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div id="multiCarousel" class="carousel slide multiSlideCarousel"><!-- add  data-bs-ride="multiSlideCarousel" to div for auto advance -->
             <div class="carousel-inner" role="listbox">
                 <div class="carousel-item active">
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-img">
-                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
-                            </div>
-                            <div class="card-img-overlay">Slide 1</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="col-md-3">
-                        <div class="card">
-                            <div class="card-img">
-                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
-                            </div>
-                            <div class="card-img-overlay">Slide 2</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="col-md-3">
-                        <div class="card">
-                            <div class="card-img">
-                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                                <?= caGetThemeGraphic($this->request, 'homePage.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
                             </div>
                             <div class="card-img-overlay">Slide 3</div>
                         </div>
@@ -144,7 +124,7 @@
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-img">
-                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                                <?= caGetThemeGraphic($this->request, 'homepage_sva_archives.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
                             </div>
                             <div class="card-img-overlay">Slide 4</div>
                         </div>
@@ -154,7 +134,7 @@
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-img">
-                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                                <?= caGetThemeGraphic($this->request, 'homepage_sva_archives2.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
                             </div>
                             <div class="card-img-overlay">Slide 5</div>
                         </div>
@@ -164,25 +144,24 @@
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-img">
-                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                                <?= caGetThemeGraphic($this->request, 'Palette_heroimage.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
                             </div>
                             <div class="card-img-overlay">Slide 6</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <a class="carousel-control-prev bg-transparent w-aut" href="#recipeCarousel" role="button" data-bs-slide="prev">
+            <a class="carousel-control-prev bg-transparent" href="#multiCarousel" role="button" data-bs-slide="prev" aria-label="previous slide">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             </a>
-            <a class="carousel-control-next bg-transparent w-aut" href="#recipeCarousel" role="button" data-bs-slide="next">
+            <a class="carousel-control-next bg-transparent" href="#multiCarousel" role="button" data-bs-slide="next" aria-label="next slide">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
             </a>
         </div>
     </div>
-    <h5 class="mt-2 fw-light">advances one slide at a time</h5>
 </div>
 <script>
-let items = document.querySelectorAll('.carousel .carousel-item')
+let items = document.querySelectorAll('.carousel.multiSlideCarousel .carousel-item')
 
 items.forEach((el) => {
     const minPerSlide = 4
@@ -199,38 +178,39 @@ items.forEach((el) => {
 });
 </script>
 <style>
-@media (max-width: 767px) {
-    .carousel-inner .carousel-item > div {
-        display: none;
-    }
-    .carousel-inner .carousel-item > div:first-child {
-        display: block;
-    }
-}
-
-.carousel-inner .carousel-item.active,
-.carousel-inner .carousel-item-next,
-.carousel-inner .carousel-item-prev {
-    display: flex;
-}
-
-/* medium and up screens */
-@media (min-width: 768px) {
-    
-    .carousel-inner .carousel-item-end.active,
-    .carousel-inner .carousel-item-next {
-      transform: translateX(25%);
-    }
-    
-    .carousel-inner .carousel-item-start.active, 
-    .carousel-inner .carousel-item-prev {
-      transform: translateX(-25%);
-    }
-}
-
-.carousel-inner .carousel-item-end,
-.carousel-inner .carousel-item-start { 
-  transform: translateX(0);
-}
-
+	@media (max-width: 767px) {
+		.multiSlideCarousel .carousel-inner .carousel-item > div {
+			display: none;
+		}
+		.multiSlideCarousel .carousel-inner .carousel-item > div:first-child {
+			display: block;
+		}
+	}
+	.card-img{
+		height:300px;
+	}
+	.multiSlideCarousel .carousel-inner .carousel-item.active,
+	.multiSlideCarousel .carousel-inner .carousel-item-next,
+	.multiSlideCarousel .carousel-inner .carousel-item-prev {
+		display: flex;
+	}
+	
+	/* medium and up screens */
+	@media (min-width: 768px) {
+		
+		.multiSlideCarousel .carousel-inner .carousel-item-end.active,
+		.multiSlideCarousel .carousel-inner .carousel-item-next {
+			transform: translateX(25%);
+		}
+		
+		.multiSlideCarousel .carousel-inner .carousel-item-start.active, 
+		.multiSlideCarousel .carousel-inner .carousel-item-prev {
+			transform: translateX(-25%);
+		}
+	}
+	
+	.multiSlideCarousel .carousel-inner .carousel-item-end,
+	.multiSlideCarousel .carousel-inner .carousel-item-start { 
+		transform: translateX(0);
+	}
 </style>
