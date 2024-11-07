@@ -125,7 +125,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 			?>
 					<tr>
 						<td><?= _t('Sponsor:'); ?></td>
-						<td><?= join(",", $links); ?></td>
+						<td><?= join(", ", $links); ?></td>
 					</tr>
 			<?php
 					}
@@ -145,7 +145,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 			?>
 					<tr>
 						<td><?= _t('Committee Referral:'); ?></td>
-						<td><?= join(",", $links); ?></td>
+						<td><?= join(", ", $links); ?></td>
 					</tr>
 			<?php
 					}
@@ -154,14 +154,14 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 			{{{<ifdef code="ca_objects.CMR|ca_objects.CMV|ca_objects.DCMR">
 				<tr>
 					<td>Committee Action:</td>
-					<td><ifdef code="ca_objects.CMR">^ca_objects.CMR </ifdef><ifdef code="ca_objects.CMV"> ^ca_objects.CMV </ifdef><ifdef code="ca_objects.DCMR">^ca_objects.DCMR</ifdef></td>
+					<td><ifdef code="ca_objects.CMR">^ca_objects.CMR <ifdef code="ca_objects.CMV">on </ifdef><ifdef code="ca_objects.CMV"> ^ca_objects.CMV </ifdef><ifdef code="ca_objects.DCMR">^ca_objects.DCMR</ifdef></td>
 				</tr>
 			</ifdef>}}}
 			
 			{{{<ifdef code="ca_objects.STAT|ca_objects.VOTE|ca_objects.DTSI">
 				<tr>
 					<td>City Council Action:</td>
-					<td><ifdef code="ca_objects.STAT">^ca_objects.STAT </ifdef><ifdef code="ca_objects.VOTE"> ^ca_objects.VOTE </ifdef><ifdef code="ca_objects.DTSI">^ca_objects.DTSI</ifdef></td>
+					<td><ifdef code="ca_objects.STAT">^ca_objects.STAT <ifdef code="ca_objects.VOTE">on </ifdef></ifdef><ifdef code="ca_objects.VOTE"> ^ca_objects.VOTE </ifdef><ifdef code="ca_objects.DTSI">^ca_objects.DTSI</ifdef></td>
 				</tr>
 			</ifdef>}}}
 			{{{<ifdef code="ca_objects.DTMY">
