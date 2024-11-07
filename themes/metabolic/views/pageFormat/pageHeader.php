@@ -105,6 +105,6 @@ if($this->request->isLoggedIn()){
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
-		print "<div class='container-fluid pt-4'>";
+		print "<div class='container-fluid pt-5'>";
 	}
 ?>
