@@ -47,80 +47,53 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
-	<p class="fs-3">Name: {{{^ca_entities.preferred_labels}}}</p>
+	<H3>{{{^ca_entities.preferred_labels}}}</H3>
 
+<table class="record table table-striped table-responsive">
+    <tbody>
 	{{{<ifdef code="ca_entities.comm_date">
 		<tr>
-			<td>Committee dates:</td>
+			<td>Dates:</td>
 			<td>^ca_entities.comm_date</td>
 		</tr>
-		<br><br>
 	</ifdef>}}}
-
-	{{{<ifdef code="ca_entities.CHR">
-		<tr>
-			<td>Committee Chairperson:</td>
-			<td>^ca_entities.CHR</td>
-		</tr>
-		<br><br>
-	</ifdef>}}}
-
-	{{{<ifdef code="ca_entities.VCHR">
-		<tr>
-			<td>Committee vice chairperson:</td>
-			<td>^ca_entities.VCHR</td>
-		</tr>
-		<br><br>
-	</ifdef>}}}
-
 	{{{<ifdef code="ca_entities.SCOP">
 		<tr>
 			<td>Scope:</td>
 			<td>^ca_entities.SCOP</td>
 		</tr>
-		<br><br>
+	</ifdef>}}}
+
+	{{{<ifdef code="ca_entities.CHR">
+		<tr>
+			<td>Chair:</td>
+			<td>^ca_entities.CHR</td>
+		</tr>
+	</ifdef>}}}
+
+	{{{<ifdef code="ca_entities.VCHR">
+		<tr>
+			<td>Vice-Chair:</td>
+			<td>^ca_entities.VCHR</td>
+		</tr>
 	</ifdef>}}}
 
 	{{{<ifdef code="ca_entities.MEM">
 		<tr>
-			<td>Committee members:</td>
+			<td>Members:</td>
 			<td>^ca_entities.MEM</td>
 		</tr>
-		<br><br>
 	</ifdef>}}}
 
 	{{{<ifdef code="ca_entities.AUTH">
 		<tr>
-			<td>Authority:</td>
+			<td>Established by:</td>
 			<td>^ca_entities.AUTH</td>
 		</tr>
-		<br><br>
-	</ifdef>}}}
-
-	{{{<ifdef code="ca_entities.DATC">
-		<tr>
-			<td>Document creation date :</td>
-			<td>^ca_entities.DATC</td>
-		</tr>
-		<br><br>
-	</ifdef>}}}
-
-	{{{<ifdef code="ca_entities.DATM">
-		<tr>
-			<td>Document modification date:</td>
-			<td>^ca_entities.DATM</td>
-		</tr>
-		<br><br>
-	</ifdef>}}}
-
-	{{{<ifdef code="ca_entities.comm_date">
-		<tr>
-			<td>Committee dates:</td>
-			<td>^ca_entities.comm_date</td>
-		</tr>
-		<br><br>
-	</ifdef>}}}
-
+	</ifdef>}}}	
+</tbody>
+</table>
+<!--
 	{{{<ifcount code="ca_objects" min="1" restrictToTypes="agenda">
 		<dt>
 			<ifcount code="ca_objects" min="1" max="1"><?= _t('Related Agenda'); ?></ifcount>
@@ -183,7 +156,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<unit relativeTo="ca_objects" delimiter="<br>"><dd><l>^ca_objects.preferred_labels</l> (^relationship_typename)</dd></unit>
 		<br>
 	</ifcount>}}}
-
+-->
   <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
 
 </div>

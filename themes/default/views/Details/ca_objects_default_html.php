@@ -34,10 +34,13 @@ $comments_enabled = $this->getVar("commentsEnabled");
 $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
 $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
-$id =				$t_object->get('ca_objects.object_id');
+$id =				$t_object->getPrimaryKey();
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
 $media_options = $this->getVar('media_options') ?? [];
+
+$lightboxes = $this->getVar('lightboxes') ?? [];
+$in_lightboxes = $this->getVar('inLightboxes') ?? [];
 
 $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
@@ -83,7 +86,8 @@ if($show_nav){
 				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
 <?php
 				}
-?>
+?>				
+				<?= $this->render('Details/lightbox_list_html.php'); ?>
 			</div>
 		</div>
 	</div>
@@ -93,7 +97,7 @@ if($show_nav){
 
 	<div class="row">
 		<div class="col-md-6">
-				{{{media_viewer}}}
+			{{{media_viewer}}}
 		</div>
 		<div class="col-md-6">
 			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->

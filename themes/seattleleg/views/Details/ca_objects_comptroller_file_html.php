@@ -39,8 +39,8 @@ $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || 
 $map_options = $this->getVar('mapOptions') ?? [];
 
 $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
-
 ?>
+
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
@@ -49,14 +49,12 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
-  <h2 class="record-number">
-		<?= $type_idno; ?> {{{ca_objects.CFN}}}
-	</h2>
+  <h3 class="record-number"><?= $type_idno; ?> {{{ca_objects.CFN}}}</h3>
 
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Title</span></th>
+        <th colspan="2"><H4>Title</H4></th>
       </tr>
       <tr>
         <td class="empty"></td>
@@ -72,7 +70,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Description and Background</span></th>
+        <th colspan="2"><H4>Description and Background</H4></th>
       </tr>
 
 			{{{<ifdef code="ca_objects.STAT">
@@ -84,7 +82,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.index")){
-					if($links = caGetBrowseLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Index Terms:'); ?></td>
@@ -94,19 +92,24 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 					}
 				}
 			?>
-
+			{{{<ifdef code="ca_objects.REF">
+				<tr>
+					<td>References:</td>
+					<td>^ca_objects.REF</td>
+				</tr>
+			</ifdef>}}}
     </tbody>
   </table>
 
   <table class="record table table-striped table-responsive">
     <tbody>
       <tr>
-        <th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Legislative History</span></th>
+        <th colspan="2"><H4>Legislative History</H4></th>
       </tr>
 
 			<?php
 				if($t_object->get("ca_objects.SPON")){
-					if($links = caGetBrowseLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Sponsor:'); ?></td>
@@ -133,7 +136,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.COMM")){
-					if($comm = caGetBrowseLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
+					if($comm = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Committee Referral:'); ?></td>
@@ -157,16 +160,16 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 					<td>^ca_objects.DTF</td>
 				</tr>
 			</ifdef>}}}
-
     </tbody>
   </table>
 
-
+<?= $this->render("Details/attachments_html.php"); ?>
+	
 	{{{<ifdef code="ca_objects.TX">
 		<table class="record table table-striped table-responsive">
 			<tbody>
 				<tr>
-					<th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Text</span></th>
+					<th colspan="2"><H4>Text</H4></th>
 				</tr>
 				<tr>
 					<td class="empty"></td>
@@ -181,27 +184,9 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 	</ifdef>}}}
 
 	{{{<ifnotdef code="ca_objects.TX">
-		<em>No text for this document is available online. You may view this document at
-			<a href="http://www.seattle.gov/cityclerk/legislation-and-research/research-assistance">the Office of the City Clerk</a>.	If you are unable to visit the Clerk's Office, you may request a copy or scan be made for you by Clerk staff.	Scans and copies provided by the Office of the City Clerk are subject to <a href="http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services">copy fees</a>, and the timing of service
-			is dependent on the availability of staff.
-		</em>
+		<?php print $this->getVar("detail_text_not_online"); ?>
 	<ifnotdef/>}}}
 
-	{{{<ifdef code="ca_object_representations.media.small">
-		<unit filterNonPrimaryRepresentations="0">
-			<table class="record table table-striped table-responsive">
-				<tbody>
-					<tr><th colspan="2"><span style="font-size: 23px; margin: 5px 0 0;">Attachments</span></th></tr>
-					<tr>
-						<td class="empty"></td>
-						<td>
-							<a href="^ca_object_representations.URL" target="_blank">^ca_object_representations.media.small</a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</unit>
-	</ifdef>}}}
 	
   <hr>
 

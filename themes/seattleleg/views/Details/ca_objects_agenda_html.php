@@ -46,22 +46,14 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <div id="detail">
 
 	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
-
-	{{{<ifdef code="ca_objects.PDFLNK">
-		<p>
-			<a href="ca_objects.PDFLNK" target="_blank">
-				<img src="http://clerk.seattle.gov/public/img/pdf.gif" height="40" alt="PDF">
-				Printable Version of this Agenda
-			</a>
-		</p>
-		<hr>
-	<ifdef/>}}}
+	<?= $this->render("Details/attachments_html.php"); ?>
 
 
 	{{{<ifdef code="ca_objects.TX">
 	  ^ca_objects.TX
 	<ifdef/>}}}
-
+	
+	
   <hr>
 
   <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>

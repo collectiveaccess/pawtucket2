@@ -340,6 +340,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$this->BUNDLES['ca_user_groups'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Group access'));
 		$this->BUNDLES['ca_set_items'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Set items'));
 		
+		$this->BUNDLES['_itemCount'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Number of items in set'));
+		
 		$this->BUNDLES['hierarchy_navigation'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Hierarchy navigation'));
 		$this->BUNDLES['hierarchy_location'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Location in hierarchy'));
 	}
@@ -1788,7 +1790,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 */
 	public function getItemsAsSearchResult($options=null) {
 		if(!$this->isLoaded()) { return null; }
-		$ids = $this->getItems(['idsOnly' => true]);
+		$ids = $this->getItems(array_merge($options, ['sort' => null, 'sortDirection' => null, 'idsOnly' => true]));
 
 		return caMakeSearchResult(Datamodel::getTableName($this->get('ca_sets.table_num')), $ids, $options);
 	}
@@ -1822,6 +1824,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * 			template =
 	 *			templateDescription = 
 	 *			item_ids = array of set item_ids to limit results to -> used by getPrimaryItemsFromSets so don't have to replicate all the functionality in this function
+	 *			class = CSS class to apply to representation tags. [Default is null]
 	 *
 	 * @return array An array of items. The format varies depending upon the options set. If returnRowIdsOnly or returnItemIdsOnly are set then the returned array is a 
 	 *			simple list of ids. The full return array is key'ed on ca_set_items.item_id and then on locale_id. The values are arrays with keys set to a number of fields including:
@@ -1842,6 +1845,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$o_db = $this->getDb();
 		
 		$sort = caGetOption('sort', $pa_options, null);
+		$class = caGetOption('class', $pa_options, null);
 		
 		$t_rel_label_table = null;
 		if (!($t_rel_table = Datamodel::getInstanceByTableNum($this->get('table_num'), true))) { return null; }
@@ -2030,7 +2034,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 					$vs_alt_text = array_shift($va_alt_tags);
 				}
 				if (isset($pa_options['thumbnailVersion'])) {
-					$va_row['representation_tag'] = $qr_res->getMediaTag('media', $pa_options['thumbnailVersion'], array("alt" => $vs_alt_text));
+					$va_row['representation_tag'] = $qr_res->getMediaTag('media', $pa_options['thumbnailVersion'], ["class" => $class, "alt" => $vs_alt_text]);
 					$va_row['representation_url'] = $qr_res->getMediaUrl('media', $pa_options['thumbnailVersion']);
 					$va_row['representation_path'] = $qr_res->getMediaPath('media', $pa_options['thumbnailVersion']);
 					$va_row['representation_width'] = $qr_res->getMediaInfo('media',  $pa_options['thumbnailVersion'], 'WIDTH');
@@ -2040,7 +2044,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				
 				if (isset($pa_options['thumbnailVersions']) && is_array($pa_options['thumbnailVersions'])) {
 					foreach($pa_options['thumbnailVersions'] as $vs_version) {
-						$va_row['representation_tag_'.$vs_version] = $qr_res->getMediaTag('media', $vs_version, array("alt" => $vs_alt_text));
+						$va_row['representation_tag_'.$vs_version] = $qr_res->getMediaTag('media', $vs_version, ["class" => $class, "alt" => $vs_alt_text]);
 						if(!defined('__CA_IS_SERVICE_REQUEST__')) {
 							global $g_request;
 							$va_row['representation_tag_'.$vs_version.'_as_link'] = caDetailLink($g_request, $qr_res->getMediaTag('media', $vs_version, array("alt" => $vs_alt_text)), '', $t_rel_table->tableName(), $qr_res->get("ca_set_items.row_id"));
@@ -2141,7 +2145,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 */
 	public function getItemCount($pa_options=null) {
 		$vn_user_id = isset($pa_options['user_id']) ? (int)$pa_options['user_id'] : null;
-		if(!($vn_set_id = $this->getPrimaryKey())) { return null; }
+		$vn_set_id = caGetOption('set_id', $pa_options, null);
+		if(!$vn_set_id && !($vn_set_id = $this->getPrimaryKey())) { return null; }
 		if ($vn_user_id && !$this->haveAccessToSet($vn_user_id, __CA_SET_READ_ACCESS__)) { return 0; }
 		
 		$o_db = $this->getDb();
@@ -2641,7 +2646,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$pa_public_access = array_map(function($v) { return (int)$v; }, $pa_public_access);
 		
 		if($pn_user_id){
-			$va_extra_joins = array();
 			$va_sql_wheres = array("(cs.deleted = 0)");
 			$va_sql_params = array();
 			$o_db = $this->getDb();
@@ -2755,7 +2759,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 									INNER JOIN ca_users AS cu ON cs.user_id = cu.user_id
 									INNER JOIN ca_set_labels AS csl ON csl.set_id = cs.set_id
 									LEFT JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
-									".join("\n", $va_extra_joins)."
 									".(sizeof($va_sql_wheres) ? "WHERE " : "")." ".join(" AND ", $va_sql_wheres)."
 									{$sort_sql}
 									", $va_sql_params);
@@ -2988,7 +2991,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		}
 
 		// Check item level restrictions
-		if ((bool)$this->getAppConfig()->get('perform_item_level_access_checking') && $this->getPrimaryKey()) {
+		if (caACLIsEnabled($this) && $this->getPrimaryKey()) {
 			$vn_item_access = $this->checkACLAccessForUser($po_request->user);
 			if ($vn_item_access < __CA_ACL_EDIT_ACCESS__) {
 				return false;
@@ -3369,4 +3372,17 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		return null;
 	}
 	# ---------------------------------------------------------------
+	/**
+	 *
+	 */
+	public function renderBundleForDisplay($bundle_name, $row_id, $values, $options=null) {
+		
+		switch($bundle_name) {
+			case '_itemCount':
+				return $this->getItemCount(['set_id' => $row_id]);
+				break;
+		}
+		return null;
+	}
+	# ------------------------------------------------------
 }

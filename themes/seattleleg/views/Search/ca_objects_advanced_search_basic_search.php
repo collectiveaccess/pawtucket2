@@ -1,6 +1,7 @@
 <div class="pe-lg-4">
 <?php
-	$va_browse_info = $this->getVar("browseInfo");
+	$va_search_info = $this->getVar("searchInfo");
+	$table = $va_search_info["table"];
 	$action = strToLower($this->request->getActionExtra());	// form type (Eg. "combined")
 
 	$page_title;
@@ -9,92 +10,40 @@
 	switch($action) {
 		case 'combined':
 			$page_title = 'Combined Legislative Records Search';
-			$description = "
-				<p class='mt-4'>Use this page to search council bills, ordinances, resolutions and Clerk/Comptroller Files. See individual database pages at left for details of the scope of each collection. For narrower results or advanced searching, you may wish to search the databases separately.</p>
-			";
+			$description = $this->getVar("combined_search_description");
 		break;
 		case 'bills':
 			$page_title = 'City Council Bills/Ordinances';
-			$description = "
-					<p>
-						This database contains basic information about <a href='http://www.seattle.gov/cityclerk/agendas-and-legislative-resources/legislative-process/legislative-glossary'>council bills and ordinances</a> that have been <a href='http://www.seattle.gov/cityclerk/agendas-and-legislative-resources/legislative-process/how-a-bill-becomes-a-law'>acted on</a> by the <a href='http://www.seattle.gov/council'>Seattle City Council</a> since <a href='http://www.seattle.gov/cityarchives/seattle-facts/quick-city-info#incorporationdate'>1869</a>. New items are added within 30 days of Council action; items under consideration by Council are available in our <a href='http://seattle.legistar.com/'>Legislative Information Center</a>.
-					</p>
-					<p>
-						Records for items introduced in 1996 or later include full text (plain text). Scans of earlier items have been posted if we have them; if they are not posted, the documents can be reviewed on <a href='https://www.nedcc.org/free-resources/preservation-leaflets/6.-reformatting/6.1-microfilm-and-microfiche'>microfiche</a> in our research room or scanned on request (<a href='http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services'>copy fees may apply</a>). Scans of signed legislation are also posted for items passed from 2009 forward.
-					</p>
-			";
+			$description = $this->getVar("council_bills_ordinances_search_description");
 		break;	
 		case 'resolutions':
 			$page_title = 'City Council Resolutions';
-			$description = "
-					<p>This database contains basic information about <a href='http://www.seattle.gov/cityclerk/agendas-and-legislative-resources/legislative-process/legislative-glossary'>resolutions</a> that have been <a href='http://www.seattle.gov/cityclerk/agendas-and-legislative-resources/legislative-process/how-a-bill-becomes-a-law'>acted on</a> by the <a href='http://www.seattle.gov/council'>Seattle City Council</a> since 1894. New items are added within 30 days of Council action; items under consideration by Council are available in our <a href='http://seattle.legistar.com/'>Legislative Information Center</a>.</p>
-					<p>Records for items introduced in 1996 or later include full text (plain text). Scans of earlier items have been posted if we have them; if they are not posted, the documents can be reviewed on <a href='https://www.nedcc.org/free-resources/preservation-leaflets/6.-reformatting/6.1-microfilm-and-microfiche'>microfiche</a> in our research room or scanned on request (<a href='http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services'>copy fees may apply</a>). Scans of signed legislation are also posted for items passed from 2009 forward.</p>
-			";
+			$description = $this->getVar("resolutions_search_description");
 		break;	
 		case 'clerk':
 			$page_title = 'Comptroller/Clerk Files Index';
-			$description = "
-					<p>This database contains basic information about documents that have been filed with the Office of the City Clerk since 1891 and added as numbered entries to the Clerk File (known as the Comptroller File until <a href='http://www.seattle.gov/cityclerk/about/historical-perspective'>1992</a>). Some are items that have been <a href='http://www.seattle.gov/cityclerk/agendas-and-legislative-resources/legislative-process/how-a-bill-becomes-a-law'>acted on</a> by the <a href='http://www.seattle.gov/council'>Seattle City Council</a>; others were filed due to legal requirements or City business practices.  New items are added within a month of Council action; items under consideration by Council are available in our <a href='http://seattle.legistar.com/'>Legislative Information Center</a>.</p>
-
-					<p>Types of documents in this collection include:</p>
-
-					<ul>
-						<li>Reports</li>
-						<li>Appointments to City boards and commissions (before 2015)</li>
-						<li>Appointments of City officials</li>
-						<li>Rules</li>
-						<li>Agreements (interlocal and interdepartmental)</li>
-						<li>Initiatives, referenda, charter amendment proposals</li>
-						<li>Department responses to Statements of Legislative Intent</li>
-					</ul>
-
-					<p>Records for select document types include full text (plain text). Scans of earlier items have been posted if we have them; if they are not posted, the documents can be reviewed on <a href='https://www.nedcc.org/free-resources/preservation-leaflets/6.-reformatting/6.1-microfilm-and-microfiche'>microfiche</a> in our research room or scanned on request (<a href='http://www.seattle.gov/cityclerk/city-clerk-services/fees-for-materials-and-services'>copy fees may apply</a>).</p>
-			";
+			$description = $this->getVar("comptroller_clerk_files_search_description");
 		break;
 		case 'agenda':
 			$page_title = 'City Council Agendas';
-			$description = "
-					<p>This database contains plain text of published agendas for City Council and committee meetings held from 2002 to 30 days ago. New items are added within a month of the meeting taking place.
-					</p>
-
-					<p>Agendas available here are generally the same as the published agenda that was circulated prior to a meeting. Actual proceedings at a meeting may differ from the published agenda, as agendas are subject to amendment.
-					</p>
-
-					<p>Published agendas for upcoming meetings are available from the Meetings section of our 
-						<a href='http://seattle.legistar.com/Calendar.aspx'>Legislative Information Center</a>.
-					</p>
-
-					<p>Some earlier agendas (currently 1964-1991) are available on the Seattle Municipal Archives 	
-						<a href='http://archives.seattle.gov/digital-collections/index.php/Detail/collections/801'>Digital Collections website</a>.
-					</p>
-			";
+			$description = $this->getVar("agendas_search_description");
 		break;
 		case 'minutes':
 			$page_title = 'City Council Minutes';
-			$description = "
-					<p>This database contains plain text of Seattle City Council meeting minutes (also known as the Journal of Proceedings of the Seattle City Council) from 2002 to present. New items are added within 30 days of being adopted.</p>
-					
-					<p>More recent minutes are available in our <a href='http://seattle.legistar.com/Calendar.aspx'>Legislative Information Center</a>.</p>
-
-					<p>Minutes from 1869 through 2001 are available in our research room. <a href='http://archives.seattle.gov/digital-collections/index.php/Search/objects/search/collection%3A1801-12'>Selected early minutes</a> are available online. For copies of signed minutes, please <a href='mailto:cityclerk@seattle.gov'>contact us</a>.</p>
-			";
+			$description = $this->getVar("minutes_search_description");
 		break;
 		case 'committees':
 			$page_title = 'City Council Committee History';
-			$description = "
-					<p>This database contains descriptions, membership information, and dates of existence for Seattle City Council committees from 1946 to the present.</p>
-			";
+			$description = $this->getVar("committee_search_description");
 		break;
 		case 'meetings':
 			$page_title = 'City Council Meeting History';
-			$description = "
-					<p>This database contains descriptions, membership information, and dates of existence for Seattle City Council committees from 1946 to the present.</p>
-			";
+			$description = $this->getVar("meeting_search_description");
 		break;
 	}	
 ?>
 
-	<h1 class="pageTitle"><?= $page_title; ?></h1><br>
+	<h2 class="pageTitle"><?= $page_title; ?></h2><br>
 
 	<a class="description-btn collapseControl" data-bs-toggle="collapse" href="#description" role="button" aria-expanded="true" aria-controls="description">Description <i class="bi bi-caret-down-fill"></i></a>
 
@@ -107,16 +56,16 @@
 			case 'bills':
 ?>
 			<div class="well">
-				<h4>Retrieve Council Bill or Ordinance by Number</h4><br>
+				<h3 class="fs-4 mb-4">Retrieve Council Bill or Ordinance by Number</h3>
 				<div class="row">
 					<div class="col-6">
-						<label for="s3" class="control-label">Council Bill No.</label>
-						<?= $this->formElement('ca_objects.CBN', ['label' => '', 'description' => _t("")]); ?>
+						<label for="ca_objects_CBN" class="control-label">Council Bill No.</label>
+						<?= $this->formElement('ca_objects.CBN'); ?>
 					</div>
 					<div class="col-6">
-						<label for="s4" class="control-label">Ordinance No.</label>
+						<label for="ca_objects_ORDN" class="control-label">Ordinance No.</label>
 						
-						<?= $this->formElement('ca_objects.ORDN', ['label' => '', 'description' => _t("")]); ?>
+						<?= $this->formElement('ca_objects.ORDN'); ?>
 					</div>
 				</div>
 				<div class="row mt-3">
@@ -130,9 +79,9 @@
 			case 'resolutions':
 	?>
 			<div class="well">
-				<h4>Retrieve Resolution by Number</h4><br>
-						<label for="s3" class="control-label">Resolution No.</label>
-						<?= $this->formElement('ca_objects.RESN', ['size' => "70px", 'label' => '', 'description' => _t("")]); ?>
+				<h3 class="fs-4 mb-4">Retrieve Resolution by Number</h3>
+						<label for="ca_objects_RESN" class="control-label">Resolution No.</label>
+						<?= $this->formElement('ca_objects.RESN'); ?>
 				<div class="mt-3">
 					<input type="submit" value="Go" class="btn btn-primary">
 				</div>
@@ -142,14 +91,14 @@
 			case 'clerk':
 	?>
 			<div class="well">
-				<h4>Retrieve File by Number</h4><br>
+				<h3 class="fs-4 mb-4">Retrieve File by Number</h3>
 					<div class="row">
 						<div class="col-sm-6">
-							<label for="s3" class="control-label">File No.</label><br/>
-							<?= $this->formElement('ca_objects.CFN', ['size' => "50px", 'label' => '', 'description' => _t("")]); ?>
+							<label for="ca_objects_CFN" class="control-label">File No.</label><br/>
+							<?= $this->formElement('ca_objects.CFN'); ?>
 						</div>
 						<div class="col-sm-6">
-							<label for="appointment" class="control-label">Appointment?</label><br/>
+							<label for="ca_objects_appointment" class="control-label">Appointment?</label><br/>
 							<?= $this->formElement('ca_objects.appointment', ['class' => 'form-select']); ?>
 						</div>
 					</div>
@@ -174,12 +123,12 @@
 
 	<div class="well">
 
-		<h4>Basic Search</h4><br>
+		<h3 class="fs-4 mb-4">Basic Search</h3>
 
 		<div class="basic-search">
 			<div class="mb-3">
-				<label class="control-label me-1">Terms Anywhere:</label>
-				<?= $this->formElement('_fulltext', ['size' => 60, 'label' => '', 'description' => _t("All fields; includes full text where available")]); ?>
+				<label for="adv-_fulltext" class="control-label me-1">Terms Anywhere:</label>
+				<?= $this->formElement('_fulltext', ['label' => '', 'description' => _t("All fields; includes full text where available")]); ?>
 			</div>
 
 	<?php
@@ -191,8 +140,8 @@
 	?>
 
 			<div class="mb-3">
-				<label class="control-label me-1">Terms in Title:</label>
-				<?= $this->formElement('ca_objects.preferred_labels', ['size' => 60, 'label' => '', 'description' => _t("Include text only within the title")]); ?>
+				<label for="adv-ca_objects_preferred_labels" class="control-label me-1">Terms in Title:</label>
+				<?= $this->formElement('ca_objects.preferred_labels', ['label' => '', 'description' => _t("Include text only within the title")]); ?>
 			</div>
 
 	<?php
@@ -205,12 +154,11 @@
 		<hr class="advanced-separator">
 		
 
-		<h4>Additional Options</h4><br>
+		<h3 class="fs-4 mb-4">Additional Options</h3>
 		<div class="advanced-search">
 
 			<div class="mb-3" id="filterdate">
 				<!-- Change description text for each search type -->
-				<label class="control-label d-block">Date:</label>
 			
 <?php
 				switch($action) {
@@ -235,32 +183,52 @@
 							$vs_desc = "Searches beginning and ending dates.";
 					break;
 				}
-				print $this->formElement('date', ['label' => 'Date!!!', 'description' => $vs_desc]);
+				switch($action) {
+					case 'committees':
+						# --- entities
+						print '<label for="ca_entities_comm_date" class="control-label d-block">Date:</label>';
+						print $this->formElement('ca_entities.comm_date', ['description' => $vs_desc]);
+					break;
+					# ---------
+					case 'meetings':
+						# --- occ
+						
+						print '<label for="ca_occurrences_DATE" class="control-label d-block">Date:</label>';
+						print $this->formElement('ca_occurrences.DATE', ['description' => $vs_desc]);
+					break;
+					# ---------
+					default:
+						# --- use access point that searches across various date fields for objects
+						print '<label for="'.$table.'_DATE" class="control-label d-block">Date:</label>';
+						print $this->formElement('date_combined', ['description' => $vs_desc]);
+					break;
+					# ---------
+				}
 						
 ?>
 			</div>
 <?php
-		if(!in_array($action, array("agenda", "minutes", "meetings"))){
+		if(!in_array($action, array("agenda", "minutes", "meetings", "committees"))){
 ?>
 			<div class="mb-3" id="filtersponsor">
-				<label class="control-label">Sponsor:</label>
-				<?= $this->formElement('SPON', ['label' => '', 'description' => _t("Search the sponsor of council bills, ordinances, resolutions, comptroller files, and cleark files.")]); ?>
+				<label class="control-label" for="ca_objects_SPON">Sponsor:</label>
+				<?= $this->formElement('ca_objects.SPON', ['label' => '', 'description' => _t("Search the sponsor of council bills, ordinances, resolutions, comptroller files, and cleark files.")]); ?>
 			</div>
 <?php
 		}
-		if(!in_array($action, array("meetings"))){
+		if(!in_array($action, array("meetings", "committees"))){
 ?>
 			<div class="mb-3" id="filtersponsor">
-				<label class="control-label">Committee:</label>
-				<?= $this->formElement('COMM', ['size' => "70px", 'label' => '', 'description' => _t("Enter committee name.")]); ?>
+				<label class="control-label" for="ca_objects_COMM">Committee:</label>
+				<?= $this->formElement('ca_objects.COMM', ['label' => '', 'description' => _t("Enter committee name.")]); ?>
 			</div>
 <?php
 		}
-		if(!in_array($action, array("meetings", "agenda"))){
+		if(!in_array($action, array("meetings", "agenda", "committees"))){
 ?>
 			<div class="mb-3" id="filtersponsor">
-				<label class="control-label">Index Terms:</label>
-				<?= $this->formElement('index', ['' => '', 'description' => _t("Search by terms.")]); ?>
+				<label class="control-label" for="ca_objects_index">Index Terms:</label>
+				<?= $this->formElement('ca_objects.index', ['class' => 'form-select', 'label' => '', 'description' => _t("Search by terms.")]); ?>
 			</div>
 <?php
 		}
@@ -268,17 +236,17 @@
 		</div>
 
 		<div class="advanced-search">
-			<h4 class="expandable-controls">
+			<h3 class="fs-4 mb-4 expandable-controls">
 				<a data-bs-toggle="collapse" class="collapseControl"  href="#settings" role="button" aria-expanded="false" aria-controls="settings">Settings <i class="bi bi-caret-right-fill"></i></a>
 				
-			</h4>
+			</h3>
 
 			<div class="collapse mb-3" id="settings">
 
 				<div class="input-group">
 					<label for="l" class="col-12 control-label">Results Per Page:</label>
 					<div class="col-12">
-						<select name="l" class="form-select" aria-label="select">
+						<select id="l" name="l" class="form-select" aria-label="select">
 							<option value="5">5</option>
 							<option value="10">10</option>
 							<option value="25">25</option>
@@ -296,7 +264,6 @@
 		</div>
 
 		<div class="form-group" style="margin-top: 5px;">
-			<label class="col-sm-3 control-label"></label>
 			<div class="col-sm-9">
 				<input type="submit" value="Search" class="btn btn-primary">
 				<input type="reset" value="Reset" class="btn btn-sm btn-default" style="margin-left: 10px;" onclick="resetAdvForm();">
