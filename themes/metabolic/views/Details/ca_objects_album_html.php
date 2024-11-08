@@ -76,6 +76,7 @@ if($show_nav){
 	<div class="row justify-content-center">
 		<div class="col-sm-12 col-md-8">
 			<div class="btn-group" role="group" aria-label="Detail Controls">
+				<?= $this->render('Details/lightbox_list_html.php'); ?>
 <?php
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-0 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
