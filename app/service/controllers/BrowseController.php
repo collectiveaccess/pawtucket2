@@ -98,7 +98,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						$u = self::authenticate($args['jwt']);
+						$u = self::authenticate($args['jwt'], ['allowAnonymous' => true, 'throw' => false]);
 						
 						list($browse_info, $browse) = self::browseParams($args);
 						$facet = $args['facet'];
@@ -177,7 +177,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						$u = self::authenticate($args['jwt']);
+						$u = self::authenticate($args['jwt'], ['allowAnonymous' => true, 'throw' => false]);
 						
 						list($browse_info, $browse) = self::browseParams($args);
 						$user_access_values = caGetUserAccessValues();
@@ -286,7 +286,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						$u = self::authenticate($args['jwt']);
+						$u = self::authenticate($args['jwt'], ['allowAnonymous' => true, 'throw' => false]);
 						
 						list($browse_info, $browse) = self::browseParams($args);
 						
@@ -352,7 +352,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						$u = self::authenticate($args['jwt']);
+						$u = self::authenticate($args['jwt'], ['allowAnonymous' => true, 'throw' => false]);
 						
 						list($browse_info, $browse) = self::browseParams($args);
 						
@@ -416,7 +416,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						$u = self::authenticate($args['jwt']);
+						$u = self::authenticate($args['jwt'], ['allowAnonymous' => true, 'throw' => false]);
 						
 						list($browse_info, $browse) = self::browseParams($args, ['baseCriteria' => ['modified:"after '.date('Y-m-d').'"']]);
 						$facet = $args['facet'];
@@ -493,7 +493,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						$u = self::authenticate($args['jwt']);
+						$u = self::authenticate($args['jwt'], ['allowAnonymous' => true, 'throw' => false]);
 						$table = $args['table'] ?? 'ca_objects';
 						$browse = $args['browse'] ?? null;
 						
@@ -629,7 +629,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						$u = self::authenticate($args['jwt']);
+						$u = self::authenticate($args['jwt'], ['allowAnonymous' => true, 'throw' => false]);
 						
 						list($browse_info, $browse) = self::browseParams($args);
 					
@@ -702,7 +702,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						$u = self::authenticate($args['jwt']);
+						$u = self::authenticate($args['jwt'], ['allowAnonymous' => true, 'throw' => false]);
 						
 						list($browse_info, $browse) = self::browseParams($args);
 					
@@ -763,7 +763,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						$u = self::authenticate($args['jwt']);
+						$u = self::authenticate($args['jwt'], ['allowAnonymous' => true, 'throw' => false]);
 						$args['key'] = '';
 						list($browse_info, $browse) = self::browseParams($args);
 						
