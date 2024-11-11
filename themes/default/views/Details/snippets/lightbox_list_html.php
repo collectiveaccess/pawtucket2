@@ -20,8 +20,8 @@ if($lightboxes) {
 		$set_id = $lightboxes->getPrimaryKey();
 		$label = $lightboxes->get('ca_sets.preferred_labels.name');
 ?>
-			<li id="lightbox_<?= $set_id; ?>" hx-post="<?= caNavUrl($this->request, '*', '*', 'LightboxMembership', ['id' => $id, 'set_id' => $set_id]); ?>" hx-trigger="click" hx-target="#lightbox_link_<?= $set_id; ?>" hx-swap="innerHTML">
-				<div class="dropdown-item"><a href="#" id="lightbox_link_<?= $set_id; ?>"><?= $lightboxes->getWithTemplate(isset($in_lightboxes[$set_id]) ? $in_lightbox_template : $not_in_lightbox_template); ?></a>
+			<li id="lightbox_<?= $set_id; ?>">
+				<div class="dropdown-item"><a href="#" id="lightbox_link_<?= $set_id; ?>" hx-post="<?= caNavUrl($this->request, '*', '*', 'LightboxMembership', ['id' => $id, 'set_id' => $set_id]); ?>" hx-trigger="click" hx-target="#lightbox_link_<?= $set_id; ?>" hx-swap="innerHTML"><?= $lightboxes->getWithTemplate(isset($in_lightboxes[$set_id]) ? $in_lightbox_template : $not_in_lightbox_template); ?></a>
 				<?= caNavLink($this->request, '<i class="bi bi-folder-symlink"></i>', 'float-end', '', 'Lightbox', "Detail/{$set_id}", [], ["title" => _t("View Lightbox %1", $label), "aria-label" => _t("View Lightbox %1", $label)]); ?></div>
 			</li>		
 <?php
