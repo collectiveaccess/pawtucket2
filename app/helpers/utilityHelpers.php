@@ -4108,8 +4108,11 @@ function caFileIsIncludable($ps_file) {
 		$int = (int)($num / $pn_denom);
 		$num %= $pn_denom;
 
+		$display_units = $o_display_config->getAssoc('displayUnits');
+		$inch_dim = ($display_units['INCHES'] ?? 'in');
+		
 		if (!$num) {
-			return "{$int} in";
+			return "{$int} {$inch_dim}";
 		}
 
 		if ($pb_reduce) {
@@ -4177,7 +4180,7 @@ function caFileIsIncludable($ps_file) {
             $frac = "{$num}/{$pn_denom}";
         }
 
-        return ($int > 0) ? trim("{$int} {$frac} in") : trim("{$frac} in");
+        return ($int > 0) ? trim("{$int} {$frac} {$inch_dim}") : trim("{$frac} {$inch_dim}");
 	}
 	# ----------------------------------------
 	/**
