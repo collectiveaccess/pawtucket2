@@ -37,7 +37,7 @@
 			$description = $this->getVar("committee_search_description");
 		break;
 		case 'meetings':
-			$page_title = 'City Council Meeting History';
+			$page_title = 'City Council Meeting History and Agendas';
 			$description = $this->getVar("meeting_search_description");
 		break;
 	}	
