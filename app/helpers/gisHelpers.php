@@ -388,48 +388,61 @@ $g_states_by_country_list = array(
 
 # --------------------------------------------------------------------------------------------
 /**
- * Converts $ps_value from degrees minutes seconds format to decimal
- */
-function caGISminutesToSignedDecimal($ps_value){
-	$ps_value = trim($ps_value);
-	$vs_value = preg_replace('/[^0-9A-Za-z\.\-]+/', ' ', $ps_value);
-	
-	//if ($vs_value === $ps_value) { return $ps_value; }
-	list($vn_deg, $vn_min, $vn_sec, $vs_dir) = explode(' ',$vs_value);
-	$vn_pos = ($vn_deg < 0) ? -1:1;
-	if (in_array(strtoupper($vs_dir), array('S', 'W'))) { $vn_pos = -1; }
-	
-	$vn_deg = abs(round($vn_deg,6));
-	$vn_min = abs(round($vn_min,6));
-	$vn_sec = abs(round($vn_sec,6));
-	return round($vn_deg+($vn_min/60)+($vn_sec/3600),6)*$vn_pos;
-}
-# --------------------------------------------------------------------------------------------
-/**
- * Converts $ps_value from decimal with N/S/E/W to signed decimal
- */
-function caGISDecimalToSignedDecimal($ps_value){
-	$ps_value = trim($ps_value);
-	list($vn_left_of_decimal, $vn_right_of_decimal, $vs_dir) = array_pad(preg_split('![\. ]{1}!',$ps_value), 3, null);
-	if (preg_match('!([A-Za-z]+)$!', $vn_right_of_decimal, $va_matches)) {
-		$vs_dir = $va_matches[1];
-		$vn_right_of_decimal = preg_replace('!([A-Za-z]+)$!', '', $vn_right_of_decimal);
-	}
-	$vn_pos = 1;
-	if (in_array(strtoupper($vs_dir), array('S', 'W'))) { $vn_pos = -1; }
-	
-	return floatval($vn_left_of_decimal.'.'.$vn_right_of_decimal) * $vn_pos;
-}
-# --------------------------------------------------------------------------------------------
-/**
- * Converts $ps_value from UTM format to decimal latitude and longitude
+ * Converts $value from degrees minutes seconds format to decimal
  *
- * @param string $ps_value The UTM expression in the format <zone><hemisphere> <easting> <northing>. Example:  17N 630084 4833438
+ * @param string $value
+ *
+ * @return float
+ */
+function caGISminutesToSignedDecimal(string $value) : float {
+	$deg = $min = $sec = 0;
+
+	$value = preg_replace('/[^0-9A-Za-z\.\-]+/', ' ', trim($value));
+	
+	list($deg, $min, $sec, $dir) = explode(' ', $value);
+	$deg = (float)$deg;
+	$min = (float)$min;
+	$sec = (float)$sec;
+	
+	$pos = ($deg < 0) ? -1 : 1;
+	if (in_array(strtoupper($dir), ['S', 'W'])) { $pos = -1; }
+
+	$deg = abs(round($deg, 6));
+	$min = abs(round($min, 6));
+	$sec = abs(round($sec, 6));
+	
+	return round($deg+($min/60)+($sec/3600), 6) * $pos;
+}
+# --------------------------------------------------------------------------------------------
+/**
+ * Converts $value from decimal with N/S/E/W to signed decimal
+ *
+ * @param string $value
+ *
+ * @return float
+ */
+function caGISDecimalToSignedDecimal(string $value) : float {
+	$value = trim($value);
+	list($left_of_decimal, $right_of_decimal, $dir) = array_pad(preg_split('![\. ]{1}!', $value), 3, null);
+	if (preg_match('!([A-Za-z]+)$!', $right_of_decimal, $matches)) {
+		$dir = $matches[1];
+		$right_of_decimal = preg_replace('!([A-Za-z]+)$!', '', $right_of_decimal);
+	}
+	$pos = 1;
+	if (in_array(strtoupper($dir), ['S', 'W'])) { $pos = -1; }
+	
+	return floatval($left_of_decimal.'.'.$right_of_decimal) * $pos;
+}
+# --------------------------------------------------------------------------------------------
+/**
+ * Converts $value from UTM format to decimal latitude and longitude
+ *
+ * @param string $value The UTM expression in the format <zone><hemisphere> <easting> <northing>. Example:  17N 630084 4833438
  * @return array Array with 'latitude' and 'longitude' keys and decimal values. Return null if value cannot be converted. 
  */
-function caGISUTMToSignedDecimals($ps_value){
-	$ps_value = trim($ps_value);
-	if(preg_match('!^([0-9]{1,2}[NSns]{1})[ ]+([0-9]{1,9})[ ]+([0-9]{1,9})$!', $ps_value, $va_matches)) {
+function caGISUTMToSignedDecimals($value){
+	$value = trim($value);
+	if(preg_match('!^([0-9]{1,2}[NSns]{1})[ ]+([0-9]{1,9})[ ]+([0-9]{1,9})$!', $value, $va_matches)) {
 		$o_gpoint = new gPoint();
 		$o_gpoint->setUTM($va_matches[2], $va_matches[3], $va_matches[1]);
 		$o_gpoint->convertTMtoLL();
@@ -439,23 +452,23 @@ function caGISUTMToSignedDecimals($ps_value){
 }
 # --------------------------------------------------------------------------------------------
 /**
- * Returns true if $ps_value is in degrees minutes seconds format
+ * Returns true if $value is in degrees minutes seconds format
  */ 
-function caGISisDMS($ps_value){
-	if(preg_match('/[^0-9A-Za-z\.\- ]+/', $ps_value)) {
+function caGISisDMS($value){
+	if(preg_match('/[^0-9A-Za-z\.\- ]+/', $value)) {
 		return true;
 	}
 	return false;
 }
 # --------------------------------------------------------------------------------------------
 /**
- * Returns true if $ps_value is in UTM format
+ * Returns true if $value is in UTM format
  *
- * @param string $ps_value The UTM expression in the format <zone><hemisphere> <easting> <northing>. Example:  17N 630084 4833438
+ * @param string $value The UTM expression in the format <zone><hemisphere> <easting> <northing>. Example:  17N 630084 4833438
  * @return bool True if expression is UTM.
  */ 
-function caGISisUTM($ps_value){
-	if(preg_match('/^[0-9]{1,2}[NS].[ ]+[0-9]{1,6}[ ]+[0-9]{1,6}$/', $ps_value)) {
+function caGISisUTM($value){
+	if(preg_match('/^[0-9]{1,2}[NS].[ ]+[0-9]{1,6}[ ]+[0-9]{1,6}$/', $value)) {
 		return true;
 	}
 	return false;
@@ -472,13 +485,13 @@ function caGISisUTM($ps_value){
  *		lat1,long1 ~ distance
  *			ex. 43.34,-74.23 ~ 5km
  */ 
-function caParseGISSearch($ps_value) {
-	$ps_value = preg_replace('![ ]*,[ ]*!', ',', $ps_value);
-	$ps_value = str_replace(" - ", " .. ", $ps_value);
-	$ps_value = str_replace(" to ", " .. ", $ps_value);
-	$ps_value = preg_replace('![^A-Za-z0-9,\.\-~ ]+!', '', $ps_value);
+function caParseGISSearch($value) {
+	$value = preg_replace('![ ]*,[ ]*!', ',', $value);
+	$value = str_replace(" - ", " .. ", $value);
+	$value = str_replace(" to ", " .. ", $value);
+	$value = preg_replace('![^A-Za-z0-9,\.\-~ ]+!', '', $value);
 	
-	$va_tokens = preg_split('![ ]+!', $ps_value);
+	$va_tokens = preg_split('![ ]+!', $value);
 	
 	$vn_lat1 = $vn_long1 = $vn_lat2 = $vn_long2 = null;
 	$vn_dist = null;
@@ -638,135 +651,22 @@ function caGetCountryList() {
 /**
  * Returns list of states, provinces or zones for the specified country code.
  *
- * @param string $ps_country The country code. If set to a false value the entire state list, with states listed by country code, is returned.
+ * @param string $country The country code. If set to a false value the entire state list, with states listed by country code, is returned.
  * @return array A list of state/province/zones for the specified country. An empty array will be returned if there are none defined for the specified country. Null will be returned if the country code is invalid.
  */
-function caGetStateList($ps_country=null) {
+function caGetStateList($country=null) {
 	global $g_states_by_country_list;
 	
-	if (!$ps_country) {
+	if (!$country) {
 		return $g_states_by_country_list;
 	}
-	if ($ps_country && !isset($g_states_by_country_list[$ps_country])) {
+	if ($country && !isset($g_states_by_country_list[$country])) {
 		return null;
 	}
-	if (is_array($g_states_by_country_list[$ps_country])) {
-		return $g_states_by_country_list[$ps_country];
+	if (is_array($g_states_by_country_list[$country])) {
+		return $g_states_by_country_list[$country];
 	}
 	
 	return array();
-}
-# --------------------------------------------------------------------------------------------
-/**
- *
- */
-function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=null) : ?array {
-	$tmp = explode('.', $bundle);
-	$t_georef_instance = Datamodel::getInstance($tmp[0], true);
-	$field_name = array_pop($tmp);
-	$container_field_name = array_pop($tmp);
-	
-	$chk_related_for_access = null;
-	if ($is_related = ($t_georef_instance && ($t_georef_instance->tableName() !== $data->tableName()))) {
-		if($t_georef_instance->hasField('access')) { $chk_related_for_access = $t_georef_instance->tableName().".access"; }
-	}
-	
-	if (is_subclass_of($data, 'BaseModel')) {
-		// Convert instance to search result
-		$data = caMakeSearchResult($data->tableName(), [$data->getPrimaryKey()]);
-	}
-	
-	if (is_subclass_of($data, 'SearchResult')) {
-		// If pulling coordinates from a related record (Eg. pulling coordinates from ca_places record related to ca_objects records)
-		// then then attempt here to shift the context from the subject to the relationship. If we leave context on subject
-		// then we're get labels for all places attached to a given object tagged on each coordinate, rather than having
-		// each label linked to its specific coordinate.
-					
-		$t_instance = $data->getResultTableInstance();
-		$table = $t_instance->tableName();
-		$pk = $t_instance->primaryKey();
-	   
-		if($is_related && is_array($path = Datamodel::getPath($t_georef_instance->tableName(), $data->tableName())) && (sizeof($path) === 3)) {
-			$path = array_keys($path);
-			
-			$rel_ids = [];
-			while($data->nextHit()) {
-				if(is_array($rel_ids_for_row = $data->get($path[1].".relation_id", ['returnAsArray' => true]))) {
-				   $rel_ids = array_merge($rel_ids, $rel_ids_for_row);
-				}
-			}
-			if (sizeof($rel_ids)) {
-				$data = caMakeSearchResult($path[1], $rel_ids);
-			}
-		}
-		
-		$access_values = null;
-		if (isset($options['checkAccess']) && is_array($options['checkAccess']) && sizeof($options['checkAccess'])) {
-			$access_values = $options['checkAccess'];
-		}
-		
-		$georef_list = [];
-		while($data->nextHit()) {
-			if (is_array($access_values) && !in_array($data->get($chk_related_for_access ? $chk_related_for_access : "{$table}.access"), $access_values)) {
-				continue;
-			}
-			if ($coordinates = $data->get($bundle, ['coordinates' => true, 'returnWithStructure' => true, 'returnAllLocales' => false])) {
-				$id = $data->get("{$table}.{$pk}");
-				
-				foreach($coordinates as $element_id => $coord_list) {
-					foreach($coord_list as $attribute_id => $geoname) {
-						if(isset($geoname[$field_name])) {
-							$coordinate = $geoname[$field_name];
-						} elseif(isset($geoname[$container_field_name])) {
-							$coordinate =  $geoname[$container_field_name];
-						} else {
-							$coordinate = $geoname;
-						}
-					
-						$label = $content = $ajax_content = null;
-						
-						if (strlen($info_template = caGetOption('infoTemplate', $options, null))) {
-							$info = caProcessTemplateForIDs($info_template, $table, [$id], []);
-						} else {
-							$info = '';
-						}
-						
-						$ajax_content = null; // @TODO
-									
-						$path_items = preg_split("/[:]/", $coordinate['path']);
-					
-						foreach($path_items as $path_item) {
-							$radius = $angle = null;
-							
-							$path = preg_split("/[;]/", $path_item);
-							if (sizeof($path) > 1) {
-								$coordinate_pairs = [];
-								foreach($path as $pair) {
-									$pair = explode(',', $pair);
-									$coordinate_pairs[] = ['latitude' => $pair[0], 'longitude' => $pair[1]];
-								}
-							   
-								$georef_list[] = ['coordinates' => $coordinate_pairs, 'info' => $info, 'ajaxContentUrl' => $ajax_content, 'ajaxContentID' => $id,  'group' => $group];
-							} else {
-								$coord = explode(',', $path[0]);
-								list($lng, $radius) = explode('~', $coord[1]);
-								if (!$radius) { list($lng, $angle) = explode('*', $coord[1]); }
-								
-								if($fuzz > 0) { $coord[0] = ''.round($coord[0], $fuzz); $lng = ''.round($lng, $fuzz); }
-						 
-								$d = ['latitude' => $coord[0], 'longitude' => $lng, 'info' => $info, 'ajaxContentUrl' => $ajax_content, 'ajaxContentID' => $id, 'group' => $group];
-								if ($radius) { $d['radius'] = $radius; }
-								if ($angle) { $d['angle'] = $angle; }
-							   $georef_list[] = $d;
-							}
-						}
-					}
-					$item_count++;
-				}
-			}
-		}	
-		return ['coordinates' => $georef_list];
-	}
-	return null;
 }
 # --------------------------------------------------------------------------------------------
