@@ -150,7 +150,7 @@ class LightboxController extends FindController {
 		$read_sets = $t_sets->getSetsForUser([
 			'tables' => $configured_tables, 
 			"user_id" => $this->request->getUserID(), 
-			"checkAccess" => $this->opa_access_values,
+			//"checkAccess" => $this->opa_access_values,
 			"access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, 
 			"parents_only" => true, 
 			'sort' => $sort, 
@@ -159,7 +159,7 @@ class LightboxController extends FindController {
 		$write_sets = $t_sets->getSetsForUser([
 			'tables' => $configured_tables, 
 			"user_id" => $this->request->getUserID(), 
-			"checkAccess" => $this->opa_access_values, 
+			//"checkAccess" => $this->opa_access_values, 
 			"parents_only" => true, 
 			'sort' => $sort, 
 			'sortDirection' => $sort_direction
@@ -228,7 +228,10 @@ class LightboxController extends FindController {
 		$this->view->setVar('current_sort', $current_sort_name);
 		$this->view->setVar('current_sort_direction', $current_sort_direction);
 	
-		$this->view->setVar('items', $qr = $t_set->getItemsAsSearchResult(['sort' => $current_sort, 'sortDirection' => $current_sort_direction, 'checkAccess' => $this->opa_access_values]));
+		$this->view->setVar('items', $qr = $t_set->getItemsAsSearchResult([
+			'sort' => $current_sort, 'sortDirection' => $current_sort_direction, 
+			//'checkAccess' => $this->opa_access_values
+		]));
 	
 		$max_result_count = 50;
 		$o_context->setResultList($qr->getPrimaryKeyValues($max_result_count));
