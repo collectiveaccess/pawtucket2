@@ -191,7 +191,8 @@ class DetailController extends FindController {
 		}
 		
 		$lightbox_conf = caGetLightboxConfig();
-		$lightboxes = caGetLightboxesForUser($this->request->getUserID(), $this->opa_access_values, ['tables' => [$this->ops_tablename]]);
+		//$lightboxes = caGetLightboxesForUser($this->request->getUserID(), $this->opa_access_values, ['tables' => [$this->ops_tablename]]);
+		$lightboxes = caGetLightboxesForUser($this->request->getUserID(), null, ['tables' => [$this->ops_tablename]]);
 		$this->view->setVar('lightboxes', ($lightboxes && ($lightboxes->numHits() > 0)) ? $lightboxes : null);
 		$this->view->setVar('inLightboxes', caGetLightboxesForItem($t_subject));
 		$this->view->setVar('lighboxListInLightboxTemplate', $lightbox_conf->get('in_lightbox_template'));
