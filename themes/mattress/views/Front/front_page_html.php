@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,17 +29,10 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- 
 ?>
-
-
-    <div class="container theme-showcase">
+<div class="container theme-showcase">
 <?php
-		print $this->render('Front/featured_items_html.php');
-		print $this->render('Front/home_text_html.php');
+	print $this->render('Front/featured_items_html.php');
+	print $this->render('Front/home_text_html.php');
 ?>    
-
-
-
-    </div> <!-- /container -->
+</div> <!-- /container -->

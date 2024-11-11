@@ -19,7 +19,6 @@
 				<li>Artworks – Searchable by name, date and type  </li>
 				<li>Exhibitions + Events – Searchable by date and type</li>
 			</ul>
-			<p style='padding-top:40px;'><small>powered by <a href='http://www.collectiveaccess.org' target='_blank'>CollectiveAccess</a></small></p>
 		</div>
 		<div class='homeLinks'>
 <?php
@@ -27,7 +26,6 @@
 			print "<div>".caNavLink($this->request, _t('Browse Artworks'), '', '', 'Browse', 'Collections')."</div>";
 			print "<div>".caNavLink($this->request, _t('Browse Exhibitions + Events'), '', '', 'Browse', 'Exhibitions')."</div>";
 			print "<div>".caNavLink($this->request, _t('Research'), '', '', 'Listing', 'collections')."</div>";			
-			print "<div>".caNavLink($this->request, _t('Contribute'), '', '', 'Browse', 'Artists')."</div>";
 ?>			
 		</div>
 	</div>
