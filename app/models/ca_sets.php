@@ -737,7 +737,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$va_sql_wheres[] = "(csl.name = ?)";
 			$va_sql_params[] = (string)$ps_set_name;
 		}
-		$va_sql_selects[] = 'cs.`rank`';
 		
 		if (!$pb_set_ids_only && !$pb_omit_counts) {
 			// get set item counts
@@ -2989,7 +2988,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		}
 
 		// Check item level restrictions
-		if ((bool)$this->getAppConfig()->get('perform_item_level_access_checking') && $this->getPrimaryKey()) {
+		if (caACLIsEnabled($this) && $this->getPrimaryKey()) {
 			$vn_item_access = $this->checkACLAccessForUser($po_request->user);
 			if ($vn_item_access < __CA_ACL_EDIT_ACCESS__) {
 				return false;

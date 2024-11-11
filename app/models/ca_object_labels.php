@@ -29,16 +29,11 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
- /**
-   *
-   */
 require_once(__CA_LIB_DIR__.'/BaseLabel.php');
 
-
 BaseModel::$s_ca_models_definitions['ca_object_labels'] = array(
- 	'NAME_SINGULAR' 	=> _t('object title'),
- 	'NAME_PLURAL' 		=> _t('object titles'),
+ 	'NAME_SINGULAR' 	=> _t('title'),
+ 	'NAME_PLURAL' 		=> _t('titles'),
  	'FIELDS' 			=> array(
  		'label_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_HIDDEN, 
