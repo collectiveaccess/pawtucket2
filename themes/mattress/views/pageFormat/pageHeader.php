@@ -6,7 +6,7 @@
 
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
-	<link rel="icon" href="<?php print caGetThemeGraphicURL($this->request, 'favicon.jpg'); ?>">
+	<link rel="icon" href="<?php print caGetThemeGraphicURL($this->request, 'favicon.png'); ?>">
 	<title><?php print $this->request->config->get('html_page_title'); ?></title>
 </head>
 <body>
