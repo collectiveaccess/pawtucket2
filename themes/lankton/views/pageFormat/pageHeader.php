@@ -78,6 +78,7 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+	<link rel="icon" href="<?php print caGetThemeGraphicURL($this->request, 'favicon.png'); ?>">
 </head>
 <body>
 	<div class="siteWrapper">
@@ -103,7 +104,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print "<a href='https://www.mattress.org' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo.svg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."</a>";
+				print "<a href='https://www.mattress.org' class='navbar-brand'>".caGetThemeGraphic($this->request, 'mflogo.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."</a>";
 ?>
 			</div>
 
