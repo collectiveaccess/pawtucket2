@@ -57,7 +57,7 @@
 <div>		
 	<div class="img-fluid">
 <?php
-			print caGetThemeGraphic($this->request, 'homeCollage3.jpg', array("alt" => "Collage of imagery from the TFANA collections"))
+			print caGetThemeGraphic($this->request, 'homeCollage2.jpg', array("alt" => "Collage of imagery from the TFANA collections"))
 ?>
 	</div>
 </div>
