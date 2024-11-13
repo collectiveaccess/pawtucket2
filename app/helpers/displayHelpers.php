@@ -4920,7 +4920,7 @@ function caRepresentationViewerHTMLBundles($po_request, $po_data, $pt_subject, $
 				['viewerWrapper' => 'viewerInline', 'context' => caGetOption('context', $pa_options, null), 'checkAccess' => caGetOption('checkAccess', $pa_options, null)]
 			).$vs_tool_bar.$vs_caption."</div></div>";
 
-			if (sizeof($va_reps) > 10) { break(2); }
+			//if (sizeof($va_reps) > 10) { break(2); }
 		}
 	}
 	return $va_reps;
