@@ -384,7 +384,7 @@ if($x){
 						</div>
 					</div>
 <?php
-					if($t_object->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
+					if((strToLower($t_object->get("ca_objects.hide_map", array("convertCodesToDisplayText" => true))) != "yes") && ($t_object->get("ca_places.georeference", array("checkAccess" => $va_access_values)))){
 						include("map_html.php");
 					}
 ?>
