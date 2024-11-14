@@ -11,8 +11,8 @@ $in_lightbox_template = $this->getVar('lighboxListInLightboxTemplate');
 if($lightboxes) {
 ?>
 	<div class="dropdown">
-	  <button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"  id="lightboxList" data-bs-toggle="dropdown" aria-expanded="false">
-		<?= _t('Lightboxes'); ?>
+	  <button type="button" class="btn btn-sm btn-white ps-0 pe-0 fw-medium"  id="lightboxList" data-bs-toggle="dropdown" aria-expanded="false">
+		<?= _t('Add to Lightbox'); ?> <i class="bi bi-caret-down-fill small"></i>
 	  </button>
 	  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 <?php
