@@ -1741,6 +1741,7 @@ a:hover .galleryIconPlaceholderWrapper .galleryIconPlaceholder, a.galleryIconAct
 	z-index:1;
 	overflow-y:auto;
 	overflow-x:hidden;
+	padding: 0px 15px 0px 15px;
 }
 #exploreSchoolListContainer{
 	z-index:10;
