@@ -73,39 +73,16 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 		</div>
 		<hr class="mb-0">
 	</div>
-<?php
-	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
-?>
-	<div class="row justify-content-center">
-		<div class="col-sm-12 col-md-8">
-			<div class="btn-group" role="group" aria-label="Detail Controls">
-<?php
-				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-0 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $id));
-				}
-				if($pdf_enabled) {
-					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_collections", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
-				}
-				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
-				}
-?>
+
+	{{{<ifdef code="ca_object_representations.media.large">
+		<div class="row justify-content-center mb-3">
+			<div class="col">
+				<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
 			</div>
 		</div>
-	</div>
-<?php
-	}
-?>
-{{{<ifdef code="ca_object_representations.media.large">
-	<div class="row justify-content-center mb-3">
-		<div class="col">
-			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
-		</div>
-	</div>
-</ifdef>}}}
-	<div class="row justify-content-center">
+	</ifdef>}}}
+
+	<div class="row justify-content-center mt-2">
 		<div class="col-sm-12 col-md-8">				
 			{{{<dl class="mb-0">
 				<ifdef code="ca_collections.parent_id">
@@ -154,18 +131,6 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 						}
 					}
 				?>
-
-				<!-- <?php
-					if($t_item->get("ca_collections.subject")){
-						if($subs = caGetBrowseLinks($t_item, 'ca_collections.subject', ['template' => '<l>^ca_collections.subject</l>', 'linkTemplate' => '^LINK'])) {
-				?>
-							<dt><?= _t('Themes'); ?></dt>
-							<dd><?= join(", ", $subs); ?></dd>
-				<?php
-						}
-					}
-				?> -->
-
 			</dl>}}}		
 		</div>
 	</div>
@@ -179,20 +144,20 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 ?>				
 
 
-{{{<ifcount code="ca_collections.subject" min="1">
-	<div class="row mt-5"><div class="col"><h1>Themes</h1></div></div>
-	<div class="row bg-light mb-5 pt-4">
-		<?php
-			if($t_item->get("ca_collections.subject")){
-				if($subs = caGetBrowseLinks($t_item, 'ca_collections.subject', ['template' => '<div class="col-sm-6 col-md-3 pb-4"><div class="bg-info text-center py-2 text-uppercase"><l class="text-decoration-none">^ca_collections.subject</l></div></div>', 'linkTemplate' => '^LINK'])) {
-		?>
-					<?= join("", $subs); ?>
-		<?php
+	{{{<ifcount code="ca_collections.subject" min="1">
+		<div class="row mt-5"><div class="col"><h1>Themes</h1></div></div>
+		<div class="row bg-light mb-5 pt-4">
+			<?php
+				if($t_item->get("ca_collections.subject")){
+					if($subs = caGetBrowseLinks($t_item, 'ca_collections.subject', ['template' => '<div class="col-sm-6 col-md-3 pb-4"><div class="bg-info text-center py-2 text-uppercase"><l class="text-decoration-none">^ca_collections.subject</l></div></div>', 'linkTemplate' => '^LINK'])) {
+			?>
+						<?= join("", $subs); ?>
+			<?php
+					}
 				}
-			}
-		?>
-	</div>
-</ifcount>}}}
+			?>
+		</div>
+	</ifcount>}}}
 
 	<?php		
 		$va_tmp_ids = array();

@@ -70,32 +70,8 @@ if($show_nav){
 		</div>
 		<hr class="mb-0">
 	</div>
-<?php
-	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
-?>
-	<div class="row justify-content-center">
-		<div class="col-sm-12 col-md-8">
-			<div class="btn-group" role="group" aria-label="Detail Controls">
-				<?= $this->render('Details/lightbox_list_html.php'); ?>
-<?php
-				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-0 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
-				}
-				if($pdf_enabled) {
-					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
-				}
-				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
-				}
-?>
-			</div>
-		</div>
-	</div>
-<?php
-	}
-?>
+
+	<?= $this->render('Details/snippets/detail_controls_html.php'); ?>
 
 	<div class="row justify-content-center">
 		<div class="col-sm-12 col-md-8">
