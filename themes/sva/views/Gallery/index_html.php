@@ -77,6 +77,8 @@
 			if($vn_set_id == $vn_featured_set_id){
 				continue;
 			}
+			$t_set->load($vn_set_id);
+			$presentation_type = $t_set->get("set_presentation_type", array("convertCodesToDisplayText" => true));
 			$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
 			print "<div class='col-sm-6 col-lg-4 d-flex'>";
 			$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 bg-white p-3 border-0 mb-4'><img src='".$va_first_item["representation_url"]."' class='".$vs_image_class."' alt=''>
@@ -88,7 +90,11 @@
 								<button class='btn btn-primary'>View <i class='bi bi-arrow-right small'></i></button>
 							</div>
 						</div>";
-			print caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id);
+			if($presentation_type == "Result lists"){
+				print caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "Search", "objects", array("search" => "ca_sets.set_id:".$vn_set_id));
+			}else{
+				print caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id);
+			}
 			print "</div>";
 		}
 ?>
