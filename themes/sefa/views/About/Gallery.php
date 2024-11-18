@@ -6,10 +6,6 @@
 		<?php print caGetThemeGraphic($this->request, 'SEFA-HUDSON.jpg', array('alt' => 'Exterior of Susan Eley Fine Art Hudson NY')); ?>
 		<small>Hudson, NY</small>
 	</div>
-	<div class="col-sm-6 fullWidthImg">
-		<?php print caGetThemeGraphic($this->request, 'SEFA_NYC_2022.JPG', array('alt' => 'Exterior of Susan Eley Fine Art NYC')); ?>
-		<small>NYC</small>
-	</div>
 </div>
 <div class="row contentbody_sub aboutPages">
 	<div class="col-sm-12">
