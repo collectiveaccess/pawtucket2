@@ -114,7 +114,7 @@
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-img">
-                                <?= caGetThemeGraphic($this->request, 'homePage.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
                             </div>
                             <div class="card-img-overlay">Slide 3</div>
                         </div>
@@ -124,7 +124,7 @@
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-img">
-                                <?= caGetThemeGraphic($this->request, 'homepage_sva_archives.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
                             </div>
                             <div class="card-img-overlay">Slide 4</div>
                         </div>
@@ -134,7 +134,7 @@
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-img">
-                                <?= caGetThemeGraphic($this->request, 'homepage_sva_archives2.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
                             </div>
                             <div class="card-img-overlay">Slide 5</div>
                         </div>
@@ -144,7 +144,7 @@
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-img">
-                                <?= caGetThemeGraphic($this->request, 'Palette_heroimage.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
                             </div>
                             <div class="card-img-overlay">Slide 6</div>
                         </div>
