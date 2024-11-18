@@ -113,7 +113,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 			?>
 					<tr>
 						<td><?= _t('Sponsor:'); ?></td>
-						<td><?= join(",", $links); ?></td>
+						<td><?= join(", ", $links); ?></td>
 					</tr>
 			<?php
 					}
@@ -140,7 +140,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 			?>
 					<tr>
 						<td><?= _t('Committee Referral:'); ?></td>
-						<td><?= join(",", $comm); ?></td>
+						<td><?= join(", ", $comm); ?></td>
 					</tr>
 			<?php
 					}
