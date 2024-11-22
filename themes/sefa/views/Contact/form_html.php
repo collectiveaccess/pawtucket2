@@ -132,7 +132,7 @@
 	 		<small>Installation View of Ellen Hermanos, Flora Inhabited, 2022, SEFA Hudson</small>
 	 	</div>
 	 	<div class="thumbnail">
-	 		<?php print caGetThemeGraphic($this->request, 'interiorHester1.jpg', array('alt' => 'Installation View of Redefine at SEFA Hudson')); ?>
+	 		<?php print caGetThemeGraphic($this->request, 'interiorHester2.jpg', array('alt' => 'Installation View of Redefine at SEFA Hudson')); ?>
 	 		<small>Francie Hester, Installation View of Redefine at SEFA Hudson, 2021, Image by Greg Staley</small>
 	 	</div>
 	</div>
