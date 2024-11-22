@@ -4,7 +4,11 @@
 <div class="row">
 	<div class="col-sm-6 fullWidthImg">
 		<?php print caGetThemeGraphic($this->request, 'SEFA-HUDSON.jpg', array('alt' => 'Exterior of Susan Eley Fine Art Hudson NY')); ?>
-		<small>Hudson, NY</small>
+		<small>Installation View of Rachel Burgess and Rachelle Krieger, This Land., 2021, SEFA Hudson</small>
+	</div>
+	<div class="col-sm-6 fullWidthImg">
+		<?php print caGetThemeGraphic($this->request, 'interiorHester1.jpg', array('alt' => 'Installation View of Redefine at SEFA Hudso')); ?>
+		<small>Francie Hester, Installation View of Redefine at SEFA Hudson, 2021, Image by Greg Staley</small>
 	</div>
 </div>
 <div class="row contentbody_sub aboutPages">
