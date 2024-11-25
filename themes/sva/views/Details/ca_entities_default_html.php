@@ -54,7 +54,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-2">{{{^ca_entities.preferred_labels.displayname}}}</H1>
 			{{{<ifdef code="ca_entities.type_id"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_entities.type_id">^ca_entities.type_id</ifdef></div></ifdef>}}}
@@ -138,7 +138,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				{{{<ifcount code="ca_collections" min="1">
 					<dl class="row">
 						<dt class="col-12 mt-3 mb-2"><ifcount code="ca_collections" min="1"><h2 class="fs-3"><?= _t('Related Collections'); ?></h2><hr></ifcount></dt>
-						<unit relativeTo="ca_collections" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-2 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black"><div class="d-block"><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ ">^ca_collections.preferred_labels.name</unit><br><i>^relationship_typename</i></div></l></dd></unit>
+						<unit relativeTo="ca_collections" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-2 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black"><div class="d-block"><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ ">^ca_collections.preferred_labels.name</unit></div></l></dd></unit>
 					</dl>
 				</ifcount>
 				<ifcount code="ca_entities" min="1">

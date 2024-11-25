@@ -66,7 +66,7 @@ $top_level_collection_id = $va_collection_hier_ids[1];
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-2">{{{^ca_collections.preferred_labels.name}}}</H1>
 			<hr class="mb-0">
