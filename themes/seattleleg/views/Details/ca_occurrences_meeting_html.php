@@ -73,6 +73,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			<td><unit relativeTo="ca_entities" delimiter="<br>"><l>^ca_entities.preferred_labels</l></unit>
 		</td></tr>
 	</ifcount>}}}
+	{{{<ifcount code="ca_entities" max="0">
+		<ifdef code="ca_occurrences.COMM">
+		<tr><td><?= _t('Committee'); ?></td>
+			<td><ifdef code="ca_occurrences.COMM">^ca_occurrences.COMM</ifdef>
+		</td></tr>
+	</ifcount>}}}
 
 	{{{<ifdef code="ca_occurrences.note">
 		<tr>
