@@ -155,11 +155,13 @@
 							'council_bill' => '<l>^ca_objects.CBN</l>',
 						];
 
-
+					$file_type = $number = $filed = $title = $meeting_date = $minutes_meeting_date = $committee = $ordinance_num = $council_bill_num = $passed = $occurrence_meeting_date = $committee_date = $type_idno = $id_num = null;
 						$result = $count;
 						$file_type = $qr_res->getWithTemplate("<l>^{$vs_table}.type_id</l>");
 						$number = $qr_res->getWithTemplate("<l>^{$vs_table}.idno</l>");
-						$filed = $qr_res->getWithTemplate("<l>^{$vs_table}.DTF</l>");
+						if($qr_res->get("{$vs_table}.DTF")){
+							$filed = $qr_res->getWithTemplate("<l>^{$vs_table}.DTF</l>");
+						}
 						$title = $qr_res->getWithTemplate("<l>^{$vs_table}.preferred_labels</l>");
 
 
@@ -167,10 +169,15 @@
 						$minutes_meeting_date = $qr_res->getWithTemplate("<l>^{$vs_table}.MDAT</l>");
 						$committee = $qr_res->getWithTemplate("<l>^{$vs_table}.COMM</l>");
 
-						$ordinance_num = $qr_res->getWithTemplate("<l>^{$vs_table}.ORDN</l>");
-						$council_bill_num = $qr_res->getWithTemplate("<l>^{$vs_table}.CBN</l>");
-						$passed = $qr_res->getWithTemplate("<l>^{$vs_table}.DTSI</l>");
-
+						if($qr_res->get("{$vs_table}.ORDN")){
+							$ordinance_num = $qr_res->getWithTemplate("<l>^{$vs_table}.ORDN</l>");
+						}
+						if($qr_res->get("{$vs_table}.CBN")){
+							$council_bill_num = $qr_res->getWithTemplate("<l>^{$vs_table}.CBN</l>");
+						}
+						if($qr_res->get("{$vs_table}.DTSI")){
+							$passed = $qr_res->getWithTemplate("<l>^{$vs_table}.DTSI</l>");
+						}
 						$occurrence_meeting_date = $qr_res->getWithTemplate("<l>^ca_occurrences.DATE</l>");
 						$committee_date = $qr_res->getWithTemplate("<l>^ca_entities.comm_date</l>");
 						
@@ -185,9 +192,9 @@
 												<td class='d-none d-md-table-cell'>{$result}</td>
 												<td class='d-none d-md-table-cell'>{$file_type}</td>
 												<td class='d-none d-md-table-cell'>{$id_num}</td>
-												<td class='d-none d-md-table-cell'>{$filed}{$meeting_date}{$minutes_meeting_date}</td>
+												<td class='d-none d-md-table-cell'>{$filed}</td>
 												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
-												<td class='d-table-cell d-md-none'>{$file_type}, {$filed}<br/>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>{$file_type} {$id_num}, {$filed}<br/>{$vs_caption}</td>
 											</tr>
 										";
 									break;
@@ -210,7 +217,7 @@
 												<td class='d-none d-md-table-cell'>{$filed}</td>
 												<td class='d-none d-md-table-cell'>{$passed}</td>
 												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
-												<td class='d-table-cell d-md-none'>{$filed}<br/>{$passed}<br/>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>".(($ordinance_num) ? "Ordinance Number: ".$ordinance_num."<br/>" : "").(($council_bill_num) ? "Council Bill Number: ".$council_bill_num."</br>" : "").(($filed) ? "Filed: ".$filed."<br/>" : "").(($passed) ? "Passed: ".$passed."<br/>" : "")."{$vs_caption}</td>
 											</tr>
 										";
 									break;
@@ -221,7 +228,7 @@
 												<td class='d-none d-md-table-cell'>{$id_num}</td>
 												<td class='d-none d-md-table-cell'>{$filed}</td>
 												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
-												<td class='d-table-cell d-md-none'>{$filed}<br>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>Resolution {$id_num}, {$filed}<br>{$vs_caption}</td>
 											</tr>
 										";
 									break;
@@ -233,7 +240,7 @@
 												<td class='d-none d-md-table-cell'>{$id_num}</td>
 												<td class='d-none d-md-table-cell'>{$filed}</td>
 												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
-												<td class='d-table-cell d-md-none'>{$filed}<br/>{$vs_caption}</td>
+												<td class='d-table-cell d-md-none'>{$file_type} {$id_num}<br/>{$filed}<br/>{$vs_caption}</td>
 											</tr>
 										";
 									break;
