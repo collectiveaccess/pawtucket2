@@ -155,12 +155,16 @@
 							'council_bill' => '<l>^ca_objects.CBN</l>',
 						];
 
-					$file_type = $number = $filed = $title = $meeting_date = $minutes_meeting_date = $committee = $ordinance_num = $council_bill_num = $passed = $occurrence_meeting_date = $committee_date = $type_idno = $id_num = null;
+					$file_type = $number = $filed = $search_date = $title = $meeting_date = $minutes_meeting_date = $committee = $ordinance_num = $council_bill_num = $passed = $occurrence_meeting_date = $committee_date = $type_idno = $id_num = null;
 						$result = $count;
 						$file_type = $qr_res->getWithTemplate("<l>^{$vs_table}.type_id</l>");
 						$number = $qr_res->getWithTemplate("<l>^{$vs_table}.idno</l>");
 						if($qr_res->get("{$vs_table}.DTF")){
 							$filed = $qr_res->getWithTemplate("<l>^{$vs_table}.DTF</l>");
+						}
+						if($qr_res->get("{$vs_table}.search_date")){
+							# --- used in combined search - pre populated / combined search date
+							$search_date = $qr_res->getWithTemplate("<l>^{$vs_table}.search_date</l>");
 						}
 						$title = $qr_res->getWithTemplate("<l>^{$vs_table}.preferred_labels</l>");
 
@@ -192,7 +196,7 @@
 												<td class='d-none d-md-table-cell'>{$result}</td>
 												<td class='d-none d-md-table-cell'>{$file_type}</td>
 												<td class='d-none d-md-table-cell'>{$id_num}</td>
-												<td class='d-none d-md-table-cell'>{$filed}</td>
+												<td class='d-none d-md-table-cell'>{$search_date}</td>
 												<td class='d-none d-md-table-cell'>{$vs_caption}</td>
 												<td class='d-table-cell d-md-none'>{$file_type} {$id_num}, {$filed}<br/>{$vs_caption}</td>
 											</tr>

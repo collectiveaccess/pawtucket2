@@ -54,7 +54,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	{{{<ifdef code="ca_occurrences.DATE|ca_occurrences.STRTTIME">
 		<tr>
 			<td>Meeting date:</td>
-			<td><ifdef code="ca_occurrences.DATE">^ca_occurrences.DATE </ifdef><ifdef code="ca_occurrences.STRTTIME">^ca_occurrences.STRTTIME</ifdef></td>
+			<td><ifdef code="ca_occurrences.DATE">^ca_occurrences.DATE </ifdef><ifdef code="ca_occurrences.STRTTIME%omitSeconds=1">^ca_occurrences.STRTTIME</ifdef></td>
 		</tr>
 	</ifdef>}}}
 
@@ -71,6 +71,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			<ifcount code="ca_entities" min="2"><?= _t('Committees'); ?></ifcount>
 			</td>
 			<td><unit relativeTo="ca_entities" delimiter="<br>"><l>^ca_entities.preferred_labels</l></unit>
+		</td></tr>
+	</ifcount>}}}
+	{{{<ifcount code="ca_entities" max="0">
+		<ifdef code="ca_occurrences.COMM">
+		<tr><td><?= _t('Committee'); ?></td>
+			<td><ifdef code="ca_occurrences.COMM">^ca_occurrences.COMM</ifdef>
 		</td></tr>
 	</ifcount>}}}
 
