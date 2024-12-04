@@ -880,7 +880,6 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 	$va_subqueries = caGetSubQueries($o_parsed_query);
 	$va_items = $va_subqueries['items'];
 	$va_signs = $va_subqueries['signs'];
-	
 	$va_query = [];
 	foreach ($va_items as $id => $subquery) {
 		if ($subquery && property_exists($subquery, 'field') && $subquery->field) {
@@ -923,7 +922,7 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 				break;
 		}
 	}
-	return join(" ", $va_query);
+	return join(caGetOption('delimiter', $pa_options, ' '), $va_query);
 }
 # ---------------------------------------
 /**
@@ -942,6 +941,10 @@ function caGetSubQueries($po_parsed_query) {
 		case 'Zend_Search_Lucene_Search_Query_MultiTerm':
 			$va_items = $po_parsed_query->getTerms();
 			$va_signs = $po_parsed_query->getSigns();
+			break;
+		case 'Zend_Search_Lucene_Search_Query_Term':
+			$va_items = [$po_parsed_query];
+			$va_signs = null;
 			break;
 		case 'Zend_Search_Lucene_Search_Query_Phrase':
 		case 'Zend_Search_Lucene_Search_Query_Range':
@@ -1018,6 +1021,21 @@ function caGetLabelForBundle($ps_bundle) {
 	if ($t_instance = Datamodel::getInstanceByTableName($va_tmp[0], true)) {
 		return $t_instance->getDisplayLabel($ps_bundle);
 	}
+	
+	// Maybe it's an access point?
+	if($indexing_config = Configuration::load(__CA_CONF_DIR__."/search_indexing.conf")) {
+		$keys = $indexing_config->getAssocKeys();
+		
+		foreach($keys as $k) {
+			$c = $indexing_config->getAssoc($k);
+			if(is_array($c['_access_points'])) {
+				if(isset($c['_access_points'][$ps_bundle]) && isset($c['_access_points'][$ps_bundle]['label'])) {
+					return $c['_access_points'][$ps_bundle]['label'];
+				}
+			}
+		}
+	}
+	
 	return $ps_bundle;
 }
 # ---------------------------------------

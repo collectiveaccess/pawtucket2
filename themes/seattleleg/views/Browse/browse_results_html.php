@@ -157,8 +157,7 @@ if (!$vb_ajax) {	// !ajax
 	$s = $vn_start + 1;
 	$e = $vn_start + $vn_hits_per_block;
 	if($e > $vn_result_size) { $e = $vn_result_size; }
-	
-	$search_str = $va_criteria[0]['value'];
+	$search_str = caGetDisplayStringForSearch($va_criteria[0]['id'], ['delimiter' => '; ']);
 ?>
   <strong>Documents:</strong> <?= $s; ?> - <?= $e; ?> of <?= $vn_result_size ?> &nbsp; <strong>Search String</strong> <span class="queries"> : <?= $search_str; ?> </span>
   <br>
