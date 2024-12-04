@@ -54,7 +54,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	{{{<ifdef code="ca_occurrences.DATE|ca_occurrences.STRTTIME">
 		<tr>
 			<td>Meeting date:</td>
-			<td><ifdef code="ca_occurrences.DATE">^ca_occurrences.DATE </ifdef><ifdef code="ca_occurrences.STRTTIME">^ca_occurrences.STRTTIME</ifdef></td>
+			<td><ifdef code="ca_occurrences.DATE">^ca_occurrences.DATE </ifdef><ifdef code="ca_occurrences.STRTTIME%omitSeconds=1">^ca_occurrences.STRTTIME</ifdef></td>
 		</tr>
 	</ifdef>}}}
 

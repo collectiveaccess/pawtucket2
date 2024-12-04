@@ -160,7 +160,12 @@ if (!$vb_ajax) {	// !ajax
 	
 	$search_str = $va_criteria[0]['value'];
 ?>
-  <strong>Documents:</strong> <?= $s; ?> - <?= $e; ?> of <?= $vn_result_size ?> &nbsp; <strong>Search String</strong> <span class="queries"> : <?= $search_str; ?> </span>
+<?php
+	if ($s < $e) {
+?>
+  <strong>Documents:</strong> <?= $s; ?> - <?= $e; ?> of <?= $vn_result_size ?> &nbsp; 
+<?php } ?>
+<strong>Search String</strong> <span class="queries"> : <?= $search_str; ?> </span>
   <br>
 	<hr>
 
@@ -294,8 +299,14 @@ if (!$vb_ajax) {	// !ajax
 			</div><!-- end browseResultsContainer -->
 
 	<hr>
-
-  <strong>Documents:</strong> <?= $s; ?> - <?= $e; ?> of <?= $vn_result_size ?> &nbsp; <strong>Search String</strong><span class="queries">: <?= $search_str; ?> </span>
+<?php
+	if ($s < $e) {
+?>
+  <strong>Documents:</strong> <?= $s; ?> - <?= $e; ?> of <?= $vn_result_size ?> &nbsp; 
+<?php 
+	} 
+?>
+<strong>Search String</strong><span class="queries">: <?= $search_str; ?> </span>
 	<br>
 
   <hr>
