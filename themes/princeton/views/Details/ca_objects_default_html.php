@@ -112,6 +112,12 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 					</unit>
 				</div></ifcount>}}}
 				{{{<if rule='^ca_objects.unknown =~ /Yes/'><div class="unit"><label>Creator</label>Unknown</div></if>}}}
+				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="owner">
+					<div class="unit"><label>Owner<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="contributor,creator">s</ifcount> (Historic)</label>
+					<unit relativeTo="ca_entities" restrictToRelationshipTypes="owner" delimiter="<br>">
+						<l>^ca_entities.preferred_labels.displayname</l>
+					</unit>
+				</div></ifcount>}}}
 				{{{<ifdef code="ca_objects.date.sort_date|ca_objects.date.display_date">
 					<div class="unit"><label>Date</label>
 						<unit relativeTo="ca_objects.date" delimiter="<br>">
