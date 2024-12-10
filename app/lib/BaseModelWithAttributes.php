@@ -1781,7 +1781,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 							'class' => (isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '',
 							'format' => '^ELEMENT',
 							'placeholder' => $pa_options['placeholder'] ?? null,
-							'forSimpleForm' => true,
+							'forSimpleForm' => false,
 							'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT',
 							'placeholder' => $pa_options['placeholder'] ?? null,
 							'attributes' => $attributes

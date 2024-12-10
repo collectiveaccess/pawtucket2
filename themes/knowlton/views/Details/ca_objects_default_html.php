@@ -65,7 +65,7 @@ $media_options = array_merge($media_options, [
 if($show_nav){
 ?>
 		<div class="col-sm-12 col-md-4 text-center text-md-end">
-			<nav aria-label="result navigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
+			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 <?php
 }
@@ -105,8 +105,10 @@ if($show_nav){
 			</div>
 		</div>
 		<div class="col-md-6 pt-1">
-							
-					{{{<dl class="mb-3 twocol">
+			<div class="row mb-3">
+				<div class="col-sm-6 col-md-12 col-lg-6">	
+					<dl>		
+					
 <?php						
 						if($t_object->get("ca_objects.department")){
 							if($links = caGetBrowseLinks($t_object, 'ca_objects.department', ['template' => '<l><div class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.department</div></l>', 'linkTemplate' => '^LINK'])) {
@@ -126,14 +128,26 @@ if($show_nav){
 						}
 ?>
 
-						<ifnotdef code="ca_objects.semester"><ifdef code="ca_objects.date_regular">
+					{{{<ifnotdef code="ca_objects.semester"><ifdef code="ca_objects.date_regular">
 							<dt class="serif fw-medium pb-1"><?= _t('Date'); ?></dt>
 							<dd class="pb-4 fs-5 fw-semibold">^ca_objects.date_regular</dd>
-						</ifdef></ifnotdef>
-						<ifcount code="ca_occurrences" restrictToTypes="course" min="1">
-							<dt class="serif fw-medium pb-1">Course<ifcount code="ca_occurrences" restrictToTypes="course" min="2">s</ifcount></dt>
-							<dd class="pb-4 fs-5 fw-semibold"><unit relativeTo="ca_occurrences" restrictToTypes="course" delimiter=", ">^ca_occurrences.preferred_labels</unit></dd>
-						</ifcount>
+						</ifdef></ifnotdef>}}}
+<?php
+						$va_courses = $t_object->get("ca_occurrences", array("returnWithStructure" => 1, "checkAccess" => $va_access_values, "restrictToTypes" => "course"));
+						if(is_array($va_courses) && sizeof($va_courses)){
+							print '<dt class="serif fw-medium pb-1">Course'.((sizeof($va_courses) > 1) ? "s" : "").'</dt><dd class="pb-4 fs-5 fw-semibold">';
+							foreach($va_courses as $va_course_info){
+								print caNavLink($this->request, $va_course_info["name"], "btn btn-secondary btn-sm me-4 fw-semibold mb-1", "", "Browse", "objects", array("facet" => "course_facet", "id" => $va_course_info["occurrence_id"]));
+
+							}
+							print "</dd>";
+						}
+?>
+						
+					</dl>
+				</div>
+				<div class="col-sm-6 col-md-12 col-lg-6">
+					<dl>
 <?php						
 						if($t_object->get("ca_objects.work_type")){
 							if($links = caGetBrowseLinks($t_object, 'ca_objects.work_type', ['template' => '<l><div class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.work_type</div></l>', 'linkTemplate' => '^LINK'])) {
@@ -143,9 +157,6 @@ if($show_nav){
 <?php
 							}
 						}
-?>
-					
-<?php
 						print $this->render("Details/snippets/related_entities_by_rel_type_html.php");
 						if($t_object->get("ca_objects.geonames", array("checkAccess" => $access_values))){
 							if($links = caGetBrowseLinks($t_object, 'ca_objects.geonames', ['template' => '<l><div class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.geonames</div></l>', 'linkTemplate' => '^LINK'])) {
@@ -155,10 +166,10 @@ if($show_nav){
 <?php
 							}
 						}
-?>
-
-						
-					</dl>}}}
+?>						
+					</dl>
+				</div>
+			</div>
 				
 				
 				{{{<ifdef code="ca_objects.descriptionSet.discriptionText|ca_objects.notes|ca_objects.rightsSet.rightText">

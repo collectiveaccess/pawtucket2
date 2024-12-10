@@ -158,6 +158,12 @@ let mediaViewerManager = function(options=null) {
 			if(index > 0) {
 				that.render(index-1);
 				if(overlay) { that.showOverlay(); }
+				let overlay_previous_button_id = that.options['overlay_previous_button_id'];
+				let e = null;
+				e = document.getElementById(overlay_previous_button_id);
+				if(e) {
+					e.focus();
+				}
 			} else {
 				return;
 			}
@@ -174,6 +180,12 @@ let mediaViewerManager = function(options=null) {
 			if((index + 1) < media_list.length) {
 				that.render(index+1);
 				if(overlay) { that.showOverlay(); }
+				let overlay_next_button_id = that.options['overlay_next_button_id'];
+				let e = null;
+				e = document.getElementById(overlay_next_button_id);
+				if(e) {
+					e.focus();
+				}
 			} else {
 				return
 			}
@@ -201,8 +213,18 @@ let mediaViewerManager = function(options=null) {
 			let show_overlay_button_id = that.options['show_overlay_button_id'];
 			let download_button_id = that.options['download_button_id'];
 			
+			let media_count_id = that.options['media_count_id'];
+			
 			let index = parseInt(that.index);
 			
+			if(media_count_id) {
+				if(media_count > 1){
+					e = document.getElementById(media_count_id);
+					if(e) {
+						e.innerHTML = (index + 1) + '/' + media_count;
+					}
+				}
+			}
 			if(show_overlay_button_id) {
 				e = document.getElementById(show_overlay_button_id);
 				if(e) {
@@ -228,9 +250,9 @@ let mediaViewerManager = function(options=null) {
 					} else {
 						e.className = next_button_class + ((((index + 1) >= media_list.length)) ? ' disabled' : '');
 						if((index + 1) >= media_list.length){
-							e.disabled = true;
+							e.setAttribute("aria-disabled", "true");
 						}else{
-							e.disabled = false;
+							e.setAttribute("aria-disabled", "false");
 						}
 					}
 				}
@@ -244,9 +266,9 @@ let mediaViewerManager = function(options=null) {
 					} else {
 						e.className = previous_button_class + ((((index - 1) < 0)) ? ' disabled' : '');
 						if((index - 1) < 0){
-							e.disabled = true;
+							e.setAttribute("aria-disabled", "true");
 						}else{
-							e.disabled = false;
+							e.setAttribute("aria-disabled", "false");
 						}
 					}
 				}
@@ -260,9 +282,9 @@ let mediaViewerManager = function(options=null) {
 					} else {
 						e.className = overlay_next_button_class + ((((index + 1) >= media_list.length)) ? ' disabled' : '');
 						if((index + 1) >= media_list.length){
-							e.disabled = true;
+							e.setAttribute("aria-disabled", "true");
 						}else{
-							e.disabled = false;
+							e.setAttribute("aria-disabled", "false");
 						}
 					}
 				}
@@ -276,9 +298,9 @@ let mediaViewerManager = function(options=null) {
 					} else {
 						e.className = overlay_previous_button_class + ((((index - 1) < 0)) ? ' disabled' : '');
 						if((index - 1) < 0){
-							e.disabled = true;
+							e.setAttribute("aria-disabled", "true");
 						}else{
-							e.disabled = false;
+							e.setAttribute("aria-disabled", "false");
 						}
 					}
 				}
@@ -305,8 +327,11 @@ let mediaViewerManager = function(options=null) {
 			if(m_id && c_id) {
 				let e = document.getElementById(m_id);
 				if(e) {
-					e.style.display = 'block';
-					e.focus();
+					//e.style.display = 'block';
+					e.showModal();
+					//e.focus();
+					document.body.style.overflow = "hidden";
+					e.setAttribute("aria-modal", "true");
 				}
 				
 				let containerDivs = viewers[that.id].containerDivs(that.id, that.media_list[that.index], that.options);
@@ -337,7 +362,10 @@ let mediaViewerManager = function(options=null) {
 			if(m_id) {
 				let e = document.getElementById(m_id);
 				if(e) {
-					e.style.display = 'none';
+					e.close();
+					//e.style.display = 'none';
+					document.body.style.overflow = "scroll";
+					e.removeAttribute("aria-modal");
 				}
 			}
 		},

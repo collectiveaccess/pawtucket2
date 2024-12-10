@@ -223,6 +223,7 @@ class SearchController extends FindController {
 			$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString, ['forcePurify' => true])));
 			if($vs_remove_criterion == "_search"){
 				$this->opo_result_context->setSearchExpression("*");
+				$vs_search_expression = $this->opo_result_context->getSearchExpression();
 			}
 		}
 		
@@ -507,6 +508,11 @@ class SearchController extends FindController {
 				$this->render("Browse/browse_results_timelineData_json.php");
 				break;
 			default:
+				$dont_redirect_to_single_search_result = $this->config->get('dont_redirect_to_single_search_result');
+				if (($qr_res->numHits() == 1) && (!$dont_redirect_to_single_search_result)) {
+					$qr_res->nextHit();
+					$this->response->setRedirect(caDetailUrl($this->request, $this->ops_tablename, $qr_res->get($this->ops_tablename.".".$qr_res->primaryKey(true)), false));
+				}				
 				$this->render("Browse/browse_results_html.php");
 				break;
 		}

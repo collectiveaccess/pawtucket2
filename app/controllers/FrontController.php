@@ -35,6 +35,7 @@ class FrontController extends BasePawtucketController {
 	 *
 	 */
 	public function __construct($request, $response, $view_paths=null) {
+		$this->view_class = 'AdvancedSearchView';
 		parent::__construct($request, $response, $view_paths);
 		
 		$this->config = caGetFrontConfig();

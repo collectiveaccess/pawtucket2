@@ -48,22 +48,15 @@
 	print $this->render("footer.php");	
 
 ?>
-	<div class="title">
-		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
-	</div>
-		
-	<div class="unit"><H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6></div>
+	<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
 	<div class="unit">
-	{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></H6></ifdef>}}}
-	{{{<ifdef code="ca_collections.label">^ca_collections.label<br/></ifdev>}}}
-	</div>
-	<div class="unit">
+		<dl class="mb-0">
+			<dt>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</dt>
+			{{{<ifdef code="ca_collections.parent_id"><dt>Part of</dt><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></dd></ifdef>}}}
+	
 <?php
 	$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => $va_restrict_to_relationship_types));
 	if(is_array($va_entities) && sizeof($va_entities)){
-?>
-		<dl class="mb-0">
-<?php
 		$va_entities_by_type = array();
 		foreach($va_entities as $va_entity_info){
 			$va_entities_by_type[$va_entity_info["relationship_typename"]][] = $va_entity_info["displayname"];
@@ -71,9 +64,6 @@
 		foreach($va_entities_by_type as $vs_type => $va_entity_links){
 			print "<dt class='text-capitalize'>".$vs_type."</dt><dd>".join(", ", $va_entity_links)."</dd>";
 		}
-?>
-		</dl>
-<?php
 	}
 ?>					
 
@@ -88,24 +78,24 @@
 		</ifdef>
 		<ifdef code="ca_collections.dates.dates_value">
 			<dt><?= _t('Date'); ?></dt>
-			<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value (^ca_collections.dates.dates_type)</dd></unit>
+			<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value<ifdef code="ca_collections.dates.dates_type"> (^ca_collections.dates.dates_type)</ifdef></dd></unit>
 		</ifdef>
 		<ifdef code="ca_collections.abstract">
 			<dt><?= _t('Abstract'); ?></dt>
 			<dd>
-				^ca_collections.abstract
+				<?php print caConvertLineBreaks($t_item->get("ca_collections.abstract")); ?>
 			</dd>
 		</ifdef>
 		<ifdef code="ca_collections.biography">
 			<dt><?= _t('Biographical / Historical note'); ?></dt>
 			<dd>
-				^ca_collections.biography
+				<?php print caConvertLineBreaks($t_item->get("ca_collections.biography")); ?>
 			</dd>
 		</ifdef>
 		<ifdef code="ca_collections.scope_contents">
 			<dt><?= _t('Scope and Contents'); ?></dt>
 			<dd>
-				^ca_collections.scope_contents
+				<?php print caConvertLineBreaks($t_item->get("ca_collections.scope_contents")); ?>
 			</dd>
 		</ifdef>
 
@@ -166,15 +156,17 @@
 			<unit relativeTo="ca_places" delimiter=""><dd>^ca_places.preferred_labels (^relationship_typename)</dd></unit>
 		</ifcount>
 }}}
+		</dl>
 	</div>
 	
 	
 <?php
 	if ($t_item->get("ca_collections.children.collection_id") || $t_item->get("ca_objects.object_id")){
-		print "<hr/><br/>Collection Contents";
+		print "<br/><h1 class='title'>Collection Contents</h1><div class='collectionContents'>";
 		if ($t_item->get('ca_collections.collection_id')) {
-			print caGetCollectionLevelSummary($this->request, array($t_item->get('ca_collections.collection_id')), 1);
+			print caGetCollectionLevelSummarySVA($this->request, array($t_item->get('ca_collections.collection_id')), 1);
 		}
+		print "</div>";
 	}
 	print $this->render("pdfEnd.php");
 ?>

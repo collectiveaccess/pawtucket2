@@ -45,14 +45,20 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 <div id="detail">
 
-	<?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_top.php"); ?>
+	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
+	
+	<?= $this->render("Details/attachments_html.php"); ?>
+	
+		<!--{{{<ifdef code="ca_object_representations.media.small">
+		<unit filterNonPrimaryRepresentations="0">
+					
+			<a href="<?= caNavUrl($this->request, '*', '*', 'DownloadRepresentation', ['representation_id' => '^ca_object_representations.representation_id']); ?>" rel="noopener noreferrer" target="_blank">
+			<?= caGetThemeGraphic($this->request, 'pdf.gif', array("alt" => "PDF Icon", "height" => "40px")); ?> <ifdef code="ca_object_representations.preferred_labels">^ca_object_representations.preferred_labels</ifdef><ifnotdef code="ca_object_representations.preferred_labels">Printable Version of this Agenda</ifnotdef
+			</a>
 
-	<p>
-		<a href="{{{ca_objects.PDFLNK}}}" target="_blank">
-			<img src="http://clerk.seattle.gov/public/img/pdf.gif" height="40" alt="PDF">
-			Printable Version of this Agenda
-		</a>
-	</p>
+		</unit>
+	</ifdef>}}}-->
+	
 
 	<hr>
 
@@ -60,6 +66,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
   <hr>
 
-  <?= $this->render("/data/seattleleg/themes/seattleleg/views/Details/ca_objects_default_nav_bottom.php"); ?>
+  <?= $this->render("Details/ca_objects_default_nav_bottom.php"); ?>
 
 </div>

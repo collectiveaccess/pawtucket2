@@ -80,7 +80,7 @@
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
 			
-			if ($vs_table != 'ca_objects') {
+			if (!in_array($vs_table, array("ca_objects", "ca_occurrences"))) {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 					$va_ids[] = $qr_res->get($vs_pk);
@@ -117,24 +117,65 @@
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
 					
-					if ($vs_table == 'ca_objects') {
-						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $vs_image_class)))){
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
-							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_thumbnail = $vs_type_placeholder;
+					switch($vs_table) {
+						case "ca_objects":
+							if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $vs_image_class)))){
+								$t_list_item->load($qr_res->get("type_id"));
+								$vs_typecode = $t_list_item->get("idno");
+								if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+									$vs_thumbnail = $vs_type_placeholder;
+								}else{
+									$vs_thumbnail = $vs_default_placeholder;
+								}
+							}
+							$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
+						break;
+						# -------------------------------
+						case "ca_occurrences":
+							
+							$vs_image_class_occ = str_replace(" ", "|", $vs_image_class);
+	
+							if($vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|'><if rule='^ca_objects.series =~ /Posters/'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</if></unit>", array("checkAccess" => $va_access_values))){
+								$va_tmp = explode("|", $vs_thumbnails);
+								$vs_thumbnail = $va_tmp[0];
+							}elseif($vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|'><if rule='^ca_objects.series =~ /Announcement/'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</if></unit>", array("checkAccess" => $va_access_values))){
+								$va_tmp = explode("|", $vs_thumbnails);
+								$vs_thumbnail = $va_tmp[0];
+							}elseif($vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|'><if rule='^ca_objects.series =~ /Photographic Material/'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</if></unit>", array("checkAccess" => $va_access_values))){
+								$va_tmp = explode("|", $vs_thumbnails);
+								$vs_thumbnail = $va_tmp[0];
+							}elseif($vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|' limit='1'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</unit>", array("checkAccess" => $va_access_values))){
+								$va_tmp = explode("|", $vs_thumbnails);
+								$vs_thumbnail = $va_tmp[0];
+							}
+							if(!$vs_thumbnail){
+								$vs_thumbnail = $vs_default_placeholder;
+							}
+							$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
+						break;
+						# -------------------------------
+						case "ca_collections":
+							$vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $vs_image_class));
+							if(!$vs_thumbnail){
+								$vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|' limit='1'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</unit>", array("checkAccess" => $va_access_values));
+								$va_tmp = explode("|", $vs_thumbnails);
+								$vs_thumbnail = $va_tmp[0];
+							}
+							if(!$vs_thumbnail){
+								$vs_thumbnail = $vs_default_placeholder;
+							}
+							$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
+						break;
+						# -------------------------------
+						default:
+							if($va_images[$vn_id]){
+								$vs_thumbnail = $va_images[$vn_id];
 							}else{
 								$vs_thumbnail = $vs_default_placeholder;
 							}
-						}
-						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
-					} else {
-						if($va_images[$vn_id]){
-							$vs_thumbnail = $va_images[$vn_id];
-						}else{
-							$vs_thumbnail = $vs_default_placeholder;
-						}
-						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
+							$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
+						break;
+						# -------------------------------
 					}
 					$vs_add_to_set_link = "";
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){

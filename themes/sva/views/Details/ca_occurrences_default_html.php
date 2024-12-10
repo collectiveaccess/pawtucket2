@@ -48,15 +48,15 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 	<div class="row mt-n3">
 		<div class="col text-center text-md-end">
-			<nav aria-label="result navigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
+			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 	</div>
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row">
 		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_occurrences.preferred_labels.name}}}</H1>
+			<H1 class="fs-2">{{{^ca_occurrences.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_occurrences.type_id|ca_occurrences.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_occurrences.type_id">^ca_occurrences.type_id</ifdef><ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0">
 		</div>
@@ -86,50 +86,42 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-{{{<ifcount code="ca_objects" min="1">
-	<div id="browseResultsContainer" class="row mb-3">
-		<unit relativeTo="ca_objects" delimiter="" limit="8">
-			<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
-				<div class='card flex-grow-1 width-100 rounded-0 shadow-sm bg-white border-0 mb-4'>
-				  <l>^ca_object_representations.media.large%class='card-img-top object-fit-contain px-3 pt-3 rounded-0'</l>
-				  	<div class='card-body'>
-						<l>^ca_objects.preferred_labels.name</l>
-					</div>
-				 </div>
-			</div>
-		</unit>
-	</div>
-	<ifcount code="ca_objects" min="9">
-		<div class="row row-cols-1 mb-4">
-			<div class="col text-center"><?php print caNavLink($this->request, "Browse All Objects", "btn btn-primary", "", "Browse", "objects", array("facet" => "occurrence_facet", "id" => $id)); ?></div>
-		</div>
-	</ifcount>
-	<div class="row">
-		<div class="col"><h2 class="fs-3">^ca_occurrences.type_id Information</h2><hr></div>
-	</div>
-</ifcount>}}}
-	<div class="row">
+
+	<div class="row mb-4">
 		<div class="col">				
 			{{{<dl class="mb-0">
 				
 				<ifdef code="ca_occurrences.Ex_type">
 					<dt><?= _t('Exhibition Type'); ?></dt>
 					<dd>
-						^ca_occurrences.Ex_type
-					</dd>
-				</ifdef><ifdef code="ca_occurrences.event_type">
-					<dt><?= _t('Event Type'); ?></dt>
-					<dd>
-						^ca_occurrences.event_type
+						^ca_occurrences.Ex_type%delimiter=,_
 					</dd>
 				</ifdef>
+				<ifdef code="ca_occurrences.event_type">
+					<dt><?= _t('Event Type'); ?></dt>
+					<dd>
+						^ca_occurrences.event_type%delimiter=,_
+					</dd>
+				</ifdef>
+				<!--<ifdef code="ca_occurrences.exhibition_event_type">
+					<dt><?= _t('Exhibition / Event Type (used for browse filter - remove)'); ?></dt>
+					<dd>
+						^ca_occurrences.exhibition_event_type%delimiter=,_
+					</dd>
+				</ifdef>-->
 				<ifcount code="ca_places" min="1">
 					<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Places'); ?></ifcount></dt>
 					<unit relativeTo="ca_places" delimiter=""><dd>^ca_places.preferred_labels</dd></unit>
 				</ifcount>
+				<ifdef code="ca_occurrences.place_as_text">
+					<dt><?= _t('Place'); ?></dt>
+					<unit relativeTo="ca_occurrences.place_as_text" delimiter=" "><dd>^ca_occurrences.place_as_text</dd></if></unit>
+				</ifdef>
 				<ifdef code="ca_occurrences.dates.dates_value">
-					<dt><?= _t('Date'); ?></dt>
-					<unit relativeTo="ca_occurrences.dates" delimiter=""><dd>^ca_occurrences.dates.dates_value (^ca_occurrences.dates.dates_type)</dd></unit>
+					<unit relativeTo="ca_occurrences.dates" delimiter=""><if rule="^ca_occurrences.dates.dates_type !~ /Reception/">
+						<dt><?= _t('Date'); ?></dt>
+						<dd>^ca_occurrences.dates.dates_value</dd>
+					</if></unit>
 				</ifdef>
 				<ifdef code="ca_occurrences.description_public">
 					<dt><?= _t('Description'); ?></dt>
@@ -147,11 +139,34 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</ifcount>
 				<ifcount code="ca_occurrences" min="1">
 					<dt><ifcount code="ca_occurrences.related" min="1"><?= _t('Related Exhibitions & Events'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences.related" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
+					<unit relativeTo="ca_occurrences.related" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l></dd></unit>
 				</ifcount>
 			</dl>}}}
 		</div>
 	</div>
+	{{{<ifcount code="ca_objects" min="1">
+	
+	<div class="row">
+		<div class="col"><h2 class="fs-3">Related Objects</h2><hr></div>
+	</div>
+	<div id="browseResultsContainer" class="row mb-3">
+		<unit relativeTo="ca_objects" delimiter="" limit="8">
+			<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
+				<div class='card flex-grow-1 width-100 rounded-0 shadow-sm bg-white border-0 mb-4'>
+				  <l>^ca_object_representations.media.large%class='card-img-top object-fit-contain px-3 pt-3 rounded-0'</l>
+				  	<div class='card-body'>
+						<l>^ca_objects.preferred_labels.name</l>
+					</div>
+				 </div>
+			</div>
+		</unit>
+	</div>
+	<ifcount code="ca_objects" min="9">
+		<div class="row row-cols-1 mb-4">
+			<div class="col text-center"><?php print caNavLink($this->request, "Browse All Objects", "btn btn-primary", "", "Browse", "objects", array("facet" => "occurrence_facet", "id" => $id)); ?></div>
+		</div>
+	</ifcount>
+</ifcount>}}}
 	{{{<ifcount code="ca_entities" min="1">
 		<dl class="row">
 			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities" min="1"><h2 class="fs-3"><?= _t('Related People & Organizations'); ?></h2><hr></ifcount></dt>

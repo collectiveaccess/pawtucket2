@@ -1,0 +1,312 @@
+# Highlight search terms in results?
+do_highlighting = 0
+use_strict_phrase_searching_for_advanced_searches = 1
+
+advancedSearchTypes = {
+	# --- combined excludes minutes and agendas
+	combined = {
+		displayName = _("Combined Legislative Record Search"),
+		labelSingular = _("Combined Legislative Record"),
+ 		labelPlural = _("Combined Legislative Records"),
+		table = ca_objects,
+		restrictToTypes = [council_bill, ordinance, resolution, comptroller_file, clerk_file],
+		# view = Search/ca_objects_advanced_search_combined_html.php, 
+		view = Search/ca_objects_advanced_search_objects_html.php, 
+		itemsPerPage = 10,
+		
+		sortBy = {
+			Date = ca_objects.DTF,
+			Type = ca_objects.type_id,
+			Title = ca_object_labels.name,
+		},
+
+		sortDirection = {
+			Date = desc,
+			Type = asc,
+			Title = asc
+		},
+
+		views = {
+			list = {
+				result_caption = "<l>^ca_objects.preferred_labels%truncate=140&ellipsis=1</l>",
+			}
+		},
+
+		fieldBundles = {
+			combined = {
+				type = {
+					label = Type,
+					bundle = ca_objects.type_id
+				},
+				text = {
+					label = Text,
+					bundle = ca_objects.TX
+				},
+				sponsor = {
+					label = Sponsor,
+					bundle = ca_objects.SPON
+				},
+				committee = {
+					label = Committee,
+					bundle = ca_objects.COMM
+				},
+				index_terms = {
+					label = Index terms,
+					bundle = ca_objects.index
+				},
+				introduced = {
+					label = Introduced,
+					bundle = ca_objects.DTIR
+				},
+				passed = {
+					label = Passed by council,
+					bundle = ca_objects.DTSI
+				},
+				
+			}
+		}
+	},
+
+	bills = {
+		displayName = _("Seattle City Council Bills and Ordinances"),
+		labelSingular = _("Seattle City Council Bills and Ordinances"),
+ 		labelPlural = _("Seattle City Council Bills and Ordinances"),
+		table = ca_objects,
+		restrictToTypes = [council_bill, ordinance],
+		# view = Search/ca_objects_advanced_search_bills_html.php, 
+		view = Search/ca_objects_advanced_search_objects_html.php, 
+		itemsPerPage = 10,
+		
+# 		sortBy = {
+# #			Identifier = ca_objects.idno,
+# 			Name = ca_object_labels.name
+# 			# Date = ca_objects.DTF
+# 		},
+
+		sortBy = {
+			Filed = ca_objects.DTF,
+			Passed = ca_objects.DTSI,
+			Ordinance_Number = ca_objects.ORDN,
+			Title = ca_object_labels.name,
+			Council_Bill_Number = ca_objects.CBN,
+		},
+
+		sortDirection = {
+			Filed = desc,
+			Passed = desc
+			Ordinance_Number = asc,
+			Title = asc,
+			Council_Bill_Number = asc,
+		},
+
+		views = {
+			list = {
+				result_caption = "<l>^ca_objects.preferred_labels%truncate=140&ellipsis=1</l>",
+			}
+		}
+	},
+
+	resolutions = {
+		displayName = _("Seattle City Council Resolutions"),
+		labelSingular = _("Seattle City Council Resolutions"),
+ 		labelPlural = _("Seattle City Council Resolutions"),
+		table = ca_objects,
+		restrictToTypes = [resolution],
+		# view = Search/ca_objects_advanced_search_resolutions_html.php, 
+		view = Search/ca_objects_advanced_search_objects_html.php, 
+		itemsPerPage = 10,
+		
+		sortBy = {
+			Date = ca_objects.DTF,
+			Title = ca_object_labels.name,
+			# Title = ca_object_labels.name
+		},
+
+		sortDirection = {
+			Date = desc,
+			Title = asc
+		},
+		
+		views = {
+			list = {
+				result_caption = "<l>^ca_objects.preferred_labels%truncate=140&ellipsis=1</l>",
+			}
+		}
+	},
+
+	clerk = {
+		displayName = _("Seattle Comptroller/Clerk Files Index Search"),
+		labelSingular = _("Seattle Comptroller/Clerk Files Index"),
+ 		labelPlural = _("Seattle Comptroller/Clerk Files Indexes"),
+		table = ca_objects,
+		restrictToTypes = [comptroller_file, clerk_file],
+		# view = Search/ca_objects_advanced_search_clerk_html.php,
+		view = Search/ca_objects_advanced_search_objects_html.php, 
+		itemsPerPage = 10,
+		
+		sortBy = {
+			Date = ca_objects.DTF,
+			Title = ca_object_labels.name,
+			Type = ca_objects.type_id,
+			# Name = ca_object_labels.name
+		},
+
+		sortDirection = {
+			Date = desc,
+			Title = asc,
+			Type = asc
+		},
+
+		views = {
+			list = {
+				result_caption = "<l>^ca_objects.preferred_labels%truncate=140&ellipsis=1</l>",
+			}
+		}
+	},
+# --- agendas are now being found through meetings
+#	agenda = {
+#		displayName = _("Seattle City Council Committee Agendas"),
+#		labelSingular = _("Seattle City Council Committee Agenda"),
+ #		labelPlural = _("Seattle City Council Committee Agendas"),
+#		table = ca_objects,
+#		restrictToTypes = [agenda],
+#		# view = Search/ca_objects_advanced_search_agenda_html.php, 
+#		view = Search/ca_objects_advanced_search_objects_html.php,
+#		itemsPerPage = 10,
+#
+#		sortBy = {
+#			Date = ca_objects.DATE,
+#			Committee = ca_objects.COMM,
+#			Title = ca_object_labels.name
+#		},
+#
+#		sortDirection = {
+#			Date = desc,
+#			Committee = asc,
+#			Title = asc
+#		},
+#
+#		views = {
+#			list = {
+#				result_caption = "<l>^ca_objects.preferred_labels%truncate=140&ellipsis=1</l>",
+#			}
+#		}
+#	},
+
+	minutes = {
+		displayName = _("Seattle City Council Minutes"),
+		labelSingular = _("Seattle City Council Minutes"),
+ 		labelPlural = _("Seattle City Council Minutes"),
+		table = ca_objects,
+		restrictToTypes = [minutes],
+		# view = Search/ca_objects_advanced_search_minutes_html.php, 
+		view = Search/ca_objects_advanced_search_objects_html.php,
+		itemsPerPage = 10,
+		
+		sortBy = {
+			Date = ca_objects.MDAT,
+			Committee = ca_objects.COMM
+		},
+
+		sortDirection = {
+			Date = desc,
+			Committee = asc
+		},
+
+		views = {
+			list = {
+				result_caption = "<l>^ca_objects.preferred_labels%truncate=140&ellipsis=1</l>",
+			}
+		}
+	},
+
+	meetings = {
+		displayName = _("City Council Meeting History"),
+		labelSingular = _("City Council Meeting"),
+ 		labelPlural = _("City Council Meeting"),
+		table = ca_occurrences,
+		restrictToTypes = [meeting],
+		# view = Search/ca_objects_advanced_search_minutes_html.php, 
+		view = Search/ca_objects_advanced_search_objects_html.php,
+		itemsPerPage = 10,
+		
+		sortBy = {
+			Date = ca_occurrences.DATE,
+			Title = ca_occurrences.preferred_labels,
+		},
+		
+		sortDirection = {
+			Date = desc,
+			Title = asc,
+		},
+
+		views = {
+			list = {
+				result_caption = "<l>^ca_occurrences.preferred_labels</l>",
+			}
+		}
+	},
+
+	committees = {
+		displayName = _("City Council Committee History Database"),
+		labelSingular = _("City Council Committee History"),
+ 		labelPlural = _("City Council Committee History"),
+		table = ca_entities,
+		restrictToTypes = [committee],
+		# view = Search/ca_objects_advanced_search_committees_html.php, 
+		view = Search/ca_objects_advanced_search_objects_html.php,
+		itemsPerPage = 10,
+		
+		sortBy = {
+			Date = ca_entities.comm_date,
+			Title = ca_entities.preferred_labels,
+		},
+		
+		sortDirection = {
+			Date = desc,
+			Title = asc,
+		},
+
+		views = {
+			list = {
+				result_caption = "<l>^ca_entities.preferred_labels</l>",
+			}
+		}
+	}
+
+}
+views = {
+	images = {
+		icon = glyphicon-th
+	},
+	list = {
+		icon = glyphicon-list
+	},
+	timeline = {
+		icon = glyphicon-time
+	},
+	map = {
+		icon = glyphicon-globe
+	}
+}
+
+#
+# Other options
+#
+
+# default number of results per page/ajax load
+defaultHitsPerBlock = 36
+
+# add a wildcard "*" to the end of all searches? 
+matchOnStem = 0
+
+advancedSearchBaseClasses = ["form-control"]
+
+advanceSearchFormElementTemplates = {
+	__default__ = "
+						^ELEMENT
+						<div id='^DESCRIPTIONID' class='form-text'>
+							^DESCRIPTION
+						</div>
+					"
+}

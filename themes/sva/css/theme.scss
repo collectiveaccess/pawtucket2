@@ -107,20 +107,39 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 /* ------------------------- Front ------------------------- */
 .parallax {
     position: relative;
-    background-image: url("../assets/graphics/homePage.jpg");
+    background-image: url("../assets/graphics/Dylan-hero-cropped.jpg");
 
     /* Full height */
     height: 100vh;
 
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
-    background-position: top center;
+    background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+}
 
-    .hero1, .hero2, .hero3 {
-        background-image: url("../assets/graphics/homePage.jpg");
-    }
+.parallax.hero1 {
+     background-image: url("../assets/graphics/Dylan-hero-cropped.jpg");
+}
+.parallax.hero2 {
+	background-image: url("../assets/graphics/Palette_heroimage.jpg");
+	background-position: top center;
+}
+.parallax.hero3 {
+	background-image: url("../assets/graphics/Tomato_heroimage.jpg");
+	background-position: top center;
+}
+.parallax.hero4{
+     background-image: url("../assets/graphics/Hero-1972-Doc-Watson--Elementary-Doctor-Watson-001.jpg");
+     background-position: top center;
+}
+.parallax.hero5 {
+	background-image: url("../assets/graphics/Hero-MG04_3340-Hesse-Nov-pres.jpg");
+	background-position: bottom center;
+}
+.parallax.hero6 {
+	background-image: url("../assets/graphics/Hero-JazzOdyssey-Vol-II-Chicago-1964.jpg");
 }
 
 .hpExplore{

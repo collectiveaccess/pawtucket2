@@ -52,7 +52,8 @@ let documentViewer = function(id, options=null) {
 					homeButton:     is_overlay ? "documentviewer-overlay-home" : "documentviewer-home",
 					fullPageButton: is_overlay ? "documentviewer-overlay-full-page" : "documentviewer-full-page",
 					nextButton:     is_overlay ? "documentviewer-overlay-next" : "documentviewer-next",
-					previousButton: is_overlay ? "documentviewer-overlay-previous" : "documentviewer-previous"
+					previousButton: is_overlay ? "documentviewer-overlay-previous" : "documentviewer-previous",
+					tabIndex:	-1
 				});
 				
 				document.getElementById(is_overlay ? "documentviewer-overlay-currentpage" : "documentviewer-currentpage").innerHTML = "1/" + source.pages.length;

@@ -1,10 +1,21 @@
+@font-face {
+	font-family:GT-Sectra-Book;
+	src:url(fonts/GT-Sectra-Book.ttf) format("truetype")
+}
+@font-face {
+	font-family:GT-Sectra-Display-Medium;
+	src:url(fonts/GT-Sectra-Display-Medium.ttf) format("truetype")
+}
+
+
+
 /* universal header/footer styles */
 #header { padding:0px; margin:0px;}
 img.headerImg {height:45px; width:auto; margin-top:20px; margin-bottom:10px;}
 .pagingText { position: absolute; top: 30px; right: 30px; font: "helvetica"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px;}
 #footer .pagingText{ top:20px; }
 .footerText { position:relative; font-size: 11px;  top:13px; padding-right:40px;  }  
-body{ font: "helvetica, sans-serif"; margin:0px; padding:0px;}
+body{ font-family:GT-Sectra-Book, helvetica, sans-serif; margin:0px; padding:0px;}
 
 /* dompdf */
 @page { margin: 65px 56px 35px 56px; }
@@ -16,7 +27,7 @@ body{ font: "helvetica, sans-serif"; margin:0px; padding:0px;}
 #footerdompdf .footerText { position:relative; font-size: 11px; padding-right:40px;  } 
 
 /* summary styles */
-.title { font: "helvetica, sans-serif"; font-size: 18px; width:100%; margin-top:10px; text-align: center; font-weight: bold;}
+.title { font-family:GT-Sectra-Display-Medium, helvetica, sans-serif; font-size: 18px; width:100%; margin-top:10px; padding-bottom:15px; margin-bottom:15px; text-align: left; font-weight: 400; border-bottom:1px solid #d4d4d1;}
 .representationList { width: 100%; margin-top:10px; text-align: center; }
 .unit {font-size:12px;margin-bottom:12px;}
 h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5px 0px; padding:0px;}
@@ -33,5 +44,8 @@ h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5p
 	display:inline-block;
 }
 dl {font-size:12px;margin-bottom:12px;}
-dt {font-size:14px; font-weight:bold;text-transform:capitalize; margin:12px 0px 5px 0px; padding:0px;}
+dt {font-family:GT-Sectra-Display-Medium, helvetica, sans-serif; font-size:14px; font-weight:400;text-transform:capitalize; margin:12px 0px 5px 0px; padding:0px;}
 dd {margin-bottom:5px; padding-left:0px; margin-left:0px;}
+
+.exportObjectItem{ padding:3px 0px 3px 0px;}
+.unit b{ font-family:GT-Sectra-Display-Medium, helvetica, sans-serif; font-size:14px; font-weight:400; margin-top:15px; display:block;}
