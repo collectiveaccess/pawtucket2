@@ -332,3 +332,11 @@ a[href="#readMoreCollapse"] {
     }
 
 }
+
+// Lightbox
+
+.lb-detail-img-link img{
+    max-height: 120px;
+    min-height: 10px;
+    width: -webkit-fill-available;
+}

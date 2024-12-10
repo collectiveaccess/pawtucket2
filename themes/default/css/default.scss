@@ -231,15 +231,18 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 }
 /* ------------------------- Lightbox ------------------------------ */
 .lightbox{
-	#lightboxLanding {
+	#lightboxContent {
 		.card{
 			img.object-fit-cover{
 				object-position:middle center;
 			}
 			img, .ca-placeholder{
-				height:200px;
+				height:250px;
 				width:100%
 			}
+		}
+		.lb-selected {
+			color: red;
 		}
 	}
 	.card{
@@ -247,11 +250,11 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 			object-position:middle center;
 		}
 		img{
-			height:200px;
+			height:250px;
 			width:100%;
 		}
 		.ca-placeholder { 
-			height:200px;
+			height:250px;
 			width:100%;
 		}
 	}

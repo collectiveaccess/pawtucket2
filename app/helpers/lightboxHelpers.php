@@ -48,10 +48,10 @@ function caGetLightboxPreviewImage(int $id, SearchResult $qr_res, ?array $option
 	}
 	if ($table == 'ca_objects') {
 		$t_set = $qr_res->getInstance();
-		$set_items = caExtractValuesByUserLocale($t_set->getItems(["user_id" => $g_request->user->get("user_id"), "thumbnailVersions" => ["iconlarge", "icon", "small"], "class" => $class, "checkAccess" => $access_values, "limit" => 5]));
+		$set_items = caExtractValuesByUserLocale($t_set->getItems(["user_id" => $g_request->user->get("user_id"), "thumbnailVersions" => ["iconlarge", "icon", "small", "large"], "class" => $class, "checkAccess" => $access_values, "limit" => 5]));
 	
 		$images = array_filter(array_map(function($v) {
-			return $v['representation_tag_small'];
+			return $v['representation_tag_large'];
 		}, $set_items), 'strlen');
 	
 		if(!($thumbnail = array_shift($images))) {

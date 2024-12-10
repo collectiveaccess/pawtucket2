@@ -734,7 +734,7 @@ class DetailController extends FindController {
 			$this->view->setVar('zip_stream', $o_zip);
 			$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
 			
-			$vn_rc = $this->render('Details/download_file_binary.php');
+			$vn_rc = $this->render('Download/download_file_binary.php');
 			
 			if ($vs_path) { unlink($vs_path); }
 		} else {
@@ -742,7 +742,7 @@ class DetailController extends FindController {
 				$this->view->setVar('archive_path', $vs_path);
 				$this->view->setVar('archive_name', $vs_name);
 			}
-			$vn_rc = $this->render('Details/download_file_binary.php');
+			$vn_rc = $this->render('Download/download_file_binary.php');
 		}
 		
 		return $vn_rc;
