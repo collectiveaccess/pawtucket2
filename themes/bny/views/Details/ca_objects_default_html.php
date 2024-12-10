@@ -200,7 +200,7 @@ if($show_nav){
 						
 					</div>
 				</div>
+				<div id="map" style="height: 200px; class="py-3">{{{map}}}</div>
 			</div>
-			<div id="map" class="py-3">{{{map}}}</div>
 		</div>
 	</div>
