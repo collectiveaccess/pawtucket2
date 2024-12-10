@@ -37,7 +37,9 @@ const EditImportPage = (props) => {
   return (
     <div className='container-fluid' style={{ maxWidth: '90%' }}>
 
-      <button type='button' className='btn btn-secondary' style={{ marginBottom: "10px" }} onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
+      <button type='button' className='btn btn-secondary' style={{ marginBottom: "10px" }} onClick={(e) => props.setInitialState(e)}>
+        <i class="bi bi-arrow-left"></i> Your Imports
+      </button>
       
       <div className="row justify-content-center">
         <div className="col-5">

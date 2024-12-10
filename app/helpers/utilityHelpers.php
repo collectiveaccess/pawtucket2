@@ -1656,7 +1656,7 @@ function caFileIsIncludable($ps_file) {
 	 *
 	 * @return string The media class that includes the specified MIME type, or null if the MIME type does not belong to a class. Returned classes are 'image', 'video', 'audio', 'document', '3d', 'vr' and 'binary'
 	 */
-	function caGetMediaClass(string $mimetype, ?array $options=null) : ?string {
+	function caGetMediaClass(?string $mimetype, ?array $options=null) : ?string {
 		$tmp = explode("/", $mimetype);
 
 		$for_iiif = caGetOption('forIIIF', $options, false);

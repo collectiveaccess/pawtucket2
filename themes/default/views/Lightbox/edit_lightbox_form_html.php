@@ -4,12 +4,11 @@ $lightbox_displayname_singular 		= $this->getVar("lightbox_displayname_singular"
 $lightbox_displayname_plural 		= $this->getVar("lightbox_displayname_plural");
 $mv									= $this->getVar('modalValues');
 ?>
-<!-- Add/edit lightbox modal -->
 <div class="modal fade" id="editLightboxModal" tabindex="-1" aria-labelledby="editLightboxModalLabel" aria-hidden="true">
   <div class="modal-dialog">
 	<div class="modal-content">
 	  <div class="modal-header">
-		<h1 class="modal-title fs-5" id="editLightboxModalLabel"><?= _t('Edit %1', $lightbox_displayname_singular); ?></h1>
+		<h1 class="modal-title fs-3" id="editLightboxModalLabel"><?= _t('Edit %1', $lightbox_displayname_singular); ?></h1>
 		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= _t('Close'); ?>"></button>
 	  </div>
 	  <div class="modal-body">

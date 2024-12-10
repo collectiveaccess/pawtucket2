@@ -2,21 +2,22 @@ import React, { useContext, useState, useEffect } from 'react';
 import { ImportContext } from './ImportContext';
 import ImportedItem from './ImportList/ImportedItem';
 
+import Dropdown from 'react-bootstrap/Dropdown';
+
 import { getSessionList, getFormList } from './ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
 
 const ImportList = (props) => {
 
-  const { isSubmitted, setIsSubmitted, sessionList, setSessionList, setFormCode } = useContext(ImportContext);
-  const { setViewMode } = useContext(ImportContext);
+  const { isSubmitted, setIsSubmitted, sessionList, setSessionList, setFormCode, setViewMode } = useContext(ImportContext);
 
   const [ submittedImports, setSubmittedImports ] = useState([]);  
   const [ unsubmittedImports, setUnsubmittedImports ] = useState([]);
   const [ formsList, setFormsList ] = useState([]);
 
-  console.log('====================================');
-  console.log("submittedImports: ", submittedImports);
-  console.log('====================================');
+  // console.log('====================================');
+  // console.log("submittedImports: ", submittedImports);
+  // console.log('====================================');
   
   useEffect(() => {
     getSessionList(baseUrl, function(data){
@@ -26,12 +27,12 @@ const ImportList = (props) => {
       setFormsList(data.forms);
     });
 
-  }, [setSessionList])
+  }, [setSessionList, baseUrl])
 
   useEffect(() => {
     let data = [...sessionList];
 
-    const current = data.filter(sub => sub.status == 'IN_PROGRESS');
+    const current = data.filter(sub => sub.status === 'IN_PROGRESS');
     setUnsubmittedImports(current);
 
     const submitted = data.filter(sub => sub.status !== 'IN_PROGRESS');
@@ -58,25 +59,25 @@ const ImportList = (props) => {
     return(
       <div className='container-fluid' style={{ maxWidth: '85%' }}>
         <div className='row mb-5'>
-          <div className='col text-left'>
+          <div className='col text-start'>
             <h1>Your Imports</h1>
           </div>
-          <div className='col text-right'>
-           <div className="dropdown">
-              <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <div className='col text-end'>
+            <Dropdown>
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
                 + New Import
-              </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {formsList.map((form, index) => {
-                  return (
-                    <a className="dropdown-item" key={index} href="#" onClick={(e) => openNewImportPage(e, form.code)}>{form.title}</a>
-                  )
-                })}
-              </div>
-            </div>
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {formsList.map((form, index) => (
+                  <Dropdown.Item key={index} onClick={(e) => openNewImportPage(e, form.code)}>
+                    {form.title}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </div>
-
         <h2 style={{textAlign: 'center'}}>To create an import, click + New Import</h2>
       </div>
     )
@@ -85,23 +86,23 @@ const ImportList = (props) => {
       <div className='container-fluid' style={{maxWidth: '85%'}}>
 
         <div className='row mb-5'>
-          <div className='col text-left'>
+          <div className='col text-start'>
             <h1>Your Imports</h1>
           </div>
-          <div className='col text-right'>
-            {/* <a href='#' className='btn btn-primary' onClick={(e) => openNewImportPage(e)}>+ New Import</a> */}
-            <div className="dropdown">
-              <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <div className='col text-end'>
+            <Dropdown>
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
                 + New Import
-              </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {formsList.map((form, index) => {
-                  return (
-                    <a className="dropdown-item" key={index} href="#" onClick={(e) => openNewImportPage(e, form.code)}>{form.title}</a>
-                  )
-                })}
-              </div>
-            </div>
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {formsList.map((form, index) => (
+                  <Dropdown.Item key={index} onClick={(e) => openNewImportPage(e, form.code)}>
+                    {form.title}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </div>
 
@@ -123,7 +124,7 @@ const ImportList = (props) => {
                   <th scope="col">Status</th>
                   <th scope="col">Number Of Files</th>
                   <th scope="col">Size</th>
-                  <th scope="col">Percentage Done</th>
+                  <th scope="col">Percent Done</th>
                   <th scope="col"> </th>
                 </tr>
               </thead>
@@ -140,10 +141,9 @@ const ImportList = (props) => {
 
         {(isSubmitted) ?
           <div className='row justify-content-center'>
-            <div className="alert alert-success alert-dismissible mb-5">
-              <br />
-              <button type="button" className="close" data-dismiss="alert" onClick={(e) => {closeAlert(e)}}>&times;</button>
-              <p><strong>Your import has been submitted</strong> and will be reviewed by an archivist! You can track the status here.</p>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={(e) => { closeAlert(e) }}></button>
+              <div><strong>Your import has been submitted </strong>and will be reviewed by an archivist! You can track the status here.</div>
             </div>
           </div>
         : null}
@@ -164,7 +164,7 @@ const ImportList = (props) => {
                   <th scope="col">Last Activity On</th>
                   <th scope="col">Status</th>
                   <th scope="col" data-toggle="tooltip" data-placement="top" title="Files imported / Files dropped">Number Of Files</th>
-                  <th scope="col" data-toggle="tooltip" data-placement="top" title="Errors and warnings with this import">Errors</th>
+                  {/* <th scope="col" data-toggle="tooltip" data-placement="top" title="Errors and warnings with this import">Errors</th> */}
                   <th scope="col">Size</th>
                   <th scope="col">Percent Done</th>
                   <th scope="col"> </th>

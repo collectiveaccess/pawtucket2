@@ -1790,7 +1790,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 */
 	public function getItemsAsSearchResult($options=null) {
 		if(!$this->isLoaded()) { return null; }
-		$ids = $this->getItems(array_merge($options, ['sort' => null, 'sortDirection' => null, 'idsOnly' => true]));
+		$ids = $this->getItems(array_merge($options, ['sort' => null, 'sortDirection' => null, 'idsOnly' => true, 'start' => 0, 'limit' => null]));
 
 		return caMakeSearchResult(Datamodel::getTableName($this->get('ca_sets.table_num')), $ids, $options);
 	}
@@ -1874,6 +1874,10 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		if (isset($pa_options['item_ids']) && (is_array($pa_options['item_ids'])) && (sizeof($pa_options['item_ids']) > 0)) {
 			$vs_item_ids_sql = " AND casi.item_id IN (".join(", ", $pa_options['item_ids']).") ";
 		}
+		$vs_row_ids_sql = '';
+		if (isset($pa_options['row_ids']) && (is_array($pa_options['row_ids'])) && (sizeof($pa_options['row_ids']) > 0)) {
+			$vs_row_ids_sql = " AND casi.row_id IN (".join(", ", $pa_options['row_ids']).") ";
+		}
 		// get set items
 		$vs_access_sql = '';
 		if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_table->hasField('access')) {
@@ -1930,7 +1934,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			INNER JOIN ".$t_rel_table->tableName()." AS rel ON rel.".$t_rel_table->primaryKey()." = casi.row_id
 			{$vs_label_join_sql}
 			WHERE
-				casi.set_id = ? {$vs_access_sql} {$vs_deleted_sql} {$vs_item_ids_sql} AND casi.deleted = 0
+				casi.set_id = ? {$vs_access_sql} {$vs_deleted_sql} {$vs_item_ids_sql} {$vs_row_ids_sql} AND casi.deleted = 0
 			ORDER BY 
 				casi.`rank` ASC
 			{$vs_limit_sql}
@@ -1978,7 +1982,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			{$vs_label_join_sql}
 			{$vs_rep_join_sql}
 			WHERE
-				casi.set_id = ? {$vs_rep_where_sql} {$vs_access_sql} {$vs_deleted_sql} {$vs_item_ids_sql}  AND casi.deleted = 0
+				casi.set_id = ? {$vs_rep_where_sql} {$vs_access_sql} {$vs_deleted_sql} {$vs_item_ids_sql} {$vs_row_ids_sql} AND casi.deleted = 0
 			ORDER BY 
 				casi.`rank` ASC
 			{$vs_limit_sql}
@@ -2139,18 +2143,70 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	# ------------------------------------------------------
 	/**
 	 * Return number of items in currently loaded set. Will return null if no set is
+	 * loaded and set_id option is not set, and zero if set is loaded but you don't have access to it.
+	 *
+	 * @array $ootions
+	 * 
+	 * @return int Number of items in the set
+	 */
+	public function getItemCount($options=null) {
+		$user_id = isset($options['user_id']) ? (int)$options['user_id'] : null;
+		$set_id = $set_id_option = caGetOption('set_id', $options, null);
+		if(!$set_id && !($set_id = $this->getPrimaryKey())) { return null; }
+		if ($user_id && !$this->haveAccessToSet($user_id, __CA_SET_READ_ACCESS__)) { return 0; }
+		
+		$o_db = $this->getDb();
+		
+		$table_num = $this->get('table_num');
+		if($set_id_option && ($tn = $this->getFieldValuesForIDs([$set_id], ['table_num']))) {
+			$table_num = $tn[$set_id] ?? null;
+		}
+		if (!($t_rel_table = Datamodel::getInstanceByTableNum($table_num, true))) { return null; }
+		$vs_rel_table_name = $t_rel_table->tableName();
+		$vs_rel_table_pk = $t_rel_table->primaryKey();
+		
+		$access_sql = '';
+		if (isset($options['checkAccess']) && is_array($options['checkAccess']) && sizeof($options['checkAccess']) && $t_rel_table->hasField('access')) {
+			$access_sql = ' AND '.$vs_rel_table_name.'.access IN ('.join(',', $options['checkAccess']).')';
+		}	
+		$deleted_sql = '';
+		if ($t_rel_table->hasField('deleted')) {
+			$deleted_sql = " AND {$vs_rel_table_name}.deleted = 0";
+		}
+		
+		$qr_res = $o_db->query("
+			SELECT count(distinct ca_set_items.row_id) c
+			FROM ca_set_items
+			INNER JOIN {$vs_rel_table_name} ON {$vs_rel_table_name}.{$vs_rel_table_pk} = ca_set_items.row_id
+			WHERE
+				ca_set_items.set_id = ? {$deleted_sql} {$access_sql} AND (ca_set_items.deleted = 0)
+		", (int)$set_id);
+		
+		if ($qr_res->nextRow()) {
+			return (int)$qr_res->get('c');
+		}
+		return 0;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Return number of items in currently loaded set. Will return null if no set is
 	 * loaded and zero if set is loaded but you don't have access to it.
 	 *
 	 * @return int Number of items in the set
 	 */
-	public function getItemCount($pa_options=null) {
+	public function getItemCountsForSets(array $set_ids, ?array $options=null) {
 		$vn_user_id = isset($pa_options['user_id']) ? (int)$pa_options['user_id'] : null;
-		$vn_set_id = caGetOption('set_id', $pa_options, null);
+		$vn_set_id = $set_id_option = caGetOption('set_id', $pa_options, null);
 		if(!$vn_set_id && !($vn_set_id = $this->getPrimaryKey())) { return null; }
 		if ($vn_user_id && !$this->haveAccessToSet($vn_user_id, __CA_SET_READ_ACCESS__)) { return 0; }
 		
 		$o_db = $this->getDb();
-		if (!($t_rel_table = Datamodel::getInstanceByTableNum($this->get('table_num'), true))) { return null; }
+		
+		$table_num = $this->get('table_num');
+		if($set_id_option && ($tn = $this->getFieldValuesForIDs([$vn_set_id], ['table_num']))) {
+			$table_num = $tn[$vn_set_id] ?? null;
+		}
+		if (!($t_rel_table = Datamodel::getInstanceByTableNum($table_num, true))) { return null; }
 		$vs_rel_table_name = $t_rel_table->tableName();
 		$vs_rel_table_pk = $t_rel_table->primaryKey();
 		
@@ -2791,7 +2847,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				
 				$vs_type = $this->getTypeName($qr_res->get('type_id'));
 			
-				$created = $this->getCreationTimestamp($set_id);
+				//$created = $this->getCreationTimestamp($set_id);
 				$va_sets[$set_id = $qr_res->get('set_id')] = array_merge($qr_res->getRow(), [
 					'set_content_type' => $vs_set_type, 'set_type' => $vs_type,
 					'label' => $labels[$set_id], 'count' => isset($counts[$set_id]) ? $counts[$set_id] : 0,

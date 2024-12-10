@@ -58,51 +58,22 @@ if($show_nav){
 <?php
 }
 ?>
-	<div class="row">
-		<div class="col-md-12">
+	<div class="row justify-content-center">
+		<div class="col-sm-12 col-md-8">
 			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_objects.type_id|ca_objects.idno">
-				<div class="fw-medium mb-3">
-					<ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef>
-					<ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef>
-				</div></ifdef>
-			}}}
-			<hr class="mb-0">
 		</div>
+		<hr class="mb-0">
 	</div>
-<?php
-	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
-?>
-	<div class="row">
-		<div class="col text-center text-md-end">
-			<div class="btn-group" role="group" aria-label="Detail Controls">
-<?php
-				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
-				}
-				if($pdf_enabled) {
-					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
-				}
-				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
-				}
-?>
-			</div>
-		</div>
-	</div>
-<?php
-	}
-?>
 
-	<div class="row">
-		<div class="col-md-6">
-				{{{media_viewer}}}
-		</div>
-		<div class="col-md-6">
-			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->
-				<div class="row">
+	<?= $this->render('Details/snippets/detail_controls_html.php'); ?>
+
+	<div class="row justify-content-center">
+
+		<div class="col-sm-12 col-md-8">
+			{{{media_viewer}}}
+			<hr>
+			<div class="bg-light py-3 px-4 mb-3"><!-- height is to make the gray background of box same height as the containing row -->
+				<div class="row row-cols-1 row-cols-md-2">
 					<div class="col">
 										
 						{{{<dl class="mb-0">
@@ -151,12 +122,28 @@ if($show_nav){
 								</dd>
 							</ifdef>
 
+						</dl>}}}
+
+					</div>
+					<div class="col">
+						{{{<dl class="mb-0">
+
 							<?php
 								if($t_object->get("ca_objects.bio_regions")){
 									if($bio_links = caGetBrowseLinks($t_object, 'ca_objects.bio_regions', ['template' => '<l>^ca_objects.bio_regions</l>', 'linkTemplate' => '^LINK'])) {
 							?>
-										<dt><?= _t('Bio Regions'); ?></dt>
-										<dd><?= join(", ", $bio_links); ?></dd>
+										<dt>
+											<?= _t('Bio Regions'); ?>
+											<a data-bs-toggle="collapse" href="#collapseBioRegions" role="button" aria-expanded="false" aria-controls="collapseBioRegions">
+												<i class="bi bi-info-circle-fill"></i>
+											</a>
+										</dt>
+										<dd>
+											<div class="collapse" id="collapseBioRegions">
+												<p>A region defined by characteristics of the natural environment rather than man-made division.</p>
+											</div>
+											<?= join(", ", $bio_links); ?>
+										</dd>
 							<?php
 									}
 								}
@@ -172,11 +159,9 @@ if($show_nav){
 									}
 								}
 							?>
-						</dl>}}}
-						
-						<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
+				
+							<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
 
-						{{{<dl class="mb-0">
 							<ifcount code="ca_collections" min="1">
 								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Actions'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Actions'); ?></ifcount></dt>
 								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
@@ -202,17 +187,89 @@ if($show_nav){
 					</div>
 				</div>
 			</div>
-			<!-- <div id="map" class="map py-3">{{{map}}}</div> -->
 		</div>
 	</div>
 
-	{{{<ifdef code="ca_objects.parent_id"><unit relativeTo="ca_objects.parent"><ifcount code="ca_objects.children" min="2"> 
-		<div class="row">
-			<div class="col"><h2>^ca_objects.type_id: ^ca_objects.preferred_labels.name</h2><l>View ^ca_objects.type_id</l><hr></div>
-		</div>
-		<div class="row" id="browseResultsContainer">	
-			<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.parent_id:'.$t_object->get("ca_objects.parent_id"))); ?>">
-				<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+	<?php
+		$vs_related_title = "";
+		# --- related_items - if item is part of an album, show the other siblings otherwise show some other items from the current object's action(ca_collection)
+		$va_related_item_ids = array();
+		if($vn_parent_id = $t_object->get("ca_objects.parent_id")){
+			$t_parent = new ca_objects($vn_parent_id);
+			$va_related_item_ids = $t_parent->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+			$vs_related_title = $t_parent->get("ca_objects.preferred_labels.name");
+		}
+		# --- remove current item
+		if(in_array($vn_id, $va_related_item_ids)){
+			$vn_key = array_search($vn_id, $va_related_item_ids);
+			unset($va_related_item_ids[$vn_key]);
+		}
+		$va_related_items = array();
+		if(sizeof($va_related_item_ids)){
+			shuffle($va_related_item_ids);
+			$q_objects = caMakeSearchResult("ca_objects", $va_related_item_ids);
+	?>
+			<div class="row mt-3">
+				<div class="col-7 mt-5">
+					<H1><?= $vs_related_title; ?></H1>
+				</div>
+				<div class="col-5 mt-5 text-end">
+					<?php
+						if($t_object->get("ca_objects.parent_id")){
+							print caDetailLink($this->request, "View Album", "btn btn-primary", "ca_objects", $t_object->get("ca_objects.parent_id"));			
+						}
+					?>
+				</div>
 			</div>
-		</div>
-	</ifcount></unit></ifdef>}}}
+			<div class="row mb-5">
+		<?php
+			$va_tmp_ids = array();
+			$i = 0;
+			while($q_objects->nextHit()){
+				if($q_objects->get("ca_object_representations.media.widepreview")){
+					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
+					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+					print "<div class='pt-2'>".$q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'>Album: </if>").substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
+					
+					if($alt_id = $q_objects->get('ca_objects.altID')) {
+						print " (".substr(strip_tags($alt_id), 0, 30).")";
+					}
+					if($album_title = $q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'><br/><l>^ca_objects.preferred_labels.name</l></if>")){
+						print $album_title;
+					}
+					
+					print "</div>";
+					
+					
+					print "</div>";
+					$i++;
+					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+				}
+				if($i == 12){
+					break;
+				}
+			}
+		}
+		?>
+			</div>
+
+	<!-- {{{<ifdef code="ca_objects.parent_id">
+		<unit relativeTo="ca_objects.parent">
+			<ifcount code="ca_objects.children" min="2"> 
+				<div class="row">
+					<div class="col">
+						<h2>^ca_objects.type_id: ^ca_objects.preferred_labels.name</h2>
+					</div>
+					<div class="col text-end">
+						<l class="btn btn-primary text-white" role="button">View ^ca_objects.type_id</l>
+					</div>
+					<hr>
+				</div>
+				<div class="row" id="browseResultsContainer">	
+					<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.parent_id:'.$t_object->get("ca_objects.parent_id"))); ?>">
+						<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+					</div>
+				</div>
+			</ifcount>
+		</unit>
+	</ifdef>}}} -->
