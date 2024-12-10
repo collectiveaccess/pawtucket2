@@ -909,7 +909,6 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 	$va_subqueries = caGetSubQueries($o_parsed_query);
 	$va_items = $va_subqueries['items'];
 	$va_signs = $va_subqueries['signs'];
-	
 	$va_query = [];
 	foreach ($va_items as $id => $subquery) {
 		if ($subquery && property_exists($subquery, 'field') && $subquery->field) {
@@ -937,8 +936,9 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 				$subquery = new Zend_Search_Lucene_Search_Query_Term($subquery);
 				// intentional fallthrough to next case here
 			case 'Zend_Search_Lucene_Search_Query_Term':
-				$vs_field = caGetLabelForBundle($subquery->getTerm()->field);
-				$va_query[] = ($vs_field && !$pb_omit_field_names ? "{$vs_field}: " : "").$subquery->getTerm()->text;
+				$field = $subquery->getTerm()->field;
+				$label = caGetLabelForBundle($field);
+				$va_query[] = ($label && !$pb_omit_field_names ? "{$label}: " : "").caGetDisplayValueForBundle($field, $subquery->getTerm()->text);
 				break;	
 			case 'Zend_Search_Lucene_Search_Query_Range':
 				$vs_field = caGetLabelForBundle($subquery->getLowerTerm()->field);
@@ -978,7 +978,7 @@ function caGetSubQueries($po_parsed_query) {
 			break;
 		case 'Zend_Search_Lucene_Search_Query_Phrase':
 		case 'Zend_Search_Lucene_Search_Query_Range':
-			$va_items = $po_parsed_query;
+			$va_items = [$po_parsed_query];
 			$va_signs = null;
 			break;
 		default:
@@ -1072,21 +1072,25 @@ function caGetLabelForBundle($ps_bundle) {
 /**
  *
  */
-function caGetDisplayValueForBundle($ps_bundle, $ps_value) {
-	$va_tmp = explode(".", $ps_bundle);
+function caGetDisplayValueForBundle(string $bundle, string $value) {
+	$va_tmp = explode(".", $bundle);
 	
 	if ($t_instance = Datamodel::getInstanceByTableName($va_tmp[0], true)) {
 		if ($t_instance->hasField($va_tmp[1])) {		// intrinsic
-			return $ps_value;
+			return $value;
 		} elseif($t_instance->hasElement($va_tmp[1])) {	// metadata element
 			if($t_element = ca_metadata_elements::getInstance($va_tmp[1])) {
 				switch(ca_metadata_elements::getElementDatatype($va_tmp[1])) {
-				//	case __CA_ATTRIBUTE_VALUE_DATERANGE__:
-				//		$o_tep = new TimeExpressionParser();
-				//		return $o_tep->parse($ps_value) ? $o_tep->getText() : $ps_value;
-				//		break;
+					case __CA_ATTRIBUTE_VALUE_LIST__:
+						if(is_numeric($value)) {
+							if(strlen($ret = caGetListItemByIDForDisplay((int)$value))) {
+								return $ret;
+							}
+						}
+						return $value;
+						break;
 					default:
-						return $ps_value;
+						return $value;
 						break;
 				}
 			}

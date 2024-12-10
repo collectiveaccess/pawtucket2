@@ -355,6 +355,7 @@ class DetailController extends FindController {
 					'media_selector_id' => 'mediaviewer-selector',
 					'media_selector_item_class' => 'mediaviewer-selector-control',
 					'media_selector_item_class_active' => 'mediaviewer-selector-control-active',
+					'media_count_id' => 'media-count',
 					
 					'base_url' => $this->request->getThemeUrlPath(),
 					'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}"

@@ -1,7 +1,7 @@
 <?php
 	$o_collections_config = $this->getVar("collections_config");
 	$qr_archives = $this->getVar("collection_results");
-	$va_access_values = $this->getVar("access_values");
+	$access_values = $this->getVar("access_values");
 	$landing_page_sort_collections = $o_collections_config->get("landing_page_sort_collections");
 
 	$vs_item_display_template = ($o_collections_config->get("landing_page_item_display_template")) ? $o_collections_config->get("landing_page_item_display_template") : "<div class='card-title'><div class='fw-medium lh-sm fs-5'><l>^ca_collections.preferred_labels</l></div></div>";
@@ -43,7 +43,7 @@
 					}
 					# --- image on collection record
 					$vs_thumbnail = "";
-					if($vs_thumbnail = $qr_collections->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values))){
+					if($vs_thumbnail = $qr_collections->get("ca_object_representations.media.iconlarge", array("checkAccess" => $access_values))){
 						$vs_thumbnail = "<div class='pt-3 img-fluid'>".$vs_thumbnail."</div>";
 					}			
 					

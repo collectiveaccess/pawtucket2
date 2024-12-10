@@ -82,7 +82,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.index")){
-					if($links = caGetSearchLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.index', ['template' => '^ca_objects.index', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Index Terms:'); ?></td>
@@ -109,11 +109,11 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.SPON")){
-					if($links = caGetSearchLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.SPON', ['template' => '^ca_objects.SPON', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Sponsor:'); ?></td>
-						<td><?= join(",", $links); ?></td>
+						<td><?= join(", ", $links); ?></td>
 					</tr>
 			<?php
 					}
@@ -136,11 +136,11 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.COMM")){
-					if($comm = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
+					if($comm = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '^ca_objects.COMM', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Committee Referral:'); ?></td>
-						<td><?= join(",", $comm); ?></td>
+						<td><?= join(", ", $comm); ?></td>
 					</tr>
 			<?php
 					}

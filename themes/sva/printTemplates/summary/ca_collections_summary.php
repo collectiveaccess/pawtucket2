@@ -78,24 +78,24 @@
 		</ifdef>
 		<ifdef code="ca_collections.dates.dates_value">
 			<dt><?= _t('Date'); ?></dt>
-			<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value (^ca_collections.dates.dates_type)</dd></unit>
+			<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value<ifdef code="ca_collections.dates.dates_type"> (^ca_collections.dates.dates_type)</ifdef></dd></unit>
 		</ifdef>
 		<ifdef code="ca_collections.abstract">
 			<dt><?= _t('Abstract'); ?></dt>
 			<dd>
-				^ca_collections.abstract
+				<?php print caConvertLineBreaks($t_item->get("ca_collections.abstract")); ?>
 			</dd>
 		</ifdef>
 		<ifdef code="ca_collections.biography">
 			<dt><?= _t('Biographical / Historical note'); ?></dt>
 			<dd>
-				^ca_collections.biography
+				<?php print caConvertLineBreaks($t_item->get("ca_collections.biography")); ?>
 			</dd>
 		</ifdef>
 		<ifdef code="ca_collections.scope_contents">
 			<dt><?= _t('Scope and Contents'); ?></dt>
 			<dd>
-				^ca_collections.scope_contents
+				<?php print caConvertLineBreaks($t_item->get("ca_collections.scope_contents")); ?>
 			</dd>
 		</ifdef>
 

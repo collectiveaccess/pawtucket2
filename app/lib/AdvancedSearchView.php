@@ -92,23 +92,28 @@ class AdvancedSearchView extends View {
 		if(is_array($base_classes) && sizeof($base_classes)) { $classes = array_merge($base_classes, $classes); }
 		if($class = caGetOption('class', $options, null)) { $classes[] = $class; }
 		
-		//<input type='text' class='form-control' id='{{{formId}}}' aria-describedby='{{{descId}}}'>
 		$element_id = 'adv-'.preg_replace('![^A-Za-z0-9_]+!', '_', $bundle);
 		$desc_id = 'advdesc-'.preg_replace('![^A-Za-z0-9_]+!', '_', $bundle);
 		
 		if(!isset($options['height'])) { $options['height'] = 1; }
+				
+		$label = caGetOption('label', $options, $this->subject->getDisplayLabel($bundle));
+		$description = caGetOption('description', $options, $this->subject->getDisplayDescription($bundle));
+		
+		$attr = [];
+		if(strlen($description)) {
+			$attr['aria-describedby'] = $desc_id;
+		}
+		
 		$element = $this->subject->htmlFormElementForSearch(
 			$this->request, 
 			$bundle, 
 			array_merge([
 				'class' => join(' ', $classes),
 				'id' => $element_id,
-				'attributes' => ['aria-describedby' => $desc_id]
+				'attributes' => $attr
 			], $options)
 		);	
-		
-		$label = caGetOption('label', $options, $this->subject->getDisplayLabel($bundle));
-		$description = caGetOption('description', $options, $this->subject->getDisplayDescription($bundle));
 		
 		$template = str_replace("^ELEMENTID", $element_id, $template);	
 		$template = str_replace("^DESCRIPTIONID", $desc_id, $template);

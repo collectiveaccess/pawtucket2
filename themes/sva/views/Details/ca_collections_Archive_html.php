@@ -65,7 +65,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-2">{{{^ca_collections.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_collections.idno"><div class="fw-medium mb-3 text-capitalize">^ca_collections.idno</div></ifdef>}}}

@@ -48,15 +48,18 @@
 		$i = $vn_col = 0;
 		while($qr_res->nextHit()){
 			if($qr_res->get('ca_object_representations.media.iconlarge', array("checkAccess" => $va_access_values))){
-				$vs_media = $qr_res->getWithTemplate('<div class="img-fluid"><l>^ca_object_representations.media.iconlarge</l></div>', array("checkAccess" => $va_access_values));
+				$vs_media = $qr_res->getWithTemplate('<div class="img-fluid">^ca_object_representations.media.iconlarge</div>', array("checkAccess" => $va_access_values));
 				if($vn_col == 0){
 					print "<div class='row g-5 mb-5'>";
 				}
-				print "<div class='col-sm-3 col-xs-6'>".$vs_media;
+				print "<div class='col-sm-3 col-xs-6'>";
+				$tmp = "";
+				$tmp .= $vs_media;
 				$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
 				if($vs_caption){
-					print "<div class='text-center text-black sansserif fs-5 pt-2'>".$vs_caption."</div>";
+					$tmp .= "<div class='text-center text-black sansserif fs-5 pt-2'>".$vs_caption."</div>";
 				}
+				print $qr_res->getWithTemplate("<l>".$tmp."</l>");
 				print "</div>";
 				$vb_item_output = true;
 				$i++;

@@ -105,3 +105,112 @@
 		</div>
 	</div>
 </div>
+<div class="container text-center my-3">
+    <h2 class="font-weight-light">Bootstrap Multi Slide Carousel</h2>
+    <div class="row mx-auto my-auto justify-content-center">
+        <div id="multiCarousel" class="carousel slide multiSlideCarousel"><!-- add  data-bs-ride="multiSlideCarousel" to div for auto advance -->
+            <div class="carousel-inner" role="listbox">
+                <div class="carousel-item active">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-img">
+                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                            </div>
+                            <div class="card-img-overlay">Slide 3</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-img">
+                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                            </div>
+                            <div class="card-img-overlay">Slide 4</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-img">
+                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                            </div>
+                            <div class="card-img-overlay">Slide 5</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-img">
+                                <?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("class" => "img-fluid", "alt" => "example image")); ?>
+                            </div>
+                            <div class="card-img-overlay">Slide 6</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev bg-transparent" href="#multiCarousel" role="button" data-bs-slide="prev" aria-label="previous slide">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </a>
+            <a class="carousel-control-next bg-transparent" href="#multiCarousel" role="button" data-bs-slide="next" aria-label="next slide">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+let items = document.querySelectorAll('.carousel.multiSlideCarousel .carousel-item')
+
+items.forEach((el) => {
+    const minPerSlide = 4
+    let next = el.nextElementSibling
+    for (var i=1; i<minPerSlide; i++) {
+        if (!next) {
+            // wrap carousel by using first child
+        	next = items[0]
+      	}
+        let cloneChild = next.cloneNode(true)
+        el.appendChild(cloneChild.children[0])
+        next = next.nextElementSibling
+    }
+});
+</script>
+<style>
+	@media (max-width: 767px) {
+		.multiSlideCarousel .carousel-inner .carousel-item > div {
+			display: none;
+		}
+		.multiSlideCarousel .carousel-inner .carousel-item > div:first-child {
+			display: block;
+		}
+	}
+	.card-img{
+		height:300px;
+	}
+	.multiSlideCarousel .carousel-inner .carousel-item.active,
+	.multiSlideCarousel .carousel-inner .carousel-item-next,
+	.multiSlideCarousel .carousel-inner .carousel-item-prev {
+		display: flex;
+	}
+	
+	/* medium and up screens */
+	@media (min-width: 768px) {
+		
+		.multiSlideCarousel .carousel-inner .carousel-item-end.active,
+		.multiSlideCarousel .carousel-inner .carousel-item-next {
+			transform: translateX(25%);
+		}
+		
+		.multiSlideCarousel .carousel-inner .carousel-item-start.active, 
+		.multiSlideCarousel .carousel-inner .carousel-item-prev {
+			transform: translateX(-25%);
+		}
+	}
+	
+	.multiSlideCarousel .carousel-inner .carousel-item-end,
+	.multiSlideCarousel .carousel-inner .carousel-item-start { 
+		transform: translateX(0);
+	}
+</style>

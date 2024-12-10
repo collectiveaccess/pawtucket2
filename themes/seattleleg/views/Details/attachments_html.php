@@ -1,7 +1,7 @@
 <?php
+$access_values = 	$this->getVar("access_values");
 $t_object = $this->getVar("item");
-$reps = $t_object->getRepresentations(['small', 'pdf', 'original']);
-
+$reps = $t_object->getRepresentations(['small', 'pdf', 'original'], null, array("checkAccess" => $access_values));
 if(is_array($reps) && sizeof($reps)) {
 ?>
 		<table class="record table table-striped table-responsive">
@@ -36,7 +36,7 @@ if(is_array($reps) && sizeof($reps)) {
 			# ---------------------------
 		}
 ?>
-		<li><?= caNavLink($this->request, "<i class='bi bi-file-earmark-arrow-down-fill' aria-label='search' title='Download'></i> {$type}{$label}", '', '*', '*', 'DownloadRepresentation', [
+		<li><?= caNavLink($this->request, "<i class='bi bi-file-earmark-arrow-down-fill' aria-label='Download' title='Download'></i> {$type}{$label}", '*', '*', '*', 'DownloadRepresentation', [
 			'context' => 'objects', 
 			'version' => 'original', 
 			'representation_id' => $rep_id

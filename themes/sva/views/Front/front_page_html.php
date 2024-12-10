@@ -45,9 +45,9 @@
 			<div class="row justify-content-center h-100">
 				<div class="col-md-9 col-lg-6 col-xl-5 d-flex h-100 align-items-center">
 					<div class="bg-body p-5 text-center shadow w-100">
-						<div class="py-3 display-4 text-center">
+						<h1 class="py-3 display-4 text-center">
 							<div>Milton Glaser<br/>Design Study Center<br/>and Archives</div><div class='divide border-bottom border-black mt-2 mb-3 d-inline-block'></div><div>SVA Archives</div>
-						</div>
+						</h1>
 					</div>
 				</div>
 			</div>

@@ -85,7 +85,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.index")){
-					if($links = caGetSearchLinks($t_object, 'ca_objects.index', ['template' => '<l>^ca_objects.index</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.index', ['template' => '^ca_objects.index', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Index Terms:'); ?></td>
@@ -121,11 +121,11 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.SPON")){
-					if($links = caGetSearchLinks($t_object, 'ca_objects.SPON', ['template' => '<l>^ca_objects.SPON</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.SPON', ['template' => '^ca_objects.SPON', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Sponsor:'); ?></td>
-						<td><?= join(",", $links); ?></td>
+						<td><?= join(", ", $links); ?></td>
 					</tr>
 			<?php
 					}
@@ -141,57 +141,56 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 			<?php
 				if($t_object->get("ca_objects.COMM")){
-					if($links = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '<l>^ca_objects.COMM</l>', 'linkTemplate' => '^LINK'])) {
+					if($links = caGetSearchLinks($t_object, 'ca_objects.COMM', ['template' => '^ca_objects.COMM', 'linkTemplate' => '^LINK'])) {
 			?>
 					<tr>
 						<td><?= _t('Committee Referral:'); ?></td>
-						<td><?= join(",", $links); ?></td>
+						<td><?= join(", ", $links); ?></td>
 					</tr>
 			<?php
 					}
 				}
 			?>
-
-
-			{{{<ifdef code="ca_objects.DCMR">
-				<tr>
-					<td>Committee Action Date:</td>
-					<td>^ca_objects.DCMR</td>
-				</tr>
-			</ifdef>}}}
-			{{{<ifdef code="ca_objects.CMR">
-				<tr>
-					<td>Committee Recommendation:</td>
-					<td>^ca_objects.CMR</td>
-				</tr>
-			</ifdef>}}}
-			{{{<ifdef code="ca_objects.CMV">
-				<tr>
-					<td>Committee Vote:</td>
-					<td>^ca_objects.CMV</td>
-				</tr>
-			</ifdef>}}}
-			{{{<ifdef code="ca_objects.DTSI">
-				<tr>
-					<td>City Council Action Date:</td>
-					<td>^ca_objects.DTSI</td>
-				</tr>
-			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.STAT">
+			{{{<ifdef code="ca_objects.CMR|ca_objects.CMV|ca_objects.DCMR">
 				<tr>
 					<td>Committee Action:</td>
-					<td>^ca_objects.STAT</td>
+					<td><ifdef code="ca_objects.CMR">^ca_objects.CMR </ifdef><ifdef code="ca_objects.CMV">^ca_objects.CMV </ifdef><ifdef code="ca_objects.DCMR"><ifdef code="ca_objects.CMR|ca_objects.CMV">on </ifdef>^ca_objects.DCMR</ifdef></td>
 				</tr>
 			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.VOTE">
+			
+			{{{<ifdef code="ca_objects.STAT|ca_objects.VOTE|ca_objects.DTSI">
 				<tr>
-					<td>City Council Vote:</td>
-					<td>^ca_objects.VOTE</td>
+					<td>City Council Action:</td>
+					<td><ifdef code="ca_objects.STAT">^ca_objects.STAT </ifdef><ifdef code="ca_objects.VOTE">^ca_objects.VOTE </ifdef><ifdef code="ca_objects.DTSI"><ifdef code="ca_objects.VOTE|ca_objects.STAT">on </ifdef>^ca_objects.DTSI</ifdef></td>
+				</tr>
+			</ifdef>}}}
+			{{{<ifdef code="ca_objects.DTMY">
+				<tr>
+					<td>Date Delivered to Mayor:</td>
+					<td>^ca_objects.DTMY</td>
 				</tr>
 			</ifdef>}}}
 
+			{{{<ifdef code="ca_objects.DTA">
+				<tr>
+					<td>
+						Date Signed by Mayor:<br>
+						<button class="modalButtonLink" data-bs-toggle="modal" data-bs-target="#MayorsSignatureApprovalDate">(About the signature date)</button>
+					</td>
+					<td>^ca_objects.DTA</td>
+				</tr>
+			</ifdef>}}}
+
+			<div class="modal fade" id="MayorsSignatureApprovalDate" aria-labelledby="MayorsSignatureApprovalDateLabel">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div id="MayorsSignatureApprovalDateLabel" class="fw-bold fs-4 centered">Mayor's signature / approval date</div>
+							{{{mayor_signature_approval_date}}}
+						</div>
+					<button class="btn btn-primary" data-bs-dismiss="modal">Close</button></div>
+				</div>
+			</div>
 			{{{<ifdef code="ca_objects.DTF">
 				<tr>
 					<td>Date Filed with Clerk:</td>

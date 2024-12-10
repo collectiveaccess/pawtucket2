@@ -46,7 +46,7 @@
 							$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
 							$vs_record_count = "";
 							if($vn_rel_object_count){
-								$vs_record_count = "<br/><small class='ms-2 fw-normal'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+								$vs_record_count = "<br/><small class='ms-2 fw-normal'>(".$vn_rel_object_count." image".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 							}
 							if($vb_link_sublist || $o_collections_config->get("always_link_to_hierarchy_viewer_sublist")){
 								if(!$first_sub_collection_id){

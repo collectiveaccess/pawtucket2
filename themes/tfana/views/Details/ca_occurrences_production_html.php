@@ -139,10 +139,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					
 					{{{<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text">
 						<div class="col">
-							<dt><?= _t('Description'); ?></dt>
-							<dd>
-								^ca_occurrences.descriptionWithSource.prodesc_text
-							</dd>
+							<dl>
+								<dt><?= _t('Description'); ?></dt>
+								<dd>
+									^ca_occurrences.descriptionWithSource.prodesc_text
+								</dd>
+							</dl>
 						</div>
 					</ifdef>}}}					
 					<div class="col">
@@ -189,7 +191,13 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	</div>
 <?php
 	}
-?>	
+if($rel_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $access_values))){
+	$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
+	$o_context->setAsLastFind();
+	$o_context->setResultList($rel_object_ids);
+	$o_context->saveContext();
+}
+?>
 {{{<ifcount code="ca_objects" excludeRelationshipTypes="select" min="1">
 	<div class="row">
 		<div class="col"><h2>Related Objects</h2><hr></div>
@@ -206,7 +214,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 							<div class='card-title'><small class='text-body-secondary'>^ca_objects.type_id, ^ca_objects.idno</small><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div><ifdef code='ca_objects.date'><p class='card-text small lh-sm text-truncate'>^ca_objects.date</p></ifdef>
 						</div>
 						<div class='card-footer text-end bg-transparent'>
-							<l class="link-dark mx-1"><i class='bi bi-arrow-right-square'></i></l>
+							<l class="link-dark mx-1"><i class='bi bi-arrow-right-square' aria-label='view record'></i></l>
 						</div>
 					 </div>	
 				</div><!-- end col -->

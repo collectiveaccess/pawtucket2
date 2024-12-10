@@ -66,7 +66,7 @@ $top_level_collection_id = $va_collection_hier_ids[1];
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-2">{{{^ca_collections.preferred_labels.name}}}</H1>
 			<hr class="mb-0">
@@ -107,22 +107,20 @@ if($t_item->get("ca_collections.parent_id") || $t_item->get("ca_collections.date
 				$hier_parts = explode(";", $hier_path);
 				array_pop($hier_parts);				
 ?>
-				<ifdef code="ca_collections.parent_id">
-					<dt>Part of</dt>
-					<dd><?php print join(" > ", $hier_parts); ?></dd>
-				</ifdef>
+				<dt>Part of</dt>
+				<dd><?php print join(" > ", $hier_parts); ?></dd>
 <?php
 			}
 ?>				
 			{{{
 				<ifdef code="ca_collections.dates.dates_value">
 					<dt><?= _t('Date'); ?></dt>
-					<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value (^ca_collections.dates.dates_type)</dd></unit>
+					<unit relativeTo="ca_collections.dates" delimiter=""><dd>^ca_collections.dates.dates_value<ifdef code="ca_collections.dates.dates_type"> (^ca_collections.dates.dates_type)</ifdef></dd></unit>
 				</ifdef>
 				<ifdef code="ca_collections.abstract">
 					<dt><?= _t('Abstract'); ?></dt>
 					<dd class="overflow-y-scroll" style="max-height: 200px;">
-						^ca_collections.abstract
+						<?php print caConvertLineBreaks($t_item->get("ca_collections.abstract")); ?>
 					</dd>
 				</ifdef>
 			}}}	
@@ -151,7 +149,7 @@ if($vs_collections_item_availablity = $this->getVar("collections_item_availablit
 		<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" delimiter="" limit="8">
 			<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
 				<div class='card flex-grow-1 width-100 rounded-0 shadow-sm bg-white border-0 mb-4'>
-				  <l>^ca_object_representations.media.large%class='card-img-top object-fit-contain px-3 pt-3 rounded-0'</l>
+				  <l>^ca_object_representations.media.large%class=' card-img-top object-fit-contain px-3 pt-3 rounded-0 '</l>
 				  	<div class='card-body'>
 						<l>^ca_objects.preferred_labels.name</l>
 					</div>
