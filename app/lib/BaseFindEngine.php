@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2023 Whirl-i-Gig
+ * Copyright 2014-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,10 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-  /**
-  *
-  */
 require_once(__CA_LIB_DIR__.'/BaseObject.php');
 require_once(__CA_APP_DIR__.'/helpers/utilityHelpers.php');
 
@@ -405,7 +401,7 @@ class BaseFindEngine extends BaseObject {
 						array_splice($sorted_page_hits, $index, $lr, array_slice($row_ids, 0, $lr));
 					} else {
 						// first result is at start of page, so we need to figure out if the sequence begins on a previous page
-						$start = null;
+						$start = 0;
 						if ($page_start > 0) {
 							$c = 0;
 							do {			// loop back through pages until we find the beginning
@@ -428,8 +424,6 @@ class BaseFindEngine extends BaseObject {
 								$start = $l * ($c-1);
 								break;
 							} while($s > 0);
-						} else {
-							$start = $map_index;
 						}
 					
 						if(!is_null($start)) {
@@ -672,7 +666,10 @@ class BaseFindEngine extends BaseObject {
 		
 		$direction = self::sortDirection($direction);
 		$rel_types = caGetOption('relationshipTypes', $options, null);
-		$joins = $this->_getJoins($t_table, $t_rel_table, $rel_label_field, $rel_types);
+		
+		$primary_table = caGetOption('primaryTable', $options, null);
+		
+		$joins = $this->_getJoins($t_table, $t_rel_table, $rel_label_field, $rel_types, $options);
 		$join_sql = join("\n", $joins);
 		
 		$is_preferred = caGetOption('isPreferred', $options, null);
@@ -984,14 +981,15 @@ class BaseFindEngine extends BaseObject {
 			}
  			$is_attribute = method_exists($t_rel_table, 'hasElement') ? $t_rel_table->hasElement($sort_field) : false;
  			
- 			if ($t_rel_table->hasField($sort_field)) {			// sort key is intrinsic
- 				$sort_key_values[] = $this->_getRelatedSortValuesForIntrinsic($hits, $t_table, $t_rel_table, $sort_field, $direction);
+ 			if ($t_rel_table && $t_rel_table->hasField($sort_field)) {			// sort key is intrinsic
+ 				$values = $this->_getRelatedSortValuesForIntrinsic($hits, $t_table, $t_rel_table, $sort_field, $direction);
  			} elseif($sort_field === 'preferred_labels') {		// sort key is preferred lables
- 				$sort_key_values[] = $this->_getRelatedSortValuesForLabel($hits, $t_table, $t_rel_table, $sort_subfield ? $sort_subfield : $sort_field, $direction);	
+ 				$values = $this->_getRelatedSortValuesForLabel($hits, $t_table, $t_rel_table, $sort_subfield ? $sort_subfield : $sort_field, $direction);	
  			} elseif($is_attribute) {							// sort key is metadata attribute
- 				$sort_key_values[] = $this->_getRelatedSortValuesForAttribute($hits, $t_table, $t_rel_table, $sort_subfield ? $sort_subfield : $sort_field, $direction);		
+ 				$values = $this->_getRelatedSortValuesForAttribute($hits, $t_table, $t_rel_table, $sort_subfield ? $sort_subfield : $sort_field, $direction);		
  			} else {
-				throw new ApplicationException(_t('Unhandled secondary sort'));
+				//throw new ApplicationException(_t('Unhandled secondary sort'));
+				$values = $hits;
 			}
 		}
 		return $values;
@@ -1227,14 +1225,15 @@ class BaseFindEngine extends BaseObject {
 			
  			$is_attribute = method_exists($t_rel_table, 'hasElement') ? $t_rel_table->hasElement($sort_field) : false;
  			
- 			if ($t_rel_table->hasField($sort_field)) {			// sort key is intrinsic
- 				$sort_key_values[] = $this->_getRelatedRowIDsForIntrinsic($values, $t_table, $t_rel_table, $hit_table, $sort_field);
+ 			if ($t_rel_table && $t_rel_table->hasField($sort_field)) {			// sort key is intrinsic
+ 				$row_ids = $this->_getRelatedRowIDsForIntrinsic($values, $t_table, $t_rel_table, $hit_table, $sort_field);
  			} elseif($sort_field === 'preferred_labels') {		// sort key is preferred lables
- 				$sort_key_values[] = $this->_getRelatedRowIDsForLabel($values, $t_table, $t_rel_table, $hit_table, $sort_subfield ? $sort_subfield : $sort_field);	
+ 				$row_ids = $this->_getRelatedRowIDsForLabel($values, $t_table, $t_rel_table, $hit_table, $sort_subfield ? $sort_subfield : $sort_field);	
  			} elseif($is_attribute) {							// sort key is metadata attribute
- 				$sort_key_values[] = $this->_getRelatedRowIDsForAttribute($values, $t_table, $t_rel_table, $hit_table, $sort_field);		
+ 				$row_ids = $this->_getRelatedRowIDsForAttribute($values, $t_table, $t_rel_table, $hit_table, $sort_field);		
  			} else {
-				throw new ApplicationException(_t('Unhandled secondary sort'));
+				//throw new ApplicationException(_t('Unhandled secondary sort'));
+				$row_ids = $values;
 			}
 		}
 		return $row_ids;
@@ -1459,19 +1458,46 @@ class BaseFindEngine extends BaseObject {
 	/**
 	 *
 	 */
-	private function _getJoins($t_table, $t_rel_table, string $sort_field, array $rel_types=null) {
+	private function _getJoins($t_table, $t_rel_table, string $sort_field, array $rel_types=null, ?array $options=null) {
 		$table = $t_table->tableName();
 		$table_pk = $t_table->primaryKey();
 		$rel_table = $t_rel_table->tableName();		
 		$rel_table_pk = $t_rel_table->primaryKey();
 		
-		$path = Datamodel::getPath($table, $rel_table);
-		$path = array_keys($path);
+		if($t_table->isRelationship() && ($primary_table = caGetOption('primaryTable', $options, null)) && ($primary_table !== $rel_table)) {
+			$path = Datamodel::getPath($primary_table, $rel_table);
+			$path = array_keys($path);
+			array_unshift($path, $table);
+		} else {
+			$path = Datamodel::getPath($table, $rel_table);
+			$path = array_keys($path);
+		}
 
 		$is_attribute = method_exists($t_rel_table, 'hasElement') ? $t_rel_table->hasElement($sort_field) : false;
 		
 		$joins = [];
 		switch($psize = sizeof($path)) {
+			case 4:
+				$pt_pk = Datamodel::primaryKey($primary_table);
+				$joins[] = "LEFT JOIN {$primary_table} AS pt ON t.{$pt_pk} = pt.{$pt_pk}";
+				$linking_table = $path[2];
+				
+				$rel_types = caMakeRelationshipTypeIDList($linking_table, $rel_types);
+				$rel_type_sql = (is_array($rel_types) && (sizeof($rel_types) > 0)) ? " AND (l.type_id IN (".join(',', array_map('intval', $rel_types)).") OR (l.type_id IS NULL))" : '';
+	
+				if ($path[1] === $rel_table) {
+					$t_relation = Datamodel::getInstance($linking_table, true);
+					// self relation
+					$joins[] = "LEFT JOIN {$linking_table} AS l ON t.{$pt_pk} = l.{$pt_pk}{$rel_type_sql}";
+					$joins[] = "LEFT JOIN {$rel_table} AS s ON (s.{$rel_table_pk} = l.".$t_relation->getLeftTableFieldName().") OR (s.{$rel_table_pk} = l.".$t_relation->getRightTableFieldName().")";
+				} elseif ($is_attribute) {
+					$joins[] = "LEFT JOIN {$linking_table} AS l ON t.{$pt_pk} = l.{$pt_pk}{$rel_type_sql}";
+					$joins[] = "LEFT JOIN {$rel_table} AS s ON s.{$rel_table_pk} = l.{$rel_table_pk}";
+				} else {							
+					$joins[] = "LEFT JOIN {$linking_table} AS l ON t.{$pt_pk} = l.{$pt_pk}{$rel_type_sql}";
+					$joins[] = "LEFT JOIN {$rel_table} AS s ON s.{$rel_table_pk} = l.{$rel_table_pk}";
+				}
+				break;
 			case 3:
 				$linking_table = $path[1];
 				
