@@ -41,7 +41,7 @@ Once the updated files are in place navigate in your web browser to the home pag
 your Providence installation has most likely not yet been updated to version 2.0. Perform the Providence update and check your Pawtucket2 installation again.
 
 
-#### Updating from version 1.6 or earlier
+### Updating from version 1.6 or earlier
 
 To update from a version 1.6.x or older installation, you must first update to version 1.7, then follow the 1.7 update instructions.
 
@@ -50,10 +50,10 @@ To update from a version 1.6.x or older installation, you must first update to v
 The latest development versions are available on GitHub in branches prefixed with `dev/`. If you are not sure what to run, use a release. If you are looking to work with an in-development feature, you can install a development branch using these steps:
 
 # Clone this repository into the location where you wish it to run using git clone https://github.com/collectiveaccess/pawtucket2.
-# By default, the newly cloned repository will use the main branch, which contains code for the current release. Choose the desired branch by running from within the cloned repository `git checkout <branch name>`.
-# Install the PHP package manager [Composer](https://getcomposer.org) if you do not already have it installed on your server.
-# Run `composer` from the root of the cloned repository with `composer.phar install.` This will download and install all required 3rd party software libraries.
-# Follow the release version installation instructions to complete the installation.
+* By default, the newly cloned repository will use the main branch, which contains code for the current release. Choose the desired branch by running from within the cloned repository `git checkout <branch name>`.
+* Install the PHP package manager [Composer](https://getcomposer.org) if you do not already have it installed on your server.
+* Run `composer` from the root of the cloned repository with `composer.phar install.` This will download and install all required 3rd party software libraries.
+* Follow the release version installation instructions to complete the installation.
 
 ### Useful Links
 
