@@ -2386,7 +2386,7 @@ function caFileIsIncludable($ps_file) {
 	 *		defaultOnEmptyString = Force use of default value when option is set to an empty string). [Default is false]
 	 * @return mixed
 	 */
-	function caGetOption($pm_option, $pa_options, $pm_default=null, $pa_parse_options=null) {
+	function caGetOption($pm_option, ?array $pa_options, $pm_default=null, ?array $pa_parse_options=null) {
 		if (is_object($pa_options) && is_a($pa_options, 'Zend_Console_Getopt')) {
 			$pa_options = array($pm_option => $pa_options->getOption($pm_option));
 		}
@@ -3382,8 +3382,8 @@ function caFileIsIncludable($ps_file) {
 
 		$vs_content = curl_exec($vo_curl);
 
-		if(curl_getinfo($vo_curl, CURLINFO_HTTP_CODE) !== 200) {
-			throw new WebServiceError(_t('An error occurred while querying an external webservice'). _t(" at %1", $ps_url). " ". print_r(curl_getinfo($vo_curl), true));
+		if(($code = curl_getinfo($vo_curl, CURLINFO_HTTP_CODE)) !== 200) {
+			throw new WebServiceError(_t('An error occurred while querying an external webservice'). _t(" at %1 [HTTP code was %2]", $ps_url, $code). " ". print_r(curl_getinfo($vo_curl), true));
 		}
 		curl_close($vo_curl);
 		return $vs_content;
@@ -3516,7 +3516,7 @@ function caFileIsIncludable($ps_file) {
 		global $g_ui_locale;
 		$vs_locale = caGetOption('locale', $pa_options, $g_ui_locale);
 		
-		$ps_value = preg_replace("![\-]+!", " ", $ps_value);
+		$ps_value = preg_replace("![\-]+!u", " ", $ps_value);
 
 		$pa_values = array(caConvertFractionalNumberToDecimal(trim($ps_value), $vs_locale));
 
@@ -4203,7 +4203,7 @@ function caFileIsIncludable($ps_file) {
 		$move_articles = caGetOption('moveArticles', $options, true);
 
 		$display_value = trim(preg_replace('![^\p{L}0-9 ]+!u', ' ', $text));
-		$display_value = preg_replace('![ ]+!', ' ', $display_value);
+		$display_value = preg_replace('![ ]+!u', ' ', $display_value);
 		
 		if($locale && $move_articles) {
 			// Move articles to end of string
@@ -4219,13 +4219,13 @@ function caFileIsIncludable($ps_file) {
 
 		// Left-pad numbers
 		$padded = [];
-		foreach(preg_split("![ \t]+!", $display_value) as $t) {
+		foreach(preg_split("![ \t]+!u", $display_value) as $t) {
 			if(is_numeric($t)) {
 				$padded[] = str_pad($t, 10, 0, STR_PAD_LEFT).'    ';	// assume numbers don't go wider than 10 places
-			} elseif(preg_match("!^([\d]+)([A-Za-z]+)$!", $t, $m)) {
-				$padded[] = str_pad($m[1], 10, 0, STR_PAD_LEFT).str_pad(substr($m[2], 0, 4), 4, ' ', STR_PAD_LEFT);
+			} elseif(preg_match("!^([\d]+)([A-Za-z]+)$!u", $t, $m)) {
+				$padded[] = str_pad($m[1], 10, 0, STR_PAD_LEFT).str_pad(mb_substr($m[2], 0, 4), 4, ' ', STR_PAD_LEFT);
 			} else {
-				$padded[] = str_pad(substr($t, 0, 10), 14, ' ', STR_PAD_RIGHT);
+				$padded[] = str_pad(mb_substr($t, 0, 10), 14, ' ', STR_PAD_RIGHT);
 			}
 		}
 		$display_value = join(' ', $padded);
@@ -4910,6 +4910,7 @@ function caFileIsIncludable($ps_file) {
 	function caGetHTMLPurifier(?array $options=null) : HTMLPurifier {
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('URI.DisableExternalResources', !Configuration::load()->get('purify_allow_external_references'));
+		$config->set('Cache.SerializerPath', Configuration::load()->get('purify_serializer_path'));
 		return new HTMLPurifier($config); 
 	}
 	# ----------------------------------------
@@ -5122,10 +5123,15 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
-	 * 
+	 * Check HTTP response code for URL. Any code indicating the URL is live (Eg. in the 200 range)
+	 * will result in a return value of true. If the allowRedirects option is set then redirects
+	 * (HTTP response codes in the 300 range) will also result in a true return value.
 	 *
-	 * @param array
-	 * @return array
+	 * @param string $url The url to check
+	 * @param array $options Options include:
+	 *		allowRedirects = If true, redirected URLs are considers to be valid, working urls. [Default is false]
+	 *
+	 * @return bool True if URL appears to be valid, false if not.
 	 */
 	function caUrlExists(string $url, ?array $options=null) : bool { 
 		$allow_redirects = caGetOption('allowRedirects', $options, true);
@@ -5138,5 +5144,15 @@ function caFileIsIncludable($ps_file) {
 			if($allow_redirects && ($sc >= 300) && ($sc <= 399)) { return true; }
 		}
 		return false;
+	}
+	# ----------------------------------------
+	/**
+	 * Return current HTTP response object
+	 *
+	 * @return ResponseHTTP
+	 */
+	function caGetHTTPResponse() : ResponseHTTP { 		
+		$app = AppController::getInstance();
+		return $app->getResponse();
 	}
 	# ----------------------------------------

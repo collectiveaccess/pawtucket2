@@ -38,7 +38,7 @@ trait CLIUtilsMaintenance {
 		$o_db = new Db();
 		ini_set('memory_limit', '4000m');
 		
-		$tables = trim((string)$po_opts->getOption('table'));
+		$tables = $po_opts ? trim((string)$po_opts->getOption('table')) : null;
 		
 		if($tables) {
 			$tables = preg_split('![,;]+!', $tables);
@@ -407,65 +407,6 @@ trait CLIUtilsMaintenance {
 	
 	# -------------------------------------------------------
 	/**
-	 * Update database schema
-	 */
-	public static function update_database_schema($po_opts=null) {
-		$config_check = new ConfigurationCheck();
-		if (($vn_current_revision = ConfigurationCheck::getSchemaVersion()) < __CollectiveAccess_Schema_Rev__) {
-			CLIUtils::addMessage(_t("Are you sure you want to update your CollectiveAccess database from revision %1 to %2?\nNOTE: you should backup your database before applying updates!\n\nType 'y' to proceed or 'N' to cancel, then hit return ", $vn_current_revision, __CollectiveAccess_Schema_Rev__));
-			flush();
-			ob_flush();
-			$confirmation  =  trim( fgets( STDIN ) );
-			if ( $confirmation !== 'y' ) {
-				// The user did not say 'y'.
-				return false;
-			}
-			$va_messages = ConfigurationCheck::performDatabaseSchemaUpdate();
-
-			print CLIProgressBar::start(sizeof($va_messages), _t('Updating database'));
-			foreach($va_messages as $vs_message) {
-				print CLIProgressBar::next(1, $vs_message);
-			}
-			print CLIProgressBar::finish();
-		} else {
-			print CLIProgressBar::finish();
-			CLIUtils::addMessage(_t("Database already at revision %1. No update is required.", __CollectiveAccess_Schema_Rev__));
-		}
-
-		return true;
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function update_database_schemaParamList() {
-		return array();
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function update_database_schemaUtilityClass() {
-		return _t('Maintenance');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function update_database_schemaShortHelp() {
-		return _t("Update database schema to the current version.");
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function update_database_schemaHelp() {
-		return _t("Updates database schema to current version.");
-	}
-	
-	
-	# -------------------------------------------------------
-	/**
 	 * @param Zend_Console_Getopt|null $po_opts
 	 * @return bool
 	 */
@@ -508,7 +449,6 @@ trait CLIUtilsMaintenance {
 	public static function clear_search_indexing_queue_lock_fileHelp() {
 		return _t('The search indexing queue is a task run periodically, usually via cron, to process pending indexing tasks. Simultaneous instances of the queue processor are prevented by means of a lock file. The lock file is created when the queue starts and deleted when it completed. While it is present new queue processing instances will refuse to start. In some cases, when a queue processing instance is killed or crashes, the lock file may not be removed and the queue will refuse to re-start. Lingering lock files may be removed using this command. Note that you must run caUtils under a user with privileges to delete the lock file.');
 	}
-	
 	# -------------------------------------------------------
 	/**
 	 * Fix file permissions
@@ -620,269 +560,6 @@ trait CLIUtilsMaintenance {
 	 */
 	public static function fix_permissionsHelp() {
 		return _t("CollectiveAccess must have both read and write access to the temporary storage directory (app/tmp), media directory (media) and HTMLPurifier definition cache (app/lib/Parsers/htmlpurifier/standalone/HTMLPurifier/DefinitionCache). A run-time error will be displayed if any of these locations is not accessible to the application. To change these permissions to allow CollectiveAccess to run normally run this command while logged in with administrative/root privileges. You are currently logged in as %1 (uid %2). You can specify which user will be given ownership of the directories using the --user option. If you do not specify a user, the web server user for your server will be automatically determined and used.", caGetProcessUserName(), caGetProcessUserID());
-	}
-	# -------------------------------------------------------
-	/**
-	 * Reset user password
-	 */
-	public static function reset_password($po_opts=null) {
-		if (!($vs_user_name = (string)$po_opts->getOption('user')) && !($vs_user_name = (string)$po_opts->getOption('username'))) {
-			$vs_user_name = readline("User: ");
-		}
-		if (!$vs_user_name) {
-			CLIUtils::addError(_t("You must specify a user"));
-			return false;
-		}
-		
-		$t_user = new ca_users();
-		if ((!$t_user->load(array("user_name" => $vs_user_name)))) {
-			CLIUtils::addError(_t("User name %1 does not exist", $vs_user_name));
-			return false;
-		}
-		
-		if (!($vs_password = (string)$po_opts->getOption('password'))) {
-			$vs_password = CLIUtils::_getPassword(_t('Password: '), true);
-			print "\n\n";
-		}
-		if(!$vs_password) {
-			CLIUtils::addError(_t("You must specify a password"));
-			return false;
-		}
-		
-		if($t_user->get('active') == 0) {
-			CLIUtils::addMessage(_t('Set user %1 as active', $vs_user_name), array('color' => 'bold_green'));
-		}
-		$t_user->set('password', $vs_password);
-		$t_user->set('active', 1);
-		$t_user->update();
-		if ($t_user->numErrors()) {
-			CLIUtils::addError(_t("Password change for user %1 failed: %2", $vs_user_name, join("; ", $t_user->getErrors())));
-			return false;
-		}
-		CLIUtils::addMessage(_t('Changed password for user %1', $vs_user_name), array('color' => 'bold_green'));
-		return true;
-		
-		CLIUtils::addError(_t("You must specify a user"));
-		return false;
-	}
-	# -------------------------------------------------------
-	/**
-	 * Grab password from STDIN without showing input on STDOUT
-	 */
-	private static function _getPassword($ps_prompt, $pb_stars = false) {
-		if ($ps_prompt) fwrite(STDOUT, $ps_prompt);
-		// Get current style
-		$vs_old_style = shell_exec('stty -g');
-
-		if ($pb_stars === false) {
-			shell_exec('stty -echo');
-			$vs_password = rtrim(fgets(STDIN), "\n");
-		} else {
-			shell_exec('stty -icanon -echo min 1 time 0');
-
-			$vs_password = '';
-			while (true) {
-				$vs_char = fgetc(STDIN);
-
-				if ($vs_char === "\n") {
-					break;
-				} else if (ord($vs_char) === 127) {
-					if (strlen($vs_password) > 0) {
-						fwrite(STDOUT, "\x08 \x08");
-						$vs_password = substr($vs_password, 0, -1);
-					}
-				} else {
-					fwrite(STDOUT, "*");
-					$vs_password .= $vs_char;
-				}
-			}
-		}
-
-		// Reset old style
-		shell_exec('stty ' . $vs_old_style);
-
-		// Return the password
-		return $vs_password;
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function reset_passwordParamList() {
-		return array(
-			"username|n=s" => _t("User name to reset password for."),
-			"user|u=s" => _t("User name to reset password for."),
-			"password|p=s" => _t("New password for user")
-		);
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function reset_passwordUtilityClass() {
-		return _t('Maintenance');
-	}
-
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function reset_passwordShortHelp() {
-		return _t('Reset a user\'s password');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function reset_passwordHelp() {
-		return _t('Reset a user\'s password.');
-	}
-	# -------------------------------------------------------
-	/**
-	 * Reset user password
-	 */
-	public static function add_account($po_opts=null) {
-		if (!($user_name = (string)$po_opts->getOption('user')) && !($user_name = (string)$po_opts->getOption('username'))) {
-			$user_name = readline("User: ");
-		}
-		if (!$user_name) {
-			CLIUtils::addError(_t("You must specify a user name"));
-			return false;
-		}
-		
-		$t_user = new ca_users();
-		if (($t_user->load(array("user_name" => $user_name)))) {
-			CLIUtils::addError(_t("User name %1 already exists", $user_name));
-			return false;
-		}
-		
-		$auto_generate_password = false;
-		if (!($password = (string)$po_opts->getOption('password'))) {
-			if($auto_generate_password = (bool)$po_opts->getOption('auto-generate-password')) {
-				$password = caGenerateRandomPassword(8);
-			} else {
-				$password = CLIUtils::_getPassword(_t('Password: '), true);
-				print "\n\n";
-			}
-		}
-		
-		if (!($lastname = (string)$po_opts->getOption('lastname'))) {
-			CLIUtils::addError(_t("You must specify a last name for the user"));
-			return false;
-		}
-		$firstname = (string)$po_opts->getOption('firstname');
-		
-		if (!($email = (string)$po_opts->getOption('email'))) {
-			CLIUtils::addError(_t("You must specify an email address for the user"));
-			return false;
-		}
-		
-		if (!($user_class = strtoupper((string)$po_opts->getOption('userclass')))) {
-			$user_class = 'FULL';
-		} elseif(!in_array($user_class, ['FULL', 'PUBLIC'])) {
-			CLIUtils::addError(_t("Invalid userclass. Must be either FULL or PUBLIC"));
-			return false;	
-		}
-		
-		$roles = (string)$po_opts->getOption('roles');
-		$role_list = preg_split('![,;]+!', $roles);
-		
-		$t_roles = new ca_user_roles();
-		$valid_role_codes = array_map(function($v) { return $v['code']; }, $t_roles->getRoleList());
-		$role_list = array_filter($role_list, function($v) use ($valid_role_codes) {
-			return in_array($v, $valid_role_codes);
-		});
-		
-		if (!sizeof($role_list)) {
-			CLIUtils::addError(_t("You must specify at least one valid role for the user"));
-			return false;
-		}
-		
-		if(strlen($groups = (string)$po_opts->getOption('groups'))) {
-			$group_list = preg_split('![,;]+!', $groups);
-		
-			$t_groups = new ca_user_groups();
-			$valid_group_codes = array_map(function($v) { return $v['code']; }, $t_groups->getGroupList());
-			$group_list = array_filter($group_list, function($v) use ($valid_group_codes) {
-				return in_array($v, $valid_group_codes);
-			});
-		
-			if (!sizeof($group_list)) {
-				CLIUtils::addError(_t("You must specify at least one valid group for the user, or omit the group option"));
-				return false;
-			}
-		}
-		
-		$t_user->set('user_name', $user_name);
-		$t_user->set('email', $email);
-		$t_user->set('fname', $firstname);
-		$t_user->set('lname', $lastname);
-		$t_user->set('user_class', ($user_class == 'FULL') ? 0 : 1);
-		$t_user->set('password', $password);
-		$t_user->set('active', 1);
-		$t_user->insert();
-		if ($t_user->numErrors()) {
-			CLIUtils::addError(_t("Account creation for user %1 failed: %2", $user_name, join("; ", $t_user->getErrors())));
-			return false;
-		}
-		
-		$t_user->addRoles($role_list);
-		if ($t_user->numErrors()) {
-			CLIUtils::addError(_t("Could not add roles to account for user %1: %2", $user_name, join("; ", $t_user->getErrors())));
-		}
-		
-		if(is_array($group_list) && sizeof($group_list)) {
-			$t_user->addToGroups($group_list);
-			if ($t_user->numErrors()) {
-				CLIUtils::addError(_t("Could not add groups to account for user %1: %2", $user_name, join("; ", $t_user->getErrors())));
-			}
-		}
-		
-		CLIUtils::addMessage(_t('Created account for user %1', $user_name), array('color' => 'bold_green'));
-		if($auto_generate_password) {
-			CLIUtils::addMessage(_t('Autogenerated password for user %1 is %2', $user_name, $password), array('color' => 'bold_green'));
-		}
-		return true;
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function add_accountParamList() {
-		return array(
-			"username|n=s" => _t("User name for new account."),
-			"user|u=s" => _t("User name for new account."),
-			"password|p=s" => _t("Password for new account"),
-			"email|e=s" => _t("Email address for new account"),
-			"firstname|f=s" => _t("First name of user"),
-			"lastname|l=s" => _t("Last name of user"),
-			"userclass|c=s" => _t("Class of account. User FULL for full login; PUBLIC for public-only login. Default is FULL."),
-			"auto-generate-password|a=s" => _t("Generate new password for account."),
-			"roles|r=s" => _t("Comma-separated list of roles to add to account"),
-			"groups|g=s" => _t("Comma-separated list of groups to add to account"),
-		);
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function add_accountUtilityClass() {
-		return _t('Maintenance');
-	}
-
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function add_accountShortHelp() {
-		return _t('Add a new user account');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function add_accountHelp() {
-		return _t('Add a new user account.');
 	}
 	# -------------------------------------------------------
 	/**
@@ -1374,7 +1051,7 @@ trait CLIUtilsMaintenance {
 	public static function clear_caches($po_opts=null) {
 		$config = Configuration::load();
 
-		$ps_cache = strtolower((string)$po_opts->getOption('cache'));
+		$ps_cache = strtolower($po_opts ? (string)$po_opts->getOption('cache') : 'all');
 		if (!in_array($ps_cache, array('all', 'app', 'usermedia'))) { $ps_cache = 'all'; }
 
 		if (in_array($ps_cache, array('all', 'app'))) {

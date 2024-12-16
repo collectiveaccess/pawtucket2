@@ -610,6 +610,7 @@ class SearchIndexer extends SearchBase {
 		$vb_initial_reindex_mode = $pb_reindex_mode;
 		$for_current_value_reindex = caGetOption('forCurrentValueReindex', $pa_options, false);
 		$force = caGetOption('force', $pa_options, false);
+		$vb_reindex_children = false;
 		
 		$can_do_incremental_indexing = $this->opo_engine->can('incremental_reindexing') ? true : false;		// can the engine do incremental indexing? Or do we need to reindex the entire row every time?
 		
@@ -633,7 +634,7 @@ class SearchIndexer extends SearchBase {
 		if(!$pb_reindex_mode && caGetOption('queueIndexing', $pa_options, false) && !$t_subject->getAppConfig()->get('disable_out_of_process_search_indexing') && !defined('__CA_DONT_QUEUE_SEARCH_INDEXING__')) {
 			$field_data_proc = [];
 			foreach(array_keys($pa_changed_fields) as $k) {
-				$field_data_proc[$k] = $pa_field_data[$k];
+				$field_data_proc[$k] = $pa_field_data[$k] ?? null;
 			}
 			$this->queueIndexRow(array(
 				'table_num' => $pn_subject_table_num,
@@ -647,7 +648,6 @@ class SearchIndexer extends SearchBase {
 		}
 		
 		$pb_is_new_row = (int)caGetOption('isNewRow', $pa_options, false);
-		$vb_reindex_children = false;
 
 		$vs_subject_pk = $t_subject->primaryKey();
 		$vs_subject_type_code = method_exists($t_subject, 'getTypeCode') ? $t_subject->getTypeCode() : null;
@@ -750,7 +750,9 @@ if (!$for_current_value_reindex) {
 						if ($t_subject && $t_subject->isHierarchical()) {
 							$vn_fld_num = $t_subject->fieldNum($vs_field);
 							if ($va_hier_values = $this->_genHierarchicalPath($pn_subject_row_id, $vs_field, $t_subject, $va_data)) {
-								$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, $va_hier_values['values'], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+								foreach($va_hier_values['values'] as $v) {
+									$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$v], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+								}
 								$fld_init = true;
 								
 								$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, $va_hier_values['values'], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
@@ -785,7 +787,9 @@ if (!$for_current_value_reindex) {
 							$va_values = $o_idno->getIndexValues($pa_field_data[$vs_field], $va_data);
 						}
 						$vn_fld_num = $t_subject->fieldNum($vs_field);
-						$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, $va_values, array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+						foreach($values as $v) {
+							$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$v], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+						}
 						$fld_init = true;
 						$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, $va_values, array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
 					}
@@ -874,7 +878,9 @@ if (!$for_current_value_reindex) {
 						}
 						if(strlen($pa_field_data[$vs_field] ?? '') > 0)  { $va_content[$pa_field_data[$vs_field]] = true; }
 
-						$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, array_keys($va_content), array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+						foreach(array_keys($va_content) as $v) {
+							$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$v], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+						}
 						$fld_init = true;
 						
 						$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, array_keys($va_content), array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
@@ -2781,7 +2787,7 @@ related_indexing:
 		
 		$cache_key = caMakeCacheKeyFromOptions(array_merge($pa_options, ['subject' => $vs_subject_tablename, 'related' => $vs_related_table]));
 		
-		if(!self::$s_query_cache[$cache_key]) {
+		if(!(self::$s_query_cache[$cache_key] ?? null)) {
 			$pb_force_related = caGetOption('forceRelated', $pa_options, false);
 			$pa_restrict_to_types = caGetOption('restrictToTypes', $pa_options, false);
 			

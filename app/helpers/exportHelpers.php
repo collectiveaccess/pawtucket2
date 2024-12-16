@@ -407,7 +407,6 @@ function caExportGetDefaultDisplay(string $table) : ?array {
  */
 function caExportResult(RequestHTTP $request, $result, string $template, string $output_filename, ?array $options=null) {
 	caIncrementExportCount();
-	
 	$output = caGetOption('output', $options, 'STREAM');
 	
 	$config = Configuration::load();

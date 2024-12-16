@@ -29,9 +29,7 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
 require_once(__CA_LIB_DIR__.'/Parsers/ganon.php');
-
  
 class DisplayTemplateParser {
 	# -------------------------------------------------------------------
@@ -668,6 +666,14 @@ class DisplayTemplateParser {
 								$va_relative_ids = $pr_res->get($t_rel_instance->tableName().".siblings.".$t_rel_instance->primaryKey(), $va_get_options);
 								$va_relative_ids = array_values($va_relative_ids);
 								break;
+							case 'next':
+								$va_relative_ids = $pr_res->get($t_rel_instance->tableName().".next.".$t_rel_instance->primaryKey(), $va_get_options);
+								$va_relative_ids = array_values($va_relative_ids);
+								break;
+							case 'previous':
+								$va_relative_ids = $pr_res->get($t_rel_instance->tableName().".previous.".$t_rel_instance->primaryKey(), $va_get_options);
+								$va_relative_ids = array_values($va_relative_ids);
+								break;
 							// allow labels as units
 							case 'preferred_labels':
 							case 'nonpreferred_labels':
@@ -751,13 +757,14 @@ class DisplayTemplateParser {
 							$va_tmpl_val = array_slice($va_tmpl_val, 0, $limit);
 						}
 						
-						if (($vn_start > 0) || !is_null($vn_length)) { 
-							$vn_last_unit_omit_count = sizeof($va_tmpl_val) - ($vn_length - $vn_start);
-						}
-						
 						if ($vs_unit_filter_regex) {
 							$va_tmpl_val = array_filter($va_tmpl_val, function($v) use ($vs_unit_filter_regex) { return preg_match($vs_unit_filter_regex, $v); });
 						}
+						
+						if (($vn_start > 0) || !is_null($vn_length)) { 
+							$vn_last_unit_omit_count = sizeof($va_tmpl_val) - ($vn_length - $vn_start);
+						}
+						$va_tmpl_val = array_slice($va_tmpl_val, $vn_start, ($vn_length > 0) ? $vn_length : null); // trim to start/length
 						
 						if (caGetOption('returnAsArray', $pa_options, false)) { return $va_tmpl_val; }
 						$vs_acc .= $content = join($vs_unit_delimiter, $va_tmpl_val);
@@ -802,6 +809,14 @@ class DisplayTemplateParser {
 								break;
 							case 'siblings':
 								if (!is_array($va_relative_ids = $pr_res->get($t_rel_instance->tableName().".siblings.".$t_rel_instance->primaryKey(), $va_get_options))) { $va_relative_ids = []; }
+								$va_relative_ids = array_values($va_relative_ids);
+								break;
+							case 'next':
+								if (!is_array($va_relative_ids = $pr_res->get($t_rel_instance->tableName().".next.".$t_rel_instance->primaryKey(), $va_get_options))) { $va_relative_ids = []; }
+								$va_relative_ids = array_values($va_relative_ids);
+								break;
+							case 'previous':
+								if (!is_array($va_relative_ids = $pr_res->get($t_rel_instance->tableName().".previous.".$t_rel_instance->primaryKey(), $va_get_options))) { $va_relative_ids = []; }
 								$va_relative_ids = array_values($va_relative_ids);
 								break;
 							case 'related':
@@ -975,7 +990,6 @@ class DisplayTemplateParser {
 					} else {
 						$vs_proc_template = caProcessTemplate($o_node->html(), $pa_vals, ['quote' => $pb_quote]);
 					}
-					
 					if (($vs_tag === 'l') && caGetOption('makeLink', $pa_options, true)) {
 						$vs_linking_context = $ps_tablename;
 						$va_linking_ids = [$pr_res->getPrimaryKey()];
@@ -992,7 +1006,7 @@ class DisplayTemplateParser {
 						$va_proc_templates = caCreateLinksFromText(
 							["{$vs_proc_template}"], $vs_linking_context, $va_linking_ids,
 							null, caGetOption('linkTarget', $pa_options, null),
-							array_merge(['addRelParameter' => true, 'requireLinkTags' => false, 'bundle' => $o_node->bundle, 'attributes' => $link_attributes], $pa_options)
+							array_merge(['addRelParameter' => true, 'bundle' => $o_node->bundle, 'attributes' => $link_attributes], $pa_options, ['requireLinkTags' => false])
 						);
 						$vs_proc_template = array_shift($va_proc_templates);	
 					} elseif(strlen($vs_tag) && ($vs_tag[0] !=='~')) { 
@@ -2055,6 +2069,15 @@ class DisplayTemplateParser {
 	static private function _setPrimaryRepresentationFiltering($res, $value) {
 		if (!is_a($res, "SearchResult") || !method_exists($res, "filterNonPrimaryRepresentations")) { return null; }
 		
+		// Don't filter non-primary representation when template is written relative to a representation or non-object-object-representation
+		// relationship. Doing filtering in this contexts generates seemingly incomprehensible results.
+		if(in_array($res->tableName(), [
+			'ca_object_representations', 'ca_object_representations_x_entities', 'ca_object_representations_x_occurrences', 'ca_object_representations_x_places', 
+			'ca_object_representations_x_collections', 'ca_object_representations_x_storage_locations', 
+			'ca_object_representations_x_object_representations', 'ca_object_representations_x_vocabulary_terms'
+		])) {
+			$value = false;
+		}
 	 	$filter_opt = $value;
 	 	$filter = true;
         if(!is_null($filter_opt) && (!(bool)$filter_opt || ($filter_opt === '0') || (strtolower($filter_opt) === 'no'))) { $filter = false; }
