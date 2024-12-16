@@ -54,7 +54,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-2">{{{^ca_occurrences.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_occurrences.type_id|ca_occurrences.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_occurrences.type_id">^ca_occurrences.type_id</ifdef><ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef></div></ifdef>}}}
@@ -118,8 +118,10 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<unit relativeTo="ca_occurrences.place_as_text" delimiter=" "><dd>^ca_occurrences.place_as_text</dd></if></unit>
 				</ifdef>
 				<ifdef code="ca_occurrences.dates.dates_value">
-					<dt><?= _t('Date'); ?></dt>
-					<unit relativeTo="ca_occurrences.dates" delimiter=""><if rule="^ca_occurrences.dates.dates_type !~ /Reception/"><dd>^ca_occurrences.dates.dates_value (^ca_occurrences.dates.dates_type)</dd></if></unit>
+					<unit relativeTo="ca_occurrences.dates" delimiter=""><if rule="^ca_occurrences.dates.dates_type !~ /Reception/">
+						<dt><?= _t('Date'); ?></dt>
+						<dd>^ca_occurrences.dates.dates_value</dd>
+					</if></unit>
 				</ifdef>
 				<ifdef code="ca_occurrences.description_public">
 					<dt><?= _t('Description'); ?></dt>

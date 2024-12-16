@@ -144,6 +144,22 @@
 							}elseif($vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|'><if rule='^ca_objects.series =~ /Photographic Material/'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</if></unit>", array("checkAccess" => $va_access_values))){
 								$va_tmp = explode("|", $vs_thumbnails);
 								$vs_thumbnail = $va_tmp[0];
+							}elseif($vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|' limit='1'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</unit>", array("checkAccess" => $va_access_values))){
+								$va_tmp = explode("|", $vs_thumbnails);
+								$vs_thumbnail = $va_tmp[0];
+							}
+							if(!$vs_thumbnail){
+								$vs_thumbnail = $vs_default_placeholder;
+							}
+							$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
+						break;
+						# -------------------------------
+						case "ca_collections":
+							$vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $vs_image_class));
+							if(!$vs_thumbnail){
+								$vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|' limit='1'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</unit>", array("checkAccess" => $va_access_values));
+								$va_tmp = explode("|", $vs_thumbnails);
+								$vs_thumbnail = $va_tmp[0];
 							}
 							if(!$vs_thumbnail){
 								$vs_thumbnail = $vs_default_placeholder;

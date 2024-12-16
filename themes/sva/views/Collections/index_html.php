@@ -43,7 +43,7 @@
 					}
 					# --- image on collection record
 					$vs_thumbnail = "";
-					if($vs_thumbnail = $qr_collections->get("ca_object_representations.media.large", array("checkAccess" => $access_values))){
+					if($vs_thumbnail = $qr_collections->get("ca_object_representations.media.iconlarge", array("checkAccess" => $access_values))){
 						$vs_thumbnail = "<div class='pt-3 img-fluid'>".$vs_thumbnail."</div>";
 					}			
 					

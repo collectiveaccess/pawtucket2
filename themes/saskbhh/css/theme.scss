@@ -1,0 +1,97 @@
+$primary:       #5EB6E7;
+$secondary:     #22559A;
+$dark:          #22559A;
+$medium_grey:	#e8e8e8;
+.bg_medium_grey{
+	background-color: $medium_grey;
+}
+.btn-primary:hover{
+	background-color:#000000;
+	color:#FFF;
+}
+.btn-white{
+	color:$secondary;
+}
+header{
+	border-top:5px solid #02d3c9;
+}
+nav.navbar{
+	background-color: transparent;
+	background-image: linear-gradient(180deg, #e8e8e8 0%, #f4f4f4 100%);
+	.nav-link:hover{
+		background-color: $primary;
+	}
+}
+@media (min-width: 992px) {
+  .navbar-expand-lg .dropdown-menu {
+    top: 3.3em;
+  }
+}
+footer{
+	transition: background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;
+	padding: 50px 0px 50px 0px;
+	line-height: 2.6rem;
+	.elementor-motion-effects-container {
+		height: 100%;
+		left: 0;
+		overflow: hidden;
+		position: absolute;
+		top: 0;
+		transform-origin: 894.5px 150px;
+		width: 100%;
+		.elementor-motion-effects-layer {
+			background-image: url("../assets/graphics/footer-image-web-copy.jpg");
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-attachment: scroll;
+			left: 0;
+			position: absolute;
+			top: 0;
+			transition-duration: 1s;
+			transition-property: transform,opacity;
+			transition-timing-function: cubic-bezier(0,.33,.07,1.03);
+			--e-transform-transition-duration: 100ms;
+		}
+	}
+	.elementor-background-overlay {
+		background-color: #22559AF0;
+		opacity: 0.7;
+		transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
+		height: 100%;
+		width: 100%;
+		top: 0;
+		left: 0;
+		position: absolute;
+	}
+}
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .3)), url("../assets/graphics/sask_hero1.jpg");
+   
+    /* Full height */
+    height: 100vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    
+    .divide{
+    	width:170px;
+    }
+}
+.parallax.hero1 {
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .4)), url("../assets/graphics/sask_hero1.jpg");
+}
+.parallax.hero2 {
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .3)), url("../assets/graphics/sask_hero2.jpg");
+}
+.parallax.hero3 {
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .3)), url("../assets/graphics/sask_hero3.jpg");
+}
+.parallax.hero4 {
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1)), url("../assets/graphics/sask_hero4.jpg");
+}
