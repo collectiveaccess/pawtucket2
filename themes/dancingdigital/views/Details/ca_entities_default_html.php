@@ -53,11 +53,19 @@
 						<div class="text-center mb-5">^ca_object_representations.media.medium</div>
 					</div> 
 				</ifdef>}}}		
+					
+									
+				{{{<ifdef code="ca_entities.idno">
+					<div class="object-info">
+						<div class="info-text"><label class="object-info-label">Identifier</label> ^ca_entities.idno</div>
+					</div>
+				</ifdef>}}}
+				
 				{{{<ifdef code="ca_entities.biography">
 					<div class="col align-self-center">
 						<div class='trimText entity-bio'>^ca_entities.biography</div>
 					</div> 
-				</ifdef>}}}		
+				</ifdef>}}}	
 			</div>
 
 			{{{<ifcount code="ca_entities.related" min="1" restrictToTypes="individual">

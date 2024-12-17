@@ -129,6 +129,14 @@
 								</unit>
 							</div>
 						</ifdef>
+						
+											
+						<ifdef code="ca_occurrences.idno">
+							<div class="object-info">
+								<label class="object-info-label">Identifier</label>
+								<div class="info-text">^ca_occurrences.idno</div>
+							</div>
+						</ifdef>
 
 						<ifdef code="ca_occurrences.description">
 							<div class="object-info">

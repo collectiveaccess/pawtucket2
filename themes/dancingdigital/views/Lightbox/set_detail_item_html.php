@@ -42,10 +42,11 @@
     $vs_representation = $this->getVar('representation');
     $vs_placeholder = $this->getVar('placeholder');
     
+    $label = $this->getVar('label');
     $start = $this->getVar('startTimecode');
     $end = $this->getVar('endTimecode');
     if($start || $end) {
-    	$timecode_display = ($start && $end) ? "{$start} ➜ {$end}" : "{$start}{$end}";
+    	$timecode_display = ($start && $end) ? "{$label} : {$start} ➜ {$end}" : "{$label} : {$start}{$end}";
     }
     $av_rep_ids = $this->getVar('av_rep_ids');
 ?>

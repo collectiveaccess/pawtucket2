@@ -338,15 +338,16 @@ if (!$vb_ajax) {	// !ajax
 								$this->setVar('representation_id', $vn_representation_id);
 								$this->setVar('annotation_id', $annotation_id = $va_items[$vn_item_id]['annotation_id'] ?? null);
 								
-								$start = $end = null;
+								$start = $end = $label = null;
 								if($annotation_id) {
 									$t_anno = new ca_user_representation_annotations($annotation_id);
 									$start = $t_anno->getPropertyValue('startTimecode', ['format' => 'hms']);
 									$end = $t_anno->getPropertyValue('endTimecode', ['format' => 'hms']);
+									$label = $t_anno->get('ca_user_representation_annotations.preferred_labels');
 								}
 								$this->setVar('startTimecode', $start);
 								$this->setVar('endTimecode', $end);
-								
+								$this->setVar('label', $label);
 								
 								switch($vs_current_view) {
 									case 'list':

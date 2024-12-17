@@ -70,6 +70,13 @@
 							<div class="info-text">^ca_objects.archival_item_type</div>
 						</div>
 					</ifdef>}}}
+					
+					{{{<ifdef code="ca_objects.idno">
+						<div class="object-info">
+							<label class="object-info-label">Identifier</label>
+							<div class="info-text">^ca_objects.idno</div>
+						</div>
+					</ifdef>}}}
 
 					{{{<ifdef code="ca_objects.date">
 						<div class="object-info">
