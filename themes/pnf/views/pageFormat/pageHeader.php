@@ -174,6 +174,13 @@ if($this->request->isLoggedIn()){
 }
 ?>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Titles modernized'), '', '', 'Listing', 'ccssusa');?></li>						
+<?php
+if($this->request->isLoggedIn()){
+?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Translations from Foreign Literatures'), '', '', 'Listing', 'translations_foreign_literatures');?></li>
+<?php
+}
+?>							
 							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/"><?php print _t('Websites of Interest');?></a></li>
 						</ul>
 					</li>
@@ -239,6 +246,13 @@ if($this->request->isLoggedIn()){
 							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/">PAGINAS WEB DE INTERES</a></li>
 
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'TITULOS MODERNIZADOS', '', '', 'Listing', 'ccssusa');?></li>						
+<?php
+if($this->request->isLoggedIn()){
+?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Traducciones de Literatura Extranjera'), '', '', 'Listing', 'translations_foreign_literatures');?></li>
+<?php
+}
+?>							
 
 						</ul>
 					</li>
