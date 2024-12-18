@@ -93,8 +93,8 @@ CITATION
 		
 		
 		if(!$qr_list) { continue; }
-		$va_output = array();
-		while($qr_list->nextHit()) {
+		#$va_output = array();
+		#while($qr_list->nextHit()) {
 			#$vs_title_sort = strToLower(strip_tags(str_replace(array("¡", "¿", ", La", ", El", ", Los", ", Las", ",", ".", "\"", "“", "”", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ú", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), 
 			#												 array("", "", "", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "U", "u", "u", "u", "N", "n", "S", "s"), trim($qr_list->get('ca_occurrences.preferred_labels.name')))));
 			#$va_output[$vs_title_sort] = "<div class='col-sm-4 col-md-3'>".$qr_list->get('ca_occurrences.preferred_labels.name')."</div>
@@ -102,10 +102,11 @@ CITATION
 			#				<div class='col-sm-4 col-md-3'>".$qr_list->get('ca_occurrences.printer_book_date')."</div>
 			#				<div class='col-sm-4 col-md-4'>".$qr_list->get('ca_occurrences.printer_book_notes')."</div>";
 				
-		}
-		ksort($va_output);
+		#}
+		#ksort($va_output);
 		$i = 0;
-		foreach ($va_output as $vs_tmp) {
+		while($qr_list->nextHit()) {
+		#foreach ($va_output as $vs_tmp) {
 			if($i == 1){
 				$bg = "#eeeded";
 			}else{
