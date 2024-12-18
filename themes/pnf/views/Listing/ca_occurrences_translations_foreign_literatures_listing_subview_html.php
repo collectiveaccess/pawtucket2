@@ -54,6 +54,7 @@
 				<div class='trimText'>
 					{{{translationsForeignLitIntroEnglish}}}
 				</div>
+<?php
 			}else{
 ?>
 				<div class="listingSubHeading">
@@ -65,12 +66,6 @@
 			
 			}		
 ?>
-
-ORIGINAL FRENCH TITLE
-TRANSLATOR(S) / ADAPTOR(S)
-
-EXPRESSION OF CULTURAL TRANSITION AS STATED ON THE SUELTAS
-CITATION
 		<div class='row'>
 			<div class='col-sm-12'>
 				<div style='padding:20px 10px 0px 10px;'>
