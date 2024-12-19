@@ -54,6 +54,18 @@
 				<div class='trimText'>
 					{{{translationsForeignLitIntroEnglish}}}
 				</div>
+				<br/><br/>
+<?php
+				if($this->getVar("translationsForeignLitBibEnglish")){
+?>
+					<div class="listingSubHeading">
+						Bibliography
+					</div>
+					<div class='trimText'>
+						{{{translationsForeignLitBibEnglish}}}
+					</div>
+<?php
+				}
 <?php
 			}else{
 ?>
@@ -63,6 +75,18 @@
 				<div class='trimText'>
 					{{{translationsForeignLitIntroSpanish}}}
 				</div>
+				<br/><br/>
+<?php
+				if($this->getVar("translationsForeignLitBibSpanish")){
+?>
+					<div class="listingSubHeading">
+						Bibliografia
+					</div>
+					<div class='trimText'>
+						{{{translationsForeignLitBibSpanish}}}
+					</div>
+<?php
+				}
 <?php			
 			}		
 ?>
@@ -75,7 +99,7 @@
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Translator(s) / Adaptor(s)" : "Traductor(es) / Refundidor(es)"; ?></div>
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Spanish Title Modernized" : "Título español modernizado"; ?></div>
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Expression of Cultural Transition" : "Expresión de traslado cultural"; ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Citation" : "Cita"; ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Citation Reference" : "Cita de referencia"; ?></div>
 					</div>
 				</div>
 			</div>
