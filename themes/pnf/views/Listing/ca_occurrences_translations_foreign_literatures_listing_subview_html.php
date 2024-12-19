@@ -38,7 +38,7 @@
  	$va_access_values = caGetUserAccessValues($this->request);
  	global $g_ui_locale;
 ?>
-	<div class="listing-content single-lists printersBooksellersList">
+	<div class="listing-content single-lists printersBooksellersList" style="padding-left:0px;">
 <?php
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
@@ -63,19 +63,19 @@
 				<div class='trimText'>
 					{{{translationsForeignLitIntroSpanish}}}
 				</div>
-			
+<?php			
 			}		
 ?>
 		<div class='row'>
 			<div class='col-sm-12'>
 				<div style='padding:20px 10px 0px 10px;'>
 					<div class='row'>
-						<div class='col-sm-2 col-md-3 listingSubHeading'><?php print ($g_ui_locale == 'en_US') ? "Author(s) / Creator(s)" : "Author(s) / Creator(s)"; ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading'><?php print ($g_ui_locale == 'en_US') ? "Original French Title" : "Original French Title"; ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading'><?php print ($g_ui_locale == 'en_US') ? "Translator(s) / Adaptor(s)" : "Translator(s) / Adaptor(s)"; ?></div>
-						<div class='col-sm-3 col-md-3 listingSubHeading'><?php print ($g_ui_locale == 'en_US') ? "Spanish Title Modernized" : "Spanish Title Modernized"; ?></div>
-						<div class='col-sm-3 col-md-4 listingSubHeading'><?php print ($g_ui_locale == 'en_US') ? "Expression of Cultural Transition as Stated on the Sueltas" : "Expression of Cultural Transition as Stated on the Sueltas"; ?></div>
-						<div class='col-sm-2 col-md-4 listingSubHeading'><?php print ($g_ui_locale == 'en_US') ? "Citation" : "Citation"; ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Author(s) / Creator(s)" : "Autor(es) / Creador(es)"; ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Original French Title" : "Título original"; ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Translator(s) / Adaptor(s)" : "Traductor(es) / Refundidor(es)"; ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Spanish Title Modernized" : "Título español modernizado"; ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Expression of Cultural Transition" : "Expresión de traslado cultural"; ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Citation" : "Cita"; ?></div>
 					</div>
 				</div>
 			</div>
@@ -115,12 +115,12 @@
 						<div class='col-sm-12'>
 							<div style='margin-bottom:3px; padding:10px; background-color:".$bg."; line-height: 1.3em'>
 								<div class='row'>
-									<div class='col-sm-4 col-md-3'>".$qr_list->get('ca_occurrences.author')."</div>
-									<div class='col-sm-4 col-md-2'>".$qr_list->get('ca_occurrences.translationOriginalTitle')."</div>
-									<div class='col-sm-4 col-md-3'>".$qr_list->get('ca_occurrences.translationtranslator')."</div>
-									<div class='col-sm-4 col-md-4'>".$qr_list->get('ca_occurrences.preferred_labels')."</div>
-									<div class='col-sm-4 col-md-4'>".$qr_list->get('ca_occurrences.translationCultural')."</div>
-									<div class='col-sm-4 col-md-4'>".$qr_list->get('ca_occurrences.510_citation_reference')."</div>
+									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.author')."</div>
+									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.translationOriginalTitle')."</div>
+									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.translationtranslator')."</div>
+									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.preferred_labels')."</div>
+									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.translationCultural')."</div>
+									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.510_citation_reference')."</div>
 								</div>
 							</div>
 						</div>
