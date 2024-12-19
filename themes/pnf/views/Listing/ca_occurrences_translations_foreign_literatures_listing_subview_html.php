@@ -66,7 +66,6 @@
 					</div>
 <?php
 				}
-<?php
 			}else{
 ?>
 				<div class="listingSubHeading">
@@ -86,8 +85,7 @@
 						{{{translationsForeignLitBibSpanish}}}
 					</div>
 <?php
-				}
-<?php			
+				}			
 			}		
 ?>
 		<div class='row'>
