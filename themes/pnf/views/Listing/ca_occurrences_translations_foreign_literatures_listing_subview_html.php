@@ -36,6 +36,7 @@
  	$va_listing_info = $this->getVar('listingInfo');
  	$vs_action = $this->request->getAction();
  	$va_access_values = caGetUserAccessValues($this->request);
+ 	$vs_current_sort = $this->getVar('sort');
  	global $g_ui_locale;
 ?>
 	<div class="listing-content single-lists printersBooksellersList" style="padding-left:0px;">
@@ -92,12 +93,12 @@
 			<div class='col-sm-12'>
 				<div style='padding:20px 10px 0px 10px;'>
 					<div class='row'>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Author(s) / Creator(s)" : "Autor(es) / Creador(es)"; ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Original French Title" : "Título original"; ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Translator(s) / Adaptor(s)" : "Traductor(es) / Refundidor(es)"; ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Spanish Title Modernized" : "Título español modernizado"; ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Expression of Cultural Transition" : "Expresión de traslado cultural"; ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Citation Reference" : "Cita de referencia"; ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Author") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Author(s) / Creator(s)" : "Autor(es) / Creador(es)"), "", "*", "*", "*", array("sort" => "Author")); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "OrigTitle") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Original French Title" : "Título original"), "", "*", "*", "*", array("sort" => "OrigTitle")); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Translator") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Translator(s) / Adaptor(s)" : "Traductor(es) / Refundidor(es)"), "", "*", "*", "*", array("sort" => "Translator")); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "SpanishTitle") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Spanish Title Modernized" : "Título español modernizado"), "", "*", "*", "*", array("sort" => "SpanishTitle")); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Culture") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Expression of Cultural Transition" : "Expresión de traslado cultural"), "", "*", "*", "*", array("sort" => "Culture")); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Citation") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Citation Reference" : "Cita de referencia"), "", "*", "*", "*", array("sort" => "Citation")); ?></div>
 					</div>
 				</div>
 			</div>
