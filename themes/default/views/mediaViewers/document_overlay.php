@@ -10,9 +10,6 @@ $options = $this->getVar('options');
 	}
 </style>
 
-
-</style>
-
 <div class="mediaviewer-document-overlay-control-bar text-center bg-white py-2">
 	<div class="btn-group align-items-center" role="group" aria-label="Viewer Controls">
 		<button type="button" id="documentviewer-overlay-zoom-in" class="btn btn-white documentviewer-control" aria-label="Zoom in"><i class="bi bi-zoom-in"></i></button>
