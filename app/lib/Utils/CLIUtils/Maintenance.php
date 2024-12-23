@@ -32,11 +32,11 @@
 trait CLIUtilsMaintenance { 
 	# -------------------------------------------------------
 	/**
-	 * Rebuild search indices
+	 * Rebuild sort values
 	 */
 	public static function rebuild_sort_values($po_opts=null) {
 		$o_db = new Db();
-		ini_set('memory_limit', '4000m');
+		ini_set('memory_limit', '4096m');
 		
 		$tables = $po_opts ? trim((string)$po_opts->getOption('table')) : null;
 		
@@ -62,30 +62,34 @@ trait CLIUtilsMaintenance {
 				$t_label = new $vs_label_table_name;
 				$vs_label_pk = $t_label->primaryKey();
 				$qr_labels = $o_db->query("SELECT {$vs_label_pk} FROM {$vs_label_table_name}");
+				
+				$table_name_display = $t_label->getProperty('NAME_PLURAL');
 
 				print CLIProgressBar::start($qr_labels->numRows(), _t('Processing %1', $t_label->getProperty('NAME_PLURAL')));
 				while($qr_labels->nextRow()) {
 					$vn_label_pk_val = $qr_labels->get($vs_label_pk);
 					
-					CLIProgressBar::setMessage(_t("Memory: %1", caGetMemoryUsage()));
+					CLIProgressBar::setMessage(_t("[Sort: %1][Mem: %2]", $table_name_display, caGetMemoryUsage()));
 					print CLIProgressBar::next();
 					if ($t_label->load($vn_label_pk_val)) {
 						$t_table->logChanges(false);
-						$t_label->update();
+						$t_label->update(['dontDoSearchIndexing' => true]);
 					}
 				}
 				print CLIProgressBar::finish();
 			}
 
 			print CLIProgressBar::start($qr_res->numRows(), _t('Processing %1 identifiers', $t_table->getProperty('NAME_SINGULAR')));
+			
+			$table_name_display = $t_table->getProperty('NAME_PLURAL');
 			while($qr_res->nextRow()) {
 				$vn_pk_val = $qr_res->get($vs_pk);
 				
-				CLIProgressBar::setMessage(_t("Memory: %1", caGetMemoryUsage()));
+				CLIProgressBar::setMessage(_t("[Sort: %1 identifiers][Mem: %2]", $table_name_display, caGetMemoryUsage()));
 				print CLIProgressBar::next();
 				if ($t_table->load($vn_pk_val)) {
 					$t_table->logChanges(false);
-					$t_table->update();
+					$t_table->update(['dontDoSearchIndexing' => true]);
 				}
 			}
 			print CLIProgressBar::finish();
@@ -1052,18 +1056,25 @@ trait CLIUtilsMaintenance {
 		$config = Configuration::load();
 
 		$ps_cache = strtolower($po_opts ? (string)$po_opts->getOption('cache') : 'all');
-		if (!in_array($ps_cache, array('all', 'app', 'usermedia'))) { $ps_cache = 'all'; }
+		if (!in_array($ps_cache, ['all', 'app', 'usermedia'])) { $ps_cache = 'all'; }
 
-		if (in_array($ps_cache, array('all', 'app'))) {
+		if (in_array($ps_cache, ['all', 'app'])) {
 			CLIUtils::addMessage(_t('Clearing application caches...'));
 			if (is_writable($config->get('taskqueue_tmp_directory'))) {
 				caRemoveDirectory($config->get('taskqueue_tmp_directory'), false);
+				mkdir($config->get('purify_serializer_path'));
 			} else {
 				CLIUtils::addError(_t('Skipping clearing of application cache because it is not writable'));
 			}
-			PersistentCache::flush();
+			try {
+				PersistentCache::flush();
+			} catch(Exception $e) {
+				// noop
+			}
+			ExternalCache::flush();
+			MemoryCache::flush();
 		}
-		if (in_array($ps_cache, array('all', 'usermedia'))) {
+		if (in_array($ps_cache, ['all', 'usermedia'])) {
 			if (($vs_tmp_directory = $config->get('media_uploader_root_directory')) && (file_exists($vs_tmp_directory))) {
 				if (is_writable($vs_tmp_directory)) {
 					CLIUtils::addMessage(_t('Clearing user media cache in %1...', $vs_tmp_directory));
@@ -2088,9 +2099,12 @@ trait CLIUtilsMaintenance {
 				$t = Datamodel::getInstance($table, true);
 				$qr = $table::find('*', ['returnAs' => 'searchResult']);
 				print CLIProgressBar::start($qr->numHits(), _t('Starting...'));
+				
+				$table_name_display = $t->getProperty('NAME_PLURAL');
+				
 				while($qr->nextHit()) {
 					if ($t->load($qr->getPrimaryKey())) {
-						print CLIProgressBar::next(1, _t('Processing %1', $t->getWithTemplate("^{$table}.preferred_labels (^{$table}.idno)")));
+						print CLIProgressBar::next(1, _t('[History: %1][Mem: %2] %3', $table_name_display, caGetMemoryUsage(), $t->getWithTemplate("^{$table}.preferred_labels (^{$table}.idno)")));
 						if ($t->deriveHistoryTrackingCurrentValue()) {
 							$c++;
 						}

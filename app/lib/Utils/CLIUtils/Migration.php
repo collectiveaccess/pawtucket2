@@ -43,11 +43,17 @@ trait CLIUtilsMigration {
 			return true;
 		}
 		
+		if(!ConfigurationCheck::performQuick(['forMigration' => true])) {
+			CLIUtils::addError(_t("Pre-flight checks failed:\n %1", strip_tags(join("\n", array_map(function($v) { return "• {$v}\n"; }, ConfigurationCheck::getErrors())))));
+			return false;
+		}
+		
 		if(!CLIUtils::confirm(_t("Are you sure you want to update your version 1.7 system (database revision %1)?\nNOTE: you MUST backup your database before applying this update!\n\nType 'y' to proceed or 'n' to cancel, then hit return", $current_revision),['confirmationCode' => 'y', 'color' => 'yellow'])) {
 			return false;
 		}
 		
-		$num_steps = 8;
+		
+		$num_steps = 9;
 		// Clear all caches
 		$c = 1;
 		CLIUtils::addMessage(_t("\n\n------------------------------------------------------------------------------"));
@@ -61,6 +67,7 @@ trait CLIUtilsMigration {
 		$db = new Db();
 		$db->query("TRUNCATE TABLE ca_sql_search_word_index");
 		$db->query("TRUNCATE TABLE ca_sql_search_words");
+		$db->query("TRUNCATE TABLE ca_search_indexing_queue");
 		$c++;
 		
 		// Apply database updates
@@ -93,9 +100,18 @@ trait CLIUtilsMigration {
 		CLIUtils::rebuild_sort_values();
 		$c++;
 		
+		// Clear all caches
+		CLIUtils::addMessage(_t("\n\n------------------------------------------------------------------------------"));
+		CLIUtils::addMessage(_t("[Step %1/%2] Clearing caches", $c, $num_steps), ['color' => 'yellow']);
+		CLIUtils::clear_caches();
+		$c++;
+		
 		// Reindex
 		CLIUtils::addMessage(_t("\n\n------------------------------------------------------------------------------"));
 		CLIUtils::addMessage(_t("[Step %1/%2] Rebuilding search index", $c, $num_steps), ['color' => 'yellow']);
+		$db->query("TRUNCATE TABLE ca_sql_search_word_index");
+		$db->query("TRUNCATE TABLE ca_sql_search_words");
+		$db->query("TRUNCATE TABLE ca_search_indexing_queue");
 		CLIUtils::rebuild_search_index();
 		$c++;
 		

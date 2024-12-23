@@ -187,6 +187,8 @@ class BaseFindController extends ActionController {
 			$vs_label_display_field = $t_label->getDisplayField();
 			foreach($display_list as $i => $va_display_item) {
 				$tmp = explode('.', $va_display_item['bundle_name']);
+				
+				if(!is_array($va_display_item['settings'])) { $va_display_item['settings'] = []; }
 
 				if(!isset($tmp[1])){ 
 					$tmp[1] = null;
