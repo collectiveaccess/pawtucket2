@@ -3423,7 +3423,10 @@ class SearchResult extends BaseObject {
 		} else {
 		    $alt_text = null;
 		}
-		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaTag($ps_version, array_merge($pa_options, ['alt' => $alt_text, 'data' => reset($this->opa_field_media_info[$ps_field] ?? [])]));
+		if($vt_data = $this->opa_field_media_info[$ps_field]) {
+		    $vt_data = reset($vt_data);
+		}
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaTag($ps_version, array_merge($pa_options, ['alt' => $alt_text, 'data' => $vt_data]));
 	}
 	# ------------------------------------------------------------------
 	/**
