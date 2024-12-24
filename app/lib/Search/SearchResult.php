@@ -3342,7 +3342,10 @@ class SearchResult extends BaseObject {
 		if (!($this->opa_field_media_info[$ps_field] ?? null)) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaInfo($ps_version, $ps_key, array_merge($pa_options, ['data' => array_shift($this->opa_field_media_info[$ps_field] ?? [])]));
+		if($vt_data = $this->opa_field_media_info[$ps_field]) {
+		    $vt_data = array_shift($vt_data);
+		}
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaInfo($ps_version, $ps_key, array_merge($pa_options, ['data' => $vt_data]));
 	}
 	# ------------------------------------------------------------------
 	/**
