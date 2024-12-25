@@ -3294,7 +3294,9 @@ class SearchResult extends BaseObject {
 		if (!($this->opa_field_media_info[$ps_field] ?? null)) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaInfo($ps_version, $ps_key, array_merge($pa_options, ['data' => array_shift($this->opa_field_media_info[$ps_field])]));
+
+		$d = is_array($this->opa_field_media_info[$ps_field]) ? array_shift($this->opa_field_media_info[$ps_field]) : null;
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaInfo($ps_version, $ps_key, array_merge($pa_options, ['data' => $d]));
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3305,7 +3307,9 @@ class SearchResult extends BaseObject {
 	    if (!($this->opa_field_media_info[$ps_field] ?? null)) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaPath($ps_version, array_merge($pa_options, ['data' => array_shift($this->opa_field_media_info[$ps_field])]));
+
+		$d = is_array($this->opa_field_media_info[$ps_field]) ? array_shift($this->opa_field_media_info[$ps_field]) : null;
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaPath($ps_version, array_merge($pa_options, ['data' => $d]));
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3335,7 +3339,9 @@ class SearchResult extends BaseObject {
 	    if (!$this->opa_field_media_info[$ps_field]) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaUrl($ps_version, array_merge($pa_options, ['data' => array_shift($this->opa_field_media_info[$ps_field])]));
+
+		$d = is_array($this->opa_field_media_info[$ps_field]) ? array_shift($this->opa_field_media_info[$ps_field]) : null;
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaUrl($ps_version, array_merge($pa_options, ['data' => $d]));
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3480,7 +3486,10 @@ class SearchResult extends BaseObject {
 	 */
 	function getFileInfo($ps_field) {
 		$va_field = $this->getFieldInfo($ps_field);
-		return $GLOBALS["_DbResult_fileinfocoder"]->getFileInfo(array_shift($this->get($va_field["field"], array("unserialize" => true, 'returnWithStructure' => true))));
+		
+		$v = $this->get($va_field["field"], ["unserialize" => true, 'returnWithStructure' => true]);
+		$d = is_array($v) ? array_shift($v) : null;
+		return $GLOBALS["_DbResult_fileinfocoder"]->getFileInfo($d);
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3488,7 +3497,10 @@ class SearchResult extends BaseObject {
 	 */
 	function getFilePath($ps_field) {
 		$va_field = $this->getFieldInfo($ps_field);
-		return $GLOBALS["_DbResult_fileinfocoder"]->getFilePath(array_shift($this->get($va_field["field"], array("unserialize" => true, 'returnWithStructure' => true))));
+		
+		$v = $this->get($va_field["field"], ["unserialize" => true, 'returnWithStructure' => true]);
+		$d = is_array($v) ? array_shift($v) : null;
+		return $GLOBALS["_DbResult_fileinfocoder"]->getFilePath($d);
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3496,7 +3508,10 @@ class SearchResult extends BaseObject {
 	 */
 	function getFileUrl($ps_field) {
 		$va_field = $this->getFieldInfo($ps_field);
-		return $GLOBALS["_DbResult_fileinfocoder"]->getFileUrl(array_shift($this->get($va_field["field"], array("unserialize" => true, 'returnWithStructure' => true))));
+		
+		$v = $this->get($va_field["field"], ["unserialize" => true, 'returnWithStructure' => true]);
+		$d = is_array($v) ? array_shift($v) : null;
+		return $GLOBALS["_DbResult_fileinfocoder"]->getFileUrl($d);
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3504,7 +3519,10 @@ class SearchResult extends BaseObject {
 	 */
 	function hasFile($ps_field) {
 		$va_field = $this->getFieldInfo($ps_field);
-		return $GLOBALS["_DbResult_fileinfocoder"]->hasFile(array_shift($this->get($va_field["field"], array("unserialize" => true, 'returnWithStructure' => true))));
+		
+		$v = $this->get($va_field["field"], ["unserialize" => true, 'returnWithStructure' => true]);
+		$d = is_array($v) ? array_shift($v) : null;
+		return $GLOBALS["_DbResult_fileinfocoder"]->hasFile($d);
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3512,7 +3530,9 @@ class SearchResult extends BaseObject {
 	 */
 	function getFileConversions($ps_field) {
 		$va_field = $this->getFieldInfo($ps_field);
-		return $GLOBALS["_DbResult_fileinfocoder"]->getFileConversions(array($this->get($va_field["field"], array("unserialize" => true, 'returnWithStructure' => true))));
+		
+		$d = [$this->get($va_field["field"], ["unserialize" => true, 'returnWithStructure' => true])];
+		return $GLOBALS["_DbResult_fileinfocoder"]->getFileConversions($d);
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3520,7 +3540,9 @@ class SearchResult extends BaseObject {
 	 */
 	function getFileConversionPath($ps_field, $ps_mimetype) {
 		$va_field = $this->getFieldInfo($ps_field);
-		return $GLOBALS["_DbResult_fileinfocoder"]->getFileConversionPath(array($this->get($va_field["field"], array("unserialize" => true, 'returnWithStructure' => true))), $ps_mimetype);
+		
+		$d = [$this->get($va_field["field"], ["unserialize" => true, 'returnWithStructure' => true])];
+		return $GLOBALS["_DbResult_fileinfocoder"]->getFileConversionPath($d, $ps_mimetype);
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3528,17 +3550,19 @@ class SearchResult extends BaseObject {
 	 */
 	function getFileConversionUrl($ps_field, $ps_mimetype) {
 		$va_field = $this->getFieldInfo($ps_field);
-		return $GLOBALS["_DbResult_fileinfocoder"]->getFileConversionUrl(array_shift($this->get($va_field["field"], array("unserialize" => true, 'returnWithStructure' => true))), $ps_mimetype);
+		
+		$v = $this->get($va_field["field"], ["unserialize" => true, 'returnWithStructure' => true]);
+		$d = is_array($v) ? array_shift($v) : null;
+		return $GLOBALS["_DbResult_fileinfocoder"]->getFileConversionUrl($d, $ps_mimetype);
 	}
 	# ------------------------------------------------------------------
 	/**
 	 * 
 	 */
 	function getDate($ps_field, $pa_options=null) {
-		
 		$va_field = $this->getFieldInfo($ps_field);
 		if (is_object($va_field["instance"])) {
-			if (!in_array($vn_field_type = $va_field["instance"]->getFieldInfo($va_field["field"], "FIELD_TYPE"), array(FT_DATE, FT_TIME, FT_DATETIME, FT_TIMESTAMP, FT_HISTORIC_DATETIME, FT_HISTORIC_DATERANGE, FT_DATERANGE))) {
+			if (!in_array($vn_field_type = $va_field["instance"]->getFieldInfo($va_field["field"], "FIELD_TYPE"), [FT_DATE, FT_TIME, FT_DATETIME, FT_TIMESTAMP, FT_HISTORIC_DATETIME, FT_HISTORIC_DATERANGE, FT_DATERANGE])) {
 				return false;
 			}
 			
