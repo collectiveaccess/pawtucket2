@@ -263,7 +263,7 @@ class BaseFindController extends ActionController {
 					$display_list[$i]['bundle_sort'] = $va_display_item['bundle_name'];
 					if(ca_metadata_elements::getElementDatatype($tmp[1]) === __CA_ATTRIBUTE_VALUE_CONTAINER__) {
 						// Try to sort on tag in display template, if template is set
-						if(!($template = caGetOption('format', is_array($va_display_item['settings']) ? $va_display_item['settings'] : [], null))) {					// template set in display
+						if(!($template = caGetOption('format', $va_display_item['settings'], null))) {					// template set in display
 							$settings = ca_metadata_elements::getElementSettingsForId($va_attribute_list[$tmp[1]]);		// template set in metadata element
 							$template = caGetOption('displayTemplate', $settings, null);
 						}
