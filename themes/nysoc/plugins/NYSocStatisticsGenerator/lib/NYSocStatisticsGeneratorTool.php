@@ -104,7 +104,7 @@ require_once(__CA_MODELS_DIR__.'/ca_objects.php');
 		 * 
 		 */
 		public function commandGenerateFindingAidsPDF() {
-			if(!(($vs_hints = @file_get_contents(__CA_APP_DIR__."/tmp/server_config_hints.txt")) && is_array($va_hints = unserialize($vs_hints)))) {
+			if(!(($vs_hints = @file_get_contents(__CA_TEMP_DIR__."/server_config_hints.txt")) && is_array($va_hints = unserialize($vs_hints)))) {
 				$va_hints['HTTP_HOST'] = 'cityreaders.nysoclib.org';
 			}
 			
