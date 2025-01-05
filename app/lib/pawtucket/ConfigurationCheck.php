@@ -194,16 +194,17 @@ final class ConfigurationCheck {
 	 * Does the app/tmp dir exist and is it writable?
 	 */
 	public static function tmpDirQuickCheck() {
-		if(!file_exists(__CA_APP_DIR__."/tmp") || !is_writable(__CA_APP_DIR__."/tmp")){
-			self::addError(_t("It looks like the directory for temporary files is not writable by the webserver. Please change the permissions of %1 and enable the user which runs the webserver to write to this directory.",__CA_APP_DIR__."/tmp"));
+		if(!file_exists(__CA_TEMP_DIR__) || !is_writable(__CA_TEMP_DIR__)){
+			self::addError(_t("It looks like the directory for temporary files is not writable by the webserver. Please change the permissions of %1 and enable the user which runs the webserver to write to this directory.",__CA_TEMP_DIR__));
 		}
+
 
 		if(!defined('__CA_CACHE_BACKEND__')) {
 			define('__CA_CACHE_BACKEND__', 'file');
 		}
 
 		if(!defined('__CA_CACHE_FILEPATH__')) {
-			define('__CA_CACHE_FILEPATH__', __CA_APP_DIR__.DIRECTORY_SEPARATOR.'tmp');
+			define('__CA_CACHE_FILEPATH__', __CA_TEMP_DIR__);
 		}
 
 
@@ -239,7 +240,7 @@ final class ConfigurationCheck {
 	 * Does the HTMLPurifier DefinitionCache dir exist and is it writable?
 	 */
 	public static function htmlPurifierDirQuickCheck() {
-		$vs_purifier_path = __CA_BASE_DIR__.'/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/Serializer';
+		$vs_purifier_path = self::$opo_config->get('purify_serializer_path');
 
 		if(!file_exists($vs_purifier_path) || !is_writable($vs_purifier_path)){
 			self::addError(_t("It looks like the directory for HTML filtering caches is not writable by the webserver. Please change the permissions of %1 and enable the user which runs the webserver to write to this directory.", $vs_purifier_path));
