@@ -44,7 +44,7 @@
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
 			}else{
-				print "<H2>Traducciones de Literatura Extranjera</H2>\n";	
+				print "<H2>Traducciones de Literaturas Extranjeras</H2>\n";	
 			
 			}		
 			if ($g_ui_locale == 'en_US'){			

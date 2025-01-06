@@ -240,7 +240,7 @@ if($this->request->isLoggedIn()){
 							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/">PAGINAS WEB DE INTERES</a></li>
 
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'TITULOS MODERNIZADOS', '', '', 'Listing', 'ccssusa');?></li>						
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Traducciones de Literatura Extranjera'), '', '', 'Listing', 'translations_foreign_literatures');?></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Traducciones de Literaturas Extranjeras'), '', '', 'Listing', 'translations_foreign_literatures');?></li>
 
 						</ul>
 					</li>
