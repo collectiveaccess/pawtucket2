@@ -259,7 +259,7 @@ class LightboxController extends FindController {
 		
 		
 		// Set configuration options in view
-		$this->view->setVar('caption_template', $tconfig['caption_template']);
+		$this->view->setVar('caption_template', caGetOption(["caption_template_{$mode}", 'caption_template'], $tconfig, '^ca_objects.preferred_labels'));
 				
 		// Set current sort
 		if(($current_sort_name = $this->request->getParameter('sort', pString)) && isset($available_sorts[$current_sort_name])) {
@@ -281,7 +281,8 @@ class LightboxController extends FindController {
 		$this->view->setVar('current_sort', $current_sort_name);
 		$this->view->setVar('current_sort_direction', $current_sort_direction);
 		
-		$ids = $t_set->getItems(['idsOnly' => true, 'checkAccess' => $this->opa_access_values]);
+		//'checkAccess' => $this->opa_access_values
+		$ids = $t_set->getItems(['idsOnly' => true]);
 		if($search_ids = caGetOption('ids', $options, null)) {
 			$ids = array_intersect($ids, $search_ids);	
 		}
@@ -289,7 +290,8 @@ class LightboxController extends FindController {
 		$this->view->setVar('start', $start);
 		$this->view->setVar('limit', $limit);
 	
-		$this->view->setVar('items', $qr = caMakeSearchResult('ca_objects', $ids, ['sort' => $current_sort, 'sortDirection' => $current_sort_direction, 'checkAccess' => $this->opa_access_values, 'start' => $start, 'limit' => $limit]));
+		//'checkAccess' => $this->opa_access_values,
+		$this->view->setVar('items', $qr = caMakeSearchResult('ca_objects', $ids, ['sort' => $current_sort, 'sortDirection' => $current_sort_direction, 'start' => $start, 'limit' => $limit]));
 
 		$this->view->setVar('total', count($ids));
 		$this->view->setVar('is_incremental_load', $is_incremental_load);
@@ -650,7 +652,7 @@ class LightboxController extends FindController {
 		$read_sets = $t_sets->getSetsForUser([
 			'tables' => $configured_tables, 
 			"user_id" => $user_id, 
-			"checkAccess" => $this->opa_access_values,
+			//"checkAccess" => $this->opa_access_values,
 			"access" => (!is_null($access = $this->request->config->get('lightbox_default_access'))) ? $access : 1, 
 			"parents_only" => true
 		]) ?? [];
@@ -658,7 +660,7 @@ class LightboxController extends FindController {
 		$write_sets = $t_sets->getSetsForUser([
 			'tables' => $configured_tables, 
 			"user_id" => $user_id, 
-			"checkAccess" => $this->opa_access_values, 
+			//"checkAccess" => $this->opa_access_values, 
 			"parents_only" => true
 		]) ?? [];
 		

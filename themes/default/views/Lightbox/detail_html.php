@@ -74,14 +74,14 @@ if(!$incremental) {
 
 	
 		<div class="row">
-			<div class="col-md-12 col-lg-5">
+			<div class="col-md-12 col-lg-4">
 				<div class="float-start me-3"><?= caNavLink($this->request, '<i class="bi bi-chevron-left"></i>', 'btn btn-secondary btn-sm', '*', 'Lightbox', 'Index', null, array("aria-label" => _t("Back"), "title" => _t("Back"))); ?></div>
 			
 				<H1 class="text-capitalize mb-0 fs-3"><?= $t_set->get('ca_sets.preferred_labels.name'); ?></H1>
 			</div>
-			<div class="col-md-12 col-lg-7 text-lg-end pt-2 mt-lg-0">
+			<div class="col-md-12 col-lg-8 text-lg-end pt-2 mt-lg-0">
 
-				<div class="btn-group" role="group" aria-label="<?= _t('%1 Controls', $lightbox_displayname_singular); ?>">
+				<div class="btn-group" role="group" id="lightbox-controls" aria-label="<?= _t('%1 Controls', $lightbox_displayname_singular); ?>">
 
 					<div id="actionsDropdown" class="btn-group d-none" role="group">
 						<button id="btnGroupActions" type="button" class="btn btn-white" data-bs-toggle="dropdown" aria-expanded="false">
@@ -123,7 +123,7 @@ if(!$incremental) {
 					if($can_delete) {
 ?>
 						<button 
-							class="btn btn-white pe-0" 
+							class="btn btn-white" 
 							data-bs-toggle="modal" 
 							data-bs-target="#deleteLightboxModal"
 							hx-on:click="document.getElementById('deleteLightboxId').value = '<?= $set_id;?>';"

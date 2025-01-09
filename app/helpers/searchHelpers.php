@@ -1072,7 +1072,7 @@ function caGetLabelForBundle($ps_bundle) {
 /**
  *
  */
-function caGetDisplayValueForBundle(string $bundle, string $value) {
+function caGetDisplayValueForBundle(?string $bundle, string $value) {
 	$va_tmp = explode(".", $bundle);
 	
 	if ($t_instance = Datamodel::getInstanceByTableName($va_tmp[0], true)) {

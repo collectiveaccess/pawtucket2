@@ -65,7 +65,7 @@ if($show_nav){
 		</div>
 	</div>
 <?php
-	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
+//	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
@@ -83,11 +83,13 @@ if($show_nav){
 <?php
 				}
 ?>
+
+				<?= $this->render('Details/snippets/lightbox_list_html.php'); ?>
 			</div>
 		</div>
 	</div>
 <?php
-	}
+	//}
 ?>
 
 	<div class="row mb-5">

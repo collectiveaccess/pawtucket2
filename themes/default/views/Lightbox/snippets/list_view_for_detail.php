@@ -29,10 +29,11 @@ if($image_format == "contain"){
 <div class="row row-cols-md-2">
 <?php
 	while($qr_items->nexthit()) {
+		$item_is_in_users_lightbox = caItemIsInUserLightbox($qr_items, $this->request->getUserID());
 		$id = $qr_items->getPrimaryKey();
 		
 		$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white', $table, $id, null, array("title" => _t("View record"), "aria-label" => _t("View record")));
-		$caption 	= $qr_items->getWithTemplate($result_caption_template, array("checkAccess" => $access_values));
+		$caption 	= $qr_items->getWithTemplate($result_caption_template, array("checkAccess" => $item_is_in_users_lightbox ? null : $access_values));
 		$image = ($table === 'ca_objects') ? $qr_items->get('ca_object_representations.media.medium', ["checkAccess" => $access_values, "class" => $image_class]) : $images[$id];
 			
 		if(!$image){

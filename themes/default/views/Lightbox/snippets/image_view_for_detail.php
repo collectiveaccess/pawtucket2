@@ -4,6 +4,7 @@ $table 		= $this->getVar('table');
 $t_list_item = new ca_list_items();
 $access_values 	= $this->getVar('access_values');
 $result_caption_template = $this->getVar('caption_template'); 
+$item_is_in_user_lightbox = $this->getVar('itemIsInUserLightbox');
 
 $o_lightbox_config 					= $this->getVar("set_config");
 $lightbox_displayname_singular 		= $this->getVar("lightbox_displayname_singular");
@@ -30,7 +31,7 @@ while($qr_items->nexthit()) {
 	$id = $qr_items->getPrimaryKey();
 	
 	$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white', $table, $id, null, array("title" => _t("View record"), "aria-label" => _t("View record")));
-	$caption 	= $qr_items->getWithTemplate($result_caption_template, array("checkAccess" => $access_values));
+	$caption 	= $qr_items->getWithTemplate($result_caption_template, array("checkAccess" => $item_is_in_user_lightbox ? null : $access_values));
 	$image = $qr_items->get('ca_object_representations.media.large', ["checkAccess" => $access_values, "class" => $image_class]);
 		
 	if(!$image){

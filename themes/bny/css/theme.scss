@@ -109,3 +109,49 @@ footer{
 		}
 	}
 }
+
+/* ------------------------- Lightbox ------------------------------ */
+.lightbox{
+	#lightboxContent {
+		.card{
+			img.object-fit-cover{
+				object-position:middle center;
+			}
+			img, .ca-placeholder{
+				height:250px;
+				width:100%
+			}
+		}
+		.lb-selected {
+			color: red;
+			border: 1px solid red;
+			background-color: #eee;
+		}
+	}
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img{
+			height:250px;
+			width:100%;
+		}
+		.ca-placeholder { 
+			height:250px;
+			width:100%;
+		}
+	}
+	
+	#errors ul {
+		margin: 0px;
+		list-style: none;
+	}
+	
+	#lightbox-controls, #lightbox-controls button, #lightbox-controls div button {
+		font-size: 14px;
+	}
+	
+	#lightbox-controls {
+		padding: 5px;
+	}
+}

@@ -48,7 +48,7 @@ function caGetLightboxPreviewImage(int $id, SearchResult $qr_res, ?array $option
 	}
 	if ($table == 'ca_objects') {
 		$t_set = $qr_res->getInstance();
-		$set_items = caExtractValuesByUserLocale($t_set->getItems(["user_id" => $g_request->user->get("user_id"), "thumbnailVersions" => ["iconlarge", "icon", "small", "large"], "class" => $class, "checkAccess" => $access_values, "limit" => 5]));
+		$set_items = caExtractValuesByUserLocale($t_set->getItems(["user_id" => $g_request->user->get("user_id"), "thumbnailVersions" => ["iconlarge", "icon", "small", "large"], "class" => $class,  "limit" => 5])); // "checkAccess" => $access_values,
 	
 		$images = array_filter(array_map(function($v) {
 			return $v['representation_tag_large'];
@@ -74,7 +74,7 @@ function caGetLightboxPreviewImage(int $id, SearchResult $qr_res, ?array $option
 /**
  *
  */
-function caGetLightboxesForUser(?int $user_id, ?array $check_access, ?array $options=null) : ?SearchResult {
+function caGetLightboxesForUser(?int $user_id, ?array $check_access, ?array $options=null) {
 	if(!$user_id) { return null; }
 	$t_sets = new ca_sets();
 	
@@ -106,6 +106,9 @@ function caGetLightboxesForUser(?int $user_id, ?array $check_access, ?array $opt
 // 	}
 	// $read_sets = array_map(function($v) { $v['writeable'] = false; return $v; }, $read_sets);		
 // 	$write_sets = array_map(function($v) { $v['writeable'] = true; return $v; }, $write_sets);	
+	if(caGetOption('idsOnly', $options, false)) {
+		return array_keys($sets);
+	}
 	
 	$lightboxes = caMakeSearchResult('ca_sets', array_keys($sets), ['sort' => 'ca_sets.preferred_labels', 'sortDirection' => 'ASC']);
 	return $lightboxes;
@@ -120,6 +123,22 @@ function caGetLightboxesForItem(BaseModel $t_subject) {
 	$sets = $t_set->getSetsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), []);
 	$sets = caExtractValuesByUserLocale($sets);
 	return $sets;
+}
+
+# ---------------------------------------
+/**
+ *
+ */
+function caItemIsInUserLightbox(BaseModel|SearchResult $t_subject, ?int $user_id, ?array $options=null) {
+	$t_set = new ca_sets();
+	$item_set_ids = $t_set->getSetIDsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), []);
+	
+	$user_set_ids = caGetLightboxesForUser($user_id, null, ['idsOnly' => true]);
+	if(!is_array($user_set_ids))  { return false; }
+	if(sizeof(array_intersect($item_set_ids, $user_set_ids)) > 0) {
+		return true;
+	}
+	return false;
 }
 
 # ---------------------------------------
