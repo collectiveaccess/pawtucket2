@@ -65,6 +65,7 @@
 		$resp = $app->getResponse();
 		
 		if (($g_request->getController() !== 'Ban') && !BanHammer::verdict($g_request)) {
+			Session::setVar('pawtucket2_page_at_ban', $g_request->getFullUrlPath());
 			$g_request->setInternalRedirect(['module' => '', 'controller' => 'Ban', 'action' => 'verify']);
 		}
 
@@ -122,9 +123,6 @@
 		//
 		caEmitHeaders($resp);
 		
-		//
-		// Dispatch the request
-		//
 		//
 		// Don't try to authenticate when doing a login attempt or trying to access the 'forgot password' feature
 		// Do try to authenticate when login is required or session has a user_id set (may have been set by single-sign-on)

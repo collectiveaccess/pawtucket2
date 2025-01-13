@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2023-2025 Whirl-i-Gig
+ * Copyright 2023-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -55,9 +55,9 @@ class BanController extends BasePawtucketController {
 	public function confirm() {
 		try {
 			caVerifyCaptcha($this->request->getParameter("g-recaptcha-response", pString));
-			
+
 			ca_ip_whitelist::whitelist($this->request, 24*60*60, 'Captcha');	// white list for 24 hours
-			if(!($url = Session::getVar('pawtucket2_last_page'))) {
+			if(!($url = Session::getVar('pawtucket2_page_at_ban')) && !($url = Session::getVar('pawtucket2_last_page'))) {
 				$url = caNavUrl($this->request, '', 'Front', 'Index');
 			}
 			$this->response->setRedirect($url);
