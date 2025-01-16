@@ -48,6 +48,8 @@
 			</div>
 		</footer><!-- end footer -->
 		
+		<?= $this->render("Cookies/banner_html.php"); ?>
+		
 		<script>
 			window.initApp();
 		</script>
