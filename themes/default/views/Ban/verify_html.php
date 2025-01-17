@@ -29,7 +29,7 @@ if($this->request->isAjax()) { return; }
 $errors = $this->getVar('errors');
 
 if(is_array($errors) && sizeof($errors)){
-	print "<div class='alert alert-danger'>".implode("<br/>", $errors)."</div>";
+	print "<div class='alert alert-danger'>".implode("<br />", $errors)."</div>";
 }
 ?>
 
@@ -49,47 +49,50 @@ if(is_array($errors) && sizeof($errors)){
         	};
 		</script>
 		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
-		<div class="row">
-			<div class="col-sm-12 offset-md-3 col-md-10">
+		<div class="row justify-content-center">
+			<div class="col-12 col-md-10">
 				<div class='banHeadline'>
 					<h1><?= _t('Please confirm that you are not a robot'); ?></h1>
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-sm-12 offset-md-3 col-md-6">
+		<div class="row justify-content-center">
+			<div class="col-12 col-md-6">
 				<div class='banDescription'>
 					<?= _t("We have a hunch that you might be a robot scanning this site for data. Please click on the <i>I'm not a robot</i> button and follow the provided instructions to confirm your status as a sentient human being."); ?>
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-sm-12 offset-md-3 col-md-10">
-				<div class='form-group<?= (($errors["recaptcha"]) ? " has-error" : ""); ?>'>
-					<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+		<div class="row justify-content-center">
+			<div class="col-12 col-md-10 text-center">
+				<div class='form-group<?= (($errors["recaptcha"]) ? " has-error" : ""); ?> d-flex justify-content-center'>
+					<div id="regCaptcha" class=""></div>
 				</div>
 			</div>
 		</div><!-- end row -->
 		
-		<div class="row">
-			<div class="col-sm-12 offset-md-3 col-md-10">
-				<div id='regCaptchaSubmit' class='banContinue'>
-					<button href="#" class="btn btn-primary" id="banContinueButton" onclick="document.getElementById('banCaptcha').submit(); return false;"><?= _t('Click here to continue'); ?></button>
+		<div class="row justify-content-center mb-4">
+			<div class="col-12 col-md-10 text-center">
+				<div id='regCaptchaSubmit' class="banContinue d-flex justify-content-center">
+					<button href="#" class="btn btn-primary" id="banContinueButton" onclick="document.getElementById('banCaptcha').submit(); return false;">
+                        <?= _t('Click here to continue'); ?>
+                    </button>
 				</div>
 			</div>
 		</div>
+
 <?php
 	} else {
 ?>
-	<div class="row">
-		<div class="col-sm-12 offset-md-3 col-md-10">
+	<div class="row justify-content-center">
+		<div class="col-12 col-md-10">
 			<div class='banHeadline'>
 				<h1><?= _t('We think you might be a robot'); ?></h1>
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-sm-12 offset-md-3 col-md-6">
+	<div class="row justify-content-center">
+		<div class="col-12 col-md-6">
 			<div class='banDescription'>
 				<?= _t("We have a hunch that you might be a robot scanning this site for data. If you're a real, live sentient human being please contact the site administrator at <a href='mailto:%1'>%1</a> to regain access.", __CA_ADMIN_EMAIL__); ?>
 			</div>
