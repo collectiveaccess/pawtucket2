@@ -119,11 +119,7 @@ if($show_nav){
 									^ca_objects.work_description
 								</dd>
 							</ifdef>
-						</dl>}}}
-						
-						<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
-
-						{{{<dl class="mb-0">
+							<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
 							<ifcount code="ca_collections" min="1">
 								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
 								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>

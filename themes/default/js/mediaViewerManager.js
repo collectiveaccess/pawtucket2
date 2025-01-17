@@ -98,7 +98,7 @@ let mediaViewerManager = function(options=null) {
 		render: function(index, options={}) {
 			let media_list = that.media_list;
 			if(media_list === undefined) { return false; }
-			console.log("xxx", media_list);
+			if(that.debug) { console.log("[mediaViewerManager::DEBUG]", media_list); }
 			let m = media_list[index];
 			
 			let display_classes = [];

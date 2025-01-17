@@ -34,84 +34,106 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
 }
 ?>
 <div class="row">
-	<div class="col-xs-8 col-sm-8 col-md-offset-2 col-md-6 col-lg-offset-3 col-lg-4">
-		<H1><?= _t("Manage Cookies"); ?></H1>
-	</div>
-	<div class="col-xs-4 col-sm-4 col-md-2 text-right">
-		
-	</div>
+    <div class="col-12 col-md-6 col-lg-4">
+        <h1><?= _t("Manage Cookies"); ?></h1>
+    </div>
 </div>
 <div class="row">
-	<div class="col-sm-12 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
-		<div class="cookieIntro"><?php print $intro; ?></div>
-		<form id="CookieForm" action="<?= caNavUrl($this->request, '*', '*', 'save'); ?>" class="form-horizontal" role="form" method="POST">
- 
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="cookieIntro"><?php print $intro; ?></div>
+        <form id="CookieForm" action="<?= caNavUrl($this->request, '*', '*', 'save'); ?>" class="needs-validation" novalidate method="POST">
 <?php
- 	foreach($cookies_by_category as $category_code => $category_info) {
+    foreach ($cookies_by_category as $category_code => $category_info) {
 ?>
-		<div class="row">
-			<div class="col-sm-12"><HR/></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-9 col-md-9">
-				<label><?= caGetOption('title', $category_info, '???'); ?></label>
-				<div class="cookieByCategory">
-					<div class="cookieCount"><?= caGetOption('cookieCount', $category_info, ''); ?> <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></div>
-					<div class="cookiesList">
-						<div class="row">
-							<div class="col-sm-4">
-								<b>Name</b>
-							</div>
-							<div class="col-sm-4">
-								<b>Description</b>
-							</div>
-						</div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <hr />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-9">
+                    <label class="form-label"><?= caGetOption('title', $category_info, '???'); ?></label>
+                    <div class="cookieByCategory">
+                        <div class="cookieCount">
+                            <?= caGetOption('cookieCount', $category_info, ''); ?> <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                        </div>
+                        <div class="cookiesList">
+                            <div class="row">
+                                <div class="col-6">
+                                    <b>Name</b>
+                                </div>
+                                <div class="col-6">
+                                    <b>Description</b>
+                                </div>
+                            </div>
 <?php
-		foreach($category_info['cookies'] as $cookie_code => $cookie_info) {
+        foreach ($category_info['cookies'] as $cookie_code => $cookie_info) {
 ?>
-			<div class="row">
-				<div class="col-sm-4">
-					<?= caGetOption('name', $cookie_info, '???'); ?>
-				</div>
-				<div class="col-sm-8">
-					<?= caGetOption('description', $cookie_info, '???'); ?>
-				</div>
-			</div>	
+                            <div class="row">
+                                <div class="col-6">
+                                    <?= caGetOption('name', $cookie_info, '???'); ?>
+                                </div>
+                                <div class="col-6">
+                                    <?= caGetOption('description', $cookie_info, '???'); ?>
+                                </div>
+                            </div>
 <?php
-		}
+        }
 ?>
+                        </div>
+                    </div>
+                    <div><?= caGetOption('description', $category_info, ''); ?></div>
+                </div>
+                <div class="col-12 col-md-3 text-center">
+<?php
+        if (!caGetOption('required', $category_info, false)) {
+            $allow = (bool)CookieOptionsManager::allow($category_code);
+?>
+                    <!-- <div class="btn-group " role="group" aria-label="Toggle">
+                        <button class="btn btn-outline-success<?= $allow ? ' active' : ''; ?>" data-value="1" data-code="<?= $category_code; ?>">
+                            <?= _t('ON'); ?>
+                        </button>
+                        <input type="hidden" name="<?= "cookie_options_{$category_code}"; ?>" id="<?= "cookie_options_{$category_code}"; ?>" value="<?= $allow ? 1 : 0; ?>" />
+                        <button class="btn btn-outline-danger<?= !$allow ? ' active' : ''; ?>" data-value="0" data-code="<?= $category_code; ?>">
+                            <?= _t('OFF'); ?>
+                        </button>
+                    </div> -->
+					<div class="btn-group" role="group" aria-label="Toggle">
+						<button type="button" class="btn btn-outline-success<?= $allow ? ' active' : ''; ?>" data-value="1" data-code="<?= $category_code; ?>">
+							<?= _t('ON'); ?>
+						</button>
+						<input type="hidden" name="<?= "cookie_options_{$category_code}"; ?>" id="<?= "cookie_options_{$category_code}"; ?>" value="<?= $allow ? 1 : 0; ?>" />
+						<button type="button" class="btn btn-outline-danger<?= !$allow ? ' active' : ''; ?>" data-value="0" data-code="<?= $category_code; ?>">
+							<?= _t('OFF'); ?>
+						</button>
 					</div>
-				</div>
-				<div><?= caGetOption('description', $category_info, ''); ?></div>
-			</div>			
-			<div class="col-sm-3 col-md-3 text-center">
+
 <?php
-		if(!caGetOption('required', $category_info, false)) {
-			$allow = (bool)CookieOptionsManager::allow($category_code);
+        }
 ?>
-				<div class="btn-group btn-toggle"> 
-					<button class="btn <?= ($allow ? ' active btn-success' : ''); ?>" data-value="1" data-code="<?= $category_code; ?>"><?= _t('ON'); ?></button>
-					<input type="hidden" name="<?= "cookie_options_{$category_code}"; ?>" id="<?= "cookie_options_{$category_code}"; ?>" value="<?= $allow ? 1 : 0; ?>"/>
-					<button class="btn <?= (!$allow ? ' active btn-success' : ''); ?>" data-value="0" data-code="<?= $category_code; ?>"><?= _t('OFF'); ?></button>
-				</div>
+                </div>
+            </div>
 <?php
-		}
+    }
 ?>
-			</div>
-		</div>
-<?php
- 	}
-?>   	
-		<div class="row">
-			<div class="col-sm-12"><HR/></div>
-		</div>
-		<div class="form-group text-center">
-			<button type="submit" class="btn btn-default"><?= _t('Update'); ?></button> <button class="btn btn-default" name="accept_all"  value="1"><?= _t('Accept All'); ?></button>
-		</div><!-- end form-group -->
-	</form>
-	</div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <hr />
+                </div>
+            </div>
+            <div class="text-center mb-4">
+                <button type="submit" class="btn btn-primary">
+                    <?= _t('Update'); ?>
+                </button>
+                <button class="btn btn-secondary" name="accept_all" value="1">
+                    <?= _t('Accept All'); ?>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
-<script type="text/javascript">
+
+<!-- <script type="text/javascript">
 	$('.btn-toggle').click(function() {
 		if(!$(this).hasClass('disabled')){
 			$(this).find('.btn').toggleClass('active');  
@@ -128,4 +150,42 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
 		$(this).find('.cookiesList').toggle();  
 	   return false;
 	});
+</script> -->
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleButtons = document.querySelectorAll('.btn-group button');
+
+    toggleButtons.forEach((button) => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent the form from submitting
+
+            const parentGroup = button.closest('.btn-group');
+            const code = button.dataset.code;
+            const value = button.dataset.value;
+
+            // Remove 'active' class from all buttons in the group
+            parentGroup.querySelectorAll('.btn').forEach((btn) => {
+                btn.classList.remove('active');
+            });
+
+            // Add 'active' class to the clicked button
+            button.classList.add('active');
+
+            // Update the hidden input value
+            const hiddenInput = document.querySelector(`#cookie_options_${code}`);
+            if (hiddenInput) {
+                hiddenInput.value = value;
+            }
+        });
+    });
+});
+
+// Handle cookies list toggle
+$('.cookieByCategory').on('click', function () {
+	$(this).find('.cookiesList').toggle();
+	return false;
+});
+
 </script>
