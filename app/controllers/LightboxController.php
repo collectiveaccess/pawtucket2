@@ -688,79 +688,74 @@ class LightboxController extends FindController {
 	 */
 	public function addItemsToSet($set_id = null) {
 		$errors = array();
-		if ($this->request->user->canDoAction('can_edit_sets')) {
-			
-			if(!$set_id){
-				$set_id = $this->request->getParameter('set_id', pInteger);
-			}
-			$user_id = $this->request->getUserID();
-			$table = $this->request->getParameter('table', pString);
-			$row_ids = $this->request->getParameter('row_ids', pString);
-			$omit_ids = $this->request->getParameter('omit_ids', pString);
-			$all_selected = $this->request->getParameter('all_selected', pString);
-			
-			$row_ids = explode(';', $row_ids);
-			$omit_ids = explode(';', $omit_ids);
-			
-			$t_set = new ca_sets($set_id);
-			if ($t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
-				$t_instance = Datamodel::getInstanceByTableName($table, true);
-				$row_ids_to_add = array();
-				$add_items_count = $dup_items_count = 0;
-				if ($t_set->getPrimaryKey() && ($t_set->get('table_num') == $t_instance->tableNum())) {
-					$set_item_ids = $t_set->getItemRowIDs(array('user_id' => $user_id));
-			
-					if($all_selected){
-						# load last result for table
-						$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
-						$result_ids = $o_context->getResultList();
-						if(is_array($result_ids) && sizeof($result_ids)){
-							$row_ids = array();
-							# remove omit_ids from result
-							if(is_array($omit_ids) && sizeof($omit_ids)){
-								  foreach($result_ids as $result_id) {
-									if (!$result_id) { continue; }
-									if (in_array($result_id,$omit_ids)) { continue; }							
-									$row_ids[] = $result_id;					
-								}
-							}else{
-								$row_ids = $result_ids;
+		if(!$set_id){
+			$set_id = $this->request->getParameter('set_id', pInteger);
+		}
+		$user_id = $this->request->getUserID();
+		$table = $this->request->getParameter('table', pString);
+		$row_ids = $this->request->getParameter('row_ids', pString);
+		$omit_ids = $this->request->getParameter('omit_ids', pString);
+		$all_selected = $this->request->getParameter('all_selected', pString);
+		
+		$row_ids = explode(';', $row_ids);
+		$omit_ids = explode(';', $omit_ids);
+		
+		$t_set = new ca_sets($set_id);
+		if ($t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+			$t_instance = Datamodel::getInstanceByTableName($table, true);
+			$row_ids_to_add = array();
+			$add_items_count = $dup_items_count = 0;
+			if ($t_set->getPrimaryKey() && ($t_set->get('table_num') == $t_instance->tableNum())) {
+				$set_item_ids = $t_set->getItemRowIDs(array('user_id' => $user_id));
+		
+				if($all_selected){
+					# load last result for table
+					$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
+					$result_ids = $o_context->getResultList();
+					if(is_array($result_ids) && sizeof($result_ids)){
+						$row_ids = array();
+						# remove omit_ids from result
+						if(is_array($omit_ids) && sizeof($omit_ids)){
+							  foreach($result_ids as $result_id) {
+								if (!$result_id) { continue; }
+								if (in_array($result_id,$omit_ids)) { continue; }							
+								$row_ids[] = $result_id;					
 							}
 						}else{
-							$errors[] = _t('Nothing was selected');
-						}
-					}else{
-						# just add the row_ids - but check there are values
-						if(!is_array($row_ids) || !sizeof($row_ids)){
-							$errors[] = _t('Nothing was selected');
-						}
-					}
-					# --- remove items already in the set
-					if(is_array($row_ids) && sizeof($row_ids)){
-						foreach($row_ids as $row_id) {
-							if (!$row_id) { continue; }
-							if (isset($set_item_ids[$row_id])) { $dupe_items_count++; continue; }							
-							$set_item_ids[$row_id] = 1;
-							$row_ids_to_add[$row_id] = 1;						
+							$row_ids = $result_ids;
 						}
 					}else{
 						$errors[] = _t('Nothing was selected');
 					}
-					if(is_array($row_ids_to_add) && sizeof($row_ids_to_add)){
-						if (($added_items_count = $t_set->addItems(array_keys($row_ids_to_add), ['user_id' => $user_id])) === false) {
-							$errors[] = join('; ', $t_set->getErrors());
-						}
-					}else{
-						$errors[] = _t('Nothing was added');
+				}else{
+					# just add the row_ids - but check there are values
+					if(!is_array($row_ids) || !sizeof($row_ids)){
+						$errors[] = _t('Nothing was selected');
+					}
+				}
+				# --- remove items already in the set
+				if(is_array($row_ids) && sizeof($row_ids)){
+					foreach($row_ids as $row_id) {
+						if (!$row_id) { continue; }
+						if (isset($set_item_ids[$row_id])) { $dupe_items_count++; continue; }							
+						$set_item_ids[$row_id] = 1;
+						$row_ids_to_add[$row_id] = 1;						
 					}
 				}else{
-					$errors[] = _t('Invalid set');
+					$errors[] = _t('Nothing was selected');
+				}
+				if(is_array($row_ids_to_add) && sizeof($row_ids_to_add)){
+					if (($added_items_count = $t_set->addItems(array_keys($row_ids_to_add), ['user_id' => $user_id])) === false) {
+						$errors[] = join('; ', $t_set->getErrors());
+					}
+				}else{
+					$errors[] = _t('Nothing was added');
 				}
 			}else{
-				$errors[] = _t('Access denied');
+				$errors[] = _t('Invalid set');
 			}
 		}else{
-			$errors[] = _t('You cannot edit sets');
+			$errors[] = _t('Access denied');
 		}
 		
 		$this->view->setVar('set_name', $t_set->getLabelForDisplay());
