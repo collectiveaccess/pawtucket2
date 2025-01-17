@@ -346,11 +346,15 @@ class LightboxController extends FindController {
 	# -------------------------------------------------------
 	/**
 	 * Add new lightbox
+	 * if row_id and table passed, also add item to new lightbox
 	 */
 	function Add(?array $options=null) {
 		global $g_ui_locale_id;
 		$name = $this->request->getParameter('name', pString);
 		$description = $this->request->getParameter('description', pString);
+		$table = $this->request->getParameter('table', pString);
+		$row_id = $this->request->getParameter('row_id', pString);
+		$mode = $this->request->getParameter('mode', pString); # --- set to addFromResults to indicate need to redirect to addItemsToSet after ligthbox set is created
 		
 		$errors = [];
 		$preserve_model_values = false;
@@ -376,14 +380,40 @@ class LightboxController extends FindController {
 			$preserve_model_values = true;
 			$t_set->delete(true);
 		}
-		
 		$this->view->setVar('modalValues', [
-			'name' => $name, 'description' => $description
+			'name' => $name, 'description' => $description, 'row_id' => $row_id, 'table' => $table
 		]);
 		$this->view->setVar('preserveModalValues', $preserve_model_values);
 		$this->view->setVar('errors', $errors);
 		
-		$this->Index();
+		$lightbox_conf = caGetLightboxConfig();
+		# --- detail pages pass a record's id and table so can add record to the new lightbox 
+		if($row_id && $table){		
+			if(!sizeof($errors) && $t_set->get("set_id")){
+				$t_set->addItem($row_id, $this->request->getUserID());
+				$message = "";
+				$message = _t("Added to %1.", $t_set->getLabelForDisplay());
+				$this->view->setVar('success', $message);				
+			}
+			# --- redraw the dropdown of lightboxes
+			$t_item = Datamodel::getInstance($table, true);
+			$t_item->load($row_id);
+			$this->view->setVar('item', $t_item);
+			
+			$lightboxes = caGetLightboxesForUser($this->request->getUserID(), null, ['tables' => [$table]]);
+			$this->view->setVar('lightboxes', ($lightboxes && ($lightboxes->numHits() > 0)) ? $lightboxes : null);
+			$this->view->setVar('in_lightboxes', caGetLightboxesForItem($t_item));
+			$this->view->setVar('lightbox_conf', $lightbox_conf);
+			
+			$this->render("Details/snippets/lightbox_list_html.php");
+		}elseif($mode == "addFromResults"){
+			$this->addItemsToSet($t_set->get("set_id"));
+		}else{
+			$this->Index();
+		}
+		
+		
+		
 	}
 	# -------------------------------------------------------
 	/**
@@ -614,6 +644,147 @@ class LightboxController extends FindController {
 			}
 		}	
 		return null;
+	}
+	# -------------------------------------------------------
+	/**
+	 * adds or removed item from lightbox and returns configured text to display
+	 * used in Lightboxes dropdown on detail pages
+	 */
+	public function LightboxMembership() {
+		$set_id = $this->request->getParameter('set_id', pInteger);
+		$id = $this->request->getParameter('id', pInteger);
+		
+		$lightbox_conf = caGetLightboxConfig();
+		$in_lightbox_template = $lightbox_conf->get('in_lightbox_template');
+		$not_in_lightbox_template = $lightbox_conf->get('not_in_lightbox_template');
+		
+		$user_id = $this->request->getUserID();
+		
+		if(!($t_set = ca_sets::findAsInstance($set_id))) { 
+			throw new ApplicationException(_t('Invalid set_id %1', $set_id));
+		}
+		if(!$t_set->haveAccessToSet($user_id, 1)) {
+			$this->view->setVar('text', 'error');	
+		} else {
+			if($t_set->isInSet($t_set->get('table_num'), $id, $set_id)) {
+				$t_set->removeItem($id, null, $user_id);
+				$this->view->setVar('text', $t_set->getWithTemplate($not_in_lightbox_template));	
+			} else {
+				$t_set->addItem($id, $user_id);
+				$this->view->setVar('text', $t_set->getWithTemplate($in_lightbox_template));	
+			}
+		}
+		$this->renderAsText(false, ['var' => 'text']);
+	}
+	# -------------------------------------------------------
+	/**
+	 * Add items to lightbox
+	 * used in browse results with select / deselect buttons
+	 * table - table of search/browse so can access results
+	 * set_id - set to add to - if passed through to function, it's because a new lightbox was made above in addLightbox
+	 * all_selected - means all results have been selected.  So add entire result set minus the omit_selection ids
+	 * row_ids  - record ids to add to set if all_selected is null/false
+	 * omit_ids - record ids to remove from results before adding to set if all_selected is true
+	 */
+	public function addItemsToSet($set_id = null) {
+		$errors = array();
+		if ($this->request->user->canDoAction('can_edit_sets')) {
+			
+			if(!$set_id){
+				$set_id = $this->request->getParameter('set_id', pInteger);
+			}
+			$user_id = $this->request->getUserID();
+			$table = $this->request->getParameter('table', pString);
+			$row_ids = $this->request->getParameter('row_ids', pString);
+			$omit_ids = $this->request->getParameter('omit_ids', pString);
+			$all_selected = $this->request->getParameter('all_selected', pString);
+			
+			$row_ids = explode(';', $row_ids);
+			$omit_ids = explode(';', $omit_ids);
+			
+			$t_set = new ca_sets($set_id);
+			if ($t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+				$t_instance = Datamodel::getInstanceByTableName($table, true);
+				$row_ids_to_add = array();
+				$add_items_count = $dup_items_count = 0;
+				if ($t_set->getPrimaryKey() && ($t_set->get('table_num') == $t_instance->tableNum())) {
+					$set_item_ids = $t_set->getItemRowIDs(array('user_id' => $user_id));
+			
+					if($all_selected){
+						# load last result for table
+						$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
+						$result_ids = $o_context->getResultList();
+						if(is_array($result_ids) && sizeof($result_ids)){
+							$row_ids = array();
+							# remove omit_ids from result
+							if(is_array($omit_ids) && sizeof($omit_ids)){
+								  foreach($result_ids as $result_id) {
+									if (!$result_id) { continue; }
+									if (in_array($result_id,$omit_ids)) { continue; }							
+									$row_ids[] = $result_id;					
+								}
+							}else{
+								$row_ids = $result_ids;
+							}
+						}else{
+							$errors[] = _t('Nothing was selected');
+						}
+					}else{
+						# just add the row_ids - but check there are values
+						if(!is_array($row_ids) || !sizeof($row_ids)){
+							$errors[] = _t('Nothing was selected');
+						}
+					}
+					# --- remove items already in the set
+					if(is_array($row_ids) && sizeof($row_ids)){
+						foreach($row_ids as $row_id) {
+							if (!$row_id) { continue; }
+							if (isset($set_item_ids[$row_id])) { $dupe_items_count++; continue; }							
+							$set_item_ids[$row_id] = 1;
+							$row_ids_to_add[$row_id] = 1;						
+						}
+					}else{
+						$errors[] = _t('Nothing was selected');
+					}
+					if(is_array($row_ids_to_add) && sizeof($row_ids_to_add)){
+						if (($added_items_count = $t_set->addItems(array_keys($row_ids_to_add), ['user_id' => $user_id])) === false) {
+							$errors[] = join('; ', $t_set->getErrors());
+						}
+					}else{
+						$errors[] = _t('Nothing was added');
+					}
+				}else{
+					$errors[] = _t('Invalid set');
+				}
+			}else{
+				$errors[] = _t('Access denied');
+			}
+		}else{
+			$errors[] = _t('You cannot edit sets');
+		}
+		
+		$this->view->setVar('set_name', $t_set->getLabelForDisplay());
+		$this->view->setVar('num_items_added', (int)$added_items_count);
+		$this->view->setVar('num_items_already_in_set', (int)$dupe_items_count);
+		$this->view->setVar('lightbox_conf', caGetLightboxConfig());
+		$message = "";
+		if($added_items_count){
+			$message .= _t("Added %1 to %2. ", $added_items_count, $t_set->getLabelForDisplay());
+		}
+		if($dupe_items_count){
+			$message .= _t("%1 items already in %2. ", $dupe_items_count, $t_set->getLabelForDisplay());
+		}
+		if(!sizeof($errors)){
+			$this->view->setVar('success', $message);
+		}else{
+			if($message){
+				$errors[] = $message;
+			}
+		}
+		$this->view->setVar('errors', $errors);
+		$this->render('Browse/lightbox_tools_html.php');
+		
+		
 	}
 	# -------------------------------------------------------
 	/*

@@ -159,6 +159,12 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 			height:200px;
 			width:100%
 		}
+		
+		.result-selected {
+			color: red;
+			border: 1px solid red;
+			background-color: #eee;
+		}
 	}
 }
 #bRefine{
@@ -243,6 +249,8 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 		}
 		.lb-selected {
 			color: red;
+			border: 1px solid red;
+			background-color: #eee;
 		}
 	}
 	.card{
@@ -250,7 +258,7 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 			object-position:middle center;
 		}
 		img{
-			height:250px;
+			height:200px;
 			width:100%;
 		}
 		.ca-placeholder { 

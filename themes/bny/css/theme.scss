@@ -42,6 +42,9 @@ $dark: #213140; /* navy */
 a.text-light:hover{
 	color:#f43f43 !important;
 }
+.dropdown-item:hover a, .dropdown-item:hover .btn{
+	color: #FFF !important;
+}
 /* ------------------------- Navbar ------------------------- */
 nav{
 	.navbar-brand{
@@ -98,7 +101,7 @@ footer{
 		margin-bottom:.25rem;
 	}
 }
-/* Gallery */
+/* ------------------------- Gallery ------------------------- */
 .gallery{
 	H2{
 		font-size: 1.5rem;
@@ -109,49 +112,25 @@ footer{
 		}
 	}
 }
-
-/* ------------------------- Lightbox ------------------------------ */
+/* ------------------------- lightbox ------------------------- */
 .lightbox{
-	#lightboxContent {
-		.card{
-			img.object-fit-cover{
-				object-position:middle center;
-			}
-			img, .ca-placeholder{
-				height:250px;
-				width:100%
-			}
-		}
-		.lb-selected {
-			color: red;
-			border: 1px solid red;
-			background-color: #eee;
-		}
+	.btn-white, .btn-group{
+		background-color:$body-bg;
 	}
 	.card{
-		img.object-fit-cover{
-			object-position:middle center;
+		.btn-white{
+			background-color:#FFFFFF;
 		}
-		img{
-			height:250px;
-			width:100%;
+	}
+	#clearSearch{
+		.btn-light{
+			font-size:1rem;
 		}
-		.ca-placeholder { 
-			height:250px;
-			width:100%;
+	}
+	#searchWithin{
+		.btn, input{
+			line-height:1rem;
 		}
 	}
 	
-	#errors ul {
-		margin: 0px;
-		list-style: none;
-	}
-	
-	#lightbox-controls, #lightbox-controls button, #lightbox-controls div button {
-		font-size: 14px;
-	}
-	
-	#lightbox-controls {
-		padding: 5px;
-	}
 }
