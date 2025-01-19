@@ -37,45 +37,10 @@
 		<div class="container">
 			<div class="row justify-content-start">
 				<div class="col-auto ms-5">
-					<h1 class="page-heading heading-size-2 ps-0">Archives</h1>
-					<p class="page-content content-size-2 ms-3">
-						How to use the Archive
-					</p>	
-					
-					<div class="explore-grid">
-
-						
-<?php
-						print caNavLink($this->request, '<div class="explore-grid-item"><div class="explore-text"><h2 >Browse Archival Items</h2></div></div>', 'explore-grid-item-link', '', 'Browse', 'objects'); 
-
-						print caNavLink($this->request, '<div class="explore-grid-item"><div class="explore-text"><h2 >Browse People</h2></div></div>', 'explore-grid-item-link', '', 'Browse', 'entities'); 
-
-						print caNavLink($this->request, '<div class="explore-grid-item"><div class="explore-text"><h2 >Browse Choreographic Works</h2></div></div>', 'explore-grid-item-link', '', 'Browse', 'choreographic_works'); 
-
-						print caNavLink($this->request, '<div class="explore-grid-item"><div class="explore-text"><h2 >Browse Events</h2></div></div>', 'explore-grid-item-link', '', 'Browse', 'events'); 
-
-?>
-
-					</div>
-
+					<h1 class="page-heading heading-size-2 ps-0">Explore the Archives</h1>
+					{{{explore_the_archive}}}
 				</div> 
-
-				<div class="col-auto" style="position: fixed; right: -40px; top: 50px;">
-					<?php
-						foreach($set_items as $item) {	
-							$item = array_shift($item);
-							//print_R($item);
-					?>
-						<div class='archive-landing-img'>
-							<?= $item['representation_tag']; ?>
-						</div>
-					<?php
-						}
-					?>
-				</div>
-
 			</div>
-
 		</div>
 		<div class="nb-graphic position-fixed" style="bottom: -45px; right: 10px;">
 			<svg width="418" height="168" viewBox="0 0 418 168" fill="none" xmlns="http://www.w3.org/2000/svg">

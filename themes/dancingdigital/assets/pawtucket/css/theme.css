@@ -703,7 +703,7 @@ a .related-item-title, .related-item-title,
 	position: relative;
 }
 
-.related-item-img a img {
+.related-item-img a img, .related-item-img img {
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
@@ -1570,4 +1570,8 @@ h6 {
 	position: relative;
 	width: 100%;
 	height: 100%;
+}
+
+.vco-storymap a, .vco-storymap a:hover {
+	color: #000 !important;
 }

@@ -73,7 +73,7 @@
 
 <div class="sidebar-container">
 	
-	<a href="<?= caNavUrl($this->request, '', 'Front', 'front_page_html'); ?>" class="d-flex mb-5 navLogo">
+	<a href="<?= caNavUrl($this->request, '', 'Front', 'front_page_html'); ?>" class="d-flex mb-5 navLogo btn">
 		<svg xmlns="http://www.w3.org/2000/svg" width="204" height="176" viewBox="0 0 204 176" fill="none" aria-labelledby="logoTitle">
 			<title id="logoTitle">No Boundaries Logo</title>
 			<path
