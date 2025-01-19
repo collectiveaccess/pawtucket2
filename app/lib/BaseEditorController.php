@@ -342,9 +342,6 @@ class BaseEditorController extends ActionController {
 				$vb_no_save_error = true;
 				$this->view->setVar('forced_values', $va_opts['ifv']);
 			}
-			if($t_subject->numErrors() > 0) {
-				$this->request->addActionErrors($t_subject->errors, 'saveBundlesForScreen');
-			}
 		}
 		$this->view->setVar('t_ui', $t_ui);
 
@@ -2648,8 +2645,7 @@ class BaseEditorController extends ActionController {
 				break;
 			}
 		}
-
-
+		
 		$this->response->addContent($o_view->render('download_file_binary.php'));
 		set_time_limit($vn_limit);
 	}
@@ -2757,7 +2753,7 @@ class BaseEditorController extends ActionController {
 			foreach($_FILES['files']['tmp_name'] as $i => $f) {
 				if(!strlen($f)) { continue; }
 				
-				$dest_filename = preg_replace("![^A-Za-z0-9_\-\.]+!", "_", isset($_FILES['files']['name'][$i]) ? $_FILES['files']['name'][$i] : pathinfo($f, PATHINFO_FILENAME));
+				$dest_filename = caEscapeFilenameForDownload(isset($_FILES['files']['name'][$i]) ? $_FILES['files']['name'][$i] : pathinfo($f, PATHINFO_FILENAME));
 				if(!@copy($f, $dest_path = "{$user_dir}/{$dest_filename}")) { continue; }
 
 				$stored_files[$dest_filename] = caGetUserDirectoryName($this->request->getUserID())."/{$dest_filename}"; // only return the user directory and file name, not the entire path
