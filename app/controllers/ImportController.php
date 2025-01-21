@@ -69,6 +69,7 @@ class ImportController extends BasePawtucketController {
 	public function tus(){
 		$user_id = $this->request->getUserID();
 
+		AppController::getInstance()->removeAllPlugins();
 		$server = MediaUploadManager::getTUSServer($user_id);
 		try {
 			$response = $server->serve();
@@ -87,7 +88,6 @@ class ImportController extends BasePawtucketController {
 			}
 
 			// Return error
-			AppController::getInstance()->removeAllPlugins();
 			http_response_code(401);
 			header("Tus-Resumable: 1.0.0");
 			$this->view->setVar('response', ['error' => $e->getMessage(), 'global' => true, 'state' => 'quota']);

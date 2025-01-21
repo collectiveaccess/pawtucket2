@@ -193,6 +193,48 @@ class ActionController extends BaseObject {
 	}
 	# -------------------------------------------------------
 	/**
+	 * Render data as JSON
+	 * 
+	 * @param bool $dont_add_content_to_response
+	 * @param array $options
+	 * @return ?string
+	 */
+	public function renderAsJSON(?bool $dont_add_content_to_response=false, ?array $options=null) : ?string {
+		if (!$this->opo_view) { $this->initView(); }
+		
+		$content = $this->opo_view->renderAsJSON($options);
+		
+		if ($this->opo_view->numErrors() > 0) {
+			$this->errors = $this->opo_view->errors;
+		}
+		if (!$dont_add_content_to_response) {
+			$this->opo_response->addContent($content, 'view');
+		}
+		return $content;
+	}
+	# -------------------------------------------------------
+	/**
+	 * Render data as JSON
+	 * 
+	 * @param bool $dont_add_content_to_response
+	 * @param array $options
+	 * @return ?string
+	 */
+	public function renderAsText(?bool $dont_add_content_to_response=false, ?array $options=null) : ?string {
+		if (!$this->opo_view) { $this->initView(); }
+		
+		$content = $this->opo_view->renderAsText($options);
+		
+		if ($this->opo_view->numErrors() > 0) {
+			$this->errors = $this->opo_view->errors;
+		}
+		if (!$dont_add_content_to_response) {
+			$this->opo_response->addContent($content, 'view');
+		}
+		return $content;
+	}
+	# -------------------------------------------------------
+	/**
 	 * Get request object (by reference)
 	 *
 	 * @return RequestHTTP

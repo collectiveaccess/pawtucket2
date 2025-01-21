@@ -229,6 +229,42 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 		}
 	}
 }
+/* ------------------------- Lightbox ------------------------------ */
+.lightbox{
+	#lightboxContent {
+		.card{
+			img.object-fit-cover{
+				object-position:middle center;
+			}
+			img, .ca-placeholder{
+				height:250px;
+				width:100%
+			}
+		}
+		.lb-selected {
+			color: red;
+		}
+	}
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img{
+			height:250px;
+			width:100%;
+		}
+		.ca-placeholder { 
+			height:250px;
+			width:100%;
+		}
+	}
+	
+	#errors ul {
+		margin: 0px;
+		list-style: none;
+	}
+}
+
 /* ------------------------- Accessibility ------------------------------ */
 #skip:focus{
 	border: 2px solid #000 !important;

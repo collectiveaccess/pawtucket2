@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2023 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,7 @@ require_once(__CA_LIB_DIR__.'/ApplicationPluginManager.php');
 require_once(__CA_APP_DIR__."/controllers/FindController.php");
 require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
+require_once(__CA_APP_DIR__."/helpers/lightboxHelpers.php");
 require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
 require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
 
@@ -65,25 +66,6 @@ class DetailController extends FindController {
 		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
 			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
 		}
-		if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-			if (!($id = urldecode($this->request->getActionExtra()))) { $id = $this->request->getParameter('id', pInteger); }
-			
-			$t_set_list = new ca_sets();
-			$t_set = new ca_sets();
-			$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values));
-			$va_user_has_access = false;
-			if (sizeof($va_sets) > 0) {
-				foreach ($va_sets as $va_key => $va_set) {
-					if($t_set->isInSet('ca_objects', $id, $va_set['set_id'])) {
-						$va_user_has_access = true;
-					}
-				}
-			}
-			if ($va_user_has_access == false) {
-				print "You do not have access to view this page.";
-				die;
-			}
-		}
 		
 		$this->view->setVar("access_values", $this->opa_access_values);
  			
@@ -99,7 +81,7 @@ class DetailController extends FindController {
 			}
 		}
 		
-		caSetPageCSSClasses(array("detail"));
+		caSetPageCSSClasses(["detail"]);
 	}
 	# -------------------------------------------------------
 	/**
@@ -207,6 +189,13 @@ class DetailController extends FindController {
 				}
 			}
 		}
+		
+		$lightbox_conf = caGetLightboxConfig();
+		$lightboxes = caGetLightboxesForUser($this->request->getUserID(), $this->opa_access_values, ['tables' => [$this->ops_tablename]]);
+		$this->view->setVar('lightboxes', ($lightboxes && ($lightboxes->numHits() > 0)) ? $lightboxes : null);
+		$this->view->setVar('inLightboxes', caGetLightboxesForItem($t_subject));
+		$this->view->setVar('lighboxListInLightboxTemplate', $lightbox_conf->get('in_lightbox_template'));
+		$this->view->setVar('lighboxListNotInLightboxTemplate', $lightbox_conf->get('not_in_lightbox_template'));
 		
 		// Record view
 		$t_subject->registerItemView();
@@ -746,7 +735,7 @@ class DetailController extends FindController {
 			$this->view->setVar('zip_stream', $o_zip);
 			$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
 			
-			$vn_rc = $this->render('Details/download_file_binary.php');
+			$vn_rc = $this->render('Download/download_file_binary.php');
 			
 			if ($vs_path) { unlink($vs_path); }
 		} else {
@@ -754,7 +743,7 @@ class DetailController extends FindController {
 				$this->view->setVar('archive_path', $vs_path);
 				$this->view->setVar('archive_name', $vs_name);
 			}
-			$vn_rc = $this->render('Details/download_file_binary.php');
+			$vn_rc = $this->render('Download/download_file_binary.php');
 		}
 		
 		return $vn_rc;
@@ -1614,6 +1603,36 @@ class DetailController extends FindController {
 	 */
 	public function __destruct() {
 		if($this->ops_tmp_download_file_path) { @unlink($this->ops_tmp_download_file_path); }
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function LightboxMembership() {
+		$set_id = $this->request->getParameter('set_id', pInteger);
+		$id = $this->request->getParameter('id', pInteger);
+		
+		$lightbox_conf = caGetLightboxConfig();
+		$in_lightbox_template = $lightbox_conf->get('in_lightbox_template');
+		$not_in_lightbox_template = $lightbox_conf->get('not_in_lightbox_template');
+		
+		$user_id = $this->request->getUserID();
+		
+		if(!($t_set = ca_sets::findAsInstance($set_id))) { 
+			throw new ApplicationException(_t('Invalid set_id %1', $set_id));
+		}
+		if(!$t_set->haveAccessToSet($user_id, 1)) {
+			$this->view->setVar('text', 'error');	
+		} else {
+			if($t_set->isInSet($t_set->get('table_num'), $id, $set_id)) {
+				$t_set->removeItem($id, null, $user_id);
+				$this->view->setVar('text', $t_set->getWithTemplate($not_in_lightbox_template));	
+			} else {
+				$t_set->addItem($id, $user_id);
+				$this->view->setVar('text', $t_set->getWithTemplate($in_lightbox_template));	
+			}
+		}
+		$this->renderAsText(false, ['var' => 'text']);
 	}
 	# -------------------------------------------------------
 }

@@ -39,18 +39,6 @@
 	}
 ?>
 
-
-<?php
-
-	# --- display galleries as a grid?
-	// print $this->render("Front/gallery_grid_html.php");
-	# --- display galleries as a slideshow?
-	#print $this->render("Front/gallery_slideshow_html.php");
-	# --- display 1 featured gallery
-	// print $this->render("Front/featured_gallery_html.php");
-
-?>
-
 <h1 class="visually-hidden">Metabolic Home Page</h1>
 
 <?php
@@ -63,7 +51,7 @@
 		<div class="col-md-9 col-lg-6 col-xl-5 d-flex">
 			<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
 				<div class="input-group pb-3">
-					<label for="heroSearchInput" class="form-label mb-0 me-3 display-5 pt-2">Search The Archive</label>
+					<label for="heroSearchInput" class="form-label mb-0 me-3 display-5 pt-2">Search the Archive</label>
 					<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="" aria-label="Search Bar">
 					<button type="submit" class=" border-0 rounded-0 ms-1 bg-white display-5 pt-2" id="heroSearchButton" aria-label="Search button">GO</button>
 				</div>
