@@ -26,6 +26,7 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
+ * @disabled true
  * @name PDF (thumbnails)
  * @filename Thumbnails
  * @type page

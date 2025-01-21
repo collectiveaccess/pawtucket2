@@ -34,7 +34,7 @@ array_pop($tmp);
 $path = join("/", $tmp);
 
 if (!is_array($error_messages)) {
-	$error_messages = self::$error_messages;
+	$error_messages = self::$opa_error_messages;
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -61,20 +61,15 @@
 		</div>
 	</div>
 </div>
-<div class="container-flex">
-	<div class="row">
-		<div class="col text-end">
-			<div class="pt-1 pe-2"><?php print caDetailLink($this->request, "Brooklyn Navy Yard, Circa 1904", "", "ca_objects", "14473"); ?></div>
-		</div>
-	</div>
-</div>
+<div class="pt-1 pe-2 text-end"><?php print caDetailLink($this->request, "Brooklyn Navy Yard, Circa 1904", "", "ca_objects", "14473"); ?></div>
+
 <?php
 	$vs_hp_intro_title = $this->getVar("hp_intro_title");
 	$vs_hp_intro = $this->getVar("hp_intro");
 	if($vs_hp_intro_title || $vs_hp_intro){
 ?>
 		<div class="container my-5 py-5">
-			<div class="row gx-5 align-items-center">
+			<div class="row gx-md-5 align-items-center">
 				<div class="col-sm-12 col-md-6 text-start">
 <?php
 					if($vs_hp_intro_title){

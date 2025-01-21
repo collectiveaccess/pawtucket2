@@ -4,6 +4,7 @@ $table 		= $this->getVar('table');
 $t_list_item = new ca_list_items();
 $access_values 	= $this->getVar('access_values');
 $result_caption_template = $this->getVar('caption_template'); 
+$item_is_in_user_lightbox = $this->getVar('itemIsInUserLightbox');
 
 $o_lightbox_config 					= $this->getVar("set_config");
 $lightbox_displayname_singular 		= $this->getVar("lightbox_displayname_singular");
@@ -16,7 +17,7 @@ $can_delete 						= $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__);
 // View modes
 $configured_modes = $this->getVar('configured_modes');
 $current_view_mode = $this->getVar('mode');
-$current_view_mode_info = $view_modes[$current_view_mode];
+$current_view_mode_info = $configured_modes[$current_view_mode];
 
 $image_format = caGetOption('image_format', $current_view_mode_info, 'cover');
 $image_class = "";
@@ -29,8 +30,8 @@ if($image_format == "contain"){
 while($qr_items->nexthit()) {
 	$id = $qr_items->getPrimaryKey();
 	
-	$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white', $table, $id, null, array("title" => _t("View record"), "aria-label" => _t("View record")));
-	$caption 	= $qr_items->getWithTemplate($result_caption_template, array("checkAccess" => $access_values));
+	$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2', $table, $id, null, array("title" => _t("View record"), "aria-label" => _t("View record")));
+	$caption 	= $qr_items->getWithTemplate($result_caption_template, array("checkAccess" => $item_is_in_user_lightbox ? null : $access_values));
 	$image = $qr_items->get('ca_object_representations.media.large', ["checkAccess" => $access_values, "class" => $image_class]);
 		
 	if(!$image){
@@ -58,14 +59,14 @@ while($qr_items->nexthit()) {
 					<button type="button" 
 						id='lb-select-btn-<?= $id; ?>'
 						onclick='toggleSelection(<?= $id; ?>)'
-						class="btn btn-white btn-select" 
+						class="btn btn-white btn-select px-2" 
 						title="<?= _t("Select record"); ?>"
 						aria-label="<?= _t("Select record"); ?>"><i class="bi bi-check-circle"></i></button>
 					<?= $detail_button_link; ?>
 
 <?php if($can_delete) { ?>
 					<button 
-						class="btn btn-white pe-0" 
+						class="btn btn-white px-2" 
 						title="<?= _t('Remove from %1', $lightbox_displayname_singular); ?>"
 						aria-label="<?= _t('Remove from %1', $lightbox_displayname_plural); ?>"
 						data-bs-toggle="modal" 

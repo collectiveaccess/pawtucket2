@@ -74,7 +74,7 @@ if(!$incremental) { ?>
 	
 		<div class="row">
 			<div class="col">
-				<H1 class="text-capitalize mb-0">My <?= ucfirst($lightbox_displayname_plural); ?></h1>
+				<H1 class="text-capitalize mb-0"><?= _t("My %1", ucfirst($lightbox_displayname_plural)); ?></h1>
 			</div>
 			<div class="col text-end">
 				<div class="btn-group" role="group" aria-label="<?= _t('%1 List Controls', $lightbox_displayname_singular); ?>">
@@ -93,7 +93,7 @@ if(!$incremental) { ?>
 <?php } ?>
 
 		<div class="row">
-			<div class="col-md-12 col-lg-5 d-flex">
+			<div class="col-md-12 col-lg-4">
 				<form role="search" id="searchWithin" hx-post="<?= caNavUrl($this->request, '', '*', 'Search', ['t' => 'ca_sets']); ?>" hx-target="#lightboxContent" hx-swap="innerHTML">
 					<div class="input-group">
 						<label for="search-within" class="form-label visually-hidden"><?= _t('Search within'); ?></label>
@@ -102,19 +102,8 @@ if(!$incremental) { ?>
 						
 					</div>
 				</form>
-<?php if($search){ ?>
-				<div id="clearSearch" class="ps-1 display-inline"><button 
-						hx-post="<?= caNavUrl($this->request, '', '*', 'Search', ['t' => 'ca_sets', 'search' => '']); ?>" 
-						hx-target="#lightboxContent" 
-						hx-trigger="click" 
-						hx-swap="innerHTML"
-						class="btn btn-light" 
-						type="button">
-						<?php print _t("%1 %2 for <i>%3</i>", $total, (($total == 1) ? _t("result") : _t("results")), $search); ?> <i class="ms-1 bi bi-x-circle" aria-label="remove"></i>
-				</button></div>
-<?php } ?>
 			</div>
-			<div class="col-md-12 col-lg-7 text-lg-end pt-2 mt-lg-0">
+			<div class="col-md-12 col-lg-8 text-lg-end pt-2 mt-lg-0">
 				<ul class="list-group list-group-horizontal justify-content-lg-end small">
 <?php 
 				if(sizeof($sorts) > 0) { ?>
@@ -196,6 +185,21 @@ if(!$incremental) { ?>
 			</ul>
 		</div>
 	</div>
+<?php if($search){ ?>
+		<div class="row">
+			<div class="col">
+				<div id="clearSearch" class="py-2 display-inline"><button 
+						hx-post="<?= caNavUrl($this->request, '', '*', 'Search', ['t' => 'ca_sets', 'search' => '']); ?>" 
+						hx-target="#lightboxContent" 
+						hx-trigger="click" 
+						hx-swap="innerHTML"
+						class="btn btn-light" 
+						type="button">
+						<?php print _t("%1 %2 for <i>%3</i>", $total, (($total == 1) ? _t("result") : _t("results")), $search); ?> <i class="ms-1 bi bi-x-circle" aria-label="remove"></i>
+				</button></div>
+			</div>
+		</div>
+<?php } ?>
 
 	<div class="row mt-2">
 <?php

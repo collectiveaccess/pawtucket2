@@ -926,7 +926,7 @@ function caGetAddToSetInfo($po_request){
 	if(!$po_request->isLoggedIn() && !$po_request->config->get("disable_lightbox")){
 		$o_lightbox_config = caGetLightboxConfig();
 		$va_link_info["controller"] = "Lightbox";
-		$va_link_info["icon"] = $o_lightbox_config->get("addToLightboxIcon");
+		$va_link_info["icon"] = $o_lightbox_config->get("lightbox_icon");
 		if(!$va_link_info["icon"]){
 			$va_link_info["icon"] = "<i class='fa fa-suitcase'></i>";
 		}
@@ -941,7 +941,7 @@ function caGetAddToSetInfo($po_request){
 	if(caDisplayLightbox($po_request)){
 		$o_lightbox_config = caGetLightboxConfig();
 		$va_link_info["controller"] = "Lightbox";
-		$va_link_info["icon"] = $o_lightbox_config->get("addToLightboxIcon");
+		$va_link_info["icon"] = $o_lightbox_config->get("lightbox_icon");
 		if(!$va_link_info["icon"]){
 			$va_link_info["icon"] = "<i class='fa fa-suitcase'></i>";
 		}

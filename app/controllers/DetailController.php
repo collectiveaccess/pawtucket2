@@ -115,6 +115,7 @@ class DetailController extends FindController {
 		if (!($t_subject = Datamodel::getInstance($table, true))) {
 			throw new ApplicationException("Invalid detail table");
 		}
+		
 		$this->ops_tablename = $table;
 		
 		$use_alt_identifier_in_urls = caUseAltIdentifierInUrls($table);
@@ -138,6 +139,10 @@ class DetailController extends FindController {
 		} 
 		$t_subject->autoConvertLineBreaks(true);
 		
+		
+		$item_is_in_users_lightbox = caItemIsInUserLightbox($t_subject, $this->request->getUserID());
+		$this->view->setVar('itemIsInUsersLightbox', $item_is_in_users_lightbox);
+		
 		$ps_view = $this->request->getParameter('view', pString);
 		if($ps_view === 'pdf') {
 			if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
@@ -148,7 +153,7 @@ class DetailController extends FindController {
 				$t_subject, 
 				$this->request->getParameter("export_format", pString), 
 				caGenerateDownloadFileName(caGetOption('pdfExportTitle', $options, $t_subject->get('preferred_labels')), ['t_subject' => $t_subject]), 
-				['checkAccess' => $this->opa_access_values]
+				['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]
 			);
 			return;
 		}		
@@ -191,11 +196,11 @@ class DetailController extends FindController {
 		}
 		
 		$lightbox_conf = caGetLightboxConfig();
-		$lightboxes = caGetLightboxesForUser($this->request->getUserID(), $this->opa_access_values, ['tables' => [$this->ops_tablename]]);
+		$this->view->setVar('lightbox_conf', $lightbox_conf);
+		//$lightboxes = caGetLightboxesForUser($this->request->getUserID(), $this->opa_access_values, ['tables' => [$this->ops_tablename]]);
+		$lightboxes = caGetLightboxesForUser($this->request->getUserID(), null, ['tables' => [$this->ops_tablename]]);
 		$this->view->setVar('lightboxes', ($lightboxes && ($lightboxes->numHits() > 0)) ? $lightboxes : null);
-		$this->view->setVar('inLightboxes', caGetLightboxesForItem($t_subject));
-		$this->view->setVar('lighboxListInLightboxTemplate', $lightbox_conf->get('in_lightbox_template'));
-		$this->view->setVar('lighboxListNotInLightboxTemplate', $lightbox_conf->get('not_in_lightbox_template'));
+		$this->view->setVar('in_lightboxes', caGetLightboxesForItem($t_subject));
 		
 		// Record view
 		$t_subject->registerItemView();
@@ -225,7 +230,7 @@ class DetailController extends FindController {
 		#
 		# Enforce access control
 		#
-		if(sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
+		if(!$item_is_in_users_lightbox && sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
 			$this->notification->addNotification(_t("This item is not available for view"), __NOTIFICATION_TYPE_INFO__);
 			$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
 			return;
@@ -292,7 +297,7 @@ class DetailController extends FindController {
 				$t_representation = Datamodel::getInstance("ca_object_representations", true);
 				$t_representation->load($pn_representation_id);
 			}else{
-				$t_representation = $t_subject->getPrimaryRepresentationInstance(array("checkAccess" => $this->opa_access_values));
+				$t_representation = $t_subject->getPrimaryRepresentationInstance(array("checkAccess" => $item_is_in_users_lightbox ? null : $this->opa_access_values));
 			}
 			if ($t_representation) {
 				$this->view->setVar("t_representation", $t_representation);
@@ -334,7 +339,7 @@ class DetailController extends FindController {
 				
 				$media_opts = array_merge(
 					$options,
-					['checkAccess' => $this->opa_access_values]
+					['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]
 				);
 				$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
 				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail'])));
@@ -545,7 +550,7 @@ class DetailController extends FindController {
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
 		$this->view->setVar('inquireEnabled', (bool)$options['enableInquire']);
 		$this->view->setVar('copyLinkEnabled', (bool)$options['enableCopyLink']);
-		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $this->opa_access_values]);
+		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]);
 		$this->render($path);
 	}
 	# -------------------------------------------------------
@@ -1603,36 +1608,6 @@ class DetailController extends FindController {
 	 */
 	public function __destruct() {
 		if($this->ops_tmp_download_file_path) { @unlink($this->ops_tmp_download_file_path); }
-	}
-	# -------------------------------------------------------
-	/**
-	 * 
-	 */
-	public function LightboxMembership() {
-		$set_id = $this->request->getParameter('set_id', pInteger);
-		$id = $this->request->getParameter('id', pInteger);
-		
-		$lightbox_conf = caGetLightboxConfig();
-		$in_lightbox_template = $lightbox_conf->get('in_lightbox_template');
-		$not_in_lightbox_template = $lightbox_conf->get('not_in_lightbox_template');
-		
-		$user_id = $this->request->getUserID();
-		
-		if(!($t_set = ca_sets::findAsInstance($set_id))) { 
-			throw new ApplicationException(_t('Invalid set_id %1', $set_id));
-		}
-		if(!$t_set->haveAccessToSet($user_id, 1)) {
-			$this->view->setVar('text', 'error');	
-		} else {
-			if($t_set->isInSet($t_set->get('table_num'), $id, $set_id)) {
-				$t_set->removeItem($id, null, $user_id);
-				$this->view->setVar('text', $t_set->getWithTemplate($not_in_lightbox_template));	
-			} else {
-				$t_set->addItem($id, $user_id);
-				$this->view->setVar('text', $t_set->getWithTemplate($in_lightbox_template));	
-			}
-		}
-		$this->renderAsText(false, ['var' => 'text']);
 	}
 	# -------------------------------------------------------
 }

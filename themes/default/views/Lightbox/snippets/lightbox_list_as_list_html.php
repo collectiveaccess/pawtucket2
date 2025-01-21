@@ -15,7 +15,7 @@ while($qr_sets->nextHit()) {
 	$set_id = $qr_sets->get('ca_sets.set_id');
 	$table = $qr_sets->get('table_num');
 	$caption = $qr_sets->get('ca_sets.preferred_labels.name');
-	$detail_link = caNavLink($this->request,"<i class='bi bi-arrow-right-square'></i>", 'text-decoration-none', '*', '*', "Detail/{$set_id}");
+	$detail_link = caNavLink($this->request,"<i class='bi bi-arrow-right-square'></i>", 'btn btn-sm btn-white ms-3', '*', '*', "Detail/{$set_id}");
 	$can_delete = $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__, $set_id);
 ?>
 		<div class='list-group-item border-0 border-bottom px-0'>
@@ -28,10 +28,10 @@ while($qr_sets->nextHit()) {
 	
 				<div class='col-auto ms-auto'>
 					<?= $qr_sets->getWithTemplate('^ca_sets._itemCount').' '.Datamodel::getTableProperty($table, 'NAME_PLURAL'); ?>
-					<button class="btn btn-sm btn-secondary ms-3"><?= $detail_link; ?></button>
+					<?= $detail_link; ?>
 <?php if($can_delete) { ?>
 					<button
-						class="btn btn-sm btn-secondary" 
+						class="btn btn-sm btn-white" 
 						data-bs-toggle="modal" 
 						data-bs-target="#deleteLightboxModal"
 						hx-on:click="document.getElementById('deleteLightboxId').value = '<?= $set_id;?>';">

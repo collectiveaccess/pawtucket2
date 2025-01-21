@@ -74,18 +74,18 @@ if(!$incremental) {
 
 	
 		<div class="row">
-			<div class="col-md-12 col-lg-5">
+			<div class="col-md-12 col-lg-4">
 				<div class="float-start me-3"><?= caNavLink($this->request, '<i class="bi bi-chevron-left"></i>', 'btn btn-secondary btn-sm', '*', 'Lightbox', 'Index', null, array("aria-label" => _t("Back"), "title" => _t("Back"))); ?></div>
 			
 				<H1 class="text-capitalize mb-0 fs-3"><?= $t_set->get('ca_sets.preferred_labels.name'); ?></H1>
 			</div>
-			<div class="col-md-12 col-lg-7 text-lg-end pt-2 mt-lg-0">
+			<div class="col-md-12 col-lg-8 text-lg-end mt-lg-0">
 
-				<div class="btn-group" role="group" aria-label="<?= _t('%1 Controls', $lightbox_displayname_singular); ?>">
+				<div class="btn-group" role="group" id="lightbox-controls" aria-label="<?= _t('%1 Controls', $lightbox_displayname_singular); ?>">
 
 					<div id="actionsDropdown" class="btn-group d-none" role="group">
-						<button id="btnGroupActions" type="button" class="btn btn-white" data-bs-toggle="dropdown" aria-expanded="false">
-							<?= _t("Actions"); ?> <i class="bi bi-caret-down-fill"></i> 
+						<button id="btnGroupActions" type="button" class="btn btn-white btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+							<?= _t("Actions"); ?> <i class="bi bi-chevron-down"></i> 
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="btnGroupActions">
 <?php if($can_delete) { ?>
@@ -95,19 +95,18 @@ if(!$incremental) {
 									aria-label="<?= _t('Remove from %1', $lightbox_displayname_plural); ?>"
 									data-bs-toggle="modal" 
 									data-bs-target="#deleteLightboxItemModal"
-									onclick="document.getElementById('deleteLightboxItemId').value = document.getElementById('selection').value;"><i class='bi bi-x-square'></i> <?= _t("Delete selected"); ?></button></li>
+									onclick="document.getElementById('deleteLightboxItemId').value = document.getElementById('selection').value;"><?= _t("Delete selected"); ?></button></li>
 <?php } ?>
 						</ul>
 					</div>
 
-					<button type="button" id="select-all-btn" class="btn btn-white" onclick="toggleSelectAll()" data-state="select">
+					<button type="button" id="select-all-btn" class="btn btn-white btn-sm" onclick="toggleSelectAll()" data-state="select">
 						<i class="bi bi-check-circle-fill"></i> <?= _t("Select All"); ?>
 					</button>
 
-					<button type="button" class="btn btn-white" data-bs-toggle="modal" data-bs-target="#editLightboxModal"><i class="bi bi-pencil-square"></i> <?= _t("Edit"); ?></button>
-					<button type="button" class="btn btn-white" data-bs-toggle="modal" data-bs-target="#lightboxAccessModal"><i class="bi bi-people-fill"></i> <?= _t("Access"); ?></button>
+					<!--<button type="button" class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#lightboxAccessModal"><i class="bi bi-people-fill"></i> <?= _t("Access"); ?></button>-->
 					<div class="btn-group" role="group">
-						<button id="btnGroupDownload" type="button" class="btn btn-white" data-bs-toggle="dropdown" aria-expanded="false">
+						<button id="btnGroupDownload" type="button" class="btn btn-white btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
 						  <i class="bi bi-download"></i> <?= _t("Download"); ?>
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="btnGroupDownload">
@@ -118,12 +117,12 @@ if(!$incremental) {
 <?php } ?>
 						</ul>
 					</div>
-
+					<button type="button" class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#editLightboxModal"><i class="bi bi-pencil-square"></i> <?= _t("Edit"); ?></button>
 <?php
 					if($can_delete) {
 ?>
 						<button 
-							class="btn btn-white pe-0" 
+							class="btn btn-white btn-sm" 
 							data-bs-toggle="modal" 
 							data-bs-target="#deleteLightboxModal"
 							hx-on:click="document.getElementById('deleteLightboxId').value = '<?= $set_id;?>';"
@@ -141,7 +140,7 @@ if(!$incremental) {
 		</div>
 	
 		<div class="row">
-			<div class="col-md-12 col-lg-5 d-flex">
+			<div class="col-md-12 col-lg-4">
 				<form role="search" id="searchWithin" hx-post="<?= caNavUrl($this->request, '', '*', 'Search', ['t' => 'ca_objects', 'id' => (int)$set_id]); ?>" hx-target="#lightboxContent" hx-swap="innerHTML">
 					<div class="input-group">
 						<label for="search-within" class="form-label visually-hidden"><?= _t('Search within'); ?></label>
@@ -149,22 +148,10 @@ if(!$incremental) {
 						<button type="submit" class="btn rounded-0 border border-start-0" aria-label="<?= _t('Search submit'); ?>"><i class="bi bi-search"></i></button>
 					</div>
 				</form>
-<?php if($search){ ?>
-				<div id="clearSearch" class="ps-1 display-inline"><button 
-						hx-post="<?= caNavUrl($this->request, '', 'Lightbox', 'Detail/'.(int)$set_id); ?>" 
-						hx-target="#lightboxContent" 
-						hx-trigger="click" 
-						hx-swap="innerHTML"
-						class="btn btn-light" 
-						type="button">
-						<?php print _t("%1 %2 for <i>%3</i>", $total, (($total == 1) ? _t("result") : _t("results")), $search); ?> <i class="ms-1 bi bi-x-circle" aria-label="remove"></i>
-				</button></div>
-<?php } ?>
-
 				<input type="hidden" name="selection" id="selection" value=""/>
 				<input type="hidden" name="omitSelection" id="omitSelection" value=""/>
 			</div>
-			<div class="col-md-12 col-lg-7 text-lg-end pt-2 mt-lg-0">
+			<div class="col-md-12 col-lg-8 text-lg-end pt-2 mt-lg-0">
 				<ul class="list-group list-group-horizontal justify-content-lg-end small">
 
 
@@ -250,12 +237,26 @@ if(!$incremental) {
 					</ul><!-- end list group -->
 				</div><!-- end col -->
 			</div><!-- end row -->
-			
+<?php if($search){ ?>
+			<div class="row">
+				<div class="col">		
+					<div id="clearSearch" class="py-2 display-inline"><button 
+							hx-post="<?= caNavUrl($this->request, '', 'Lightbox', 'Detail/'.(int)$set_id); ?>" 
+							hx-target="#lightboxContent" 
+							hx-trigger="click" 
+							hx-swap="innerHTML"
+							class="btn btn-light" 
+							type="button">
+							<?php print _t("%1 %2 for <i>%3</i>", $total, (($total == 1) ? _t("result") : _t("results")), $search); ?> <i class="ms-1 bi bi-x-circle" aria-label="remove"></i>
+					</button></div>
+				</div><!-- end col -->
+			</div><!-- end row -->
+<?php } ?>			
 			<div class="row mt-2">
 <?php } ?> <!-- end if incremental -->
 <?= $this->render($configured_modes[$current_view_mode]['view']);   ?>
 <?php if(!$incremental) { ?>
-	</div>
+			</div>
 </div><!-- end lightboxContent -->
 <?php } ?> <!-- end if incremental -->
 
