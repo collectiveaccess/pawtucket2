@@ -159,6 +159,12 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 			height:200px;
 			width:100%
 		}
+		
+		.result-selected {
+			color: red;
+			border: 1px solid red;
+			background-color: #eee;
+		}
 	}
 }
 #bRefine{
@@ -229,6 +235,44 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 		}
 	}
 }
+/* ------------------------- Lightbox ------------------------------ */
+.lightbox{
+	#lightboxContent {
+		.card{
+			img.object-fit-cover{
+				object-position:middle center;
+			}
+			img, .ca-placeholder{
+				height:250px;
+				width:100%
+			}
+		}
+		.lb-selected {
+			color: red;
+			border: 1px solid red;
+			background-color: #eee;
+		}
+	}
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img{
+			height:200px;
+			width:100%;
+		}
+		.ca-placeholder { 
+			height:250px;
+			width:100%;
+		}
+	}
+	
+	#errors ul {
+		margin: 0px;
+		list-style: none;
+	}
+}
+
 /* ------------------------- Accessibility ------------------------------ */
 #skip:focus{
 	border: 2px solid #000 !important;
@@ -263,6 +307,10 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 	box-shadow:0 0 2px 2px rgba(0,0,0,.5);
 }
 
+.lightbox #lightboxContent .card img, .lightbox #lightboxContent .card .ca-placeholder {
+	height: 250px;
+	width: 100%;
+}
 
 /* ------------------------- Cookie Manager ------------------------------ */
 #cookieNotice{
@@ -318,7 +366,7 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 	color:#777;
 }
 .cookieByCategory .cookiesList{
-	display:none;
+	// display:none;
 	padding:10px;
 	margin:10px;
 	background-color:#F2F2F2;
@@ -355,4 +403,3 @@ div.banContinue {
 	display: none;
 	margin: 48px 0 0 0;
 }
-

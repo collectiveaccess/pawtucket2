@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2020-2023 Whirl-i-Gig
+ * Copyright 2020-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -333,7 +333,11 @@ class MediaUploadManager {
 		$server = new \TusPhp\Tus\Server('redis');  // TODO: make cache type configurable
 
 		$server->middleware()->add(MediaUploaderHandler::class);
-		$server->setApiPath('/batch/MediaUploader/tus')->setUploadDir($user_dir_path);
+		if(defined('__CA_APP_TYPE__') && (__CA_APP_TYPE__ === 'PAWTUCKET')) {
+			$server->setApiPath(__CA_URL_ROOT__.'/Import/tus')->setUploadDir($user_dir_path);
+		} else {
+			$server->setApiPath(__CA_URL_ROOT__.'/batch/MediaUploader/tus')->setUploadDir($user_dir_path);
+		}
 
 		$server->event()->addListener('tus-server.upload.progress', function (\TusPhp\Events\TusEvent $event) use ($user_id) {
 			$fileMeta = $event->getFile()->details();

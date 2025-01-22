@@ -65,7 +65,7 @@ if($this->request->isLoggedIn()){
 	</script>
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
-	
+	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<nav class="navbar navbar-expand-lg shadow-sm">
 		<div class="container-xl">
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'BNY-logo.png', array("alt" => "Brooklyn Navy Yard Logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
@@ -102,7 +102,7 @@ if($this->request->isLoggedIn()){
 		</div>
 	</nav>	
 
-	<main <?= caGetPageCSSClasses(); ?>>
+	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4'>";

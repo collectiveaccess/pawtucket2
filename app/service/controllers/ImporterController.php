@@ -147,7 +147,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						
 						$properties = $ui_schema = $required_fields = [];
 						foreach($fi['content'] as $code => $info) {
-							
+							$bm = $info['bundle']; //preg_replace("![^A-Za-z0-9]+!", "_", $info['bundle']);
 							if(!($label = $info['label'])) {
 								$label = $t_instance->getDisplayLabel($info['bundle']);
 							} 
@@ -161,12 +161,12 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 								'title' => $label,
 								'description' => $description,
 								'type' => $types['type'],
-								'format' => $types['format'],
+								// 'format' => $types['format'],
 								'uniqueItems' => $types['uniqueItems'] ?? false
 							]; 		
 							if($types['items']) { $field['items'] = $types['items']; }
 							if($types['uiSchema']) { 
-								$ui_schema[$info['bundle']] = $types['uiSchema'];
+								$ui_schema[$bm] = $types['uiSchema'];
 							}
 							foreach(['minLength', 'maxLength', 'enum', 'enumNames', 'minimum', 'maximum'] as $k) {
 								if (isset($types[$k])) {
@@ -175,10 +175,10 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 							}
 							
 							if(caGetOption('required', $info, false)) {
-								$required_fields[] = $info['bundle'];
+								$required_fields[] = $bm;
 							}
 							
-							$properties[$info['bundle']] = $field;					
+							$properties[$bm] = $field;					
 						}
 						
 						$form = [
@@ -189,7 +189,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 							'properties' => json_encode($properties),
 							'uiSchema' => json_encode($ui_schema)
 						];
-						
+						//print_R($form);
 						return $form;
 					}
 				],
@@ -395,9 +395,16 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 									if(is_array($v)) {
 										foreach($v as $f => $e) {
 											if(!is_array($e)) { $e = [$e]; }
+											
+											$msg = join("; ", $e);
+											if(preg_match("!([\d]{4}\.[\d]+)!", $msg, $m)) {
+												if($t_object = ca_objects::find(['idno' => $m[1]], ['returnAs' => 'firstModelInstance'])) {
+													$msg = str_replace($m[1], caDetailLink($m[1], '', 'ca_objects', $t_object->getPrimaryKey(), [], [], []), $msg);
+												}
+											}
 											$data[$k][] = [
 												'filename' => $f,
-												'message' => join("; ", $e)
+												'message' => $msg
 											];
 										}
 									}
@@ -637,13 +644,16 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					$type = ['type' => 'string', 'format' => caGetOption('useDatePicker', $info, false) ? 'date' : 'string'];
 					break;	
 				case __CA_ATTRIBUTE_VALUE_INTEGER__:
-					$type = ['type' => 'integer', 'format' => 'string'];
+					$type = ['type' => 'integer'];
+					// $type = ['type' => 'integer', 'format' => 'string'];
 					break;
 				case __CA_ATTRIBUTE_VALUE_NUMERIC__:
-					$type = ['type' => 'number', 'format' => 'string'];
+					$type = ['type' => 'number'];
+					// $type = ['type' => 'number', 'format' => 'string'];
 					break;	
 				case __CA_ATTRIBUTE_VALUE_LIST__:
-					$type = ['type' => 'string', 'format' => 'string'];
+					// $type = ['type' => 'string', 'format' => 'string'];
+					$type = ['type' => 'string'];
 					$list_id = $dt->get('list_id');
 					$t_list = new ca_lists();
 					$item_count = $t_list->numItemsInList($list_id);
@@ -655,26 +665,42 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						}
 
 						$items = array_map(function($v) { return $v['name_plural']; }, caExtractValuesByUserLocale($t_list->getItemsForList($list_id, $opts)));
+						
 						$t_item = new ca_list_items();
 						$np = $t_item->getNonPreferredDisplayLabelsForIDs(array_keys($items));
 
-						
-						foreach($np as $id => $labels) {
-							$items[$id] = $labels[0];
-						}
+						// 
+// 						foreach($np as $id => $labels) {
+// 							$items[$id] = (string)$labels[0];
+// 						}
 						asort($items);
 						
-						$type['enum'] = array_map(function($v) { return (string)$v; }, array_keys($items));
-						$type['enumNames'] = array_values($items);
+						$type = ['type' => 'array'];
+						$type['items'] = [
+							'type' => 'string', 'format' => 'string', 
+							'enum' => array_map(function($v) { return (string)$v; }, array_keys($items)),
+							'enumNames' => array_values($items)
+						];
+						$type['uniqueItems'] = true;
+						if($render === 'checkboxes') {
+							$type['uiSchema'] = [
+								"ui:widget" => "checkboxes",
+								"ui:classNames" => "importCheckboxList",
+								"ui:options" => [
+									"inline" => true
+								]
+							];
+						}
 					}
 					break;	
 				default:
-					$type = ['type' => 'string', 'format' => 'string'];	
+					// $type = ['type' => 'string', 'format' => 'string'];	
+					$type = ['type' => 'string'];	
 					if($height > 1) {
 						$type['uiSchema'] = [
 							"ui:widget" => "textarea",
 							"ui:options" => [
-								"rows" => $height
+								"rows" => (int)$height
 							]
 						];
 					}	
@@ -694,7 +720,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					if(($settings['maxAttributesPerRow'] > 1) && !$dont_repeat) {
 						$type = [
 							'type' => 'array',
-							'format' => 'string',
+							// 'format' => 'string',
 							'items' => $type,
 							'minItems' => (int)$settings['minAttributesPerRow'],
 							'maxItems' => (int)$settings['maxAttributesPerRow'],
@@ -704,7 +730,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						if($render === 'checkboxes') {
 							$type['uiSchema'] = [
 								"ui:widget" => "checkboxes",
-								"classNames" => "importCheckboxList",
+								"ui:classNames" => "importCheckboxList",
 								"ui:options" => [
 									"inline" => true
 								]
@@ -752,8 +778,9 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					$type = [
 						'type' => 'array', 'format' => 'string',
 						'items' => [
-							'type' => 'string', 'format' => 'string', 
-							'enum' => array_values($options), 'enumNames' => array_keys($options)
+							'type' => 'string',
+							// 'type' => 'string', 'format' => 'string', 
+							'enum' => array_map(function($v) { return (string)$v; }, array_values($options)), 'enumNames' => array_keys($options)
 						],
 						'uniqueItems' => true
 					];
@@ -761,7 +788,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					if($render === 'checkboxes') {
 						$type['uiSchema'] = [
 							"ui:widget" => "checkboxes",
-									"classNames" => "importCheckboxList",
+									"ui:classNames" => "importCheckboxList",
 							"ui:options" => [
 								"inline" => true
 							]
@@ -773,7 +800,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					'type' => 'array', 'format' => 'string',
 					'items' => [
 						'type' => 'string', 'format' => 'string', 
-						'enum' => array_values($options), 'enumNames' => array_keys($options)
+						'enum' => array_map(function($v) { return (string)$v; }, array_values($options)), 'enumNames' => array_keys($options)
 					],
 					'uniqueItems' => true
 				];
@@ -781,7 +808,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 				if($render === 'checkboxes') {
 					$type['uiSchema'] = [
 						"ui:widget" => "checkboxes",
-								"classNames" => "importCheckboxList",
+								"ui:classNames" => "importCheckboxList",
 						"ui:options" => [
 							"inline" => true
 						]
@@ -800,7 +827,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					$type['uiSchema'] = [
 						"ui:widget" => "textarea",
 						"ui:options" => [
-							"rows" => $height
+							"rows" => (int)$height
 						]
 					];
 				}
@@ -812,11 +839,17 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 				$type['uiSchema'] = [
 					"ui:widget" => "textarea",
 					"ui:options" => [
-						"rows" => $height
+						"rows" => (int)$height
 					]
 				];
 			}
 		}
+		
+		if(is_array($type['enumNames'])) {
+			$type['uiSchema']['ui:enumNames'] = $type['enumNames'];
+			unset($type['enumNames']);
+		}
+		//var_dump($type);
 		return $type;
 	}
 	# -------------------------------------------------------
