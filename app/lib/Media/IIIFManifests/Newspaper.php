@@ -36,6 +36,14 @@ class Newspaper extends BaseIIIFManifest {
 	/**
 	 *
 	 */
+	public function __construct() {
+		parent::__construct();
+		$this->manifest_name = 'Newspaper';
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	public function manifest(array $identifiers, ?array $options=null) : array {
 		global $g_request;
 		if(!$g_request) { return null; }

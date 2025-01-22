@@ -298,28 +298,43 @@ function caFileIsIncludable($ps_file) {
 	 *
 	 * @param string $dir The path to the directory you wish to remove
 	 * @param bool $pb_delete_dir By default caRemoveDirectory() will remove the specified directory after delete everything within it. Setting this to false will retain the directory after removing everything inside of it, effectively "cleaning" the directory.
-	 * @return bool Always returns true
+	 * @param array $options Options include:
+	 * 		allowFiles = If path is to a file, delete file. If not set the file is not deleted and false returned. [Default is false]
+	 *
+	 * @return int Number of files deleted; null on error
 	 */
-	function caRemoveDirectory($dir, $pb_delete_dir=true) {
+	function caRemoveDirectory($dir, $delete_dir=true, ?array $options=null) : ?int {
+		$count = 0;
 		if(substr($dir, -1, 1) == "/"){
 			$dir = substr($dir, 0, strlen($dir) - 1);
 		}
+		
+		if(caGetOption('allowFiles', $options, false) && is_file($dir)) {
+			if(@unlink($dir)) { $count++; }
+			return $count;
+		}
+		
 		if ($handle = @opendir($dir)) {
 			while (false !== ($item = readdir($handle))) {
 				if ($item != "." && $item != "..") {
-					if (is_dir("{$dir}/{$item}")) { caRemoveDirectory("{$dir}/{$item}", true);  }
-					else { @unlink("{$dir}/{$item}"); }
+					if (is_dir("{$dir}/{$item}")) { 
+						$count += caRemoveDirectory("{$dir}/{$item}", true);
+					} else { 
+						if(@unlink("{$dir}/{$item}")) {
+							$count++;
+						}
+					}
 				}
 			}
 			closedir($handle);
-			if ($pb_delete_dir) {
+			if ($delete_dir) {
 				@rmdir($dir);
 			}
 		} else {
-			return false;
+			return null;
 		}
 
-		return true;
+		return $count;
 	}
 	# ----------------------------------------
 	/**
@@ -880,6 +895,33 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
+	 * Remove stray temporary files from application tmp diectory
+	 *
+	 * Currently deletes:
+	 *		wkhtmltopdf tmp files
+	 */
+	function caCleanTmpDirectory() {
+		$config = Configuration::load();
+		if (($threshold = (int)$config->get('tmp_directory_garbage_collection_threshold')) <= 0) {
+			$threshold = 1800;
+		}
+		
+		$files_to_delete = caGetDirectoryContentsAsList(__CA_APP_DIR__.'/tmp', true, false, false, true, ['notModifiedSince' => time() - $threshold]);
+	
+		$count = 0;
+		foreach($files_to_delete as $file_to_delete) {
+			if(is_writeable($file_to_delete)) {
+				if(preg_match("!^".__CA_APP_DIR__.'/tmp'."/wkhtmltopdf[\d]+!", $file_to_delete)) {
+					@unlink($file_to_delete);
+					$count++;
+				}
+			}
+		}
+		
+		return $count;
+	}
+	# ----------------------------------------
+	/**
 	 *
 	 */
 	function caMakeGetFilePath($ps_prefix=null, $ps_extension=null, $options=null) {
@@ -1063,9 +1105,9 @@ function caFileIsIncludable($ps_file) {
 		if (
 			caGetOption('strict', $pa_options, false)
 			?
-				preg_match("!^(".join('|', $schemes)."):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#]*[\w\-\@?^=%&/~\+#])?$!", $ps_url, $va_matches)
+				preg_match("!^(".join('|', $schemes)."):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#\(\)\[\]]*[\w\-\@?^=%&/~\+#])?$!", $ps_url, $va_matches)
 				:
-				preg_match("!(".join('|', $schemes)."):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#]*[\w\-\@?^=%&/~\+#])?!", $ps_url, $va_matches)
+				preg_match("!(".join('|', $schemes)."):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#\(\)\[\]]*[\w\-\@?^=%&/~\+#])?!", $ps_url, $va_matches)
 			) {
 			return array(
 				'protocol' => $va_matches[1],
@@ -2319,14 +2361,13 @@ function caFileIsIncludable($ps_file) {
 	/**
 	 * Determines if current request was from from command line
 	 *
-	 * @return boolean True if request wasrun from command line, false if not
+	 * @return boolean True if request was run from command line, false if not
 	 */
 	function caIsRunFromCLI() {
-		if(php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])) {
-			return true;
-		} else {
-			return false;
-		}
+		if (in_array(PHP_SAPI, array('cli', 'cli-server', 'phpdbg'))) {
+      		return true;
+      	}
+      	return false;
 	}
 	# ---------------------------------------
 	/**
@@ -2360,7 +2401,7 @@ function caFileIsIncludable($ps_file) {
 	 *		defaultOnEmptyString = Force use of default value when option is set to an empty string). [Default is false]
 	 * @return mixed
 	 */
-	function caGetOption($pm_option, $pa_options, $pm_default=null, $pa_parse_options=null) {
+	function caGetOption($pm_option, ?array $pa_options, $pm_default=null, ?array $pa_parse_options=null) {
 		if (is_object($pa_options) && is_a($pa_options, 'Zend_Console_Getopt')) {
 			$pa_options = array($pm_option => $pa_options->getOption($pm_option));
 		}
@@ -2916,27 +2957,26 @@ function caFileIsIncludable($ps_file) {
 		global $g_ui_locale;
 		if(!$locale) { $locale = $g_ui_locale; }
 		if(!$locale && defined('__CA_DEFAULT_LOCALE__')) { $locale = __CA_DEFAULT_LOCALE__; }
-		
+	
 		$currency_specifier = $decimal_value = null;
 		// it's either "<something><decimal>" ($1000) or "<decimal><something>" (1000 EUR) or just "<decimal>" with an implicit <something>
 		try {
 			// either
 			if (preg_match("!^([^\d]+)([\d\.\,]+)$!", trim($value), $matches)) {
-				$decimal_value = (strpos($matches[2], ',') !== false) ? Zend_Locale_Format::getNumber($matches[2], ['locale' => $locale, 'precision' => 2]) : (float)$matches[2];
+				$decimal_value = Zend_Locale_Format::getNumber($matches[2], ['locale' => $locale, 'precision' => 2]);
 				$currency_specifier = trim($matches[1]);
 			// or 1
 			} else if (preg_match("!^([\d\.\,]+)([^\d]+)$!", trim($value), $matches)) {
-				$decimal_value = (strpos($matches[1], ',') !== false) ? Zend_Locale_Format::getNumber($matches[1], ['locale' => $locale, 'precision' => 2]) : (float)$matches[1];
+				$decimal_value = Zend_Locale_Format::getNumber($matches[1], ['locale' => $locale, 'precision' => 2]);
 				$currency_specifier = trim($matches[2]);
 			// or 2
 			} else if (preg_match("!(^[\d\,\.]+$)!", trim($value), $matches)) {
-				$decimal_value = (strpos($matches[1], ',') !== false) ? Zend_Locale_Format::getNumber($matches[1], ['locale' => $locale, 'precision' => 2]) : (float)$matches[1];
+				$decimal_value = Zend_Locale_Format::getNumber($matches[1], ['locale' => $locale, 'precision' => 2]);
 				$currency_specifier = null;
 			}
 		} catch (Zend_Locale_Exception $e){
 			return null;
 		}
-
 		if ($currency_specifier || ($decimal_value > 0)) {
 			return ['currency' => $currency_specifier, 'value' => round($decimal_value, 2)];
 		}
@@ -3357,8 +3397,8 @@ function caFileIsIncludable($ps_file) {
 
 		$vs_content = curl_exec($vo_curl);
 
-		if(curl_getinfo($vo_curl, CURLINFO_HTTP_CODE) !== 200) {
-			throw new WebServiceError(_t('An error occurred while querying an external webservice'). _t(" at %1", $ps_url). " ". print_r(curl_getinfo($vo_curl), true));
+		if(($code = curl_getinfo($vo_curl, CURLINFO_HTTP_CODE)) !== 200) {
+			throw new WebServiceError(_t('An error occurred while querying an external webservice'). _t(" at %1 [HTTP code was %2]", $ps_url, $code). " ". print_r(curl_getinfo($vo_curl), true));
 		}
 		curl_close($vo_curl);
 		return $vs_content;
@@ -3491,7 +3531,7 @@ function caFileIsIncludable($ps_file) {
 		global $g_ui_locale;
 		$vs_locale = caGetOption('locale', $pa_options, $g_ui_locale);
 		
-		$ps_value = preg_replace("![\-]+!", " ", $ps_value);
+		$ps_value = preg_replace("![\-]+!u", " ", $ps_value);
 
 		$pa_values = array(caConvertFractionalNumberToDecimal(trim($ps_value), $vs_locale));
 
@@ -3836,11 +3876,8 @@ function caFileIsIncludable($ps_file) {
 	        if (sizeof($va_tokens) > 2000) { 
 	        	$va_tokens = array_filter($va_tokens, function($v) { return ($v > (time() - 86400)); });	// delete any token older than eight hours
 	    	}
-	    	if (sizeof($va_tokens) > 2000) { 
-	    		$va_tokens = array_slice($va_tokens, 0, 500, true); // delete last quarter of token buffer if it gets too long
-	    	}
 	    
-	        if (!isset($va_tokens[$vs_token])) { $va_tokens[$vs_token] = time(); }
+	        $va_tokens[$vs_token] = time();
 	        
 	        PersistentCache::save("csrf_tokens_{$session_id}", $va_tokens, "csrf_tokens");
 	    }
@@ -4181,7 +4218,7 @@ function caFileIsIncludable($ps_file) {
 		$move_articles = caGetOption('moveArticles', $options, true);
 
 		$display_value = trim(preg_replace('![^\p{L}0-9 ]+!u', ' ', $text));
-		$display_value = preg_replace('![ ]+!', ' ', $display_value);
+		$display_value = preg_replace('![ ]+!u', ' ', $display_value);
 		
 		if($locale && $move_articles) {
 			// Move articles to end of string
@@ -4197,13 +4234,13 @@ function caFileIsIncludable($ps_file) {
 
 		// Left-pad numbers
 		$padded = [];
-		foreach(preg_split("![ \t]+!", $display_value) as $t) {
+		foreach(preg_split("![ \t]+!u", $display_value) as $t) {
 			if(is_numeric($t)) {
 				$padded[] = str_pad($t, 10, 0, STR_PAD_LEFT).'    ';	// assume numbers don't go wider than 10 places
-			} elseif(preg_match("!^([\d]+)([A-Za-z]+)$!", $t, $m)) {
-				$padded[] = str_pad($m[1], 10, 0, STR_PAD_LEFT).str_pad(substr($m[2], 0, 4), 4, ' ', STR_PAD_LEFT);
+			} elseif(preg_match("!^([\d]+)([A-Za-z]+)$!u", $t, $m)) {
+				$padded[] = str_pad($m[1], 10, 0, STR_PAD_LEFT).str_pad(mb_substr($m[2], 0, 4), 4, ' ', STR_PAD_LEFT);
 			} else {
-				$padded[] = str_pad(substr($t, 0, 10), 14, ' ', STR_PAD_RIGHT);
+				$padded[] = str_pad(mb_substr($t, 0, 10), 14, ' ', STR_PAD_RIGHT);
 			}
 		}
 		$display_value = join(' ', $padded);
@@ -4254,6 +4291,10 @@ function caFileIsIncludable($ps_file) {
 
 			foreach($va_rels as $vn_table_num => $va_rel_table_info) {
 				$va_ret[$vn_table_num] = $va_rel_table_info['table'];
+			}
+			if(isset($va_ret[56])) {
+				$t_instance = Datamodel::getInstanceByTableName('ca_objects_x_object_representations', true);
+				$va_ret[$t_instance->tableNum()] = $t_instance->tableName();
 			}
 		}
 
@@ -4888,6 +4929,7 @@ function caFileIsIncludable($ps_file) {
 	function caGetHTMLPurifier(?array $options=null) : HTMLPurifier {
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('URI.DisableExternalResources', !Configuration::load()->get('purify_allow_external_references'));
+		$config->set('Cache.SerializerPath', Configuration::load()->get('purify_serializer_path'));
 		return new HTMLPurifier($config); 
 	}
 	# ----------------------------------------
@@ -4981,6 +5023,8 @@ function caFileIsIncludable($ps_file) {
 	 * @return string Return absolute path or null if path is invalid
 	 */
 	function caSanitizeRelativeFilepath(string $relative_filepath, string $base_directory, ?array $options=null) : ?string {
+		$base_directory = str_replace('\\', '/', $base_directory);
+		$relative_filepath = str_replace('\\', '/', $relative_filepath);
 		$f = realpath($base_directory.'/'.$relative_filepath);
 		
 		if(!is_null($f)) {
@@ -5019,5 +5063,117 @@ function caFileIsIncludable($ps_file) {
 		}
 		$config = Configuration::load();
 		return (bool)$config->get('run_task_queue');
+	}
+	# ----------------------------------------
+	/**
+	 * Evaluate expression on model instance or current row of search result
+	 * 
+	 * @param BaseModel|SearchResult $item
+	 * @param string $expression
+	 * @param array $options Options include:
+	 *		context = Prefix to add to tag. [Default is null]
+	 *		... other optiond are passed through to get()
+	 *
+	 * @return bool
+	 */
+	function caEvaluateExpression($item, string $expression, ?array $options=null) : bool {
+		$expr_tags = caGetTemplateTags($expression);
+		$values = caGetTagValuesFromDataItem($item, $expr_tags, $options);
+		return (bool)ExpressionParser::evaluate($expression, $values);
+	}
+	# ----------------------------------------
+	/**
+	 * Return array with values for tags from a model instance or current row of search result
+	 *
+	 * @param BaseModel|SearchResult $item
+	 * @param array $tags
+	 * @param array $options Options include:
+	 *		context = Prefix to add to tag. [Default is null]
+	 *		... other optiond are passed through to get()
+	 *
+	 * @return array
+	 */
+	function caGetTagValuesFromDataItem($item, array $tags, ?array $options=null) : array {
+		if(!is_array($options)) {
+			$options = ['convertCodesToIdno' => true, 'returnAsArray' => false];
+		}	
+		$context = caGetOption('context', $options, null);
+		$vars = [];
+		if(is_array($tags)) {
+			foreach($tags as $tag) {
+				$v = $item->get(($context ? "{$context}." : '').$tag, $options);
+				$vars[$tag] = $v;
+			}
+		}
+		return $vars;
+	}
+	# ----------------------------------------
+	/**
+	 * Randomize order of array while preserving keys
+	 *
+	 * @param array
+	 * @return array
+	 */
+	function caShuffleArray(array $array) : array { 
+		$keys = array_keys($array); 
+		shuffle($keys); 
+		
+		$rarray = []; 
+		foreach ($keys as $key) {
+			$rarray[$key] = $array[$key]; 
+		}
+		return $rarray; 
+	}
+	# ----------------------------------------
+	/**
+	 * Return instance attached to attribute value.
+	 *
+	 * @param int $value_id
+	 *
+	 * @return BaseModel Instance or null if no match
+	 */
+	function caGetInstanceForValueID(int $value_id) : ?BaseModel {
+		$val = ca_attribute_values::find($value_id, ['returnAs' => 'arrays']);
+		if(!is_array($val)) { return null; }
+		
+		$attribute_id = $val[0]['attribute_id'];
+		$attr = ca_attributes::find($attribute_id, ['returnAs' => 'arrays']);
+		if(!is_array($attr)) { return null; }
+		
+		return Datamodel::getInstance($attr[0]['table_num'], true, $attr[0]['row_id']);
+	}
+	# ----------------------------------------
+	/**
+	 * Check HTTP response code for URL. Any code indicating the URL is live (Eg. in the 200 range)
+	 * will result in a return value of true. If the allowRedirects option is set then redirects
+	 * (HTTP response codes in the 300 range) will also result in a true return value.
+	 *
+	 * @param string $url The url to check
+	 * @param array $options Options include:
+	 *		allowRedirects = If true, redirected URLs are considers to be valid, working urls. [Default is false]
+	 *
+	 * @return bool True if URL appears to be valid, false if not.
+	 */
+	function caUrlExists(string $url, ?array $options=null) : bool { 
+		$allow_redirects = caGetOption('allowRedirects', $options, true);
+		
+		if(!is_array($headers = @get_headers($url))) { return false; }
+	
+		if(preg_match("!([\d]{3}) OK$!i", $headers[0], $m)) {
+			$sc = (int)$m[1];
+			if(($sc >= 200) && ($sc <= 299)) { return true; }
+			if($allow_redirects && ($sc >= 300) && ($sc <= 399)) { return true; }
+		}
+		return false;
+	}
+	# ----------------------------------------
+	/**
+	 * Return current HTTP response object
+	 *
+	 * @return ResponseHTTP
+	 */
+	function caGetHTTPResponse() : ResponseHTTP { 		
+		$app = AppController::getInstance();
+		return $app->getResponse();
 	}
 	# ----------------------------------------

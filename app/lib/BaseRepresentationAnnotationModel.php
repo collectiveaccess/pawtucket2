@@ -173,8 +173,7 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 		}
 		$this->set('props', $x=$this->opo_annotations_properties->getPropertyValues());
 		$this->generatePreview($pa_options);
-	
-	
+
 		$vn_rc = parent::update($pa_options);
 		if (!$this->numErrors()) {
 			$this->opo_annotations_properties = $this->loadProperties($vs_type);
@@ -313,7 +312,7 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
  	}
  	# ------------------------------------------------------
  	public function getPropertyValue($ps_property, $options=null) {
- 		return $this->opo_annotations_properties->getProperty($ps_property, false, $options);
+ 		return $this->opo_annotations_properties ? $this->opo_annotations_properties->getProperty($ps_property, false, $options) : null;
  	}
  	# ------------------------------------------------------
  	public function getPropertyValueForID(int $annotation_id, string $property) {

@@ -65,7 +65,8 @@
 				}
 			}
 		}
-		print "<div><br/>".caNavLink($this->request, _t("More"), 'btn-default btn-sm', '', 'Detail', 'entities/'.$t_entity->get("ca_entities.entity_id"), array(), array("target" => "_blank"))."</div>";
+		#print "<div><br/>".caNavLink($this->request, _t("More"), 'btn-default btn-sm', '', 'Detail', 'entities/'.$t_entity->get("ca_entities.entity_id"), array(), array("target" => "_blank"))."</div>";
+		print "<div><br/>".caNavLink($this->request, _t("More"), 'btn-default btn-sm', '', 'Detail', 'entities/'.$t_entity->get("ca_entities.entity_id"), array())."</div>";
 		print "<div style='clear:both;'></div>";
 		print "</div><!-- end mapItem -->";
 	}

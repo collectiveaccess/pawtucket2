@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2023 Whirl-i-Gig
+ * Copyright 2009-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -187,6 +187,8 @@ class BaseFindController extends ActionController {
 			$vs_label_display_field = $t_label->getDisplayField();
 			foreach($display_list as $i => $va_display_item) {
 				$tmp = explode('.', $va_display_item['bundle_name']);
+				
+				if(!is_array($va_display_item['settings'])) { $va_display_item['settings'] = []; }
 
 				if(!isset($tmp[1])){ 
 					$tmp[1] = null;
@@ -204,6 +206,17 @@ class BaseFindController extends ActionController {
 					($va_display_item['bundle_name'] === 'nonpreferred_labels')
 				) {
 					$display_list[$i]['is_sortable'] = true;
+					
+					// Sort on presented field when overriding related bundle with single-tag template
+					// Eg. If showing entity label with template to only show first name, sort should be on first name,
+					// not default related entity field (which is displayname)
+					$template = caGetOption('format', is_array($display_list[$i]['settings'] ?? null) ? $display_list[$i]['settings'] : [], null);
+					$tags = caGetTemplateTags($template);
+					if(is_array($tags) && (sizeof($tags) === 1) && preg_match("!^{$va_display_item['bundle_name']}\.(.*)!", $tags[0], $m)) {
+						$display_list[$i]['bundle_sort'] = $vs_label_table_name.'.'.$m[1];
+						continue;
+					} 
+					
 					$display_list[$i]['bundle_sort'] = $vs_label_table_name.'.'.$t_instance->getLabelSortField();
 					continue;
 				}
@@ -494,7 +507,7 @@ class BaseFindController extends ActionController {
 				$this->Index();
 				return;
 			} else {
-				$this->postError(100, _t("Couldn't queue label export", ), "BaseFindController->export()");
+				$this->postError(100, _t("Couldn't queue label export"), "BaseFindController->export()");
 			}
 		}
 		Session::setVar($this->ops_tablename.'_search_export_in_background', false);
@@ -580,7 +593,7 @@ class BaseFindController extends ActionController {
 				
 				return;
 			} else {
-				$this->postError(100, _t("Couldn't queue export", ), "BaseFindController->export()");
+				$this->postError(100, _t("Couldn't queue export"), "BaseFindController->export()");
 			}
 		}
 		Session::setVar($this->ops_tablename.'_search_export_in_background', false);
@@ -644,6 +657,8 @@ class BaseFindController extends ActionController {
 		}
 		$this->view->setVar('num_items_added', (int)$vn_added_items_count);
 		$this->view->setVar('num_items_already_in_set', (int)$vn_dupe_item_count);
+		
+		$this->response->setContentType('application/json');
 		$this->render('Results/ajax_add_to_set_json.php');
 	}
 	# ------------------------------------------------------------------
@@ -691,7 +706,9 @@ class BaseFindController extends ActionController {
 					$this->view->setVar('error', join("; ", $t_set->getErrors()));
 				}
 		
-				$t_set->addLabel(array('name' => $vs_set_name), $g_ui_locale_id, null, true);
+				if(!$t_set->addLabel(['name' => $vs_set_name], $g_ui_locale_id, null, true)) {
+					$this->view->setVar('error', _t('Could not add label to set'));
+				}
 		
 				$vn_added_items_count = $t_set->addItems($va_row_ids, ['user_id' => $this->request->getUserID()]);
 			
@@ -709,6 +726,8 @@ class BaseFindController extends ActionController {
 		$this->view->setVar('set_name', $vs_set_name);
 		$this->view->setVar('set_code', $vs_set_code);
 		$this->view->setVar('num_items_added', $vn_added_items_count);
+		
+		$this->response->setContentType('application/json');
 		$this->render('Results/ajax_create_set_from_result_json.php');
 	}
 	# ------------------------------------------------------------------
@@ -736,6 +755,8 @@ class BaseFindController extends ActionController {
 		} else {
 			$this->view->setVar('error', _t('Search could not be saved'));
 		}
+		
+		$this->response->setContentType('application/json');
 		$this->render('Results/ajax_add_saved_search_json.php');
 	}
 	# ------------------------------------------------------------------
@@ -1023,7 +1044,7 @@ class BaseFindController extends ActionController {
 				['request' => $this->getRequest(), 'restrictToDisplay' => $this->request->config->get('restrict_find_result_sort_options_to_current_display') ? $display_id : null]));
 		
 		$this->view->setVar('display_id', $display_id);
-		$this->view->setVar('columns',ca_bundle_displays::getColumnsForResultsEditor($display_list, ['request' => $this->request]));
+		$this->view->setVar('columns', ca_bundle_displays::getColumnsForResultsEditor($display_list, ['request' => $this->request]));
 		$this->view->setVar('num_rows', sizeof($ids));
 		
 		$this->render("Results/results_editable_html.php");
@@ -1072,6 +1093,8 @@ class BaseFindController extends ActionController {
 			['restrictToDisplay' => $this->request->config->get('restrict_find_result_sort_options_to_current_display') ? $display_id : null]);
 		
 		$this->view->setVar('data', $data);
+		
+		$this->response->setContentType('application/json');
 		$this->render("Results/ajax_results_editable_data_json.php");
 	}
 	# ------------------------------------------------------------------
@@ -1102,6 +1125,7 @@ class BaseFindController extends ActionController {
 		
 		$this->view->setVar('response', $response);
 		
+		$this->response->setContentType('application/json');
 		$this->render("Results/ajax_save_results_editable_data_json.php");
 	}
 	# ------------------------------------------------------------------

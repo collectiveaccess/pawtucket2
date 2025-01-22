@@ -173,7 +173,7 @@
 						$vs_compare_link = "";
 						if(is_array($media_value_ids = $t_item->get("ca_occurrences.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
 							foreach($media_value_ids as $value_id) {
-								print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("PDF Document")."'></span>".caNavLink($this->request, "PDF Document", "", "", "Detail",  "DownloadAttributeMedia", array('value_id' => $value_id, 'version' => 'original', 'download' => 1))."</div>";
+								print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("PDF Document")."'></span>".caNavLink($this->request, "PDF Document", "", "", "Detail",  $this->request->getAction()."/DownloadAttributeMedia", array('table' => $t_item->tableName(), $t_item->primaryKey() => $t_item->getPrimaryKey(), 'value_id' => $value_id, 'version' => 'original', 'download' => 1))."</div>";
 								$vs_compare_link = "<div class='detailTool'><i class='fa fa-clone' aria-hidden='true' aria-label='Compare Images'></i></span><a href='#' class='compare_link' data-id='attribute:{$media_value_ids[0]}' title='Compare Images'>Compare Image</a></div>";
 							}
 						}

@@ -39,6 +39,11 @@ class LoginRegController extends BasePawtucketController {
 		if ($po_request->getAppConfig()->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 			throw new ApplicationException('Login/registration not allowed');
 		}
+		
+		if (AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__)) {
+		    $vb_auth_success = $po_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($po_request->getController() == 'LoginReg')));
+		}
+		
 		caSetPageCSSClasses(array("loginreg"));
 	}
 	# -------------------------------------------------------
@@ -287,6 +292,9 @@ class LoginRegController extends BasePawtucketController {
 				}
 				$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
 				$this->notification->addNotification(_t("You have been logged in").($vs_group_message ? "<br/>{$vs_group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
+				
+				ca_ip_whitelist::whitelist($this->request, 24*60*60, 'Login');
+				
 				$this->response->setRedirect($vs_url);
 			}
 		}

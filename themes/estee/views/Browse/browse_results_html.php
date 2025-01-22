@@ -300,7 +300,7 @@ if($vb_ajax && $vb_show_chronology_filters){
 	<div class="bChronologyHeading">
 		<div class="row">
 			<div class="col-lg-9">
-				<div class='filterChronologyButtons'><H4>Filter By: </H4>
+				<div class='filterChronologyButtons'><H4>Filter By: </H4><br/>
 <?php
 					foreach($va_chrono_types_process as $va_chrono_type){
 						if($va_chrono_type["selected"]){
@@ -389,7 +389,7 @@ if($vb_ajax && $vb_show_chronology_filters){
 # --- check if this result page has been cached
 # --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
 $vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
-if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
+if(!$va_browse_info['noCache'] && ($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
 	print ExternalCache::fetch($vs_cache_key, 'browse_results');
 }else{
 	$vs_result_page = $this->render("Browse/browse_results_{$vs_current_view}_html.php");

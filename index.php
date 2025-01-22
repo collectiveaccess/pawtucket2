@@ -65,6 +65,7 @@
 		$resp = $app->getResponse();
 		
 		if (($g_request->getController() !== 'Ban') && !BanHammer::verdict($g_request)) {
+			Session::setVar('pawtucket2_page_at_ban', $g_request->getFullUrlPath());
 			$g_request->setInternalRedirect(['module' => '', 'controller' => 'Ban', 'action' => 'verify']);
 		}
 
@@ -123,12 +124,10 @@
 		caEmitHeaders($resp);
 		
 		//
-		// Dispatch the request
-		//
-		//
 		// Don't try to authenticate when doing a login attempt or trying to access the 'forgot password' feature
+		// Do try to authenticate when login is required or session has a user_id set (may have been set by single-sign-on)
 		//
-		if ((AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__) && !preg_match("/^[\/]{0,1}system\/auth\/callback/", strtolower($g_request->getPathInfo()))) || !preg_match("/^[\/]{0,1}system\/auth\/(dologin|login|forgot|requestpassword|initreset|doreset|callback)/", strtolower($g_request->getPathInfo()))) {
+		if (((bool)$g_request->config->get('pawtucket_requires_login') || (Session::$s_session_vars[__CA_APP_NAME__.'_user_id'])) && ((!preg_match("/^[\/]{0,1}system\/auth\/callback/", strtolower($g_request->getPathInfo()))) || !preg_match("/^[\/]{0,1}system\/auth\/(dologin|login|forgot|requestpassword|initreset|doreset|callback)/", strtolower($g_request->getPathInfo())))) {
 		    $vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($g_request->getController() == 'LoginReg')));
 		}
 		$app->dispatch(true);

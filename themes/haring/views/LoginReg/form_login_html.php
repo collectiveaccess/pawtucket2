@@ -15,7 +15,7 @@
 ?>
 			<form id="LoginForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "login"); ?>" class="form-horizontal" role="form" method="POST">
 				<div class="form-group">
-					<label for="username" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("E-mail address"); ?></label>
+					<label for="username" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("Username"); ?></label>
 					<div class="col-sm-7">
 						<input type="text" class="form-control" id="username" name="username">
 					</div><!-- end col-sm-7 -->

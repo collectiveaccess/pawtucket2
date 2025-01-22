@@ -70,6 +70,7 @@
 					</div><!-- end col -->
 				</div><!-- end row -->
 			</div><!-- end container -->
+		</div>
 		</div><!-- end container -->
 	</div><!-- end frontTopContainer -->
 	<div class="container"><div class="row"><div class="col-xs-12">
@@ -103,16 +104,13 @@
 <?php
 									$c = 0;
 									while($qr_set_items->nextHit()){
-										$vs_image = "";
-										$tmp_images = array();
 										$va_all_ids[] = $qr_set_items->get("ca_objects.object_id");
-										$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' delimiter='|||'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
+										$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
 										if(!$vs_image){
 											$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' limit='1'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values));
 										}
-										if($vn_c = mb_strpos($vs_image, "|||")){
-											$tmp_images = explode("|||", $vs_image);
-											$vs_image = $tmp_images[0];
+										if($vn_c = strpos($vs_image, ";")){
+											$vs_image = substr($vs_image, 0, $vn_c);
 										}
 										if(!$vs_image){
 											$vs_image = caGetThemeGraphic($this->request, 'placeholder.jpg', array("style" => "opacity:.5;"));

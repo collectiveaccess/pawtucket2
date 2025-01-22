@@ -93,7 +93,7 @@
 					<div class="uk-first-column">
 						<div class="uk-panel">
 							<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo">
-								<?php print caGetThemeGraphic($this->request, "AlutiiqMuseum_Logo.png", array("alt" => "Alutiiq Museum Logo")); ?>
+								<?php print caGetThemeGraphic($this->request, "AMAR-logo-cropped.jpg", array("alt" => "Alutiiq Museum Logo")); ?>
 							</a>
 						</div>
 					</div>
@@ -158,13 +158,7 @@
 				<div class="uk-container uk-container-expand">
 					<nav class="uk-navbar" uk-navbar="{&quot;container&quot;:&quot;.tm-header-mobile&quot;,&quot;boundary&quot;:&quot;.tm-header-mobile .uk-navbar-container&quot;}">
 						<div class="uk-navbar-left">
-								<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo uk-navbar-item"><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png 134w" sizes="(min-width: 134px) 134px">
-								<img alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png" width="134" height="98">
-								</picture><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png 134w" sizes="(min-width: 134px) 134px">
-								<img class="uk-logo-inverse" alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png" width="134" height="98">
-								</picture></a>                        
+								<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo uk-navbar-item"><?php print caGetThemeGraphic($this->request, "AMAR-logo-cropped.jpg", array("alt" => "Alutiiq Museum Logo")); ?></a>                        
 						</div>
 						<div class="uk-navbar-right">
 							<a uk-toggle="" href="#tm-dialog-mobile" class="uk-navbar-toggle" role="button" aria-label="Open menu">
@@ -181,13 +175,7 @@
 					<div class="uk-container">
                 		<nav class="uk-navbar" uk-navbar="{&quot;align&quot;:&quot;center&quot;,&quot;container&quot;:&quot;.tm-header > [uk-sticky]&quot;,&quot;boundary&quot;:&quot;.tm-header .uk-navbar-container&quot;}">
 							<div class="uk-navbar-left">
-								<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo uk-navbar-item"><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png 134w" sizes="(min-width: 134px) 134px">
-								<img alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png" width="134" height="98">
-								</picture><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png 134w, /wp-content/themes/yootheme/cache/f9/Alutiiq-Museum-Logo-Inverse-f9f1b723.webp 268w" sizes="(min-width: 134px) 134px">
-								<img class="uk-logo-inverse" alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png" width="134" height="98">
-								</picture></a>                        
+								<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo uk-navbar-item"><?php print caGetThemeGraphic($this->request, "AMAR-logo-cropped.jpg", array("alt" => "Alutiiq Museum Logo")); ?></a>                        
                     		</div>
                     		<div class="uk-navbar-center">
 								<ul class="uk-navbar-nav">
@@ -299,7 +287,67 @@
             </div>                
 		</div>
 <?php	
+	}elseif(in_array(strToLower($this->request->getController()), array("loginreg", "contact")) || in_array(strToLower($this->request->getAction()), array("repatriation"))){
+?>
+		<div class="uk-section-secondary uk-section uk-section-xsmall">
+			<div class="uk-container">                
+				<div class="uk-grid tm-grid-expand uk-child-width-1-1 uk-grid-margin">
+					<div class="uk-width-1-1@m">
+						<nav aria-label="Breadcrumb">
+							<ul class="uk-breadcrumb uk-margin-remove-bottom" vocab="https://schema.org/" typeof="BreadcrumbList">
+	
+									<li property="itemListElement" typeof="ListItem">            <a href="https://alutiiqmuseum.org" property="item" typeof="WebPage"><span property="name">Home</span></a>
+									<meta property="position" content="1">
+									</li>    
+									<li property="itemListElement" typeof="ListItem">            <a href="https://alutiiqmuseum.org/museum/" property="item" typeof="WebPage"><span property="name">Museum</span></a>
+									<meta property="position" content="2">
+									</li>    
+									<li property="itemListElement" typeof="ListItem">            <a href="https://alutiiqmuseum.org/museum/repatriation/" property="item" typeof="WebPage"><span property="name">Repatriation</span></a>
+									<meta property="position" content="3">
+									</li>   
+							</ul>
+						</nav>
+						<h1 class="uk-heading-medium uk-margin-small" uk-parallax="y: 0,-75; easing: 1; media: @m" style="transform: translateY(0px); will-change: transform;">        Repatriation    </h1>
+					</div>
+				</div>
+			</div>                
+		</div>
+		<div class="uk-section-muted uk-section">           
+			<div class="uk-container">                
+				<div class="uk-grid tm-grid-expand uk-child-width-1-1 uk-grid-margin">
+					<div class="uk-width-1-1">
+						<nav class="uk-text-center">
+							<ul class="uk-margin-remove-bottom uk-subnav  uk-subnav-divider uk-flex-center" uk-margin="">        
+								<li class="el-item uk-first-column">
+									<a class="el-link" href="https://alutiiqmuseum.org/museum/repatriation/">Introduction</a></li>
+<?php
+							if($this->request->isLoggedIn()){
+?>
+								<li class="el-item ">
+									<?php print caNavLink($this->request, "Find", "el-link", "", "browse", "repatriation"); ?>
+								</li>
+<?php
+							}
+?>
+								<li class="el-item ">
+<?php
+									if($this->request->isLoggedIn()){
+										print caNavLink($this->request, "Logout", "el-link", "", "loginReg", "logout");
+									}else{
+										print caNavLink($this->request, "Login", "el-link", "", "loginReg", "loginform");
+									}
+?>
+								</li>
+							</ul>
+						</nav> 
+					</div>
+				</div>
+            </div>
+		</div>
+	
+<?php	
 	}else{
+		# --- amutat
 ?>
 		<div class="uk-section-secondary uk-section uk-section-xsmall">
 			<div class="uk-container">                

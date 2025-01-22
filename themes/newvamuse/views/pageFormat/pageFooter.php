@@ -40,12 +40,12 @@
 		<footer id="footer">
 			<ul class="list-inline pull-right social">
 				<li class='connectWith'><?= _t('Connect With Us'); ?></li>
-				<li><a href="https://www.facebook.com/NovaMuse" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
-				<li><a href="https://twitter.com/novamuse_ca" target="_blank"><i class="fa fa-twitter"></i></a></li>
-				<li><a href="https://www.pinterest.com/novamuse/" target="_blank"><i class="fa fa-pinterest"></i></a></li>
-				<li><a href="mailto:support@ansm.ns.ca" ><i class="fa fa-envelope"></i></a></li>
+				<li><a href="https://www.facebook.com/NovaMuse" target="_blank"><img alt="facebook sharing button" src="https://platform-cdn.sharethis.com/img/facebook.svg"></li>
+				<li><a href="https://twitter.com/novamuse_ca" target="_blank"><img alt="twitter sharing button" src="https://platform-cdn.sharethis.com/img/twitter.svg"></a></li>
+				<li><a href="https://www.pinterest.com/novamuse/" target="_blank"><img alt="pinterest sharing button" src="https://platform-cdn.sharethis.com/img/pinterest.svg"></a></li>
+				<li><a href="mailto:support@ansm.ns.ca" ><img alt="email sharing button" src="https://platform-cdn.sharethis.com/img/email.svg"></a></li>
 			</ul>
-			<div style='padding-left:15px;'>© 2015-2023 ANSM</div>
+			<div style='padding-left:15px;'>© 2015-<?= date("Y"); ?> ANSM</div>
 		<?php
 			if ($this->request->getController() == 'Front') {
 		?>
