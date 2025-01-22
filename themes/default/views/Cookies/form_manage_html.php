@@ -57,7 +57,8 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
                         <div class="cookieCount">
                             <?= caGetOption('cookieCount', $category_info, ''); ?> <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
                         </div>
-                        <div class="cookiesList">
+
+                        <div class="cookiesList d-none">
                             <div class="row">
                                 <div class="col-6">
                                     <b>Name</b>
@@ -66,9 +67,9 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
                                     <b>Description</b>
                                 </div>
                             </div>
-<?php
-        foreach ($category_info['cookies'] as $cookie_code => $cookie_info) {
-?>
+                        <?php
+                                foreach ($category_info['cookies'] as $cookie_code => $cookie_info) {
+                        ?>
                             <div class="row">
                                 <div class="col-6">
                                     <?= caGetOption('name', $cookie_info, '???'); ?>
@@ -77,10 +78,11 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
                                     <?= caGetOption('description', $cookie_info, '???'); ?>
                                 </div>
                             </div>
-<?php
-        }
-?>
+                        <?php
+                                }
+                        ?>
                         </div>
+
                     </div>
                     <div><?= caGetOption('description', $category_info, ''); ?></div>
                 </div>
@@ -153,39 +155,44 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
 </script> -->
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleButtons = document.querySelectorAll('.btn-group button');
 
-document.addEventListener('DOMContentLoaded', function () {
-    const toggleButtons = document.querySelectorAll('.btn-group button');
+        toggleButtons.forEach((button) => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent the form from submitting
 
-    toggleButtons.forEach((button) => {
-        button.addEventListener('click', function (event) {
-            event.preventDefault(); // Prevent the form from submitting
+                const parentGroup = button.closest('.btn-group');
+                const code = button.dataset.code;
+                const value = button.dataset.value;
 
-            const parentGroup = button.closest('.btn-group');
-            const code = button.dataset.code;
-            const value = button.dataset.value;
+                // Remove 'active' class from all buttons in the group
+                parentGroup.querySelectorAll('.btn').forEach((btn) => {
+                    btn.classList.remove('active');
+                });
 
-            // Remove 'active' class from all buttons in the group
-            parentGroup.querySelectorAll('.btn').forEach((btn) => {
-                btn.classList.remove('active');
+                // Add 'active' class to the clicked button
+                button.classList.add('active');
+
+                // Update the hidden input value
+                const hiddenInput = document.querySelector(`#cookie_options_${code}`);
+                if (hiddenInput) {
+                    hiddenInput.value = value;
+                }
             });
-
-            // Add 'active' class to the clicked button
-            button.classList.add('active');
-
-            // Update the hidden input value
-            const hiddenInput = document.querySelector(`#cookie_options_${code}`);
-            if (hiddenInput) {
-                hiddenInput.value = value;
-            }
         });
     });
-});
 
-// Handle cookies list toggle
-$('.cookieByCategory').on('click', function () {
-	$(this).find('.cookiesList').toggle();
-	return false;
-});
+    // Handle cookies list toggle
+    const cookieCategories = document.querySelectorAll('.cookieByCategory');
 
+    cookieCategories.forEach((category) => {
+        category.addEventListener('click', function (event) {
+            const cookiesList = category.querySelector('.cookiesList');
+            if (cookiesList) {
+                cookiesList.classList.toggle('d-none'); //toggling visibility
+            }
+            event.preventDefault();
+        });
+    });
 </script>
