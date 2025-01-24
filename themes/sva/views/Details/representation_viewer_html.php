@@ -28,6 +28,7 @@
 $media_list = $this->getVar('media_list');
 $media_viewers = $this->getVar('media_viewers');
 $media_viewer_overlays = $this->getVar('media_viewer_overlays');
+$subject = $this->getVar("subject");
 ?>
 <style>
 	.mediaviewer-selector-control, .mediaviewer-selector-control-active{
@@ -121,7 +122,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 <div class="row">
 	<div class="col-6">
 		<button class='btn btn-md ps-0 ms-0 pe-2 me-1 mediaviewer-control' id="mediaviewer-show-overlay" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();' aria-label='enlarge'><i class="bi bi-zoom-in"></i></button>
-		<button class='btn btn-md ps-0 ms-0 mediaviewer-control' id="mediaviewer-download" aria-label="download"><i class="bi bi-download"></i></button>
+		<button class='btn btn-md ps-0 ms-0 mediaviewer-control' id="mediaviewer-download" aria-label="download" hx-on:click="window.location='<?= caNavUrl($this->request, '*', '*', 'DownloadMedia', [$subject->primaryKey() => $subject->getPrimaryKey()]); ?>'"><i class="bi bi-download"></i></button>
 	</div>
 	<div class="col-6 text-end">
 		<button class='btn btn-lg ms-0 ps-0 pe-1 me-0 mediaviewer-control' id="mediaviewer-previous" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>

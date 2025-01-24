@@ -205,6 +205,6 @@ if (!$vb_ajax) {	// !ajax
 </div><!-- end row -->
 
 <?php
-		print $this->render('Browse/browse_panel_subview_html.php');
+		print $this->render('Browse/browse_refine_subview_html.php');
 } //!ajax
 ?>
