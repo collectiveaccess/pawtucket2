@@ -52,7 +52,7 @@
 ?>
 			</ul>
 			<div>
-				&copy; Bramble 2018
+				&copy; Bramble 2025
 			</div>
 		</footer><!-- end footer -->
 <?php
