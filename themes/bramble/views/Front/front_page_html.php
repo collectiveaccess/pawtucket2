@@ -44,7 +44,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2 text-center">
-			<br/><br/><H1><b>Bramble is a design and presentation tool that helps landscape professionals put the right plants in the right place.</b> By clarifying the complexities of plants, Bramble helps people create beautiful gardens and ecosystems that can thrive.</H1>
+			<br/><br/><H1><b>Bramble is a design and presentation tool that helps landscape professionals put the right plants in the right place.</b><br/>By clarifying the complexities of plants, Bramble helps people create beautiful gardens and ecosystems that can thrive.</H1>
 			<p class="text-center">
 				<a href="#features" class="btn btn-default">Learn More</a>
 			</p><br/><br/>
@@ -62,7 +62,7 @@
 <div class="container tealBg">
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2 text-center">
-			<br/>
+			<br/><br/>
 			Bramble offers plant professionals logical search mechanisms in an uncluttered interface to assist in finding the right plant for a particular place. We want your individual creativity to flourish. With Bramble, you can easily select plants to combine into palettes, which in turn can be used as design tools and to create custom presentation pages for your clients.
 			<br/><br/><br/>
 			<a name="features"></a>
