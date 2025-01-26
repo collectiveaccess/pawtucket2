@@ -72,12 +72,5 @@
 				
 			</div>
 		</footer><!-- end footer -->
-		
-		<script>
-			window.initApp();
-			document.addEventListener('contextmenu', event => {
-				event.preventDefault();
-			});
-		</script>
 	</body>
 </html>
