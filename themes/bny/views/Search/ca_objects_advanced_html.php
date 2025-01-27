@@ -12,9 +12,9 @@
 
 			<?= $this->formElement('ca_objects.creation_date', ['label' => _t('Date Range <em>(e.g. 1970-1979)</em>'), 'description' => _t("Search records of a particular date or date range.")]); ?>
 
-			<?= $this->formElement('ca_objects.type_id', ['label' => _t('Type'), 'description' => _t("Limit your search to object types.")]); ?>
+			<?= $this->formElement('ca_objects.type_id', ['class' => 'form-select', 'label' => _t('Type'), 'description' => _t("Limit your search to object types.")]); ?>
 
-			<?= $this->formElement('ca_collections', ['label' => _t('Collection'), 'description' => _t("Search records within a particular collection.")]); ?>
+			<?= $this->formElement('ca_collections.preferred_labels', ['label' => _t('Collection'), 'description' => _t("Search records within a particular collection.")]); ?>
 			
 			<div class="col-12 mb-3">
 				<?= $this->formHiddenElements(); ?>
@@ -25,8 +25,8 @@
 	</div>
 
 	<div class="col-md-4">
-		<div class="border-start px-4">
-			<h2><?= _t("Search Tips"); ?></h2>
+		<div class="bg-light px-4 py-4">
+			<h2 class="fs-2"><?= _t("Search Tips"); ?></h2>
 			<h3>Boolean Operators</h3>
 			<p>You can combine search terms in a single search box using "AND" and "OR":</p>
 

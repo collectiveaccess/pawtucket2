@@ -150,8 +150,8 @@
 						$id_field_codes = [
 							'ordinance' => '<l>^ca_objects.ORDN<l>',
 							'resolution' => '<l>^ca_objects.RESN</l>',
-							'clerk_file' => '<l>^ca_objects.CFN</l>',
-							'comptroller_file' => '<l>^ca_objects.CFN</l>',
+							'clerk_file' => '<l>^ca_objects.idno</l>',
+							'comptroller_file' => '<l>^ca_objects.idno</l>',
 							'council_bill' => '<l>^ca_objects.CBN</l>',
 						];
 

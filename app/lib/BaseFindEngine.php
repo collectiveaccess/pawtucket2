@@ -331,7 +331,7 @@ class BaseFindEngine extends BaseObject {
 				$sort_fields[$i] = $parsed_sort_spec['sort'];
 				$options = array_merge($options, $parsed_sort_spec['options']);
 			}
-			$sorted_hits = $this->_secondarySortHits($hits, $sorted_hits, $table, $primary_sort_field, $primary_sort_direction, $sort_fields, $sort_directions, array_merge($options, ['relationshipTypes' => $rel_types]));
+		//	$sorted_hits = $this->_secondarySortHits($hits, $sorted_hits, $table, $primary_sort_field, $primary_sort_direction, $sort_fields, $sort_directions, array_merge($options, ['relationshipTypes' => $rel_types]));
 		}
 		
 		return $sorted_hits;
@@ -474,6 +474,9 @@ class BaseFindEngine extends BaseObject {
 		list($sort_field, $sort_filter) = array_pad(explode('|', $sort_field), 2, null);
 		list($sort_table, $sort_field, $sort_subfield) = array_pad(explode(".", $sort_field), 3, null);
 		if (!($t_bundle = Datamodel::getInstanceByTableName($sort_table, true))) { 
+			if(($start > 0) || ($limit > 0)) {
+				$hits = array_slice($hits, $start, $limit);
+			}
 			return $hits;
 		}
 		
@@ -494,7 +497,10 @@ class BaseFindEngine extends BaseObject {
 			} elseif($sort_field === 'nonpreferred_labels') {
 				$sort_key_values = $this->_sortByLabels($t_table, $hit_table, $sort_subfield, $sort_direction, array_merge($options, ['isPreferred' => false]));	
 			} else {
-				//throw new ApplicationException(_t('Unhandled sort'));
+				//throw new ApplicationException(_t('Unhandled sort'))		
+				if(($start > 0) || ($limit > 0)) {
+					$hits = array_slice($hits, $start, $limit);
+				}
 				return $hits;
 			}
 		} elseif($t_table->getLabelTableName() == $sort_table) {
@@ -526,7 +532,9 @@ class BaseFindEngine extends BaseObject {
 			} elseif($is_attribute) {							// sort key is metadata attribute
 				$sort_key_values = $this->_sortByRelatedAttribute($t_table, $t_rel_table, $hit_table, $sort_field, $sort_subfield, $sort_direction, $hits, array_merge($options, ['filter' => $sort_filter_field ,'filterValues' => $sort_field_values]));		
 			} else {
-				//throw new ApplicationException(_t('Unhandled sort'));
+				if(($start > 0) || ($limit > 0)) {
+					$hits = array_slice($hits, $start, $limit);
+				}
 				return $hits;
 			}
 		}
@@ -672,7 +680,10 @@ class BaseFindEngine extends BaseObject {
 		
 		$direction = self::sortDirection($direction);
 		$rel_types = caGetOption('relationshipTypes', $options, null);
-		$joins = $this->_getJoins($t_table, $t_rel_table, $rel_label_field, $rel_types);
+		
+		$primary_table = caGetOption('primaryTable', $options, null);
+		
+		$joins = $this->_getJoins($t_table, $t_rel_table, $rel_label_field, $rel_types, $options);
 		$join_sql = join("\n", $joins);
 		
 		$is_preferred = caGetOption('isPreferred', $options, null);
@@ -1463,19 +1474,46 @@ class BaseFindEngine extends BaseObject {
 	/**
 	 *
 	 */
-	private function _getJoins($t_table, $t_rel_table, string $sort_field, array $rel_types=null) {
+	private function _getJoins($t_table, $t_rel_table, string $sort_field, array $rel_types=null, ?array $options=null) {
 		$table = $t_table->tableName();
 		$table_pk = $t_table->primaryKey();
 		$rel_table = $t_rel_table->tableName();		
 		$rel_table_pk = $t_rel_table->primaryKey();
 		
-		$path = Datamodel::getPath($table, $rel_table);
-		$path = array_keys($path);
+		if($t_table->isRelationship() && ($primary_table = caGetOption('primaryTable', $options, null)) && ($primary_table !== $rel_table)) {
+			$path = Datamodel::getPath($primary_table, $rel_table);
+			$path = array_keys($path);
+			array_unshift($path, $table);
+		} else {
+			$path = Datamodel::getPath($table, $rel_table);
+			$path = array_keys($path);
+		}
 
 		$is_attribute = method_exists($t_rel_table, 'hasElement') ? $t_rel_table->hasElement($sort_field) : false;
 		
 		$joins = [];
 		switch($psize = sizeof($path)) {
+			case 4:
+				$pt_pk = Datamodel::primaryKey($primary_table);
+				$joins[] = "LEFT JOIN {$primary_table} AS pt ON t.{$pt_pk} = pt.{$pt_pk}";
+				$linking_table = $path[2];
+				
+				$rel_types = caMakeRelationshipTypeIDList($linking_table, $rel_types);
+				$rel_type_sql = (is_array($rel_types) && (sizeof($rel_types) > 0)) ? " AND (l.type_id IN (".join(',', array_map('intval', $rel_types)).") OR (l.type_id IS NULL))" : '';
+	
+				if ($path[1] === $rel_table) {
+					$t_relation = Datamodel::getInstance($linking_table, true);
+					// self relation
+					$joins[] = "LEFT JOIN {$linking_table} AS l ON t.{$pt_pk} = l.{$pt_pk}{$rel_type_sql}";
+					$joins[] = "LEFT JOIN {$rel_table} AS s ON (s.{$rel_table_pk} = l.".$t_relation->getLeftTableFieldName().") OR (s.{$rel_table_pk} = l.".$t_relation->getRightTableFieldName().")";
+				} elseif ($is_attribute) {
+					$joins[] = "LEFT JOIN {$linking_table} AS l ON t.{$pt_pk} = l.{$pt_pk}{$rel_type_sql}";
+					$joins[] = "LEFT JOIN {$rel_table} AS s ON s.{$rel_table_pk} = l.{$rel_table_pk}";
+				} else {							
+					$joins[] = "LEFT JOIN {$linking_table} AS l ON t.{$pt_pk} = l.{$pt_pk}{$rel_type_sql}";
+					$joins[] = "LEFT JOIN {$rel_table} AS s ON s.{$rel_table_pk} = l.{$rel_table_pk}";
+				}
+				break;
 			case 3:
 				$linking_table = $path[1];
 				

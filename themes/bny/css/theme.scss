@@ -42,6 +42,9 @@ $dark: #213140; /* navy */
 a.text-light:hover{
 	color:#f43f43 !important;
 }
+.dropdown-item:hover a, .dropdown-item:hover .btn{
+	color: #FFF !important;
+}
 /* ------------------------- Navbar ------------------------- */
 nav{
 	.navbar-brand{
@@ -98,7 +101,7 @@ footer{
 		margin-bottom:.25rem;
 	}
 }
-/* Gallery */
+/* ------------------------- Gallery ------------------------- */
 .gallery{
 	H2{
 		font-size: 1.5rem;
@@ -108,4 +111,26 @@ footer{
 			font-size: 2rem;
 		}
 	}
+}
+/* ------------------------- lightbox ------------------------- */
+.lightbox{
+	.btn-white, .btn-group{
+		background-color:$body-bg;
+	}
+	.card{
+		.btn-white{
+			background-color:#FFFFFF;
+		}
+	}
+	#clearSearch{
+		.btn-light{
+			font-size:1rem;
+		}
+	}
+	#searchWithin{
+		.btn, input{
+			line-height:1rem;
+		}
+	}
+	
 }

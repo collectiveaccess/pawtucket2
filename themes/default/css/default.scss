@@ -159,6 +159,12 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 			height:200px;
 			width:100%
 		}
+		
+		.result-selected {
+			color: red;
+			border: 1px solid red;
+			background-color: #eee;
+		}
 	}
 }
 #bRefine{
@@ -229,6 +235,44 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 		}
 	}
 }
+/* ------------------------- Lightbox ------------------------------ */
+.lightbox{
+	#lightboxContent {
+		.card{
+			img.object-fit-cover{
+				object-position:middle center;
+			}
+			img, .ca-placeholder{
+				height:250px;
+				width:100%
+			}
+		}
+		.lb-selected {
+			color: red;
+			border: 1px solid red;
+			background-color: #eee;
+		}
+	}
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img{
+			height:200px;
+			width:100%;
+		}
+		.ca-placeholder { 
+			height:250px;
+			width:100%;
+		}
+	}
+	
+	#errors ul {
+		margin: 0px;
+		list-style: none;
+	}
+}
+
 /* ------------------------- Accessibility ------------------------------ */
 #skip:focus{
 	border: 2px solid #000 !important;
@@ -261,4 +305,101 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 }
 .btn-white:focus, .btn:focus{
 	box-shadow:0 0 2px 2px rgba(0,0,0,.5);
+}
+
+.lightbox #lightboxContent .card img, .lightbox #lightboxContent .card .ca-placeholder {
+	height: 250px;
+	width: 100%;
+}
+
+/* ------------------------- Cookie Manager ------------------------------ */
+#cookieNotice{
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	text-align: left;
+	color: #000;
+	background-color: #FFF;
+	padding: 30px 0px 30px 0px;
+	font-size: 16px;
+	z-index: 9999;
+	box-shadow: rgba(0,0,0,.5) 0px 5px 50px;
+	padding-left:15px;
+	padding-right:15px;
+}
+#cookieNotice .cookieNoticeHeading{
+	font-weight:bold;
+	font-size:1.25em;
+	font-family: lato;
+}
+#cookieNotice .btn{
+	margin:10px 10px 0px 10px;
+}
+#cookieNotice .btn-inverse{
+	color:#000;
+	background-color:#dfdfdf;
+}
+#cookieNotice .btn-inverse:hover{
+	color:#000;
+	background-color:#f1f1f1;
+}
+.cookieIntro{
+	font-size: 1.2em;
+}
+@media(max-width:768px){
+	.cookies .btn-group{
+		margin-top:20px;
+	}
+}
+.cookies label{
+	font-size:15px;
+}
+.cookieByCategory{
+	cursor: pointer;
+}
+.cookieByCategory .cookieCount{
+	text-decoration:underline;
+	font-size:.9em;
+	padding-bottom:10px;
+}
+.cookieByCategory .cookieCount .fa{
+	color:#777;
+}
+.cookieByCategory .cookiesList{
+	// display:none;
+	padding:10px;
+	margin:10px;
+	background-color:#F2F2F2;
+}
+.cookieByCategory .cookiesList .row{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+.highlightText {
+	background-color: #FBF719;
+	opacity: 0.8;
+}
+
+
+/* ------------------------- Bans ------------------------------ */
+div.banHeadline {
+	text-align: center;
+	margin: 48px 0 8px 0;
+}
+
+div.banHeadline h1 {
+	font-size: 30px;
+}
+
+div.banDescription {
+	text-align: center;
+	margin: 0 0 24px 0;
+	font-size: 18px;
+}
+
+div.banContinue {
+	text-align: center; 
+	display: none;
+	margin: 48px 0 0 0;
 }
