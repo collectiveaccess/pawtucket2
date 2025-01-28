@@ -147,6 +147,7 @@
  				$display_attribute = $this->config->get('gallery_set_presentation_element_code');
  				$display = $display_attribute? $t_set->get("ca_sets.{$display_attribute}", ['convertCodesToIdno' => true]) : $display;
  			
+ 			$display = "timeline";
  				switch($display) {
 					case 'timeline':
 						AssetLoadManager::register('timeline');
