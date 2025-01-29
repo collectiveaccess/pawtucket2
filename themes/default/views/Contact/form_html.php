@@ -36,7 +36,7 @@ $num1 = rand(1,10);
 $num2 = rand(1,10);
 $sum = $num1 + $num2;
 
-$url = $name = $idno = $page_title = '';
+$url = $name = $idno = '';
 if($id > 0) {
 	$url = $this->request->config->get("site_host").caDetailUrl($this->request, $table, $id);
 	$name = $t_item->get("{$table}.preferred_labels");

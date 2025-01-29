@@ -5,7 +5,6 @@
 </div>
 <div class="row">
 	<div class="col-sm-8">
-		<h2>Contact The Archives</h2>
 		<p>
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nec ligula erat. 
 			Pellentesque nibh leo, pharetra et posuere vel, accumsan vitae sapien. Phasellus a 
