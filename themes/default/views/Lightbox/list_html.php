@@ -36,6 +36,7 @@ $set_ids 							= $this->getVar("set_ids");
 $access_values 						= $this->getVar("access_values");
 $lightbox_displayname_singular 		= $this->getVar("lightbox_displayname_singular");
 $lightbox_displayname_plural 		= $this->getVar("lightbox_displayname_plural");
+$lightbox_section_heading 			= $this->getVar("lightbox_section_heading");
 $o_lightbox_config 					= $this->getVar("set_config");
 $current_sort 						= $this->getVar('sort');
 $current_sort_dir 					= $this->getVar('direction');
@@ -74,7 +75,7 @@ if(!$incremental) { ?>
 	
 		<div class="row">
 			<div class="col">
-				<H1 class="text-capitalize mb-0"><?= _t("My %1", ucfirst($lightbox_displayname_plural)); ?></h1>
+				<H1 class="text-capitalize mb-0"><?= $lightbox_section_heading; ?></h1>
 			</div>
 			<div class="col text-end">
 				<div class="btn-group" role="group" aria-label="<?= _t('%1 List Controls', $lightbox_displayname_singular); ?>">
