@@ -144,7 +144,7 @@ if ($start < $qr_res->numHits()) {
 						title='"._t("Select record")."'
 						aria-label='"._t("Select record")."'><i class='bi bi-check-circle'></i></button>";
 			}
-			$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square' aria-label='view record'></i>", 'btn btn-white  px-2', $table, $id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
+			$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square' aria-label='view record'></i>", 'btn btn-white px-2 ms-1', $table, $id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 if(strToLower($this->request->getAction()) == "seasons"){
 			$result_output = "
 				<div class='col-md-6 col-lg-4 col-xl-4 col-xxl-3 d-flex'>
