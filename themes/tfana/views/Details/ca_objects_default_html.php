@@ -34,16 +34,20 @@ $comments_enabled = $this->getVar("commentsEnabled");
 $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
 $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
-$id =				$t_object->get('ca_objects.object_id');
+$id =				$t_object->getPrimaryKey();
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
 $media_options = $this->getVar('media_options') ?? [];
+
+$lightboxes = $this->getVar('lightboxes') ?? [];
+$in_lightboxes = $this->getVar('inLightboxes') ?? [];
 
 $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
 ]);
 ?>
 <script>
+	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 <?php
@@ -65,7 +69,7 @@ if($show_nav){
 		</div>
 	</div>
 <?php
-	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
+	if(caDisplayLightbox($this->request) || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
@@ -78,12 +82,11 @@ if($show_nav){
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
 				}
 				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
+					print $this->render('Details/snippets/copy_link_html.php');
 				}
-?>
+?>				
 			</div>
+			<?= $this->render('Details/snippets/lightbox_list_html.php'); ?>
 		</div>
 	</div>
 <?php
