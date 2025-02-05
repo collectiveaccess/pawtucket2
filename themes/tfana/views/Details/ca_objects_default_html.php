@@ -95,6 +95,7 @@ if($show_nav){
 
 	<div class="row mb-4">
 		<div class="col-md-6">
+				
 				{{{media_viewer}}}
 		</div>
 		<div class="col-md-6">

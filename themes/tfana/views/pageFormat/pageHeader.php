@@ -79,7 +79,7 @@ if($this->request->isLoggedIn()){
 		</div>
 	</nav>
 		
-	<nav class="navbar navbar-expand-lg shadow-sm py-3" aria-label="Site">
+	<nav class="navbar navbar-expand-xl shadow-sm py-3" aria-label="Site">
 		<div class="container-xl">
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'tfana-logo.jpg', array("alt" => "TFANA logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
