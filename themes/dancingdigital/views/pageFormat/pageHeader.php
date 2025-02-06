@@ -106,4 +106,4 @@
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	
 			<?= $this->render("pageFormat/sidebar.php"); ?>
-				<div id="main">
+				<div id="main"><a name="main"></a>
