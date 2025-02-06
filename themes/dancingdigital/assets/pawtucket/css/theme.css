@@ -1188,12 +1188,12 @@ a.browseRemoveFacet img {
 
 }
 
-.lightbox-container .btn-group .dropdown-menu li a, .lightbox-ind-container .btn-group .dropdown-menu li a, em, .browse-results .btn-group .dropdown-menu li a{
+.lightbox-container .btn-group .dropdown-menu li a, .lightbox-ind-container .btn-group .dropdown-menu li a, .browse-results .btn-group .dropdown-menu li a{
 	color: #000 !important;
 	font-size: 12px;
 	font-family: Poppins;
 }
-.lightbox-container .btn-group .dropdown-menu li, .lightbox-ind-container .btn-group .dropdown-menu li, em, .browse-results .btn-group .dropdown-menu li {
+.lightbox-container .btn-group .dropdown-menu li, .lightbox-ind-container .btn-group .dropdown-menu li, .lightbox-container em, .browse-results .btn-group .dropdown-menu li {
 	color: #000 !important;
 	font-size: 14px;
 	font-family: Forum, sans-serif;

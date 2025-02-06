@@ -32,7 +32,7 @@
  ?>
 
 <main data-barba="container" data-barba-namespace="about" class="barba-main-container about-section">
-	<div class="general-page">
+	<div class="general-page" tabindex="0">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-auto">
