@@ -38,7 +38,7 @@ $t_rep =					$this->getVar('representation');
 if(!in_array($t_rep->getAnnotationType(), ['TimeBasedAudio', 'TimeBasedVideo'])) { return ; }
 if (sizeof($annotations) > 0) {
 ?>
-<h6><?= _t('Featured clips (%1)', sizeof($annotations)); ?></h6>
+<div class='object-info-label'><?= _t('Featured clips (%1)', sizeof($annotations)); ?></div>
 <div class='detailAnnotationList'>
 	<ul class='detailAnnotation'>
 <?php
@@ -51,7 +51,7 @@ if (sizeof($annotations) > 0) {
 }
 if ((sizeof($user_annotations) > 0) && $this->request->isLoggedIn()) {
 ?>
-<h6><?= _t('Your clips (%1)', sizeof($user_annotations)); ?></h6>
+<div class='object-info-label'><?= _t('Your clips (%1)', sizeof($user_annotations)); ?></div>
 <div class='detailUserAnnotationList'>
 	<div class='row detailUserAnnotation'>
 <?php
@@ -68,7 +68,7 @@ if ((sizeof($user_annotations) > 0) && $this->request->isLoggedIn()) {
 if($this->request->isLoggedIn()) {
 ?>
 <form style="margin-top: 15px;">
-	<h6><?= _t('Add clip'); ?></h6>
+	<div class='object-info-label'><?= _t('Add clip'); ?></div>
 	<div class="row align-items-center h-100">
 		<div class="col-md-7">
 			<?= _t('Label').':<br/>'.caHTMLTextInput('label', ['id' => 'clipLabel'], ['width' => '420px', 'height'=> '1']); ?>

@@ -38,9 +38,10 @@
 				<form class="navbar-form" role="search" action="<?= caNavUrl($this->request, '', 'search/objects', 'Index'); ?>" aria-label="<?= _t("Search"); ?>">
 					<div class="formOutline m-0 border-0" style='width:180px;'>
 						<div class="form-group">
+							<label for="headerSearchInputMobile" class="form-label visually-hidden">Search</label>
 							<input type="text" class="form-control" id="headerSearchInputMobile" placeholder="Search" name="search" autocomplete="off" aria-label="<?= _t("Search text"); ?>" style='background-color:#fff;' />
 						</div>
-						<button type="submit" class="btn-search ps-3" id="headerSearchButton" style="background-color: transparent;">
+						<button type="submit" class="btn-search ps-3" id="headerSearchButtonMobile">
 							<span class="glyphicon glyphicon-search" style="color: #fff;" aria-label="<?= _t("Submit"); ?>"></span>
 						</button>
 					</div>
@@ -71,7 +72,7 @@
 </nav>
 
 
-<div class="sidebar-container">
+<div class="sidebar-container" role="navigation">
 	
 	<a href="<?= caNavUrl($this->request, '', 'Front', 'front_page_html'); ?>" class="d-flex mb-5 navLogo btn">
 		<svg xmlns="http://www.w3.org/2000/svg" width="204" height="176" viewBox="0 0 204 176" fill="none" aria-labelledby="logoTitle">
@@ -112,22 +113,14 @@
 		<form class="navbar-form p-0 ps-2" role="search" action="<?= caNavUrl($this->request, '', 'search/objects', 'Index'); ?>" aria-label="<?= _t("Search"); ?>">
 			<div class="formOutline">
 				<div class="form-group">
+					<label for="headerSearchInput" class="form-label visually-hidden">Search</label>
 					<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="<?= _t("Search text"); ?>" />
 				</div>
-				<button type="submit" class="btn-search btn-default" id="headerSearchButton" style="background-color: transparent;">
+				<button type="submit" class="btn-search btn-default" id="headerSearchButton">
 					<span class="glyphicon glyphicon-search" style="color: #fff;" aria-label="<?= _t("Submit"); ?>"></span>
 				</button>
 			</div>
 		</form>
-
-		<script type="text/javascript">
-			$(document).ready(function(){
-				$('#headerSearchButton').prop('disabled',true);
-				$('#headerSearchInput').on('keyup', function(){
-					$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
-				})
-			});
-		</script>
 	</li>
 <?php
 	if($this->request->isLoggedIn()){

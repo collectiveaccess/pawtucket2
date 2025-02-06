@@ -59,7 +59,7 @@
 	$t_object = $t_stop->getRelatedItems('ca_objects', ['returnAs' => 'firstModelInstance']);
 	
 	$media_url = $t_object ? $t_object->get('ca_object_representations.media.medium.url') : null;
-	$media_caption = $t_object ? $t_object->get('ca_objects.preferred_labels.name') : null;
+	$media_caption = $t_object ? $t_object->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>') : null;
  	array_push($slides, [
 		"date" => $stop['date'],
  		"text" => [

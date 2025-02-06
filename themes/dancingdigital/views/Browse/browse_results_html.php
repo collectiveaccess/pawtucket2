@@ -129,7 +129,7 @@ if (!$vb_ajax) {	// !ajax
 					}
 						if(is_array($va_facets) && sizeof($va_facets)){
 				?>
-						<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
+						<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table" aria-label="Refine"></i></a>
 				<?php
 						}
 						if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){

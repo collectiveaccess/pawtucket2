@@ -73,12 +73,15 @@
 		<div class="related-item-title"><?= $t_object->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>'); ?></div>
 	</div>
 <?php
-	} else {
+	} elseif($objects) {
+		$tmp = $t_object->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>');
+		if($tmp){
 ?>
 	<div class="related-item">
-		<div class="related-item-title"><?= $t_object->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>'); ?></div>
+		<div class="related-item-title"><?= $tmp; ?></div>
 	</div>
 <?php
+		}
 	}
 ?>
 </div> 
@@ -96,7 +99,7 @@
 							}
 							foreach($va_entities_by_type as $vs_type => $va_entity_links){
 								print "<div class='object-info'>
-										<label class='object-info-label'>".$vs_type."</label>
+										<div class='object-info-label'>".$vs_type."</div>
 										<div class='info-text'>".join(", ", $va_entity_links)."</div>
 									</div>";
 							}
@@ -111,14 +114,14 @@
 					<div class="col">
 						<ifdef code="ca_occurrences.date">
 							<div class="object-info">
-								<label class="object-info-label">Creation Date</label><br>
+								<div class="object-info-label">Creation Date</div>
 								<div class="info-text">^ca_occurrences.date</div>
 							</div>
 						</ifdef>
 
 						<ifdef code="ca_occurrences.sound">
 							<div class="object-info">
-								<label class="object-info-label">Sound</label><br>
+								<div class="object-info-label">Sound</div>
 								<unit delimiter="<br>">
 									<ifdef code="ca_occurrences.sound.sound_title"><div class="info-text">Title: ^ca_occurrences.sound.sound_title</div></ifdef>
 									<ifdef code="ca_occurrences.sound.sound_date"><div class="info-text">Date: ^ca_occurrences.sound.sound_date</div></ifdef>
@@ -133,14 +136,14 @@
 											
 						<ifdef code="ca_occurrences.idno">
 							<div class="object-info">
-								<label class="object-info-label">Identifier</label>
+								<div class="object-info-label">Identifier</div>
 								<div class="info-text">^ca_occurrences.idno</div>
 							</div>
 						</ifdef>
 
 						<ifdef code="ca_occurrences.description">
 							<div class="object-info">
-								<label class="object-info-label">Description</label><br>
+								<div class="object-info-label">Description</div>
 								<div class="info-text">^ca_occurrences.description</div>
 							</div>
 						</ifdef>

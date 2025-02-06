@@ -57,7 +57,7 @@
 									
 				{{{<ifdef code="ca_entities.idno">
 					<div class="object-info">
-						<div class="info-text"><label class="object-info-label">Identifier</label> ^ca_entities.idno</div>
+						<div class="info-text"><div class="object-info-label">Identifier</div> ^ca_entities.idno</div>
 					</div>
 				</ifdef>}}}
 				

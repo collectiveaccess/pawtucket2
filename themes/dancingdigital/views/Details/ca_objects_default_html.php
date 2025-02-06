@@ -66,28 +66,28 @@
 
 					{{{<ifdef code="ca_objects.archival_item_type">
 						<div class="object-info">
-							<label class="object-info-label">Archival Item Type</label>
+							<div class="object-info-label">Archival Item Type</div>
 							<div class="info-text">^ca_objects.archival_item_type</div>
 						</div>
 					</ifdef>}}}
 					
 					{{{<ifdef code="ca_objects.idno">
 						<div class="object-info">
-							<label class="object-info-label">Identifier</label>
+							<div class="object-info-label">Identifier</div>
 							<div class="info-text">^ca_objects.idno</div>
 						</div>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_objects.date">
 						<div class="object-info">
-							<label class="object-info-label">Creation Date</label><br>
+							<div class="object-info-label">Creation Date</div>
 							<div class="info-text">^ca_objects.date</div>
 						</div>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_objects.description">
 						<div class="object-info">
-							<label class="object-info-label">Description</label><br>
+							<div class="object-info-label">Description</div>
 							<div class="info-text">^ca_objects.description</div>
 						</div>
 					</ifdef>}}}

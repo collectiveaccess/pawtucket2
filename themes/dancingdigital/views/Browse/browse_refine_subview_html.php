@@ -40,7 +40,7 @@
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
-		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
+		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle' aria-label='Close'></span></a>";
 		print "<H2>"._t("Filter by")."</H2>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			

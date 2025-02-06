@@ -80,7 +80,7 @@
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
 			
-			if ($vs_table != 'ca_objects') {
+			if (!in_array($vs_table, array('ca_objects', 'ca_entities', 'ca_occurrences'))) {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 					$va_ids[] = $qr_res->get($vs_pk);
@@ -117,7 +117,7 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					if ($vs_table == 'ca_objects') {
+					if (in_array($vs_table, array('ca_objects', 'ca_entities', 'ca_occurrences'))) {
 						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.large', array("checkAccess" => $va_access_values)))){
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
