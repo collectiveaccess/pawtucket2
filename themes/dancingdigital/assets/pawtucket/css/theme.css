@@ -22,6 +22,7 @@ body{
 	letter-spacing: .87px;
 	height: 100%;
 	overflow: hidden;
+	background-color:#000;
 }
 
 .btn-default:focus, .btn-light:focus, .btn:focus-visible{
@@ -261,6 +262,10 @@ ul.navbar-nav{
 	padding: 100px 270px 50px 550px;
 	height: 100%;
 	overflow-y: auto;
+	border:1px solid transparent;
+}
+.general-page:focus H1 {
+	border: 1px solid #D954AB;
 }
 
 .page-heading {
@@ -277,7 +282,6 @@ ul.navbar-nav{
 .heading-size-2 {
 	font-size: 70px;
 }
-
 
 .page-content, blockquote {
 	font-family: Poppins;

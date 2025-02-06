@@ -34,7 +34,7 @@
  $set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'thumbnail']) : [];
  ?>
 <main data-barba="container" data-barba-namespace="performances" class="barba-main-container performances-section">
-	<div class="general-page">
+	<div class="general-page" tabindex="0">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="row align-items-baseline" style="padding-bottom: 50px;">

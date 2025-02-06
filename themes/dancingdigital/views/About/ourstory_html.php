@@ -31,7 +31,7 @@
  */
  ?>
  <main data-barba="container" data-barba-namespace="ourstory" class="barba-main-container ourstory-section">
-	<div class="general-page">
+	<div class="general-page" tabindex="0">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-auto">

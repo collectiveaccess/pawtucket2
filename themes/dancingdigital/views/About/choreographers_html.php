@@ -42,7 +42,7 @@ $set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'original']) : [];
  
 ?>
 <main data-barba="container" data-barba-namespace="choreographers" class="barba-main-container choreographers-section">
-	<div class="general-page">
+	<div class="general-page" tabindex="0">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="row align-items-baseline" style="padding-bottom: 50px;">

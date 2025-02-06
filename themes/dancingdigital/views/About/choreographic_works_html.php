@@ -41,7 +41,7 @@
 
 ?>
 <main data-barba="container" data-barba-namespace="choreoworks" class="barba-main-container choreoworks-section">
-	<div class="general-page">
+	<div class="general-page" tabindex="0">
 		<div class="container">
 			<div class="row justify-content-center">
 

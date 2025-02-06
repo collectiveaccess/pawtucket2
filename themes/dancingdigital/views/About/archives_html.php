@@ -33,7 +33,7 @@
  $set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'medium']) : [];
  ?>
 <main data-barba="container" data-barba-namespace="archives" class="barba-main-container archives-section">
-	<div class="general-page">
+	<div class="general-page" tabindex="0">
 		<div class="container">
 			<div class="row justify-content-start">
 				<div class="col-auto ms-5">

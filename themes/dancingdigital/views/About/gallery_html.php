@@ -33,7 +33,7 @@
  $set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'large']) : [];
  ?>
  <main data-barba="container" data-barba-namespace="gallery" class="barba-main-container gallery-section">
-	<div class="general-page">
+	<div class="general-page" tabindex="0">
 		<div class="container">
 			<div class="row justify-content-center">
 				<h1 class="page-heading heading-size-2 ps-0">Gallery</h1>

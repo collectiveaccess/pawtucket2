@@ -31,7 +31,7 @@
  */
  ?>
 <main data-barba="container" data-barba-namespace="journey" class="barba-main-container journey-section">
-	<div class="general-page">
+	<div class="general-page" tabindex="0">
 		<div class="container">
 			<div class="row justify-content-center">
 				<h1 class="page-heading heading-size-2 ps-0">Gesel’s Journey</h1>
