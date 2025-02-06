@@ -102,7 +102,7 @@
 							<li class='detail-list-item'>
 								<div class='related-item-title'>
 									<l>^ca_entities.preferred_labels 
-										<span style="color: rgba(255, 255, 255, 0.5); font-size: 16px;">
+										<span style="font-size: 16px;">
 											(^relationship_typename)
 										</span>
 									</l>

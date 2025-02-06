@@ -56,7 +56,7 @@
 						<unit relativeTo="ca_entities" delimiter="" restrictToTypes="individual">
 							<li class='detail-list-item'>
 								<div class='related-item-title'>
-									<l>^ca_entities.preferred_labels.displayname <span style="color: rgba(255, 255, 255, 0.5); font-size: 16px;">(^relationship_typename)</span></l>
+									<l>^ca_entities.preferred_labels.displayname <span style="font-size: 16px;">(^relationship_typename)</span></l>
 								</div>
 							</li>
 						</unit>
