@@ -24,7 +24,7 @@
 	</div>
 
 	<div class="col-md-4">
-		<div class="border-start px-4">
+		<div class="bg-light p-4">
 			<h2><?= _t("Search Tips"); ?></h2>
 			<h3>Boolean Operators</h3>
 			<p>You can combine search terms in a single search box using "AND" and "OR":</p>

@@ -65,7 +65,7 @@ if($t_object->get("ca_objects.content_warning.check", array("convertCodesToDispl
 ?>
 	<div class="row">
 		<div class="col-md-12">
-			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
+			<H1 class="fs-2">{{{^ca_objects.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0">
 		</div>

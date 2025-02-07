@@ -39,6 +39,7 @@ if($this->request->isLoggedIn()){
 	if(caDisplayLightbox($this->request)){
 		$user_links .= "<li>".caNavLink($this->request, $lightbox_sectionHeading, 'dropdown-item', '', 'Lightbox', 'Index', array())."</li>";
 	}
+	$user_links .= "<li>".caNavLink($this->request, _t('Import'), 'dropdown-item', '', 'Import', 'Index', array())."</li>";
 	$user_links .= "<li>".caNavLink($this->request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array())."</li>";
 	
 	if ($this->request->config->get('use_submission_interface')) {
@@ -104,6 +105,6 @@ if($this->request->isLoggedIn()){
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
-		print "<div class='container-fluid pt-4'>";
+		print "<div class='container-fluid pt-5'>";
 	}
 ?>

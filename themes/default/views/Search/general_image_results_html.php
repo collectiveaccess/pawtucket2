@@ -39,7 +39,6 @@ $vb_has_more 		= (bool)$this->getVar('hasMore');
 	$va_access_values = caGetUserAccessValues($this->request);
 	$vs_table 			= $this->getVar('table');
 	$vs_pk				= $this->getVar('primaryKey');
-	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	$va_options = $va_block_info["options"];
 	
 	$o_icons_conf = caGetIconsConfig();
@@ -100,10 +99,6 @@ $vb_has_more 		= (bool)$this->getVar('hasMore');
 				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 			}
-			$vs_add_to_set_link = "";
-			if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-				$vs_add_to_set_link = "<a href='#' class='link-dark mx-1' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
-			}
 			$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 			print "
 		<div class='col-md-4 col-lg-3 d-flex'>
@@ -113,7 +108,7 @@ $vb_has_more 		= (bool)$this->getVar('hasMore');
 					{$vs_caption}
 				</div>
 				<div class='card-footer text-end bg-transparent'>
-					{$vs_detail_button_link}{$vs_add_to_set_link}
+					{$vs_detail_button_link}
 				</div>
 			 </div>	
 		</div><!-- end col -->";				

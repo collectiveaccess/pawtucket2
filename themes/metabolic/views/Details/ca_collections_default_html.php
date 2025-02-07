@@ -61,47 +61,29 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
-		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_collections.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_collections.type_id|ca_collections.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_collections.type_id">^ca_collections.type_id</ifdef><ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef></div></ifdef>}}}
-			<hr class="mb-0">
+	<div class="row justify-content-center<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+		<div class="col-sm-12 col-md-8">
+			<H1 class="fs-1">
+				{{{<ifdef code="ca_collections.type_id">
+					^ca_collections.type_id: 
+					</ifdef>
+					^ca_collections.preferred_labels.name
+				}}}
+			</H1>
 		</div>
+		<hr class="mb-0">
 	</div>
-<?php
-	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
-?>
-	<div class="row">
-		<div class="col text-center text-md-end">
-			<div class="btn-group" role="group" aria-label="Detail Controls">
-<?php
-				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $id));
-				}
-				if($pdf_enabled) {
-					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_collections", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
-				}
-				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
-				}
-?>
+
+	{{{<ifdef code="ca_object_representations.media.large">
+		<div class="row justify-content-center mb-3">
+			<div class="col">
+				<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
 			</div>
 		</div>
-	</div>
-<?php
-	}
-?>
-{{{<ifdef code="ca_object_representations.media.large">
-	<div class="row justify-content-center mb-3">
-		<div class="col">
-			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
-		</div>
-	</div>
-</ifdef>}}}
-	<div class="row row-cols-1 row-cols-md-2">
-		<div class="col">				
+	</ifdef>}}}
+
+	<div class="row justify-content-center mt-2">
+		<div class="col-sm-12 col-md-8">				
 			{{{<dl class="mb-0">
 				<ifdef code="ca_collections.parent_id">
 					<dt>Part of</dt>
@@ -114,59 +96,42 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				</ifcount>
 
 				<ifdef code="ca_collections.description">
-					<dt><?= _t('Description'); ?></dt>
-					<dd>^ca_collections.description</dd>
+					<div class="collapse-text collapse" id="readMoreCollapse">
+						<dt><?= _t('Description'); ?></dt>
+						<dd>^ca_collections.description</dd>
+					</div>
+					
+					<a class="btn btn-link btn-sm pb-2" data-bs-toggle="collapse" href="#readMoreCollapse" role="button" aria-expanded="false" aria-controls="readMoreCollapse">
+						<span class="expand-text">+ Read more</span>
+						<span class="collapse-text">- Read less</span>
+					</a>
 				</ifdef>
 			</dl>}}}
 			
 			<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
-		</div>
-		<div class="col">
+
 			{{{<dl class="mb-0">
 				<?php
 					if($t_item->get("ca_collections.bio_regions")){
 						if($bio_links = caGetBrowseLinks($t_item, 'ca_collections.bio_regions', ['template' => '<l>^ca_collections.bio_regions</l>', 'linkTemplate' => '^LINK'])) {
 				?>
-							<dt><?= _t('Bio Regions'); ?></dt>
-							<dd><?= join(", ", $bio_links); ?></dd>
+							<dt>
+								<?= _t('Bio Regions'); ?>
+								<a data-bs-toggle="collapse" href="#collapseBioRegions" role="button" aria-expanded="false" aria-controls="collapseBioRegions">
+									<i class="bi bi-info-circle-fill"></i>
+								</a>
+							</dt>
+							<dd>
+								<div class="collapse" id="collapseBioRegions">
+									<p>A region defined by characteristics of the natural environment rather than man-made division.</p>
+								</div>
+								<?= join(", ", $bio_links); ?>
+							</dd>
 				<?php
 						}
 					}
 				?>
-
-				<?php
-					if($t_item->get("ca_collections.subject")){
-						if($subs = caGetBrowseLinks($t_item, 'ca_collections.subject', ['template' => '<l>^ca_collections.subject</l>', 'linkTemplate' => '^LINK'])) {
-				?>
-							<dt><?= _t('Themes'); ?></dt>
-							<dd><?= join(", ", $subs); ?></dd>
-				<?php
-						}
-					}
-				?>
-				<!-- <ifcount code="ca_collections.related" min="1">
-					<dt><ifcount code="ca_collections.related" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections.related" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-					<unit relativeTo="ca_collections.related" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
-				</ifcount>
-
-				<ifcount code="ca_occurrences" min="1">
-					<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="action"><?= _t('Event'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="action"><?= _t('Events'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="action"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-				<ifcount code="ca_occurrences" min="1">
-					<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="exhibition"><?= _t('Exhibition'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="exhibition"><?= _t('Exhibitions'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-				<ifcount code="ca_occurrences" min="1">
-					<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="lecture_presentation"><?= _t('Lecture/Presentation'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="lecture_presentation"><?= _t('Lectures/Presentations'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="lecture_presentation"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-				<ifcount code="ca_occurrences" min="1">
-					<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="publication"><?= _t('Publication'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="publication"><?= _t('Publications'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="publication"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount> -->
-
-			</dl>}}}					
+			</dl>}}}		
 		</div>
 	</div>
 
@@ -178,14 +143,101 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	}									
 ?>				
 
-<!-- {{{<ifcount code="ca_occurrences" min="1">
-	<dl class="row">
-		<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-		<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br>^relationship_typename</l></dd></unit>
-	</dl>
-</ifcount>}}} -->
 
-{{{<ifcount code="ca_objects" min="1">
+	{{{<ifcount code="ca_collections.subject" min="1">
+		<div class="row mt-5"><div class="col"><h1>Themes</h1></div></div>
+		<div class="row bg-light mb-5 pt-4">
+			<?php
+				if($t_item->get("ca_collections.subject")){
+					if($subs = caGetBrowseLinks($t_item, 'ca_collections.subject', ['template' => '<div class="col-sm-6 col-md-3 pb-4"><div class="bg-info text-center py-2 text-uppercase"><l class="text-decoration-none">^ca_collections.subject</l></div></div>', 'linkTemplate' => '^LINK'])) {
+			?>
+						<?= join("", $subs); ?>
+			<?php
+					}
+				}
+			?>
+		</div>
+	</ifcount>}}}
+
+	<?php		
+		$va_tmp_ids = array();
+		$va_related_album_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("album"), "restrictToRelationshipTypes" => array("featured"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+		if(sizeof($va_related_album_ids)){	
+			# --- related_items
+			shuffle($va_related_album_ids);
+			$q_objects = caMakeSearchResult("ca_objects", array_slice($va_related_album_ids,0,400));
+	?>
+			<div class="row mt-3">
+				<div class="col-7 mt-5">
+					<H1>Albums</H1>
+				</div>
+				<div class="col-5 mt-5 text-end">
+					<?php print caNavLink($this->request, _t("View All"), "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
+				</div>
+			</div>
+
+			<div class="row mb-3 detailRelated">
+	<?php
+				$i = 0;
+				while($q_objects->nextHit()){
+						print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
+						print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+						$vs_idno = substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
+						if($q_objects->get("ca_objects.preferred_labels.name")){
+							$vs_title = "<br/>".$q_objects->get("ca_objects.preferred_labels.name");
+						}
+						print "<div class='pt-2'>".caDetailLink($this->request, $vs_idno.$vs_title, '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
+						print "</div>";
+						$i++;
+						$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+					if($i == 12){
+						break;
+					}
+				}
+	?>
+			</div>
+	<?php		
+		}
+	?>
+
+<?php		
+	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(sizeof($va_related_item_ids)){	
+		# --- related_items
+		shuffle($va_related_item_ids);
+		$q_objects = caMakeSearchResult("ca_objects", array_slice($va_related_item_ids,0,400));
+?>
+		<div class="row mt-3">
+			<div class="col-7 mt-5">
+				<H1>Assets</H1>
+			</div>
+			<div class="col-5 mt-5 text-end">
+				<?php print caNavLink($this->request, "View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
+			</div>
+		</div>
+		<div class="row mb-3 detailRelated">
+<?php
+			$i = 0;
+			while($q_objects->nextHit()){
+				if($q_objects->get("ca_object_representations.media.widepreview")){
+					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
+					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+					print "<div class='pt-2'>".caDetailLink($this->request, substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
+					print "</div>";
+					$i++;
+					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+				}
+				if($i == 12){
+					break;
+				}
+			}
+?>
+		</div>
+<?php		
+	}
+?>
+
+<!-- {{{<ifcount code="ca_objects" min="1">
 	<div class="row">
 		<div class="col"><h2>Assets</h2><hr/></div>
 	</div>
@@ -193,4 +245,4 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id"))); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
-</ifcount>}}}
+</ifcount>}}} -->

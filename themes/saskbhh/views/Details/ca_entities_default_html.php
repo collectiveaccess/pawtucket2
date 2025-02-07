@@ -111,7 +111,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			</dl>			
 		</div>
 	</div>
-</ifcount>}}}	
+</ifcount>}}}
+<div class="row">
+	<div class="col-12">
+		<div id="map" class="map py-3">{{{map}}}</div>
+	</div>
+</div>
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row mt-4">
 		<div class="col"><h2>Related Objects</h2><hr></div>

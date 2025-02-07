@@ -36,18 +36,28 @@
 			<div class="elementor-motion-effects-container"><div class="elementor-motion-effects-layer" style="width: 100%; height: 160%; --translateY: -63.98999999999999px; transform: translateY(var(--translateY));"></div></div>
 			<div class="elementor-background-overlay"></div>
 			<div class="container-xl position-relative">
-				<div class="fw-bold text-start lh-lg">					
-					Museums Association of Saskatchewan<br>
-					
-					424 McDonald Street | Regina, SK | S4N 6E1<br>
-					
-					Phone: (306) 780-9279<br>
-					
-					mas@saskmuseums.org<br>
+				<div class="row">
+					<div class="col">
+						<div class="fw-bold text-start lh-lg">					
+							Museums Association of Saskatchewan<br>
+							
+							424 McDonald Street | Regina, SK | S4N 6E1<br>
+							
+							Phone: (306) 780-9279 | Email: <a href="mailto:mas@saskmuseums.org" class="text-light">mas@saskmuseums.org</a><br>
+							
+							<a href="http://www.saskmuseums.org" class="text-light">www.saskmuseums.org</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</footer><!-- end footer -->
 		<section>
 			<div class="container-xl mt-4 pt-4">
+				<div class="row justify-content-center text-center text-secondary mb-4 pb-4 small">
+					<div class="col-8 col-md-12">
+						{{{footer_text}}}
+					</div>
+				</div>
 				<div class="row justify-content-center text-center">
 					<div class="col-8 col-md-12">
 						<div class="row justify-content-center text-center">

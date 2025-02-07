@@ -30,7 +30,7 @@ if(CookieOptionsManager::showBanner()) {
 	$text = $this->getVar($config->get("cookiesBannerGlobalValue")) ?? $config->get("cookiesBannerText");
 ?>
 	<div id="cookieNotice" role="dialog" aria-labelledby="Cookie Window">
-		<div class="row">
+		<div class="row justify-content-center">
 			<div class="col-sm-12 col-md-offset-3 col-md-6">
 				<div class="cookieNoticeHeading">
 					<?= _t('This website uses cookies'); ?>

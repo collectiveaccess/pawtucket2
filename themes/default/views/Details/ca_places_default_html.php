@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_placess_default_html.php : 
+ * themes/default/views/bundles/ca_places_default_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -53,7 +53,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-	<div class="row<?php print ($vb_show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-3">{{{^ca_places.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_places.type_id|ca_places.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_places.type_id">^ca_places.type_id</ifdef><ifdef code="ca_places.idno">, ^ca_places.idno</ifdef></div></ifdef>}}}
@@ -74,9 +74,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_places", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_places_summary'));
 				}
 				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
+					print $this->render('Details/snippets/copy_link_html.php');
 				}
 ?>
 			</div>
@@ -132,7 +130,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			</dl>}}}					
 		</div>
 		<div class="col">
-			<div id="map" class="py-3">{{{map}}}</div>
+			<div class="py-3"><div id="map">{{{map}}}</div></div>
 		</div>
 	</div>
 	{{{<ifcount code="ca_entities" min="1">

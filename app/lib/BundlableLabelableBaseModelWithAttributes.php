@@ -7579,7 +7579,9 @@ $pa_options["display_form_field_tips"] = true;
 	 *		sortDirection = direction to sort results by, either 'asc' for ascending order or 'desc' for descending order; default is 'asc'
 	 *		instance = An instance of the model for $pm_rel_table_name_or_num; if passed makeSearchResult can use it to directly extract model information potentially saving time [Default is null]
 	 *		returnIndex = Return array with result instance (key "result") and list of sorted primary key values (key "index"). [Default is false]
-	 *
+	 *		primaryTable = When search result is for a relationship, the related table to consider as context. Paths to related tables will be generated as if they were relative to the primary. Mostly useful when sorting on related records from a relationship, to ensure that the path to the sort record is. [Default is null]
+	 *		start = Zero-based index to begin returned items at. [Default is 0]
+ 	 *		limit = Maximum number of items to return. [Default is null; no limit]
 	 * @return SearchResult A search result of for the specified table
 	 */
 	public function makeSearchResult($pm_rel_table_name_or_num, $pa_ids, $pa_options=null) {
@@ -7600,7 +7602,14 @@ $pa_options["display_form_field_tips"] = true;
 			
 			$vo_sort = new BaseFindEngine($this->getDb());
 			$va_ids = $vo_sort->sortHits($va_ids, $t_instance->tableName(), join(';', $pa_sort), caGetOption('sortDirection', $pa_options, 'asc'), $pa_options);
+		} else {
+			$start = caGetOption('start', $pa_options, 0);
+			$limit = caGetOption('limit', $pa_options, null);
+			if(($start > 0) || ($limit > 0)) {
+				$va_ids = array_slice($va_ids, $start, $limit);
+			}
 		}
+		
 		if (!($vs_search_result_class = $t_instance->getProperty('SEARCH_RESULT_CLASSNAME'))) { return null; }
 		$o_data = new WLPlugSearchEngineCachedResult($va_ids, [], $t_instance->tableNum());
 		/** @var BaseSearchResult $o_res */

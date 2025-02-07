@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2024 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -154,15 +154,15 @@ class LoginRegController extends BasePawtucketController {
 		}
 		$this->view->setVar("t_user", $t_user);
 	
-		$va_profile_prefs = $t_user->getValidPreferences('profile');
-		if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
-			$va_elements = [];
-			foreach($va_profile_prefs as $pref) {
-				$va_pref_info = $t_user->getPreferenceInfo($pref);
-				$va_elements[$pref] = array('element' => $t_user->preferenceHtmlFormElement($pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($pref, "<label for='pref_".$pref."'>".$va_pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($pref, "<label class='form-label' for='pref_".$pref."'>".$va_pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
+		$profile_prefs = $t_user->getValidPreferences('profile');
+		if (is_array($profile_prefs) && sizeof($profile_prefs)) {
+			$elements = [];
+			foreach($profile_prefs as $pref) {
+				$pref_info = $t_user->getPreferenceInfo($pref);
+				$elements[$pref] = array('element' => $t_user->preferenceHtmlFormElement($pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($pref, "<label for='pref_".$pref."'>".$pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($pref, "<label class='form-label' for='pref_".$pref."'>".$pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $pref_info, 'label' => $pref_info['label']);
 			}
 
-			$this->view->setVar("profile_settings", $va_elements);
+			$this->view->setVar("profile_settings", $elements);
 		}
 
 		$this->render("LoginReg/form_profile_html.php");
@@ -336,10 +336,10 @@ class LoginRegController extends BasePawtucketController {
 			
 			$controller = $module_path = '';
 			if ($default_action = $this->request->config->get('default_action')) {
-				$va_tmp = explode('/', $default_action);
-				$action = array_pop($va_tmp);
-				if (sizeof($va_tmp)) { $controller = array_pop($va_tmp); }
-				if (sizeof($va_tmp)) { $module_path = join('/', $va_tmp); }
+				$tmp = explode('/', $default_action);
+				$action = array_pop($tmp);
+				if (sizeof($tmp)) { $controller = array_pop($tmp); }
+				if (sizeof($tmp)) { $module_path = join('/', $tmp); }
 			} else {
 				$controller = 'Front';
 				$action = 'Index';

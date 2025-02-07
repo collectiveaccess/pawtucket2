@@ -29,19 +29,13 @@
  *
  * ----------------------------------------------------------------------
  */
-
- /**
-  *
-  */
-  
 require_once(__CA_LIB_DIR__."/Configuration.php");
 require_once(__CA_LIB_DIR__."/Db/Transaction.php");
 require_once(__CA_LIB_DIR__.'/GenericVersionUpdater.php');
 
-
- 	define('__CA_SCHEMA_UPDATE_ERROR__', 0);
- 	define('__CA_SCHEMA_UPDATE_WARNING__', 1);
- 	define('__CA_SCHEMA_UPDATE_INFO__', 2);
+define('__CA_SCHEMA_UPDATE_ERROR__', 0);
+define('__CA_SCHEMA_UPDATE_WARNING__', 1);
+define('__CA_SCHEMA_UPDATE_INFO__', 2);
 
 final class ConfigurationCheck {
 	# -------------------------------------------------------

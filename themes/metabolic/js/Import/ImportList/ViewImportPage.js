@@ -15,9 +15,9 @@ const ViewImportPage = (props) => {
   // console.log("previousFilesUploaded: ", previousFilesUploaded);
   // console.log('====================================');
 
-  console.log('====================================');
-  console.log("sessionList: ", sessionList);
-  console.log('====================================');
+  // console.log('====================================');
+  // console.log("sessionList: ", sessionList);
+  // console.log('====================================');
 
   useEffect(() => {
     getFormList(baseUrl, function (data) {
@@ -89,15 +89,15 @@ const ViewImportPage = (props) => {
     }
   }
 
-  console.log('====================================');
-  console.log("prevFiles: ", prevFiles);
-  console.log('====================================');
+  // console.log('====================================');
+  // console.log("prevFiles: ", prevFiles);
+  // console.log('====================================');
 
 
   if(formData !== null && schemaProperties){
     return (
       <div className='container-fluid' style={{ maxWidth: '60%' }}>
-        <button type='button' className='btn btn-secondary mb-4' onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
+        <button type='button' className='btn btn-secondary mb-4' onClick={(e) => props.setInitialState(e)}><i class="bi bi-arrow-left"></i> Your Imports</button>
 
         <h2 className="mb-2">Files Uploaded:</h2>
         {(previousFilesUploaded.length > 100) ?
