@@ -778,8 +778,6 @@ class LightboxController extends FindController {
 		}
 		$this->view->setVar('errors', $errors);
 		$this->render('Browse/lightbox_tools_html.php');
-		
-		
 	}
 	# -------------------------------------------------------
 	/*
@@ -858,6 +856,54 @@ class LightboxController extends FindController {
 			'params' => []
 		];
 		return $ret;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function AddAnonymousAccess() {
+		$id = $this->request->getParameter('id', pInteger);
+
+		$name = $this->request->getParameter('urlName', pString);
+		$expirationDate = $this->request->getParameter('expirationDate', pString);
+
+		$t_set = ca_sets::findAsInstance($id);
+		$this->view->setVar('t_set', $t_set);
+
+		$new_token = [
+			'name' => $name ?: 'Untitled', 
+			'access' => 1,  
+			'effective_date' => $expirationDate
+		];
+
+		$success = $t_set->addAnonymousAccessTokens([$new_token]);
+
+		// If successful, refresh the shared links list
+		if ($success) {
+			$this->render("Lightbox/anonymous_access_list_html.php");
+		} else {
+			echo "Error adding new token";
+		}
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function RemoveAnonymousAccess() {
+		$id = $this->request->getParameter('id', pInteger);
+		$guid = $this->request->getParameter('guid', pString);
+
+		$t_set = ca_sets::findAsInstance($id);
+		$this->view->setVar('t_set', $t_set);
+
+		$success = $t_set->removeAnonymousAccessTokens([$guid]);
+
+		// If successful, refresh the shared links list
+		if ($success) {
+			$this->render("Lightbox/anonymous_access_list_html.php");
+		} else {
+			echo "Error removing token";
+		}
 	}
 	# -------------------------------------------------------
 }
