@@ -1,13 +1,13 @@
-<?php
+<?php	
 /* ----------------------------------------------------------------------
- * themes/default/views/Gallery/set_detail_timeline_html.php :
+ * app/templates/header.php : standard PDF report header
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,33 +23,41 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name Header
+ * @type fragment
+ *
  * ----------------------------------------------------------------------
  */
- 	
-	$t_set = $this->getVar("set");
+ 
+ if($this->request->config->get('summary_header_enabled')) {
+	switch($this->getVar('PDFRenderer')) {
+		case 'wkhtmltopdf':
 ?>
-	<div class="row">
-		<div class="col-sm-12">
-			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-12">
-			<div id="lbTimelineContainer">
-				<div id="timeline-embed"></div>
+			<!--BEGIN HEADER--><!DOCTYPE html>
+			<html>
+				<head>
+					<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+					<meta charset="utf-8" />
+				</head>
+				<body><div id='header'>
+					<?= caGetReportLogo(); ?>
+				</div>
+				<br style="clear: both;"/>
+			</body>
+			</html><!--END HEADER-->
+<?php
+		break;
+		# ----------------------------------------
+		default:
+?>
+			<div id='headerdompdf'>
+				<?= caGetReportLogo(); ?>
 			</div>
-		</div>
-	</div>
-	<div style="clear:both;"><!-- empty --></div>
-	
-    <script type="text/javascript">
-		jQuery(document).ready(function() {
-			createStoryJS({
-				type:       'timeline',
-				width:      '100%',
-				height:     '100%',
-				source:     '<?php print caNavUrl($this->request, '', '*', 'getSetInfoAsJSON', array('mode' => 'timeline', 'set_id' => $t_set->get("set_id"))); ?>',
-				embed_id:   'timeline-embed'
-			});
-		});
-	</script>
+<?php
+		break;
+		# ----------------------------------------
+	}
+}

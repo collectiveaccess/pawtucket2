@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/views/objects/object_representation_within_media_search_results_json.php : 
+ * app/templates/pdfEnd.php : bottom-matter appended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,13 +23,14 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name PDF end
+ * @type pageEnd
+ *
  * ----------------------------------------------------------------------
  */
-
-	$pn_object_id 			= $this->getVar('object_id');
-	$pn_representation_id 	= $this->getVar('representation_id');
-	$pa_results 			= $this->getVar('results');
-	
-	header("Content-type: application/json");
-	print json_encode($pa_results);
 ?>
+	</body>
+</html>

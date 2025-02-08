@@ -67,7 +67,7 @@
 			<div class="col-sm-12">
 				<div class="bg-dark text-center pb-4 mb-2">
 					<div class="row justify-content-center">
-						<div class="col-sm-12 col-md-8 col-lg-6">
+						<div class="col-sm-12 col-md-10 col-lg-8">
 	
 							<div class="text-white display-6 pt-4 mt-4 pb-4">{{{hp_intro}}}</div>
 							<div class="row justify-content-center">
@@ -102,9 +102,9 @@
 ?>
 <div class="container-xxl text-center pb-4 mb-4">
 	<div class="row pt-4 mt-4 mb-4 pb-4 justify-content-center">
-		<div class="col-sm-12 col-md-8 col-lg-6">
+		<div class="col-sm-12 col-md-10 col-lg-8">
 			<h2 class="pt-4">{{{hp_productions_title}}}</h2>
-			<div class="pb-4 mb-4">{{{hp_productions_text}}}</div>
+			<div class="pt-3 pb-4 mb-4 display-6">{{{hp_productions_text}}}</div>
 			<div class="row justify-content-center">
 				<div class="col-sm-12 col-md-12 col-lg-8 mb-4">
 <?php
@@ -120,7 +120,7 @@
 			<div class="hpExplore">
 				<div class="row gx-5">
 					<div class="col-md-6 mb-md-4 pb-md-4 mb-4 pb-4">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, "featured.jpg", array("alt" => "black and white production still of dancers", "class" => "object-fit-cover w-100")), "", "", "Gallery", "Index"); ?>
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, "featured.jpg", array("alt" => "black and white production still of dancers", "class" => "object-fit-cover w-100 shadow-sm")), "", "", "Gallery", "Index"); ?>
 						<hr/>
 						<h3 class="mb-4">{{{hp_gallery_title}}}</h3>
 						<div class="pb-4 mb-4">{{{hp_gallery_text}}}</div>
@@ -129,7 +129,7 @@
 ?>
 					</div>
 					<div class="col-md-6">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, "collection.jpg", array("alt" => "black and white contact sheet", "class" => "object-fit-cover object-position-top w-100")), "", "", "Collections", "index"); ?>
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, "collection.jpg", array("alt" => "black and white contact sheet", "class" => "object-fit-cover object-position-top w-100 shadow-sm")), "", "", "Collections", "index"); ?>
 						<hr/>
 						<h3 class="mb-4">{{{hp_collections_title}}}</h3>
 						<div class="pb-4 mb-4">{{{hp_collections_text}}}</div>

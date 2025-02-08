@@ -82,9 +82,7 @@ if($show_nav){
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
 				}
 				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
+					print $this->render('Details/snippets/copy_link_html.php');
 				}
 ?>				
 			</div>
@@ -100,55 +98,51 @@ if($show_nav){
 			{{{media_viewer}}}
 		</div>
 		<div class="col-md-6">
-			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->
-				<div class="row">
-					<div class="col">				
-						{{{<dl class="mb-0">
-							<ifdef code="ca_objects.date">
-								<dt><?= _t('Date'); ?></dt>
-								<dd>^ca_objects.date.dates_value (^ca_objects.date.dates_type)</dd>
-							</ifdef>
+			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->			
+				{{{<dl class="mb-0">
+					<ifdef code="ca_objects.date">
+						<dt><?= _t('Date'); ?></dt>
+						<dd>^ca_objects.date.dates_value (^ca_objects.date.dates_type)</dd>
+					</ifdef>
+
+					<ifdef code="ca_objects.colorType">
+						<dt><?= _t('Color'); ?></dt>
+						<dd>^ca_objects.colorType</dd>
+					</ifdef>
+					<ifdef code="ca_objects.inscription">
+						<dt><?= _t('Inscription'); ?></dt>
+						<dd>^ca_objects.inscription</dd>
+					</ifdef>
+					<ifdef code="ca_objects.work_description">
+						<dt><?= _t('Description'); ?></dt>
+						<dd>
+							^ca_objects.work_description
+						</dd>
+					</ifdef>
+					<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
+					<ifcount code="ca_collections" min="1">
+						<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
+						<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
+					</ifcount>
 		
-							<ifdef code="ca_objects.colorType">
-								<dt><?= _t('Color'); ?></dt>
-								<dd>^ca_objects.colorType</dd>
-							</ifdef>
-							<ifdef code="ca_objects.inscription">
-								<dt><?= _t('Inscription'); ?></dt>
-								<dd>^ca_objects.inscription</dd>
-							</ifdef>
-							<ifdef code="ca_objects.work_description">
-								<dt><?= _t('Description'); ?></dt>
-								<dd>
-									^ca_objects.work_description
-								</dd>
-							</ifdef>
-							<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
-							<ifcount code="ca_collections" min="1">
-								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
-							</ifcount>
-				
-							<ifcount code="ca_entities" min="1">
-								<dt><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
-								<unit relativeTo="ca_entities" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
-							</ifcount>
+					<ifcount code="ca_entities" min="1">
+						<dt><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
+						<unit relativeTo="ca_entities" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</ifcount>
 
-							<ifcount code="ca_occurrences" min="1">
-								<dt><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-								<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-							</ifcount>
+					<ifcount code="ca_occurrences" min="1">
+						<dt><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
+						<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</ifcount>
 
-							<ifcount code="ca_places" min="1">
-								<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-								<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
-							</ifcount>
-						</dl>}}}
-						
-					</div>
-				</div>
+					<ifcount code="ca_places" min="1">
+						<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
+						<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</ifcount>
+				</dl>}}}
+				<div><div id="map" class="map">{{{map}}}</div></div>
 			</div>
-			<div id="map" class="map py-3">{{{map}}}</div>
+			
 		</div>
 	</div>
 	{{{<ifcount code="ca_entities" min="1">

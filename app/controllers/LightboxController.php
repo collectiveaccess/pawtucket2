@@ -105,10 +105,12 @@ class LightboxController extends FindController {
 		
 		$this->lightbox_display_name_singular = $display_name["singular"] ?? _t('Lightbox');
 		$this->lightbox_display_name_plural = $display_name["plural"] ?? _t('Lightboxes');
+		$this->lightbox_section_heading = $display_name["section_heading"] ?? _t('My Lightboxes');
 		$this->lightbox_description_element_code = $this->config->get('lightbox_description_element_code');
 		
 		$this->view->setVar('lightbox_displayname_singular', $this->lightbox_display_name_singular);
 		$this->view->setVar('lightbox_displayname_plural', $this->lightbox_display_name_plural);
+		$this->view->setVar('lightbox_section_heading', $this->lightbox_section_heading);
 		$this->view->setVar('lightbox_description_element_code', $this->lightbox_description_element_code);
 				
  		$this->opa_access_values = caGetOption('checkAccess', $va_browse_info, $this->opa_access_values);
