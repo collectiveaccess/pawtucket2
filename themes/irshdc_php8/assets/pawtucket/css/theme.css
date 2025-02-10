@@ -1741,6 +1741,7 @@ a:hover .galleryIconPlaceholderWrapper .galleryIconPlaceholder, a.galleryIconAct
 	z-index:1;
 	overflow-y:auto;
 	overflow-x:hidden;
+	padding: 0px 15px 0px 15px;
 }
 #exploreSchoolListContainer{
 	z-index:10;
@@ -2232,7 +2233,7 @@ a .digExhSideNavLinkImg .digExhSideNavLink{
 	margin-bottom:10px;
 }
 .digExhContentBlock{
-	margin-bottom:80px;
+	margin-bottom:40px;
 	position:relative;
 }
 a.digExhAnchors{
@@ -2273,7 +2274,7 @@ a.digExhAnchors.offset{
 .digExhContentBlock HR{
 	border-color: #f0ede4;
     border-bottom: 2px solid #f0ede4;
-    margin-bottom:70px;
+    margin-bottom:40px;
 }
 .digExhContentBlock .contentBlockSubTitle{
 	font-weight: normal;

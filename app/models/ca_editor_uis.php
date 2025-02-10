@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2023 Whirl-i-Gig
+ * Copyright 2008-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -320,7 +320,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		if (!isset($pa_options['editorPref'])) { $pa_options['editorPref'] = 'cataloguing'; }
 		
 		if ($po_request->user) {
-			switch($pa_options['editorPref']) {
+			switch($pa_options['editorPref'] ?? null) {
 				case 'quickadd':
 					$va_uis_by_type = $po_request->user->getPreference("quickadd_{$vs_table_name}_editor_ui");
 					break;
@@ -881,20 +881,30 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 	 *		returnTypeRestrictions = return list of type restrictions for screen. Default is false. 
 	 *		restrictToTypes = 
 	 *		user_id = User_id to apply access control for
+	 *		dontIncludeSubtypesInTypeRestriction = Don't expand type-restrictions to include sub-types. [Default is true]
 	 * @return array
 	 */
 	public function getScreensAsNavConfigFragment($po_request, $pn_type_id, $ps_module_path, $ps_controller, $ps_action, $pa_parameters, $pa_requirements, $pb_disable_options=false, $pa_options=null) {
 		if(!caGetOption('user_id', $pa_options, null) && $po_request) { $pa_options['user_id'] = $po_request->getUserID(); }
 		if (!($va_screens = $this->getScreens($pn_type_id, $pa_options))) { return false; }
 		
+		$dont_include_subtypes = caGetOption('dontIncludeSubtypesInTypeRestriction', $pa_options, true);
+		
 		if (is_array($restrict_to_types = caGetOption('restrictToTypes', $pa_options, null)) && sizeof($restrict_to_types)) {
-		    $restrict_to_types = caMakeTypeIDList($this->get('editor_type'), $restrict_to_types);
+		    $restrict_to_types = caMakeTypeIDList($this->get('editor_type'), $restrict_to_types, ['dontIncludeSubtypesInTypeRestriction' => $dont_include_subtypes]);
 		}
 		$va_nav = [];
 		$vn_default_screen_id = null;
 		foreach($va_screens as $va_screen) {
+			$is_relationship = Datamodel::isRelationship($this->get('editor_type'));
 			$va_screen_restrictions = $va_screen['typeRestrictions'] ?? null;
-		    if(is_array($va_screen_restrictions)) { $va_screen_restrictions = caMakeTypeIDList($this->get('editor_type'), array_keys($va_screen_restrictions)); }
+		    if(is_array($va_screen_restrictions)) { 
+		    	if($is_relationship) {
+		    		$va_screen_restrictions = caMakeRelationshipTypeIDList($this->get('editor_type'), array_keys($va_screen_restrictions)); 
+		    	} else {
+		    		$va_screen_restrictions = caMakeTypeIDList($this->get('editor_type'), array_keys($va_screen_restrictions), ['dontIncludeSubtypesInTypeRestriction' => $dont_include_subtypes]); 
+		    	}
+		    }
 			
 			if(is_array($restrict_to_types) && is_array($va_screen_restrictions) && (sizeof($va_screen_restrictions) > 0)) {
 				$vb_skip = true;

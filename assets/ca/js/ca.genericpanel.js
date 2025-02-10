@@ -6,7 +6,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2015 Whirl-i-Gig
+ * Copyright 2010-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -24,8 +24,10 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 var caUI = caUI || {};
+
+// Global panel count; provides for control of mask when nested panels are opened
+caUI.panelCount = 0;
 
 (function ($) {
 	caUI.initPanel = function(options) {
@@ -46,6 +48,8 @@ var caUI = caUI || {};
 			mobileSafariUserScaleable: false,
 			onOpenCallback: null,
 			onCloseCallback: null,
+			finallyCallback: null,
+			onEscapeCallback: null,	// called if panel is closed by escape key
 			callbackData: null,
 			
 			center: false,
@@ -53,7 +57,8 @@ var caUI = caUI || {};
 			centerVertical : false,
 			
 			isChanging: false,
-			clearOnClose: false
+			clearOnClose: false,
+			closeOnEsc: true
 		}, options);
 		
 		
@@ -63,6 +68,8 @@ var caUI = caUI || {};
 		that.showPanel = function(url, onCloseCallback, clearOnClose, postData, callbackData) {
 			that.setZoom(that.allowMobileSafariZooming);
 			that.isChanging = true;
+			
+			caUI.panelCount++;
 			
 			// Set reference to panel in <div> being used
 			jQuery('#' + that.panelID).data("panel", that);
@@ -86,7 +93,7 @@ var caUI = caUI || {};
 			if (!postData) { postData = {}; }
 			if (url) {
 				jQuery('#' + that.panelContentID).load(url, postData, that.closeButtonSelector ? function() {			
-					jQuery(that.closeButtonSelector).on('click', function() {
+					jQuery(that.closeButtonSelector).click(function() {
 						that.hidePanel();
 					})
 				} : null);
@@ -101,7 +108,9 @@ var caUI = caUI || {};
 		}
 		
 		that.hidePanel = function(opts) {
-			if (that.onCloseCallback) {
+		    if(!opts) { opts = {}; }
+			caUI.panelCount--;
+			if (that.onCloseCallback && !opts['dontUseCallback']) {
 				that.onCloseCallback(that.callbackData);
 			}
 			that.setZoom(false);
@@ -112,6 +121,7 @@ var caUI = caUI || {};
 				jQuery('#' + that.panelContentID).empty();
 				that.clearOnClose = false;
 			}
+			if(that.finallyCallback) { that.finallyCallback(that.callbackData); }
 		}
 		
 		that.panelIsVisible = function() {
@@ -141,17 +151,10 @@ var caUI = caUI || {};
 		// Set up handler to trigger appearance of panel
 		// --------------------------------------------------------------------------------
 		jQuery(document).ready(function() {
-			// hide panel if click is outside of panel
-			//jQuery(document).on('click', function(event) {
-			//	var p = jQuery(event.target).parents().map(function() { return this.id; }).get();
-			//	if (!that.isChanging && that.panelIsVisible() && (jQuery.inArray(that.panelID, p) == -1)) {
-				//	that.hidePanel();
-			//	}
-			//});
-			
 			// hide panel if escape key is clicked
-			jQuery(document).on('keyup', function(event) {
-				if ((event.keyCode == 27) && !that.isChanging && that.panelIsVisible()) {
+			jQuery(document).keyup(function(event) {
+				if (that.closeOnEsc && (event.keyCode == 27) && !that.isChanging && that.panelIsVisible()) {
+					if(that.onEscapeCallback) { that.onEscapeCallback(that.callbackData); }
 					that.hidePanel();
 				}
 			});

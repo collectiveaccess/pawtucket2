@@ -49,7 +49,7 @@
 				$va_main_image_object = $va_main_image_captions[0];
 			}
 			if ($va_primary_rep['tags']['medium']) {
-				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $va_primary_id, 'representation_id' => $va_primary_rep['representation_id']))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
+				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $va_primary_id, 'representation_id' => $va_primary_rep['representation_id']))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
 			
 				print "<div class='caption' style='width:".$va_primary_rep['info']['medium']['WIDTH']."px;'>".$va_main_image_object."</div>";
 				$va_object_results[] = array("object_id" => $va_primary_id, "representation_id" => $va_primary_rep['representation_id']);
@@ -68,7 +68,7 @@
 				foreach(array_slice($va_related_reps, 1, null, true) as $vn_related_rep_id => $va_related_rep) {
 					if ($stack == 0) { print "<div class='thumbResult'>";}
 					
-					print "<div class='rep'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_related_rep_id, 'representation_id' => $va_related_rep['representation_id']))."\"); return false;' >".$va_related_rep['tags']['smallthumb']."</a></div>";
+					print "<div class='rep'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_related_rep_id, 'representation_id' => $va_related_rep['representation_id']))."\"); return false;' >".$va_related_rep['tags']['smallthumb']."</a></div>";
 					//print "<div class='rep'>".$va_related_rep['tags']['widepreview']."</div>";
 					
 					$stack++;
@@ -125,7 +125,7 @@
 		}
 
 		if ($t_item->get('ca_collections.collection_note')) {
-			$va_collection_notes = $t_item->get('ca_collections.collection_note', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+			$va_collection_notes = $t_item->get('ca_collections.collection_note', array('returnWithStructure' => true, 'returnAsArray' => true, 'convertCodesToDisplayText' => true));
 			foreach ($va_collection_notes as $key_collection => $va_collection_note) {
 				if ($va_collection_note['collectio_note_type'] == "Abstract") {
 					print "<div class='metatitle'>".$va_collection_note['collectio_note_type']."</div><p>".$va_collection_note['collection_note_content']."</p>\n";		
@@ -138,7 +138,7 @@
 		{{{<unit><ifdef code="ca_collections.extent.extent_value"><div class="metatitle">Extent</div><p> ^ca_collections.extent.extent_value ^ca_collections.extent.extent_units</p></ifdef></unit>}}}
 <?php
 		if ($t_item->get('ca_collections.collection_note')) {
-			$va_collection_notes = $t_item->get('ca_collections.collection_note', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+			$va_collection_notes = $t_item->get('ca_collections.collection_note', array('returnWithStructure' => true, 'returnAsArray' => true, 'convertCodesToDisplayText' => true));
 			foreach ($va_collection_notes as $key_collection => $va_collection_note) {
 				if ($va_collection_note['collectio_note_type'] == "Scope & Content") {
 					print "<div class='metatitle'>".$va_collection_note['collectio_note_type']."</div><p>".$va_collection_note['collection_note_content']."</p>\n";		
@@ -146,7 +146,7 @@
 			}
 		}
 		if ($t_item->get('ca_collections.collection_note')) {
-			$va_collection_notes = $t_item->get('ca_collections.collection_note', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+			$va_collection_notes = $t_item->get('ca_collections.collection_note', array('returnWithStructure' => true, 'returnAsArray' => true, 'convertCodesToDisplayText' => true));
 			foreach ($va_collection_notes as $key_collection => $va_collection_note) {
 				if (($va_collection_note['collectio_note_type'] != "Scope & Content") && ($va_collection_note['collectio_note_type'] != "Abstract")) {
 					print "<div class='metatitle'>".$va_collection_note['collectio_note_type']."</div><p>".$va_collection_note['collection_note_content']."</p>\n";		

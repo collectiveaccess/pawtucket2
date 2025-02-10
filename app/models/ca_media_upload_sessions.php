@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2020-2023 Whirl-i-Gig
+ * Copyright 2020-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -104,7 +104,6 @@ BaseModel::$s_ca_models_definitions['ca_media_upload_sessions'] = array(
 				_t('Submitted') => 'SUBMITTED',
 				_t('Processing') => 'PROCESSING',
 				_t('Processed') => 'PROCESSED',
-			//	_t('In review') => 'IN_REVIEW',
 				_t('Accepted') => 'ACCEPTED',
 				_t('Rejected') => 'REJECTED',
 				_t('Completed') => 'COMPLETED',
@@ -388,6 +387,11 @@ class ca_media_upload_sessions extends BaseModel {
 			$table = $config['table'];
 			$type = $config['type'];
 			$idno = $config['idno'];
+			
+			// TODO: more placeholders?
+			$idno = preg_replace("!<year>!i", date("Y"), $idno);
+			
+			
 			$status = $config['status'];
 			$access = $config['access'];
 			
@@ -410,10 +414,11 @@ class ca_media_upload_sessions extends BaseModel {
 				return ($v['completed_on'] > 0);
 			});
 			foreach($media as $path => $info) {
-				if(ca_object_representations::mediaExists($path)) {
+				if($t_rep = ca_object_representations::mediaExists($path)) {
 					$filename = pathinfo($path, PATHINFO_BASENAME);
 					unset($media[$path]);
-					self::_setSessionWarning($session, $label, $warnings[$filename][] = _t('Media file <em>%1</em> is already loaded (file was skipped)', $filename));
+					$object_idno = $t_rep->get('ca_objects.idno');
+					self::_setSessionWarning($session, $label, $warnings[$filename][] = ($object_idno ? _t('Media file <em>%1</em> is already loaded in %2 (file was skipped)', $filename, $object_idno) : _t('Media file <em>%1</em> is already loaded (file was skipped)', $filename)));
 				}
 			}
 			
@@ -496,14 +501,14 @@ class ca_media_upload_sessions extends BaseModel {
 						$r->insert();
 						
 						if ($r->numErrors()) {
-							self::_setSessionError($session, $label, $errors[$filename][] = _t('Could not create media child record %1 for %2: %3 (file was skipped)', $filename, $label, join(", ", $r->getErrors())));
+							self::_setSessionError($session, $label, $errors[$filename][] = _t('Could not create media child record in %4 for %1 (%2): %3 (file was skipped)', $filename, $label, join(", ", $r->getErrors()), $t->get("{$table}.idno")));
 							continue;
 						}
 					
-						$r->addLabel(['name' => $label." [{$index}]"], $locale_id, null, true);
+						$r->addLabel(['name' => $label], $locale_id, null, true);
 						
 						if ($r->numErrors()) {
-							self::_setSessionError($session, $label, $errors[$filename][] = _t('Could not add label for media child record for %1: %2 (file was skipped)', $label, join(", ", $t->getErrors())));
+							self::_setSessionError($session, $label, $errors[$filename][] = _t('Could not add label for media child record in %3 for %1: %2 (file was skipped)', $label, join(", ", $t->getErrors()),  $t->get("{$table}.idno")));
 							continue;
 						}
 						
@@ -624,7 +629,7 @@ class ca_media_upload_sessions extends BaseModel {
 							continue;
 						}
 					
-						$r->addLabel(['name' => $label." [{$index}]"], $locale_id, null, true);
+						$r->addLabel(['name' => $label], $locale_id, null, true);
 						
 						if ($r->numErrors()) {
 							self::_setSessionError($session, $label, $errors[$filename][] = _t('Could not add label for media record %1 for %2: %3 (file was skipped)', $filename, $label, join(", ", $r->getErrors())));
@@ -691,7 +696,7 @@ class ca_media_upload_sessions extends BaseModel {
 	 *
 	 */
 	static private function _processContent(BaseModel $t_instance, array $config, array $data) : array {
-		global $g_request;
+		global $g_request, $g_ui_locale_id;
 		$table = $t_instance->tableName();
 		$tags_added = 0;
 		
@@ -720,6 +725,22 @@ class ca_media_upload_sessions extends BaseModel {
 						}
 						$t_instance->update();
 						
+						if(($rel = ($info['relateToExisting'] ?? null)) && ($rel_type = $info['relationshipType'] ?? null)) {
+							foreach($data[$info['bundle']] as $i => $d) {
+								switch($rel) {
+									case 'ca_entities':
+										$rel_id = DataMigrationUtils::getEntityID(DataMigrationUtils::splitEntityName($d), null, $g_ui_locale_id, [], ['ignoreType' => true, 'dontCreate' => true]);			
+										break;
+									case 'ca_occurrences':
+										$rel_id = DataMigrationUtils::getOccurrenceID($d, null, null, $g_ui_locale_id, [], ['ignoreType' => true, 'dontCreate' => true]);
+										break;
+								}
+								if($rel_id && !$t_instance->addRelationship($rel, $rel_id, $rel_type)) {
+									$errors[] = join('; ', $t_instance->getErrors());
+								}
+							}
+						}
+						
 						break;
 				}
 			} else {
@@ -744,11 +765,11 @@ class ca_media_upload_sessions extends BaseModel {
 					if(!is_array($data[$info['bundle']])) { $data[$info['bundle']] = [$data[$info['bundle']]]; }
 					foreach($data[$info['bundle']] as $i => $d) {
 						$reltype = $info['relationshipType'];
-						$t_instance->addRelationship($bundle_bits[0], $d, $reltype, null, null, null, null, ['idnoOnly' => true]);
+						$t_instance->addRelationship($bundle_bits[0], $d, $reltype, null, null, null, null, ['primaryKeyOnly' => true]);
 					}
 				}
 			}
-		}	
+		}
 		return $errors;
 	}
 	# ------------------------------------------------------
