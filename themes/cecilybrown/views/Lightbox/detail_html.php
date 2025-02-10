@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2024 Whirl-i-Gig
+ * Copyright 2024-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,6 +39,8 @@ $access_values 						= $this->getVar('access_values');
 $downloads							= $this->getVar('downloads');
 $exports							= $this->getVar('exports');
 
+$is_anonymous						= $this->getVar('access_is_anonymous');
+
 // View modes
 $configured_modes = $this->getVar('configured_modes');
 $current_view_mode = $this->getVar('mode');
@@ -50,8 +52,11 @@ $current_sort = $this->getVar('current_sort');
 $current_sort_direction = $this->getVar('current_sort_direction');
 
 $t_list_item = new ca_list_items();
-$user_id = $this->request->getUserID();
-$can_delete = $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__);
+$user_id = $is_anonymous ? null : $this->request->getUserID();
+$can_edit = !$is_anonymous;
+$can_delete = $is_anonymous ? false : $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__);
+
+$show_actions =  !$is_anonymous && $can_delete;
 
 $search = $this->getVar('search');
 $total = $this->getVar('total');
@@ -78,20 +83,21 @@ if(!$incremental) {
 	
 		<div class="row">
 			<div class="col-md-12 col-lg-4">
+<?php if(!$is_anonymous) { ?>
 				<div class="float-start me-3"><?= caNavLink($this->request, '<i class="bi bi-chevron-left"></i>', 'btn btn-secondary btn-sm', '*', 'Lightbox', 'Index', null, array("aria-label" => _t("Back"), "title" => _t("Back"))); ?></div>
-			
+<?php } ?>			
 				<H1 class="text-capitalize mb-0 fs-3"><?= $t_set->get('ca_sets.preferred_labels.name'); ?></H1>
 			</div>
 			<div class="col-md-12 col-lg-8 text-lg-end mt-lg-0">
 
 				<div class="btn-group" role="group" id="lightbox-controls" aria-label="<?= _t('%1 Controls', $lightbox_displayname_singular); ?>">
-
+<?php if($show_actions) { ?>
 					<div id="actionsDropdown" class="btn-group d-none" role="group">
 						<button id="btnGroupActions" type="button" class="btn btn-white btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
 							<?= _t("Actions"); ?> <i class="bi bi-chevron-down"></i> 
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="btnGroupActions">
-<?php if($can_delete) { ?>
+	<?php if($can_delete) { ?>
 						  <li>
 						  	<button class="dropdown-item" 
 									title="<?= _t('Remove from %1', $lightbox_displayname_plural); ?>" 
@@ -99,15 +105,14 @@ if(!$incremental) {
 									data-bs-toggle="modal" 
 									data-bs-target="#deleteLightboxItemModal"
 									onclick="document.getElementById('deleteLightboxItemId').value = document.getElementById('selection').value;"><?= _t("Delete selected"); ?></button></li>
-<?php } ?>
+	<?php } ?>
 						</ul>
 					</div>
-
+<?php } ?>
 					<button type="button" id="select-all-btn" class="btn btn-white btn-sm" onclick="toggleSelectAll()" data-state="select">
 						<i class="bi bi-check-circle-fill"></i> <?= _t("Select All"); ?>
 					</button>
 
-					<!--<button type="button" class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#lightboxAccessModal"><i class="bi bi-people-fill"></i> <?= _t("Access"); ?></button>-->
 					<div class="btn-group" role="group">
 						<button id="btnGroupDownload" type="button" class="btn btn-white btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
 						  <i class="bi bi-download"></i> <?= _t("Download"); ?>
@@ -120,10 +125,10 @@ if(!$incremental) {
 <?php } ?>
 						</ul>
 					</div>
+<?php if($can_edit) { ?>
 					<button type="button" class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#editLightboxModal"><i class="bi bi-pencil-square"></i> <?= _t("Edit"); ?></button>
-<?php
-					if($can_delete) {
-?>
+<?php } ?>
+<?php if($can_delete) { ?>
 						<button 
 							class="btn btn-white btn-sm" 
 							data-bs-toggle="modal" 
@@ -132,16 +137,12 @@ if(!$incremental) {
 						>
 							<i class="bi bi-trash3"></i> <?= _t("Delete"); ?>
 						</button>
-<?php
-					}
-
-					
-					?>		
-					<!--  TODO: If user can share -->
+<?php } ?>
+<?php if($can_edit) { ?>
 						<button type="button" class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#lightboxAccessModal">
 							<i class="bi bi-share"></i> <?= _t("Share"); ?>
 						</button>
-
+<?php } ?>
 					</div><!-- end btn group -->
 			</div>
 		</div>
@@ -151,7 +152,7 @@ if(!$incremental) {
 	
 		<div class="row">
 			<div class="col-md-12 col-lg-4">
-				<form role="search" id="searchWithin" hx-post="<?= caNavUrl($this->request, '', '*', 'Search', ['t' => 'ca_objects', 'id' => (int)$set_id]); ?>" hx-target="#lightboxContent" hx-swap="innerHTML">
+				<form role="search" id="searchWithin" hx-post="<?= caNavUrl($this->request, '', '*', "Search/{$set_id}", ['t' => 'ca_objects']); ?>" hx-target="#lightboxContent" hx-swap="innerHTML">
 					<div class="input-group">
 						<label for="search-within" class="form-label visually-hidden"><?= _t('Search within'); ?></label>
 						<input name="search" id="search-within" type="text" class="form-control rounded-0 border-end-0" placeholder="<?= _t('Search within...'); ?>" value="<?= $this->getVar('search'); ?>">
@@ -163,8 +164,6 @@ if(!$incremental) {
 			</div>
 			<div class="col-md-12 col-lg-8 text-lg-end pt-2 mt-lg-0">
 				<ul class="list-group list-group-horizontal justify-content-lg-end small">
-
-
 <?php 
 				if(sizeof($sorts) > 0) { ?>
 					<li class='list-group-item border-0 px-0 pt-1'>
@@ -178,7 +177,7 @@ if(!$incremental) {
 ?>
 							<li class='list-inline-item me-1'><?= $sort; ?></li>
 <?php						
-						}else{
+						} else {
 ?>
 							<li class='list-inline-item me-1'>
 								<a href="#" 
@@ -211,57 +210,57 @@ if(!$incremental) {
 						</ul>
 					</li>
 <?php
-		}
-		if(sizeof($configured_modes) > 0){
-?>			
-			<li class='list-group-item border-0 px-0 pt-0'>
-				<ul class='list-inline p-0 ms-lg-3'>
-<?php
-				foreach($configured_modes as $view_mode => $view_mode_info) {
-					print "<li class='list-inline-item me-1'>";
-					if ($view_mode === $current_view_mode) {
-						print '<button class="btn btn-dark btn-sm disabled" aria-label="'.$view_mode_info['display_name'].'"  title="'.$view_mode_info['display_name'].'">'.$view_mode_info['display_icon'].'</button>';
-					} else {
-?>
-						<a href="#" class="btn btn-light btn-sm"
-								 hx-post="<?= caNavUrl($this->request, '*', '*', 'Detail/'.$set_id, ['mode' => $view_mode]); ?>" 
-								 hx-trigger="click" 
-								 hx-target="#lightboxContent" 
-								 hx-swap="innerHTML" 
-								 title="<?= $view_mode_info['display_name']; ?>" 
-								 aria-label="<?= $view_mode_info['display_name']; ?>">
-									<?= $view_mode_info['display_icon']; ?>
-								</a>
-<?php
-
-					}
-					print "</li>\n";
 				}
-?>						
-				</ul>
-			</li>
+				if(sizeof($configured_modes) > 0){
+?>			
+					<li class='list-group-item border-0 px-0 pt-0'>
+						<ul class='list-inline p-0 ms-lg-3'>
+		<?php
+						foreach($configured_modes as $view_mode => $view_mode_info) {
+							print "<li class='list-inline-item me-1'>";
+							if ($view_mode === $current_view_mode) {
+								print '<button class="btn btn-dark btn-sm disabled" aria-label="'.$view_mode_info['display_name'].'"  title="'.$view_mode_info['display_name'].'">'.$view_mode_info['display_icon'].'</button>';
+							} else {
+		?>
+								<a href="#" class="btn btn-light btn-sm"
+										 hx-post="<?= caNavUrl($this->request, '*', '*', 'Detail/'.$set_id, ['mode' => $view_mode]); ?>" 
+										 hx-trigger="click" 
+										 hx-target="#lightboxContent" 
+										 hx-swap="innerHTML" 
+										 title="<?= $view_mode_info['display_name']; ?>" 
+										 aria-label="<?= $view_mode_info['display_name']; ?>">
+											<?= $view_mode_info['display_icon']; ?>
+										</a>
+		<?php
+		
+							}
+							print "</li>\n";
+						}
+		?>						
+							</ul>
+						</li>
 <?php
-	}
+				}
 ?>	
 
 					</ul><!-- end list group -->
 				</div><!-- end col -->
 			</div><!-- end row -->
-<?php if($search){ ?>
+	<?php if($search){ ?>
 			<div class="row">
 				<div class="col">		
 					<div id="clearSearch" class="py-2 display-inline"><button 
-							hx-post="<?= caNavUrl($this->request, '', 'Lightbox', 'Detail/'.(int)$set_id); ?>" 
+							hx-post="<?= caNavUrl($this->request, '', 'Lightbox', 'Detail/'.$set_id); ?>" 
 							hx-target="#lightboxContent" 
 							hx-trigger="click" 
 							hx-swap="innerHTML"
 							class="btn btn-light" 
 							type="button">
-							<?php print _t("%1 %2 for <i>%3</i>", $total, (($total == 1) ? _t("result") : _t("results")), $search); ?> <i class="ms-1 bi bi-x-circle" aria-label="remove"></i>
+							<?= _t("%1 %2 for <i>%3</i>", $total, (($total == 1) ? _t("result") : _t("results")), $search); ?> <i class="ms-1 bi bi-x-circle" aria-label="remove"></i>
 					</button></div>
 				</div><!-- end col -->
 			</div><!-- end row -->
-<?php } ?>			
+	<?php } ?>			
 			<div class="row mt-2">
 <?php } ?> <!-- end if incremental -->
 <?= $this->render($configured_modes[$current_view_mode]['view']);   ?>
@@ -286,7 +285,7 @@ if (typeof selectionListInput === 'undefined') {
 	function updateSelectionList() {
 		selectionListInput.value = selectionList.join(';');
 		omitSelectionListInput.value = omitSelectionList.join(';');
-		actionsDropdown.classList.toggle('d-none', selectionList.length === 0); // Show or hide Actions dropdown
+		if(actionsDropdown) { actionsDropdown.classList.toggle('d-none', selectionList.length === 0); } // Show or hide Actions dropdown
 	}
 	
 	function toggleSelection(id) {

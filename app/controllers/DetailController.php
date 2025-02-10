@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2024 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -61,11 +61,8 @@ class DetailController extends FindController {
 	
 	# -------------------------------------------------------
 	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+		$this->dont_require_login = true;
 		parent::__construct($po_request, $po_response, $pa_view_paths);
-		
-		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-		}
 		
 		$this->view->setVar("access_values", $this->opa_access_values);
  			
@@ -136,12 +133,16 @@ class DetailController extends FindController {
 		if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($load_params, ['returnAs' => 'firstModelInstance'])))) {
 			// invalid id - throw error
 			throw new ApplicationException("Invalid id");
-		} 
+		}
 		$t_subject->autoConvertLineBreaks(true);
 		
-		
 		$item_is_in_users_lightbox = caItemIsInUserLightbox($t_subject, $this->request->getUserID());
+		$access_is_anonymous = caItemAccessIsAnonymous($t_subject);
 		$this->view->setVar('itemIsInUsersLightbox', $item_is_in_users_lightbox);
+	
+		if (!$item_is_in_users_lightbox && $this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
+			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+		}
 		
 		$ps_view = $this->request->getParameter('view', pString);
 		if($ps_view === 'pdf') {
@@ -408,118 +409,58 @@ class DetailController extends FindController {
 			}
 		}
 		
-		// Filtering of related items
-		if (($t_subject->tableName() != 'ca_objects') && (!$this->opa_detail_types[$function]['disableRelatedItemsBrowse'])) {
-			$class = 'ca_objects';
-			$o_browse = caGetBrowseInstance($class);
-			if ($ps_cache_key = $this->request->getParameter('key', pString)) {
-				$o_browse->reload($ps_cache_key);
-			} else {
-				$o_browse->addCriteria("collection_facet", $t_subject->getPrimaryKey() ); 
-				$ps_cache_key = $o_browse->getBrowseID();
-			}
-			$o_browse->execute();
-			
-			$this->view->setVar('key', $o_browse->getBrowseID());
-			$this->view->setVar('browse', $o_browse);
-			//
-			// Facets
-			//
-			if ($facet_group = caGetOption('facetGroup', $browse_info, null)) {
-				$o_browse->setFacetGroup($facet_group);
-			}
-		
-			$o_browse->execute();
-			$available_facet_list = caGetOption('availableFacets', $browse_info, null);
-			$facets = $o_browse->getInfoForAvailableFacets();
-			foreach($facets as $facet_name => $facet_info) {
-				if(isset($base_criteria[$facet_name])) { continue; } // skip base criteria 
-				$facets[$facet_name]['content'] = $o_browse->getFacet($facet_name, array("checkAccess" => $this->opa_access_values, 'checkAvailabilityOnly' => caGetOption('deferred_load', $facet_info, false, array('castTo' => 'bool'))));
-			}
-			$this->view->setVar('facets', $facets);
-	
-			$this->view->setVar('key', $key = $o_browse->getBrowseID());
-		
-			Session::setVar($function.'_last_browse_id', $key);
-		
-		
-			// remove base criteria from display list
-			if (is_array($base_criteria)) {
-				foreach($base_criteria as $base_facet => $criteria_value) {
-					unset($criteria[$base_facet]);
-				}
-			}
-			$criteria = $o_browse->getCriteriaWithLabels();
-		
-			$criteria_for_display = array();
-			foreach($criteria as $facet_name => $criterion) {
-				$facet_info = $o_browse->getInfoForFacet($facet_name);
-				foreach($criterion as $vn_criterion_id => $criterion) {
-					$criteria_for_display[] = array('facet' => $facet_info['label_singular'], 'facet_name' => $facet_name, 'value' => $criterion, 'id' => $vn_criterion_id);
-				}
-			}
-			$this->view->setVar('criteria', $criteria_for_display);
-			
-			$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', $function);
-			$o_rel_context->setParameter('key', $key);
-			$o_rel_context->setAsLastFind(true);
-			
-			$qr_rel_res = $o_browse->getResults();
-			$o_rel_context->setResultList($qr_rel_res->getPrimaryKeyValues(1000));
-			
-			$o_rel_context->saveContext();
-		}
-		
 		//
 		// comments, tags, rank
 		//
-		$this->view->setVar('commentsEnabled', (bool)$options['enableComments']);
-		
-		if ((bool)$options['enableComments']) {
-			$this->view->setVar('averageRank', $t_subject->getAverageRating(true));
-			$this->view->setVar('numRank', $t_subject->getNumRatings(true));
-		
-			#
-			# User-generated comments, tags and ratings
-			#
-			$user_comments = $t_subject->getComments(null, true);
-			$comments = array();
-			if (is_array($user_comments)) {
-				foreach($user_comments as $user_comment){
-					if($user_comment["comment"] || $user_comment["media1"] || $user_comment["media2"] || $user_comment["media3"] || $user_comment["media4"]){
-						# TODO: format date based on locale
-						$user_comment["date"] = date("n/j/Y", $user_comment["created_on"]);
-					
-						# -- get name of commenter
-						if($user_comment["user_id"]){
-							$t_user = new ca_users($user_comment["user_id"]);
-							$user_comment["author"] = $t_user->getName();
-						}elseif($user_comment["name"]){
-							$user_comment["author"] = $user_comment["name"];
+		if($access_is_anonymous) {
+			$this->view->setVar('commentsEnabled', (bool)$options['enableComments']);
+			
+			if ((bool)$options['enableComments']) {
+				$this->view->setVar('averageRank', $t_subject->getAverageRating(true));
+				$this->view->setVar('numRank', $t_subject->getNumRatings(true));
+			
+				#
+				# User-generated comments, tags and ratings
+				#
+				$user_comments = $t_subject->getComments(null, true);
+				$comments = array();
+				if (is_array($user_comments)) {
+					foreach($user_comments as $user_comment){
+						if($user_comment["comment"] || $user_comment["media1"] || $user_comment["media2"] || $user_comment["media3"] || $user_comment["media4"]){
+							# TODO: format date based on locale
+							$user_comment["date"] = date("n/j/Y", $user_comment["created_on"]);
+						
+							# -- get name of commenter
+							if($user_comment["user_id"]){
+								$t_user = new ca_users($user_comment["user_id"]);
+								$user_comment["author"] = $t_user->getName();
+							}elseif($user_comment["name"]){
+								$user_comment["author"] = $user_comment["name"];
+							}
+							$comments[] = $user_comment;
 						}
-						$comments[] = $user_comment;
 					}
 				}
-			}
-			$this->view->setVar('comments', $comments);
-		
-		
-			$user_tags = $t_subject->getTags(null, true);
-			$tags = array();
-		
-			if (is_array($user_tags)) {
-				foreach($user_tags as $user_tag){
-					if(!in_array($user_tag["tag"], $tags)){
-						$tags[] = $user_tag["tag"];
+				$this->view->setVar('comments', $comments);
+			
+			
+				$user_tags = $t_subject->getTags(null, true);
+				$tags = array();
+			
+				if (is_array($user_tags)) {
+					foreach($user_tags as $user_tag){
+						if(!in_array($user_tag["tag"], $tags)){
+							$tags[] = $user_tag["tag"];
+						}
 					}
 				}
+				$this->view->setVar('tags_array', $tags);
+				$this->view->setVar('tags', implode(", ", $tags));
+			
+				$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_subject->getPrimaryKey(), $t_subject, $comments, $tags));
+			} else {
+				$this->view->setVar("itemComments", '');
 			}
-			$this->view->setVar('tags_array', $tags);
-			$this->view->setVar('tags', implode(", ", $tags));
-		
-			$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_subject->getPrimaryKey(), $t_subject, $comments, $tags));
-		} else {
-			$this->view->setVar("itemComments", '');
 		}
 		
 		//

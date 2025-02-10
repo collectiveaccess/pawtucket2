@@ -124,7 +124,6 @@ function caGetLightboxesForItem(BaseModel $t_subject) {
 	$sets = caExtractValuesByUserLocale($sets);
 	return $sets;
 }
-
 # ---------------------------------------
 /**
  *
@@ -133,14 +132,50 @@ function caItemIsInUserLightbox(BaseModel|SearchResult $t_subject, ?int $user_id
 	$t_set = new ca_sets();
 	$item_set_ids = $t_set->getSetIDsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), []);
 	
-	$user_set_ids = caGetLightboxesForUser($user_id, null, ['idsOnly' => true]);
-	if(!is_array($user_set_ids))  { return false; }
-	if(sizeof(array_intersect($item_set_ids, $user_set_ids)) > 0) {
-		return true;
+	if($user_id) {
+		$user_set_ids = caGetLightboxesForUser($user_id, null, ['idsOnly' => true]);
+		if(!is_array($user_set_ids))  { return false; }
+		if(sizeof(array_intersect($item_set_ids, $user_set_ids)) > 0) {
+			return true;
+		}
+	}
+	$anonymous_sets = Session::getVar('anonymous_sets') ?? [];
+	if(is_array($anonymous_sets) && sizeof($anonymous_sets) && sizeof($set_ids = array_intersect($item_set_ids, array_keys($anonymous_sets))) > 0) {
+		$set_id = array_shift($set_ids);
+		$guid = $anonymous_sets[$set_id] ?? null;
+		$d = caGetEffectiveDateForAnonymousAccessToken($guid);
+		return !strlen($d) || caDateIsCurrent($d);
 	}
 	return false;
 }
-
+# ---------------------------------------
+/**
+ *
+ */
+function caItemAccessIsAnonymous($t_subject, ?array $options=null) {
+	return caItemIsInUserLightbox($t_subject, null, $options);	
+}
+# ---------------------------------------
+/**
+ *
+ */
+function caGetEffectiveDateForAnonymousAccessToken(string $guid, ?array $options=null) {
+	if(caIsGuid($guid) && ($t_token = ca_sets_x_anonymous_access::findAsInstance(['guid' => $guid]))) {
+		return $t_token->get('ca_sets_x_anonymous_access.effective_date');
+	}
+	return false;
+}
+# ---------------------------------------
+/**
+ *
+ */
+function caAccessToLightboxIsAnonymous($set_id, ?array $options=null) {
+	$anonymous_sets = Session::getVar('anonymous_sets') ?? [];
+	if(is_array($anonymous_sets) && sizeof($anonymous_sets) && isset($anonymous_sets[$set_id])) {
+		return !strlen($anonymous_sets[$set_id]) || caDateIsCurrent($anonymous_sets[$set_id]);
+	}
+	return false;
+}
 # ---------------------------------------
 /**
  *

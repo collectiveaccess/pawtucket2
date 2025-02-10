@@ -1034,7 +1034,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 */
 	public function haveAccessToSet($user_id, $access, $set_id=null, $options=null) {
 		if(!$set_id) { $set_id = $this->getPrimaryKey(); }
-		return array_shift($this->haveAccessToSets($user_id, $access, [$set_id], $options));
+		
+		$levels = $this->haveAccessToSets($user_id, $access, [$set_id], $options);
+		return is_array($levels) ? array_shift($levels) : false;
 	}
 	# ------------------------------------------------------
 	/**
@@ -1048,7 +1050,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *
 	 * @return array Array of access levels, keyed on set_id
 	 */
-	public function haveAccessToSets(int $user_id, int $access, ?array $set_ids, ?array $options=null) {
+	public function haveAccessToSets(?int $user_id, int $access, ?array $set_ids, ?array $options=null) {
+		if(!$user_id) { return false; }
 		if(is_array($set_ids)) {
 			$set_ids = array_filter($set_ids, function($v) { return (bool)$v; });
 		}
@@ -3427,7 +3430,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		}
 		return null;
 	}
-		# ------------------------------------------------------------------
+	# ------------------------------------------------------------------
 	# Anonymous access
 	# ------------------------------------------------------------------
 	/**
@@ -3617,6 +3620,26 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			}
 		}
 		return true;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Load get using anonymous access token 
+	 *
+	 * @return ca_set
+	 */ 
+	public static function getSetByAnonymousAccessToken(string $guid) : ?ca_sets {
+		if(caIsGuid($guid) && ($t_token = ca_sets_x_anonymous_access::findAsInstance(['guid' => $guid]))) {
+			$date = $t_token->get('ca_sets_x_anonymous_access.effective_date');
+			if($date) {
+				$ts = caDateToUnixTimestamps($date);
+				$t = time();
+				if(is_array($ts) && !(($ts['start'] <= $t) && ($ts['end'] >= $t))) {
+					return null;
+				}
+			}
+			return ca_sets::findAsInstance(['set_id' => $t_token->get('set_id')]);
+		}
+		return null;
 	}
 	# ------------------------------------------------------------------		
 	/**

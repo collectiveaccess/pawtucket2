@@ -2024,6 +2024,24 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ---------------------------------------
 	/**
+	  * Returns true if date expression is a current date
+	  *
+	  * @param string $date_expression Date expression
+	  * @return bool True if expression encompasses current date
+	  */
+	function caDateIsCurrent($date_expression) : bool {
+		if($date_expression) {
+			$ts = caDateToUnixTimestamps($date_expression);
+			$t = time();
+			if(is_array($ts) && (($ts['start'] <= $t) && ($ts['end'] >= $t))) {
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
+	# ---------------------------------------
+	/**
 	 *
 	 */
 	function caSeemsUTF8($str){
