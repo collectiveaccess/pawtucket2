@@ -135,7 +135,7 @@
 				print "<div class='unit'><b>Source</b><br/>".$vs_source."</div>";
 			}						
 			if ($va_rights_array = $t_object->get('ca_objects.rightsList', array('returnWithStructure' => true))) {
-				$t_rights_list = new ca_lists();
+				$t_list = new ca_lists();
 				$vn_nysa_id = $t_list->getItemIDFromList("rightsType", "NYSArights");
 				$vn_nonnysa_id = $t_list->getItemIDFromList("rightsType", "nonNYSArights");
 				foreach ($va_rights_array as $va_key => $va_rights_array_t) {

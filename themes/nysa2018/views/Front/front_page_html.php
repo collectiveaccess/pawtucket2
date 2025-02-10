@@ -44,7 +44,8 @@
 	<div class="row">
 		<div class="col-sm-8">
 			<h2>Welcome to the Digital Collections!</h2>
-			<p>{{{homePageText}}}</p>
+			<!---JB Edit: Added reference and link to harmful language statement--->
+			<p>Some content may contain outdated and offensive terminology. See: <a href="http://www.archives.nysed.gov/research/statement-on-language-in-description" target="_blank">New York State Archives Statement on Harmful Language in Descriptive Resources</p>
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">
 			
