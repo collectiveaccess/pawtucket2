@@ -46,16 +46,20 @@
 		while($qr_res->nextHit()){
 			if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>', array("checkAccess" => $va_access_values))){
 				if($vn_col == 0){
-					print "<div class='row'>";
+					print "<div class='row lessGutter'>";
 				}
 					
-				print "<div class='col-sm-6 col-md-4'><div class='resultTile'>".$vs_media;
+				print "<div class='col-sm-4 col-md-4'><div class='resultTile'>".$vs_media;
 				$vs_caption = $qr_res->getWithTemplate("<l><div class='caption'>".$vs_caption_template."</div></l>");
 				if($vs_caption){
 					print $vs_caption;
 				}
-				$vs_add_to_set_link = "<a href='#' class='setLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
-				print "<div class='tools'>".$vs_add_to_set_link."<div class='identifier'>".$qr_res->getWithTemplate("<l>^ca_objects.idno</l>")."</div></div>";
+				$vs_add_to_set_link = "<a href='#' class='setLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array("front" => "1", "object_id" => $qr_res->get("ca_objects.object_id")))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+				$vs_idno_link = "";
+				if($vs_tmp = $qr_res->getWithTemplate("<ifdef code='ca_objects.idno'>^ca_objects.idno%truncate=15&ellipsis=1</ifdef>")){
+					$vs_idno_link = caDetailLink($this->request, $vs_tmp, '', "ca_objects", $qr_res->get("ca_objects.object_id"), array(), array("aria-label" => "Record Identifier"));
+				}
+				print "<div class='tools'>".$vs_add_to_set_link."<div class='identifier'>".$vs_idno_link."</div></div>";
 				print "</div></div>";
 				$vb_item_output = true;
 				$i++;
