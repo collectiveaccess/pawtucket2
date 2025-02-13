@@ -76,8 +76,6 @@ if(!$incremental) {
 		<!-- Confirm lightbox item(s) delete modal -->
 		<?= $this->render("Lightbox/confirm_delete_lightbox_item_form_html.php"); ?>
 
-		<!-- Confirm lightbox item(s) delete modal -->
-		<?= $this->render("Lightbox/lightbox_access_form_html.php"); ?>
 	<!-- END Modals -->
 
 	

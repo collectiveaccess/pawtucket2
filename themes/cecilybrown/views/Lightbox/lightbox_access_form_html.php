@@ -36,7 +36,7 @@ $addUrl = caNavUrl($this->request, '*', '*', 'AddAnonymousAccess', ['id' => $set
   <div class="modal-dialog modal-lg">
 	<div class="modal-content">
 	  <div class="modal-header">
-		<h1 class="modal-title fs-3" id="lightboxAccessModalLabel"><?= _t('Share'); ?></h1>
+		<h1 class="modal-title fs-3" id="lightboxAccessModalLabel"><?= _t('Sharing'); ?></h1>
 		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= _t('Close'); ?>"></button>
 	  </div>
 	  <div class="modal-body">
@@ -44,14 +44,24 @@ $addUrl = caNavUrl($this->request, '*', '*', 'AddAnonymousAccess', ['id' => $set
 		<form id="accessForm">
 			<!-- Name the URL -->
 			<div class="mb-3">
-				<label for="urlName" class="form-label"><?= _t('Name'); ?></label>
+				<label for="urlName" class="form-label z-3">
+					<?= _t('Sharing Name'); ?>
+				</label>
 				<input name="urlName" type="text" class="form-control" id="urlName" placeholder="Enter a name for the URL">
+				<div id="urlNameHelp" class="form-text">
+					<?= _t('Enter a descriptive name for the URL. This name will be used when tracking use of the URL.'); ?>
+				</div>
 			</div>
 
 			<!-- Date Picker -->
 			<div class="mb-3">
-				<label for="expirationDate" class="form-label"><?= _t('Expiration Date'); ?> (<?= _t('Optional'); ?>)</label>
+				<label for="c" class="form-label z-3">
+					<?= _t('Date Available'); ?> (<?= _t('Optional'); ?>)
+				</label>
 				<input name="expirationDate" type="text" class="form-control" id="expirationDate">
+				<div id="expirationDateHelp" class="form-text">
+					<?= _t('Choose an optional date range for the availability of URL.'); ?>
+				</div>
 			</div>
 
 			<!-- Add URL -->
@@ -66,7 +76,10 @@ $addUrl = caNavUrl($this->request, '*', '*', 'AddAnonymousAccess', ['id' => $set
         </form>
 
         <!-- Shared URLs List -->
-        <h5 class="mt-4"><?= _t('Shared Links'); ?></h5>
+		<h5 class="mt-4"><?= _t('Share Links'); ?></h5>
+		<div class="form-text mb-2">
+			<?= _t('Anyone with a link can view the contents of the lightbox.'); ?>
+		</div>
 		<?= $this->render('Lightbox/anonymous_access_list_html.php'); ?>
 
 	  </div>
@@ -78,13 +91,17 @@ $addUrl = caNavUrl($this->request, '*', '*', 'AddAnonymousAccess', ['id' => $set
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+document.body.addEventListener("htmx:afterSwap", () => {
     document.querySelectorAll(".copyButton").forEach(button => {
-        button.addEventListener("click", function () {
-            const url = this.previousElementSibling.href; // Get URL from the <a> tag
-            navigator.clipboard.writeText(url).catch(err => console.error("Copy failed:", err));
-        });
+        button.onclick = () => {
+            let url = button.closest("td").querySelector("a")?.href;
+            if (url) {
+                navigator.clipboard.writeText(url).then(() => {
+                    button.innerHTML = '<i class="bi bi-clipboard-check"></i>';
+                    setTimeout(() => button.innerHTML = '<i class="bi bi-clipboard"></i>', 2000);
+                });
+            }
+        };
     });
 });
-
 </script>

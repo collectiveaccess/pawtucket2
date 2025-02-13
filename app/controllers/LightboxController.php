@@ -85,6 +85,11 @@ class LightboxController extends FindController {
 	 * @throws ApplicationException
 	 */
 	public function __construct($request, $response, $view_paths=null) {
+		// Catch disabled lightbox
+		if ($request->config->get('disable_lightbox')) {
+			throw new ApplicationException('Lightbox is not enabled');
+		}
+		
 		if (!($request->isLoggedIn())) {
 			// Is this anonymous access?
 			$anonymous_sets = Session::getVar('anonymous_sets') ?? [];
@@ -97,6 +102,8 @@ class LightboxController extends FindController {
 					($t_set = ca_sets::getSetByAnonymousAccessToken($guid))
 				)
 			) {
+				// Anonymous access to set is set up here
+				
 				$this->anonymous_set = $t_set;
 				$this->dont_require_login = true;
 				
@@ -111,11 +118,6 @@ class LightboxController extends FindController {
 		
 		parent::__construct($request, $response, $view_paths);
 
-		// Catch disabled lightbox
-		if ($this->request->config->get('disable_lightbox')) {
-			throw new ApplicationException('Lightbox is not enabled');
-		}
-		
 		$t_user_groups = new ca_user_groups();
 		$this->user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
 		$this->view->setVar("user_groups", $this->user_groups);
@@ -910,6 +912,11 @@ class LightboxController extends FindController {
 		$expirationDate = $this->request->getParameter('expirationDate', pString);
 
 		$t_set = ca_sets::findAsInstance($id);
+		
+		if(!$t_set->haveAccessToSet($user_id = $this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+			throw new ApplicationException(_t('No access to set'));
+		}
+		
 		$this->view->setVar('t_set', $t_set);
 
 		$new_token = [
@@ -919,14 +926,34 @@ class LightboxController extends FindController {
 		];
 
 		$success = $t_set->addAnonymousAccessTokens([$new_token]);
+		
+		$log = caGetAccessLogger();
 
 		// If successful, refresh the shared links list
 		if ($success) {
-			$this->render("Lightbox/anonymous_access_list_html.php");
+			$this->view->setVar('success_message', 'New share link added');
+			
+			$log->logJSON('AddAnonymousAccess', [
+				'user' => $this->request->user->get('user_name'),
+				'name' => $name,
+				'expirationDate' => $expirationDate,
+				'message' => 'New share link added',
+			], 'INFO');
+			
 		} else {
-			echo "Error adding new token";
+			// echo "Error adding new token";
+			$this->view->setVar('error_message', 'Error adding new token');
+
+			$log->logJSON('AddAnonymousAccess', [
+				'user' => $this->request->user->get('user_name'),
+				'name' => $name,
+				'expirationDate' => $expirationDate,
+				'message' => 'Error adding new token',
+			], 'ERR');
 		}
+		$this->render("Lightbox/anonymous_access_list_html.php");
 	}
+
 	# -------------------------------------------------------
 	/**
 	 *
@@ -935,17 +962,45 @@ class LightboxController extends FindController {
 		$id = $this->request->getParameter('id', pInteger);
 		$guid = $this->request->getParameter('guid', pString);
 
+		// TODO: pass name and expiration in the request for logging purposes
+		$name = $this->request->getParameter('urlName', pString);
+		$expirationDate = $this->request->getParameter('expirationDate', pString);
+
+
 		$t_set = ca_sets::findAsInstance($id);
+
+		if(!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+			throw new ApplicationException(_t('No access to set'));
+		}
+
 		$this->view->setVar('t_set', $t_set);
 
 		$success = $t_set->removeAnonymousAccessTokens([$guid]);
 
+		$log = caGetAccessLogger();
+
 		// If successful, refresh the shared links list
 		if ($success) {
-			$this->render("Lightbox/anonymous_access_list_html.php");
+			$this->view->setVar('success_message', 'Share link removed');
+
+			$log->logJSON('RemoveAnonymousAccess', [
+				'user' => $this->request->user->get('user_name'),
+				'name' => $name,
+				'expirationDate' => $expirationDate,
+				'message' => 'Share link removed',
+			], 'INFO');
 		} else {
-			echo "Error removing token";
+			// echo "Error removing token";
+			$this->view->setVar('error_message', 'Error removing token');
+
+			$log->logJSON('RemoveAnonymousAccess', [
+				'user' => $this->request->user->get('user_name'),
+				'name' => $name,
+				'expirationDate' => $expirationDate,
+				'message' => 'Error removing token',
+			], 'ERR');
 		}
+		$this->render("Lightbox/anonymous_access_list_html.php");
 	}
 	# -------------------------------------------------------
 }

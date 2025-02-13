@@ -139,10 +139,22 @@ class DetailController extends FindController {
 		$item_is_in_users_lightbox = caItemIsInUserLightbox($t_subject, $this->request->getUserID());
 		$access_is_anonymous = caItemAccessIsAnonymous($t_subject);
 		$this->view->setVar('itemIsInUsersLightbox', $item_is_in_users_lightbox);
+
+		$log = caGetAccessLogger();
+		
+		if($access_is_anonymous) {
+			// do logging
+			$log->logJSON('Access is anonymous', [
+				'user' => $this->request->user->get('user_name'),
+				'message' => 'Accessis anonymous',
+			], 'INFO');
+		
+		}
 	
 		if (!$item_is_in_users_lightbox && $this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
 			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
 		}
+
 		
 		$ps_view = $this->request->getParameter('view', pString);
 		if($ps_view === 'pdf') {
@@ -489,7 +501,7 @@ class DetailController extends FindController {
 		}
 
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
-		$this->view->setVar('inquireEnabled', (bool)$options['enableInquire']);
+		$this->view->setVar('inquireEnabled', (!$access_is_anonymous) && (bool)$options['enableInquire']);
 		$this->view->setVar('copyLinkEnabled', (bool)$options['enableCopyLink']);
 		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]);
 		$this->render($path);
