@@ -26,6 +26,20 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 .btn.disabled{
 	border-color:transparent;
 }
+.readMore{
+	max-height:3rem;
+	overflow:hidden;
+}
+.readMoreExpanded{
+	max-height:100% !important;
+}
+.readMoreButton::after {
+  content: "Read More";
+}
+.readMoreButton.readMoreButtonExpanded::after {
+  content: "Read Less";
+}
+
 /* ------------------------- Navbar ------------------------- */
 .navbar-brand{
 	width:200px;
