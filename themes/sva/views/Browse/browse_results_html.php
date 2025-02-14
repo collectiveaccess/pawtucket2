@@ -165,6 +165,23 @@ if (!$vb_ajax) {	// !ajax
 			</div>
 		</div>
 <?php				
+		# --- output intro for browse - global values - if this is not a set search
+		$intro = "";
+		if(!$search_set_id){
+			switch($vs_table){
+				case "ca_objects":
+					$intro = $this->getVar("objects_browse_intro");
+				break;
+				# ------------------------
+				case "ca_occurrences":
+					$intro = $this->getVar("exhibitions_browse_intro");
+				break;
+				# ------------------------
+			}
+		}
+		if($intro){
+			print "<div class='pt-2 pb-3'>".$intro."</div>";
+		}
 		if($vs_facet_description){
 			print "<div class='py-3'>".$vs_facet_description."</div>";
 		}

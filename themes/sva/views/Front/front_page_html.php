@@ -75,8 +75,13 @@
 		</div></div>
 <?php
 	}
-	print $this->render("Front/featured_set_grid_html.php");
 ?>
+	<div class="frontGrid px-5 bg-white py-5">
+<?php
+	print $this->render("Front/featured_set_grid_html.php");
+	print $this->render("Front/gallery_grid_html.php");
+?>
+	</div>
 <div class="container-xxl">
 	<div class="fade-out bg-black bg-opacity-25 text-bg-dark p-3 text-center shadow w-100 fixed-bottom display-4"><i class="bi bi-chevron-down"></i></div>
 </div>

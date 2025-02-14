@@ -154,7 +154,12 @@ if($show_nav){
 								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="events"><?= _t('Related Event'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="events"><?= _t('Related  Events'); ?></ifcount></dt>
 								<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="events"><dd><l>^ca_occurrences.preferred_labels</l></dd></unit>
 							</ifcount>
-							
+						<?php
+							if($copyright = $this->getVar("object_detail_copyright")){
+								print "<dt>"._t('Rights')."</dt>
+										<dd>".$copyright."</dd>";
+							}
+						?>
 						</dl>}}}
 						
 						
