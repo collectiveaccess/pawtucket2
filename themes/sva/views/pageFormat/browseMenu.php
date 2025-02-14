@@ -45,6 +45,10 @@
 						}
 					}
 ?>
+					<li>
+						<?= caNavlink($this->request, _t('Highlights'), "dropdown-item", "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
+					</li>
+					
 				</ul>	
 			</li>
 <?php				
