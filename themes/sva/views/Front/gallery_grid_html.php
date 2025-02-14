@@ -48,7 +48,7 @@
 		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
 		
 		$o_front_config = caGetFrontConfig();
-		$vs_front_page_set = $o_front_config->get('ca_objects_set_code');
+		$vs_front_page_set = $o_front_config->get('set_code');
 		$vb_omit_front_page_set = (bool)$o_config->get('omit_front_page_set_from_gallery');
 		foreach($va_sets as $vn_set_id => $va_set) {
 			if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
