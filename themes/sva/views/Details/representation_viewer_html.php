@@ -175,6 +175,7 @@ $subject = $this->getVar("subject");
 <script>
 	document.onreadystatechange = function() {
 		if (document.readyState === "complete") {
+			console.log(window.mediaViewerManagers);
 			window.mediaViewerManagers['mediaviewer'].setup();
 		}
 	};

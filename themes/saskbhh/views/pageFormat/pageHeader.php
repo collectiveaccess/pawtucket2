@@ -114,10 +114,10 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 		<div class="container-xl my-3">
 			<div class="row align-items-center">
 				<div class="col-9">
-					<?= caNavlink($this->request, _t("Bringing Heritage Home"), "text-secondary display-4 fw-medium text-decoration-none", "", "", ""); ?>
+					<?= caNavlink($this->request, _t("MAS Repatriation Portal"), "text-secondary display-4 fw-medium text-decoration-none", "", "", ""); ?>
 				</div>
 				<div class="col-3">
-					<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'MAS-LOGO.png', array("alt" => _t("Museum Association of Saskatechwan Logo"), "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
+					<a href="https://saskmuseums.org"><?= caGetThemeGraphic($this->request, 'MAS-LOGO.png', array("class" => "img-fluid", "alt" => _t("Museum Association of Saskatechwan Logo"), "role" => "banner")); ?>
 				</div>
 			</div>
 		</div>
@@ -136,7 +136,7 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<?= caNavlink($this->request, _t('About the Project'), "dropdown-item".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
+								<?= caNavlink($this->request, _t('About the Project'), "dropdown-item".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							<li>
 								<?= caNavlink($this->request, _t('How to Contribute'), "dropdown-item".((strToLower($this->request->getController()) == "contribute") ? " active" : ""), "", "Contribute", "Form", "", ((strToLower($this->request->getController()) == "contribute") ? array("aria-current" => "page") : null)); ?>

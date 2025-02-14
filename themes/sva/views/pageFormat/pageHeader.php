@@ -76,9 +76,6 @@ if($this->request->isLoggedIn()){
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">				
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Featured'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
-					</li>
-					<li class="nav-item">
 						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">

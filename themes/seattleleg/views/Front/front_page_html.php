@@ -72,13 +72,13 @@
 			
 			<div class="tileTextDescription">
 				<ul>
-					<li><?= caNavLink($this->request, _t("Combined Search"), "", "", "Search", "advanced/combined"); ?></li>
-					<li><?= caNavLink($this->request, _t("Ordinances / Council Bills"), "", "", "Search", "advanced/bills"); ?></li>
-					<li><?= caNavLink($this->request, _t("Resolutions"), "", "", "Search", "advanced/resolutions"); ?></li>
-					<li><?= caNavLink($this->request, _t("Clerk Files"), "", "", "Search", "advanced/clerk"); ?></li>
-					<li><?= caNavLink($this->request, _t("Committee History"), "", "", "Search", "advanced/committees"); ?></li>
-					<li><?= caNavLink($this->request, _t("Meeting History and Agendas"), "", "", "Search", "advanced/meetings"); ?></li>
-					<li><?= caNavLink($this->request, _t("Minutes"), "", "", "Search", "advanced/minutes"); ?></li>
+					<li class="py-1"><?= caNavLink($this->request, _t("Combined Search"), "", "", "Search", "advanced/combined"); ?></li>
+					<li class="py-1"><?= caNavLink($this->request, _t("Ordinances / Council Bills"), "", "", "Search", "advanced/bills"); ?></li>
+					<li class="py-1"><?= caNavLink($this->request, _t("Resolutions"), "", "", "Search", "advanced/resolutions"); ?></li>
+					<li class="py-1"><?= caNavLink($this->request, _t("Clerk Files"), "", "", "Search", "advanced/clerk"); ?></li>
+					<li class="py-1"><?= caNavLink($this->request, _t("Committee History"), "", "", "Search", "advanced/committees"); ?></li>
+					<li class="py-1"><?= caNavLink($this->request, _t("Meeting History and Agendas"), "", "", "Search", "advanced/meetings"); ?></li>
+					<li class="py-1"><?= caNavLink($this->request, _t("Minutes"), "", "", "Search", "advanced/minutes"); ?></li>
 				</ul>
 			</div>
 		</div>

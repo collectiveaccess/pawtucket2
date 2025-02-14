@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2024 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,75 +26,66 @@
  * ----------------------------------------------------------------------
  */
 
-$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
-$va_facets 			= $this->getVar('facets');				// array of available browse facets
-$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
-$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
-$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
-$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
-$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
-$vn_is_advanced		= (int)$this->getVar('is_advanced');
-$vb_showLetterBar	= (int)$this->getVar('showLetterBar');	
-$va_letter_bar		= $this->getVar('letterBar');	
-$vs_letter			= $this->getVar('letter');
-$vn_row_id 			= $this->request->getParameter('row_id', pInteger);
+	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
+	$va_facets 			= $this->getVar('facets');				// array of available browse facets
+	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
+	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
+	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
+	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
+	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
+	$vn_is_advanced		= (int)$this->getVar('is_advanced');
+	$vb_showLetterBar	= (int)$this->getVar('showLetterBar');	
+	$va_letter_bar		= $this->getVar('letterBar');	
+	$vs_letter			= $this->getVar('letter');
+	$vn_row_id 			= $this->request->getParameter('row_id', pInteger);
+	
+	$va_views			= $this->getVar('views');
+	$vs_current_view	= $this->getVar('view');
+	$va_view_icons		= $this->getVar('viewIcons');
+	
+	$vs_current_sort	= $this->getVar('sort');
+	$vs_sort_dir		= $this->getVar('sort_direction');
+	
+	$vs_table 			= $this->getVar('table');
+	$t_instance			= $this->getVar('t_instance');
+	
+	$vb_is_search		= ($this->request->getController() == 'Search');
 
-$va_views			= $this->getVar('views');
-$vs_current_view	= $this->getVar('view');
-$va_view_icons		= $this->getVar('viewIcons');
-
-$vs_current_sort	= $this->getVar('sort');
-$vs_sort_dir		= $this->getVar('sort_direction');
-
-$vs_table 			= $this->getVar('table');
-$t_instance			= $this->getVar('t_instance');
-
-$vb_is_search		= ($this->request->getController() == 'Search');
-
-$vn_result_size 	= $qr_res->numHits();
-
-
-$va_options			= $this->getVar('options');
-$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
-$vb_ajax			= (bool)$this->request->isAjax();
-$va_browse_info = $this->getVar("browseInfo");
-$o_config = $this->getVar("config");
-$va_export_formats = $this->getVar('export_formats');
-$va_browse_type_info = $o_config->get($va_browse_info["table"]);
-$va_all_facets = $va_browse_type_info["facets"];	
-$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-# --- are we searching by a set?  Linked to from Featured gallery
-$search_set_id = $search_set_title = $search_set_description = "";
-if (sizeof($va_criteria) > 0) {
-	foreach($va_criteria as $va_criterion) {
-		if($va_criterion['facet_name'] == "_search"){
-			if(str_contains($va_criterion['value'], "ca_sets.set_id:")){
-				$search_set_id = substr($va_criterion['value'], 15);
-				$t_set = new ca_sets($search_set_id);
-				$search_set_title = $t_set->get("ca_sets.preferred_labels");
-				$search_set_description = $t_set->get("ca_sets.set_description");
-			}
-		}
-	}
-}
+	$vn_result_size 	= $qr_res->numHits();
+	
+	
+	$va_options			= $this->getVar('options');
+	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
+	$vb_ajax			= (bool)$this->request->isAjax();
+	$va_browse_info = $this->getVar("browseInfo");
+	$o_config = $this->getVar("config");
+	$va_export_formats = $this->getVar('export_formats');
+	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
+	$va_all_facets = $va_browse_type_info["facets"];	
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+	
 if (!$vb_ajax) {	// !ajax
 ?>
 
 <div class="row" style="clear:both;">
-	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
+<?php
+	if($vs_table != "ca_entities"){
+?>
+		<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
+<?php
+	}else{
+?>
+		<div class='col-sm-12'>
+<?php		
+	}
+?>
 		<div class="row">
 			<div class="col-md-12 col-lg-5">
-				
+				<H1 class="text-capitalize fs-3">
 <?php
-					if($search_set_title){
-						print '<H1 class="text-capitalize">'.$search_set_title.'</H1>';
-						if($search_set_description){
-							print "<div class='fs-4 pb-3'>".$search_set_description."</div>";
-						}
-					}else{
-						print '<H1 class="text-capitalize fs-3">'._t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? (($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_PLURAL')) : (($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL'))).'</H1>';
-					}
+					print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? (($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_PLURAL')) : (($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL')));	
 ?>		
+				</H1>
 			</div>
 			<div class="col-md-12 col-lg-7 text-lg-end">
 				<ul class="list-group list-group-horizontal justify-content-lg-end small">
@@ -165,23 +156,6 @@ if (!$vb_ajax) {	// !ajax
 			</div>
 		</div>
 <?php				
-		# --- output intro for browse - global values - if this is not a set search
-		$intro = "";
-		if(!$search_set_id){
-			switch($vs_table){
-				case "ca_objects":
-					$intro = $this->getVar("objects_browse_intro");
-				break;
-				# ------------------------
-				case "ca_occurrences":
-					$intro = $this->getVar("exhibitions_browse_intro");
-				break;
-				# ------------------------
-			}
-		}
-		if($intro){
-			print "<div class='pt-2 pb-3'>".$intro."</div>";
-		}
 		if($vs_facet_description){
 			print "<div class='py-3'>".$vs_facet_description."</div>";
 		}
@@ -220,14 +194,17 @@ if (!$vb_ajax) {	// !ajax
 			</div><!-- end row -->
 		</div><!-- end browseResultsContainer -->
 	</div><!-- end col-8 -->
-	
+<?php
+	if($vs_table != "ca_entities"){
+?>	
 	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 offset-xl-1"><a name="filters"></a>
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
-	
-	
+<?php	
+	}
+?>
 </div><!-- end row -->
 
 <?php

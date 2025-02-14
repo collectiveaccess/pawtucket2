@@ -28,157 +28,162 @@
 $qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 $va_facets 			= $this->getVar('facets');				// array of available browse facets
 $va_criteria 		= $this->getVar('criteria');			// array of browse criteria
-$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
+$browse_key 		= $this->getVar('key');					// cache key for current browse
 $va_access_values 	= $this->getVar('access_values');		// list of access values for this user
-$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
-$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
-$vn_row_id		 	= (int)$this->getVar('row_id');			// id of last visited detail item so can load to and jump to that result - passed in back button
-$vb_row_id_loaded 	= false;
-if(!$vn_row_id){
-	$vb_row_id_loaded = true;
+$hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
+$start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
+$row_id		 	= (int)$this->getVar('row_id');			// id of last visited detail item so can load to and jump to that result - passed in back button
+$row_id_loaded 	= false;
+if(!$row_id){
+	$row_id_loaded = true;
 }
 	
 $va_views			= $this->getVar('views');
-$vs_current_view	= $this->getVar('view');
+$current_view	= $this->getVar('view');
 $va_view_icons		= $this->getVar('viewIcons');
-$vs_current_sort	= $this->getVar('sort');
+$current_sort	= $this->getVar('sort');
 
 $t_instance			= $this->getVar('t_instance');
-$vs_table 			= $this->getVar('table');
-$vs_pk				= $this->getVar('primaryKey');
+$table 			= $this->getVar('table');
+$pk				= $this->getVar('primaryKey');
 $va_access_values = caGetUserAccessValues($this->request);
 $o_config = $this->getVar("config");	
 
 $va_options			= $this->getVar('options');
-$va_view_info 		= $va_views[$vs_current_view];
+$va_view_info 		= $va_views[$current_view];
 
-$vb_ajax			= (bool)$this->request->isAjax();
+$ajax			= (bool)$this->request->isAjax();
 
 
 $va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
 $o_icons_conf = caGetIconsConfig();
 $va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
-if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
-	$vs_default_placeholder = "<div class='display-1 text-center d-flex bg-light ca-placeholder' aria-label='media placeholder image' aria-role='img'><i class='bi bi-card-image align-self-center w-100'></i></div>";
+if(!($default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+	$default_placeholder = "<div class='display-1 text-center d-flex bg-light ca-placeholder' aria-label='media placeholder image' aria-role='img'><i class='bi bi-card-image align-self-center w-100'></i></div>";
 }
-$vs_result_caption_template = caGetOption('result_caption', $va_view_info, null);
-$vs_image_format = caGetOption('image_format', $va_view_info, 'cover');
-$vs_image_class = "";
-if($vs_image_format == "contain"){
-	$vs_image_class = "card-img-top object-fit-contain px-3 pt-3 rounded-0";
+$result_caption_template = caGetOption('result_caption', $va_view_info, null);
+$image_format = caGetOption('image_format', $va_view_info, 'cover');
+$image_class = "";
+if($image_format == "contain"){
+	$image_class = "card-img-top object-fit-contain px-3 pt-3 rounded-0";
 }else{
-	$vs_image_class = "card-img-top object-fit-cover rounded-0";
+	$image_class = "card-img-top object-fit-cover rounded-0";
 }
-$vb_refine = false;
+$refine = false;
 if(is_array($va_facets) && sizeof($va_facets)){
-	$vb_refine = true;
+	$refine = true;
 }
-if ($vn_start < $qr_res->numHits()) {
-	$vn_c = 0;
-	$vn_results_output = 0;
-	$qr_res->seek($vn_start);
+if ($start < $qr_res->numHits()) {
+	$c = 0;
+	$results_output = 0;
+	$qr_res->seek($start);
 	
-	if ($vs_table != 'ca_objects') {
+	if ($table != 'ca_objects') {
 		$va_ids = array();
-		while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-			$va_ids[] = $qr_res->get($vs_pk);
-			$vn_c++;
+		while($qr_res->nextHit() && ($c < $hits_per_block)) {
+			$va_ids[] = $qr_res->get($pk);
+			$c++;
 		}
-		$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'medium', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+		$va_images = caGetDisplayImagesForAuthorityItems($table, $va_ids, array('version' => 'medium', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 	
-		$vn_c = 0;	
-		$qr_res->seek($vn_start);
+		$c = 0;	
+		$qr_res->seek($start);
 	}
 	
 	$t_list_item = new ca_list_items();
 	while($qr_res->nextHit()) {
-		if($vn_c == $vn_hits_per_block){
-			if($vb_row_id_loaded){
+		if($c == $hits_per_block){
+			if($row_id_loaded){
 				break;
 			}else{
-				$vn_c = 0;
+				$c = 0;
 			}
 		}
-		$vn_id = $qr_res->get("{$vs_table}.{$vs_pk}");
-		if($vn_id == $vn_row_id){
-			$vb_row_id_loaded = true;
+		$id = $qr_res->get("{$table}.{$pk}");
+		if($id == $row_id){
+			$row_id_loaded = true;
 		}
 		
 		# --- check if this result has been cached
 		# --- key is MD5 of table, id, list, refine(vb_refine)
-		$vs_cache_key = md5($vs_table.$vn_id."images".$vb_refine);
-		if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
-			print ExternalCache::fetch($vs_cache_key, 'browse_result');
+		$cache_key = md5($table.$id."images".$refine);
+		if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($cache_key,'browse_result')){
+			print ExternalCache::fetch($cache_key, 'browse_result');
 		}else{			
-			$vs_caption 	= $qr_res->getWithTemplate($vs_result_caption_template, array("checkAccess" => $va_access_values));
-			$vs_thumbnail = "";
-			$vs_type_placeholder = "";
-			$vs_typecode = "";
+			$caption 	= $qr_res->getWithTemplate($result_caption_template, array("checkAccess" => $va_access_values));
+			$thumbnail = "";
+			$type_placeholder = "";
+			$typecode = "";
 			
-			if ($vs_table == 'ca_objects') {
-				if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $vs_image_class)))){
+			if ($table == 'ca_objects') {
+				if(!($thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $image_class)))){
 					$t_list_item->load($qr_res->get("type_id"));
-					$vs_typecode = $t_list_item->get("idno");
-					if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-						$vs_thumbnail = $vs_type_placeholder;
+					$typecode = $t_list_item->get("idno");
+					if($type_placeholder = caGetPlaceholder($typecode, "placeholder_media_icon")){
+						$thumbnail = $type_placeholder;
 					}else{
-						$vs_thumbnail = $vs_default_placeholder;
+						$thumbnail = $default_placeholder;
 					}
 				}
-				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
+				$rep_detail_link 	= caDetailLink($this->request, $thumbnail, '', $table, $id);				
 			} else {
-				if($va_images[$vn_id]){
-					$vs_thumbnail = $va_images[$vn_id];
+				if($va_images[$id]){
+					$thumbnail = $va_images[$id];
 				}else{
-					$vs_thumbnail = $vs_default_placeholder;
+					$thumbnail = $default_placeholder;
 				}
-				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
+				$rep_detail_link 	= caDetailLink($this->request, $thumbnail, '', $table, $id);			
 			}
-			$vs_add_to_set_link = "";
-			if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-				$vs_add_to_set_link = "<a href='#' class='link-dark mx-1' aria-label='Add' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+			$select_button = "";
+			if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
+				$select_button = "<button type='button' 
+						id='result-select-btn-{$id}'
+						onclick='toggleSelection({$id})'
+						class='btn btn-white btn-select px-2' 
+						title='"._t("Select record")."'
+						aria-label='"._t("Select record")."'><i class='bi bi-check-circle'></i></button>";
 			}
-			$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square' aria-label='view record'></i>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
+			$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square' aria-label='view record'></i>", 'btn btn-white px-2 ms-1', $table, $id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 if(strToLower($this->request->getAction()) == "seasons"){
-			$vs_result_output = "
+			$result_output = "
 				<div class='col-md-6 col-lg-4 col-xl-4 col-xxl-3 d-flex'>
-					<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4 bg-light'>
+					<div id='row{$id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4 bg-light'>
 					  	".caDetailLink($this->request, "<div class='row g-0 align-items-center justify-content-center'>
     						<div class='col-md-5 bg-white'>
-								{$vs_thumbnail}
+								{$thumbnail}
 							</div>
 							<div class='col-md-7'>
 								<div class='card-body'>
-									".str_replace("Season", "", $vs_caption)."
+									".str_replace("Season", "", $caption)."
 								</div>
 							</div>
-						</div>", "",$vs_table, $vn_id)." 
+						</div>", "",$table, $id)." 
 					 </div>	
 				</div><!-- end col -->";
 
 }else{
-			$vs_result_output = "
+			$result_output = "
 				<div class='col-md-6 col-lg-4 d-flex'>
-					<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
-					  {$vs_rep_detail_link}
+					<div id='row{$id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
+					  {$rep_detail_link}
 						<div class='card-body'>
-							{$vs_caption}
+							{$caption}
 						</div>
 						<div class='card-footer text-end bg-transparent'>
-							{$vs_detail_button_link}{$vs_add_to_set_link}
+							{$select_button}{$detail_button_link}
 						</div>
 					 </div>	
 				</div><!-- end col -->";
 }
-			ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
-			print $vs_result_output;
+			ExternalCache::save($cache_key, $result_output, 'browse_result', $o_config->get("cache_timeout"));
+			print $result_output;
 		}				
-		$vn_c++;
-		$vn_results_output++;
+		$c++;
+		$results_output++;
 	}
-	if(($vn_start + $vn_results_output) < $qr_res->numHits()) {
-		print "<div style='clear:both' class='text-center' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."' hx-trigger='revealed' hx-swap='outerHTML'>
+	if(($start + $results_output) < $qr_res->numHits()) {
+		print "<div style='clear:both' class='text-center' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $start + $results_output, 'key' => $browse_key, 'view' => $current_view, 'sort' => $current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."' hx-trigger='revealed' hx-swap='outerHTML'>
 					<div class='spinner-border htmx-indicator m-3' role='status'><span class='visually-hidden'>Loading...</span></div>
 				</div>";
 	}
