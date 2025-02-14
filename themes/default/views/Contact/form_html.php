@@ -25,49 +25,46 @@
  *
  * ----------------------------------------------------------------------
  */
+$t_item = $this->getVar('t_item');
 $o_config = caGetContactConfig();
-$va_errors = $this->getVar("errors");
-$vn_num1 = rand(1,10);
-$vn_num2 = rand(1,10);
-$vn_sum = $vn_num1 + $vn_num2;
-$vs_page_title = ($o_config->get("contact_page_title")) ? $o_config->get("contact_page_title") : _t("Contact");
+$errors = $this->getVar("errors");
+$page_title = ($o_config->get("contact_page_title")) ? $o_config->get("contact_page_title") : _t("Contact");
+$table = $t_item ? $t_item->tableName() : null;
+$id = $t_item ? $t_item->getPrimaryKey() : null;
 
-# --- if a table has been passed this is coming from the Item Inquiry/Ask An Archivist contact form on detail pages
-$pn_id = $this->request->getParameter("id", pInteger);
-$ps_table = $this->request->getParameter("table", pString);
+$num1 = rand(1,10);
+$num2 = rand(1,10);
+$sum = $num1 + $num2;
 
-if($pn_id && $ps_table){
-	$t_item = Datamodel::getInstanceByTableName($ps_table);
-	if($t_item){
-		$t_item->load($pn_id);
-		$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
-		$vs_name = $t_item->get($ps_table.".preferred_labels");
-		$vs_idno = $t_item->get($ps_table.".idno");
-		$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
-	}
+$url = $name = $idno = '';
+if($id > 0) {
+	$url = $this->request->config->get("site_host").caDetailUrl($this->request, $table, $id);
+	$name = $t_item->get("{$table}.preferred_labels");
+	$idno = $t_item->get("{$table}.idno");
+	$page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
 }
 ?>
-<H1><?= $vs_page_title; ?></H1>
+<H1><?= $page_title; ?></H1>
 <?php
-	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
-		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
+	if(is_array($errors["display_errors"]) && sizeof($errors["display_errors"])){
+		print "<div class='alert alert-danger'>".implode("<br/>", $errors["display_errors"])."</div>";
 	}
 ?>
 <form id="contactForm" action="<?= caNavUrl($this->request, "", "Contact", "send"); ?>" method="post">
 	<input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>"/>
 <?php
-if($pn_id && $t_item->getPrimaryKey()){
+if($id && $t_item->getPrimaryKey()){
 ?>
 	<div class="bg-light px-4 pt-4 pb-2 mb-4">		
 		<div class="row mt-2">
 			<div class="col-sm-12 mb-4">
-				<div class="pb-2"><b>Title: </b><?= $vs_name; ?></div>
-				<div class="pb-2"><b>Regarding this URL: </b><a href="<?= $vs_url; ?>" class="purpleLink"><?= $vs_url; ?></a></div>
-				<input type="hidden" name="itemId" value="<?= $vs_idno; ?>">
-				<input type="hidden" name="itemTitle" value="<?= $vs_name; ?>">
-				<input type="hidden" name="itemURL" value="<?= $vs_url; ?>">
-				<input type="hidden" name="id" value="<?= $pn_id; ?>">
-				<input type="hidden" name="table" value="<?= $ps_table; ?>">
+				<div class="pb-2"><b>Title: </b><?= $name; ?></div>
+				<div class="pb-2"><b>Regarding this URL: </b><a href="<?= $url; ?>" class="purpleLink"><?= $url; ?></a></div>
+				<input type="hidden" name="itemId" value="<?= $idno; ?>">
+				<input type="hidden" name="itemTitle" value="<?= $name; ?>">
+				<input type="hidden" name="itemURL" value="<?= $url; ?>">
+				<input type="hidden" name="id" value="<?= $id; ?>">
+				<input type="hidden" name="table" value="<?= $table; ?>">
 			</div>
 		</div>
 	</div>
@@ -78,11 +75,11 @@ if($pn_id && $t_item->getPrimaryKey()){
 	<div class="row mt-2">
 		<div class="col-md-4 mb-4">
 			<label for="name" class="form-label"><?= _t("Name"); ?></label>
-			<input type="text" class="form-control<?= (($va_errors["name"]) ? " is-invalid" : ""); ?>" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
+			<input type="text" class="form-control<?= (($errors["name"]) ? " is-invalid" : ""); ?>" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
 		</div><!-- end col -->
 		<div class="col-md-4 mb-4">
 			<label for="email" class="form-label"><?= _t("Email address"); ?></label>
-			<input type="text" class="form-control<?= (($va_errors["email"]) ? " is-invalid" : ""); ?>" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
+			<input type="text" class="form-control<?= (($errors["email"]) ? " is-invalid" : ""); ?>" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
 		</div><!-- end col -->
 <?php
 	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
@@ -103,7 +100,7 @@ if($pn_id && $t_item->getPrimaryKey()){
 	<div class="row mb-2">
 		<div class="col-md-8 mb-4">
 			<label for="message" class="form-label"><?= _t("Message"); ?></label>
-			<textarea class="form-control<?= (($va_errors["message"]) ? " is-invalid" : ""); ?>" id="message" name="message" rows="5">{{{message}}}</textarea>
+			<textarea class="form-control<?= (($errors["message"]) ? " is-invalid" : ""); ?>" id="message" name="message" rows="5">{{{message}}}</textarea>
 		</div><!-- end col -->
 	</div><!-- end row -->
 </div>

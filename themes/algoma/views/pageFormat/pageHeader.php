@@ -66,9 +66,9 @@ if($this->request->isLoggedIn()){
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
-	<nav class="navbar navbar-expand-lg shadow-sm">
+	<nav class="navbar navbar-expand-lg">
 		<div class="container-xl">
-			<?= caNavlink($this->request, "Algoma University Archives", "navbar-brand  img-fluid fw-bold", "", "", ""); ?>
+			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'archive-logo.png', array("alt" => "Algoma University Archives & Special Collections", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
@@ -90,11 +90,11 @@ if($this->request->isLoggedIn()){
 					}
 ?>
 				</ul>
-				<form action="<?= caNavUrl($this->request, '', 'Search', 'all_collections'); ?>" role="search">
+				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
 					<div class="input-group mt-4">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search">
-						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
+						<button type="submit" class="btn rounded-0 text-primary" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
 					<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/collections"); ?></div>
 				</form>

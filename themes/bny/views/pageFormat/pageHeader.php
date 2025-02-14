@@ -47,7 +47,7 @@ if($this->request->isLoggedIn()){
 	$user_links .= "<li>".caNavLink($this->request, _t('Logout'), 'dropdown-item', '', 'LoginReg', 'Logout', array())."</li>";
 	$user_links .= "</ul></li>";
 } else {	
-	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $user_links = "<li class='nav-item'>".caNavlink($this->request, _t('Login'), "nav-link".((strToLower($this->request->getController()) == "loginreg") ? " active" : ""), "", "LoginReg", "LoginForm", "", ((strToLower($this->request->getController()) == "loginreg") ? array("aria-current" => "page") : null))."</li>"; }
+	#if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $user_links = "<li class='nav-item'>".caNavlink($this->request, _t('Login'), "nav-link".((strToLower($this->request->getController()) == "loginreg") ? " active" : ""), "", "LoginReg", "LoginForm", "", ((strToLower($this->request->getController()) == "loginreg") ? array("aria-current" => "page") : null))."</li>"; }
 }
 
 ?><!DOCTYPE html>
@@ -65,7 +65,7 @@ if($this->request->isLoggedIn()){
 	</script>
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
-	
+	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<nav class="navbar navbar-expand-lg shadow-sm">
 		<div class="container-xl">
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'BNY-logo.png', array("alt" => "Brooklyn Navy Yard Logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
@@ -89,6 +89,7 @@ if($this->request->isLoggedIn()){
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 					</li>
+					<?= $user_links; ?>
 				</ul>
 				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
 					<div class="input-group mt-4">
@@ -102,7 +103,7 @@ if($this->request->isLoggedIn()){
 		</div>
 	</nav>	
 
-	<main <?= caGetPageCSSClasses(); ?>>
+	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4'>";

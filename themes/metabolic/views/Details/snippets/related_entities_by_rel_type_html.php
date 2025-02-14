@@ -10,7 +10,7 @@
 <?php
 		$va_entities_by_type = array();
 		foreach($va_entities as $va_entity_info){
-			$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
+			$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caNavLink($this->request, $va_entity_info["displayname"], '', '', 'Browse', 'objects', array("facet" => "entity_facet", "id" => $va_entity_info["entity_id"]));
 		}
 		foreach($va_entities_by_type as $vs_type => $va_entity_links){
 			print "<dt class='text-capitalize'>".$vs_type."</dt><dd>".join(", ", $va_entity_links)."</dd>";

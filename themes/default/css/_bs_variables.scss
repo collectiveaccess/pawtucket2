@@ -174,10 +174,13 @@ $nav-underline-border-width:        .125rem !default;
 $nav-pills-link-active-bg: $light;
 $nav-pills-link-active-color: $navbar-light-active-color; /* note this is over ridden by $navbar-light-active-color so set the color there instead */
 
-/* buttons */
+/* input */
 $input-btn-font-family:       null !default;
 $input-btn-font-size:         $font-size-base !default;
 
+/* button */
+$btn-font-family:       inherit !default;
+$btn-font-weight:       $font-weight-base !default;
 $btn-border-radius:           0 !default;
 $btn-border-radius-sm:        0 !default;
 $btn-border-radius-lg:        0 !default;

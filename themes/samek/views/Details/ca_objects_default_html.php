@@ -77,7 +77,9 @@ if($show_nav){
 				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
 <?php
 				}
+				
 ?>
+				<?= $this->render('Details/lightbox_list_html.php'); ?>
 			</div>
 		</div>
 	</div>

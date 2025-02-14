@@ -94,8 +94,8 @@
 				<h3 class="fs-4 mb-4">Retrieve File by Number</h3>
 					<div class="row">
 						<div class="col-sm-6">
-							<label for="ca_objects_CFN" class="control-label">File No.</label><br/>
-							<?= $this->formElement('ca_objects.CFN'); ?>
+							<label for="ca_objects_idno" class="control-label">File No.</label><br/>
+							<?= $this->formElement('ca_objects.idno', ['description' => '']); ?>
 						</div>
 						<div class="col-sm-6">
 							<label for="ca_objects_appointment" class="control-label">Appointment?</label><br/>
@@ -197,9 +197,15 @@
 						print $this->formElement('ca_occurrences.DATE', ['description' => $vs_desc]);
 					break;
 					# ---------
+					case 'combined':
+						# --- field populated with primary date for all object types so can sort and display a single date
+						print '<label for="'.$table.'_search_date" class="control-label d-block">Date:</label>';
+						print $this->formElement($table.'.search_date', ['description' => $vs_desc]);
+					break;
+					# ---------
 					default:
 						# --- use access point that searches across various date fields for objects
-						print '<label for="'.$table.'_DATE" class="control-label d-block">Date:</label>';
+						print '<label for="date_combined" class="control-label d-block">Date:</label>';
 						print $this->formElement('date_combined', ['description' => $vs_desc]);
 					break;
 					# ---------

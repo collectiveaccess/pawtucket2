@@ -49,7 +49,7 @@ $type_idno = $t_object->get("type_id", ['convertCodesToDisplayText' => true]);
 
 	<?= $this->render("Details/ca_objects_default_nav_top.php"); ?>
 
-  <h3 class="record-number"><?= $type_idno; ?> {{{ca_objects.CFN}}}</h3>
+  <h3 class="record-number"><?= $type_idno; ?> {{{ca_objects.idno}}}</h3>
 
   <table class="record table table-striped table-responsive">
     <tbody>

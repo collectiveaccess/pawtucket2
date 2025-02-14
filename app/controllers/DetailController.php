@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2023 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,7 @@ require_once(__CA_LIB_DIR__.'/ApplicationPluginManager.php');
 require_once(__CA_APP_DIR__."/controllers/FindController.php");
 require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
+require_once(__CA_APP_DIR__."/helpers/lightboxHelpers.php");
 require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
 require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
 
@@ -65,25 +66,6 @@ class DetailController extends FindController {
 		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
 			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
 		}
-		if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-			if (!($id = urldecode($this->request->getActionExtra()))) { $id = $this->request->getParameter('id', pInteger); }
-			
-			$t_set_list = new ca_sets();
-			$t_set = new ca_sets();
-			$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values));
-			$va_user_has_access = false;
-			if (sizeof($va_sets) > 0) {
-				foreach ($va_sets as $va_key => $va_set) {
-					if($t_set->isInSet('ca_objects', $id, $va_set['set_id'])) {
-						$va_user_has_access = true;
-					}
-				}
-			}
-			if ($va_user_has_access == false) {
-				print "You do not have access to view this page.";
-				die;
-			}
-		}
 		
 		$this->view->setVar("access_values", $this->opa_access_values);
  			
@@ -99,7 +81,7 @@ class DetailController extends FindController {
 			}
 		}
 		
-		caSetPageCSSClasses(array("detail"));
+		caSetPageCSSClasses(["detail"]);
 	}
 	# -------------------------------------------------------
 	/**
@@ -133,6 +115,7 @@ class DetailController extends FindController {
 		if (!($t_subject = Datamodel::getInstance($table, true))) {
 			throw new ApplicationException("Invalid detail table");
 		}
+		
 		$this->ops_tablename = $table;
 		
 		$use_alt_identifier_in_urls = caUseAltIdentifierInUrls($table);
@@ -156,6 +139,10 @@ class DetailController extends FindController {
 		} 
 		$t_subject->autoConvertLineBreaks(true);
 		
+		
+		$item_is_in_users_lightbox = caItemIsInUserLightbox($t_subject, $this->request->getUserID());
+		$this->view->setVar('itemIsInUsersLightbox', $item_is_in_users_lightbox);
+		
 		$ps_view = $this->request->getParameter('view', pString);
 		if($ps_view === 'pdf') {
 			if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
@@ -166,7 +153,7 @@ class DetailController extends FindController {
 				$t_subject, 
 				$this->request->getParameter("export_format", pString), 
 				caGenerateDownloadFileName(caGetOption('pdfExportTitle', $options, $t_subject->get('preferred_labels')), ['t_subject' => $t_subject]), 
-				['checkAccess' => $this->opa_access_values]
+				['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]
 			);
 			return;
 		}		
@@ -208,6 +195,13 @@ class DetailController extends FindController {
 			}
 		}
 		
+		$lightbox_conf = caGetLightboxConfig();
+		$this->view->setVar('lightbox_conf', $lightbox_conf);
+		//$lightboxes = caGetLightboxesForUser($this->request->getUserID(), $this->opa_access_values, ['tables' => [$this->ops_tablename]]);
+		$lightboxes = caGetLightboxesForUser($this->request->getUserID(), null, ['tables' => [$this->ops_tablename]]);
+		$this->view->setVar('lightboxes', ($lightboxes && ($lightboxes->numHits() > 0)) ? $lightboxes : null);
+		$this->view->setVar('in_lightboxes', caGetLightboxesForItem($t_subject));
+		
 		// Record view
 		$t_subject->registerItemView();
 		
@@ -236,7 +230,7 @@ class DetailController extends FindController {
 		#
 		# Enforce access control
 		#
-		if(sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
+		if(!$item_is_in_users_lightbox && sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
 			$this->notification->addNotification(_t("This item is not available for view"), __NOTIFICATION_TYPE_INFO__);
 			$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
 			return;
@@ -303,7 +297,7 @@ class DetailController extends FindController {
 				$t_representation = Datamodel::getInstance("ca_object_representations", true);
 				$t_representation->load($pn_representation_id);
 			}else{
-				$t_representation = $t_subject->getPrimaryRepresentationInstance(array("checkAccess" => $this->opa_access_values));
+				$t_representation = $t_subject->getPrimaryRepresentationInstance(array("checkAccess" => $item_is_in_users_lightbox ? null : $this->opa_access_values));
 			}
 			if ($t_representation) {
 				$this->view->setVar("t_representation", $t_representation);
@@ -345,7 +339,7 @@ class DetailController extends FindController {
 				
 				$media_opts = array_merge(
 					$options,
-					['checkAccess' => $this->opa_access_values]
+					['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]
 				);
 				$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
 				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail'])));
@@ -556,7 +550,7 @@ class DetailController extends FindController {
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
 		$this->view->setVar('inquireEnabled', (bool)$options['enableInquire']);
 		$this->view->setVar('copyLinkEnabled', (bool)$options['enableCopyLink']);
-		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $this->opa_access_values]);
+		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]);
 		$this->render($path);
 	}
 	# -------------------------------------------------------
@@ -746,7 +740,7 @@ class DetailController extends FindController {
 			$this->view->setVar('zip_stream', $o_zip);
 			$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
 			
-			$vn_rc = $this->render('Details/download_file_binary.php');
+			$vn_rc = $this->render('Download/download_file_binary.php');
 			
 			if ($vs_path) { unlink($vs_path); }
 		} else {
@@ -754,7 +748,7 @@ class DetailController extends FindController {
 				$this->view->setVar('archive_path', $vs_path);
 				$this->view->setVar('archive_name', $vs_name);
 			}
-			$vn_rc = $this->render('Details/download_file_binary.php');
+			$vn_rc = $this->render('Download/download_file_binary.php');
 		}
 		
 		return $vn_rc;

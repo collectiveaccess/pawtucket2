@@ -22,11 +22,11 @@ const ImportedItem = (props) => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
-          <div className='col info text-gray'>
-            <p>Would you like to delete this import?</p>
-            <div className='button' style={{ cursor: "pointer" }} onClick={() => { callback(); onClose(); }}>Yes, Delete It!</div>
+          <div className='col info bg-light p-5'>
+            <div className='fs-4'>Would you like to delete this import?</div><br></br>
+            <div className='btn btn-primary' onClick={() => { callback(); onClose(); }}>Yes, Delete It!</div>
 						&nbsp;
-            <div className='button' style={{ cursor: "pointer" }} onClick={() => { onClose() }}>No</div>
+            <div className='btn btn-primary' onClick={() => { onClose() }}>No</div>
           </div>
         );
       }
@@ -89,8 +89,7 @@ const ImportedItem = (props) => {
         {(props.data.status !== 'IN_PROGRESS') ?
         <>
           <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => viewImport(e)}>Info</a></td>
-          <td><a href={`/MultiSearch/Index?search=${props.data.sessionKey}`} type='button' className='btn btn-secondary btn-sm'>View</a></td>
-          {/* <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td> */}
+          <td><a href={`/Search/GeneralSearch?search=${props.data.sessionKey}`} type='button' className='btn btn-secondary btn-sm'>View</a></td>
         </>
           : null}
       </tr>

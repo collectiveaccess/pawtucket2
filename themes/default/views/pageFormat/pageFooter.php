@@ -36,16 +36,19 @@
 			<div class="container-xl">
 				<div class="display-4">CollectiveAccess</div>
 				<ul class="list-inline pt-3 fw-medium">
-  					<li class="list-inline-item text-bg-dark small">&copy; 2024</li>
+  					<li class="list-inline-item text-bg-dark small">&copy; <?= date('Y'); ?></li>
+  					<?= ((CookieOptionsManager::cookieManagerEnabled()) ? '<li class="list-inline-item">'.caNavLink($this->request, _t("Manage Cookies"), "text-bg-dark small", "", "Cookies", "manage")."</li>" : ""); ?></li>
 					<li class="list-inline-item"><a href="#" class="text-bg-dark small">Link</a></li>
 					<li class="list-inline-item"><a href="#" class="text-bg-dark small">Link</a></li>
 				</ul>
 				<ul class="list-inline pt-3">
-  					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Facebook Link"><i class="bi bi-facebook"></i></a></li>
+					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Facebook Link"><i class="bi bi-facebook"></i></a></li>
 					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Instagram Link"><i class="bi bi-instagram"></i></a></li>
 				</ul>
 			</div>
 		</footer><!-- end footer -->
+		
+		<?= $this->render("Cookies/banner_html.php"); ?>
 		
 		<script>
 			window.initApp();

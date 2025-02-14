@@ -1,7 +1,104 @@
-/* details */
+@font-face {
+  font-family:TTNorms;
+  src:url("fonts/TT-Norms-Fonts/TTNorms-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family:TTNorms;
+  font-weight:600;
+  src:url("fonts/TT-Norms-Fonts/TTNorms-Bold.otf") format("opentype");
+}
+@font-face {
+  font-family:TTNormsMedium;
+  src:url("fonts/TT-Norms-Fonts/TTNorms-Medium.otf") format("opentype");
+}
+@font-face {
+  font-family:TTNormsMedium;
+  font-weight:600;
+  src:url("fonts/TT-Norms-Fonts/TTNorms-Bold.otf") format("opentype");
+}
+
+$primary:       #b3282d; /* red */
+$gold: #CA970D;
+h2{
+	font-weight:400;
+	font-family:TTNormsMedium;
+}
+.btn-primary {
+	text-transform:uppercase;
+	padding: 10px 30px;
+	font-size: 15px;
+}
+.btn-primary:hover {
+	background-color: $gold;
+	color:#FFF;
+	border-color: $gold;
+}
+main{
+	margin-bottom:45px;
+}
+/* ------------------------- details ------------------------- */
 .detailRepresentationGrid{
 	img{
 		height:400px;
 		width:100%;
 	}
+}
+
+/* ------------------------- Navbar ------------------------- */
+.navbar{
+	.nav-link{
+		text-transform:uppercase;
+	}
+	.nav-link:hover, .nav-link.active:hover, .nav-link:focus, .nav-link.active:focus{
+		background-color: $primary;
+		color:#FFF;
+	}
+	.navbar-brand {
+		width:350px
+	}
+}
+@media(min-width: 992px) {
+  .navbar-expand-lg .dropdown-menu {
+	top:100%;
+  }
+}
+/* ------------------------- Footer ------------------------- */
+footer::before {
+	content: "";
+	display: block;
+	height: 10px;
+	width: 100%;
+	background-image: url("../assets/graphics/band.jpg");
+	background-size: 100% 100%;
+	position: absolute;
+	top: 0px;
+	left: 0;
+}
+footer{
+	img{
+		max-width:350px;
+	}
+}
+
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .2), rgba(0, 0, 0, .8)), url("../assets/graphics/hero-university.jpg");
+   
+    /* not Full height */
+    height: 70vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/hero-university.jpg");
+    }
+    .divide{
+    	width:170px;
+    }
+    text-shadow: 1px 0 5px #000;
 }

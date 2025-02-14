@@ -68,16 +68,11 @@
 						All names, logos, trademarks and/or copyrighted images are the property of their respective owners and their appearance on this site is merely intended to illustrate certain of the content available for educational purposes in the Milton Glaser Design Study Center and Archives of the Visual Arts Foundation and is not intended in any way to imply or suggest that the respective owners of these names, logos, trademarks and/or copyrighted images consent to, approve, endorse, sponsor, or intend to associate with the Visual Arts Foundation or any of its affiliates.
 					</div>
 				</div>
-				
-				
 			</div>
 		</footer><!-- end footer -->
 		
 		<script>
 			window.initApp();
-			document.addEventListener('contextmenu', event => {
-				event.preventDefault();
-			});
 		</script>
 	</body>
 </html>
