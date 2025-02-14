@@ -46,9 +46,8 @@
 				<div class="col-md-9 col-lg-6 col-xl-5 d-flex h-100 align-items-center">
 					<div class="bg_medium_grey bg-opacity-100 p-5 text-center shadow w-100">
 						<div class="py-3">
-							<div class="fs-2 fw-light ">Welcome to</div>
-							<div class="pt-2 display-4 fw-medium">MAS Active Access</div>
-							<div class="pt-1 display-5 fw-medium">Bringing History Home</div>
+							<div class="fs-3 fw-light ">Welcome to the</div>
+							<div class="pt-2 display-5 fw-medium">MAS Repatriation Portal</div>
 						</div>
 						<div class="fs-4 pt-1">{{{hp_search_text}}}</div>
 						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'Objects'); ?>">

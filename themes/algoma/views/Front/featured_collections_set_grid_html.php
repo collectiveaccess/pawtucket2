@@ -29,14 +29,35 @@
  *
  * ----------------------------------------------------------------------
  */
- 	$o_config = caGetGalleryConfig();
-	
-	# --- what is the gallery section called
-	if(!$section_name = $o_config->get('gallery_section_name')){
-		$section_name = _t("Featured Galleries");
-	}
+	$va_access_values = $this->getVar("access_values");
+	$featured_ids = $this->getVar('featured_set_item_ids');
+	if(is_array($featured_ids) && sizeof($featured_ids)){
+		$qr_res = caMakeSearchResult('ca_collections', $featured_ids);
+		if($qr_res && $qr_res->numHits()){
 ?>
-			<h2>Browse Featured <?php print $section_name; ?></h2>
+<div class="containerflex bg-light-subtle mb-5">	
+	<div class="container">
+		<div class="row justify-content-center text-center">
+			<div class="col-lg-10 hpExplore my-5">
+				<H2 class="mb-5">Featured Collections</H2>
+				<div class="row mb-5">
+	<?php
+				$i = $vn_col = 0;
+				while($qr_res->nextHit()){
+					print "<div class='col-md-4 mb-3 mb-md-0'><div class='p-2 p-lg-5 bg-primary h-100'>".$qr_res->getWithTemplate("<l class='text-decoration-none text-white'>".$vs_thumbnail."<div class='text-start fw-semibold display-6'>^ca_collections.preferred_labels.name</div></l>")."</div></div>";
+					$i++;
+					if($i == 3){
+						break;
+					}
+				}
+	?>
+				</div>
+				<?= caNavLink($this->request, "View All Collections", "btn btn-primary bg-light-subtle text-primary border-1 w-auto", "", "Browse", "collections"); ?>
+			</div>
+		</div>
+	</div>
+</div>
 <?php
-			print caGetGallerySetsAsList($this->request, "nav nav-pills nav-stacked");
+		}
+	}
 ?>
