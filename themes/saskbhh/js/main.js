@@ -3,6 +3,9 @@ import 'htmx.org';
 import * as bootstrap from 'bootstrap';
 require('bootstrap-icons/font/bootstrap-icons.css');
 
+import autoComplete from "@tarekraafat/autocomplete.js";
+require('@tarekraafat/autocomplete.js/dist/css/autoComplete.02.css');
+
 window.htmx = require('htmx.org');
 
 const domContainer = document.querySelector("#pawtucketApp");

@@ -42,7 +42,7 @@ if($this->request->isLoggedIn()){
 	$user_links .= "<li>".caNavLink($this->request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array())."</li>";
 	
 	if ($this->request->config->get('use_submission_interface')) {
-		$user_links .= "<li>".caNavLink($this->request, _t('Submit content'), 'dropdown-item', '', 'Contribute', 'List', array())."</li>";
+		$user_links .= "<li>".caNavLink($this->request, _t('Submit content'), 'dropdown-item', '', 'Contribute', 'Index', array())."</li>";
 	}
 	$user_links .= "<li>".caNavLink($this->request, _t('Logout'), 'dropdown-item', '', 'LoginReg', 'Logout', array())."</li>";
 	$user_links .= "</ul></li>";
@@ -117,13 +117,13 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 					<?= caNavlink($this->request, _t("MAS Repatriation Portal"), "text-secondary display-4 fw-medium text-decoration-none", "", "", ""); ?>
 				</div>
 				<div class="col-3">
-					<a href="https://saskmuseums.org"><?= caGetThemeGraphic($this->request, 'MAS-LOGO.png', array("class" => "img-fluid", "alt" => _t("Museum Association of Saskatechwan Logo"), "role" => "banner")); ?>
+					<a href="https://saskmuseums.org"><?= caGetThemeGraphic($this->request, 'MAS-LOGO.png', array("class" => "img-fluid", "alt" => _t("Museum Association of Saskatechwan Logo"), "role" => "banner")); ?></a>
 				</div>
 			</div>
 		</div>
 	</header>
 	<nav class="navbar navbar-expand-lg">
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
 		<div class="container-xl">
@@ -139,7 +139,7 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 								<?= caNavlink($this->request, _t('About the Project'), "dropdown-item".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							<li>
-								<?= caNavlink($this->request, _t('How to Contribute'), "dropdown-item".((strToLower($this->request->getController()) == "contribute") ? " active" : ""), "", "Contribute", "Form", "", ((strToLower($this->request->getController()) == "contribute") ? array("aria-current" => "page") : null)); ?>
+								<?= caNavlink($this->request, _t('How to Contribute'), "dropdown-item".((strToLower($this->request->getController()) == "contribute") ? " active" : ""), "", "Contribute", "Index", "", ((strToLower($this->request->getController()) == "contribute") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							<li>
 								<?= caNavlink($this->request, _t('Contact Us'), "dropdown-item".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
@@ -148,7 +148,7 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 						</ul>	
 					</li>
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Contributors'), "nav-link".((strToLower($this->request->getAction()) == "contributors") ? " active" : ""), "", "Browse", "Contributors", "", ((strToLower($this->request->getAction()) == "contributors") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Contributors'), "nav-link".((strToLower($this->request->getAction()) == "contributors") ? " active" : ""), "", "Contributors", "List", "", ((strToLower($this->request->getAction()) == "contributors") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('Search Heritage in Collections'), "nav-link".((strToLower($this->request->getAction()) == "objects") ? " active" : ""), "", "Browse", "Objects", "", ((strToLower($this->request->getAction()) == "objects") ? array("aria-current" => "page") : null)); ?>
@@ -163,8 +163,8 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 					}
 ?>
 					<li class="nav-item">
-						<form class="pt-2 pb-1" action="<?= caNavUrl($this->request, '', 'Search', 'Objects'); ?>" role="search">
-							<div class="input-group p-0 m-0">
+						<form class="pt-2 pb-2" action="<?= caNavUrl($this->request, '', 'Search', 'Objects'); ?>" role="search">
+							<div class="input-group">
 								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 								<input type="text" name="search" class="form-control-sm rounded-start-1 border-0 shadow-sm" id="nav-search-input" placeholder="Search">
 								<button type="submit" class="px-3 py-2 btn btn-primary rounded-end-1" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
