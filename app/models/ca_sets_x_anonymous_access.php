@@ -30,6 +30,7 @@
  * ----------------------------------------------------------------------
  */
 require_once(__CA_LIB_DIR__.'/BaseRelationshipModel.php');
+require_once(__CA_LIB_DIR__.'/ModelSettings.php');
 require_once(__CA_MODELS_DIR__.'/ca_sets.php');
 
 BaseModel::$s_ca_models_definitions['ca_sets_x_anonymous_access'] = array(
@@ -78,6 +79,13 @@ BaseModel::$s_ca_models_definitions['ca_sets_x_anonymous_access'] = array(
 			'BOUNDS_LENGTH' => [0, 255],
 			'LABEL' => _t('Name of link'), 'DESCRIPTION' => _t('Descriptive name for token.')
 		),
+		'settings' => array(
+			'FIELD_TYPE' => FT_VARS, 'DISPLAY_TYPE' => DT_OMIT, 
+			'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
+			'IS_NULL' => false, 
+			'DEFAULT' => '',
+			'LABEL' => _t('Settings'), 'DESCRIPTION' => _t('Display settings')
+		),
 		'effective_date' => array(
 			'FIELD_TYPE' => FT_DATERANGE, 'DISPLAY_TYPE' => DT_FIELD, 
 			'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
@@ -90,6 +98,8 @@ BaseModel::$s_ca_models_definitions['ca_sets_x_anonymous_access'] = array(
 );
 
 class ca_sets_x_anonymous_access extends BaseModel {
+	use ModelSettings;
+	
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -169,11 +179,41 @@ class ca_sets_x_anonymous_access extends BaseModel {
 	
 	# ------------------------------------------------------
 	/**
+	 *
+	 */
+	public function __construct($id=null, ?array $options=null) {
+		parent::__construct($id, $options);
+		
+		$this->initSettings();
+	}
+	# ------------------------------------------------------
+	/**
 	 * Override insert() to add set token
 	 */ 
 	public function insert($options=null) {
 		$this->set('guid', caGenerateGUID());
 		return parent::insert($options);
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	protected function initSettings() {
+		$settings = [
+			'download_versions' => [
+				'formatType' => FT_TEXT,
+				'displayType' => DT_SELECT,
+				'multiple' => 1,
+				'width' => 40, 'height' => 1,
+				'takesLocale' => false,
+				'default' => '',
+				'options' => ['original' => 'original'],
+				'label' => _t('Available download formats'),
+				'description' => _t('Media versions available for download with this token.')
+			]
+		];
+				
+		$this->setAvailableSettings($settings);
 	}
 	# ------------------------------------------------------
 }
