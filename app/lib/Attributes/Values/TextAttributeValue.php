@@ -276,6 +276,7 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 	/**
 	 * @param array $options Options include:
 	 *      doRefSubstitution = Parse and replace reference tags (in the form [table idno="X"]...[/table]). [Default is false in Providence; true in Pawtucket].
+	 *		stripEnclosingParagraphTags = The CKEditor and QuillJS "rich text" editors automatically wrap text in paragraph (<p>) tags. This is usually desirable but can cause issues when embedding styled text into a template meant to be viewed as a single line. Setting this option will remove any enclosing "<p>" tags. [Default is false]
 	 * @return string
 	 */
 	public function getDisplayValue($options=null) {
@@ -284,6 +285,11 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 		// process reference tags
 		if ($g_request && caGetOption('doRefSubstitution', $options, __CA_APP_TYPE__ == 'PAWTUCKET')) {
 			return caProcessReferenceTags($g_request, $this->ops_text_value);
+		}
+		
+		if(caGetOption('stripEnclosingParagraphTags', $options, false)) {
+			$this->ops_text_value = preg_replace("!^<p>!i", "", $this->ops_text_value);
+			$this->ops_text_value = preg_replace("!</p>$!i", "", $this->ops_text_value);
 		}
 	
 		return $this->ops_text_value;
@@ -505,9 +511,9 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 			$t_element = new ca_metadata_elements($element_info['element_id']);
 			$elements = $t_element->getElementsInSet($t_element->getHierarchyRootID());
 			$element_dom_ids = [];
-			foreach($elements as $i => $element) {
-				if ($element['datatype'] == __CA_ATTRIBUTE_VALUE_CONTAINER__) { continue; }
-				$element_dom_ids[$element['element_code']] = "#{fieldNamePrefix}".$element['element_id']."_{n}";
+			foreach($elements as $i => $e) {
+				if ($e['datatype'] == __CA_ATTRIBUTE_VALUE_CONTAINER__) { continue; }
+				$element_dom_ids[$e['element_code']] = "#{fieldNamePrefix}".$e['element_id']."_{n}";
 			}
 			
 			$o_dimensions_config = Configuration::load(__CA_APP_DIR__."/conf/dimensions.conf");
@@ -522,7 +528,7 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 					'use_inches_for_display_up_to', 'use_feet_for_display_up_to', 'use_millimeters_for_display_up_to', 
 					'use_centimeters_for_display_up_to', 'use_meters_for_display_up_to',
 					'force_meters_for_all_when_dimension_exceeds', 'force_centimeters_for_all_when_dimension_exceeds', 'force_millimeters_for_all_when_dimension_exceeds',
-					'force_feet_for_all_when_dimension_exceeds', 'force_inches_for_all_when_dimension_exceeds'
+					'force_feet_for_all_when_dimension_exceeds', 'force_inches_for_all_when_dimension_exceeds', 'display_units'
 				] as $key) {
 				$proc_key = caSnakeToCamel($key);
 				$parser_opts[$proc_key] = $o_dimensions_config->get($key);

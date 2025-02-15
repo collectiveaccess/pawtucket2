@@ -186,7 +186,7 @@ class IIIFService {
 			// size	
 			$va_dimensions = IIIFService::calculateSize($vn_width, $vn_height, $ps_size);
 			$va_operations[] = ['SCALE' => $va_dimensions];
-				
+			
 			// Can we use a pre-generated tilepic tile for this request?
 			$vn_tile_width = $va_tilepic_info['PROPERTIES']['tile_width'];
 			$vn_tile_height = $va_tilepic_info['PROPERTIES']['tile_height'];
