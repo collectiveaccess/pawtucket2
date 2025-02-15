@@ -1009,6 +1009,7 @@ class SearchResult extends BaseObject {
 	 *			unserialize = When fetching intrinsic value of type FT_VARS (serialized variables) return unserialized value. [Default is false]
 	 *			list = A list code or array or list codes to restrict returned values to when referencing ca_list_items values. [Default is null]
 	 *          primaryOnly = Return only related representations marked "primary", otherwise return all representations. Has no effect when not pulling related representations. [Default is false]
+	 *			dontReturnDefault = Don't use metadata element default value when value is empty. [Default is false]
 	 *			
 	 *		[Formatting options for strings and arrays]
 	 *			template = Display template use when formatting return values. @see http://docs.collectiveaccess.org/wiki/Display_Templates. [Default is null]
@@ -2587,6 +2588,10 @@ class SearchResult extends BaseObject {
 							if($include_value_ids) {
 								$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()]["{$vs_element_code}_value_id"] = $o_value->getValueID();
 							}
+							
+							if(strlen($src = $o_attribute->getValueSource())) {
+								$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()]["__source__"] = $src;
+							}
 						} else { 
 							$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()][] = $vs_val_proc;	
 						}
@@ -2625,7 +2630,7 @@ class SearchResult extends BaseObject {
 			}
 		} else {
 			// is blank
-			$default_value = ca_metadata_elements::getElementDefaultValue($va_path_components['subfield_name'] ? $va_path_components['subfield_name'] : $va_path_components['field_name']);
+			$default_value = ($pa_options['dontReturnDefault'] ?? false) ? '' : ca_metadata_elements::getElementDefaultValue($va_path_components['subfield_name'] ? $va_path_components['subfield_name'] : $va_path_components['field_name']);
 			
 			if (($pa_options['returnWithStructure'] ?? null) && ($pa_options['returnBlankValues'] ?? null)) {
 				$va_return_values[(int)$vn_id][null][null][$e = $va_path_components['subfield_name'] ? $va_path_components['subfield_name'] : $va_path_components['field_name']] = $default_value;
@@ -2872,6 +2877,23 @@ class SearchResult extends BaseObject {
 								} else {
 									$d = null;
 									break;
+								}
+							}
+							
+							if($return_as = caGetOption('returnAs', $pa_options, null)) {
+								switch(strtolower($return_as)) {
+									case 'timecode':
+										$tc = new TimecodeParser();
+										if(is_array($d)) {
+											$d = array_map(function($v) use ($tc) {
+												$tc->parse($v);
+												return $tc->getText() ;
+											}, $d);
+										} else {
+											$tc->parse($d);
+											$d = $tc->getText('colon_delimited');
+										}
+										break;
 								}
 							}
 						
@@ -3341,7 +3363,6 @@ class SearchResult extends BaseObject {
 		if (!($this->opa_field_media_info[$ps_field] ?? null)) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-
 		$d = is_array($this->opa_field_media_info[$ps_field]) ? array_shift($this->opa_field_media_info[$ps_field]) : null;
 		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaInfo($ps_version, $ps_key, array_merge($pa_options, ['data' => $d]));
 	}
@@ -3354,7 +3375,6 @@ class SearchResult extends BaseObject {
 	    if (!($this->opa_field_media_info[$ps_field] ?? null)) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-
 		$d = is_array($this->opa_field_media_info[$ps_field]) ? array_shift($this->opa_field_media_info[$ps_field]) : null;
 		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaPath($ps_version, array_merge($pa_options, ['data' => $d]));
 	}
@@ -3386,7 +3406,6 @@ class SearchResult extends BaseObject {
 	    if (!$this->opa_field_media_info[$ps_field]) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-
 		$d = is_array($this->opa_field_media_info[$ps_field]) ? array_shift($this->opa_field_media_info[$ps_field]) : null;
 		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaUrl($ps_version, array_merge($pa_options, ['data' => $d]));
 	}
@@ -3428,7 +3447,9 @@ class SearchResult extends BaseObject {
 		} else {
 		    $alt_text = null;
 		}
-		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaTag($ps_version, array_merge($pa_options, ['alt' => $alt_text, 'data' => reset($this->opa_field_media_info[$ps_field])]));
+		
+		$d = $this->opa_field_media_info[$ps_field] ?? [];
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaTag($ps_version, array_merge($pa_options, ['alt' => $alt_text, 'data' => reset($d)]));
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3474,7 +3495,9 @@ class SearchResult extends BaseObject {
 	    if (!$this->opa_field_media_info[$ps_field]) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaVersions(['data' => reset($this->opa_field_media_info[$ps_field])]);
+		
+		$d = $this->opa_field_media_info[$ps_field] ?? [];
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaVersions(['data' => reset($d)]);
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3494,7 +3517,9 @@ class SearchResult extends BaseObject {
 		if (!$this->opa_field_media_info[$ps_field]) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-		return $GLOBALS["_DbResult_mediainfocoder"]->hasMedia(['data' => reset($this->opa_field_media_info[$ps_field])]);
+		
+		$d = $this->opa_field_media_info[$ps_field] ?? [];
+		return $GLOBALS["_DbResult_mediainfocoder"]->hasMedia(['data' => reset($d)]);
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3505,7 +3530,8 @@ class SearchResult extends BaseObject {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
 
-		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaScale(['data' => reset($this->opa_field_media_info[$ps_field])]);	
+		$d = $this->opa_field_media_info[$ps_field] ?? [];
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaScale(['data' => reset($d)]);	
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3515,7 +3541,9 @@ class SearchResult extends BaseObject {
 	    if (!$this->opa_field_media_info[$ps_field]) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-		return $GLOBALS["_DbResult_mediainfocoder"]->mediaIsMirrored($ps_version, ['data' => reset($this->opa_field_media_info[$ps_field])]);
+		
+		$d = $this->opa_field_media_info[$ps_field] ?? [];
+		return $GLOBALS["_DbResult_mediainfocoder"]->mediaIsMirrored($ps_version, ['data' => reset($d)]);
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3525,7 +3553,9 @@ class SearchResult extends BaseObject {
 		if (!$this->opa_field_media_info[$ps_field]) {
 		    $this->opa_field_media_info[$ps_field] = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
 		}
-		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaMirrorStatus($ps_version, $ps_mirror, ['data' => reset($this->opa_field_media_info[$ps_field])]);
+		
+		$d = $this->opa_field_media_info[$ps_field] ?? [];
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaMirrorStatus($ps_version, $ps_mirror, ['data' => reset($d)]);
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -4014,10 +4044,10 @@ class SearchResult extends BaseObject {
 			}
 			if(!strlen($v)) { array_pop($c); return $c; }
 			if(mb_substr($v, -1, 1) == 's') {
-				array_push($c, preg_quote(mb_substr($v, 0, mb_strlen($v) - 1)."'s", '/'));
-				array_push($c, preg_quote(mb_substr($v, 0, mb_strlen($v) - 1)."’s", '/'));
+				array_push($c, (mb_substr($v, 0, mb_strlen($v) - 1)."'s"));
+				array_push($c, (mb_substr($v, 0, mb_strlen($v) - 1)."’s"));
 			}
-			array_push($c, preg_quote($v, '/'));
+			array_push($c, $v);
 			return $c;
 		}, []);
 		if(!sizeof($highlight_text)) { return $content; }
@@ -4025,7 +4055,7 @@ class SearchResult extends BaseObject {
 			return strlen($b) <=> strlen($a);
 		});
 		
-		$content = $g_highlight_cache[$content] = preg_replace("/(?<= |^)(".join('|', $highlight_text).")/i", "<span class=\"highlightText\">\\1</span>", $content);
+		$content = $g_highlight_cache[$content] = preg_replace("/(?<= |^)(".preg_quote(join('|', $highlight_text), '/').")/i", "<span class=\"highlightText\">\\1</span>", $content);
 		
 		return $content;
 	}

@@ -1050,7 +1050,7 @@ function caGetLabelForBundle($ps_bundle) {
 	$va_tmp = explode(".", $ps_bundle);
 	
 	if ($t_instance = Datamodel::getInstanceByTableName($va_tmp[0], true)) {
-		return $t_instance->getDisplayLabel($ps_bundle);
+		return $t_instance->getDisplayLabel($ps_bundle, ['useDisambiguationLabels' => true]);
 	}
 	
 	// Maybe it's an access point?
@@ -2167,6 +2167,8 @@ function caMapBundleToSearchBuilderFilterDefinition(BaseModel $t_subject, $pa_bu
 	$vs_name_no_table = caGetBundleNameForSearchSearchBuilder($vs_name);
 	$table = $t_subject->tableName();
 	
+	$render_in_builder = false;
+	
 	$priority = caGetPriorityBundlesForSearchBuilder($table, $search_builder_config, []);
 	
 	$va_operators_by_type = $search_builder_config->get(['search_builder_operators', 'query_builder_operators']);
@@ -2215,6 +2217,8 @@ function caMapBundleToSearchBuilderFilterDefinition(BaseModel $t_subject, $pa_bu
 			$vs_list_code = ca_metadata_elements::getElementListID($vs_name_no_table);
 			$t_element = ca_metadata_elements::getInstance($element_id);
 			
+			$render_in_builder = $t_element ? $t_element->getSetting('renderInSearchBuilder') : null;
+			
 			$vn_display_type = $vs_list_code ? DT_SELECT : DT_FIELD;
 			// Convert CA attribute datatype to query builder type and operators.
 			switch (ca_metadata_elements::getElementDatatype($vs_name_no_table)) { 
@@ -2252,7 +2256,6 @@ function caMapBundleToSearchBuilderFilterDefinition(BaseModel $t_subject, $pa_bu
 			$va_select_options = [];
 			$t_list = new ca_lists();
 			$max_length = $t_element ? $t_element->getSetting('useTextEntryInSearchBuilderWhenListLongerThan') : 200;
-			$render_in_builder = $t_element ? $t_element->getSetting('renderInSearchBuilder') : null;
 	
 			if(!$vs_list_code || ($t_list->numItemsInList($vs_list_code) > $max_length)) {
 				$va_select_options = null;
@@ -2639,7 +2642,7 @@ function caFieldNumToBundleCode($table_name_or_num, string $field_num) : ?string
 /**
  * Try to extract positions of text using PDFMiner (http://www.unixuser.org/~euske/python/pdfminer/index.html)
  */
-function caExtractTextFromPDF(string $filepath) : ?array {
+function caExtractTextLocationsFromPDF(string $filepath) : ?array {
 	if ($miner_path = caPDFMinerInstalled()) {
 		$locations = [];
 		$o_search_config = caGetSearchConfig();

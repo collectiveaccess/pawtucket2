@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2022 Whirl-i-Gig
+ * Copyright 2014-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -102,7 +102,6 @@ function caGetAvailablePrintTemplates($ps_type, $pa_options=null) {
 		$va_show_only_in = array_map(function($v) { return trim($v); }, explode(',', $va_show_only_in));
 	}
 	
-
 	$vs_cache_key = caMakeCacheKeyFromOptions($pa_options ?? [], $ps_type);
 	
 	$va_templates = array();
@@ -164,7 +163,7 @@ function caGetAvailablePrintTemplates($ps_type, $pa_options=null) {
 
 						if (!is_dir($vs_path.'/'.$vs_template) && preg_match("/^[A-Za-z_\-]+[A-Za-z0-9_\-]*$/", $vs_template_tag)) {
 							if ($vb_for_html_select && !isset($va_templates[$va_template_info['name']])) {
-								$va_templates[$va_template_info['name']] = '_pdf_'.$vs_template_tag;
+								$va_templates[$va_template_info['name']] = '_'.($va_template_info['fileFormat'] ?? 'pdf').'_'.$vs_template_tag;
 							} elseif (!isset($va_templates[$vs_template_tag])) {
 								$va_templates[$vs_template_tag] = array(
 									'name' => $va_template_info['name'],
@@ -213,6 +212,10 @@ function caGetPrintTemplateDetails($ps_type, $ps_template, $pa_options=null) {
 			$vs_template_path = "{$vs_template_path}/local/{$ps_template}.php";
 		} elseif(file_exists("{$vs_template_path}/{$ps_template}.php")) {
 			$vs_template_path = "{$vs_template_path}/{$ps_template}.php";
+		} elseif(is_numeric($ps_template) && file_exists("{$vs_template_path}/display.php")) {
+			$vs_template_path = "{$vs_template_path}/display.php";
+		} elseif(is_numeric($ps_template) && file_exists("{$vs_template_path}/local/display.php")) {
+			$vs_template_path = "{$vs_template_path}/local/display.php";
 		} else {
 			continue;
 		}
@@ -524,6 +527,7 @@ function caGetPrintFormatsListAsHTMLForRelatedBundles($ps_id_prefix, $po_request
 	$va_options = [];
 	if (sizeof($va_formats) > 0) {
 		foreach($va_formats as $vn_ => $va_form_info) {
+			if($va_form_info['type'] === 'omit') { continue; }
 			$va_options[$va_form_info['name']] = $va_form_info['code'];
 		}
 	}
@@ -541,7 +545,8 @@ function caGetPrintFormatsListAsHTMLForRelatedBundles($ps_id_prefix, $po_request
 			|| 
 			(is_array($va_display_info['settings']['show_only_in'] ?? null) && !in_array('editor_relationship_bundle', $va_display_info['settings']['show_only_in']))
 		) { continue; }        
-		$va_options[$va_display_info['name']] = '_pdf__display_'.$va_display_info['display_id'];
+		$n = !isset($va_options[$va_display_info['name']]) ? $va_display_info['name'] : $va_display_info['name'].' (display)';
+		$va_options[$n] = '_display_'.$va_display_info['display_id']; 
 	}
 	
 	if (sizeof($va_options) == 0) { return ''; }
@@ -549,7 +554,7 @@ function caGetPrintFormatsListAsHTMLForRelatedBundles($ps_id_prefix, $po_request
 	uksort($va_options, 'strnatcasecmp');
 	
 	$vs_buf = "<div class='editorBundlePrintControl'>"._t("Export as")." ";
-	$vs_buf .= caHTMLSelect('export_format', $va_options, array('id' => "{$ps_id_prefix}_reportList", 'class' => 'dontTriggerUnsavedChangeWarning'), array('value' => Session::getVar("P{$placement_id}_last_export_format"), 'width' => '150px'))."\n";
+	$vs_buf .= caHTMLSelect('export_format', $va_options, array('id' => "{$ps_id_prefix}_reportList", 'class' => 'caItemListSortControlTrigger dontTriggerUnsavedChangeWarning'), array('value' => Session::getVar("P{$placement_id}_last_export_format"), 'width' => '150px'))."\n";
 	
 	$vs_buf .= caJSButton($po_request, __CA_NAV_ICON_GO__, '', "{$ps_id_prefix}_report", ['onclick' => "caGetExport{$ps_id_prefix}(); return false;"], ['size' => '15px']);
 	
@@ -601,7 +606,7 @@ function caGetPrintFormatsListAsHTMLForSetItemBundles($ps_id_prefix, $po_request
 				($va_display_info['settings']['show_only_in'] ?? null) && 
 				($va_display_info['settings']['show_only_in'] != 'set_item_bundle'))
 			) { continue; }
-			$va_options[$va_display_info['name']] = '_display_'.$va_display_info['display_id'];
+			if(!isset($va_options[$va_display_info['name']])) { $va_options[$va_display_info['name']] = '_display_'.$va_display_info['display_id']; }
 		}
 	}
 	
@@ -640,7 +645,12 @@ function caEditorPrintSummaryControls($view) {
 	$t_item = $view->getVar('t_subject');
 	$request = $view->request;
 	
+	$defalt_display_id = $request->user->getVar($t_item->tableName().'_print_display_id');
+	
 	$item_id = $t_item->getPrimaryKey();
+	
+	$config = Configuration::load();
+	$table = $t_item->tableName();
 	
 	$available_displays = caExtractValuesByUserLocale($t_display->getBundleDisplays([
 		'table' => $t_item->tableNum(), 
@@ -650,8 +660,8 @@ function caEditorPrintSummaryControls($view) {
 		'context' => 'editor_summary'
 	]));
 	
-	// Opts for on-screen display list (only displays; no PDF print templates)
 	$display_opts = [];
+	// Opts for on-screen display list (only displays; no PDF print templates)
 	foreach($available_displays as $d) {
 		$display_opts[$d['name']] = $d['display_id'];
 	}
@@ -665,6 +675,13 @@ function caEditorPrintSummaryControls($view) {
 		['value' => $t_display->getPrimaryKey()]
 	);
 	
+	if(
+		$config->get("{$table}_dont_use_displays_for_pdf_summary_output")
+		||
+		($view->request->user->getPreference('use_displays_for_pdf_summary_output') === 'no')
+	) {
+		$display_opts = [];
+	}
 	// Opts for print templates (displays + PDF templates)
 	$print_templates = caGetAvailablePrintTemplates('summary', ['table' => $t_item->tableName(), 'restrictToTypes' => $t_item->getTypeID()]);
 
@@ -681,7 +698,7 @@ function caEditorPrintSummaryControls($view) {
 		'display_id', 
 		$display_opts, 
 		['onchange' => 'return caSummaryUpdateOptions();', 'id' => 'caSummaryDisplaySelector', 'class' => 'searchFormSelector'],
-		['value' => $t_display->getPrimaryKey()]
+		['value' => $defalt_display_id ? $defalt_display_id : $t_display->getPrimaryKey()]
 	);
 	$view->setVar('print_display_select_html', $print_display_select_html);
 	
@@ -811,27 +828,47 @@ function caEditorPrintParametersForm(string $type, string $template, ?array $val
 	if(!is_array($info['params']) || (sizeof($info['params']) === 0)) { return []; }
 	
 	$form_elements = [];
-	
 	foreach($info['params'] as $n => $p) {
 		$default = $p['default'] ?? null;
+		
+		$label = $p['label'];
+		
+		if(is_array($label)) {
+			// Label is localized in the form:
+			// "label": {"en": "Include logo?", "de_DE": "Logo entschließen?" }
+			$label = caExtractSettingsValueByUserLocale('label', $p);
+		}
+		
 		switch(strtolower($p['type'] ?? null)) {
 			case 'list':
 				$attr = ['class' => 'dontTriggerUnsavedChangeWarning'];
 				if($p['multiple'] ?? false) { $attr['multiple'] = 1; }
-				
+			
+				$list_options = null;
+				if(caIsAssociativeArray($p['options'])) {
+					$list_options = $p['options'];
+					foreach($list_options as $k => $v) {
+						if(is_array($v)) {
+							// Options are localized in form:
+							// "options": { "en": {"One": 1, "Two": 2, "Thress": 3 },  "de": {"Eins": 1, "Zwei": 2, "Drei": 3 }
+							$list_options = caExtractSettingsValueByUserLocale('options', $p);
+							break;
+						}
+					}
+				}
 				$dv = $values[$n] ?? $default;
 				if(!is_array($dv)) { $dv = [$dv]; }
 				
-				$e = caHTMLSelect($n.((isset($attr['multiple']) && $attr['multiple']) ? '[]' : '') , $p['options'], $attr, ['values' => $dv, 'width' => caGetOption('width', $p, null), 'height' => caGetOption('height', $p, null)]);
-				$form_elements[$n] = ['label' => $p['label'], 'element' => $e];
+				$e = caHTMLSelect($n.((isset($attr['multiple']) && $attr['multiple']) ? '[]' : '') , $list_options, $attr, ['values' => $dv, 'width' => caGetOption('width', $p, null), 'height' => caGetOption('height', $p, null)]);
+				$form_elements[$n] = ['label' => $label, 'element' => $e];
 				break;
 			case 'checkbox':
 				$e = caHTMLCheckboxInput($n, ['value' => $p['value'] ?? 1, 'checked' => $values[$n] ?? $default, 'class' => 'dontTriggerUnsavedChangeWarning']);
-				$form_elements[$n] = ['label' => $p['label'], 'element' => $e];
+				$form_elements[$n] = ['label' => $label, 'element' => $e];
 				break;
 			case 'text':
 				$e = caHTMLTextInput($n, ['placeholder' => caGetOption('placeholder', $p, ''), 'value' => $values[$n] ?? $default, 'class' => 'dontTriggerUnsavedChangeWarning'], ['width' => caGetOption('width', $p, '200px'), 'height' => caGetOption('height', $p, '200px')]);
-				$form_elements[$n] = ['label' => $p['label'], 'element' => $e];
+				$form_elements[$n] = ['label' => $label, 'element' => $e];
 				break;
 		}
 	}

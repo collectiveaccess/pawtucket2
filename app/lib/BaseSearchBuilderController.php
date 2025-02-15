@@ -74,17 +74,18 @@ class BaseSearchBuilderController extends BaseRefineableSearchController {
 		$t_model = Datamodel::getInstanceByTableName($this->ops_tablename, true);
 		$va_access_values = caGetUserAccessValues($this->request);
 		
-		$search_builder_config = Configuration::load(__CA_CONF_DIR__.'/search_query_builder.conf');
+		$search_builder_config = caGetSearchBuilderConfig();
+		
 		$builder_options = [
-			'filters' => caGetSearchBuilderFilters($t_model, $search_builder_config),
-			'icons' => $search_builder_config->getAssoc('query_builder_icons'),
+			'filters' => caGetSearchBuilderFilters($t_model, $search_builder_config, ['restrictToTypes' => [$this->opn_type_restriction_id]]),
+			'icons' => $search_builder_config->get(['search_builder_icons', 'query_builder_icons']),
 			'sort_filters' => false
 		];
 		$this->view->setVar('options', $builder_options);
 		
 		// Get elements of result context
 		$vn_page_num 			= $this->opo_result_context->getCurrentResultsPageNumber();
-		$vs_search 				= html_entity_decode(stripslashes($this->opo_result_context->getSearchExpression()));	// decode entities encoded to avoid Apache request parsing issues (Eg. forward slashes [/] in searches) 
+		$vs_search 				= html_entity_decode($this->opo_result_context->getSearchExpression());	// decode entities encoded to avoid Apache request parsing issues (Eg. forward slashes [/] in searches) 
 		$vb_is_new_search		= $this->opo_result_context->isNewSearch();
 		
 		if ((bool)$this->request->getParameter('reset', pString) && ($this->request->getParameter('reset', pString) != 'save')) {
@@ -304,7 +305,7 @@ class BaseSearchBuilderController extends BaseRefineableSearchController {
 				break;
 			# ------------------------------------
 			case 'EXPORT':
-				caExportResult($this->request, $vo_result, $this->request->getParameter("export_format", pString), $vs_search, ['output' => 'STREAM', 'display' => $t_display]);
+				caExportResult($this->request, $vo_result, $this->request->getParameter("export_format", pString), $vs_search, ['output' => 'STREAM', 'display' => $t_display, 'browseCriteria' => $this->opo_browse->getCriteriaAsStrings(null, ['sense' => 'singular', 'returnAs' => 'array'])]);
 				break;
 			# ------------------------------------
 			case 'HTML': 

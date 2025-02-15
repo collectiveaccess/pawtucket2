@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2023 Whirl-i-Gig
+ * Copyright 2014-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,10 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-  /**
-  *
-  */
 require_once(__CA_LIB_DIR__.'/BaseObject.php');
 require_once(__CA_APP_DIR__.'/helpers/utilityHelpers.php');
 
@@ -331,7 +327,7 @@ class BaseFindEngine extends BaseObject {
 				$sort_fields[$i] = $parsed_sort_spec['sort'];
 				$options = array_merge($options, $parsed_sort_spec['options']);
 			}
-		//	$sorted_hits = $this->_secondarySortHits($hits, $sorted_hits, $table, $primary_sort_field, $primary_sort_direction, $sort_fields, $sort_directions, array_merge($options, ['relationshipTypes' => $rel_types]));
+			$sorted_hits = $this->_secondarySortHits($hits, $sorted_hits, $table, $primary_sort_field, $primary_sort_direction, $sort_fields, $sort_directions, array_merge($options, ['relationshipTypes' => $rel_types]));
 		}
 		
 		return $sorted_hits;
@@ -405,7 +401,7 @@ class BaseFindEngine extends BaseObject {
 						array_splice($sorted_page_hits, $index, $lr, array_slice($row_ids, 0, $lr));
 					} else {
 						// first result is at start of page, so we need to figure out if the sequence begins on a previous page
-						$start = null;
+						$start = 0;
 						if ($page_start > 0) {
 							$c = 0;
 							do {			// loop back through pages until we find the beginning
@@ -428,8 +424,6 @@ class BaseFindEngine extends BaseObject {
 								$start = $l * ($c-1);
 								break;
 							} while($s > 0);
-						} else {
-							$start = $map_index;
 						}
 					
 						if(!is_null($start)) {
@@ -474,9 +468,6 @@ class BaseFindEngine extends BaseObject {
 		list($sort_field, $sort_filter) = array_pad(explode('|', $sort_field), 2, null);
 		list($sort_table, $sort_field, $sort_subfield) = array_pad(explode(".", $sort_field), 3, null);
 		if (!($t_bundle = Datamodel::getInstanceByTableName($sort_table, true))) { 
-			if(($start > 0) || ($limit > 0)) {
-				$hits = array_slice($hits, $start, $limit);
-			}
 			return $hits;
 		}
 		
@@ -497,10 +488,7 @@ class BaseFindEngine extends BaseObject {
 			} elseif($sort_field === 'nonpreferred_labels') {
 				$sort_key_values = $this->_sortByLabels($t_table, $hit_table, $sort_subfield, $sort_direction, array_merge($options, ['isPreferred' => false]));	
 			} else {
-				//throw new ApplicationException(_t('Unhandled sort'))		
-				if(($start > 0) || ($limit > 0)) {
-					$hits = array_slice($hits, $start, $limit);
-				}
+				//throw new ApplicationException(_t('Unhandled sort'));
 				return $hits;
 			}
 		} elseif($t_table->getLabelTableName() == $sort_table) {
@@ -532,9 +520,7 @@ class BaseFindEngine extends BaseObject {
 			} elseif($is_attribute) {							// sort key is metadata attribute
 				$sort_key_values = $this->_sortByRelatedAttribute($t_table, $t_rel_table, $hit_table, $sort_field, $sort_subfield, $sort_direction, $hits, array_merge($options, ['filter' => $sort_filter_field ,'filterValues' => $sort_field_values]));		
 			} else {
-				if(($start > 0) || ($limit > 0)) {
-					$hits = array_slice($hits, $start, $limit);
-				}
+				//throw new ApplicationException(_t('Unhandled sort'));
 				return $hits;
 			}
 		}
@@ -995,14 +981,15 @@ class BaseFindEngine extends BaseObject {
 			}
  			$is_attribute = method_exists($t_rel_table, 'hasElement') ? $t_rel_table->hasElement($sort_field) : false;
  			
- 			if ($t_rel_table->hasField($sort_field)) {			// sort key is intrinsic
- 				$sort_key_values[] = $this->_getRelatedSortValuesForIntrinsic($hits, $t_table, $t_rel_table, $sort_field, $direction);
+ 			if ($t_rel_table && $t_rel_table->hasField($sort_field)) {			// sort key is intrinsic
+ 				$values = $this->_getRelatedSortValuesForIntrinsic($hits, $t_table, $t_rel_table, $sort_field, $direction);
  			} elseif($sort_field === 'preferred_labels') {		// sort key is preferred lables
- 				$sort_key_values[] = $this->_getRelatedSortValuesForLabel($hits, $t_table, $t_rel_table, $sort_subfield ? $sort_subfield : $sort_field, $direction);	
+ 				$values = $this->_getRelatedSortValuesForLabel($hits, $t_table, $t_rel_table, $sort_subfield ? $sort_subfield : $sort_field, $direction);	
  			} elseif($is_attribute) {							// sort key is metadata attribute
- 				$sort_key_values[] = $this->_getRelatedSortValuesForAttribute($hits, $t_table, $t_rel_table, $sort_subfield ? $sort_subfield : $sort_field, $direction);		
+ 				$values = $this->_getRelatedSortValuesForAttribute($hits, $t_table, $t_rel_table, $sort_subfield ? $sort_subfield : $sort_field, $direction);		
  			} else {
-				throw new ApplicationException(_t('Unhandled secondary sort'));
+				//throw new ApplicationException(_t('Unhandled secondary sort'));
+				$values = $hits;
 			}
 		}
 		return $values;
@@ -1238,14 +1225,15 @@ class BaseFindEngine extends BaseObject {
 			
  			$is_attribute = method_exists($t_rel_table, 'hasElement') ? $t_rel_table->hasElement($sort_field) : false;
  			
- 			if ($t_rel_table->hasField($sort_field)) {			// sort key is intrinsic
- 				$sort_key_values[] = $this->_getRelatedRowIDsForIntrinsic($values, $t_table, $t_rel_table, $hit_table, $sort_field);
+ 			if ($t_rel_table && $t_rel_table->hasField($sort_field)) {			// sort key is intrinsic
+ 				$row_ids = $this->_getRelatedRowIDsForIntrinsic($values, $t_table, $t_rel_table, $hit_table, $sort_field);
  			} elseif($sort_field === 'preferred_labels') {		// sort key is preferred lables
- 				$sort_key_values[] = $this->_getRelatedRowIDsForLabel($values, $t_table, $t_rel_table, $hit_table, $sort_subfield ? $sort_subfield : $sort_field);	
+ 				$row_ids = $this->_getRelatedRowIDsForLabel($values, $t_table, $t_rel_table, $hit_table, $sort_subfield ? $sort_subfield : $sort_field);	
  			} elseif($is_attribute) {							// sort key is metadata attribute
- 				$sort_key_values[] = $this->_getRelatedRowIDsForAttribute($values, $t_table, $t_rel_table, $hit_table, $sort_field);		
+ 				$row_ids = $this->_getRelatedRowIDsForAttribute($values, $t_table, $t_rel_table, $hit_table, $sort_field);		
  			} else {
-				throw new ApplicationException(_t('Unhandled secondary sort'));
+				//throw new ApplicationException(_t('Unhandled secondary sort'));
+				$row_ids = $values;
 			}
 		}
 		return $row_ids;

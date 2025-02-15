@@ -38,6 +38,15 @@
         if(require_once(__CA_MODELS_DIR__."/{$class}.php")) { return true; }
     }
     
+    $path = explode('\\', $class);
+    if(sizeof($path) > 1) {
+    	if($path[0] === 'CA') { array_shift($path); }
+    	if(file_exists(__CA_LIB_DIR__.'/'.join('/', $path).'.php')) {
+    		include_once(__CA_LIB_DIR__.'/'.join('/', $path).'.php');
+    		return true;
+    	}
+    }
+    
     // strip namespaces if present
  	$base = $class;
  	$parts = [$class];
@@ -118,6 +127,7 @@ require_once(__CA_APP_DIR__.'/lib/GarbageCollection.php');
 require_once(__CA_APP_DIR__.'/helpers/guidHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/browseHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
+require_once(__CA_LIB_DIR__."/Process/Background.php");
 
 require_once(__CA_LIB_DIR__."/BanHammer.php");
 require_once(__CA_LIB_DIR__."/Datamodel.php");

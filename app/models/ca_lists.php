@@ -484,6 +484,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		
 		$pb_omit_root = caGetOption('omitRoot', $pa_options, false);
 		$vb_enabled_only = caGetOption('enabledOnly', $pa_options, false);
+		
 		$filter_expr = caGetOption('filterExpression', $pa_options, null);
 		
 		$pa_check_access = caGetOption('checkAccess', $pa_options, null); 
