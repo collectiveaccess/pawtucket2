@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2024 Whirl-i-Gig
+ * Copyright 2024-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -71,6 +71,11 @@ class LightboxController extends FindController {
 	 */
 	protected $ops_view_prefix = 'Lightbox';
 	
+	/**
+	 *
+	 */
+	protected $anonymous_set = null;
+	
 	
 	# -------------------------------------------------------
 	/**
@@ -80,18 +85,39 @@ class LightboxController extends FindController {
 	 * @throws ApplicationException
 	 */
 	public function __construct($request, $response, $view_paths=null) {
-		parent::__construct($request, $response, $view_paths);
-
 		// Catch disabled lightbox
-		if ($this->request->config->get('disable_lightbox')) {
+		if ($request->config->get('disable_lightbox')) {
 			throw new ApplicationException('Lightbox is not enabled');
 		}
-		if (!($this->request->isLoggedIn())) {
-			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-			$this->is_login_redirect = true;
-			return;
+		
+		if (!($request->isLoggedIn())) {
+			// Is this anonymous access?
+			$anonymous_sets = Session::getVar('anonymous_sets') ?? [];
+			if(
+				(
+					(in_array(strtolower($request->getAction()), ['detail', 'search', 'download', 'export'], true))
+					&&
+					(caIsGUID($guid = $request->getActionExtra()))
+					&&
+					($t_set = ca_sets::getSetByAnonymousAccessToken($guid))
+				)
+			) {
+				// Anonymous access to set is set up here
+				
+				$this->anonymous_set = $t_set;
+				$this->dont_require_login = true;
+				
+				$anonymous_sets[$t_set->getPrimaryKey()] = $guid;
+				Session::setVar('anonymous_sets', $anonymous_sets);
+			} else {
+				$response->setRedirect(caNavUrl($request, "", "LoginReg", "LoginForm"));
+				$this->is_login_redirect = true;
+				return;
+			}
 		}
 		
+		parent::__construct($request, $response, $view_paths);
+
 		$t_user_groups = new ca_user_groups();
 		$this->user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
 		$this->view->setVar("user_groups", $this->user_groups);
@@ -105,12 +131,10 @@ class LightboxController extends FindController {
 		
 		$this->lightbox_display_name_singular = $display_name["singular"] ?? _t('Lightbox');
 		$this->lightbox_display_name_plural = $display_name["plural"] ?? _t('Lightboxes');
-		$this->lightbox_section_heading = $display_name["section_heading"] ?? _t('My Lightboxes');
 		$this->lightbox_description_element_code = $this->config->get('lightbox_description_element_code');
 		
 		$this->view->setVar('lightbox_displayname_singular', $this->lightbox_display_name_singular);
 		$this->view->setVar('lightbox_displayname_plural', $this->lightbox_display_name_plural);
-		$this->view->setVar('lightbox_section_heading', $this->lightbox_section_heading);
 		$this->view->setVar('lightbox_description_element_code', $this->lightbox_description_element_code);
 				
  		$this->opa_access_values = caGetOption('checkAccess', $va_browse_info, $this->opa_access_values);
@@ -120,7 +144,6 @@ class LightboxController extends FindController {
 		$this->view->setVar('errors', []);
 		
 		caSetPageCSSClasses(["lightbox"]);
-		
 		parent::setTableSpecificViewVars();
 	}
 	# -------------------------------------------------------
@@ -215,8 +238,7 @@ class LightboxController extends FindController {
 	 */
 	function Detail(?array $options=null) {
 		if($this->is_login_redirect) { return; }
-		$set_id = caGetOption(['id', 'set_id'], $options, $this->request->getActionExtra());
-		
+		$set_id = caGetOption(['id', 'set_id', 'guid'], $options, $this->request->getActionExtra());
 		$limit = 8;
 		$start = (int)$this->request->getParameter('s', pInteger);
 
@@ -251,14 +273,16 @@ class LightboxController extends FindController {
 		$this->view->setVar('configured_modes', $configured_modes);
 		
 		// Load set
-		if(!($t_set = ca_sets::findAsInstance($set_id))) {
+		if($this->anonymous_set) {
+			$t_set = $this->anonymous_set;
+		} elseif(!$set_id || !($t_set = ca_sets::findAsInstance($set_id))) {
 			return $this->Index();
 		}
+		$this->view->setVar('access_is_anonymous', $this->anonymous_set ? true : false);
 		$this->view->setVar('t_set', $t_set);
 		$this->view->setVar('set_id', $set_id);
 		$this->view->setVar('table_num', $table_num = $t_set->get('ca_sets.table_num'));
 		$this->view->setVar('table', Datamodel::getTableName($table_num));
-		
 		
 		// Set configuration options in view
 		$this->view->setVar('caption_template', caGetOption(["caption_template_{$mode}", 'caption_template'], $tconfig, '^ca_objects.preferred_labels'));
@@ -306,7 +330,7 @@ class LightboxController extends FindController {
 			switch(strtolower($dinfo['type'] ?? null)) {
 				case 'media':
 					$downloads[] = array_merge($dinfo, [
-						'url' => caNavUrl($this->request, '*', '*', "Download/{$dcode}", ['id' => $set_id,'type' => $dinfo['type'], 'version' => $dinfo['version'] ?? 'original']),
+						'url' => caNavUrl($this->request, '*', '*', "Download/{$set_id}", ['dcode' => $dcode,'type' => $dinfo['type'], 'version' => $dinfo['version'] ?? 'original']),
 					]);
 					break;
 			}
@@ -316,7 +340,7 @@ class LightboxController extends FindController {
 		$exports = [];
 		foreach($tconfig['exports'] ?? [] as $dcode => $dinfo) {
 			$exports[] = array_merge($dinfo, [
-				'url' => caNavUrl($this->request, '*', '*', "Export/{$dcode}", ['id' => $set_id, 'type' => $dinfo['type'], 'display' => $dinfo['display']]),
+				'url' => caNavUrl($this->request, '*', '*', "Export/{$set_id}", ['dcode' => $dinfo['code'], 'type' => $dinfo['type'], 'display' => $dinfo['display']]),
 			]);
 		}
 		$pdf_exports = caGetAvailablePrintTemplates('results', ['table' => 'ca_objects']);
@@ -325,7 +349,7 @@ class LightboxController extends FindController {
 				$dinfo['label'] = $dinfo['name'];
 				unset($dinfo['name']);
 				$exports[] = array_merge($dinfo, [
-					'url' => caNavUrl($this->request, '*', '*', "Export/{$dinfo['code']}", ['id' => $set_id, 'type' => $dinfo['type']]),
+					'url' => caNavUrl($this->request, '*', '*', "Export/{$set_id}", ['dcode' => $dinfo['code'], 'type' => $dinfo['type']]),
 				]);
 			}
 		}
@@ -510,8 +534,8 @@ class LightboxController extends FindController {
 	 * Search
 	 */
 	function Search(?array $options=null) {
+		$id = $this->request->getActionExtra();	// set_id or guid
 		$t = $this->request->getParameter('t', pString); // table
-		$id = $this->request->getParameter('id', pInteger);	// set_id
 		$search = $this->request->getParameter('search', pString);	// set_id
 		
 		$this->view->setVar('search', $search);
@@ -531,7 +555,7 @@ class LightboxController extends FindController {
 	 * Download
 	 */
 	function Download(?array $options=null) {
-		$id = $this->request->getParameter('id', pInteger);
+		$set_id = $this->request->getActionExtra(); // set_id or guid
 		$type = $this->request->getParameter('type', pString);
 		$item_ids = $this->_getItemIDs($this->request->getParameter('item_id', pString));
 		$version = $this->request->getParameter('version', pString);
@@ -540,8 +564,14 @@ class LightboxController extends FindController {
 
 		$errors = [];
 		
-		if(!($t_set = ca_sets::findAsInstance(['set_id' => $id]))) {
-			$errors[] = _t('Invalid %1 id %2', $this->lightbox_display_name_singular, $id);
+		if(caIsGuid($set_id)) {
+			if(!($t_set = ca_sets::getSetByAnonymousAccessToken($set_id))) {
+				$errors[] = _t('Invalid %1 id %2', $this->lightbox_display_name_singular, $set_id);
+			} else {
+				$set_id = $t_set->getPrimaryKey();
+			}
+		} elseif(!($t_set = ca_sets::findAsInstance(['set_id' => $set_id]))) {
+			$errors[] = _t('Invalid %1 id %2', $this->lightbox_display_name_singular, $set_id);
 		} else {
 			$user_id = $this->request->getUserID();
 			if(!$t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__)) {
@@ -551,7 +581,7 @@ class LightboxController extends FindController {
 		
 		if(sizeof($errors)) { 
 			$this->view->setVar('errors', $errors);
-			return $this->Detail(['id' => $id]);
+			return $this->Detail(['id' => $set_id]);
 		} 
 		
 		$set_items = caExtractValuesByUserLocale($t_set->getItems(['thumbnailVersions' => [$version], 'row_ids' => $select_all ? null : $item_ids]));
@@ -582,13 +612,13 @@ class LightboxController extends FindController {
 	 * Download
 	 */
 	function Export(?array $options=null) {
-		$id = $this->request->getParameter('id', pInteger);
+		$set_id = $this->request->getActionExtra(); // set_id or guid
 		$type = $this->request->getParameter('type', pString);
 		$item_ids = $this->_getItemIDs($this->request->getParameter('item_id', pString));
 		$select_all = (bool)$this->request->getParameter('selectAll', pString);
 		$omit_item_ids = $select_all ? $this->_getItemIDs($this->request->getParameter('omit_item_id', pString)) : null;
 
-		$format = $this->request->getActionExtra();
+		$format = $this->request->getParameter('dcode', pString);
 		
 		// Lightbox options
 		$loptions = $this->config->getAssoc('lightbox_options');
@@ -596,8 +626,14 @@ class LightboxController extends FindController {
 		
 		$errors = [];
 		
-		if(!($t_set = ca_sets::findAsInstance(['set_id' => $id]))) {
-			$errors[] = _t('Invalid %1 id %2', $this->lightbox_display_name_singular, $id);
+		if(caIsGuid($set_id)) {
+			if(!($t_set = ca_sets::getSetByAnonymousAccessToken($set_id))) {
+				$errors[] = _t('Invalid %1 id %2', $this->lightbox_display_name_singular, $set_id);
+			} else {
+				$set_id = $t_set->getPrimaryKey();
+			}
+		} elseif(!($t_set = ca_sets::findAsInstance(['set_id' => $set_id]))) {
+			$errors[] = _t('Invalid %1 id %2', $this->lightbox_display_name_singular, $set_id);
 		} else {
 			$user_id = $this->request->getUserID();
 			if(!$t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__)) {
@@ -607,7 +643,7 @@ class LightboxController extends FindController {
 		
 		if(sizeof($errors)) { 
 			$this->view->setVar('errors', $errors);
-			return $this->Detail(['id' => $id]);
+			return $this->Detail(['id' => $set_id]);
 		} 
 		
 		$set_items = caExtractValuesByUserLocale($t_set->getItems(['thumbnailVersions' => [$version], 'row_ids' => $select_all ? null : $item_ids]));
@@ -780,8 +816,6 @@ class LightboxController extends FindController {
 		}
 		$this->view->setVar('errors', $errors);
 		$this->render('Browse/lightbox_tools_html.php');
-		
-		
 	}
 	# -------------------------------------------------------
 	/*
@@ -791,7 +825,7 @@ class LightboxController extends FindController {
 	/**
 	 * 
 	 */
-	private function _search(string $t, string $search, ?int $set_id=null) : ?array {
+	private function _search(string $t, string $search, $set_id=null) : ?array {
 		if(!($s = caGetSearchInstance($t))){
 			throw new ApplicationException(_t('Invalid type %1', $t));
 		}
@@ -800,15 +834,21 @@ class LightboxController extends FindController {
 		if($t === 'ca_sets') {
 			//$set_ids = $this->_getSetsForUser($this->request->getUserID(), ['ca_sets']) ?? [0];
 			//$s->addResultFilter("{$t}.set_id", 'IN', join(",", $set_ids));
+		} elseif(caIsGUID($set_id)) {
+			$anonymous_sets = Session::getVar('anonymous_sets') ?? [];
+			
+			if($t_set = ca_sets::getSetByAnonymousAccessToken($set_id)) {
+				$search .= " AND (ca_sets.set_id:".$t_set->getPrimaryKey().")";
+			} else {
+				return [];
+			}
 		} elseif($set_id > 0) {
 			$search .= " AND (ca_sets.set_id:{$set_id})";
 		}
 		
 		$qr = $s->search($search, ['checkAccess' => $this->opa_access_values]);
-		
 		Session::setVar("lightbox_search_{$t}", $search);
 		$ids = $qr->getAllFieldValues($key);
-		
 		return $ids;
 	}
 	# -------------------------------------------------------
@@ -860,6 +900,107 @@ class LightboxController extends FindController {
 			'params' => []
 		];
 		return $ret;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function AddAnonymousAccess() {
+		$id = $this->request->getParameter('id', pInteger);
+
+		$name = $this->request->getParameter('urlName', pString);
+		$expirationDate = $this->request->getParameter('expirationDate', pString);
+
+		$t_set = ca_sets::findAsInstance($id);
+		
+		if(!$t_set->haveAccessToSet($user_id = $this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+			throw new ApplicationException(_t('No access to set'));
+		}
+		
+		$this->view->setVar('t_set', $t_set);
+
+		$new_token = [
+			'name' => $name ?: 'Untitled', 
+			'access' => 1,  
+			'effective_date' => $expirationDate
+		];
+
+		$success = $t_set->addAnonymousAccessTokens([$new_token]);
+		
+		$log = caGetAccessLogger();
+
+		// If successful, refresh the shared links list
+		if ($success) {
+			$this->view->setVar('success_message', 'New share link added');
+			
+			$log->logJSON('AddAnonymousAccess', [
+				'user' => $this->request->user->get('user_name'),
+				'name' => $name,
+				'expirationDate' => $expirationDate,
+				'message' => 'New share link added',
+			], 'INFO');
+			
+		} else {
+			// echo "Error adding new token";
+			$this->view->setVar('error_message', 'Error adding new token');
+
+			$log->logJSON('AddAnonymousAccess', [
+				'user' => $this->request->user->get('user_name'),
+				'name' => $name,
+				'expirationDate' => $expirationDate,
+				'message' => 'Error adding new token',
+			], 'ERR');
+		}
+		$this->render("Lightbox/anonymous_access_list_html.php");
+	}
+
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function RemoveAnonymousAccess() {
+		$id = $this->request->getParameter('id', pInteger);
+		$guid = $this->request->getParameter('guid', pString);
+
+		// TODO: pass name and expiration in the request for logging purposes
+		$name = $this->request->getParameter('urlName', pString);
+		$expirationDate = $this->request->getParameter('expirationDate', pString);
+
+
+		$t_set = ca_sets::findAsInstance($id);
+
+		if(!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+			throw new ApplicationException(_t('No access to set'));
+		}
+
+		$this->view->setVar('t_set', $t_set);
+
+		$success = $t_set->removeAnonymousAccessTokens([$guid]);
+
+		$log = caGetAccessLogger();
+
+		// If successful, refresh the shared links list
+		if ($success) {
+			$this->view->setVar('success_message', 'Share link removed');
+
+			$log->logJSON('RemoveAnonymousAccess', [
+				'user' => $this->request->user->get('user_name'),
+				'name' => $name,
+				'expirationDate' => $expirationDate,
+				'message' => 'Share link removed',
+			], 'INFO');
+		} else {
+			// echo "Error removing token";
+			$this->view->setVar('error_message', 'Error removing token');
+
+			$log->logJSON('RemoveAnonymousAccess', [
+				'user' => $this->request->user->get('user_name'),
+				'name' => $name,
+				'expirationDate' => $expirationDate,
+				'message' => 'Error removing token',
+			], 'ERR');
+		}
+		$this->render("Lightbox/anonymous_access_list_html.php");
 	}
 	# -------------------------------------------------------
 }
