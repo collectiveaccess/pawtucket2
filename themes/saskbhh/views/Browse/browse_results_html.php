@@ -24,45 +24,44 @@
  * http://www.CollectiveAccess.org
  *
  * ----------------------------------------------------------------------
- */
+*/
+$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
+$va_facets 			= $this->getVar('facets');				// array of available browse facets
+$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
+$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
+$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
+$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
+$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
+$vn_is_advanced		= (int)$this->getVar('is_advanced');
+$vb_showLetterBar	= (int)$this->getVar('showLetterBar');	
+$va_letter_bar		= $this->getVar('letterBar');	
+$vs_letter			= $this->getVar('letter');
+$vn_row_id 			= $this->request->getParameter('row_id', pInteger);
 
-	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
-	$va_facets 			= $this->getVar('facets');				// array of available browse facets
-	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
-	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
-	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
-	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
-	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
-	$vn_is_advanced		= (int)$this->getVar('is_advanced');
-	$vb_showLetterBar	= (int)$this->getVar('showLetterBar');	
-	$va_letter_bar		= $this->getVar('letterBar');	
-	$vs_letter			= $this->getVar('letter');
-	$vn_row_id 			= $this->request->getParameter('row_id', pInteger);
-	
-	$va_views			= $this->getVar('views');
-	$vs_current_view	= $this->getVar('view');
-	$va_view_icons		= $this->getVar('viewIcons');
-	
-	$vs_current_sort	= $this->getVar('sort');
-	$vs_sort_dir		= $this->getVar('sort_direction');
-	
-	$vs_table 			= $this->getVar('table');
-	$t_instance			= $this->getVar('t_instance');
-	
-	$vb_is_search		= ($this->request->getController() == 'Search');
+$va_views			= $this->getVar('views');
+$vs_current_view	= $this->getVar('view');
+$va_view_icons		= $this->getVar('viewIcons');
 
-	$vn_result_size 	= $qr_res->numHits();
-	
-	
-	$va_options			= $this->getVar('options');
-	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
-	$vb_ajax			= (bool)$this->request->isAjax();
-	$va_browse_info = $this->getVar("browseInfo");
-	$o_config = $this->getVar("config");
-	$va_export_formats = $this->getVar('export_formats');
-	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
-	$va_all_facets = $va_browse_type_info["facets"];	
-	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+$vs_current_sort	= $this->getVar('sort');
+$vs_sort_dir		= $this->getVar('sort_direction');
+
+$vs_table 			= $this->getVar('table');
+$t_instance			= $this->getVar('t_instance');
+
+$vb_is_search		= ($this->request->getController() == 'Search');
+
+$vn_result_size 	= $qr_res->numHits();
+
+
+$va_options			= $this->getVar('options');
+$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
+$vb_ajax			= (bool)$this->request->isAjax();
+$va_browse_info = $this->getVar("browseInfo");
+$o_config = $this->getVar("config");
+$va_export_formats = $this->getVar('export_formats');
+$va_browse_type_info = $o_config->get($va_browse_info["table"]);
+$va_all_facets = $va_browse_type_info["facets"];	
+$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -89,8 +88,6 @@ if (!$vb_ajax) {	// !ajax
 			</div>
 			<div class="col-md-12 col-lg-7 text-lg-end">
 				<ul class="list-group list-group-horizontal justify-content-lg-end small">
- 					
-
 <?php
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<li class='list-group-item border-0 px-0 pt-1'>\n";

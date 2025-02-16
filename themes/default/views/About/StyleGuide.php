@@ -49,6 +49,12 @@
 			<p class="fw-lighter">.fw-lighter Lighter weight text (relative to the parent element).</p>
 			<p class="fst-italic">.fst-italic Italic text.</p>
 			<p class="fst-normal">.fst-normal Text with normal font style</p>
+			<div class="my-3">
+				<div id="readMoreDiv" class="readMore mb-2">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</div>
+				<button id="readMoreBtn" class="btn btn-white btn-sm readMoreButton" hx-on:click="htmx.toggleClass(htmx.find('#readMoreDiv'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreBtn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button>
+			</div>
 		</div>
 		<div class="col-4">
 			<h2>Links</h2>
