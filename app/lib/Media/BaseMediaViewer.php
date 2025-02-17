@@ -58,8 +58,9 @@ class BaseMediaViewer {
 		$check_access = caGetOption('checkAccess', $options, null);
 		
 		$display_version = caGetOption('display_version', $data['display'], null);
+		$display_type = caGetOption('display_type', $data, null);
 		$subject_table = $t_subject ? $t_subject->tableName() : null;
-		
+				
 		// Controls
 		$controls = '';
 		if ($t_subject) {
@@ -70,6 +71,8 @@ class BaseMediaViewer {
 			} elseif(is_a($t_instance, 'BundlableLabelableBaseModelWithAttributes')) {
 				// for everything except ca_site_page_media
 				$media_overlay_titlebar_text = caTruncateStringWithEllipsis($t_subject->get($t_instance->tableName().'.preferred_labels'), 80)." (".$t_instance->get($t_subject->tableName().'.'.$t_subject->getProperty('ID_NUMBERING_ID_FIELD')).")";
+			} elseif(is_a($t_instance, 'ca_attribute_values')) {
+				$media_overlay_titlebar_text = caTruncateStringWithEllipsis($t_subject->get($t_subject->tableName().'.preferred_labels'), 80)." (".$t_subject->get($t_subject->tableName().'.'.$t_subject->getProperty('ID_NUMBERING_ID_FIELD')).")";
 			} else {
 				// for ca_site_page_media 
 				$media_overlay_titlebar_text = caTruncateStringWithEllipsis($t_instance->get($t_instance->tableName().'.'.array_shift($t_instance->getProperty('LIST_FIELDS'))), 80)." (".$t_instance->get($t_instance->tableName().'.'.$t_instance->getProperty('ID_NUMBERING_ID_FIELD')).")";
@@ -168,7 +171,9 @@ class BaseMediaViewer {
 		$o_view->setVar('hideAllOverlayControls', caGetOption('hideAllOverlayControls', $options, false));
 		$o_view->setVar('hideOverlayControls', caGetOption('hideOverlayControls', $options, false));
 		$o_view->setVar('controls', $controls);
-	
+		$o_view->setVar('displayType', $display_type);
+		$o_view->setVar('displayInfo', $data['display']);
+		
 		return $o_view->render(caGetOption('viewerWrapper', $options, 'viewerWrapper').'.php');
 	}
 	# -------------------------------------------------------

@@ -202,10 +202,10 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 						<div class="enterButton"><a href="https://irshdc.ubc.ca/for-survivors/healing-and-wellness-resources/" class="btn btn-default">Wellness Resources</a></div>
 					</div>
 					<div class="col-md-6 col-lg-5 col-lg-offset-2">
-<?php
-	$url = caNavLink($this->request, "Enter", "btn btn-default", "*", "*", "*", ["confirmEnter" => 1]);
-?>
-						<div class="enterButton"><?= $url; ?></div>
+						<form method="POST" action="<?php print caNavUrl($this->request, '*', '*', '*'); ?>">
+							<input type="hidden" name="confirmEnter" value="1">
+							<div class="enterButton"><button type="submit" class="btn btn-default">Enter</button></div>
+						</form>
 					</div>
 				</div>
 			</div>

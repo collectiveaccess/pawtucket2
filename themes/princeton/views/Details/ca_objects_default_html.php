@@ -97,6 +97,12 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 					<div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br>"><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></unit>
 					</div>
 				</ifcount>}}}
+				{{{<ifdef code="ca_objects.parent_id" min="1">
+					<div class="unit"><label>Part Of</label>
+					<unit relativeTo="ca_objects.parent" delimiter="<br/>">
+						<l>^ca_objects.preferred_labels.name</l>
+					</unit>
+				</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.item_type"><div class="unit"><label>Object Type</label><unit relativeTo="ca_objects.item_type" delimiter=", ">^ca_objects.item_type</unit></div></ifdef>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="contributor,creator">
@@ -106,6 +112,12 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 					</unit>
 				</div></ifcount>}}}
 				{{{<if rule='^ca_objects.unknown =~ /Yes/'><div class="unit"><label>Creator</label>Unknown</div></if>}}}
+				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="owner">
+					<div class="unit"><label>Owner<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="owner">s</ifcount> (Historic)</label>
+					<unit relativeTo="ca_entities" restrictToRelationshipTypes="owner" delimiter="<br>">
+						<l>^ca_entities.preferred_labels.displayname</l>
+					</unit>
+				</div></ifcount>}}}
 				{{{<ifdef code="ca_objects.date.sort_date|ca_objects.date.display_date">
 					<div class="unit"><label>Date</label>
 						<unit relativeTo="ca_objects.date" delimiter="<br>">
@@ -189,7 +201,6 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 		</div><!-- end row -->
 		<div class="row">
 			<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1'>
-				<hr>
 <?php
 				if($this->getVar("representation_id")){
 ?>
@@ -215,6 +226,36 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 				{{{<ifdef code="ca_objects.credit"><div class="unit"><label>Credit</label>^ca_objects.credit</div></ifdef>}}}
 			</div>
 		</div>
+		
+		{{{<ifcount code="ca_objects.children" min="1">
+			<div class="row">
+				<div class="col-sm-12">
+					<br><H2>Contains</H2>
+					<hr>
+				</div>
+			</div>
+			<div class="row featuredObjects">
+				<unit relativeTo="ca_objects.children" delimiter=" " sort="ca_objects.rank">
+					<div class='col-sm-3'><l><div class='featuredObject'><div class='featuredObjectImage'>^ca_object_representations.media.medium</div><div class='featuredObjectsCaption'><small>^ca_objects.idno</small><br>^ca_objects.preferred_labels<ifdef code='ca_objects.date.date_display|ca_objects.date.sort_date'><br><ifdef code='ca_objects.date.date_display'>^ca_objects.date.date_display</ifdef><ifnotdef code='ca_objects.date.date_display'>^ca_objects.date.sort_date</ifnotdef></ifdef></div></l></div></div>
+				</unit>
+			</div>
+		</ifcount>}}}
+		
+		{{{<ifdef code="ca_objects.parent_id" min="1"><unit relativeTo="ca_objects.parent">
+			<ifcount code="ca_objects.children" min="2">
+				<div class="row">
+					<div class="col-sm-12">
+						<br><H2>More From <l>^ca_objects.preferred_labels</l></H2>
+						<hr>
+					</div>
+				</div>
+				<div class="row featuredObjects">
+					<unit relativeTo="ca_objects.children" delimiter=" ">
+						<div class='col-sm-3'><l><div class='featuredObject'><div class='featuredObjectImage'>^ca_object_representations.media.medium</div><div class='featuredObjectsCaption'><small>^ca_objects.idno</small><br>^ca_objects.preferred_labels<ifdef code='ca_objects.date.date_display|ca_objects.date.sort_date'><br><ifdef code='ca_objects.date.date_display'>^ca_objects.date.date_display</ifdef><ifnotdef code='ca_objects.date.date_display'>^ca_objects.date.sort_date</ifnotdef></ifdef></div></l></div></div>
+					</unit>
+				</div>
+			</ifcount>
+		</unit></ifdef>}}}	
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>

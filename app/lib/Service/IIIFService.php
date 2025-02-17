@@ -43,13 +43,17 @@ class IIIFService {
 	 * @throws Exception
 	 */
 	public static function dispatch(string $identifier, RequestHTTP $request, ResponseHTTP $response) {
-		$response->addHeader('Cache-Control', 'max-age=86400, private', true); // Cache all responses for 1 day.
+		if(defined('__CA_APP_TYPE__') && (__CA_APP_TYPE__ === 'PROVIDENCE') && !$request->isLoggedIn()) {
+			throw new AccessException(_t('Not logged in'));
+		}
+		
+		$response->addHeader('Cache-Control', 'max-age=3600, private', true); // Cache all responses for 1 hour.
 
 		$va_path = array_filter(array_slice(explode("/", $request->getPathInfo()), 3), 'strlen');
 		$vs_key = $identifier."/".join("/", $va_path);
 		
 		if ($vs_tile = CompositeCache::fetch($vs_key, 'IIIFTiles')) {
-		    header("Content-type: ".CompositeCache::fetch($vs_key, 'IIIFTileTypes'));
+		    $response->setContentType(CompositeCache::fetch($vs_key, 'IIIFTileTypes'));
 		    $response->addContent($vs_tile);
 		    return true;
 		}
@@ -57,10 +61,6 @@ class IIIFService {
 		// BASEURL:		{scheme}://{server}{/prefix}/{identifier}
 		// INFO: 		{scheme}://{server}{/prefix}/{identifier}/info.json
 		// IMAGE:		{scheme}://{server}{/prefix}/{identifier}/{region}/{size}/{rotation}/{quality}.{format}
-		
-		if(((sizeof($va_path) > 1) && ($va_path[0] === 'info.json'))) {
-			array_shift($va_path);
-		}
 		
 		if (sizeof($va_path) == 0) { 
 			$response->setRedirect($request->getFullUrlPath()."/info.json");
@@ -71,7 +71,7 @@ class IIIFService {
 		$pb_is_info_request = false;
 		if (($ps_region = array_shift($va_path)) == 'info.json') {
 			$pb_is_info_request = true;
-			//$vb_cache = false;
+			$vb_cache = false;
 		} else {
 			$ps_size = array_shift($va_path);
 			$ps_rotation = array_shift($va_path);
@@ -163,7 +163,7 @@ class IIIFService {
 	
 		if ($pb_is_info_request) {
 			// Return JSON-format IIIF metadata
-			header("Content-type: application/json");
+		    $response->setContentType('application/json');
 			header("Access-Control-Allow-Origin: *");
 			$response->addContent(caFormatJson(json_encode($va_image_info)));
 			return true;
@@ -233,7 +233,7 @@ class IIIFService {
 				$vn_tile = ceil($y * $vn_num_tiles_per_row) + ceil($x) + 1;
 				$vn_tile_num = $vn_tile_offset + $vn_tile;
 				
-				header("Content-type: ".$va_tilepic_info['PROPERTIES']['tile_mimetype']);
+				$response->setContentType($va_tilepic_info['PROPERTIES']['tile_mimetype']);
 				
 				$vs_tile = TilepicParser::getTileQuickly($va_media_paths['tilepic'], $vn_tile_num, true);
 				CompositeCache::save($vs_key, $vs_tile, 'IIIFTiles');
@@ -286,8 +286,7 @@ class IIIFService {
 			$vs_output_path = IIIFService::processImage($vs_image_path, $vs_mimetype, $va_operations, $request);
 			
 			// TODO: should we be caching output?
-		
-			header("Content-type: {$vs_mimetype}");
+			$response->setContentType($vs_mimetype);
 			header("Content-length: ".filesize($vs_output_path));
 			header("Access-Control-Allow-Origin: *");
 			
@@ -665,10 +664,6 @@ class IIIFService {
 	 *
 	 */
 	public static function manifest($identifiers, ?array $options=null) : array {
-		header("Access-Control-Allow-Origin: *");
-        header('Access-Control-Allow-Credentials: true');
-        header('Access-Control-Max-Age: 86400');    // cache for 1 day
-        
 		if(!$identifiers) { return null; }
 		if(!is_array($identifiers)) { $identifiers = [$identifiers]; }
 		

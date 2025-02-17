@@ -264,6 +264,9 @@ if (!$vb_ajax) {	// !ajax
 		<!-- </H1> -->
 <?php
 		
+		if(strToLower($this->request->getAction()) == "works"){
+			print "<div class='resultsIntro'>".$this->getVar("works_intro")."</div>";
+		}
 		# --- if browsing by a sub collection, show the linkable breadcrumb trail to the parent collection records
 		if (sizeof($va_criteria) > 0){
 			foreach($va_criteria as $va_criteria_info){
