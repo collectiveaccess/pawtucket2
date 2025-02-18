@@ -340,6 +340,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$this->BUNDLES['ca_user_groups'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Group access'));
 		$this->BUNDLES['ca_set_items'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Set items'));
 		
+		$this->BUNDLES['_itemCount'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Number of items in set'));
+		
 		$this->BUNDLES['hierarchy_navigation'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Hierarchy navigation'));
 		$this->BUNDLES['hierarchy_location'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Location in hierarchy'));
 	}
@@ -1032,7 +1034,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 */
 	public function haveAccessToSet($user_id, $access, $set_id=null, $options=null) {
 		if(!$set_id) { $set_id = $this->getPrimaryKey(); }
-		return array_shift($this->haveAccessToSets($user_id, $access, [$set_id], $options));
+		
+		$levels = $this->haveAccessToSets($user_id, $access, [$set_id], $options);
+		return is_array($levels) ? array_shift($levels) : false;
 	}
 	# ------------------------------------------------------
 	/**
@@ -1046,7 +1050,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *
 	 * @return array Array of access levels, keyed on set_id
 	 */
-	public function haveAccessToSets(int $user_id, int $access, ?array $set_ids, ?array $options=null) {
+	public function haveAccessToSets(?int $user_id, int $access, ?array $set_ids, ?array $options=null) {
+		if(!$user_id) { return false; }
 		if(is_array($set_ids)) {
 			$set_ids = array_filter($set_ids, function($v) { return (bool)$v; });
 		}
@@ -1845,7 +1850,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 */
 	public function getItemsAsSearchResult($options=null) {
 		if(!$this->isLoaded()) { return null; }
-		$ids = $this->getItems(['idsOnly' => true]);
+		$ids = $this->getItems(array_merge($options, ['sort' => null, 'sortDirection' => null, 'idsOnly' => true, 'start' => 0, 'limit' => null]));
 
 		return caMakeSearchResult(Datamodel::getTableName($this->get('ca_sets.table_num')), $ids, $options);
 	}
@@ -1879,6 +1884,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * 			template =
 	 *			templateDescription = 
 	 *			item_ids = array of set item_ids to limit results to -> used by getPrimaryItemsFromSets so don't have to replicate all the functionality in this function
+	 *			class = CSS class to apply to representation tags. [Default is null]
 	 *
 	 * @return array An array of items. The format varies depending upon the options set. If returnRowIdsOnly or returnItemIdsOnly are set then the returned array is a 
 	 *			simple list of ids. The full return array is key'ed on ca_set_items.item_id and then on locale_id. The values are arrays with keys set to a number of fields including:
@@ -1899,6 +1905,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$o_db = $this->getDb();
 		
 		$sort = caGetOption('sort', $pa_options, null);
+		$class = caGetOption('class', $pa_options, null);
 		
 		$t_rel_label_table = null;
 		if (!($t_rel_table = Datamodel::getInstanceByTableNum($this->get('table_num'), true))) { return null; }
@@ -1926,6 +1933,10 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$vs_item_ids_sql = '';
 		if (isset($pa_options['item_ids']) && (is_array($pa_options['item_ids'])) && (sizeof($pa_options['item_ids']) > 0)) {
 			$vs_item_ids_sql = " AND casi.item_id IN (".join(", ", $pa_options['item_ids']).") ";
+		}
+		$vs_row_ids_sql = '';
+		if (isset($pa_options['row_ids']) && (is_array($pa_options['row_ids'])) && (sizeof($pa_options['row_ids']) > 0)) {
+			$vs_row_ids_sql = " AND casi.row_id IN (".join(", ", $pa_options['row_ids']).") ";
 		}
 		// get set items
 		$vs_access_sql = '';
@@ -1983,7 +1994,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			INNER JOIN ".$t_rel_table->tableName()." AS rel ON rel.".$t_rel_table->primaryKey()." = casi.row_id
 			{$vs_label_join_sql}
 			WHERE
-				casi.set_id = ? {$vs_access_sql} {$vs_deleted_sql} {$vs_item_ids_sql} AND casi.deleted = 0
+				casi.set_id = ? {$vs_access_sql} {$vs_deleted_sql} {$vs_item_ids_sql} {$vs_row_ids_sql} AND casi.deleted = 0
 			ORDER BY 
 				casi.`rank` ASC
 			{$vs_limit_sql}
@@ -2031,7 +2042,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			{$vs_label_join_sql}
 			{$vs_rep_join_sql}
 			WHERE
-				casi.set_id = ? {$vs_rep_where_sql} {$vs_access_sql} {$vs_deleted_sql} {$vs_item_ids_sql}  AND casi.deleted = 0
+				casi.set_id = ? {$vs_rep_where_sql} {$vs_access_sql} {$vs_deleted_sql} {$vs_item_ids_sql} {$vs_row_ids_sql} AND casi.deleted = 0
 			ORDER BY 
 				casi.`rank` ASC
 			{$vs_limit_sql}
@@ -2092,7 +2103,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 					$vs_alt_text = array_shift($va_alt_tags);
 				}
 				if (isset($pa_options['thumbnailVersion'])) {
-					$va_row['representation_tag'] = $qr_res->getMediaTag('media', $pa_options['thumbnailVersion'], array("alt" => $vs_alt_text));
+					$va_row['representation_tag'] = $qr_res->getMediaTag('media', $pa_options['thumbnailVersion'], ["class" => $class, "alt" => $vs_alt_text]);
 					$va_row['representation_url'] = $qr_res->getMediaUrl('media', $pa_options['thumbnailVersion']);
 					$va_row['representation_path'] = $qr_res->getMediaPath('media', $pa_options['thumbnailVersion']);
 					$va_row['representation_width'] = $qr_res->getMediaInfo('media',  $pa_options['thumbnailVersion'], 'WIDTH');
@@ -2102,7 +2113,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				
 				if (isset($pa_options['thumbnailVersions']) && is_array($pa_options['thumbnailVersions'])) {
 					foreach($pa_options['thumbnailVersions'] as $vs_version) {
-						$va_row['representation_tag_'.$vs_version] = $qr_res->getMediaTag('media', $vs_version, array("alt" => $vs_alt_text));
+						$va_row['representation_tag_'.$vs_version] = $qr_res->getMediaTag('media', $vs_version, ["class" => $class, "alt" => $vs_alt_text]);
 						if(!defined('__CA_IS_SERVICE_REQUEST__')) {
 							global $g_request;
 							$va_row['representation_tag_'.$vs_version.'_as_link'] = caDetailLink($g_request, $qr_res->getMediaTag('media', $vs_version, array("alt" => $vs_alt_text)), '', $t_rel_table->tableName(), $qr_res->get("ca_set_items.row_id"));
@@ -2201,17 +2212,70 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	# ------------------------------------------------------
 	/**
 	 * Return number of items in currently loaded set. Will return null if no set is
+	 * loaded and set_id option is not set, and zero if set is loaded but you don't have access to it.
+	 *
+	 * @array $ootions
+	 * 
+	 * @return int Number of items in the set
+	 */
+	public function getItemCount($options=null) {
+		$user_id = isset($options['user_id']) ? (int)$options['user_id'] : null;
+		$set_id = $set_id_option = caGetOption('set_id', $options, null);
+		if(!$set_id && !($set_id = $this->getPrimaryKey())) { return null; }
+		if ($user_id && !$this->haveAccessToSet($user_id, __CA_SET_READ_ACCESS__)) { return 0; }
+		
+		$o_db = $this->getDb();
+		
+		$table_num = $this->get('table_num');
+		if($set_id_option && ($tn = $this->getFieldValuesForIDs([$set_id], ['table_num']))) {
+			$table_num = $tn[$set_id] ?? null;
+		}
+		if (!($t_rel_table = Datamodel::getInstanceByTableNum($table_num, true))) { return null; }
+		$vs_rel_table_name = $t_rel_table->tableName();
+		$vs_rel_table_pk = $t_rel_table->primaryKey();
+		
+		$access_sql = '';
+		if (isset($options['checkAccess']) && is_array($options['checkAccess']) && sizeof($options['checkAccess']) && $t_rel_table->hasField('access')) {
+			$access_sql = ' AND '.$vs_rel_table_name.'.access IN ('.join(',', $options['checkAccess']).')';
+		}	
+		$deleted_sql = '';
+		if ($t_rel_table->hasField('deleted')) {
+			$deleted_sql = " AND {$vs_rel_table_name}.deleted = 0";
+		}
+		
+		$qr_res = $o_db->query("
+			SELECT count(distinct ca_set_items.row_id) c
+			FROM ca_set_items
+			INNER JOIN {$vs_rel_table_name} ON {$vs_rel_table_name}.{$vs_rel_table_pk} = ca_set_items.row_id
+			WHERE
+				ca_set_items.set_id = ? {$deleted_sql} {$access_sql} AND (ca_set_items.deleted = 0)
+		", (int)$set_id);
+		
+		if ($qr_res->nextRow()) {
+			return (int)$qr_res->get('c');
+		}
+		return 0;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Return number of items in currently loaded set. Will return null if no set is
 	 * loaded and zero if set is loaded but you don't have access to it.
 	 *
 	 * @return int Number of items in the set
 	 */
-	public function getItemCount($pa_options=null) {
+	public function getItemCountsForSets(array $set_ids, ?array $options=null) {
 		$vn_user_id = isset($pa_options['user_id']) ? (int)$pa_options['user_id'] : null;
-		if(!($vn_set_id = $this->getPrimaryKey())) { return null; }
+		$vn_set_id = $set_id_option = caGetOption('set_id', $pa_options, null);
+		if(!$vn_set_id && !($vn_set_id = $this->getPrimaryKey())) { return null; }
 		if ($vn_user_id && !$this->haveAccessToSet($vn_user_id, __CA_SET_READ_ACCESS__)) { return 0; }
 		
 		$o_db = $this->getDb();
-		if (!($t_rel_table = Datamodel::getInstanceByTableNum($this->get('table_num'), true))) { return null; }
+		
+		$table_num = $this->get('table_num');
+		if($set_id_option && ($tn = $this->getFieldValuesForIDs([$vn_set_id], ['table_num']))) {
+			$table_num = $tn[$vn_set_id] ?? null;
+		}
+		if (!($t_rel_table = Datamodel::getInstanceByTableNum($table_num, true))) { return null; }
 		$vs_rel_table_name = $t_rel_table->tableName();
 		$vs_rel_table_pk = $t_rel_table->primaryKey();
 		
@@ -2856,7 +2920,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				
 				$vs_type = $this->getTypeName($qr_res->get('type_id'));
 			
-				$created = $this->getCreationTimestamp($set_id);
+				//$created = $this->getCreationTimestamp($set_id);
 				$va_sets[$set_id = $qr_res->get('set_id')] = array_merge($qr_res->getRow(), [
 					'set_content_type' => $vs_set_type, 'set_type' => $vs_type,
 					'label' => $labels[$set_id], 'count' => isset($counts[$set_id]) ? $counts[$set_id] : 0,
@@ -3627,6 +3691,26 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		}
 		return true;
 	}
+	# ------------------------------------------------------------------
+	/**
+	 * Load get using anonymous access token 
+	 *
+	 * @return ca_set
+	 */ 
+	public static function getSetByAnonymousAccessToken(string $guid) : ?ca_sets {
+		if(caIsGuid($guid) && ($t_token = ca_sets_x_anonymous_access::findAsInstance(['guid' => $guid]))) {
+			$date = $t_token->get('ca_sets_x_anonymous_access.effective_date');
+			if($date) {
+				$ts = caDateToUnixTimestamps($date);
+				$t = time();
+				if(is_array($ts) && !(($ts['start'] <= $t) && ($ts['end'] >= $t))) {
+					return null;
+				}
+			}
+			return ca_sets::findAsInstance(['set_id' => $t_token->get('set_id')]);
+		}
+		return null;
+	}
 	# ------------------------------------------------------------------		
 	/**
 	 * Generate editor bundle for management of anonymous access tokens
@@ -3649,4 +3733,17 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		return $o_view->render('ca_sets_x_anonymous_access.php');
 	}
 	# ---------------------------------------------------------------
+	/**
+	 *
+	 */
+	public function renderBundleForDisplay($bundle_name, $row_id, $values, $options=null) {
+		
+		switch($bundle_name) {
+			case '_itemCount':
+				return $this->getItemCount(['set_id' => $row_id]);
+				break;
+		}
+		return null;
+	}
+	# ------------------------------------------------------
 }

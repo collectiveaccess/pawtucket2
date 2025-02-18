@@ -5823,7 +5823,6 @@ function caEscapeFilenameForDownload(string $filename, ?array $options=null) : s
 	}
 	return $v;
 }
-
 # ------------------------------------------------------------------
 /**
  * Generate name for downloaded representation media file based upon app.conf 

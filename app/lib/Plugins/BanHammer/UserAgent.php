@@ -144,5 +144,3 @@ class WLPlugBanHammerUserAgent Extends BaseBanHammerPlugin  {
 	}
 	# ------------------------------------------------------
 }
-// 
-//     exclude_useragents = []
