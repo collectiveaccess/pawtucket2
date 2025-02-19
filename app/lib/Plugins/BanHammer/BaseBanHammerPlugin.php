@@ -90,4 +90,5 @@ class BaseBanHammerPlugin {
 	static public function getLogger() {
 		return self::$config->get('logging') ? caGetLogger(['logName' => 'ban']) : null;
 	}
+	# ------------------------------------------------------
 }
