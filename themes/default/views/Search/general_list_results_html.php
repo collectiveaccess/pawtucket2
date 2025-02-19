@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2014 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,35 +25,42 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	$qr_results 		= $this->getVar('result');
-	$va_block_info 		= $this->getVar('blockInfo');
-	$vs_block 			= $this->getVar('block');
-	$vn_num_items_to_show 	= (int)$this->getVar('numItemsToShow');
-	$vb_has_more 		= (bool)$this->getVar('hasMore');
-	$vs_search 			= (string)$this->getVar('search');
-	$o_config = $this->getVar("config");
-	$o_browse_config = caGetBrowseConfig();
-	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
-	$vs_caption_template = $this->getVar('resultCaption');
-	$va_access_values = caGetUserAccessValues($this->request);
-	
+$qr_results 		= $this->getVar('result');
+$block_info 		= $this->getVar('blockInfo');
+$block 				= $this->getVar('block');
+$num_items_to_show 	= (int)$this->getVar('numItemsToShow');
+$has_more 			= (bool)$this->getVar('hasMore');
+$search 			= (string)$this->getVar('search');
+$o_config 			= $this->getVar("config");
+$o_browse_config 	= caGetBrowseConfig();
+$browse_types 		= array_keys($o_browse_config->get("browseTypes"));
+$caption_template	= $this->getVar('resultCaption');
+$access_values 		= caGetUserAccessValues($this->request);
 
-	if ($qr_results->numHits() > 0) {
-		$vn_i = 0;
-		print "<dl class='row'><dt class='col-12 mt-3 mb-2 text-capitalize'>".$qr_results->numHits()." ".(($qr_results->numHits() == 1) ? $va_block_info["labelSingular"] : $va_block_info["labelPlural"])."</dt>";
-		while($qr_results->nextHit()) {
-			print "<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>";
-			print $qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values));
-			print "</dd>";
-			$vn_i++;
-			if($vn_i == $vn_num_items_to_show){
-				if($qr_results->numHits() > $vn_num_items_to_show){
-					print "<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>".caNavLink($this->request, _t("Full Results")."  <i class='ps-2 bi bi-box-arrow-up-right' aria-label='link out'></i>", "pt-3 pb-4 px-3 d-flex align-items-center justify-content-center bg-dark h-100 w-100 text-white", "", "Search", $vs_block, array("search" => $vs_search))."</dd>";
-				}
-				break;
+if ($qr_results->numHits() > 0) {
+	$i = 0;
+?>
+	<dl class='row'><dt class='col-12 mt-3 mb-2 text-capitalize'><?= $qr_results->numHits()." ".(($qr_results->numHits() == 1) ? $block_info["labelSingular"] : $block_info["labelPlural"]); ?></dt>
+<?php
+	while($qr_results->nextHit()) {
+?>
+		<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>
+			<?= $qr_results->getWithTemplate($caption_template, array("checkAccess" => $access_values)); ?>
+		</dd>
+<?php
+		$i++;
+		if($i == $num_items_to_show){
+			if($qr_results->numHits() > $num_items_to_show) {
+?>
+				<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>
+					<?= caNavLink($this->request, _t("Full Results")."  <i class='ps-2 bi bi-box-arrow-up-right' aria-label='link out'></i>", "pt-3 pb-4 px-3 d-flex align-items-center justify-content-center bg-dark h-100 w-100 text-white", "", "Search", $block, ["search" => $search]); ?>
+				</dd>
+<?php
 			}
+			break;
 		}
-		print "</dl>";
 	}
 ?>
+	</dl>
+<?php
+}

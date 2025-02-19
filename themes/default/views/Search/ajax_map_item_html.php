@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2016-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,8 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 	// other vars: 
- 	// 		ids = list of items associated with this map location
- 	//		table = primary table for results in current search
- 
-	print $this->getVar('contentTemplate');
+// other vars: 
+// 		ids = list of items associated with this map location
+//		table = primary table for results in current search
+print $this->getVar('contentTemplate');

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2018 Whirl-i-Gig
+ * Copyright 2009-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,29 +25,33 @@
  *
  * ----------------------------------------------------------------------
  */
-	
-	$va_elements =			$this->getVar('elements');
-	$va_element_ids = 		$this->getVar('element_ids');
-	$vs_element_set_label = $this->getVar('element_set_label');
-	
+$elements			= $this->getVar('elements');
+$element_ids 		= $this->getVar('element_ids');
+$element_set_label 	= $this->getVar('element_set_label');
 ?>
-		<div>				
+<div>				
 <?php
-			foreach($va_elements as $vn_container_id => $va_element_list) {
-				if ($vn_container_id === '_locale_id') { continue; }
+	foreach($elements as $container_id => $element_list) {
+		if ($container_id === '_locale_id') { continue; }
 ?>
-				<table class="attributeListItem" cellpadding="0px" cellspacing="0px">
+		<table class="attributeListItem" cellpadding="0px" cellspacing="0px">
 <?php
-						foreach($va_element_list as $vs_element) {
-							print '<tr><td class="attributeListItem"><div class="searchFormLineModeElementSubLabel">'.$vs_element."</div></td></tr>\n";
-						}
+				foreach($element_list as $element) {
 ?>
-				</table>
+					<tr>
+						<td class="attributeListItem">
+							<div class="searchFormLineModeElementSubLabel"><?= $element; ?></div>
+						</td>
+					</tr>
 <?php
-			}
+				}
+?>
+		</table>
+<?php
+	}
 
-			if (isset($va_elements['_locale_id'])) {
-				print ($va_elements['_locale_id']['hidden']) ? $va_elements['_locale_id']['element'] : '<div class="formLabel">'._t('Locale ').$va_elements['_locale_id']['element'].'</div>';
-			}
+	if (isset($elements['_locale_id'])) {
+		print ($elements['_locale_id']['hidden']) ? $elements['_locale_id']['element'] : '<div class="formLabel">'._t('Locale ').$elements['_locale_id']['element'].'</div>';
+	}
 ?>
-		</div>
+</div>
