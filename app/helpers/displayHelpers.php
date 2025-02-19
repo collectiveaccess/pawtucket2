@@ -4490,7 +4490,7 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 			
 			$rep['pages'] = [];
 			foreach($rep['pages_previews'] as $i => $p) {
-				$rep['pages'][] = $request->getBaseUrlPath().'/service/IIIF/representation:'.$rep_id.':'.($i+1).'/info.json';
+				$rep['pages'][] = $request->getBaseUrlPath().(caUseCleanUrls() ? '/service' : '/service.php').'/IIIF/representation:'.$rep_id.':'.($i+1).'/info.json';
 			}
 		}
 		
