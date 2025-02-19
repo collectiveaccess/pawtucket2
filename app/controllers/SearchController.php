@@ -129,6 +129,7 @@ class SearchController extends FindController {
 		}
 		
 		$vs_search_expression = $this->opo_result_context->getSearchExpression();
+		$vs_search_expression = str_replace("::slash::", "/", $vs_search_expression);
 		if(!$this->request->isAjax()) {
 			if ($label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
 				$this->opo_result_context->setSearchExpressionForDisplay("{$label}: {$vs_search_expression}"); 
