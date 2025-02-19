@@ -53,7 +53,7 @@ if ($qr_results->numHits() > 0) {
 			if($qr_results->numHits() > $num_items_to_show) {
 ?>
 				<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>
-					<?= caNavLink($this->request, _t("Full Results")."  <i class='ps-2 bi bi-box-arrow-up-right' aria-label='link out'></i>", "pt-3 pb-4 px-3 d-flex align-items-center justify-content-center bg-dark h-100 w-100 text-white", "", "Search", $block, ["search" => $search]); ?>
+					<?= caNavLink($this->request, _t("Full Results")."  <i class='ps-2 bi bi-box-arrow-up-right' aria-label='link out'></i>", "pt-3 pb-4 px-3 d-flex align-items-center justify-content-center bg-dark h-100 w-100 text-white", "", "Search", $block, ["search" => $search], [], ['encodeSlashesInParams'=> true]); ?>
 				</dd>
 <?php
 			}
