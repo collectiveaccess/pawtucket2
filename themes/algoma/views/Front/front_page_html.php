@@ -41,20 +41,19 @@
 
 <div class="container-flex">
 	<div class="parallax hero<?php print $vs_hero; ?>">
-		<div class="container h-75">
-			<div class="row justify-content-center h-100">
-				<div class="col-md-9 col-lg-6 col-xl-5 d-flex h-100 align-items-center">
-					<div class="bg-black bg-opacity-75 text-bg-dark p-5 text-center shadow w-100">
+		<div class="container h-100">
+			<div class="row h-100">
+				<div class="col-md-12 col-lg-10 col-xl-10 d-flex h-100 align-items-center">
+					<div class="text-white p-5 text-left w-100">
 						<div class="py-3">
-							<div class="fs-2 fw-light ">Welcome to</div>
-							<div class="pt-2 display-3 fw-medium">Algoma University Archives</div>
+							<div class="fs-2 fw-light ">Welcome to the</div>
+							<div class="pt-2 display-4 fw-medium">Engracia De Jesus Matias Archives & Special Collections at the Arthur A. Wishart Library</div>
 						</div>
-						<div class="fs-4 pt-1">{{{hp_search_text}}}</div>
 						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'all_collections'); ?>">
-							<div class="input-group pb-3">
+							<div class="input-group pb-3 w-50">
 								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
 								<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
-								<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
+								<button type="submit" class="btn rounded-0 bg-white text-primary" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
 							</div>
 						</form>
 					</div>
@@ -84,40 +83,49 @@
 		</div>
 <?php
 	}
-
-
-
-	# --- display galleries as a grid?
-	#print $this->render("Front/gallery_grid_html.php");
-	# --- display galleries as a slideshow?
-	#print $this->render("Front/gallery_slideshow_html.php");
-	# --- display 1 featured gallery
-	print $this->render("Front/featured_gallery_html.php");
-
+	print $this->render("Front/featured_collections_set_grid_html.php");
 ?>
-<div class="container">
-	<div class="row justify-content-center text-center">
-		<div class="col-md-10 hpExplore my-5 py-5">
-			<H2 class="mb-3">Explore The Archive</H2>
-			<div class="row">
-				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Collections</div></div>", "", "", "Browse", "collections"); ?>
+
+	<div class="container pt-5">
+		<div class="row align-items-center mb-5 pb-5">
+			<div class="col-md-5 mb-3 mb-md-0">
+				<H2 class="fw-semibold fs-3">Find Collections</H2>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				<div class="text-center my-4">
+					<?= caNavLink($this->request, "Browse Collections", "btn btn-primary", "", "Browse", "collections"); ?>
 				</div>
-				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Browse Files</div></div>", "", "", "Browse", "files"); ?>
-				</div>
-				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>About the Archive</div></div>", "", "", "About", "Index"); ?>
+			</div>
+			<div class="col-md-6 offset-md-1 img-fluid">
+				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'frontCollections.jpg', array("alt" => "Page from CAS information sheets")), "", "", "Browse", "collections"); ?>
+			</div>
+		</div>
+		<div class="row align-items-center mb-5 pb-5">
+			<div class="col-md-6 img-fluid mb-3 mb-md-0">
+				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'frontFiles.jpg', array("alt" => "Photo album image in balck and white")), "", "", "Browse", "files"); ?>
+			</div>
+			<div class="col-md-5 offset-md-1">
+				<H2 class="fw-semibold fs-3">Explore Files</H2>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				
+				<div class="text-center my-4">
+					<?= caNavLink($this->request, "Browse Files", "btn btn-primary", "", "Browse", "files"); ?>
 				</div>
 			</div>
 		</div>
+		<div class="row align-items-center mb-5 pb-5">
+			<div class="col-md-5 mb-3 mb-md-0">
+				<H2 class="fw-semibold fs-3">About the Archive</H2>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				
+				<div class="text-center my-4">
+					<?= caNavLink($this->request, "Learn More", "btn btn-primary", "", "About", "index"); ?>
+				</div>
+			</div>
+			<div class="col-md-6 offset-md-1 img-fluid">
+				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'algoma-uni-fall.jpg', array("alt" => "Algoma University in the fall")), "", "", "About", "index"); ?>
+			</div>
+		</div>
 	</div>
-</div>
-<?php
-	# --- display slideshow of random images
-	#print $this->render("Front/featured_set_slideshow_html.php");
-?>
-
 <div class="container-flex">
 	<div class="fade-out bg-black bg-opacity-25 text-bg-dark p-3 text-center shadow w-100 fixed-bottom display-4"><i class="bi bi-chevron-down"></i></div>
 </div>

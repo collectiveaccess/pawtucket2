@@ -73,7 +73,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 ?>
 	<div class="row">
 		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_collections.preferred_labels.name}}}</H1>
+			<H1 class="fs-2">{{{^ca_collections.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_collections.type_id|ca_collections.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_collections.type_id">^ca_collections.type_id</ifdef><ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0">
 		</div>

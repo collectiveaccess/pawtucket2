@@ -85,12 +85,13 @@
 <?php
 	}
 
-
-
 	# --- display galleries as a grid?
-	#print $this->render("Front/gallery_grid_html.php");
+	print $this->render("Front/gallery_grid_html.php");
+
 	# --- display galleries as a slideshow?
+	#TODO: this is broken
 	#print $this->render("Front/gallery_slideshow_html.php");
+
 	# --- display 1 featured gallery
 	print $this->render("Front/featured_gallery_html.php");
 
@@ -116,6 +117,11 @@
 <?php
 	# --- display slideshow of random images
 	print $this->render("Front/featured_set_slideshow_html.php");
+
+	#TODO: this does not render
+	print $this->render("Front/featured_set_grid_html.php");
+
+	print $this->render("Front/gallery_set_links_html.php");
 ?>
 <div class="container">
 	<div class="row justify-content-center my-5">

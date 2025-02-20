@@ -57,6 +57,13 @@ if($show_nav){
 	</div>
 <?php
 }
+if($t_object->get("ca_objects.sensitive.yn", array("convertCodesToDisplayText" => true)) == "Yes"){
+	$generic_detail_cultaral_sensitivity_warning = $this->getVar("detail_cultural_sensitivity_warning");
+	print '<div class="row">
+				<div class="col"><div class="alert alert-danger text-center" role="alert">'.$generic_detail_cultaral_sensitivity_warning.'</div>
+			</div></div>';
+}
+
 ?>
 	<div class="row">
 		<div class="col-md-12">
@@ -95,12 +102,12 @@ if($show_nav){
 		<div class="col-md-6">
 				{{{media_viewer}}}
 		</div>
-		<div class="col-md-6 mb-5">
+		<div class="col-md-6 mb-4">
 			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->
 				<div class="row">
 					<div class="col">				
 						{{{<dl class="mb-0">
-							<ifcount code="ca_entities" restrictToRelationshipTypes="home" min="1">
+							<ifcount code="ca_entities" restrictToRelationshipTypes="repository" min="1">
 								<dt><?= _t('Holding Repository'); ?></dt>
 								<unit relativeTo="ca_entities" restrictToRelationshipTypes="repository" delimiter=" ">
 									<dd><l>^ca_entities.preferred_labels</l></dd>
@@ -134,7 +141,6 @@ if($show_nav){
 								<dt><?= _t('Material(s)'); ?></dt>
 								<unit relativeTo="ca_objects.material" delimiter=" ">
 									<dd>
-										<ifdef code="ca_objects.material.material_text">^ca_objects.material.material_text</ifdef><ifdef code="ca_objects.material.material_text,ca_objects.material.material_generated">, </ifdef>
 										<ifdef code="ca_objects.material.material_generated">^ca_objects.material.material_generated</ifdef>
 									</dd>
 								</unit>
@@ -178,5 +184,22 @@ if($show_nav){
 					</div>
 				</div>
 			</div>
+		
 		</div>
 	</div>
+<?php
+	if($disclaimer = $this->getVar("detail_disclaimer")){
+?>
+	<div class="row">
+		<div class="col-md-6 offset-md-6">	
+			<div class="alert alert-warning text-center mb-5" role="alert">
+<?php	
+		print $disclaimer;
+?>
+			</div>
+		</div>
+	</div>
+<?php
+	}
+?>
+

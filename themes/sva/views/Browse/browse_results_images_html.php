@@ -56,8 +56,6 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 
-	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
@@ -176,10 +174,6 @@
 							$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 						break;
 						# -------------------------------
-					}
-					$vs_add_to_set_link = "";
-					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-						$vs_add_to_set_link = "<a href='#' class='link-dark mx-1' aria-label='Add' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 					$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 					$vs_result_output = "

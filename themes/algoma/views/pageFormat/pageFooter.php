@@ -32,18 +32,28 @@
 		print "</div> <!-- end container -->";
 	}
 ?>
-		<footer id="footer" class="p-5 text-center mt-auto bg-dark text-bg-dark">
+		<footer id="footer" class="pt-5 pb-3 text-center mt-auto position-relative text-dark">
 			<div class="container-xl">
-				<div class="display-4">Algoma University Archives</div>
-				<ul class="list-inline pt-3 fw-medium">
-  					<li class="list-inline-item text-bg-dark small">&copy; 2024</li>
-					<li class="list-inline-item"><a href="#" class="text-bg-dark small">Link</a></li>
-					<li class="list-inline-item"><a href="#" class="text-bg-dark small">Link</a></li>
-				</ul>
-				<ul class="list-inline pt-3">
-  					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Facebook Link"><i class="bi bi-facebook"></i></a></li>
-					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Instagram Link"><i class="bi bi-instagram"></i></a></li>
-				</ul>
+				<div class="row">
+					<div class="col-6 offset-3 col-md-3 offset-md-0 col-lg-2  img-fluid py-5">
+						<a href="https://algomau.ca" target="_blank"><?= caGetThemeGraphic($this->request, 'algoma_logo_rgb_colour.png', array("alt" => "Algoma University")); ?></a>
+						
+					</div>
+					<div class="col-xs-12 col-md-4 offset-md-1 col-lg-8 offset-lg-0 img-fluid text-center">
+						<a href="https://library.algomau.ca" target="_blank"><?= caGetThemeGraphic($this->request, 'WishartLogo.png', array("alt" => "Arthur A. Wishart Library")); ?></a>
+						<div class="pt-5 fs-6">
+							1520 Queen St. East<br/>
+							Sault Ste. Marie,<br/>
+							ON P6A 2G4
+						</div>
+					</div>
+					
+				</div>
+				<div class="row pt-5">
+					<div class="col-12 text-center fs-6">
+						Copyright &copy; <?= date("Y"); ?> Algoma University. All Rights Reserved.
+					</div>
+				</div>
 			</div>
 		</footer><!-- end footer -->
 		

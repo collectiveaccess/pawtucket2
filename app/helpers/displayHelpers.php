@@ -4380,7 +4380,7 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 		
 		$display_version = $display_info['display_version'] ?? null;
 		
-		$iiif_url = $request->getBaseUrlPath().'/service/IIIF/representation:'.$rep_id.'/info.json';
+		$iiif_url = $request->getBaseUrlPath().(caUseCleanUrls() ? '/service' : '/service.php').'/IIIF/representation:'.$rep_id.'/info.json';
 		
 		$vtt_captions = null;
 		if(is_array($vtt_caption_list = $t_rep->getCaptionFileList($rep_id))) {

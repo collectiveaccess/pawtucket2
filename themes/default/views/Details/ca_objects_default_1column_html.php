@@ -53,7 +53,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-3">{{{^ca_objects.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
@@ -74,9 +74,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
 				}
 				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
+					print $this->render('Details/snippets/copy_link_html.php');
 				}
 ?>
 			</div>

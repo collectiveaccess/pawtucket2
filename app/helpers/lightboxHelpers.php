@@ -157,7 +157,7 @@ function caGetLightboxDisplayName($o_lightbox_config = null){
 	}
 	$lightbox_section_heading = $o_lightbox_config->get(["lightbox_section_heading", "lightboxSectionHeading"]);
 	if(!$lightbox_section_heading){
-		$lightbox_section_heading = _t("lightboxes");
+		$lightbox_section_heading = _t("my lightboxes");
 	}
 	return ["singular" => $lightbox_displayname_singular, "plural" => $lightbox_displayname_plural, "section_heading" => $lightbox_section_heading];
 }

@@ -26,6 +26,20 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 .btn.disabled{
 	border-color:transparent;
 }
+.readMore{
+	max-height:3rem;
+	overflow:hidden;
+}
+.readMoreExpanded{
+	max-height:100% !important;
+}
+.readMoreButton::after {
+  content: "Read More";
+}
+.readMoreButton.readMoreButtonExpanded::after {
+  content: "Read Less";
+}
+
 /* ------------------------- Navbar ------------------------- */
 .navbar-brand{
 	width:200px;
@@ -362,7 +376,7 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 	font-size:.9em;
 	padding-bottom:10px;
 }
-.cookieByCategory .cookieCount .fa{
+.cookieByCategory .cookieCount .bi{
 	color:#777;
 }
 .cookieByCategory .cookiesList{
@@ -402,4 +416,11 @@ div.banContinue {
 	text-align: center; 
 	display: none;
 	margin: 48px 0 0 0;
+}
+
+/* ------------------------- Contribute Form ------------------------------ */
+.contribute{
+	table{
+		width:100%;
+	}
 }
