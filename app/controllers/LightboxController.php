@@ -633,13 +633,25 @@ class LightboxController extends FindController {
 			foreach($set_items as $set_item) {
 				if($omit_item_ids && in_array($set_item['row_id'], $omit_item_ids)) { continue; }
 				$f = $set_item["representation_path_{$version}"];
-				$file_paths[$f] = $set_item['idno'].'-'.$c.'.'.pathinfo($f, PATHINFO_EXTENSION);
+				$file_paths[$f] = [
+					'name' => $set_item['idno'].'-'.$c.'.'.pathinfo($f, PATHINFO_EXTENSION),
+					'row_id' => $set_item['row_id']
+				];
 				$c++;
 			}
 		}
+		
+		$md_config = Configuration::load(__CA_CONF_DIR__.'/media_metadata.conf');
+		$do_embedding = (bool)$md_config->get('do_metadata_embedding');
+		
+		$t_instance = Datamodel::getInstance($t_set->get('table_num'));
 		$o_zip = new ZipStream();
-		foreach($file_paths as $path => $name) {
-			// @TODO: do metadata embedding 
+		foreach($file_paths as $path => $info) {
+			$name = $info['name'];
+			if($do_embedding) {
+				$t_instance->load($info['row_id']);
+				$path = caEmbedMediaMetadataIntoFile($t_instance,  $version, ['path' => $path]);
+			}
 			$o_zip->addFile($path, $name);
 		}
 		$this->view->setVar('zip_stream', $o_zip);
