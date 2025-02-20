@@ -1,3 +1,4 @@
+const axios = require('axios').default;
 let mediaViewerManager = function(options=null) {
 	let viewers = {};
 	let that = {
@@ -61,6 +62,13 @@ let mediaViewerManager = function(options=null) {
 				}
 			}
 			
+			button_id = that.options['remove_media_button_id'];
+			if(button_id) {
+				if(e = document.getElementById(button_id)) {
+					options.remove_media_button_classname = e.className;
+				}
+			}
+			
 			
 			if(options.media_list) { that.setMediaList(options.media_list); }
 			
@@ -99,6 +107,18 @@ let mediaViewerManager = function(options=null) {
 			let media_list = that.media_list;
 			if(media_list === undefined) { return false; }
 			if(that.debug) { console.log("[mediaViewerManager::DEBUG]", media_list); }
+			
+			if(media_list.length === 0) {
+				if(that.debug) { console.log("[mediaViewerManager::DEBUG] Media list is empty"); }
+				document.getElementById(that.id + '-container').style.display = 'none';
+				return true;
+			}
+			const viewerElem = document.getElementById(that.id + '-container');
+			
+			if(viewerElem){
+				viewerElem.style.display = 'block';
+			}
+			
 			let m = media_list[index];
 			
 			let display_classes = [];
@@ -117,7 +137,6 @@ let mediaViewerManager = function(options=null) {
 			}
 			
 			let viewer;
-			
 			if(!options['overlay']) {
 				if(that.viewer) { that.viewer.destroy(m); }
 				viewer = that.getViewer(m.media_class, that.options);
@@ -154,9 +173,12 @@ let mediaViewerManager = function(options=null) {
 		//
 		renderPrevious: function(overlay=false) {
 			let media_list = that.media_list;
+			const indices = Object.keys(that.media_list);
 			let index = that.index;
-			if(index > 0) {
-				that.render(index-1);
+			
+			let x = indices.indexOf(''+index);
+			if(x > 0) {
+				that.render(indices[x-1]);
 				if(overlay) { that.showOverlay(); }
 				let overlay_previous_button_id = that.options['overlay_previous_button_id'];
 				let e = null;
@@ -175,10 +197,12 @@ let mediaViewerManager = function(options=null) {
 		//
 		renderNext: function(overlay=false) {
 			let media_list = that.media_list;
+			const indices = Object.keys(that.media_list);
 			let index = that.index;
 			
-			if((index + 1) < media_list.length) {
-				that.render(index+1);
+			let x = indices.indexOf(''+index);
+			if((x + 1) < media_list.length) {
+				that.render(indices[x+1]);
 				if(overlay) { that.showOverlay(); }
 				let overlay_next_button_id = that.options['overlay_next_button_id'];
 				let e = null;
@@ -195,9 +219,42 @@ let mediaViewerManager = function(options=null) {
 		//
 		//
 		//
+		removeMedia: function() {
+			let media_list = that.media_list;
+			let index = that.index;
+			
+			if(media_list[index]) {
+				const url = that.options['media_remove_url'] + '&representation_id=' + media_list[index]['representation_id'] + "&download=1";
+				axios.get(url)
+					.then(function (response) {
+						if(response.data && response.data['ok'] && (response.data['ok'] == 1)) {
+							that.media_list.splice(index,1);
+							const e = document.getElementById('mediaviewer-icon-' + index);
+							console.log('delete media', e, that.media_list, index, Object.keys(that.media_list), that.media_list.length);
+							if(e) { e.remove(); }
+							
+							const indices = Object.keys(that.media_list);
+							that.render(indices.shift());
+							that.updateNextPreviousNavigation();
+						}
+					})
+					.catch(function (error) {
+						console.log(error);
+					})
+					.finally(function () {
+						// noop
+					});
+			} else {
+				return;
+			}
+		},
+		
+		//
+		//
+		//
 		updateNextPreviousNavigation: function() {
 			let media_list = that.media_list;
-			let media_count = media_list.length;
+			let media_count = Object.keys(media_list).length;
 			
 			let e = null; 
 			let next_button_id = that.options['next_button_id'];
@@ -212,6 +269,9 @@ let mediaViewerManager = function(options=null) {
 			
 			let show_overlay_button_id = that.options['show_overlay_button_id'];
 			let download_button_id = that.options['download_button_id'];
+			
+			let remove_media_button_id = that.options['remove_media_button_id'];
+			let remove_media_button_class = that.options['remove_media_button_classname'];
 			
 			let media_count_id = that.options['media_count_id'];
 			
@@ -228,16 +288,23 @@ let mediaViewerManager = function(options=null) {
 			if(show_overlay_button_id) {
 				e = document.getElementById(show_overlay_button_id);
 				if(e) {
-					e.style.display = (media_list[index] && media_list[index]['no_overlay']) ? 'none' : 'inline';
-					
+					if(media_list[index]) {
+						e.style.display = (media_list[index] && media_list[index]['no_overlay']) ? 'none' : 'inline';
+					} else {
+						e.style.display = 'none';
+					}
 				}
 			}
 			
 			if(download_button_id) {
 				e = document.getElementById(download_button_id);
-				if(e) {
-					e.style.display = (media_list[index] && media_list[index]['download_version']) ? 'inline' : 'none';
-					e.href = that.options.media_download_url + "&version=" + media_list[index]['download_version'] + "&representation_id=" + media_list[index]['representation_id'];
+				if (e) {
+					if(media_list[index]) {
+						e.style.display = (media_list[index] && media_list[index]['download_version']) ? 'inline' : 'none';
+						e.href = that.options.media_download_url + "&version=" + media_list[index]['download_version'] + "&representation_id=" + media_list[index]['representation_id'];
+					} else {
+						e.style.display = 'none';
+					}
 				}
 			}
 			
@@ -305,13 +372,26 @@ let mediaViewerManager = function(options=null) {
 					}
 				}
 			}
+			
+			if(remove_media_button_id) { 
+				e = document.getElementById(remove_media_button_id);
+				if(e) {
+					if (media_count < 1) {
+						e.style.display = 'none';
+					} else {
+						e.style.display = 'block';
+					}
+				}
+			}
+			
 			if(that.options.media_selector_id && that.options.media_selector_item_class) {
 				e = document.getElementById(that.options.media_selector_id);
 				if(e) {
 					let selector_items = e.getElementsByClassName(that.options.media_selector_item_class);
-					
-					for(let i=0; i < selector_items.length; i++) {
-						selector_items[i].className = that.options.media_selector_item_class + ((i === index) ? ' ' + that.options.media_selector_item_class_active : '');
+					const indices = Object.keys(that.media_list);
+					for(let i=0; i < indices.length; i++) {
+						let x = parseInt(indices[i]);
+						selector_items[i].className = that.options.media_selector_item_class + ((x === index) ? ' ' + that.options.media_selector_item_class_active : '');
 					}
 				}
 			}
@@ -327,9 +407,7 @@ let mediaViewerManager = function(options=null) {
 			if(m_id && c_id) {
 				let e = document.getElementById(m_id);
 				if(e) {
-					//e.style.display = 'block';
 					e.showModal();
-					//e.focus();
 					document.body.style.overflow = "hidden";
 					e.setAttribute("aria-modal", "true");
 				}
