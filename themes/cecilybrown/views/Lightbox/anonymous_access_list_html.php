@@ -30,6 +30,13 @@ $set_id = $t_set->getPrimaryKey();
 $anonymousTokens = $t_set->getAnonymousAccessTokens();
 $errors = $this->getVar('error_message');
 $success = $this->getVar('success_message');
+
+// var_dump($anonymousTokens);
+// Ensure downloads is always an array
+foreach ($anonymousTokens as &$token) {
+    $token['downloads'] = is_array($token['downloads']) ? $token['downloads'] : [];
+}
+unset($token);
 ?>
 
 <?php
@@ -61,6 +68,8 @@ $success = $this->getVar('success_message');
           <th><?= _t('Sharing Name'); ?></th>
           <th><?= _t('URL'); ?></th>
           <th><?= _t('Date Available'); ?></th>
+          
+          <th><?= _t('Downloads'); ?></th>
           <th><?= _t('Actions'); ?></th>
         </tr>
       </thead>
@@ -74,7 +83,7 @@ $success = $this->getVar('success_message');
   ?>
           <tr>
             <td><?= $token['name']; ?></td>
-            <td>
+            <td style="word-break: break-word;">
               <div class="d-flex align-items-center">
                 <a href="<?= $url; ?>" class="me-2" target="_new"><?= $url; ?></a>
                 <button class="btn btn-sm btn-secondary copyButton" type="button" aria-label="Copy URL">
@@ -83,6 +92,7 @@ $success = $this->getVar('success_message');
               </div>
             </td>
             <td><?= $token['effective_date']; ?></td>
+            <td><?= join('; ', $token['downloads']) ?: _t('None'); ?></td>
             <td>
               <button class="btn btn-sm deleteUrl" 
                 hx-post="<?= caNavUrl($this->request, '*', '*', 'RemoveAnonymousAccess', ['id' => $set_id, 'guid' => $token['guid']]); ?>" 

@@ -3475,6 +3475,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$o_tep->setUnixTimestamps($qr_res->get('sdatetime'), $qr_res->get('edatetime'));
 			$row['effective_date'] = $o_tep->getText();
 			
+			$settings = caUnserializeForDatabase($qr_res->get('settings'));
+			$row['downloads'] = $settings['download_versions'];
+			
 			$tokens[$row['guid']] = $row;
 		}
 		
@@ -3518,6 +3521,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$t_rel = new ca_sets_x_anonymous_access();
 		
 		if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
+
 		foreach($tokens as $data) {
 			$t_rel->clear();
 			$t_rel->load(['name' => $data['name'], 'set_id' => $id]);		// try to load existing record
@@ -3525,6 +3529,10 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$t_rel->set('name', $data['name']);
 			$t_rel->set('access', $data['access']);
 			$t_rel->set('effective_date', $data['effective_date']);
+			
+			if(is_array($data['downloads'] ?? null)) {
+				$t_rel->setSetting('download_versions', $data['downloads']);
+			}
 			
 			if ($t_rel->getPrimaryKey()) {
 				$t_rel->update();
