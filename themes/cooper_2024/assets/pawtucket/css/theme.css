@@ -1391,9 +1391,10 @@ ul.menuItems {
 .bResultList{
 	font-size:15px;
 	font-family: 'Gotham-light';
-	line-height:1.8em;
+	line-height:1.2em;
+	margin-bottom:10px;
 	/*max-height: 1.8em;*/
-	height: 1.8em;
+	height: 2.3em;
 	overflow: hidden;
 }
 .bResultLetterDivide{

@@ -70,7 +70,6 @@
 					</div><!-- end col -->
 				</div><!-- end row -->
 			</div><!-- end container -->
-		</div>
 		</div><!-- end container -->
 	</div><!-- end frontTopContainer -->
 	<div class="container"><div class="row"><div class="col-xs-12">

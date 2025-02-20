@@ -69,9 +69,6 @@
 							<a href="https://www.facebook.com/nysarchives"><?php print caGetThemeGraphic($this->request, 'Facebook_icon.png', array ('width' => '27px', 'height' => '27px'));?></a>
 						</li>
 						<li>
-							<a href="https://twitter.com/nysarchives"><?php print caGetThemeGraphic($this->request, 'twitter_icon.png', array ('width' => '27px', 'height' => '27px'));?></a>
-						</li>
-						<li>
 							<a href="https://www.youtube.com/user/nysarchives"><?php print caGetThemeGraphic($this->request, 'YouTubeIcon.png', array ('width' => '27px', 'height' => '27px'));?></a>
 						</li>
 					</ul>
@@ -158,7 +155,7 @@
 						</ul>	
 					</li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Topics"), "", "", "Collections", "index"); ?></li>										
+					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured Topics"), "", "", "Collections", "index"); ?></li>										
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibits"), "", "", "Gallery", "Index"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->

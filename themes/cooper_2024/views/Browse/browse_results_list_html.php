@@ -60,12 +60,14 @@
 	$vs_last_letter = Session::getVar('lastLetter');
 	
 		$vn_col_span = 3;
+		$vn_col_span_md = 4;
 		$vn_col_span_sm = 6;
 		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
 			$vn_col_span = 3;
+			$vn_col_span_md = 4;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 12;
 		}
@@ -130,7 +132,7 @@
 						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					}
 
-					$vs_result_output = "<div class='bResultList col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>{$vs_label_detail_link}</div><!-- end col -->";
+					$vs_result_output = "<div class='bResultList col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span_md} col-lg-{$vn_col_span}'>{$vs_label_detail_link}</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				

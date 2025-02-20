@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+$t_list = new ca_lists(); 
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -111,7 +111,7 @@
 			
 			<div class='col-sm-5 rightCol'>
 <?php
-			if ($vs_description = $t_object->get('ca_objects.description')) {
+			if ($vs_description = $t_object->get('ca_objects.description', ['delimiter' => '<br/><br/>'])) {
 				print "<div class='unit'>".$vs_description."</div>";
 			}			
 			# --- identifier
@@ -130,20 +130,44 @@
 			if($vs_idno = $t_object->get('idno')){
 				print "<div class='unit'><b>"._t("Identifier")."</b><br/>".$vs_idno."</div><!-- end unit -->";
 			}
-			#if ($va_date_array = $t_object->get('ca_objects.date', array('returnWithStructure' => true))) {
-			#	$t_list = new ca_lists();
-			#	$vn_original_date_id = $t_list->getItemIDFromList("date_types", "dateOriginal");
-			#	foreach ($va_date_array as $va_key => $va_date_array_t) {
-			#		foreach ($va_date_array_t as $va_key => $va_date_array) {
-			#			if ($va_date_array['dc_dates_types'] == $vn_original_date_id) {
-			#				print "<div class='unit'><b>Date</b><br/>".$va_date_array['dates_value']."</div>";
-			#			}
-			#		}
-			#	}
+			/* JB edit: Turned off date_original display.  Turned on multi-date display. */
+			// if ($va_date_array = $t_object->get('ca_objects.date', array('returnWithStructure' => true))) {
+				// $t_list = new ca_lists();
+				// $vn_original_date_id = $t_list->getItemIDFromList("date_types", "dateOriginal");
+				// foreach ($va_date_array as $va_key => $va_date_array_t) {
+					// foreach ($va_date_array_t as $va_key => $va_date_array) {
+						// if ($va_date_array['dc_dates_types'] == $vn_original_date_id) {
+							// print "<div class='unit'><b>Date</b><br/>".$va_date_array['dates_value']."</div>";
+						// }
+					// }
+				// }
 				
-			#}
-			if($vs_tmp = $t_object->get('date_original')){
-				print "<div class='unit'><b>"._t("Date")."</b><br/>".$vs_tmp."</div><!-- end unit -->";
+			// }
+			// if($vs_tmp = $t_object->get('date_original')){
+				// print "<div class='unit'><b>"._t("Date")."</b><br/>".$vs_tmp."</div><!-- end unit -->";
+			// }
+			if ($va_date_array = $t_object->get('ca_objects.object_date', array('returnWithStructure' => true))) {
+				$t_list = new ca_lists();
+				/* Get all list items for date types, in sort order */
+				$va_date_type_array = $t_list->getItemsForList("date_types");
+				foreach($va_date_type_array as $va_key => $va_date_type) {
+					$vs_date_type_idno = $va_date_type[1]['idno'];
+					$vs_date_type_label = $va_date_type[1]['name_singular'];
+					$vn_date_type_id = $t_list->getItemIDFromList("date_types", $vs_date_type_idno);
+					foreach ($va_date_array as $va_key => $va_date_array_t) {
+						$vs_date_string = null;
+						foreach ($va_date_array_t as $va_key => $va_date_array_v) {
+							if ($va_date_array_v['date_type'] == $vn_date_type_id) {
+								$vs_date_string .= $va_date_array_v['date_expression']."<br/>";
+								// print "<div class='unit'><b>".$vs_date_type_label."</b><br/>".$va_date_array_v['date_expression']."</div>";
+							}
+						}
+						if ($vs_date_string) {
+							$vs_date_string = rtrim($vs_date_string, "<br/>");
+							print "<div class='unit'><b>".$vs_date_type_label."</b><br/>".$vs_date_string."</div>";
+						}
+					}
+				}
 			}
 			if ($va_contributor = $t_object->get('ca_objects.contributor', array('convertCodesToDisplayText' => true, 'returnWithStructure' => 'true'))) {
 				$va_contributor = array_pop($va_contributor);
@@ -162,6 +186,66 @@
 					print "<div class='unit'><b>Contributor</b><br/>";
 					print join(", ", $va_tmp);
 					print "</div>";
+				}
+			}
+			if ($va_person_names = $t_object->get('ca_objects.person_name2', array('convertCodesToDisplayText' => true, 'returnWithStructure' => 'true'))) {
+				$va_person_names = array_pop($va_person_names);
+				$va_tmp = array();
+				foreach ($va_person_names as $va_person_info) {
+					$vs_tmp = "";
+					$vs_tmp = $va_person_info['person_name2'];
+					if(trim($vs_tmp)){
+						$va_tmp[] = $vs_tmp;
+					}
+				}
+				if(sizeof($va_tmp)){
+					print "<div class='unit'><b>Names</b><br/>";
+					$vs_names_entry = null;
+					foreach($va_tmp as $name) {
+						$vs_names_entry .= $name."<br/>";
+					}
+					$vs_names_entry = rtrim($vs_names_entry, "<br/>");
+					print $vs_names_entry."</div>";
+				}
+			}
+			if ($va_organizations = $t_object->get('ca_objects.organization_name', array('convertCodesToDisplayText' => true, 'returnWithStructure' => 'true'))) {
+				$va_organizations = array_pop($va_organizations);
+				$va_tmp = array();
+				foreach ($va_organizations as $va_org_info) {
+					$vs_tmp = "";
+					$vs_tmp = $va_org_info['organization_name'];
+					if(trim($vs_tmp)){
+						$va_tmp[] = $vs_tmp;
+					}
+				}
+				if(sizeof($va_tmp)){
+					print "<div class='unit'><b>Organizations</b><br/>";
+					$vs_orgs_entry = null;
+					foreach($va_tmp as $name) {
+						$vs_orgs_entry .= $name."<br/>";
+					}
+					$vs_orgs_entry = rtrim($vs_orgs_entry, "<br/>");
+					print $vs_orgs_entry."</div>";
+				}
+			}
+			if ($va_document_types = $t_object->get('ca_objects.genreOAG', array('convertCodesToDisplayText' => true, 'returnWithStructure' => 'true'))) {
+				$va_document_types = array_pop($va_document_types);
+				$va_tmp = array();
+				foreach ($va_document_types as $va_org_info) {
+					$vs_tmp = "";
+					$vs_tmp = $va_org_info['genreOAG'];
+					if(trim($vs_tmp)){
+						$va_tmp[] = $vs_tmp;
+					}
+				}
+				if(sizeof($va_tmp)){
+					print "<div class='unit'><b>Document Types</b><br/>";
+					$vs_doctype_entry = null;
+					foreach($va_tmp as $name) {
+						$vs_doctype_entry .= $name."<br/>";
+					}
+					$vs_doctype_entry = rtrim($vs_doctype_entry, "<br/>");
+					print $vs_doctype_entry."</div>";
 				}
 			}
 			if ($vs_language = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true))) {
@@ -222,7 +306,7 @@
 				
 				if(sizeof($va_place_links)){
 					print "<div class='unit'><h3>"._t("Geographic Locations")."</h3>";
-					print join($va_place_links, "<br/>");
+					print join("<br/>", $va_place_links);
 					print "</div><!-- end unit -->";
 				}
 			}
