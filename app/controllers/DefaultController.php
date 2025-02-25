@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2024 Whirl-i-Gig
+ * Copyright 2014-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -74,7 +74,8 @@ class DefaultController extends BasePawtucketController {
 		if($this->viewExists($v = join("/", $path[0]).".php")) {
 			$this->render($v, false);
 		} else {
-			$this->response->addContent(_t('Page is not available'));
+			$this->response->addContent($m = _t('Page is not available'));
+			$this->response->setHTTPResponseCode(404, $m);
 		}
 	}
 	# ------------------------------------------------------
