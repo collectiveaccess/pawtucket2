@@ -76,6 +76,9 @@
 										}elseif($thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|'><if rule='^ca_objects.series =~ /Announcement/'>^ca_object_representations.media.iconlarge</if></unit>", array("checkAccess" => $access_values))){
 											$tmp = explode("|", $thumbnails);
 											$media = $tmp[0];
+										}elseif($thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|'><if rule='^ca_objects.series =~ /Catalogue/'>^ca_object_representations.media.iconlarge</if></unit>", array("checkAccess" => $access_values))){
+											$tmp = explode("|", $thumbnails);
+											$media = $tmp[0];
 										}elseif($thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|'><if rule='^ca_objects.series =~ /Photographic Material/'>^ca_object_representations.media.iconlarge</if></unit>", array("checkAccess" => $access_values))){
 											$tmp = explode("|", $thumbnails);
 											$media = $tmp[0];
