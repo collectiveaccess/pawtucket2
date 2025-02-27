@@ -21,6 +21,7 @@
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/preset-env": "^7.23.3",
     "@popperjs/core": "^2.11.8",
+    "@tarekraafat/autocomplete.js": "^10.2.9",
     "@types/openseadragon": "^3.0.10",
     "axios": "^1.7.9",
     "babel-loader": "^9.1.3",
