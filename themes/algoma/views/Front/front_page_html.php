@@ -46,8 +46,8 @@
 				<div class="col-md-12 col-lg-10 col-xl-10 d-flex h-100 align-items-center">
 					<div class="text-white p-5 text-left w-100">
 						<div class="py-3">
-							<div class="fs-2 fw-light ">Welcome to the</div>
-							<div class="pt-2 display-4 fw-medium">Engracia De Jesus Matias Archives & Special Collections at the Arthur A. Wishart Library</div>
+							<div class="fw-light "><span class="display-2 fw-medium">Welcome </span><span class="fs-3">to the</span></div>
+							<div class="display-5 fw-medium">Engracia De Jesus Matias Archives & Special Collections at the Arthur A. Wishart Library</div>
 						</div>
 						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'all_collections'); ?>">
 							<div class="input-group pb-3 w-50">

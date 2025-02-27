@@ -25,7 +25,7 @@
 ?>					
 				<hr/>
 				<div class="row" id="collectionsWrapper">
-					<div class='h-100 overflow-y-auto col-12<?php print ($o_collections_config->get("always_link_to_hierarchy_viewer_sublist") || $vb_has_grandchildren) ? " col-sm-4" : ""; ?>'>
+					<div class='overflow-y-auto col-12<?php print ($o_collections_config->get("always_link_to_hierarchy_viewer_sublist") || $vb_has_grandchildren) ? " col-sm-4" : ""; ?>'>
 						<div class='mx-3'>
 							<div class='fw-medium fs-3'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
 <?php
@@ -77,8 +77,9 @@
 <?php
 					if($o_collections_config->get("always_link_to_hierarchy_viewer_sublist") || $vb_has_grandchildren){
 ?>
-							<div class='h-100 overflow-y-auto col-xs-12 col-sm-8 border-start'><div id='collectionLoad' class='mx-3'>
-								<i class="bi bi-arrow-left"></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.
+							<div class='mt-4 mt-sm-0 overflow-y-auto col-xs-12 col-sm-8 border-start '><div id='collectionLoad' class='mx-3'>
+								<div class="d-none d-sm-block"><i class="bi bi-arrow-left"></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.</div>
+								<div class="d-block d-sm-none"><i class="bi bi-arrow-up"></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container above to see its contents.</div>
 							</div></div>
 <?php
 					}
