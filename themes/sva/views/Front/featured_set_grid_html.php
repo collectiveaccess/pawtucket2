@@ -61,7 +61,7 @@
 		?>   
 							<div class="container-fluid pb-5<?= ($i==1) ? " pt-5" : ""; ?>">
 								<div class="row">
-									<div class="col-sm-12"><H2 class="pb-2"><?= $heading; ?></H2></div>
+									<div class="col-sm-12"><H2 class="pb-2 fs-1"><?= $heading; ?></H2></div>
 								</div>
 								
 		<?php
@@ -92,7 +92,7 @@
 									if($media){
 										$vs_media = '<div class="img-fluid">'.$media.'</div>';
 										if($vn_col == 0){
-											print "<div class='row g-5 mb-5'>";
+											print "<div class='row g-5".(($i < 4) ? " mb-5" : " mb-2")."'>";
 										}
 										print "<div class='col-sm-3 col-xs-6'>";
 										$tmp = "";
