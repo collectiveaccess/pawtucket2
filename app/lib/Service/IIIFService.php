@@ -698,7 +698,13 @@ class IIIFService {
 		$media = self::getMediaInstance($identifier, $g_request);
 		$target = caGetOption('target', $options, null);
 		$q = caGetOption('q', $options, null);
-		$exact = caGetOption('exact', $options, 1, ['castAs' => 'integer']);
+		$exact = caGetOption('exact', $options, false, ['castAs' => 'boolean']);
+		$anywhere = caGetOption('anywhere', $options, false, ['castAs' => 'boolean']);
+		$anything = caGetOption('anything', $options, false, ['castAs' => 'boolean']);
+		
+		if($anything) { 
+			$exact = $anywhere = true;
+		}
 
 		$tokens = self::_tokenize($q);
 		$token_count = sizeof($tokens);
@@ -732,26 +738,29 @@ class IIIFService {
 				if($token_locations) {
 					foreach($token_locations as $c) {
 						$is_ok = true;
-						if(($tindex > 0) && (!isset($data[$p+1][$c['i']-$tindex]))) { 
-							$is_ok = false;
-						} elseif($tindex < ($token_count - 1)){
-							$is_ok = false;
-							$ft = $tokens[$tindex + 1];
-							$forward_locations = self::_getLocations($ft, $locations, ['exact' => $exact]);
-							if(is_array($forward_locations)) {
-								foreach($forward_locations as $fl) {
-									if($fl['i'] == ($c['i'] + 1)) {
-										$is_ok = true;
-										break;
-									}
-								}
-							} else {
-								$is_ok = false;
-							}
-						}
-						if(!$is_ok) { continue; }
 						
-						if($tindex > 0) {
+						if(!$anywhere){ 
+							if(($tindex > 0) && (!isset($data[$p+1][$c['i']-$tindex]))) { 
+								$is_ok = false;
+							} elseif($tindex < ($token_count - 1)){
+								$is_ok = false;
+								$ft = $tokens[$tindex + 1];
+								$forward_locations = self::_getLocations($ft, $locations, ['exact' => $exact]);
+								if(is_array($forward_locations)) {
+									foreach($forward_locations as $fl) {
+										if($fl['i'] == ($c['i'] + 1)) {
+											$is_ok = true;
+											break;
+										}
+									}
+								} else {
+									$is_ok = false;
+								}
+							}
+							if(!$is_ok) { continue; }
+						}
+						
+						if(($tindex > 0) && !$anywhere) {
 							if(isset($data[$p+1][$c['i']-($tindex-$offset)])) {
 								if(abs(((int)($c['y'] * $sh)) - $data[$p+1][$c['i'] - ($tindex-$offset)]['y']) < 8) {
 									$data[$p+1][$c['i'] - ($tindex - $offset)]['width'] = (int)(($c['x'] + $c['w']) * $sw) - $data[$p+1][$c['i'] - ($tindex - $offset)]['x'];
@@ -786,13 +795,23 @@ class IIIFService {
 					}	
 				}
 			}
-			if($token_count > 1) {
+			if(($token_count > 1) && !$anywhere) {
 				foreach($data as $p => $pdata){
 					$data[$p] = array_filter($pdata, function($v) use($token_count){
 						return (($v['partial']) || ($v['c'] === ($token_count - 1)));
 					});
 				}
 			}
+		}
+		
+		if(!$exact && !sizeof($data)) {
+			return self::search($identifier, array_merge($options, ['exact' => true]));
+		}
+		if(!$anywhere && !sizeof($data)) {
+			return self::search($identifier, array_merge($options, ['exact' => false, 'anywhere' => true]));
+		}
+		if(!$anything && !sizeof($data)) {
+			return self::search($identifier, array_merge($options, ['anything' => true]));
 		}
 		$search = new \CA\Media\IIIFResponses\Search();
 		return $search->response($data, ['identifiers' => [$identifier], 'target' => $target]);
@@ -802,7 +821,7 @@ class IIIFService {
 	 *
 	 */
 	private static function _getLocations($token, $locations, ?array $options=null) {
-		$exact = caGetOption('exact', $options, true);
+		$exact = caGetOption('exact', $options, false);
 		
 		if($exact) {
 			return $locations[$token] ?? null;
@@ -813,8 +832,8 @@ class IIIFService {
 		$token = $stemmer->stem($token);
 		$words = array_keys($locations);
 		$fwords = array_filter($words, function($v) use ($token, $stemmer) {
-			$v = $stemmer->stem($v);
-			return preg_match("!^".preg_quote($token, '!')."!i", $v);
+			$v = $stemmer->stem(trim($v));
+			return preg_match("!^".preg_quote($token, '!')."!ui", $v);
 		});
 	
 		$acc = [];
@@ -919,8 +938,6 @@ class IIIFService {
 							) {
 								$t_anno->replaceLabel(['name' => $title], 'en_US', null, true);
 							} else {
-							print "session key is ".Session::getSessionID();
-								print_R(Session::getVarKeys());
 								$t_media->addAnnotation($title, 'en_US', $request->getUserID(), $properties, 0, 0, ['idno' => $id], ['forcePreviewGeneration' => true]);
 							}
 						}
