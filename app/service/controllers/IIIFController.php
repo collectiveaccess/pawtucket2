@@ -79,8 +79,7 @@ class IIIFController extends BaseServiceController {
 		$path = explode('/', $this->request->getPathInfo()); // path = /IIIF/manifest/<identifier> ; identifier index = 3
 		try {
 			$search = IIIFService::search($path[3], [
-				'q' => $this->request->getParameter('q', pString),
-				'exact' => $this->request->getParameter('exact', pInteger)
+				'q' => $this->request->getParameter('q', pString)
 			]);
 		} catch(IIIFAccessException $e) {
 			$this->getView()->setVar('errors', array($e->getMessage()));
