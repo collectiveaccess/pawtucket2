@@ -158,7 +158,7 @@ class SearchController extends FindController {
 		if($vb_is_advanced) { 
 			if (!$this->request->isAjax()) {
 				$this->opo_result_context->setSearchExpression(
-					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])
+					$vs_search_expression = stripSlashes(caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])]))
 				); 
 			}
 			if (!$this->request->isAjax() && ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context))) {
@@ -501,7 +501,7 @@ class SearchController extends FindController {
 				'color' => '#cc0000', 
 				'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
 				'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
-				//'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view))
+				'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view))
 			);
 
 			$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
