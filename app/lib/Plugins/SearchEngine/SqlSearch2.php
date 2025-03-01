@@ -604,7 +604,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 			return $v->text;
 	 		}, $terms);
 	 		$ma = new MetsALTOSearch();
-	 		$ids = $ma->search("".join(' ', $term_list));
+	 		$ids = $ma->search('"'.join(' ', $term_list).'"');
 	 		return $ids;
 	 	}
 	 	
