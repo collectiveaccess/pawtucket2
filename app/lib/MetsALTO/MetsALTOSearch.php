@@ -94,6 +94,11 @@ class MetsALTOSearch {
 		//$terms_proc = self::_rewriteQuery($search);
 		//print_R($terms_proc);die;
 		//$query->setQuery(join(' ', $terms_proc));
+		
+		if(preg_match("!(~[\d]+)\"!", $search, $m)) {
+			$search = str_replace($m[1], '', $search);
+			$search .= $m[1];
+		}
 		$query->setQuery($search);
 		$query->setStart(0)->setRows(5000);
 		$query->setFields(['id', 'name', 'page', 'content']);
