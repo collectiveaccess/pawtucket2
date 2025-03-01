@@ -312,7 +312,8 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
 					'object_id' => $object_id,
 					'object_label' => $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.preferred_labels</unit>"),
 					'object_idno' => $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.idno</unit>"),
-					'page' => $properties['page'] ?? null
+					'page' => $properties['page'] ?? null,
+					'created' => $qr->get('ca_user_representation_annotations.created', ['dateFormat' => 'delimited', 'timeOmit' => true])
 				];
 				switch($group_by) {
 					case 'ca_objects':
