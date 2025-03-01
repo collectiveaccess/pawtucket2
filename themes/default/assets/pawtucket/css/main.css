@@ -622,9 +622,6 @@ a.browseRemoveFacet img {
 }
 .filterMenuResults {
 	padding-top:2px;
-}
-
-.filterMenuResults div div.row {
 	overflow:auto;
 	max-height:325px;
 }

@@ -31,9 +31,9 @@ if($this->request->config->get("dont_approve_logins_on_registration")){
 }
 $t_user = $this->getVar("t_user");
 
-print _t("Thank you for creating an account with the Residential School History and Dialogue Centre records website.
+print _t("Thank you for creating an account with the Indian Residential School History and Dialogue Centre collections website.
  
-Your account registration is confirmed and your username is %1. The URL for our home page is: %2. Access your account by clicking on the grey icon at the top right corner of the screen and selecting \"Login\" from the dropdown menu.
+Your account registration is confirmed and your username is %1. The URL for our home page is: %2. Access your account by clicking on the black icon at the top right corner of the screen and selecting “Login” from the dropdown menu. To learn more about how to use this website, visit our user guide: https://collections.irshdc.ubc.ca/UserGuide.
  
 If you would like support in your research, please contact us at irshdc.reference@ubc.ca.
 

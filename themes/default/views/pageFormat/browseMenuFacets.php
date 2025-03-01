@@ -40,7 +40,7 @@
 	</div>
 		
 	<div class="filterMenuResults col-sm-10">
-		<div class='browseMenuFacet'> </div>	
+		<div class='browseMenuFacet row'> </div>	
 	</div>	
 	<div class="browsedivider">&nbsp;</div>
 

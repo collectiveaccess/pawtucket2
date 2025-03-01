@@ -48,9 +48,9 @@ if($vs_mode == "map"){
 	}elseif(strpos($vs_last_find, "search") !== false){
 		$vs_link_text = "Search";	
 	}elseif(strpos($vs_last_find, "gallery") !== false){
-		$vs_link_text = "Explore Features";	
+		$vs_link_text = "Features";	
 	}elseif(strpos($vs_last_find, "school") !== false){
-		$vs_link_text = "Explore Schools";	
+		$vs_link_text = "Schools";	
 	}elseif(strpos($vs_last_find, "front") !== false){
 		# --- home link is always in breadcrumb trail
 		$vs_link_text = "";	
@@ -98,9 +98,9 @@ if($vs_mode == "map"){
 							{{{<ifdef code="ca_entities.link"><br/><unit delimiter="<br/>"><a href="^ca_entities.link" class="redLink" target="_blank">^ca_entities.link <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
 						</H4>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><unit relativeTo="ca_entities.related"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
-						{{{<ifdef code="ca_entities.repository_description">
-							<div class="unit"><h6>Description</h6>
-								<div class="trimText">^ca_entities.repository_description</div>
+						{{{<ifdef code="ca_entities.description_new.description_new_txt">
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
+								<div class="trimText">^ca_entities.description_new.description_new_txt</div>
 							</div>
 						</ifdef>}}}
 					</div><!-- end stoneBg -->

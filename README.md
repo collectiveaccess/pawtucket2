@@ -1,4 +1,4 @@
-# README: Pawtucket2 version 1.8
+# README: Pawtucket2 version 2.0
 
 ### About CollectiveAccess
 
@@ -10,8 +10,8 @@ Pawtucket2 provides many features for finding, presenting and interacting with c
 
 * Full text search
 * Configurable faceted browse
-* Ability to browse within search results
-* Configurable detail displays for collection objects and all authorities- you can show as much or as little information from your Providence back-end catalogue as you want
+* Browse within search results
+* Configurable detail displays for collection objects and all authorities- you can show as much or as little information from your Providence back-end catalogue as desired
 * Support for "galleries" - simple online exhibitions using curator-defined sets. 
 * Support for user-created tags, comments and lightboxes.
 * Not object-centric. While objects are usually the focus of a collections front-end, with Pawtucket2 they don't have to be. You can search and browse in any authority in addition to collection objects. This makes Pawtucket2 useful for specialized applications such as biographical catalogues (focussed on people rather than objects) and collection-level archival finding aids (focussed on collections rather than objects).
@@ -21,63 +21,46 @@ Pawtucket2 is meant to be customized. The download package includes a neutral de
 All CollectiveAccess components are freely available under the open source GNU Public License version 3.
 
 
-### About CollectiveAccess 1.8
+### About Pawtucket2 2.0
 
-Pawtucket 1.8 is compatible with PHP 7.2, 7.3 and 7.4. It is not yet compatible with PHP 8.
-
-
-### Updating from a previous version
-
-NOTE: The update process is relatively safe and rarely, if ever, causes data loss. That said BACKUP YOUR EXISTING DATABASE AND CONFIGURATION prior to updating. You almost certainly will not need it, but if you do you'll be glad it's there.
+This version of Pawtucket2 is compatible with PHP versions 8.2 and 8.3. We are currently testing compatibility with PHP 8.4, but it should be usable with that version as well. It can be made to work with PHP versions as old as 7.4 if need be, but it is unsupported when used with pre 8.2 versions of PHP.
 
 
-#### Updating from version 1.7 or later
+### Updating from version 1.7 or later
 
-Before attempting to upgrade your Pawtucket2 installation to version 1.7.11 make sure your Providence installation has been updated to 1.7.11. While it is often possible to run an older version of Pawtucket2 with a newer version of Providence, it is not guaranteed. It is usually not possible to run an older version of Providence with a newer version of Pawtucket2.
+NOTE: The update process is relatively safe and rarely, if ever, causes data loss. That said, BACKUP YOUR EXISTING DATABASE AND CONFIGURATION prior to updating. You almost certainly will not need the backup, but if you do you'll be glad it's there.
 
-To update from a version 1.7.x installation decompress the CollectiveAccess Pawtucket 1.7.11 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory, custom theme (in `themes/your_theme_name_here`) and your setup.php file.
+Before attempting to upgrade your Pawtucket2 installation make sure your Providence installation has been updated to 2.0. While it is often possible to run an older version of Pawtucket2 with a newer version of Providence, compatibility is not guaranteed. It is usually not possible to run an older version of Providence with a newer version of Pawtucket2.
+
+To update from a version 1.7.x installation decompress the CollectiveAccess Pawtucket2 2.0 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory, custom theme (in `themes/your_theme_name_here`) and your `setup.php` file.
 
 Once the updated files are in place navigate in your web browser to the home page of your Pawtucket2 installation. If you see the home page you're done. If you see this message:
 
 ```"Your database is out-of-date. Please install all schema migrations starting with migration #xxx."```
  
-you have not updated your Providence installation to version 1.7.11.
+your Providence installation has most likely not yet been updated to version 2.0. Perform the Providence update and check your Pawtucket2 installation again.
 
 
-#### Updating from version 1.6 or earlier
+### Updating from version 1.6 or earlier
 
-To update from a version 1.6.x or older installation decompress the CollectiveAccess Providence 1.7.11 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory and custom theme (in `themes/your_theme_name_here`). 
-
-Next rename your existing setup.php to something else (Eg. `setup.php-old`). Then copy the version 1.7.11 template in `setup.php-dist` to `setup.php`. Edit this file with your database login information, system name and other basic settings. You can reuse the settings in your old setup.php file as-is. Only the format of the setup.php file has changed.
-
-Once the updated files are in place navigate in your web browser to the home page of your Pawtucket2 installation. If you see the home page you're done. If you see this message:
-
-```"Your database is out-of-date. Please install all schema migrations starting with migration #xxx. Click here to automatically apply the required updates, or see the update HOW-TO for instructions on applying database updates manually."```
- 
-you have not updated your Providence installation to version 1.7.11.
-
-Version 1.7 introduced zoomable media versions for multipage documents such as PDFs, Microsoft Word or Powerpoint. Systems migrated from pre-1.7 versions of CollectiveAccess will not have these media versions available causing the built-in document viewer to fail. If your system includes multipage documents you should regenerate the media **in Providence** using the command-line caUtils utility in `support/bin`. See the [Providence README](https://github.com/collectiveaccess/providence) for details.
-
+To update from a version 1.6.x or older installation, you must first update to version 1.7, then follow the 1.7 update instructions.
 
 ### Installing development versions
 
-The latest development version is always available in the `develop` branch (https://github.com/collectiveaccess/pawtucket2/tree/develop). Other feature-specific development versions are in branches prefixed with `dev/`. To install a development branch follow these steps:
+The latest development versions are available on GitHub in branches prefixed with `dev/`. If you are not sure what to run, use a release. If you are looking to work with an in-development feature, you can install a development branch using these steps:
 
-1. clone this repository into the location where you wish it to run using `git clone https://github.com/collectiveaccess/pawtucket2`.
-2. by default, the newly cloned repository will use the main branch, which contains code for the current release. Choose the `develop` branch by running from within the cloned repository `git checkout develop`.
-3. install the PHP package manager [Composer](https://getcomposer.org) if you do not already have it installed on your server.
-4. run `composer` from the root of the cloned repository with `composer.phar install`. This will download and install all required 3rd party software libraries. 
-5. follow the release version installation instructions to complete the installation.
+* Clone this repository into the location where you wish it to run using git clone https://github.com/collectiveaccess/pawtucket2.
+* By default, the newly cloned repository will use the main branch, which contains code for the current release. Choose the desired branch by running from within the cloned repository `git checkout <branch name>`.
+* Install the PHP package manager [Composer](https://getcomposer.org) if you do not already have it installed on your server.
+* Run `composer` from the root of the cloned repository with `composer.phar install.` This will download and install all required 3rd party software libraries.
+* Follow the release version installation instructions to complete the installation.
+
 ### Useful Links
 
 * Web site: https://collectiveaccess.org
-* Documentation: https://manual.collectiveaccess.org
+* Documentation: https://docs.collectiveaccess.org
 * Demo: https://demo.collectiveaccess.org/
-* Installation instructions: http://docs.collectiveaccess.org/wiki/Installing_Pawtucket2
-* Upgrade instructions: http://docs.collectiveaccess.org/wiki/Upgrading_Pawtucket2
-* Release Notes for 1.7:
-  * https://docs.collectiveaccess.org/wiki/Release_Notes_for_Pawtucket2_1.7
-  * https://docs.collectiveaccess.org/wiki/Release_Notes_for_Pawtucket2_1.7.8
+* Installation instructions: https://docs.collectiveaccess.org/providence/user/setup/installation.html
 * Forum: https://www.collectiveaccess.org/support/forum
 
 To report issues please use GitHub Issues.

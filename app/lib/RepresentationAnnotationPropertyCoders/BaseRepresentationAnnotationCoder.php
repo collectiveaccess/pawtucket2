@@ -147,7 +147,7 @@ abstract class BaseRepresentationAnnotationCoder extends BaseObject implements I
 	 */
 	public function getDisplayMediaVersion($ps_type=null) {
 		if (!$ps_type) { $ps_type = $this->getType(); }
-		return $this->opa_type_info[$ps_type]['displayVersion'];
+		return $this->opa_type_info[$ps_type]['displayVersion'] ?? null;
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -155,7 +155,7 @@ abstract class BaseRepresentationAnnotationCoder extends BaseObject implements I
 	 */
 	public function useBundleBasedAnnotationEditor($ps_type=null) {
 		if (!$ps_type) { $ps_type = $this->getType(); }
-		return $this->opa_type_info[$ps_type]['useBundleEditor'];
+		return $this->opa_type_info[$ps_type]['useBundleEditor'] ?? false;
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -163,7 +163,7 @@ abstract class BaseRepresentationAnnotationCoder extends BaseObject implements I
 	 */
 	public function getAnnotationSortProperty($ps_type=null) {
 		if (!$ps_type) { $ps_type = $this->getType(); }
-		return $this->opa_type_info[$ps_type]['sortByProperty'];
+		return $this->opa_type_info[$ps_type]['sortByProperty'] ?? null;
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -171,7 +171,7 @@ abstract class BaseRepresentationAnnotationCoder extends BaseObject implements I
 	 */
 	public function getAnnotationGotoProperty($ps_type=null) {
 		if (!$ps_type) { $ps_type = $this->getType(); }
-		return $this->opa_type_info[$ps_type]['gotoToPropery'];
+		return $this->opa_type_info[$ps_type]['gotoToPropery'] ?? null;
 	}
 	# ------------------------------------------------------------------
 	/**

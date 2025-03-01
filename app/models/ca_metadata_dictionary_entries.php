@@ -496,7 +496,7 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 		}
 		if(!is_array($va_types)) { $va_types = [$pt_subject->getTypeID()]; }
 		if(sizeof($va_types = array_filter($va_types, 'strlen')) && ($t_instance = Datamodel::getInstance($ps_bundle_name)) && method_exists($ps_bundle_name, 'getTypeCode') ) {
-			$va_types = array_merge($va_types, caMakeTypeIDList($ps_bundle_name, $va_types, ['dontIncludeSubtypesInTypeRestriction' => true]));
+			$va_types = array_merge($va_types, caMakeTypeIDList($ps_bundle_name, $va_types, ['dontIncludeSubtypesInTypeRestriction' => true]) ?? []);
 		}
 		
 		if(!is_array($va_relationship_types = caGetOption(['restrict_to_relationship_types', 'restrictToRelationshipTypes'], $pa_settings, null)) && $va_relationship_types) {
@@ -504,7 +504,7 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 		}
 		if(!is_array($va_relationship_types)) { $va_relationship_types = []; }
 		if (sizeof($va_relationship_types = array_filter($va_relationship_types, 'strlen'))) {
-			$va_relationship_types = array_merge($va_relationship_types, ca_relationship_types::relationshipTypeIDsToTypeCodes($va_relationship_types));
+			$va_relationship_types = array_merge($va_relationship_types, ca_relationship_types::relationshipTypeIDsToTypeCodes($va_relationship_types) ?? []);
 		}
 		
 		if ($va_entry_list = ca_metadata_dictionary_entries::entryExists($ps_bundle_name)) {
@@ -522,31 +522,43 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 					$vn_entry_id = $vn_id;
 				}
 				
-				if ($vn_entry_id && (sizeof($va_types) || sizeof($va_relationship_types))) {
-					if (sizeof($va_relationship_types)) {
-						if(
-							is_array($va_entry_types = ($va_entry['settings']['restrict_to_relationship_types'] ?? null))
-						) {
-							if (sizeof(array_intersect($va_relationship_types, $va_entry_types))) {
-								$vn_entry_id = $vn_id;
-							} else {
-								$vn_entry_id = null;
+				if(!is_array($res_types = $va_entry['settings']['restrict_to_types'] ?? [])) {
+					$res_types = [$res_types];
+				}
+				$va_entry_types = array_filter($res_types ?? [], 'strlen');
+				if(!is_array($rel_types = $va_entry['settings']['restrict_to_relationship_types'] ?? [])) {
+					$rel_types = [$rel_types];
+				}
+				$va_entry_relationship_types = array_filter($rel_types, 'strlen');
+		
+				if($vn_entry_id) {
+					if ((sizeof($va_types) || sizeof($va_relationship_types))) {
+						if (sizeof($va_relationship_types)) {
+							if(is_array($va_entry_relationship_types) && sizeof($va_entry_relationship_types)) {
+								if (sizeof(array_intersect($va_relationship_types, $va_entry_relationship_types))) {
+									$vn_entry_id = $vn_id;
+								} else {
+									$vn_entry_id = null;
+									continue;
+								}
 							}
 						}
-					}
-					if (sizeof($va_types)) {
-						if(
-							is_array($va_entry_types = ($va_entry['settings']['restrict_to_types'] ?? null))
-						) {
-							if (sizeof(array_intersect($va_types, $va_entry_types))) {
-								$vn_entry_id = $vn_id;
-							} else {
-								$vn_entry_id = null;
+						if (sizeof($va_types)) {
+							if(is_array($va_entry_types) && sizeof($va_entry_types)) {
+								if (sizeof(array_intersect($va_types, $va_entry_types))) {
+									$vn_entry_id = $vn_id;
+								} else {
+									$vn_entry_id = null;
+									continue;
+								}
 							}
 						}
+					} elseif((sizeof($va_types) && !sizeof($va_entry_types)) || (!sizeof($va_types) && sizeof($va_entry_types))) {
+						$vn_entry_id = null;
+					} elseif((sizeof($va_relationship_types) && !sizeof($va_entry_relationship_types)) || (!sizeof($va_relationship_types) && sizeof($va_entry_relationship_types))) {
+						$vn_entry_id = null;
 					}
 				}
-				
 				if ($vn_entry_id) { break; }
 			}
 			

@@ -368,6 +368,15 @@ body{
 	max-width:250px;
 }
 /* search / browse results */
+.resultsIntro{
+	padding-top:10px;
+	padding-bottom:10px;
+}
+.resultsIntro a{	
+	color:#000;
+	text-decoration:underline;
+	text-decoration-color: #E77500;
+}
 #bRefine H2, #bRefine H3, #bRefine H5{
 	color:#000;
 }
@@ -886,7 +895,13 @@ body.frontContainer #footer{
   margin-top: 10%;
   font-size: 18px;
 }
-
+.collectionShowHideBrowser{
+	background-color: #8f8d8d !important;
+	text-decoration: none;
+	font-size: 12px;
+	padding: 4px 5px;
+	text-transform: none;
+}
 .form-control:focus {
 	border-color: #000;
 }

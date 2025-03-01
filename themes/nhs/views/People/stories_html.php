@@ -27,7 +27,7 @@
 							}
 							$vs_tmp .= "<div class='title'>".$qr_people->get("ca_entities.preferred_labels.displayname")."</div>";	
 							$vs_tmp .= "</div>";
-							print caNavLink($this->request, $vs_tmp, "", "", "People", "Story", array("story" => $qr_people->get("ca_entities.entity_id")));
+							print caNavLink($this->request, $vs_tmp, "", "", "People", "Story", array('doRefSubstitution' => true, "story" => $qr_people->get("ca_entities.entity_id")));
 
 							print "</div><!-- end col-4 -->";
 							$vn_i++;

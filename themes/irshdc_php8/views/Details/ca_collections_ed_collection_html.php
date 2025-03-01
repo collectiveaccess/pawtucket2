@@ -176,18 +176,15 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 60
+		  maxHeight: 110
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 18
+		  maxHeight: 22
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
-		  maxHeight: 80,
-		  moreLink: '<a href="#" class="moreLess">More</a>',
-		  lessLink: '<a href="#" class="moreLess">Less</a>'
-		});
+		  maxHeight: 85,
 		
 		var options = {
 			placement: function () {

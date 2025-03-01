@@ -67,7 +67,7 @@
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-	$vn_acquisition_movement_id = $this->request->getParameter("acquisition_movement_id", pInteger);
+	$vn_acquisition_movement_id = (int)$this->request->getParameter("acquisition_movement_id", pInteger);
 	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
 	$vs_detail_type = $this->request->getParameter("detailType", pString);
 

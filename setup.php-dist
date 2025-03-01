@@ -33,6 +33,12 @@ if (!defined("__CA_DB_HOST__")) {
 	define("__CA_DB_HOST__", 'localhost');
 }
 
+# __CA_DB_PORT__ = Database server port. Only change if the default 3306 isn't being used
+# 
+if (!defined("__CA_DB_PORT__")) {
+	define("__CA_DB_PORT__", '3306');
+}
+
 # __CA_DB_USER__ = Database login user name
 #
 if (!defined("__CA_DB_USER__")) {
@@ -232,6 +238,42 @@ if (!defined('__CA_CACHE_BACKEND__')) {
 # __CA_REDIS_DB__ = redis database index (typically a number between 0 and 15) 
 
 # --------------------------------------------------------------------------------------------
+
+# __CA_DB_USE_SSL__ = Use SSL encryption for database connections
+#
+if (!defined("__CA_DB_USE_SSL__")) {
+	define("__CA_DB_USE_SSL__", false);
+}
+
+# __CA_DB_SSL_VERIFY_CERT__ = Verify SSL certificate before use?
+#
+if (!defined("__CA_DB_SSL_VERIFY_CERT__")) {
+	define("__CA_DB_SSL_VERIFY_CERT__", true);
+}
+
+# __CA_DB_SSL_KEY__ = The path name to the key file
+#
+if (!defined("__CA_DB_SSL_KEY__")) {
+	define("__CA_DB_SSL_KEY__", null);
+}
+
+# __CA_DB_SSL_CERTIFICATE__ = The path name to the certificate file.
+#
+if (!defined("__CA_DB_SSL_CERTIFICATE__")) {
+	define("__CA_DB_SSL_CERTIFICATE__", null);
+}
+
+# __CA_DB_SSL_CA_CERTIFICATE__ = The path name to the certificate authority file
+#
+if (!defined("__CA_DB_SSL_CA_CERTIFICATE__")) {
+	define("__CA_DB_SSL_CA_CERTIFICATE__", null);
+}
+
+# __CA_DB_SSL_CA_PATH__ = The pathname to a directory that contains trusted SSL CA certificates in PEM format
+#
+if (!defined("__CA_DB_SSL_CA_PATH__")) {
+	define("__CA_DB_SSL_CA_PATH__", null);
+}
 
 # __CA_ALLOW_INSTALLER_TO_OVERWRITE_EXISTING_INSTALLS__
 #

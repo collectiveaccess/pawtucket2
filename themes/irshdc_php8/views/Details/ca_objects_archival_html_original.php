@@ -52,7 +52,7 @@
 				
 					<div id="detailAnnotations"></div>
 				
-					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "basic", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				</div><!-- end col -->
 				<div class='col-sm-8 col-md-6'>
 					<div class="stoneBg">				

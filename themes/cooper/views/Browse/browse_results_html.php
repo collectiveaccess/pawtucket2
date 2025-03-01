@@ -88,7 +88,7 @@ if (!$vb_ajax) {	// !ajax
 		<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>
 		<div id='bRefine'>
 			<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery("#bRefine").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>
-			<H3>Filter <?php print ($vs_table == "ca_objects") ? "Student Work " : ""; ?>Results By:
+			<H3>Filter Results By:
 <?php
 			if (sizeof($va_criteria) > 0) {
 				$i = 0;
@@ -151,23 +151,7 @@ if (!$vb_ajax) {	// !ajax
 								$vs_faculty_text = "";
 								ksort($va_faculty_texts_by_year);
 								foreach($va_faculty_texts_by_year as $va_year_texts){
-									$vs_faculty_text .= join($va_year_texts, "\n");
-								}
-							}
-		
-						}
-						
-						# --- look for related exhibitions
-						$va_exhibition_occ_ids = $t_authority_table->get("ca_occurrences.occurrence_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "restrictToTypes" => array("exhibition"), "sort" => "ca_occurrences.preferred_labels"));
-						if(is_array($va_exhibition_occ_ids) && sizeof($va_exhibition_occ_ids)){
-							$qr_exhibitions = caMakeSearchResult('ca_occurrences', $va_exhibition_occ_ids);
-							$vn_exhibitions_c = $qr_exhibitions->numHits();
-							if($qr_exhibitions->numHits()){
-
-								$vs_exhibitions_output = "";
-								while($qr_exhibitions->nextHit()){
-									$vs_tmp = "";
-									$vs_exhibitions_output .= "<div class='col-sm-6'>".$qr_exhibitions->getWithTemplate("<l>^ca_occurrences.preferred_labels.name</l>")."</div>";
+									$vs_faculty_text .= join("\n", $va_year_texts);
 								}
 							}
 		
@@ -338,7 +322,7 @@ if (!$vb_ajax) {	// !ajax
 		
 		</H1>
 <?php
-		if($vs_facet_description || $vs_fact_img || $vs_faculty_text || $vs_exhibitions_output || (is_array($va_rel_types) && (sizeof($va_rel_types) > 1))){
+		if($vs_facet_description || $vs_fact_img || $vs_faculty_text || (is_array($va_rel_types) && (sizeof($va_rel_types) > 1))){
 			if($vs_facet_description || $vs_fact_img){
 				print "<div class='row bFacetContextHeader'>";
 				if($vs_facet_img){
@@ -348,22 +332,7 @@ if (!$vb_ajax) {	// !ajax
 				}
 				print "<div class='bFacetDescription'>".$vs_facet_description."</div></div></div>";
 			}
-					
-			if($vs_exhibitions_output){
-?>
-				<div class="row textsList">
-					<div class='col-sm-12'>
-						<H5>Exhibitions <span class="grey"> / <?php print $vn_exhibitions_c." ".(($vn_exhibitions_c == 1) ? "exhibition" : "exhibitions"); ?></span></H5>
-					</div>
-					<div class='col-sm-12'>
-						<div class="row textsListScroll">
-							<?php print $vs_exhibitions_output; ?>
-						</div>				
-					</div>
-				</div><!-- end row -->
-<?php				
 			
-			}
 			if($vs_faculty_text){
 ?>
 				<div class="row textsList">
@@ -377,9 +346,7 @@ if (!$vb_ajax) {	// !ajax
 					</div>
 				</div><!-- end row -->
 <?php				
-			}
-			
-				
+			}			
 				//
 				// GET RELATIONSHIP TYPES FOR TABS
 				//

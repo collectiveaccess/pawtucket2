@@ -61,6 +61,7 @@
 				</div>
 			</div>
 		</footer><!-- end footer -->
+		<a href="#" class="jumpTop btn btn-default" onclick="$('html, body').animate({scrollTop: '0px'}, 300);"><span class="glyphicon glyphicon-chevron-up"></span> TOP</a>
 <?php
 	}
 	
