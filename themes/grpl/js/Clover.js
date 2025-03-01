@@ -105,7 +105,7 @@ export default function _init(appData) {
 				showIIIFBadge: false,
 				showTitle: true,
 				annotationOverlays: {
-					zoomLevel: 5
+					zoomLevel: 6
 				},
 				initialSearch: appData.initialSearch,
 				canvasHeight: (jQuery(window).height() - 120) + "px",
@@ -114,12 +114,15 @@ export default function _init(appData) {
 					scrollToZoom: true,
 					clickToZoom: true
 				  },
-				  maxZoomPixelRatio: 4
+				  maxZoomPixelRatio: 5,
+				  showFullPageControl: false,
+				  showRotationControl: false,
+				  showHomeControl: false
 				},
 				localeText: {
 					contentSearch: {
 						tabLabel: "Search",
-						formPlaceholder: "Search",
+						formPlaceholder: "Search within issue",
 						noSearchResults: "No results found"
 					}
 				},
@@ -128,8 +131,9 @@ export default function _init(appData) {
 					show: false
 				},
 				contentSearch: {
+					zoomToFirst: true,
 					overlays: {
-						zoomLevel: 20
+						zoomLevel: 22,
 					}
 				}
 			  }}

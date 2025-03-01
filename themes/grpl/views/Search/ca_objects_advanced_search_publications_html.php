@@ -19,22 +19,16 @@ print "<p>Enter your search terms in the fields below</p>";
 			{{{metsalto%height=1}}}
 		</div>
 	</div>
-<!--	<div class='row'>
+		<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search issue titles">Title</span>
-			{{{ca_objects.preferred_labels.name%width=220px}}}
-		</div>
-	</div> -->
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit search to a single date or date range">Date range <i>(e.g. 1970-1979)</i></span>
-			{{{ca_objects.date.date_value%useDatePicker=0}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Exclude results with text">Exclude Words</span>
+			{{{metsalto_exclude%height=1}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit search by publication">Publication title</span>
-			{{{ca_objects.serial_name%width=200px}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit search to a single date or date range">Date range <i>(e.g. 1970-1979)</i></span>
+			{{{ca_objects.date.date_value%useDatePicker=0}}}
 		</div>
 	</div>
 	<div class='row'>
@@ -62,21 +56,23 @@ print "<p>Enter your search terms in the fields below</p>";
 		<p><?php print caNavLink($this->request, "Search WWI registration cards", "", "", "Search", "advanced/regcard"); ?></p>
 		<hr></hr>
 <?php
-	if($set_code = $searchInfo["featuredCollectionsSetCode"]){
-		$t_set = new ca_sets(array("set_code" => $set_code));
-		if($t_set->get("ca_sets.set_id")){
-			$va_collection_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
-			if(is_array($va_collection_ids) && sizeof($va_collection_ids)){
-				$r_collections = caMakeSearchResult('ca_collections', $va_collection_ids);
-				if($r_collections->numHits()){
-					print "<h2>Newspaper and magazine titles</h2>";
-					while($r_collections->nextHit()){
-						print "<p>".$r_collections->getWithTemplate("<l>^ca_collections.preferred_labels.name<ifdef code='ca_collections.date.date_value'>, ^ca_collections.date.date_value</ifdef></l>")."</p>";	
-					}
-				}
-			}
-		}
-	}
+#	if($set_code = $searchInfo["featuredCollectionsSetCode"]){
+#		$t_set = new ca_sets(array("set_code" => $set_code));
+#		if($t_set->get("ca_sets.set_id")){
+#			$va_collection_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
+#			if(is_array($va_collection_ids) && sizeof($va_collection_ids)){
+#				$r_collections = caMakeSearchResult('ca_collections', $va_collection_ids);
+#				if($r_collections->numHits()){
+#					print "<h2>Newspaper and magazine titles</h2>";
+#					while($r_collections->nextHit()){
+#						print "<p>".$r_collections->getWithTemplate("<l>^ca_collections.preferred_labels.name<ifdef code='ca_collections.date.date_value'>, ^ca_collections.date.date_value</ifdef></l>")."</p>";	
+#					}
+#				}
+#			}
+#		}
+#	}
+	$t_collection = new ca_collections(array("idno" => "newspaper_collection"));
+	print $t_collection->getWithTemplate("<l class='btn btn-default'>All Newspaper & Magazine Titles</l>");
 ?>
 <!--		
 		<h2>Newspaper and magazine titles</h2>

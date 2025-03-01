@@ -69,7 +69,9 @@ H6, h6{
 	background-color: #1592d1;
 	color: #fff;
 }
-
+.browseRemoveFacet .btn-default-br{
+	font-size:13px;
+}
 /* Fix distortion/pixelation of collection images on resize */
 .bResultItemCol {
     height: 290px;
@@ -421,8 +423,8 @@ H6, h6{
 	margin-top:0px;
 }
 .front .frontSlide{
-	background-color:#93c98d;
-	/*background-color:#89d0cc;*/
+	/*background-color:#93c98d;*/
+	background-color:#89d0cc;
 }
 .front .frontSlide img{
 	width:100%;
@@ -597,12 +599,6 @@ div.caMediaOverlayControls .close {
 	top: 40vh;
 }
 
-.issueNav {
-	font-size: 30px;
-	font-weight: bold;
-	text-decoration: none !important;
-}
-
 .container.newspapers, .container.periodical {
 	width: 100% !important;
 	max-width: unset;
@@ -635,6 +631,8 @@ div.caMediaOverlayControls .close {
 	font-family: "Open Sans", Arial, sans-serif;
 	margin-left:5px;
 	font-weight:normal;
+	
+	text-decoration: none !important;
 }
 .c-dsaJAm {
 	flex-grow: 1 !important;
@@ -718,4 +716,10 @@ div.caMediaOverlayControls .close {
 }
 .c-fIsjLW {
 	
+}
+
+#browseResultsContainer{
+	margin:20px 0 0 15px;
+	height:100%;
+	position:relative;
 }

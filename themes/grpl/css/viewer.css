@@ -191,3 +191,48 @@ span.label a {
 .r6o-widget:nth-child(2) {
 	display: none;
 }
+
+button._active_fbp68_40 {
+	background-color: #cc0000 !important;
+}
+
+button.c-fuvPUR, button._toolbarBtn_fbp68_1 {
+	width: 30px !important;
+	height: 30px !important;
+}
+
+button._toolbarBtn_fbp68_1 i {
+	display: block;
+	width: 30px;
+	height: 30px;
+	margin-top: 7px;
+}
+
+.c-ihwAQz {
+	background-color: rgba(255, 255, 255, 0.6);
+	padding: 5px;
+}
+
+.clover-viewer-header span button {
+	background: none;
+	background-color: rgba(0, 0, 0, 0);
+	background-color: #EBEBEB;
+	border: 0px;
+	text-shadow: 0 0px 0 #FFFFFF;
+	font-size: 12px !Important;
+	text-transform: capitalize;
+	padding: 4px 5px 3px 5px;
+	box-shadow: 0 0px 0 rgba(255, 255, 255, 0.15) inset, 0 0px 0px rgba(0, 0, 0, 0.075);
+	border-radius: 0px;
+	letter-spacing: 1px;
+	color: #696969 !important;
+	font-family: "Open Sans", Arial, sans-serif;
+	margin-left:5px;
+	font-weight:normal;
+	
+	text-decoration: none !important;
+}
+
+.r6o-editor {
+	width: 30% !important;
+}

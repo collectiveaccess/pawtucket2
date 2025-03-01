@@ -110,6 +110,7 @@ $annotations = $this->getVar("annotations");
 			<div class="sourceInfo">
 				<div class='objectLabel'><?= _t('From <em>%1</em>', $anno['object_label']); ?></div>
 				<div class='annotationLabel'><?= $anno['label']; ?></div>
+				<div class='annotationLabel'><?= $anno['created'] ? _t('Created %1', $anno['created']) : ''; ?></div>
 			</div>
 		</div>
 <?php

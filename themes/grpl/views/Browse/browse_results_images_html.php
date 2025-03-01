@@ -125,9 +125,8 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 				print ExternalCache::fetch($vs_cache_key, 'browse_result');
 			}else{
 				#Added by TG 5/21 to change collection link to browse page (so collection is browsable) and create hover text
+				# ---  But if there are sub collections, link to detail page so can see the sub collections
 				if ($vb_is_collection){
-					$vs_label_detail_link = caNavLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => $vn_id, "view" => "images"));
-					$vs_idno_detail_link 	= caNavLink($this->request, $qr_res->get("{$vs_table}.idno"), "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => $vn_id, "view" => "images"));
 					# Get hover text
 					if ($vs_brief = $qr_res->get("{$vs_table}.brief_description")){
 						$vs_hover_text = "data-toggle='popover' data-trigger='hover' data-content='".$vs_brief;
@@ -137,6 +136,10 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 							$vs_hover_text .= "'";
 						}
 					}
+				}
+				if ($vb_is_collection && !$qr_res->get("ca_collections.children.collection_id")){
+					$vs_label_detail_link = caNavLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => $vn_id, "view" => "images"));
+					$vs_idno_detail_link 	= caNavLink($this->request, $qr_res->get("{$vs_table}.idno"), "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => $vn_id, "view" => "images"));
 				}else{
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
@@ -184,8 +187,8 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 					}else{
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}
-					# TG added: use browse link if a collection, otherwise details
-					if ($vb_is_collection){
+					# TG added: use browse link if a collection and there are no sub collections, otherwise details
+					if ($vb_is_collection && !$qr_res->get("ca_collections.children.collection_id")){
 						$vs_rep_detail_link 	= caNavLink($this->request, $vs_thumbnail, "", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => $vn_id, "view" => "images"));
 					}
 					else{

@@ -191,7 +191,7 @@ if((strToLower($this->request->getController()) == "detail") && (strToLower($thi
 				<form class="navbar-form navbar-right" role="search" action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" />
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search everything" name="search" autocomplete="off" />
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
