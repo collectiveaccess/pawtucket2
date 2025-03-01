@@ -758,7 +758,6 @@ function caGetInfoForSearchBuilderType($ps_search_type) {
  *
  */
 function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) {
-	
 	$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
 	$va_form_contents = explode('|', caGetOption('_formElements', $pa_form_values, ''));
 	
@@ -779,6 +778,21 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 					$va_default_values['_fieldlist_value'][] = trim($pa_form_values[$vs_dotless_element.'_value'][$vn_j]);
 					$va_booleans["_fieldlist:boolean"][] = $va_booleans["{$vs_fieldlist_field}:boolean"][] = isset($pa_form_values["_fieldlist:boolean"][$vn_j]) ? $pa_form_values["_fieldlist:boolean"][$vn_j] : null;
 					
+				}
+				break;
+			case 'metsalto':
+				foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
+						if(!strlen(trim($vs_element_value))) { continue; }
+						$va_default_values[$vs_element.$vs_element_rel_type][] = trim($vs_element_value);
+						$va_values[$vs_element.$vs_element_rel_type][] = trim($vs_element_value);
+						$va_booleans["{$vs_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
+					}
+				break;
+			case 'metsalto_exclude':
+				foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
+					if(!strlen(trim($vs_element_value))) { continue; }
+					$va_default_values['metsalto'.$vs_element_rel_type][] = $va_values['metsalto'.$vs_element_rel_type][] = '-'.trim(preg_replace("!^\-!", "", $vs_element_value));
+					$va_booleans["metsalto{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
 				}
 				break;
 			default:
@@ -825,7 +839,12 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 			foreach($va_value_list as $vn_i => $vs_value) {
 				if (!strlen(trim($vs_value))) { continue; }
 				if ((strpos($vs_value, ' ') !== false) && ($vs_value[0] != '[')) {
-					$vs_query_element = '"'.str_replace('"', "\\\"", $vs_value).'"';
+					
+					if($vs_value[0] === '-') {
+						$vs_query_element = '-"'.mb_substr($vs_value, 1).'"';
+					} else {
+						$vs_query_element = '"'.str_replace('"', "\\\"", $vs_value).'"';
+					}
 				} else {
 					$vs_query_element = $vs_value;
 				}
@@ -844,12 +863,21 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 						if(!strlen(trim($pa_form_values['_fieldlist_value'][$vn_i]))) { continue(2); }
 						$va_query_elements[$vs_element][] = "(".$va_values['_fieldlist_field'][$vn_i].":".$pa_form_values['_fieldlist_value'][$vn_i].")";
 						break;
+					case 'metsalto':
+						$va_query_elements[$vs_element][] = $vs_query_element;
+						break;
+					case 'metsalto_exclude':
+						$va_query_elements[$vs_element][] = $vs_query_element;
+						break;
 					default:
 						$va_tmp = explode('.', $vs_element);
 						if ((sizeof($va_tmp) > 2) && ($va_tmp[1] == 'related')) { unset($va_tmp[1]); $vs_element = join('.', $va_tmp); }
 						$va_query_elements[$vs_element][] = "({$vs_element}:{$vs_query_element})";
 						break;
 				}
+			}
+			if($vs_element === 'metsalto') {
+				$va_query_elements[$vs_element] = ['metsalto:"'.str_replace('"', "",join(' ', $va_query_elements[$vs_element])).'"'];
 			}
 		}
 	}
@@ -865,7 +893,6 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 		}
 		$vs_query_string = trim($vs_query_string). ')';
 	}
-	
 	return $vs_query_string;
 }
 # ---------------------------------------
@@ -964,6 +991,8 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 	$o_query_parser->setEncoding('UTF-8');
 	$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
 	
+	$ps_search = stripslashes($ps_search);
+	//print "S=$ps_search<br>\n";
 	if ($purifier = RequestHTTP::getPurifier()) { $ps_search = $purifier->purify($ps_search); }
 	
 	$pb_omit_field_names = caGetOption(['omitFieldNames', 'omitQualifiers'], $pa_options, false);
@@ -981,9 +1010,10 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 	}
 	
 	$va_subqueries = caGetSubQueries($o_parsed_query);
+	//print($va_subqueries);
 	$va_items = $va_subqueries['items'];
 	$va_signs = $va_subqueries['signs'];
-	
+	//print_R($va_items);
 	$va_query = [];
 	foreach ($va_items as $id => $subquery) {
 		if ($subquery && property_exists($subquery, 'field') && $subquery->field) {
@@ -1005,7 +1035,9 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 				}
 				
 				$vs_field_disp = caGetLabelForBundle($vs_field);
-				$va_query[] = ($vs_field_disp && !$pb_omit_field_names ? "{$vs_field_disp}: \"" : "").caGetDisplayValueForBundle($vs_field, join(" ", $va_terms))."\"";
+				
+				$dv = caGetDisplayValueForBundle($vs_field, join(" ", $va_terms));
+				$va_query[] = strlen($dv) ? (($vs_field_disp && !$pb_omit_field_names ? "{$vs_field_disp}: \"" : "")).$dv."\"" : join(" ", $va_terms);
 				break;
 			case 'Zend_Search_Lucene_Index_Term':
 				$subquery = new Zend_Search_Lucene_Search_Query_Term($subquery);
@@ -1026,6 +1058,7 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 				break;
 		}
 	}
+	
 	return join(" ", $va_query);
 }
 # ---------------------------------------
@@ -1048,7 +1081,7 @@ function caGetSubQueries($po_parsed_query) {
 			break;
 		case 'Zend_Search_Lucene_Search_Query_Phrase':
 		case 'Zend_Search_Lucene_Search_Query_Range':
-			$va_items = $po_parsed_query;
+			$va_items = [$po_parsed_query];
 			$va_signs = null;
 			break;
 		default:
@@ -1145,9 +1178,11 @@ function caGetDisplayValueForBundle($ps_bundle, $ps_value) {
 						break;
 				}
 			}
+		} else {
+		
 		}
 	}
-	return "???";
+	return null;
 }
 # ---------------------------------------
 /**
@@ -2205,6 +2240,7 @@ function caMapBundleToSearchBuilderFilterDefinition(BaseModel $t_subject, $pa_bu
  * @return array A list of terms
  */
 function caExtractTermsForSearch($search, ?array $options=null) {
+	$search = stripslashes($search);
 	if(is_string($search)) {
 		$qp = new LuceneSyntaxParser();
 		$qp->setEncoding('UTF-8');
@@ -2218,12 +2254,26 @@ function caExtractTermsForSearch($search, ?array $options=null) {
 		$parsed = $search;
 	}
 	if(!is_object($parsed)) { return []; }
+	$terms = _caExtractTermsForSearchParsedItem($parsed);
+	
+	return $terms;
+}
+# ---------------------------------------
+/**
+ * Extract terms from parsed search item. Usually called from the caExtractTermsForSearch() helper
+ *
+ * @param object $parsed A parsed search item (Eg. class Zend_Search_Lucene_Search_Query_Term)
+ *
+ * @return array A list of terms
+ * @seealso caExtractTermsForSearch
+ */
+function _caExtractTermsForSearchParsedItem($parsed, ?array $options=null) {
 	$terms = [];
 	switch(get_class($parsed)) {
 		case 'Zend_Search_Lucene_Search_Query_Boolean':
 			$signs = $parsed->getSigns();
 			foreach($parsed->getSubqueries() as $i => $sq) {
-				$terms = array_merge($terms, caExtractTermsForSearch($sq, array_merge($options ?? [], ['sign' => $signs[$i]])));
+				$terms = array_merge($terms, _caExtractTermsForSearchParsedItem($sq, array_merge($options ?? [], ['sign' => $signs[$i]])));
 			}
 			break;
 		case 'Zend_Search_Lucene_Search_Query_MultiTerm':
@@ -2248,9 +2298,6 @@ function caExtractTermsForSearch($search, ?array $options=null) {
 		case 'Zend_Search_Lucene_Search_Query_Insignificant':
 		case 'Zend_Search_Lucene_Search_Query_Empty':
 			// noop
-			break;
-		default:
-			return [];
 			break;
 	}
 	return $terms;
