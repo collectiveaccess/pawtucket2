@@ -291,7 +291,7 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
  		}
  
  		$ret = [];
- 		if($qr = ca_user_representation_annotations::find($criteria, ['returnAs' => 'searchResult'])) {
+ 		if($qr = ca_user_representation_annotations::find($criteria, ['returnAs' => 'searchResult', 'sort' => 'ca_user_representation_annotations.annotation_id'])) {
 			while($qr->nextHit()) {
 				$anno_id = $qr->get('ca_user_representation_annotations.annotation_id');
 				$object_id = $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.object_id</unit>");
@@ -339,7 +339,10 @@ class ca_user_representation_annotations extends BaseRepresentationAnnotationMod
 						$ret[$representation_id]['representation_id'] = $representation_id;
 						break;
 					default:
-						$ret[$anno_id] = $anno;
+						$ret[$anno_id] = array_merge($anno, [
+							'object_label', $qr->getWithTemplate("<unit relativeTo='ca_object_representations'>^ca_objects.preferred_labels</unit>"),
+							'object_id' => $object_id
+						]);
 						break;
 				}
 			}

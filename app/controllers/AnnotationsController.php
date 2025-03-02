@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2024 Whirl-i-Gig
+ * Copyright 2024-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -45,9 +45,19 @@ class AnnotationsController extends BasePawtucketController {
 	 *
 	 */
 	public function Index() {
-		$annotations = ca_user_representation_annotations::getAnnotations(['request' => $this->request, 'groupBy' => 'ca_objects']);
+		$sort = strtolower($this->request->getParameter('sort', pString));
+		if(!in_array($sort, ['issue', 'date'])) { 
+			if(!($sort = Session::getVar('annotationSort'))) {
+				$sort = 'issue'; 
+			}
+		}
+		
+		$annotations = ca_user_representation_annotations::getAnnotations(['request' => $this->request, 'groupBy' => ($sort === 'issue') ? 'ca_objects' : null]);
 	
 		$this->view->setVar('annotations', $annotations);
+		$this->view->setVar('sort', $sort);
+		
+		Session::setVar('annotationSort', $sort);
 		
 		$this->render("Annotations/index_html.php");
 	}
