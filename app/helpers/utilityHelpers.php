@@ -4238,8 +4238,7 @@ function caFileIsIncludable($ps_file) {
 		$omit_article = caGetOption('omitArticle', $options, true);
 		$move_articles = caGetOption('moveArticles', $options, true);
 
-		$display_value = trim(preg_replace('![^\p{L}0-9 ]+!u', ' ', $text));
-		$display_value = preg_replace('![ ]+!u', ' ', $display_value);
+		$display_value = preg_replace('![ ]+!u', ' ', $text);
 		
 		if($locale && $move_articles) {
 			// Move articles to end of string
@@ -4252,6 +4251,7 @@ function caFileIsIncludable($ps_file) {
 				}
 			}
 		}
+		$display_value = trim(preg_replace('![^\p{L}0-9 ]+!u', ' ', $display_value));
 
 		// Left-pad numbers
 		$padded = [];
