@@ -58,7 +58,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php 
 	if($show_nav){
 ?>
-	<div class="row mt-n3">
+	<div class="row">
 		<div class="col text-center text-md-end">
 			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
@@ -271,7 +271,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	}									
 ?>				
 
-{{{<ifcount code="ca_collections.children" restrictToTypes="files" min="1">
+{{{<ifcount code="ca_collections.children" restrictToTypes="file" min="1">
 <div class="row mt-5">
 	<div class="col"><h2>Files in this ^ca_collections.type_id</h2><hr/></div>
 </div>

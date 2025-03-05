@@ -50,7 +50,7 @@ $media_options = array_merge($media_options, [
 <?php
 if($show_nav){
 ?>
-	<div class="row mt-n3">
+	<div class="row">
 		<div class="col text-center text-md-end">
 			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>

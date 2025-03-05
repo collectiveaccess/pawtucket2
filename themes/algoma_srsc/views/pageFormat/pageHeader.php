@@ -105,23 +105,34 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 }
 ?>
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
-	<nav class="navbar navbar-expand-lg shadow-sm">
-		<div class="container-xl">
-			<?= caNavlink($this->request, "Shingwauk Residential Schools Centre", "navbar-brand  img-fluid fw-bold", "", "", ""); ?>
+	<nav class="navbar navbar-expand-xl nav-pills shadow-sm">
+		<div class="container-fluid">
+			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'srsc_logo.png', array("alt" => "Shingwauk Residential Schools Centre Logo", "role" => "banner"))."<div class='d-inline-block ms-3 lh-sm fw-bold giovanni fs-4'><span class='fs-3 red'>Shingwauk</span><br/>Residential Schools Centre</div>", "navbar-brand d-flex align-items-center", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">				
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
+					<li class="nav-item dropdown">
+						<a class="text-nowrap nav-link<?=((in_array(strToLower($this->request->getController()), array("aboutsrsc", "contact"))) ? " active" : ""); ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<?= _t("About"); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<?= caNavlink($this->request, _t('About the Centre'), "dropdown-item".((strToLower($this->request->getController()) == "aboutsrsc") ? " active" : ""), "", "AboutSRSC", "", "", ((strToLower($this->request->getController()) == "aboutsrsc") ? array("aria-current" => "page") : null)); ?>
+							</li>
+							<li>
+								<?= caNavlink($this->request, _t('Contact Us'), "dropdown-item".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
+							</li>
+											
+						</ul>	
 					</li>
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Gallery'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Schools'), "nav-link".((strToLower($this->request->getController()) == "schools") ? " active" : ""), "", "Schools", "List", "", ((strToLower($this->request->getController()) == "schools") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Gallery'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
 					</li>
 <?php
 					if($user_links){
