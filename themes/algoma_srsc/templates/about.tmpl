@@ -3,8 +3,84 @@
 		<h1>{{{title}}}</h1><br>
 	</div>
 	<div class="row">
-		<div class="col-12 col-lg-8">
-			<p>{{{bodytext}}}</p>
+		<div class="col-md-9">
+			<h2>Archives and Special Collections</h2>
+			<div class="mb-5">{{{archives_special_collections}}}</div>
+			<h2>Donations</h2>
+			<div class="mb-5">{{{donations}}}</div>
+			<h2>Contact Us</h2>
+			<div class="mb-5">{{{contact_info}}}</div>
+			<h2>Significant Fonds</h2>
+			<div class="mb-5">
+
+
+
+
+<?php
+
+	$access_values = caGetUserAccessValues($this->request);
+ 	$templates_config = Configuration::load(__CA_THEME_DIR__.'/conf/templates.conf');
+	$sets = array(
+					$templates_config->get("university_fonds_heading") => $templates_config->get("university_fonds_set_code"), 
+					$templates_config->get("anglican_diocese_fonds_heading") => $templates_config->get("anglican_diocese_fonds_set_code"), 
+					$templates_config->get("private_fonds_heading") => $templates_config->get("private_fonds_set_code")
+				);
+	
+	foreach($sets as $heading => $set_code){
+		$t_set = $qr_res = null;
+		$featured_ids = [];
+		$t_set = new ca_sets();
+		$t_set->load(['set_code' => $set_code]);
+		if($t_set->get("ca_sets.set_id")){
+			// Enforce access control on set
+			if((sizeof($access_values) == 0) || (sizeof($access_values) && in_array($t_set->get("access"), $access_values))){
+				$featured_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values])) ? $tmp : []);
+			}
+			if(sizeof($featured_ids)){
+				$qr_res = caMakeSearchResult("ca_collections", $featured_ids);
+				if($qr_res && $qr_res->numHits()){
+				$i++;
+?>   
+					<div class="mb-4">
+						<button class="w-100 btn btn-light btn-lg text-start border fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#<?= $set_code; ?>" aria-expanded="false" aria-controls="<?= $set_code; ?>"><i class="bi bi-chevron-expand me-2"></i> <?= $heading; ?></button>
+						<div class="collapse border p-4" id="<?= $set_code; ?>">
+							<ul class="w-100 lh-lg">
+<?php
+							while($qr_res->nextHit()){
+								print "<li>".$qr_res->getWithTemplate("<l>^ca_collections.preferred_labels.name</l>")."</li>";
+							}
+?>
+							</ul>
+						</div>
+					</div>
+<?php
+				}
+			}
+		}
+	}	
+	
+?>
+			</div>
+		</div>
+		<div class="col-md-3 img-fluid mb-5">
+			{{{media:1:original}}}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-9">
+			<h2>Anglican Diocese of Algoma Archives</h2>
+			<div class="mb-5">{{{anglican_diocese}}}</div>
+			<h3>Parish Records Policy</h3>
+			<div class="mb-4">
+				<button class="w-100 btn btn-light btn-lg text-start border fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#parish_records_policy" aria-expanded="false" aria-controls="parish_records_policy"><i class="bi bi-chevron-expand me-2"></i> Access to Parish Records</button>
+				<div class="collapse border p-4" id="parish_records_policy">
+					{{{access_to_parish_records}}}
+				</div>
+			</div>
+
+		</div>
+		<div class="col-md-3 img-fluid mb-5">
+			{{{media:2:original}}}
 		</div>
 	</div>
 </div>
