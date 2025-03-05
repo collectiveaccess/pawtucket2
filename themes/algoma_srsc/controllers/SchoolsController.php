@@ -57,7 +57,7 @@
  		 	if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
  		 		$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
 			}
-			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_school_id, array("sort" => "ca_entity_labels.name_sort"));
+			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_school_id, array("sort" => "ca_entity_labels.displayname"));
  			
  			$map_info = $this->config->get("map_info");
  		 	if (!is_array($map_attributes = caGetOption(['data', 'mapAttributes', 'map_attributes'], $map_info, array())) || !sizeof($map_attributes)) {
@@ -105,7 +105,7 @@
  		public static function getReturnToResultsUrl($request) {
  			$ret = array(
  				'module_path' => '',
- 				'controller' => 'Contributors',
+ 				'controller' => 'Schools',
  				'action' => $request->getAction(),
  				'params' => array(
  					

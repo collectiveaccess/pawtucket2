@@ -46,7 +46,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	if($show_nav){
 ?>
-	<div class="row mt-n3">
+	<div class="row">
 		<div class="col text-center text-md-end">
 			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
@@ -54,7 +54,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row<?php print ($show_nav) ? " mt-2" : ""; ?>">
 		<div class="col-md-12">
 			<H1 class="fs-3">{{{^ca_entities.preferred_labels.displayname}}}</H1>
 			{{{<ifdef code="ca_entities.type_id"><div class="fw-medium mb-3 text-capitalize">^ca_entities.type_id</div></ifdef>}}}

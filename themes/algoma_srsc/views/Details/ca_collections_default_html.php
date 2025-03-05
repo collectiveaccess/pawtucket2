@@ -58,7 +58,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php 
 	if($show_nav){
 ?>
-	<div class="row mt-n3">
+	<div class="row">
 		<div class="col text-center text-md-end">
 			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
