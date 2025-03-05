@@ -31,6 +31,24 @@ $lightbox_displayname_plural 		= $this->getVar("lightbox_displayname_plural");
 $t_set = $this->getVar('t_set');
 $set_id = $t_set->getPrimaryKey();
 $addUrl = caNavUrl($this->request, '*', '*', 'AddAnonymousAccess', ['id' => $set_id]);
+
+$lightbox_conf = caGetLightboxConfig();
+
+$reflection = new ReflectionClass($lightbox_conf);
+$property = $reflection->getProperty('ops_config_settings');
+$property->setAccessible(true);
+$settings = $property->getValue($lightbox_conf);
+
+// Extract the downloads object
+$downloads = $settings['assoc']['lightbox_options']['ca_objects']['downloads'] ?? null;
+
+// Check if downloads exist and use it
+// if ($downloads) {
+//     var_dump($downloads);
+// } else {
+//     echo "Downloads object not found.";
+// }
+
 ?>
 <div class="modal fade" id="lightboxAccessModal" tabindex="-1" aria-labelledby="lightboxAccessModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -42,25 +60,44 @@ $addUrl = caNavUrl($this->request, '*', '*', 'AddAnonymousAccess', ['id' => $set
 	  <div class="modal-body">
 
 		<form id="accessForm">
-			<!-- Name the URL -->
-			<div class="mb-3">
-				<label for="urlName" class="form-label z-3">
-					<?= _t('Sharing Name'); ?>
-				</label>
-				<input name="urlName" type="text" class="form-control" id="urlName" placeholder="Enter a name for the URL">
-				<div id="urlNameHelp" class="form-text">
-					<?= _t('Enter a descriptive name for the URL. This name will be used when tracking use of the URL.'); ?>
+			<div class="row">
+				<!-- Name Field -->
+				<div class="col-md-6">
+					<div class="mb-3">
+						<label for="urlName" class="form-label z-3">
+							<?= _t('Sharing Name'); ?>
+						</label>
+						<input name="urlName" type="text" class="form-control" id="urlName" placeholder="Enter a name for the URL">
+						<div id="urlNameHelp" class="form-text">
+							<?= _t('Enter a descriptive name for the URL. This name will be used when tracking use of the URL.'); ?>
+						</div>
+					</div>
+				</div>
+
+				<!-- Date Picker Field -->
+				<div class="col-md-6">
+					<div class="mb-3">
+						<label for="expirationDate" class="form-label z-3">
+							<?= _t('Date Available'); ?> (<?= _t('Optional'); ?>)
+						</label>
+						<input name="expirationDate" type="text" class="form-control" id="expirationDate">
+						<div id="expirationDateHelp" class="form-text">
+							<?= _t('Choose an optional date range for the availability of the URL.'); ?>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<!-- Date Picker -->
 			<div class="mb-3">
-				<label for="c" class="form-label z-3">
-					<?= _t('Date Available'); ?> (<?= _t('Optional'); ?>)
-				</label>
-				<input name="expirationDate" type="text" class="form-control" id="expirationDate">
-				<div id="expirationDateHelp" class="form-text">
-					<?= _t('Choose an optional date range for the availability of URL.'); ?>
+				<label class="form-label"><?= _t('Download Options'); ?></label>
+				<div class="form-check">
+					<?php foreach ($downloads as $key => $option): ?>
+						<input type="checkbox" class="form-check-input" id="download_<?= $key; ?>" name="downloads[]" value="<?= $key; ?>">
+						<label class="form-check-label" for="download_<?= $key; ?>"><?= $option['label']; ?></label><br>
+					<?php endforeach; ?>
+				</div>
+				<div id="downloadsHelp" class="form-text">
+					<?= _t('Select which file versions will be available for download through the shared link.'); ?>
 				</div>
 			</div>
 
@@ -69,9 +106,9 @@ $addUrl = caNavUrl($this->request, '*', '*', 'AddAnonymousAccess', ['id' => $set
 				hx-post="<?= $addUrl; ?>" 
 				hx-target="#sharedUrls" 
 				hx-swap="outerHTML"
-				hx-include="#urlName, #expirationDate"
+				hx-include="#accessForm"
 			>
-				<?= _t('Add'); ?>
+				<?= _t('Add '); ?><i class="bi bi-plus-lg"></i>
 			</button>
         </form>
 
@@ -91,17 +128,16 @@ $addUrl = caNavUrl($this->request, '*', '*', 'AddAnonymousAccess', ['id' => $set
 </div>
 
 <script>
-document.body.addEventListener("htmx:afterSwap", () => {
-    document.querySelectorAll(".copyButton").forEach(button => {
-        button.onclick = () => {
-            let url = button.closest("td").querySelector("a")?.href;
-            if (url) {
-                navigator.clipboard.writeText(url).then(() => {
-                    button.innerHTML = '<i class="bi bi-clipboard-check"></i>';
-                    setTimeout(() => button.innerHTML = '<i class="bi bi-clipboard"></i>', 2000);
-                });
-            }
-        };
-    });
+document.body.addEventListener("click", (event) => {
+    const button = event.target.closest(".copyButton"); // Check if a copy button was clicked
+    if (!button) return;
+    let url = button.closest("td")?.querySelector("a")?.href;
+    if (url) {
+        navigator.clipboard.writeText(url).then(() => {
+            button.innerHTML = '<i class="bi bi-clipboard-check"></i>';
+            setTimeout(() => button.innerHTML = '<i class="bi bi-clipboard"></i>', 1000);
+        })
+    }
 });
+
 </script>
