@@ -61,7 +61,7 @@
 ?>
 		<div class="px-3"><div class="container-xxl">
 			<div class="row justify-content-center">
-				<div class="col-md-10 my-5 py-5 text-center">
+				<div class="col-md-10 my-5 py-5 text-center hpIntro">
 <?php
 					if($vs_hp_intro_title){
 						print "<div class='display-3 lh-base'>".$vs_hp_intro_title."</div>";
