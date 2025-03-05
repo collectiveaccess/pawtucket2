@@ -185,7 +185,7 @@
 				$results_output++;
 			}
 			
-			print "<div style='clear:both' class='text-center m-3' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $start + $results_output, 'key' => $browse_key, 'view' => $current_view, 'sort' => $current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."' hx-trigger='revealed' hx-swap='afterend'>
+			print "<div style='clear:both' class='text-center m-3' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $start + $results_output, 'key' => $browse_key, 'view' => $current_view, 'sort' => $current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."' hx-trigger='revealed' hx-swap='outerHTML'>
 						<div class='spinner-border htmx-indicator' role='status'><span class='visually-hidden'>Loading...</span></div>
 					</div>";
 		}
