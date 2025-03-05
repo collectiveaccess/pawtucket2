@@ -52,7 +52,6 @@ if($collections_config->get("do_not_display_collection_browser")){
 $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 ?>
 <script>
-	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 <?php 
@@ -92,9 +91,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_collections", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
 				}
 				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
+					print $this->render('Details/snippets/copy_link_html.php');
 				}
 ?>
 			</div>
