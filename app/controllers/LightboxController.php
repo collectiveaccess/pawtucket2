@@ -324,19 +324,35 @@ class LightboxController extends FindController {
 		
 		// TODO: support different types of lightboxes
 		$this->view->setVar('type', 'ca_objects');
-		
-		$downloads = [];
-		foreach($tconfig['downloads'] ?? [] as $dcode => $dinfo) {
-			switch(strtolower($dinfo['type'] ?? null)) {
-				case 'media':
-					$downloads[] = array_merge($dinfo, [
-						'url' => caNavUrl($this->request, '*', '*', "Download/{$set_id}", ['dcode' => $dcode,'type' => $dinfo['type'], 'version' => $dinfo['version'] ?? 'original']),
-					]);
-					break;
+
+		// Get all available download options
+		$downloads = $tconfig['downloads'] ?? [];
+
+		// If the user is anonymous, filter allowed downloads
+		if ($this->anonymous_set) {
+			$anonymous_guid = $this->request->getActionExtra();
+			$access_token = ca_sets_x_anonymous_access::findAsInstance(['guid' => $anonymous_guid]);
+
+			if ($anonymous_guid && $access_token) {
+				$allowed_versions = $access_token->getSetting('download_versions') ?: [];
+				$downloads = array_filter($downloads, fn($key) => in_array($key, $allowed_versions), ARRAY_FILTER_USE_KEY);
 			}
 		}
-		$this->view->setVar('downloads', $downloads);
-		
+
+		foreach ($downloads as $dcode => $dinfo) {
+			if (strtolower($dinfo['type'] ?? '') === 'media') {
+				$downloads[$dcode] = array_merge($dinfo, [
+					'url' => caNavUrl($this->request, '*', '*', "Download/{$set_id}", [
+						'dcode' => $dcode,
+						'type' => $dinfo['type'], 
+						//'version' => $dinfo['version'] ?? 'original'
+					]),
+				]);
+			}
+		}
+
+		$this->view->setVar('downloads', array_values($downloads));
+
 		$exports = [];
 		foreach($tconfig['exports'] ?? [] as $dcode => $dinfo) {
 			$exports[] = array_merge($dinfo, [
@@ -558,9 +574,34 @@ class LightboxController extends FindController {
 		$set_id = $this->request->getActionExtra(); // set_id or guid
 		$type = $this->request->getParameter('type', pString);
 		$item_ids = $this->_getItemIDs($this->request->getParameter('item_id', pString));
-		$version = $this->request->getParameter('version', pString);
+		//$version = $this->request->getParameter('version', pString);
+		$dcode = $this->request->getParameter('dcode', pString);
 		$select_all = (bool)$this->request->getParameter('selectAll', pString);
 		$omit_item_ids = $select_all ? $this->_getItemIDs($this->request->getParameter('omit_item_id', pString)) : null;
+		
+		
+		$loptions = $this->config->getAssoc('lightbox_options');
+		
+		// @TODO support different types of lightboxes
+		$tconfig = $loptions['ca_objects'] ?? [];
+		
+		if(!isset($tconfig['downloads'][$dcode])) {
+			throw new ApplicationException(_t('Invalid dcode'));
+		}
+		
+		// Verify user can download specified version
+		if(!$this->request->isLoggedIn()) {
+			$guid = $this->request->getActionExtra();
+			if(!($t_rel = ca_sets_x_anonymous_access::findAsInstance(['guid' => $guid]))) {
+				throw new ApplicationException(_t('Guid is invalid'));
+			}
+			$allowed_versions = $t_rel->getSetting('download_versions') ?: [];
+			if(!in_array($dcode, $allowed_versions, true)) {
+				throw new ApplicationException(_t('No access for dcode'));
+			}
+		}
+		$version = $tconfig['downloads'][$dcode]['version'];
+
 
 		$errors = [];
 		
@@ -598,6 +639,7 @@ class LightboxController extends FindController {
 		}
 		$o_zip = new ZipStream();
 		foreach($file_paths as $path => $name) {
+			// @TODO: do metadata embedding 
 			$o_zip->addFile($path, $name);
 		}
 		$this->view->setVar('zip_stream', $o_zip);
@@ -907,9 +949,9 @@ class LightboxController extends FindController {
 	 */
 	public function AddAnonymousAccess() {
 		$id = $this->request->getParameter('id', pInteger);
-
 		$name = $this->request->getParameter('urlName', pString);
 		$expirationDate = $this->request->getParameter('expirationDate', pString);
+		$downloads = $this->request->getParameter('downloads', pArray);
 
 		$t_set = ca_sets::findAsInstance($id);
 		
@@ -922,7 +964,8 @@ class LightboxController extends FindController {
 		$new_token = [
 			'name' => $name ?: 'Untitled', 
 			'access' => 1,  
-			'effective_date' => $expirationDate
+			'effective_date' => $expirationDate,
+			'downloads' => $downloads
 		];
 
 		$success = $t_set->addAnonymousAccessTokens([$new_token]);
@@ -937,17 +980,19 @@ class LightboxController extends FindController {
 				'user' => $this->request->user->get('user_name'),
 				'name' => $name,
 				'expirationDate' => $expirationDate,
+				'downloads' => $downloads,
 				'message' => 'New share link added',
 			], 'INFO');
 			
 		} else {
 			// echo "Error adding new token";
-			$this->view->setVar('error_message', 'Error adding new token');
+			$this->view->setVar('error_message', 'Error adding new token: '.join("; ", $t_set->getErrors()));
 
 			$log->logJSON('AddAnonymousAccess', [
 				'user' => $this->request->user->get('user_name'),
 				'name' => $name,
 				'expirationDate' => $expirationDate,
+				'downloads' => $downloads,
 				'message' => 'Error adding new token',
 			], 'ERR');
 		}
