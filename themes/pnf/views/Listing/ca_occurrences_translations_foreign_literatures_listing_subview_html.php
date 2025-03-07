@@ -87,74 +87,89 @@
 					</div>
 <?php
 				}			
-			}		
+			}
+	$rows_by_language = array();
+	foreach($va_lists as $vn_type_id => $qr_list) {
+		
+		
+		if(!$qr_list) { continue; }
+		while($qr_list->nextHit()) {
+			$rows_by_language[$qr_list->get("ca_occurrences.translationOriginalLanguage", array("convertCodesToDisplayText" => true))][] =  "<div class='row'>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.author')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.translationOriginalTitle')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.translationtranslator')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.preferred_labels')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.translationCultural')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.510_citation_reference')."</div>
+									</div>";
+		}
+	}
+	$langs = array_keys($rows_by_language);
+	print "<div style='padding-top:30px;'>Show: ";
+	$lang_count = 0;
+	foreach($langs as $lang){
 ?>
+		<a class="sortLinks sortLink<?php print $lang; ?>" style="<?php print ($lang_count == 0) ? "font-weight:bold; " : ""; ?>color: #7f4539;" href="#" onclick="jQuery('.sortLinks').css('font-weight', 'normal'); jQuery('.sortLink<?php print $lang; ?>').css('font-weight', 'bold'); jQuery('.langListings').hide(); jQuery('#Lang<?php print $lang; ?>').show();"><?php print $lang; ?></a> 
+<?php	
+		$lang_count++;
+		if($lang_count < sizeof($langs)){
+			print " | ";
+		}
+	}
+	print "</div>";
+	$table_count = 0;
+	foreach($rows_by_language as $language => $rows){
+		$table_count++;	
+?>
+	<div class="langListings" id="Lang<?php print $language; ?>"<?php print ($table_count > 1) ? " style='display:none;'" : "";  ?>><a name="Lang<?php print $language; ?>"></a>
 		<div class='row'>
 			<div class='col-sm-12'>
 				<div style='padding:20px 10px 0px 10px;'>
 					<div class='row'>
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Author") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Author(s) / Creator(s)" : "Autor(es) / Creador(es)"), "", "*", "*", "*", array("sort" => "Author")); ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "OrigTitle") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Original French Title" : "Título original"), "", "*", "*", "*", array("sort" => "OrigTitle")); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "OrigTitle") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Original ".$language." Title" : "Título original"), "", "*", "*", "*", array("sort" => "OrigTitle")); ?></div>
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Translator") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Translator(s) / Adaptor(s)" : "Traductor(es) / Refundidor(es)"), "", "*", "*", "*", array("sort" => "Translator")); ?></div>
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "SpanishTitle") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Spanish Title Modernized" : "Título español modernizado"), "", "*", "*", "*", array("sort" => "SpanishTitle")); ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Culture") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Expression of Cultural Transition" : "Expresión de traslado cultural"), "", "*", "*", "*", array("sort" => "Culture")); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Culture") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Expression of Cultural Transition / Other Notes" : "Expresión de traslado cultural / Otras notas"), "", "*", "*", "*", array("sort" => "Culture")); ?></div>
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Citation") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Citation Reference" : "Cita de referencia"), "", "*", "*", "*", array("sort" => "Citation")); ?></div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class='row' style='overflow-y:scroll;' id='tableContent'>
+		<div class='row tableContent' style='overflow-y:scroll;'>
 			<div class='col-sm-12'>
 				<div style='background-color:#eeeded; padding:5px 5px 2px 5px;'>
 <?php
-	foreach($va_lists as $vn_type_id => $qr_list) {
-		
-		
-		if(!$qr_list) { continue; }
-		#$va_output = array();
-		#while($qr_list->nextHit()) {
-			#$vs_title_sort = strToLower(strip_tags(str_replace(array("¡", "¿", ", La", ", El", ", Los", ", Las", ",", ".", "\"", "“", "”", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ú", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), 
-			#												 array("", "", "", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "U", "u", "u", "u", "N", "n", "S", "s"), trim($qr_list->get('ca_occurrences.preferred_labels.name')))));
-			#$va_output[$vs_title_sort] = "<div class='col-sm-4 col-md-3'>".$qr_list->get('ca_occurrences.preferred_labels.name')."</div>
-			#				<div class='col-sm-4 col-md-2'>".$qr_list->get('ca_occurrences.printer_book_place_date')."</div>
-			#				<div class='col-sm-4 col-md-3'>".$qr_list->get('ca_occurrences.printer_book_date')."</div>
-			#				<div class='col-sm-4 col-md-4'>".$qr_list->get('ca_occurrences.printer_book_notes')."</div>";
+			$i = 0;
+			foreach($rows as $row) {
 				
-		#}
-		#ksort($va_output);
-		$i = 0;
-		while($qr_list->nextHit()) {
-		#foreach ($va_output as $vs_tmp) {
-			if($i == 1){
-				$bg = "#eeeded";
-			}else{
-				$bg = "#ffffff";
-			}
-			$i++;
-			if($i == 2){
-				$i = 0;
-			}
-			print "<div class='row'>
-						<div class='col-sm-12'>
-							<div style='margin-bottom:3px; padding:10px; background-color:".$bg."; line-height: 1.3em'>
-								<div class='row'>
-									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.author')."</div>
-									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.translationOriginalTitle')."</div>
-									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.translationtranslator')."</div>
-									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.preferred_labels')."</div>
-									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.translationCultural')."</div>
-									<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.510_citation_reference')."</div>
+				
+					if($i == 1){
+						$bg = "#eeeded";
+					}else{
+						$bg = "#ffffff";
+					}
+					$i++;
+					if($i == 2){
+						$i = 0;
+					}
+					print "<div class='row'>
+								<div class='col-sm-12'>
+									<div style='margin-bottom:3px; padding:10px; background-color:".$bg."; line-height: 1.3em'>
+										".$row."
+									</div>
 								</div>
-							</div>
-						</div>
-					</div>";
-		}
-	}
+							</div>";
+			}
+
 ?>
 				</div>
 			</div>
 		</div>
-
+	</div>
+<?php
+	}
+?>
 	
 
 
@@ -170,9 +185,9 @@
 				  lessLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ LESS" : "CERRAR"; ?></a>",
 		  
 				});
-				$("#tableContent").height((jQuery(window).height() - 200));
+				$(".tableContent").height((jQuery(window).height() - 200));
 				window.onresize = function() {
-					$("#tableContent").height((jQuery(window).height() - 200));
+					$(".tableContent").height((jQuery(window).height() - 200));
 				}
 			});
 		</script>
