@@ -105,11 +105,11 @@
 		}
 	}
 	$langs = array_keys($rows_by_language);
-	print "<div style='padding-top:30px;'>Show: ";
+	print "<div class='listingSubHeading' style='padding-top:30px; color:#000;'>Show: ";
 	$lang_count = 0;
 	foreach($langs as $lang){
 ?>
-		<a class="sortLinks sortLink<?php print $lang; ?>" style="<?php print ($lang_count == 0) ? "font-weight:bold; " : ""; ?>color: #7f4539;" href="#" onclick="jQuery('.sortLinks').css('font-weight', 'normal'); jQuery('.sortLink<?php print $lang; ?>').css('font-weight', 'bold'); jQuery('.langListings').hide(); jQuery('#Lang<?php print $lang; ?>').show();"><?php print $lang; ?></a> 
+		<a class="sortLinks sortLink<?php print $lang; ?>" style="<?php print ($lang_count == 0) ? "color: #7f4539; " : "color: #000000; "; ?>text-decoration:underline;" href="#" onclick="jQuery('.sortLinks').css('color', '#000000'); jQuery('.sortLink<?php print $lang; ?>').css('color', '#7f4539'); jQuery('.langListings').hide(); jQuery('#Lang<?php print $lang; ?>').show(); return false;"><?php print $lang; ?></a> 
 <?php	
 		$lang_count++;
 		if($lang_count < sizeof($langs)){
