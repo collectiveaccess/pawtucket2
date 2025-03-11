@@ -1078,6 +1078,10 @@ div.caMediaOverlayControls {
 	color: #7f4539;
 	font-family: 'Lusitana', serif;
 }
+.listingSubHeading img{
+	width:40px;
+	height:100%;
+}
 .listingColHeading {
   margin-bottom: 5px;
   line-height: 1.3em;
