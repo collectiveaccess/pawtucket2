@@ -221,7 +221,9 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 	}
 }
 #collectionsWrapper{
-	height:400px;
+	.overflow-y-auto{
+		height:400px;
+	}
 }
 /* ------------------------- Gallery ------------------------- */
 .gallery{

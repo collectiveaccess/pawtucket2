@@ -50,7 +50,7 @@ $media_options = array_merge($media_options, [
 <?php
 if($show_nav){
 ?>
-	<div class="row mt-n3">
+	<div class="row">
 		<div class="col text-center text-md-end">
 			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
@@ -84,9 +84,7 @@ if($t_object->get("ca_objects.content_warning.check", array("convertCodesToDispl
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
 				}
 				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
+					print $this->render('Details/snippets/copy_link_html.php');
 				}
 ?>
 			</div>

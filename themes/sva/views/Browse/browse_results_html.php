@@ -88,9 +88,6 @@ if (!$vb_ajax) {	// !ajax
 <?php
 					if($search_set_title){
 						print '<H1 class="text-capitalize">'.$search_set_title.'</H1>';
-						if($search_set_description){
-							print "<div class='fs-4 pb-3'>".$search_set_description."</div>";
-						}
 					}else{
 						print '<H1 class="text-capitalize fs-3">'._t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? (($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_PLURAL')) : (($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL'))).'</H1>';
 					}
@@ -184,6 +181,9 @@ if (!$vb_ajax) {	// !ajax
 		}
 		if($vs_facet_description){
 			print "<div class='py-3'>".$vs_facet_description."</div>";
+		}
+		if($search_set_description){
+			print "<div class='fs-4 pt-2 pb-4'>".$search_set_description."</div>";
 		}
 
 		if($vb_showLetterBar){

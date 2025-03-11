@@ -58,7 +58,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php 
 	if($show_nav){
 ?>
-	<div class="row mt-n3">
+	<div class="row">
 		<div class="col text-center text-md-end">
 			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
@@ -92,9 +92,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_collections", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
 				}
 				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
+					print $this->render('Details/snippets/copy_link_html.php');
 				}
 ?>
 			</div>
@@ -271,7 +269,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	}									
 ?>				
 
-{{{<ifcount code="ca_collections.children" restrictToTypes="files" min="1">
+{{{<ifcount code="ca_collections.children" restrictToTypes="file" min="1">
 <div class="row mt-5">
 	<div class="col"><h2>Files in this ^ca_collections.type_id</h2><hr/></div>
 </div>
