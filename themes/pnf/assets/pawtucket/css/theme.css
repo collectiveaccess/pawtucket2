@@ -1079,8 +1079,9 @@ div.caMediaOverlayControls {
 	font-family: 'Lusitana', serif;
 }
 .listingSubHeading img{
-	width:40px;
-	height:100%;
+	width: 30px;
+	height: 100%;
+	margin-top: -10px;
 }
 .listingColHeading {
   margin-bottom: 5px;

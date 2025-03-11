@@ -7,7 +7,7 @@ $images = array(
         <p></p>Facing the entrance is a life-sized casting of a farolero—a reminder of how city streets were illuminated before electricity, when gas lamps were lit at dusk by men carrying long sticks.</p>
         <p>Address: Calle de Concepción Jerónima, 15, 28012 Madrid, Spain
         <br>
-        <a target="_blank" href="https://www.madrid.es/portales/munimadrid/es/Inicio/Cultura-ocio-y-deporte/Cultura-y-ocio/Imprenta-Municipal-Artes-del-Libro?vgnextfmt=default&vgnextoid=b21d6b17c90ac010VgnVCM1000000b205a0aRCRD&vgnextchannel=c937f073808fe410VgnVCM2000000c205a0aRCRD">Imprenta Municipal Website</a></p>
+        <a target="_blank" href="https://es.wikipedia.org/wiki/Imprenta_Municipal-Artes_del_Libro">Imprenta Municipal Website</a></p>
         </p>',
     ),
     array(
