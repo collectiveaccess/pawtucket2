@@ -141,6 +141,18 @@
 			</div>
 		</div>
 </div>
+<div class="">
+	<div class="container-xxl text-center pb-4">
+		<div class="row pt-4 mt-4 pb-4 justify-content-center">
+			<div class="col-sm-12 col-md-10">
+<?php
+		print $this->render("Front/featured_set_grid_html.php");
+	
+?>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 <div class="container-fluid">
