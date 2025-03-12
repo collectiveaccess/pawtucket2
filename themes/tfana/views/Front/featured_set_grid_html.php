@@ -61,7 +61,7 @@
 				print "</div>";
 				$vn_col = 0;
 			}
-			if($i == 8){
+			if($i == 4){
 				break;
 			}
 		}
