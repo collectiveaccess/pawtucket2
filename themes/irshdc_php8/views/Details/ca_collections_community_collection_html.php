@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_collections_default_html.php : 
+ * themes/default/views/bundles/ca_collections_community_collection_html.php : 
  * 
  * ----------------------------------------------------------------------
  * CollectiveAccess
@@ -42,7 +42,8 @@
 	# --- get the collection hierarchy parent to use for exporting finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
 	$va_access_values = $this->getVar("access_values");
-	include("restricted_access_warning.php");
+	
+	include("restricted_access_warning.php");	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -50,15 +51,55 @@
 	</div><!-- end detailTop -->
 </div>
 			<div class="row">
-				<div class='col-sm-12 col-md-9'>	
-						<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
-						{{{<ifdef code="ca_collections.description_new.description_new_txt">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.description_new.description_new_source"><h6>Description</h6>
-								<div class="trimText">^ca_collections.description_new.description_new_txt</div>
-							</div>
-						</ifdef>}}}
-						{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H6>Contains</H6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-						
+				<div class='col-sm-12 col-md-9'>					
+<?php
+					$vs_source = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>', array("checkAccess" => $va_access_values));						
+					$vs_source_link = $t_item->get("ca_collections.link");
+					if($vs_source_link){
+						$vs_source_link = '<br/><a href="'.$vs_source_link.'" class="redLink" target="_blank">'.(($vs_source) ? $vs_source : 'Source Record').' <span class="glyphicon glyphicon-new-window"></span></a>';
+					}						
+?>
+					<H4>{{{^ca_collections.preferred_labels.name}}}<?php print $vs_source_link; ?></H4>
+					{{{<ifdef code="ca_collections.displayDate"><div class="unit">^ca_collections.displayDate</div></ifdef>}}}
+			
+					<H6>
+						{{{<if rule='^ca_collections.resource_type !~ /-/'><ifdef code="ca_collections.resource_type">^ca_collections.resource_type%useSingular=1</ifdef></if>}}}
+					</H6>
+					{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+<?php
+					$vs_creators_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
+					$vs_creators_text = $t_item->getWithTemplate('<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.creators</unit>', array("checkAccess" => $va_access_values));
+					if($vs_creators_entities || $vs_creators_text){
+						print '<div class="unit"><H6>Creators</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? ", " : "").$vs_creators_text.'</div></div>';
+					}
+					$vs_contributors_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
+					$vs_contributors_text = $t_item->getWithTemplate('<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.contributors</unit>', array("checkAccess" => $va_access_values));
+					if($vs_contributors_entities || $vs_contributors_text){
+						print '<div class="unit"><H6>Contributors</H6><div class="trimTextShort">'.$vs_contributors_entities.(($vs_contributors_entities && $vs_contributors_text) ? ", " : "").$vs_contributors_text.'</div></div>';
+					}
+?>
+					{{{<ifdef code="ca_collections.description_new.description_new_txt">
+						<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.description_new.description_new_source"><h6>Description</h6>
+							<div class="trimText">^ca_collections.description_new.description_new_txt</div>
+						</div>
+					</ifdef>}}}
+					{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H6>Contains</H6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}					
+<?php
+					include("themes_html.php");
+?>
+					<div class="collapseBlock">
+						<h3>More Information <span class="glyphicon glyphicon-collapse-down" aria-hidden="true"></span></H3>
+						<div class="collapseContent">
+							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Holding Repository</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
+							{{{<ifdef code="ca_collections.source_identifer"><div class='unit'><h6>Holding Repository Object Identifier</h6>^ca_collections.source_identifer</div></ifdef>}}}
+							
+							{{{<ifdef code="ca_collections.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_collections.RAD_generalNote</div></ifdef>}}}
+<?php
+							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'collections/'.$t_item->get("object_id"))."</textarea></div>";					
+?>
+						</div>
+					</div>
+
 				</div>
 				<div class='col-sm-12 col-md-3'>
 	<?php
@@ -102,6 +143,11 @@
 						</div>
 <?php				
 					}
+					if($vs_map = $this->getVar("map")){
+						if($t_item->get("ca_collections.georeference")){
+							include("map_html.php");
+						}
+					}
 ?>
 				</div>
 			</div>
@@ -124,7 +170,7 @@
 			<div class="row" style="margin-top:30px;">
 				<div class="col-sm-12">		
 <?php
-		#include("related_tabbed_html.php");
+		include("related_tabbed_html.php");
 ?>
 					{{{<ifcount code="ca_objects" min="1">
 								<div class="relatedBlock">
@@ -136,7 +182,7 @@
 									</div><!-- end row -->
 									<script type="text/javascript">
 										jQuery(document).ready(function() {
-											jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_collection_edu_res', 'id' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+											jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_collection', 'id' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 												jQuery('#browseResultsContainer').jscroll({
 													autoTrigger: true,
 													loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -186,6 +232,9 @@
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
 		  maxHeight: 85,
+		  moreLink: '<a href="#" class="moreLess">More</a>',
+		  lessLink: '<a href="#" class="moreLess">Less</a>'
+		});
 		
 		var options = {
 			placement: function () {
@@ -205,8 +254,8 @@
 		$('.collapseBlock h3').click(function() {
   			block = $(this).parent();
   			block.find('.collapseContent').toggle();
-  			block.find('.fa').toggleClass("fa-toggle-down");
-  			block.find('.fa').toggleClass("fa-toggle-up");
+  			block.find('.glyphicon').toggleClass("glyphicon-collapse-down");
+  			block.find('.glyphicon').toggleClass("glyphicon-collapse-up");
   			
 		});
 	});

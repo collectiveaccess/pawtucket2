@@ -76,7 +76,11 @@
 		$vn_i = 0;
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
-			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
+			$restricted_class = null;
+			if(!in_array($qr_results->get("ca_collections.access"), $va_access_values)){
+				$restricted_class = " restricted_result";
+			}
+			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet".$restricted_class."'>\n"; $vb_div_open = true;}
 				print "<div class='collectionsResult authorityResult'>".$qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true))."</div>";
 			$vn_count++;
 			$vn_i++;

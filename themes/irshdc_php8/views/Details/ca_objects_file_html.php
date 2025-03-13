@@ -63,7 +63,7 @@ if($vs_mode == "map"){
  	}
  	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels.name'), 60);
  	$vb_show_download_all_link = false;
-
+	include("restricted_access_warning.php");
 ?>
 			<div class="row">
 				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->

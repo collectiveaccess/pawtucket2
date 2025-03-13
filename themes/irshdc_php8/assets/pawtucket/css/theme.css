@@ -970,6 +970,12 @@ a.readmore-js-toggle {
 .detail .noToolBar .detailMediaToolbar, .detail .noToolBar .repViewerCont:hover .detailMediaToolbar{
 	display:none;
 }
+.detail summary{
+	display:list-item;
+}
+.detail summary:hover{
+	cursor: pointer;
+}
 /* archival collections */
 @media(min-width:768px){
 	#detailTools.archival{
@@ -1911,6 +1917,17 @@ h2.exhibitionSection{
 	font-size: 28px;
 }
 
+.communityCollectionsListing{
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	padding:30px;
+}
+.communityCollectionsListing H2{
+	font-size:24px;
+}
+.exploreCommunityCollectionDesc{
+	font-size:18px;
+	padding:0px 0px 30px 0px;
+}
 /* styles for uniform col height in exhibiton list */
 .aligned-row {
     display: flex;
@@ -2128,7 +2145,7 @@ div.caMediaOverlayControls {
 		padding-bottom:800px;
 	}
 }
-.exploreDigitalExhibitionsRow, .exploreEduResRow{
+.exploreDigitalExhibitionsRow, .exploreEduResRow, .exploreCommunityCollectionRow{
 	background:
 		linear-gradient(
 		  rgba(224, 215, 186, .95), 
@@ -2736,3 +2753,20 @@ a.digExhDetailPrev, a.digExhDetailNext{
 		font-size: 32px;
 	}
 }*/
+/* community collection */
+.alert.alert-restricted{
+	color: #000;
+	background-color: #ffa94e;
+	border-color: #cc6d06;
+	padding: 8px 0px 5px 0px;
+	font-size: 16px;
+	font-family: lato;
+	text-align: center;
+	margin-top: -15px;
+	margin: -15px -15px 30px -15px;
+	border-radius: 0px;
+	border: 0px;
+}
+.bResultItem.restricted_result, .bResultListItem.restricted_result, .multisearch .restricted_result{
+	border:1px solid #cc6d06;
+}

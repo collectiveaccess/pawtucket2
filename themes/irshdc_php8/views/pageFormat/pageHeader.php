@@ -166,6 +166,11 @@
 							<li><?php print caNavLink($this->request, "<span>"._t("Educational Resources")."</span>", "", "", "Explore", "EducationalResources"); ?></li>
 <?php
 	}
+	if($this->request->isLoggedIn()){
+?>
+							<li><?php print caNavLink($this->request, "<span>"._t("Community Collections")."</span>", "", "", "Explore", "CommunityCollections"); ?></li>
+<?php	
+	}
 ?>					
 							<li><a href='/UserGuide'><span><?php print _t("User Guide"); ?></span></a></li>
 						</ul>

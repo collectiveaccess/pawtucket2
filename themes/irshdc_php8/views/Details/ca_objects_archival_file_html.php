@@ -33,7 +33,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$va_access_values = 	$this->getVar("access_values");
-	
+	include("restricted_access_warning.php");
 ?>
 		<div class="detailArchivalCollections">
 			<div class="row">

@@ -98,6 +98,7 @@
  		}
  		# -------------------------------------------------------
  		public function schools(){
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Learn > BC Residential Schools");
  			$o_browse = caGetBrowseInstance("ca_entities");
  		 	$o_browse->setTypeRestrictions(array("school"));
  		 	$t_place = new ca_places(array("idno" => 37));
@@ -135,7 +136,7 @@
  		}
  		# -------------------------------------------------------
  		public function EducationalResources(){
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Explore > Educational Resources");
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Learn > Educational Resources");
  			
  			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "exploreEducationalResources");
  			$this->opo_result_context->setAsLastFind();
@@ -147,6 +148,21 @@
 			caSetPageCSSClasses(array("collections", "landing"));
 
  			$this->render("Explore/educational_resources_html.php");
+ 		}
+ 		# -------------------------------------------------------
+ 		public function CommunityCollections(){
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Learn > Community Collections");
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "exploreCommunityCollections");
+ 			$this->opo_result_context->setAsLastFind();
+ 			
+ 			$t_list = new ca_lists();
+			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", "community_collection");
+			$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => 'ca_collection_labels.name'));
+			$this->view->setVar("collection_results", $qr_collections);
+			caSetPageCSSClasses(array("collections", "landing"));
+
+ 			$this->render("Explore/community_collections_html.php");
  		}
  		# -------------------------------------------------------
  		

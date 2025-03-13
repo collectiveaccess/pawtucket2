@@ -131,7 +131,7 @@ if($vs_mode == "map"){
 					{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><l><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit></l> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
 					{{{<ifdef code="ca_entities.description_new.description_new_txt">
 						<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
-							<div class="trimText">^ca_entities.description_new.description_new_txt</div>
+							^ca_entities.description_new.description_new_txt
 						</div>
 					</ifdef>}}}
 					{{{<ifdef code="ca_entities.additionalResources"><div class='unit'><H6>Additional Resources</H6>^ca_entities.additionalResources</div></ifdef>}}}		
@@ -330,6 +330,24 @@ if($vs_mode == "map"){
   			block.find('.glyphicon').toggleClass("glyphicon-collapse-up");
   			
 		});
+		
+		// Fetch all the details element.
+		const detailsList = document.querySelectorAll("details");
+		
+		// When a details is open, close all other details.
+		function handleDetailToggle(event) {
+			// We are only interested in details being opened.
+			// Also, without the guard below, we'd run into an infinite loop.
+			if (!event.target.open) return;
+			for (let details of detailsList) {
+				details.open = details === event.target;
+			}
+		}
+		
+		// Add toggle listeners.
+		for (let details of detailsList) {
+			details.addEventListener("toggle", handleDetailToggle);
+		}
 	});
 </script>
 <?php

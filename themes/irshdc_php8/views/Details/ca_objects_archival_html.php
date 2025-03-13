@@ -62,6 +62,7 @@ if($vs_mode == "map"){
  	}
  	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels.name'), 60);
 	$vb_show_download_all_link = false;
+	include("restricted_access_warning.php");
 ?>
 		<div class="detailArchivalCollections">
 			<div class="row">

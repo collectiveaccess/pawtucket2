@@ -61,7 +61,7 @@ if($vs_mode == "map"){
  		$va_breadcrumb_trail[] = $o_context->getResultsLinkForLastFind($this->request, "ca_objects", $vs_link_text, null, $va_params);
  	}
  	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels.name'), 60);
-
+	include("restricted_access_warning.php");
 ?>
 			<div class="row">
 				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->

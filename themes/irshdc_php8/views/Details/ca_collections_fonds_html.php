@@ -43,6 +43,7 @@
 	# --- get the collection hierarchy parent to use for exporting finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
 
+	include("restricted_access_warning.php");
 ?>
 	<div class="detailArchivalCollections">
 			<div class="row ">
