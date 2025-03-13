@@ -112,6 +112,12 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 					</unit>
 				</div></ifcount>}}}
 				{{{<if rule='^ca_objects.unknown =~ /Yes/'><div class="unit"><label>Creator</label>Unknown</div></if>}}}
+				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="owner">
+					<div class="unit"><label>Owner<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="owner">s</ifcount> (Historic)</label>
+					<unit relativeTo="ca_entities" restrictToRelationshipTypes="owner" delimiter="<br>">
+						<l>^ca_entities.preferred_labels.displayname</l>
+					</unit>
+				</div></ifcount>}}}
 				{{{<ifdef code="ca_objects.date.sort_date|ca_objects.date.display_date">
 					<div class="unit"><label>Date</label>
 						<unit relativeTo="ca_objects.date" delimiter="<br>">
@@ -229,7 +235,7 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 				</div>
 			</div>
 			<div class="row featuredObjects">
-				<unit relativeTo="ca_objects.children" delimiter=" ">
+				<unit relativeTo="ca_objects.children" delimiter=" " sort="ca_objects.rank">
 					<div class='col-sm-3'><l><div class='featuredObject'><div class='featuredObjectImage'>^ca_object_representations.media.medium</div><div class='featuredObjectsCaption'><small>^ca_objects.idno</small><br>^ca_objects.preferred_labels<ifdef code='ca_objects.date.date_display|ca_objects.date.sort_date'><br><ifdef code='ca_objects.date.date_display'>^ca_objects.date.date_display</ifdef><ifnotdef code='ca_objects.date.date_display'>^ca_objects.date.sort_date</ifnotdef></ifdef></div></l></div></div>
 				</unit>
 			</div>

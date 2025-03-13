@@ -105,6 +105,11 @@
  	define('__CA_NAV_ICON_CROSSHAIRS__', 68);
  	define('__CA_NAV_ICON_UPLOAD__', 69);
  	define('__CA_NAV_ICON_COPY__', 70);
+ 	define('__CA_NAV_ICON_MERGE__', 71);
+ 	define('__CA_NAV_ICON_SPLIT__', 72);
+ 	define('__CA_NAV_ICON_TOGGLE__', 73);
+ 	define('__CA_NAV_ICON_CHECKBOX__', 74);
+ 	define('__CA_NAV_ICON_TRASH__', 75);
  	
  	/**
  	 * Icon position constants
@@ -389,6 +394,7 @@
 	 *  noCSRFToken = if true CSRF token is omitted. [Default is false]
 	 *	disableSubmit = don't allow form to be submitted. [Default is false]
 	 *	submitOnReturn = submit form if user hits return in any form element. [Default is false]
+	 *	autocomplete = enable autocomplete for elements in form. [Default is false]
 	 */
 	function caFormTag($po_request, $ps_action, $ps_id, $ps_module_and_controller_path=null, $ps_method='post', $ps_enctype='multipart/form-data', $ps_target='_top', $pa_options=null) {
 		if ($ps_target) {
@@ -417,7 +423,9 @@
 				$po_request->getControllerUrl().'/'.$ps_action;
 		}
 		
-		$vs_buf = "<form action='".$vs_action."' method='".$ps_method."' id='".$ps_id."' $vs_target enctype='".$ps_enctype."'>\n<input type='hidden' name='_formName' value='{$ps_id}'/>\n";
+		$autocomplete = caGetOption('autocomplete', $pa_options, false);
+		
+		$vs_buf = "<form action='".$vs_action."' method='".$ps_method."' id='".$ps_id."' $vs_target enctype='".$ps_enctype."' ".($autocomplete ? '' : 'autocomplete="off"').">\n<input type='hidden' name='_formName' value='{$ps_id}'/>\n";
 		
 		if (!caGetOption('noTimestamp', $pa_options, false)) {
 			$vs_buf .= caHTMLHiddenInput('form_timestamp', array('value' => time()));
@@ -579,7 +587,7 @@
 		
 		$va_img_attr = array(
 			'border' => '0',
-			'alt=' => $ps_content,
+			'alt' => htmlentities($ps_content),
 			'class' => 'form-button-left',
 			'style' => "padding-right: {$vn_padding}px"
 		);
@@ -789,7 +797,7 @@
 				$vs_fa_class = 'fas fa-cog';
 				break;
 			case __CA_NAV_ICON_FILTER__:
-				$vs_fa_class = 'fas fa-sliders';
+				$vs_fa_class = 'fas fa-sliders-h';
 				break;	
 			case __CA_NAV_ICON_EXPORT__:
 				$vs_fa_class = 'fas fa-download';
@@ -898,7 +906,22 @@
 				break;	
 			case __CA_NAV_ICON_COPY__:
 				$vs_fa_class = 'fa fa-clipboard';
-				break;																					
+				break;	
+			case __CA_NAV_ICON_MERGE__:
+				$vs_fa_class = 'fa fa-object-group';
+				break;	
+			case __CA_NAV_ICON_SPLIT__:
+				$vs_fa_class = 'fa fa-object-ungroup';
+				break;		
+			case __CA_NAV_ICON_TOGGLE__:
+				$vs_fa_class = 'fa fa-toggle-on';
+				break;
+			case __CA_NAV_ICON_CHECKBOX__:
+				$vs_fa_class = 'fa fa-check-square';
+				break;				
+			case __CA_NAV_ICON_TRASH__:
+				$vs_fa_class = 'fas fa-trash';
+				break;															
 			default:
 				print "INVALID CONSTANT $pn_type<br>\n";
 				return null;

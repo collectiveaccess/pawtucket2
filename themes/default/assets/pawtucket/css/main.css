@@ -3083,7 +3083,7 @@ div.caMediaOverlayControls {
 .plyr video {
 	height: 100%;
 	width: 100%;
-	object-fit: fill;
+	object-fit: contain;
 }
 .plyr__poster {
 	background-size: contain;

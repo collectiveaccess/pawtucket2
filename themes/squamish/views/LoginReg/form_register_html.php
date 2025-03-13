@@ -60,6 +60,47 @@
 <?php
 	}else{
 ?>
+<?php		
+		$va_profile_settings = $this->getVar("profile_settings");
+?>
+		<div class="row bgLightGray" style="margin-bottom: 15px;">
+			<div class="col-sm-10 col-lg-10 col-lg-offset-1">
+				<H2>Squamish Nation Members and Staff</H2>
+				<p class="formTextLarge">{{{register_member_staff_instructions}}}</p>
+				
+				<div class="form-group">
+					<div class="col-sm-6 <?php print (($va_errors["user_profile_band_number"]) ? " has-error" : ""); ?>">
+						<b>Squamish Nation Members</b>
+						<p>{{{register_member_instructions}}}</p>
+<?php
+
+						if($va_errors["user_profile_band_number"]){
+							print "<div class='alert alert-danger'>".$va_errors["user_profile_band_number"]."</div>";
+						}
+?>
+						<label for="member_code" class="control-label">Squamish Nation Member Registration Code</label>
+						<input type="text" name="member_code" maxlength="70" class="form-control" value="<?php print html_entity_decode(strip_tags($this->request->getParameter("member_code", pString))); ?>">
+						
+						<label for="pref_user_profile_band_number" class="control-label"><?php print $va_profile_settings["user_profile_band_number"]["label"]; ?></label>
+						<div class="profileElement"><?php print $va_profile_settings["user_profile_band_number"]["element"]; ?></div>
+					</div><!-- end col-sm-6 -->
+					<div class="col-sm-6 <?php print (($va_errors["user_profile_staff_jde_number"]) ? " has-error" : ""); ?>">
+						<b>Squamish Nation Staff</b>
+						<p>{{{register_staff_instructions}}}</p>
+<?php
+						if($va_errors["user_profile_staff_jde_number"]){
+							print "<div class='alert alert-danger'>".$va_errors["user_profile_staff_jde_number"]."</div>";
+						}
+?>
+						<label for="staff_code" class="control-label">Squamish Nation Staff Registration Code</label>
+						<input type="text" name="staff_code" maxlength="70" class="form-control" value="<?php print html_entity_decode(strip_tags($this->request->getParameter("staff_code", pString))); ?>">
+						
+						<label for="pref_user_profile_staff_jde_number" class="control-label"><?php print $va_profile_settings["user_profile_staff_jde_number"]["label"]; ?></label>
+						<div class="profileElement"><?php print $va_profile_settings["user_profile_staff_jde_number"]["element"]; ?></div>
+					</div><!-- end col-sm-6 -->
+				</div>
+			</div>
+		</div>
 	    <div class="row"><div class="col-md-12 col-lg-10 col-lg-offset-1"><H1><?php print _t("Register"); ?></H1></div></div>
 <?php
 	}
@@ -123,47 +164,6 @@
 		}
 ?>
 
-			</div>
-		</div>
-<?php		
-		$va_profile_settings = $this->getVar("profile_settings");
-?>
-		<div class="row bgLightGray">
-			<div class="col-sm-12">
-				<H2>Squamish Nation Members and Staff</H2>
-				<p class="formTextLarge">{{{register_member_staff_instructions}}}</p>
-				
-				<div class="form-group">
-					<div class="col-sm-6 <?php print (($va_errors["user_profile_band_number"]) ? " has-error" : ""); ?>">
-						<b>Squamish Nation Members</b>
-						<p>{{{register_member_instructions}}}</p>
-<?php
-
-						if($va_errors["user_profile_band_number"]){
-							print "<div class='alert alert-danger'>".$va_errors["user_profile_band_number"]."</div>";
-						}
-?>
-						<label for="member_code" class="control-label">Squamish Nation Member Registration Code</label>
-						<input type="text" name="member_code" maxlength="70" class="form-control" value="<?php print html_entity_decode(strip_tags($this->request->getParameter("member_code", pString))); ?>">
-						
-						<label for="pref_user_profile_band_number" class="control-label"><?php print $va_profile_settings["user_profile_band_number"]["label"]; ?></label>
-						<div class="profileElement"><?php print $va_profile_settings["user_profile_band_number"]["element"]; ?></div>
-					</div><!-- end col-sm-6 -->
-					<div class="col-sm-6 <?php print (($va_errors["user_profile_staff_jde_number"]) ? " has-error" : ""); ?>">
-						<b>Squamish Nation Staff</b>
-						<p>{{{register_staff_instructions}}}</p>
-<?php
-						if($va_errors["user_profile_staff_jde_number"]){
-							print "<div class='alert alert-danger'>".$va_errors["user_profile_staff_jde_number"]."</div>";
-						}
-?>
-						<label for="staff_code" class="control-label">Squamish Nation Staff Registration Code</label>
-						<input type="text" name="staff_code" maxlength="70" class="form-control" value="<?php print html_entity_decode(strip_tags($this->request->getParameter("staff_code", pString))); ?>">
-						
-						<label for="pref_user_profile_staff_jde_number" class="control-label"><?php print $va_profile_settings["user_profile_staff_jde_number"]["label"]; ?></label>
-						<div class="profileElement"><?php print $va_profile_settings["user_profile_staff_jde_number"]["element"]; ?></div>
-					</div><!-- end col-sm-6 -->
-				</div>
 			</div>
 		</div>
 			<div class="form-group">

@@ -126,6 +126,7 @@
 		# -------------------------------------------
 	}
 ?>
+	<link rel="icon" type="image/x-icon" href="/themes/erfgoed_leieschelde_new/favicon/favicon.ico">
 </head>
 <body class='<?php print $vs_body_class; ?>'>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
