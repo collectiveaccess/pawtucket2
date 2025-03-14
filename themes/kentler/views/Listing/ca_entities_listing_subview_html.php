@@ -38,12 +38,13 @@
 	<div class="row artistList">
 		<div class="col-sm-12">
 			<div class="leader ltGrayBg">
-				<H1><?php print _t("Flatfile Digital Archives"); ?></H1>
+				<H1>THE KENTLER FLATFILES</H1>
 				<p>
-					The Kentler Flatfiles have been an essential element of Kentler International Drawing Space since its founding in 1990. A collection of over 2,000 artworks by local, national and international artists, this living archive represents the incredible breadth and diversity found in contemporary drawings and works on paper.The Flatfiles Digital Archive, providing full online access to the collection, was awarded an ArtWorks grant by the National Endowment for the Arts in 2015. Thank you for your patience as we work towards a complete representation of all current and historic holdings. 
+					The Kentler Flatfiles have been an essential element of Kentler International Drawing Space since its founding in 1990. The archive contains more than 2,500 artworks by artists from around the world, representing the incredible variety of contemporary drawing and works on paper. Flatfiles artworks are housed in our showroom and are exhibited regularly. The holdings are available for onsite viewing and purchase; 65% of each sale goes to the artist with 35% supporting Kentler’s nonprofit mission. Please <a href="mailto:info@kentlergallery.org?subject=Kentler Flatfiles Inquiry." style="text-decoration:underline;">contact</a> the gallery to schedule an appointment or inquire about pricing.
 				</p>
+				<H2>Flatfiles Digital Archive</H2>
 				<p>
-					Flatfiles works are held on consignment in Kentler's showroom and are available to the public for viewing and purchase. Starting in 2017, a rotating selection of works will be on view in our front gallery space. To schedule a viewing appointment or inquire about prices, please <a href="mailto:info@kentlergallery.org" style="text-decoration:underline;">contact</a> the gallery.
+					The Flatfiles Digital Archive, providing full online access to the Flatfiles collection, was made possible by an ArtWorks grant from the National Endowment for the Arts in 2015. The Digital Archive is a critical piece of Kentler’s mission to promote drawings and works on paper, educate the public and support working artists. Thank you for your patience as we work towards a complete representation of all current and historic holdings.
 				</p>
 			</div>
 		</div>
