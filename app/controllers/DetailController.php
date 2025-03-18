@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2025 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -61,8 +61,11 @@ class DetailController extends FindController {
 	
 	# -------------------------------------------------------
 	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
-		$this->dont_require_login = true;
 		parent::__construct($po_request, $po_response, $pa_view_paths);
+		
+		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+		}
 		
 		$this->view->setVar("access_values", $this->opa_access_values);
  			
@@ -132,29 +135,28 @@ class DetailController extends FindController {
 		
 		if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($load_params, ['returnAs' => 'firstModelInstance'])))) {
 			// invalid id - throw error
-			throw new ApplicationException("Invalid id");
-		}
+			throw new ApplicationException("Invalid id {$id}");
+		} 
 		$t_subject->autoConvertLineBreaks(true);
 		
+		$log = caGetLogger();
+		// $context = $this->request->getParameter('context', pString);
+		// $detail_id = $this->request->getParameter('id', pInteger);		
+		// $representation_id = $this->request->getParameter('representation_id', pInteger);
+
+		if($completed_id = $this->request->getParameter('reviewComplete', pInteger)) {
+			if($t_review_completed = ca_objects::findAsInstance($completed_id)) {
+				$t_review_completed->replaceAttribute(['media_reviewed' => 'yes'], 'media_reviewed');
+				$log->logInfo("Review has been completed for {$completed_id}");
+				if(!$t_review_completed->update()) {
+					throw new ApplicationException("Could not set review complete for id {$completed_id}");
+					$log->logError("Review could not be completed for {$completed_id}");
+				}
+			}
+		}
+
 		$item_is_in_users_lightbox = caItemIsInUserLightbox($t_subject, $this->request->getUserID());
-		$access_is_anonymous = caItemAccessIsAnonymous($t_subject);
 		$this->view->setVar('itemIsInUsersLightbox', $item_is_in_users_lightbox);
-
-		$log = caGetAccessLogger();
-		
-		if($access_is_anonymous) {
-			// do logging
-			$log->logJSON('Access is anonymous', [
-				'user' => $this->request->user->get('user_name'),
-				'message' => 'Accessis anonymous',
-			], 'INFO');
-		
-		}
-	
-		if (!$item_is_in_users_lightbox && $this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
-			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-		}
-
 		
 		$ps_view = $this->request->getParameter('view', pString);
 		if($ps_view === 'pdf') {
@@ -355,12 +357,13 @@ class DetailController extends FindController {
 					['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]
 				);
 				$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
-				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail'])));
+				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail', 'detail_options' => $options])));
 				$this->view->setVar('media_options', [
 					'media_list' => $media_list,
 					
 					'next_button_id' => 'mediaviewer-next',
 					'previous_button_id' => 'mediaviewer-previous',
+					'remove_media_button_id' => 'mediaviewer-remove',
 					'overlay_next_button_id' => 'mediaviewer-overlay-next',
 					'overlay_previous_button_id' => 'mediaviewer-overlay-previous',
 					'show_overlay_button_id' => 'mediaviewer-show-overlay',
@@ -375,7 +378,8 @@ class DetailController extends FindController {
 					'media_count_id' => 'media-count',
 					
 					'base_url' => $this->request->getThemeUrlPath(),
-					'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}"
+					'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}",
+					'media_remove_url' => $this->request->getBaseUrlPath()."/Detail/RemoveRepresentation?context={$function}&id={$id}"
 				]);
 			} else {
 				$this->view->setVar('media_list', null);
@@ -421,58 +425,118 @@ class DetailController extends FindController {
 			}
 		}
 		
+		// Filtering of related items
+		if (($t_subject->tableName() != 'ca_objects') && (!$this->opa_detail_types[$function]['disableRelatedItemsBrowse'])) {
+			$class = 'ca_objects';
+			$o_browse = caGetBrowseInstance($class);
+			if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+				$o_browse->reload($ps_cache_key);
+			} else {
+				$o_browse->addCriteria("collection_facet", $t_subject->getPrimaryKey() ); 
+				$ps_cache_key = $o_browse->getBrowseID();
+			}
+			$o_browse->execute();
+			
+			$this->view->setVar('key', $o_browse->getBrowseID());
+			$this->view->setVar('browse', $o_browse);
+			//
+			// Facets
+			//
+			if ($facet_group = caGetOption('facetGroup', $browse_info, null)) {
+				$o_browse->setFacetGroup($facet_group);
+			}
+		
+			$o_browse->execute();
+			$available_facet_list = caGetOption('availableFacets', $browse_info, null);
+			$facets = $o_browse->getInfoForAvailableFacets();
+			foreach($facets as $facet_name => $facet_info) {
+				if(isset($base_criteria[$facet_name])) { continue; } // skip base criteria 
+				$facets[$facet_name]['content'] = $o_browse->getFacet($facet_name, array("checkAccess" => $this->opa_access_values, 'checkAvailabilityOnly' => caGetOption('deferred_load', $facet_info, false, array('castTo' => 'bool'))));
+			}
+			$this->view->setVar('facets', $facets);
+	
+			$this->view->setVar('key', $key = $o_browse->getBrowseID());
+		
+			Session::setVar($function.'_last_browse_id', $key);
+		
+		
+			// remove base criteria from display list
+			if (is_array($base_criteria)) {
+				foreach($base_criteria as $base_facet => $criteria_value) {
+					unset($criteria[$base_facet]);
+				}
+			}
+			$criteria = $o_browse->getCriteriaWithLabels();
+		
+			$criteria_for_display = array();
+			foreach($criteria as $facet_name => $criterion) {
+				$facet_info = $o_browse->getInfoForFacet($facet_name);
+				foreach($criterion as $vn_criterion_id => $criterion) {
+					$criteria_for_display[] = array('facet' => $facet_info['label_singular'], 'facet_name' => $facet_name, 'value' => $criterion, 'id' => $vn_criterion_id);
+				}
+			}
+			$this->view->setVar('criteria', $criteria_for_display);
+			
+			$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', $function);
+			$o_rel_context->setParameter('key', $key);
+			$o_rel_context->setAsLastFind(true);
+			
+			$qr_rel_res = $o_browse->getResults();
+			$o_rel_context->setResultList($qr_rel_res->getPrimaryKeyValues(1000));
+			
+			$o_rel_context->saveContext();
+		}
+		
 		//
 		// comments, tags, rank
 		//
-		if($access_is_anonymous) {
-			$this->view->setVar('commentsEnabled', (bool)$options['enableComments']);
-			
-			if ((bool)$options['enableComments']) {
-				$this->view->setVar('averageRank', $t_subject->getAverageRating(true));
-				$this->view->setVar('numRank', $t_subject->getNumRatings(true));
-			
-				#
-				# User-generated comments, tags and ratings
-				#
-				$user_comments = $t_subject->getComments(null, true);
-				$comments = array();
-				if (is_array($user_comments)) {
-					foreach($user_comments as $user_comment){
-						if($user_comment["comment"] || $user_comment["media1"] || $user_comment["media2"] || $user_comment["media3"] || $user_comment["media4"]){
-							# TODO: format date based on locale
-							$user_comment["date"] = date("n/j/Y", $user_comment["created_on"]);
-						
-							# -- get name of commenter
-							if($user_comment["user_id"]){
-								$t_user = new ca_users($user_comment["user_id"]);
-								$user_comment["author"] = $t_user->getName();
-							}elseif($user_comment["name"]){
-								$user_comment["author"] = $user_comment["name"];
-							}
-							$comments[] = $user_comment;
+		$this->view->setVar('commentsEnabled', (bool)$options['enableComments']);
+		
+		if ((bool)$options['enableComments']) {
+			$this->view->setVar('averageRank', $t_subject->getAverageRating(true));
+			$this->view->setVar('numRank', $t_subject->getNumRatings(true));
+		
+			#
+			# User-generated comments, tags and ratings
+			#
+			$user_comments = $t_subject->getComments(null, true);
+			$comments = array();
+			if (is_array($user_comments)) {
+				foreach($user_comments as $user_comment){
+					if($user_comment["comment"] || $user_comment["media1"] || $user_comment["media2"] || $user_comment["media3"] || $user_comment["media4"]){
+						# TODO: format date based on locale
+						$user_comment["date"] = date("n/j/Y", $user_comment["created_on"]);
+					
+						# -- get name of commenter
+						if($user_comment["user_id"]){
+							$t_user = new ca_users($user_comment["user_id"]);
+							$user_comment["author"] = $t_user->getName();
+						}elseif($user_comment["name"]){
+							$user_comment["author"] = $user_comment["name"];
 						}
+						$comments[] = $user_comment;
 					}
 				}
-				$this->view->setVar('comments', $comments);
-			
-			
-				$user_tags = $t_subject->getTags(null, true);
-				$tags = array();
-			
-				if (is_array($user_tags)) {
-					foreach($user_tags as $user_tag){
-						if(!in_array($user_tag["tag"], $tags)){
-							$tags[] = $user_tag["tag"];
-						}
-					}
-				}
-				$this->view->setVar('tags_array', $tags);
-				$this->view->setVar('tags', implode(", ", $tags));
-			
-				$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_subject->getPrimaryKey(), $t_subject, $comments, $tags));
-			} else {
-				$this->view->setVar("itemComments", '');
 			}
+			$this->view->setVar('comments', $comments);
+		
+		
+			$user_tags = $t_subject->getTags(null, true);
+			$tags = array();
+		
+			if (is_array($user_tags)) {
+				foreach($user_tags as $user_tag){
+					if(!in_array($user_tag["tag"], $tags)){
+						$tags[] = $user_tag["tag"];
+					}
+				}
+			}
+			$this->view->setVar('tags_array', $tags);
+			$this->view->setVar('tags', implode(", ", $tags));
+		
+			$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_subject->getPrimaryKey(), $t_subject, $comments, $tags));
+		} else {
+			$this->view->setVar("itemComments", '');
 		}
 		
 		//
@@ -501,7 +565,7 @@ class DetailController extends FindController {
 		}
 
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
-		$this->view->setVar('inquireEnabled', (!$access_is_anonymous) && (bool)$options['enableInquire']);
+		$this->view->setVar('inquireEnabled', (bool)$options['enableInquire']);
 		$this->view->setVar('copyLinkEnabled', (bool)$options['enableCopyLink']);
 		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]);
 		$this->render($path);
@@ -1471,6 +1535,53 @@ class DetailController extends FindController {
 		}
 	
 		$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $context_str, 'checkAccess' => $this->opa_access_values]));
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function RemoveRepresentation() {
+		$log = caGetLogger();
+		
+		$context = $this->request->getParameter('context', pString);
+		$id = $this->request->getParameter('id', pInteger);
+		
+		$detail_config = $this->opa_detail_types[$context] ?? [];
+		
+		$table = $detail_config['table'];
+		
+		if(!($t_rec = $table::findAsInstance($id))) {
+			throw new ApplicationException(_('Invalid id'));
+		}
+		
+		$representation_id = $this->request->getParameter('representation_id', pInteger);
+		
+		if(!$this->request->isLoggedIn() || !$this->request->user->canDoAction('is_administrator')) {
+			throw new ApplicationException(_('Access denied'));
+		}
+		
+		if(!($t_rep = ca_object_representations::findAsInstance($representation_id))) {
+			throw new ApplicationException(_('Invalid representation_id'));
+		}
+		if($deleted_media_dir = ($detail_config['options']['deleted_media_directory'] ?? null)) {
+			$path = $t_rep->get('ca_object_representations.media.original.path');
+			$filename = $t_rep->get('ca_object_representations.original_filename');
+			if(!$filename) {
+				$filename = pathinfo($path, PATHINFO_BASENAME);
+			}
+			copy($path, __CA_BASE_DIR__.$deleted_media_dir."/".$filename);
+		}
+		
+		$ret = $t_rec->removeRepresentation($representation_id);
+		$resp = ['ok' => $ret ? 1 : 0];
+		
+		if($ret) {
+			$log->logInfo("Deleted representation {$representation_id} for {$context}::{$id}");
+		} else {
+			$log->logError("Could not delete representation {$representation_id} for {$context}::{$id}");
+		}
+		
+		print json_encode($resp);
 	}
 	# -------------------------------------------------------
 	/**
