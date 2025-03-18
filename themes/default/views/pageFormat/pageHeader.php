@@ -56,8 +56,8 @@ $has_user_links = (sizeof($user_links) > 0);
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<link rel="stylesheet" href="http://localhost/pawtucket2/themes/default/assets/pawtucket/css/fonts.css" type="text/css" media="all">	
-	<link rel="stylesheet" href="http://localhost/pawtucket2/themes/default/assets/pawtucket/css/main.css" type="text/css" media="all">
+	<link rel="stylesheet" href="http://pawtucket2/themes/default/assets/pawtucket/css/fonts.css" type="text/css" media="all">	
+	<link rel="stylesheet" href="http://pawtucket2/themes/default/assets/pawtucket/css/main.css" type="text/css" media="all">
 
 
 	<title><?= (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
