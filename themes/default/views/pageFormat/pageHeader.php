@@ -56,6 +56,10 @@ $has_user_links = (sizeof($user_links) > 0);
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 
+	<link rel="stylesheet" href="http://localhost/pawtucket2/themes/default/assets/pawtucket/css/fonts.css" type="text/css" media="all">	
+	<link rel="stylesheet" href="http://localhost/pawtucket2/themes/default/assets/pawtucket/css/main.css" type="text/css" media="all">
+
+
 	<title><?= (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
 	<script type="text/javascript">
@@ -76,7 +80,7 @@ $has_user_links = (sizeof($user_links) > 0);
 </head>
 <body>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
-	<nav class="navbar navbar-default yamm" role="navigation">
+	<!-- <nav class="navbar navbar-default yamm" role="navigation"> -->
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
