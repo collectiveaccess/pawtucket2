@@ -189,7 +189,7 @@ class ca_sets_x_anonymous_access extends BaseModel {
 				'takesLocale' => false,
 				'default' => null,
 				'label' => _t('Download versions'),
-				'description' => _t('')
+				'description' => _t('Media versions available for download with this token')
 			]
 		]);
 	}
