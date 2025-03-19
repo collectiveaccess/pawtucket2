@@ -113,6 +113,14 @@ class DetailController extends FindController {
 		$o_search_config = caGetSearchConfig();
 		
 		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
+		
+		// Is this an audio recorder save?
+		if($this->request->getParameter('recorder', pInteger) == 1) {
+			return $this->SaveRecording($options);
+		}
+		
+		$this->view->setVar('audio_recorder_enabled', $options['audio_recorder']['enabled'] ?? false);
+		
 		//
 		// Media viewer
 		//
@@ -1602,6 +1610,94 @@ class DetailController extends FindController {
 		}
 
 		$this->response->addContent(caMediaDataAutocomplete($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	private function SaveRecording(array $options) {
+		try {
+			$o_view = new View($this->request, $this->request->getViewsDirectoryPath().'/bundles/');
+			if(!$this->request->isLoggedIn() || !$this->request->user->canDoAction('can_add_audio_commentary')) {
+				throw new AudioCommentarySaveException([_t('Access denied')]);
+			}
+		
+			$id = $this->request->getParameter('id', pString);
+			$name = $this->request->getParameter('name', pString); 
+			$notes = $this->request->getParameter('notes', pString);
+			$link_id = null;
+			
+			// Validate required parameters
+			if (empty($id)) {
+				throw new AudioCommentarySaveException([_t("Missing related object ID.")]);
+			}
+			
+			// Check if a file is received
+			if (empty($_FILES)) {
+				throw new AudioCommentarySaveException([_t('No file received')]);
+			} 
+			
+			$o = new ca_objects();
+			$o->set([
+				'type_id' => $options['audio_recorder']['type_id'], 
+				'access' => $options['audio_recorder']['access'],
+				'idno' => $options['audio_recorder']['idno']
+			]);
+
+			if (!$o->insert()) {
+				throw new AudioCommentarySaveException($o->getErrors());
+			}
+			$o->insert();
+			
+			if (!$o->addLabel(['name' => $name], __CA_DEFAULT_LOCALE__, null, true)) {
+				throw new AudioCommentarySaveException($o->getErrors());
+			}
+			if (!empty($name)) {
+				$o->addLabel(['name' => $name], __CA_DEFAULT_LOCALE__, null, true);
+			} else {
+				$o->addLabel(['name' => _t('Commentary from %1', $name)], __CA_DEFAULT_LOCALE__, null, true);
+			}
+			
+			if (!empty($notes)) {
+				$o->addAttribute([$options['audio_recorder']['notes_element_code'] => $notes], $options['audio_recorder']['notes_element_code']);
+			}
+
+			if (!$o->update()) {
+				throw new AudioCommentarySaveException($o->getErrors());
+			}
+			$o->update();
+			
+			if (!$o->addRelationship('ca_objects', $id, $options['audio_recorder']['relationship_type'])) {
+				throw new AudioCommentarySaveException($o->getErrors());
+			}
+			$o->addRelationship('ca_objects', $id, $options['audio_recorder']['relationship_type']);
+			
+			$link_id = $o->addRepresentation($_FILES['audio']['tmp_name'], $options['audio_recorder']['representation_type'], __CA_DEFAULT_LOCALE__, 0, $access, true, [], []);
+			
+			// If the representation fails, delete the object, print error
+			if(!$link_id) {
+				$errors = $o->getErrors();
+				$o->delete(true);
+				
+				throw new AudioCommentarySaveException($errors);
+			}
+
+			// Success response
+			$data = ["status" => "ok", 'link_id' => $link_id, 'files' => $_FILES];
+
+		} catch(AudioCommentarySaveException $e) {
+			$data = [
+				'status' => 'error', 'message' => $e->getMessage(), 'errors' => $e->getErrors()
+			];
+		} catch(Exception $e) {
+			$data = [
+				'status' => 'error', 'message' => _t('Unknown error: %1'. $e->getMessage()), 'errors' => [$e->getMessage()]
+			];
+		} 
+		
+		$this->response->setContentType('application/json');
+		$o_view->setVar('data', $data);
+		$this->response->addContent($o_view->render('json.php'));
 	}
 	# -------------------------------------------------------
 	/**

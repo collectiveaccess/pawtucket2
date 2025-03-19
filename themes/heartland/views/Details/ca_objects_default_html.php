@@ -25,18 +25,17 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	$t_object = 			$this->getVar("item");
-	$va_comments = 			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
-	$va_access_values = $this->getVar("access_values");
-	$va_options = $this->getVar('config_options');
-	$va_rep_ids = $t_object->get('ca_object_representations.representation_id', array('filterNonPrimaryRepresentations' => false, 'checkAccess' => $va_access_values, 'returnAsArray' => true));
-	
+$t_object = 			$this->getVar("item");
+$va_comments = 			$this->getVar("comments");
+$va_tags = 				$this->getVar("tags_array");
+$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+$vn_share_enabled = 	$this->getVar("shareEnabled");
+$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+$audio_recorder_enabled = $this->getVar("audio_recorder_enabled");
+$vn_id =				$t_object->get('ca_objects.object_id');
+$va_access_values = $this->getVar("access_values");
+$va_options = $this->getVar('config_options');
+$va_rep_ids = $t_object->get('ca_object_representations.representation_id', array('filterNonPrimaryRepresentations' => false, 'checkAccess' => $va_access_values, 'returnAsArray' => true));
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -50,6 +49,72 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-6'>
+
+<?php if ($this->request->isLoggedIn() && $this->request->user->canDoAction('can_add_audio_commentary') && $this->getVar("audio_recorder_enabled")): ?>
+				<div class="audio-recorder">
+					<div class="text-center">
+						<h4>Record Audio</h4>
+					</div>
+					<p class="">Click record to contribute audio commentary for this record.</p>
+					<div class="text-center">						
+						<div class="control-bar btn-group">
+							<button id="startBtn" class="btn">
+								<span class="glyphicon glyphicon-play" aria-hidden="true"></span> Record
+							</button>
+							<button id="pauseBtn" class="btn" disabled>
+								<span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause
+							</button>
+							<button id="stopBtn" class="btn" disabled>
+								<span class="glyphicon glyphicon-stop" aria-hidden="true"></span> Finish
+							</button>
+							<button id="downloadBtn" class="btn hidden">
+								<span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download
+							</button>
+						</div>
+
+						<canvas id="visualizer" width="300" height="50" class="center-block hidden"></canvas><br>
+						
+						<div id="postRecordingContainer" class="hidden">
+							<div id="audioPreviewContainer" class="form-group">
+								<label for="audioPlayback">
+									<span class="glyphicon glyphicon-headphones" aria-hidden="true"></span> Audio Preview
+								</label>
+								<audio id="audioPlayback" controls></audio>
+							</div>
+
+							<form class="form-horizontal">
+								<div class="form-group">
+									<label for="audioName" class="text-left">Name:</label>
+									<input type="text" id="audioName" class="form-control" placeholder="Enter name">
+								</div>
+
+								<div class="form-group">
+									<label for="audioNotes" class="text-left">Notes:</label>
+									<textarea id="audioNotes" class="form-control" rows="3" placeholder="Enter notes"></textarea>
+								</div>
+
+								<div id="actionButtons" class="form-group text-center">
+									<button id="cancelBtn" type="button" class="btn">
+										<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel
+									</button>
+									<button id="saveBtn" type="button" class="btn">
+										<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Save
+									</button>
+								</div>
+							</form>
+						</div>
+
+						<div id="successMessage" class="alert alert-success hidden" role="alert">
+							<strong>Success!</strong> Your recording has been submitted.
+						</div>
+						<div id="errorMessage" class="alert alert-danger hidden" role="alert">
+							<strong>Error!</strong> Your recording has not been submitted.
+						</div>
+					</div>
+				</div><br><br>
+<?php endif; ?>
+
+
 				{{{representationViewer}}}
 				
 <?php
@@ -94,6 +159,7 @@
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 				<HR></HR>
+
 				{{{<ifdef code="ca_objects.idno"><label>Identifier</label>^ca_objects.idno<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.object_category"><label>Category</label>^ca_objects.object_category<br/></ifdef>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Creator"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="Creator">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="Creator" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
@@ -105,10 +171,8 @@
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="partnering_organization"><div class="unit"><label>Partnering Organization<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="partnering_organization">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="partnering_organization" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.date_created"><label>Date Created</label>^ca_objects.date_created<br/></ifdef>}}}
 				
-				
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Source"><div class="unit"><label>Source<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="Source">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="Source" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="partnering_organization,Source,Creator,Subject"><div class="unit"><label>Contributor<ifcount code="ca_entities" min="2" excludeRelationshipTypes="partnering_organization,Source,Subject">s</ifcount></label><unit relativeTo="ca_entities" excludeRelationshipTypes="partnering_organization,Source,Subject" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
-				
 				
 				{{{<ifdef code="ca_objects.idno|ca_objects.object_category|ca_objects.language|ca_objects.date_digitized"><hr></hr></ifdef>}}}
 				{{{<ifdef code="ca_objects.language"><label>Language</label>^ca_objects.language%delimiter=,_<br/></ifdef>}}}
@@ -154,17 +218,25 @@
 					<ifdef code="ca_objects.rights.rightsHolder"><label>Rights Holder</label>^ca_objects.rights.rightsHolder<br/></ifdef>
 				</div></ifdef>}}}
 				
-				
-						
 			</div><!-- end col -->
-		</div><!-- end row --></div><!-- end container -->
+		</div><!-- end row -->
+	</div><!-- end container -->
+
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
 			{{{nextLink}}}
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
+
 </div><!-- end row -->
+
+<script type='text/javascript'>
+	caUI.initAudioRecorder({
+		vnId: <?php echo json_encode($vn_id); ?>, // object id
+		saveUrl: <?= json_encode(caNavUrl($this->request, '*', '*', '*', ['recorder' => 1])); ?> // endpoint
+	});
+</script>
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {

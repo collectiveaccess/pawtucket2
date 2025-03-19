@@ -113,13 +113,16 @@ function caExtractMetadataWithGetID3($ps_filepath) {
 	// to parse MPEG-4 files.
 	//
 	if ((isset($va_getid3_info["error"])) && (is_array($va_getid3_info["error"])) && (sizeof($va_getid3_info["error"]) == 1)) {
-		if (preg_match("/does not fully support MPEG-4/", $va_getid3_info['error'][0])) {
+		if (preg_match("/does not fully support MPEG-4/", join(' ', $va_getid3_info['error']))) {
 			$va_getid3_info['error'] = array();
 		}
-		if (preg_match("/claims to go beyond end-of-file/", $va_getid3_info['error'][0])) {
+		if (preg_match("/claims to go beyond end-of-file/", join(' ', $va_getid3_info['error']))) {
 			$va_getid3_info['error'] = array();
 		}
-		if (preg_match("/because beyond 2GB limit of PHP filesystem functions/", $va_getid3_info['error'][0])) {
+		if (preg_match("/because beyond 2GB limit of PHP filesystem functions/", join(' ', $va_getid3_info['error']))) {
+			$va_getid3_info['error'] = array();
+		}
+		if (preg_match("/fragmented mp4/", join(' ', $va_getid3_info['error']))) {
 			$va_getid3_info['error'] = array();
 		}
 	}

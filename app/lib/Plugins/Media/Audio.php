@@ -278,6 +278,12 @@ class WLPlugMediaAudio Extends BaseMediaPlugin Implements IWLPlugMedia {
 			} else {
 				$this->metadata = $this->handle;
 			}
+			
+			if(is_array($this->handle["error"])) {
+				if(preg_match("!fragmented mp4!", join(' ', $this->handle["error"]))) { 
+					$this->handle["error"] = [];
+				}
+			}
 		}
 		if (!((isset($this->handle["error"])) && (is_array($this->handle["error"])) && (sizeof($this->handle["error"]) > 0))) {
 			$this->filepath = $filepath;
