@@ -1,0 +1,73 @@
+
+  .home-page {
+      height: 500px;
+      display: flex;
+      justify-content: end;
+      align-items: center;
+      color: #ffff;
+      position: relative;
+  }
+
+  .home-page .row{
+    margin-right: 20px; 
+    text-align: right; 
+    width: 100%
+  }
+
+  .home-page .home-content .home-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+  }
+
+  .home-background{
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/pawtucket2/themes/default/assets/pawtucket/graphics/home-page.jpg') !important;
+    background-size: cover !important;
+    background-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100%;
+    z-index: -1;
+  }
+
+  .home-page .home-content {
+    background-color: rgba(0, 0, 0, 0.15) !important; /* to darken the background */
+    padding: 20px;
+    padding-right: 40px;
+    padding-left: 40px;
+    margin-right: 20px;
+    border-radius: 60px;
+    text-align: end !important;
+  }
+
+  .home-page .home-content h1{
+    font-size: 64px;
+    margin-bottom: 50px;
+    color: #4D4D4D;
+    font-weight: bold;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+  }
+
+  .home-page .home-content p{
+    font-size: 20px;
+    margin-bottom: 40px;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    background-color: #4D4D4D;
+    padding: 20px;
+    border: white 1px solid;
+    border-radius: 10px;
+  }
+  
+  .home-content .home-button {
+    background-color: #28a745; /* Green button */
+    color: white;
+    font-size: 1.4rem;
+    padding: 15px 32px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }

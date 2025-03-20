@@ -31,13 +31,21 @@
  */
 		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
+
+<div class="home-page">
+
+	<div class="home-background"></div>
+
 	<div class="row">
-		<div class="col-sm-8">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
-		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
-<?php
-		print $this->render("Front/gallery_set_links_html.php");
-?>
-		</div> <!--end col-sm-4-->	
+		<div class="col-md-2"></div>			
+		<div class="col-md-10">
+			<div class="home-content" >
+				<div class="home-title">
+					<button class="home-button">إنشاء حساب</button>
+					<h1>ذاكرة فلسطين</h1>
+				</div>
+				<p> ذاكرة فلسطين هي أرشيف رقمي يهدف إلى توثيق وحفظ الأحداث التاريخية والشهادات الشخصية والمصادر المختلفة المتعلقة بالقضية الفلسطينية. يتيح هذا الأرشيف الوصول إلى وثائق، صور، مقاطع فيديو، وتسجيلات صوتية تسلط الضوء على تاريخ فلسطين وتراثها الثقافي. يوفر النظام أدوات بحث متقدمة وتصنيفات منظمة لتسهيل استكشاف المحتوى، مما يجعله مرجعًا هامًا للباحثين، الطلاب، والمؤرخين المهتمين بتوثيق الرواية الفلسطينية وحفظها للأجيال القادمة.</p>			
+			</div>
+		</div> <!--end col-sm-8-->		
 	</div><!-- end row -->
+</div>

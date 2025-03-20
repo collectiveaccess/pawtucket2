@@ -58,6 +58,7 @@ $has_user_links = (sizeof($user_links) > 0);
 
 	<link rel="stylesheet" href="/pawtucket2/themes/default/assets/pawtucket/css/fonts.css" type="text/css" media="all">	
 	<link rel="stylesheet" href="/pawtucket2/themes/default/assets/pawtucket/css/main.css" type="text/css" media="all">
+	<link rel="stylesheet" href="/pawtucket2/themes/default/assets/pawtucket/css/home.css" type="text/css" media="all">
 
 
 	<title><?= (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
@@ -158,5 +159,5 @@ $has_user_links = (sizeof($user_links) > 0);
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
-	<div class="container"><div class="row"><div class="col-xs-12">
+	<div class="container"><div class="row">
 		<div role="main" id="main"><div id="pageArea" <?= caGetPageCSSClasses(); ?>>

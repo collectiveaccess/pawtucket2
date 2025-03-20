@@ -63,7 +63,6 @@
 
 	if(is_array($va_sets) && sizeof($va_sets)){
 ?>
-
 <div class="row">
 	<div class="col-sm-12"> 
 		<H2><?php print $section_name; ?></H2>
