@@ -49,3 +49,52 @@
 		</div> <!--end col-sm-8-->		
 	</div><!-- end row -->
 </div>
+
+			
+			<!-- Archive content section -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 archive-section">
+            <h2>محتوى الأرشيف</h2>
+            <p class="subtitle">توثيق ورصد المعلومات للأجيال القادمة</p>
+            
+            <!-- Archive categories -->
+            <div class="archive-categories">
+                <div class="row">
+                    <div class="col-sm-2 col-xs-6">
+                        <a href="#" class="category-item">الانتهاكات الإنسانية</a>
+                    </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <a href="#" class="category-item">تدمير البنية التحتية</a>
+                    </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <a href="#" class="category-item">المساجد</a>
+                    </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <a href="#" class="category-item">المدارس</a>
+                    </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <a href="#" class="category-item">المستشفيات</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 col-xs-6">
+                        <a href="#" class="category-item">الانتهاكات الإنسانية</a>
+                    </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <a href="#" class="category-item">تدمير البنية التحتية</a>
+                    </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <a href="#" class="category-item">المساجد</a>
+                    </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <a href="#" class="category-item">المدارس</a>
+                    </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <a href="#" class="category-item">المستشفيات</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -71,3 +71,105 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
+  
+.container .archive-categories {
+  margin: 40px 0;
+  width: 100%;
+  text-align: center;
+}
+
+.container .archive-categories .row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.container .archive-categories .col-sm-2 {
+  float: none;
+  display: inline-block;
+  width: 180px;
+  margin: 0 10px 20px;
+  vertical-align: top;
+}
+
+.container .category-item {
+  display: block;
+  padding: 20px 15px;
+  text-align: center;
+  background-color:  #4D4D4D;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s ease;
+  height: 100%;
+  font-weight: 500;
+  font-size: 16px;
+  border: 1px solid #eaeaea;
+}
+
+.container .category-item:hover {
+  background-color: white;
+  color: #4D4D4D;
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+}
+
+/* Make the container full width */
+.container .container {
+  width: 100%;
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.container .archive-section {
+  width: 100%;
+  text-align: center;
+  margin: 60px 0;
+  padding: 20px 0;
+}
+
+/* تحسين التوافقية على الشاشات الصغيرة */
+@media (max-width: 767px) {
+  .container .archive-categories .col-sm-2 {
+      width: 45%;
+      margin: 0 5px 15px;
+  }
+  
+  .container .category-item {
+      padding: 15px 10px;
+      font-size: 14px;
+  }
+}
+
+.container .archive-section h2 {
+  font-size: 36px;
+  font-weight: bold;
+  color: #4D4D4D;
+  margin-bottom: 15px;
+  position: relative;
+  display: inline-block;
+}
+
+.container .archive-section h2:after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 25%;
+  right: 25%;
+  height: 3px;
+  background: linear-gradient(to right, transparent, #007bff, transparent);
+}
+
+.container .archive-section .subtitle {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 40px;
+  font-weight: 300;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
