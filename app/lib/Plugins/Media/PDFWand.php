@@ -320,7 +320,7 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 		return $this->metadata;
 	}
 	# ------------------------------------------------
-	public function read ($ps_filepath, $mimetype="", $options=null) {
+	public function read($ps_filepath, $mimetype="", $options=null) {
 		if (is_array($this->handle) && ($this->handle["filepath"] == $ps_filepath)) {
 			// noop
 		} else {
@@ -338,33 +338,37 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 			}
 		}
 		
+		$for_preview = caGetOption('forPreviewGeneration', $options, false);
+	
 		$this->filepath = $ps_filepath;
 		
-		$this->metadata = caExtractMetadataWithExifTool($ps_filepath);
 					
 		// Try to extract text
 		$this->handle['content_by_location'] = $this->ohandle['content_by_location'] = [];
 		
-		if($locations = caExtractTextFromPDF($ps_filepath)) {
-			$this->handle['content'] = join("\n", $locations['__pages__'] ?? []);
-			unset($locations['__pages__']);
-			$this->handle['content_by_location'] = $this->ohandle['content_by_location'] = $locations;
-		} elseif ($this->ops_pdftotext_path) {
-			if(($page_start = (int)$this->opo_config->get("document_text_extraction_start_page")) <= 0) { $page_start = 1; }
-			if(($num_pages = (int)$this->opo_config->get("document_text_extraction_max_number_of_pages")) <= 0) { $num_pages = null; }
-			if(($num_chars = (int)$this->opo_config->get("document_text_extraction_max_characters")) <= 0) { $num_chars = null; }
-			
-			$page_limits = " -f {$page_start} ";
-			if($num_pages > 0) { $page_limits .= "-l ".($page_start + $num_pages)." "; }
-			
-			$vs_tmp_filename = tempnam('/tmp', 'CA_PDF_TEXT');
-			caExec($this->ops_pdftotext_path.' -q -enc UTF-8 '.$page_limits.caEscapeShellArg($ps_filepath).' '.caEscapeShellArg($vs_tmp_filename).(caIsPOSIX() ? " 2> /dev/null" : ""));
-			$vs_extracted_text = file_get_contents($vs_tmp_filename);
-			
-			if($num_chars > 0) { $vs_extracted_text = mb_substr($vs_extracted_text, 0, $num_chars, 'UTF-8'); }
-			
-			$this->handle['content'] = $this->ohandle['content'] = $vs_extracted_text;
-			@unlink($vs_tmp_filename);
+		if(!$for_preview) {
+			$this->metadata = caExtractMetadataWithExifTool($ps_filepath);
+			if($locations = caExtractTextFromPDF($ps_filepath)) {
+				$this->handle['content'] = join("\n", $locations['__pages__'] ?? []);
+				unset($locations['__pages__']);
+				$this->handle['content_by_location'] = $this->ohandle['content_by_location'] = $locations;
+			} elseif ($this->ops_pdftotext_path) {
+				if(($page_start = (int)$this->opo_config->get("document_text_extraction_start_page")) <= 0) { $page_start = 1; }
+				if(($num_pages = (int)$this->opo_config->get("document_text_extraction_max_number_of_pages")) <= 0) { $num_pages = null; }
+				if(($num_chars = (int)$this->opo_config->get("document_text_extraction_max_characters")) <= 0) { $num_chars = null; }
+				
+				$page_limits = " -f {$page_start} ";
+				if($num_pages > 0) { $page_limits .= "-l ".($page_start + $num_pages)." "; }
+				
+				$vs_tmp_filename = tempnam('/tmp', 'CA_PDF_TEXT');
+				caExec($this->ops_pdftotext_path.' -q -enc UTF-8 '.$page_limits.caEscapeShellArg($ps_filepath).' '.caEscapeShellArg($vs_tmp_filename).(caIsPOSIX() ? " 2> /dev/null" : ""));
+				$vs_extracted_text = file_get_contents($vs_tmp_filename);
+				
+				if($num_chars > 0) { $vs_extracted_text = mb_substr($vs_extracted_text, 0, $num_chars, 'UTF-8'); }
+				
+				$this->handle['content'] = $this->ohandle['content'] = $vs_extracted_text;
+				@unlink($vs_tmp_filename);
+			}
 		}
 			
 		return true;	
@@ -771,29 +775,25 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 	public function writeClip(string $filepath, ?array $options=null) : ?string {
 		$page = caGetOption('page', $options, 1);
 		$t_rep = caGetOption('representation', $options, null);
+		if(!$t_rep || !$t_rep->isLoaded()) { return null; }
 		
-		if($t_rep) { 
-			$previews = $t_rep->getFileList(null, $page - 1, 1, ['versions' => ['original']]);
-			$preview = array_shift($previews);
-			$files = [$preview['original_path']];
-			
-			$page_width = $preview['original_width'] ?? null;
-			$page_height = $preview['original_height'] ?? null;
-		} else {
-			$files = $this->writePreviews($filepath, ['startAtPage' => $page, 'numberOfPages' => 1, 'force' => true]);
-			$page_width = $media_info['INPUT']['WIDTH'] ?? null;
-			$page_height = $media_info['INPUT']['HEIGHT'] ?? null;
-		}
+		$for_preview = caGetOption('forPreviewGeneration', $options, false);
+		
+		$previews = $t_rep->getFileList(null, $page - 1, 1, ['versions' => ['original']]);
+		$preview = array_shift($previews);
+		$files = [$preview['original_path']];
+		
+		$page_width = $preview['original_width'] ?? null;
+		$page_height = $preview['original_height'] ?? null;
+
 		if(!is_array($files) || (sizeof($files) != 1)) {
 			return false;
 		}
 		
 		$m = new Media();
-		if(!$m->read($files[0])) {
+		if(!$m->read($files[0], null, ['forPreviewGeneration' => true])) {
 			return false;
 		}
-		$t_rep = caGetOption('representation', $options, null);
-		if(!$t_rep || !$t_rep->isLoaded()) { return null; }
 		
 		$w = caGetOption('w', $options, null);
 		$h = caGetOption('h', $options, null);
@@ -803,7 +803,6 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 		$y = caGetOption('y', $options, null);
 		if(($x < 0) || ($y < 0)) { return null; }
 		
-		$media_info = $t_rep->getMediaInfo('media',);	
 		if(!$page_width || !$page_height) { return null; }
 		
 		$m->transform('CROP', ['width' => $w * $page_width, 'height' => $h * $page_height, 'x' => $x * $page_width, 'y' => $y * $page_height]);
