@@ -50,8 +50,8 @@ class Clips extends BaseIIIFResponse {
 		$clip_list = caGetOption('clip_list', $options, []);
 	
 		$items = [];
-		foreach($clip_list as $clip) {
-			$items[sprintf('%05d', (int)$clip['page']).$clip['label']] = [
+		foreach($clip_list as $i => $clip) {
+			$items[sprintf('%05d', (int)$clip['page']).$clip['label']."_{$i}"] = [
 				'type' => 'Annotation',
 				'body' => [
 					 [
