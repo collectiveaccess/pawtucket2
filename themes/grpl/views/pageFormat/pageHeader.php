@@ -158,7 +158,7 @@ if((strToLower($this->request->getController()) == "detail") && (strToLower($thi
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'grpl_logo_2024.png', array("alt" => "Grand Rapids Public Library Logo")), "navbar-brand", "", "","");
+			print caNavLink($this->request, caGetThemeGraphic($this->request, 'grpl_logo.png'), "navbar-brand", "", "","");
 ?>
 			</div>
 

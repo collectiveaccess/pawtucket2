@@ -162,7 +162,7 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 					
 					if($type_code === 'newspaper') {
 						$rep_id = $qr_res->get('ca_object_representations.representation_id');
-						$vs_thumbnail = "<img src='/service.php/IIIF/representation:{$rep_id}/full/400,400/0/default.jpg?highlight=".urlencode(join(' ', $terms))."'/>";
+						$vs_thumbnail = "<img src='/service.php/IIIF/representation:{$rep_id}/full/270,170/0/default.jpg?highlight=".urlencode(join(' ', $terms))."'/>";
 					} elseif(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 						$t_list_item->load($qr_res->get("type_id"));
 						$vs_typecode = $t_list_item->get("idno");

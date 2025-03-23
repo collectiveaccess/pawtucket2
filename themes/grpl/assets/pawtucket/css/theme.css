@@ -8,19 +8,17 @@ body{
 	background-color: #FFFFFF;
 	font-family: "Open Sans", Arial, sans-serif;
 	margin-bottom: 200px;
-	font-size:16px;
-	color: #474747;
+	font-size:13px;
+	color: #666666;
 }
 b, strong{
 	font-family: "Open Sans", Arial, sans-serif;
 }
 a{
-	/*color:#06357A;*/
-	color: #02729e;
-}
+	color:#06357A;
+	}
 a:hover {
-	/*color:#1592d1;*/
-	color: #014e6c;
+	color:#1592d1;
 }
 a, a:active, a:focus {
 /*   outline: 0; */
@@ -91,14 +89,14 @@ H6, h6{
 
 /* Browse results */
 .map-warning{
-	color: #02729e;
+	color: #06357A;
 	font-size: 14px;
 	font-decoration:bold;
   margin:10px 0px 5px 0px;
 	padding-top:20px;
 }
 .browse .btn, .sets .btn {
-	background-color:#02729e;
+	background-color:#06357A;
 	font-size:10px;
 	color:#fff;
 	margin-left:5px;
@@ -177,7 +175,7 @@ H6, h6{
 }
 /* Browse side menu */
 #bRefine a {
-	color: #474747;
+	color: #666666;
     font-size: 13px;
     line-height: 146%;
 }
@@ -186,7 +184,7 @@ H6, h6{
 }
 /* "leaflet container" (popup on map) */
 .leaflet-container a {
-    color: #02729e;
+    color: #06357A;
 }
 /* Make sure map controls look normal */
 .leaflet-touch .leaflet-bar a {
@@ -221,7 +219,7 @@ H6, h6{
   background-color: #daf0fb;
   background-image: none;
   filter: none;
-  color:#02729e;
+  color:#06357A;
 	text-decoration: underline;
 }
 .yamm .nav.navbar-right .dropdown-menu {
@@ -249,7 +247,7 @@ H6, h6{
 	background-color:#FFF;
 }
 #footer ul a{
-	color: #02729e;
+	color: #06357A;
 	text-decoration: underline;
 }
 
@@ -260,11 +258,11 @@ H6, h6{
 	height: auto;
 }
 .detail {
-	color:#474747;
-	font-size:16px;
+	color:#454545;
+	font-size:13px;
 }
 .detail a {
-	color:#02729e;
+	color:#06357A;
 	text-decoration:underline;
 }
 
@@ -278,7 +276,7 @@ H6, h6{
 	margin:0px;
 }
 .detail H6 a{
-	color:#02729e;
+	color:#06357A;
 	/*font-size:9px;*/
 	padding:2px 0px 0px 10px;
 	text-decoration:none;
@@ -307,8 +305,8 @@ H6, h6{
 
 /* various based on GRPM */
 .container{
-	/*max-width:1112px;*/
-	max-width:1250px;
+	max-width:1112px;
+	marg
 }
 @media (max-width:768px){
 	body{
@@ -323,12 +321,12 @@ H6, h6{
 	margin-top:25px;
 	padding-bottom:25px;
 }
- .navbar{
+.navbar{
 	background-color: #FFFFFF;
-	margin-bottom:20px;
+	margin-bottom:0px;
 }
 .navbar-brand {
-	width:145px;
+	width:300px;
 }
 .navbar-default .navbar-nav > li > a {
     color: #666;
@@ -338,11 +336,11 @@ H6, h6{
 
 @media (min-width: 768px) {
 	.navbar-nav > li > a {
-		padding-top: 30px;
-		padding-bottom: 30px;
+		padding-top: 20px;
+		padding-bottom: 0px;
 	}
 	#user-navbar, .menuBar .navbar-form{
-		padding-top:15px;
+		padding-top:5px;
 	}
 }
 
@@ -423,7 +421,6 @@ H6, h6{
 	margin-top:0px;
 }
 .front .frontSlide{
-	/*background-color:#93c98d;*/
 	background-color:#89d0cc;
 }
 .front .frontSlide img{
@@ -687,9 +684,10 @@ div.caMediaOverlayControls .close {
 	text-align:center;
 	padding:10px;
 	line-height:1.1em;
-	height:205px;
+	height:250px;
 	margin-bottom:15px;
-	overflow:hidden;
+	overflow-x:hidden;
+	overflow-y:auto;
 	position:relative;
 }
 .myClippingsIssue .clippingCaption{
@@ -722,4 +720,19 @@ div.caMediaOverlayControls .close {
 	margin:20px 0 0 15px;
 	height:100%;
 	position:relative;
+}
+
+.navbar-brand {
+	width: 300px;
+}
+.navbar {
+	height: 68px;
+	background-color: #FFFFFF;
+	margin-bottom: 0px;
+	border-radius: 0px;
+	background-image: none;
+	border-top: 0px;
+	border: 0px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
