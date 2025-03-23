@@ -159,17 +159,20 @@ class AnnotationsController extends BasePawtucketController {
 	public function DownloadPDF() {
 		$annotation_id = $this->request->getParameter('annotation_id', pInteger);
 		$representation_id = $this->request->getParameter('representation_id', pInteger);
-		
+		if(!($t_rep = ca_object_representations::findAsInstance($representation_id))) {
+			throw new ApplicationException(_t('Invalid representation_id'));
+		}
+	
 		$annotations = ca_user_representation_annotations::getAnnotations(['request' => $this->request, 'annotation_id' => $annotation_id, 'representation_id' => $representation_id]);
 		
 		$this->view->setVar('annotations', $annotations);
 		
 		$content = $this->view->render('Annotations/export/annotations_pdf_html.php', true);
-	
+		
 		caExportContentAsPDF($content, [
 			'pageSize' => 'letter', 'pageOrientation' => 'portrait',
 			'marginLeft' => '0.5in', 'marginRight' => '0.5in', 'marginTop' => '0.5in', 'marginBottom' => '0.5in',
-		], 'my_clippings.pdf', []);
+		], $this->_getDownloadName($t_rep, $annotations), []);
 		
 		return;
 	}
@@ -179,6 +182,9 @@ class AnnotationsController extends BasePawtucketController {
 	 */
 	public function DownloadFiles() {
 		$representation_id = $this->request->getParameter('representation_id', pInteger);
+		if(!($t_rep = ca_object_representations::findAsInstance($representation_id))) {
+			throw new ApplicationException(_t('Invalid representation_id'));
+		}
 		$annotations = ca_user_representation_annotations::getAnnotations(['request' => $this->request, 'representation_id' => $representation_id]);
 		
 		$this->view->setVar('annotations', $annotations);
@@ -202,7 +208,7 @@ class AnnotationsController extends BasePawtucketController {
 				$o_zip->addFile($path, $name);
 			}
 			$this->view->setVar('zip_stream', $o_zip);
-			$this->view->setVar('archive_name', 'my_clippings.zip');
+			$this->view->setVar('archive_name', $this->_getDownloadName($t_rep, $annotations).'.zip');
 			
 			$rc = $this->render('bundles/download_file_binary.php');
 		} else {
@@ -213,6 +219,18 @@ class AnnotationsController extends BasePawtucketController {
 			$rc = $this->render('bundles/download_file_binary.php');
 		}
 		return $rc;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	private function _getDownloadName($t_rep, $annotations) {
+		$download_file_name = 'my_clippings';
+		if($t_rep && ($t_object = $t_rep->getRelatedItems('ca_objects', ['returnAs' => 'firstModelInstance']))) {
+			$anno = array_shift($annotations);
+			$download_file_name = mb_substr(preg_replace("![^A-Za-z0-9\-_\.]+!", "_", $t_object->get('ca_objects.preferred_labels')), 0, 30).'_'.$t_object->get('ca_objects.date.date_value', ['dateFormat' => 'iso8601']).'_'.($anno['label'] ?? null);
+		}
+		return $download_file_name;
 	}
 	# ------------------------------------------------------
 }
