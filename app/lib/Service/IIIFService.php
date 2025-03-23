@@ -83,7 +83,7 @@ class IIIFService {
 		list($ps_type, $pn_id, $page) = self::parseIdentifier($identifier);
 
 		$vs_image_path = null;
-		//$vb_cache = false;
+		$vb_cache = false;
 		$highlight = $request->getParameter('highlight', pString);
 		$highlight_md5 = $highlight ? md5($highlight) : '';
 		
@@ -193,6 +193,8 @@ class IIIFService {
 		
 			if (
 				in_array('tilepic', $va_versions)
+				&&
+				!$highlight
 				&&
 				(
 					(($va_dimensions['width'] == $vn_tile_width) && ($va_dimensions['height'] == $vn_tile_height))
