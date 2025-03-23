@@ -2095,6 +2095,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 				't_subject' => $this,
 				'request' => $po_request,
 				'form_name' => $ps_form_name,
+				'format' => '',
 				'dontDoRefSubstitution' => true,
 				'format' => 
 					// Set format to single line when displaying yes_no checkboxes

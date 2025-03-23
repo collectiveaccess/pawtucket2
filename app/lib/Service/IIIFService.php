@@ -83,7 +83,7 @@ class IIIFService {
 		list($ps_type, $pn_id, $page) = self::parseIdentifier($identifier);
 
 		$vs_image_path = null;
-		$vb_cache = false;
+		//$vb_cache = false;
 		$highlight = $request->getParameter('highlight', pString);
 		$highlight_md5 = $highlight ? md5($highlight) : '';
 		
@@ -497,6 +497,8 @@ class IIIFService {
 		
 		$va_tmp = explode("/", $vs_base_url);
 		if ($vn_i = array_search("service.php", $va_tmp)) {
+			$va_tmp = array_slice($va_tmp, 0, $vn_i + 3);
+		} elseif ($vn_i = array_search("service", $va_tmp)) {
 			$va_tmp = array_slice($va_tmp, 0, $vn_i + 3);
 		}
 		

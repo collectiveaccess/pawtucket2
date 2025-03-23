@@ -1195,26 +1195,32 @@ function caGetDisplayValueForBundle(?string $bundle, string $value) {
 	$va_tmp = explode(".", $bundle);
 	
 	if ($t_instance = Datamodel::getInstanceByTableName($va_tmp[0], true)) {
-		if ($t_instance->hasField($va_tmp[1])) {		// intrinsic
-			return $value;
-		} elseif($t_instance->hasElement($va_tmp[1])) {	// metadata element
-			if($t_element = ca_metadata_elements::getInstance($va_tmp[1])) {
-				switch(ca_metadata_elements::getElementDatatype($va_tmp[1])) {
-					case __CA_ATTRIBUTE_VALUE_LIST__:
-						if(is_numeric($value)) {
-							if(strlen($ret = caGetListItemByIDForDisplay((int)$value))) {
-								return $ret;
-							}
+		switch($va_tmp[1]) {
+			case 'preferred_labels':
+			case 'nonpreferred_labels':
+				return $value;
+				break;
+			default:
+				if ($t_instance->hasField($va_tmp[1])) {		// intrinsic
+					return $value;
+				} elseif($t_instance->hasElement($va_tmp[1])) {	// metadata element
+					if($t_element = ca_metadata_elements::getInstance($va_tmp[1])) {
+						switch(ca_metadata_elements::getElementDatatype($va_tmp[1])) {
+							case __CA_ATTRIBUTE_VALUE_LIST__:
+								if(is_numeric($value)) {
+									if(strlen($ret = caGetListItemByIDForDisplay((int)$value))) {
+										return $ret;
+									}
+								}
+								return $value;
+								break;
+							default:
+								return $value;
+								break;
 						}
-						return $value;
-						break;
-					default:
-						return $value;
-						break;
+					}
 				}
-			}
-		} else {
-		
+				break;
 		}
 	}
 	return $value;
@@ -2766,7 +2772,7 @@ function caFieldNumToBundleCode($table_name_or_num, string $field_num) : ?string
 /**
  * Try to extract positions of text using PDFMiner (http://www.unixuser.org/~euske/python/pdfminer/index.html)
  */
-function caExtractTextFromPDF(string $filepath) : ?array {
+function caExtractTextLocationsFromPDF(string $filepath) : ?array {
 	if ($miner_path = caPDFMinerInstalled()) {
 		$locations = [];
 		$o_search_config = caGetSearchConfig();

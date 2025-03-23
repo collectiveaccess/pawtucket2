@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2016-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,21 +26,26 @@
  * ----------------------------------------------------------------------
  */
  	
- 	class BasePawtucketController extends ActionController {
- 		# ------------------------------------------------------- 	
-        /**
-         * @var array
-         */
- 		 protected $opa_access_values;
- 		# -------------------------------------------------------
- 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if (($this->request->getController() !== 'LoginReg') && $this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
-				$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-            }
-            
- 			$this->opa_access_values = caGetUserAccessValues($po_request);
- 		 	$this->view->setVar("access_values", $this->opa_access_values);
- 		}
- 		# -------------------------------------------------------
+class BasePawtucketController extends ActionController {
+	# ------------------------------------------------------- 	
+	/**
+	 * @var array
+	 */
+	protected $opa_access_values;
+	
+	/**
+	 *
+	 */
+	protected $dont_require_login = false;
+	# -------------------------------------------------------
+	public function __construct($request, $response, $view_paths=null) {
+		parent::__construct($request, $response, $view_paths);
+		if (!$this->dont_require_login && ($request->getController() !== 'LoginReg') && $request->config->get('pawtucket_requires_login') && !($request->isLoggedIn())) {
+			$response->setRedirect(caNavUrl($request, "", "LoginReg", "LoginForm"));
+		}
+		
+		$this->opa_access_values = caGetUserAccessValues($request);
+		$this->view->setVar("access_values", $this->opa_access_values);
 	}
+	# -------------------------------------------------------
+}

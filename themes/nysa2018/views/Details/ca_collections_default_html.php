@@ -60,7 +60,7 @@
 <?php
 
 					if ($vs_idno = $t_item->get('ca_collections.idno')) {
-						print "<div class='unit'><b>Identifier</b><br/>".$vs_idno."</div>";
+						print "<div class='unit'><b>Series</b><br/>".$vs_idno."</div>";
 					}
 					#if ($vs_altID_array = $t_item->get('ca_collections.alternateID', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 					#	print "<div class='unit'><b>Alternate Identifier</b><br/>";

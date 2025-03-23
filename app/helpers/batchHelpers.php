@@ -484,8 +484,16 @@ function caIsValidMediaImportDirectory(string $directory, array $options=null) {
 		return false;
 	}
 	$directory = preg_replace('!^[/]+!', '', $directory);
-	if (is_dir($dir="{$batch_media_import_root_directory}/{$directory}")) {
-		return $dir;
+
+	if (!caGetOption('userDirectoryOnly', $options, false)) {
+		$au =  preg_replace('!^[/]+!', '', $batch_media_import_root_directory);
+		$ad = preg_replace("!^{$au}!", '', $directory);
+		if(is_dir($dir="{$batch_media_import_root_directory}/{$ad}")) {
+			return $dir;
+		}
+		if (caGetOption('allowFiles', $options, false) && is_file($dir)) {
+			return $dir;
+		}
 	}
 
 	if($user_id = caGetOption('user_id', $options, null)) {
