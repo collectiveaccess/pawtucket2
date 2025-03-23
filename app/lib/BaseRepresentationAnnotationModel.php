@@ -186,6 +186,7 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 	 *
 	 */
 	public function generatePreview(?array $options=null) {
+		global $g_request;
 		if (!$this->getAppConfig()->get('dont_generate_annotation_previews') && $this->getPrimaryKey() && ($this->changed('props') || (isset($options['forcePreviewGeneration']) && $options['forcePreviewGeneration']))) {			
 			$type = $this->getAnnotationType();
 			
@@ -207,7 +208,8 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 			$t_rep = ca_object_representations::findAsInstance(['representation_id' => $this->get('representation_id')]);
 			if ($t_rep && ($file = $t_rep->getMediaPath('media', 'original')) && file_exists($file)) {
 				$o_media = new Media();
-				if ($o_media->read($file)) {
+				$data['forPreviewGeneration'] = true;
+				if ($o_media->read($file,  null, ['forPreviewGeneration' => true])) {
 					$data['representation'] = $t_rep;
 					if ($ret = $o_media->writeClip($output_file = tempnam(caGetTempDirPath(), 'annotationPreview'), $data)) {
 						$this->set('preview', $ret);
