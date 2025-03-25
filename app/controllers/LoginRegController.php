@@ -333,6 +333,8 @@ class LoginRegController extends BasePawtucketController {
 			$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 			return;
 		}
+		$old_session_id = Session::getSessionID();
+		
 		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Register"));
 		# logout user in case is already logged in
 		$this->request->deauthenticate();
@@ -512,6 +514,9 @@ class LoginRegController extends BasePawtucketController {
 			if($t_user->numErrors()) {
 				$va_errors["register"] = join("; ", $t_user->getErrors());
 			}else{
+				// Does session have annotations to be transferred to user?
+				ca_user_representation_annotations::transferSessionAnnotationsToUser($pn_user_id, ['request' => $this->request, 'session' => $old_session_id]);
+			
 				# --- add default roles
 				if (($va_default_roles = $this->request->config->getList('registration_default_roles')) && sizeof($va_default_roles)) {
 					$t_user->addRoles($va_default_roles);
