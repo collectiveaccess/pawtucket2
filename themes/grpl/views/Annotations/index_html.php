@@ -8,8 +8,8 @@ $sort = $this->getVar('sort');
 			<div class="btn-group">
 				<span class="glyphicon glyphicon-cog bGear" data-toggle="dropdown"></span>
 				<ul class="dropdown-menu" role="menu">
-					<li><?= caNavLink($this->request, _t("Sort clips by issue"), "", "*", "*", "*", ['sort' => 'issue']); ?></li>
-					<li><?= caNavLink($this->request, _t("Sort clips by date created"), "", "*", "*", "*", ['sort' => 'date']); ?></li>
+					<li><?= caNavLink($this->request, _t("Sort clips by issue"), "", "*", "*", "Index", ['sort' => 'issue']); ?></li>
+					<li><?= caNavLink($this->request, _t("Sort clips by date created"), "", "*", "*", "Index", ['sort' => 'date']); ?></li>
 					<li class="divider"></li>
 					<li><?= caNavLink($this->request, _t("Download PDF"), "", "*", "*", "DownloadPDF"); ?></li>
 					<li><?= caNavLink($this->request, _t("Download images"), "", "*", "*", "DownloadFiles"); ?></li>

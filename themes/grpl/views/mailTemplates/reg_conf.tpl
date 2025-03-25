@@ -33,7 +33,9 @@ print _t("Thank you for registering for \"%1\". ".$vs_active_message."
 
 Thank you for registering with the historical digital collections site of the Grand Rapids Public Library.
 
-As a member you can comment and tag items on the site. You can also create your own personal collections and share them with friends, family and colleagues.
+As a member, you can comment and tag items on the site. You can also create your own personal collections and share them with friends, family, and colleagues.
+
+If you clip articles or content in newspapers or magazines, your clippings will be saved in your account on the My Clippings page. You can download your clippings to print them or save them to your own device.
 
 Any comments or tags that you add will display your full name. If you would like to display initials or update your name, you can make those changes on your User Profile page (https://digital.grpl.org/LoginReg/profileForm).
 

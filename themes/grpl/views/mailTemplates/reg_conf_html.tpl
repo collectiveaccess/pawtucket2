@@ -30,7 +30,8 @@ if($this->request->config->get("dont_approve_logins_on_registration")){
 }
 
 print _t("<p>Thank you for registering with the historical digital collections site of the Grand Rapids Public Library.</p>
-<p>As a member you can comment and tag items on the site. You can also create your own personal collections and share them with friends, family and colleagues.</p>
+<p>As a member, you can comment and tag items on the site. You can also create your own personal collections and share them with friends, family, and colleagues.</p>
+<p>If you clip articles or content in newspapers or magazines, your clippings will be saved in your account on the My Clippings page. You can download your clippings to print them or save them to your own device.</p>
 <p>Any comments or tags that you add will display your full name. If you would like to display initials or update your name, you can make those changes on your User Profile <a href='https://digital.grpl.org/LoginReg/profileForm'>page</a>.
 <p>If you have any questions, send us an email at localhistory@grpl.org</p>
 <p>Regards,</p>

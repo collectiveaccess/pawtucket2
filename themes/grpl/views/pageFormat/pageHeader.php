@@ -76,7 +76,7 @@ $vb_has_user_links = (sizeof($va_user_links) > 0);
 <?php
 # --- what should the image to share be?
 # --- default to logo --- use image from detail page if on object page
-$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'grpl_logo_2024.png'); # --- replace this with logos for institutions
+$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'grpl_logo_2025.png'); # --- replace this with logos for institutions
 if((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "objects")){
 	$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra()));
 	$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls("ca_objects");
@@ -158,7 +158,7 @@ if((strToLower($this->request->getController()) == "detail") && (strToLower($thi
 					<span class="icon-bar"></span>
 				</button>
 <?php
-			print caNavLink($this->request, caGetThemeGraphic($this->request, 'grpl_logo.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'grpl_logo_2025.png', array("alt" => "Grand Rapids Public Library Logo")), "navbar-brand", "", "","");
 ?>
 			</div>
 
