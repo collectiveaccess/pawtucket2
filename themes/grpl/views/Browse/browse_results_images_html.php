@@ -121,7 +121,7 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 			# --- check if this result has been cached
 			# --- key is MD5 of table, id, list, refine(vb_refine)
 			$vs_cache_key = md5($vs_table.$vn_id."images".$vb_refine);
-			if(false) { //($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
+			if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 				print ExternalCache::fetch($vs_cache_key, 'browse_result');
 			}else{
 				#Added by TG 5/21 to change collection link to browse page (so collection is browsable) and create hover text

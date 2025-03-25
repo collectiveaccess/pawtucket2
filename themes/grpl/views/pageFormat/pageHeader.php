@@ -214,7 +214,7 @@ if((strToLower($this->request->getController()) == "detail") && (strToLower($thi
 							<li><?= caNavLink($this->request, "<span>"._t("Browse images")."</span>", "", "", "Browse", "Objects", array("facet" => "type_facet", "id" => 33, "view" => "images")); ?></li>
 							<li><?= caNavLink($this->request, "<span>"._t("View map")."</span>", "", "", "Browse", "Objects", array("facet" => "type_facet", "id" => 37, "view" => "map")); ?></li>
 							<li <?= (($this->request->getController() == "Search") && ($this->request->getActionExtra() == "objects")) ? 'class="active"' : ''; ?>><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></li>
-							<li><?= caNavLink($this->request, "<span>"._t("Browse all items")."</span>", "", "", "Browse", "Objects"); ?></li>
+							<li><?= caNavLink($this->request, "<span>"._t("Browse all items")."</span>", "", "", "Browse", "Objects", ['view' => 'images']); ?></li>
 						</ul>
 					</li>
 

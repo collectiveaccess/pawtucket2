@@ -108,12 +108,14 @@ if (!$vb_ajax) {	// !ajax
 			# TG removed item type from Heading (object, occurance, entity, etc.)
 			# print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));
 			print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? _t("Result") : _t("Results"));
+			
+	if($vs_table == "ca_objects") {
 ?>
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-cog bGear" aria-label="Result options"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
-					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
+					if($vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
 						print "<li role='menuitem'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
 						print "<li role='menuitem'><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
 						print "<li class='divider' role='menuitem'></li>";
@@ -155,6 +157,7 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
+			}
 			if(is_array($va_facets) && sizeof($va_facets)){
 ?>
 			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
