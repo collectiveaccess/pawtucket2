@@ -853,7 +853,9 @@ class IIIFService {
 	 */
 	public static function cliplist($identifier, RequestHTTP $request, ?array $options=null) {
 		global $g_locale_id;
-		 $auth_success = $request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false));
+		if(!$request->isLoggedIn()) {
+			$auth_success = $request->doAuthentication(['dont_redirect' => true, 'noPublicUsers' => false, "no_headers" => true]);
+		}
 		if(!is_array($media = self::getMediaInstance($identifier, $request))) {
 			throw new IIIFAccessException(_t('Unknown error'), 400);
 		}
