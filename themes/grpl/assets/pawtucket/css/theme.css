@@ -650,7 +650,7 @@ div.caMediaOverlayControls .close {
 	padding-top:5px;
 }
 .headerNavigation{
-	display:block;
+	/* display:block; */
 }
 @media(min-width:1350px){
 	.headerNavigation{
