@@ -2596,10 +2596,7 @@ class BaseEditorController extends ActionController {
                     $t_rep = new ca_object_representations($va_rep['representation_id']);
                     if(!$t_rep->isReadable($this->request->user)) { continue; }
                     
-                    if(!($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version),
-                        $t_subject->tableName(), $t_subject->getPrimaryKey(), $t_subject->getTypeCode(), // subject table info
-                        $t_rep->getPrimaryKey(), $t_rep->getTypeCode() // rep info
-                    ))) {
+                    if(!($vs_path = caEmbedMediaMetadataIntoFile($t_subject, $ps_version, ['path' => $t_rep->getMediaPath('media', $ps_version)]))) {
                         $vs_path = $va_rep['paths'][$ps_version];
                     }
                 } else {
@@ -3081,6 +3078,7 @@ class BaseEditorController extends ActionController {
 			$resp = ['ok' => false, 'errors' => $t_subject->getErrors(),'message' => _t('Could not update media: %1', join('; ', $t_subject->getErrors()))];
 		}
 		
+		$this->response->setContentType('application/json');
 		$this->view->setVar('response', $resp);
 		$this->render('../generic/return_to_home_locations.php');
 	}

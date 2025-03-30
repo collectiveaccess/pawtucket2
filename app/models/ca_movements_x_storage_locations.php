@@ -277,6 +277,9 @@ class ca_movements_x_storage_locations extends LocationRelationshipBaseModel {
 	public function renderBundleForDisplay($bundle_name, $row_id, $values, $options=null) {
 		switch($bundle_name) {
 			case 'original_path':
+				$delimiter = caGetOption('delimiter', $options, '; ');
+				$delimiter = preg_replace("!^[_]+!", " ", $delimiter);
+				$delimiter = preg_replace("![_]+$!", " ", $delimiter);
 				$qr = ca_movements_x_storage_locations::findAsSearchResult(['relation_id' => $row_id]);
 				if($qr->nextHit()) {
 					$data = $qr->get('ca_movements_x_storage_locations.source_info', ['returnAsArray' => true]);
