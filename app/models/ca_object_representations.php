@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2024 Whirl-i-Gig
+ * Copyright 2008-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -186,7 +186,7 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 			'IS_NULL' => true, 
 			'DEFAULT' => null,
 			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
-			'LABEL' => _t('Home location'), 'DESCRIPTION' => _t('The customary storage location for this object reprsentation.')
+			'LABEL' => _t('Home location'), 'DESCRIPTION' => _t('The customary storage location for this object representation.')
 		),
 		'access' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
@@ -544,7 +544,6 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 				}
 			}
 			$va_metadata = $this->get('media_metadata', array('binary' => true));
-			caExtractEmbeddedMetadata($this, $va_metadata, $this->get('locale_id'));	// TODO: deprecate in favor of import mapping based system below?
 			
 			// Extract metadata mapping with configured mappings
 			$this->_importEmbeddedMetadata(array_merge($options, ['path' => !isUrl($media_path) ? $media_path : null, 'reader' => $reader]));
@@ -610,8 +609,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 				}
 				if ($vb_media_has_changed) {
 					$va_metadata = $this->get('media_metadata', array('binary' => true));
-					caExtractEmbeddedMetadata($this, $va_metadata, $this->get('locale_id'));	// TODO: deprecate in favor of import mapping based system below?
-									
+					
 					// Extract metadata mapping with configured mappings
 					$this->_importEmbeddedMetadata(array_merge($options, ['path' => !isUrl($media_path) ? $media_path : null, 'reader' => $reader]));
 				}

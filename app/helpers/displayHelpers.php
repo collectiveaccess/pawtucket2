@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2024 Whirl-i-Gig
+ * Copyright 2009-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -2540,7 +2540,7 @@ function caGetMediaDisplayInfo($ps_context, $ps_mimetype) {
  *
  * @return
  */
-function caGetMediaDisplayInfoForMimetype(string $context, string $mimetype) : ?array {
+function caGetMediaDisplayInfoForMimetype(string $context, ?string $mimetype) : ?array {
 	$o_config = Configuration::load();
 	$o_media_display_config = caGetMediaDisplayConfig();
 
@@ -2778,10 +2778,19 @@ function caProcessTemplateTagDirectives($ps_value, $pa_directives, $pa_options=n
 							$vs_measure_conv = $vo_measurement->convertTo(Zend_Measure_Length::INCH, $o_dimensions_config->get('inch_decimal_precision')).((!$pb_omit_units && in_array('INCH', $va_add_periods_list)) ? '.' : '');
 							break;
 					}
+					
+					if(preg_match("!\.[0]+[ ]+!", $vs_measure_conv)) { // remove trailing zero decimals
+						$vs_measure_conv = preg_replace("!\.[0]+[ ]+!", " ", $vs_measure_conv);
+					}
 
 					if ($vs_measure_conv) {
 						if ($pb_omit_units) { $vs_measure_conv = trim(preg_replace("![^\d\-\.\/ ]+!", "", $vs_measure_conv)); }
 						$ps_value = "{$vs_measure_conv}";
+					}
+					if(is_array($pa_options['displayUnits'])) { 
+						foreach($pa_options['displayUnits'] as $b => $a) {
+							$ps_value = preg_replace("!".preg_quote($b, '!')."\.*$!u", $a, $ps_value);
+						}
 					}
 				} catch (Exception $e) {
 					// noop
@@ -5802,6 +5811,23 @@ function caFormatPersonName($fname, $lname, $default=null){
 }
 # ------------------------------------------------------------------
 /**
+ * Strip special characters for filename prior to download
+ *
+ * @param string $filename
+ * @param array $options No options are currently supported
+ *
+ * @return string 
+ * @throws ApplicationException
+ */
+function caEscapeFilenameForDownload(string $filename, ?array $options=null) : string {
+	$v = preg_replace("![\|;\<\>\(\)\$\`\~&\\\\]+!", "_", html_entity_decode($filename));
+	if(preg_match('^\.+$', $filename)) {
+		throw new ApplicationError(_t('Invalid filename'));
+	}
+	return $v;
+}
+# ------------------------------------------------------------------
+/**
  * Generate name for downloaded representation media file based upon app.conf 
  * downloaded_file_naming directive.
  *
@@ -5834,7 +5860,7 @@ function caGetRepresentationDownloadFileName(string $table, array $data, ?array 
 		case 'original_name':
 		default:
 			if (strpos($mode, "^") !== false) { // template
-			   $filename = preg_replace('!\.[A-Za-z]{1}[A-Za-z0-9]{1,3}$!', '', caProcessTemplateForIDs($mode, 'ca_object_representations', [$data['representation_id']]));
+			   $filename = caProcessTemplateForIDs($mode, 'ca_object_representations', [$data['representation_id']]);
 			   
 			} elseif ($data['original_filename']) {
 				$tmp = explode('.', $data['original_filename']);
@@ -5858,8 +5884,7 @@ function caGetRepresentationDownloadFileName(string $table, array $data, ?array 
 			break;
 	} 
 
-	$filename = html_entity_decode($filename);
-	return preg_replace("![^A-Za-z0-9_\-\.&]+!", "_", $filename);
+	return caEscapeFilenameForDownload($filename);
 }
 # ------------------------------------------------------------------
 /**
@@ -5892,9 +5917,7 @@ function caGetMediaDownloadArchiveName($table, $id, $options=null) {
 			}
 			break;
 	} 
-
-	$filename = html_entity_decode($filename);
-	return preg_replace("![^A-Za-z0-9_\-\.&]+!", "_", $filename);
+	return caEscapeFilenameForDownload($filename);
 }
 # ------------------------------------------------------------------
 /**
@@ -6168,6 +6191,12 @@ function caGetFindViewList($table_name_or_num) : ?array {
 			return [
 				'list' => _t('list'),
 				'full' => _t('full'),
+				'thumbnail' => _t('thumbnails'),
+			];
+			break;
+		case 'ca_object_representations':
+			return [
+				'list' => _t('list'),
 				'thumbnail' => _t('thumbnails'),
 			];
 			break;

@@ -797,16 +797,19 @@ trait HistoryTrackingCurrentValueTrait {
 								
 								if (is_array($entry = $this->_rewriteEntryWithRelated($entry))) {
 									$this->setHistoryTrackingCurrentValue($policy, $entry, ['row_id' => $row_id, 'isFuture' => $is_future]);
+									
+									$this->logChange('U', null, ['touch' => true]);
 								}	
 								continue;
 							}
 							if (($entry['status'] === 'CURRENT') || ($omit_table)) {
 								$current_entry = $entry;
 								$current_entry['status'] = 'CURRENT';
-								 
+								
 								if(!is_array($current_entry = $this->_rewriteEntryWithRelated($current_entry))) { 
 									continue;
 								}
+								$this->logChange('U', null, ['touch' => true]);
 								break(2);
 							}
 						}
@@ -2842,7 +2845,7 @@ trait HistoryTrackingCurrentValueTrait {
 									return $v;
 								}
 							} elseif (($t_loc = Datamodel::getInstanceByTableName($va_current_location['type'], true)) && $t_loc->load($va_current_location['id'])) {
-								$v = $t_loc->get($va_current_location['type'].'.'.$va_path_components['subfield_name']);
+								$v = $t_loc->get($va_current_location['type'].'.'.$va_path_components['subfield_name'], $pa_options);
 								if ($for_report) { $v = self::_filterValueForReport($v); }
 								return $v;
 								

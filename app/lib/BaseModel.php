@@ -2325,9 +2325,12 @@ class BaseModel extends BaseObject {
 	/**
 	 *
 	 */
-	private function _processDatabaseException($e, $o_db) {
+	private function _processDatabaseException(DatabaseException $e, Db $o_db, ?string $source=null) {
+		$context = $e->getContext();
+		if(is_null($source)) { $source = $e->getContext(); }
 		switch($e->getNumber()) {
 			case 251: // Duplicate key error
+			case 1062:
 				$indices = $o_db->getIndices($this->tableName());	// try to get key info
 
 				if (preg_match("/for key [']{0,1}([\w]+)[']{0,1}$/", $e->getMessage(), $matches)) {
@@ -2346,10 +2349,11 @@ class BaseModel extends BaseObject {
 				} else {
 					$msg = $e->getMessage();
 				}
-				$this->postError($e->getNumber(), $msg, $e->getContext());
-				$o_db->postError($e->getNumber(), $msg, $e->getContext());
+				$this->postError($e->getNumber(), $msg, $context, $source);
+				$o_db->postError($e->getNumber(), $msg, $context, $source);
 				break;
 			case 250: // Invalid foreign key error
+			case 1452:
 				$msg = $e->getMessage();
 				if (preg_match("!FOREIGN KEY \([`]*([A-Za-z0-9_]+)!", $msg, $m)) {
 					if ($m[1] === 'type_id') {
@@ -2358,12 +2362,12 @@ class BaseModel extends BaseObject {
 						$msg = _t('Invalid relationship reference for %1', $m[1]);
 					}
 				}
-				$this->postError($e->getNumber(), $msg, $e->getContext());
-				$o_db->postError($e->getNumber(), $msg, $e->getContext());
+				$this->postError($e->getNumber(), $msg, $context, $source);
+				$o_db->postError($e->getNumber(), $msg, $context, $source);
 				break;
 			default:
-				$this->postError($e->getNumber(), $e->getMessage(), $e->getContext());
-				$o_db->postError($e->getNumber(), $e->getMessage(), $e->getContext());
+				$this->postError($e->getNumber(), $e->getMessage(), $context, $source);
+				$o_db->postError($e->getNumber(), $e->getMessage(), $context, $source);
 				break;
 		}
 		return false;
@@ -2753,7 +2757,7 @@ class BaseModel extends BaseObject {
 			try {
 				$o_db->query($vs_sql);
 			} catch (DatabaseException $e) {
-				$this->_processDatabaseException($e, $o_db);
+				$this->_processDatabaseException($e, $o_db, caGetOption('source', $pa_options, null));
 			}
 			
 			if ($this->numErrors() == 0) {
@@ -3339,7 +3343,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 				try {
 					$o_db->query($vs_sql);
 				} catch(DatabaseException $e) {
-					$this->_processDatabaseException($e, $o_db);
+					$this->_processDatabaseException($e, $o_db, caGetOption('source', $pa_options, null));
 				}
 				
 				if ($this->numErrors()) {
@@ -3654,7 +3658,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 		try {
 			$o_db->query($vs_sql);
 		} catch(DatabaseException $e) {
-			$this->_processDatabaseException($e, $o_db);
+			$this->_processDatabaseException($e, $o_db, caGetOption('source', $pa_options, null));
 		}
 		
 		if ($this->numErrors() > 0) {
@@ -4959,7 +4963,10 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 							}
 							$magic = rand(0,99999);
 							$filepath = $vi["absolutePath"]."/".$dirhash."/".$magic."_".$this->_genMediaName($ps_field)."_".$v;
-
+	
+							if($cs = $this->_CONFIG->get('force_image_to_colorspace')) {
+								$m->set('colorspace', $cs);
+							}
 							if (!($vs_output_file = $m->write($filepath, $output_mimetype, $va_media_write_options))) {
 								$this->postError(1600,_t("Couldn't write file: %1", join("; ", $m->getErrors())),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 								$m->cleanup();
@@ -6673,6 +6680,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 						$cur_table = $primary_table = $this->tableName();
 						$cur_table_pk = $primary_table_pk = $this->primaryKey();
 						
+						$xrow_id = $this->getPrimaryKey();
 						if($is_metadata_value && (($id = $this->get('attribute_id')) > 0)) {
 							$t_attr = new ca_attributes($id);
 							$cur_table = $primary_table = Datamodel::getTableName($t_attr->get('table_num'));
@@ -6703,7 +6711,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 								}
 							}
 						} else {
-							throw new ApplicationException(_t('Error is subject logging: %1', $sql));
+							throw new ApplicationException(_t('Error in subject logging: %1', $sql));
 						}
 					}
 				}
@@ -6765,7 +6773,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 			$snapshot = $this->getSnapshot(($change_type === 'U') ? true : false); 
 		}
 
-		if (!(($change_type == 'U') && (!sizeof($snapshot)))) {
+		if (!(($change_type == 'U') && (!sizeof($snapshot))) || caGetOption('touch', $options, false)) {
 			$snapshot = caSerializeForDatabase($snapshot, true);
 			// Create primary log entry
 			$this->opqs_change_log->execute(
@@ -9118,7 +9126,6 @@ $pa_options["display_form_field_tips"] = true;
 							}
 							
 							if (isset($pa_options['usewysiwygeditor']) && $pa_options['usewysiwygeditor']) {
-								AssetLoadManager::register("ckeditor");
 								$vs_width = $vn_display_width;
 								$vs_height = $vn_display_height;
 								if (!preg_match("!^[\d\.]+px$!i", $vs_width)) {
@@ -9127,11 +9134,107 @@ $pa_options["display_form_field_tips"] = true;
 								if (!preg_match("!^[\d\.]+px$!i", $vs_height)) {
 									$vs_height = ((int)$vs_height * 16)."px";
 								}
+								$attr = [
+									'width' => $vs_width, 
+									'height' => $vs_height, 
+									'value' => $this->escapeHTML($vm_field_value), 
+									'id' => $pa_options['id'] ?? null,
+									'class' => $pa_options['classname'] ?? null
+								];
+								$opts = [
+									'textAreaTagName' => caGetOption('textAreaTagName', $pa_options, null)
+								];
 								
-								if(!is_array($va_toolbar_config = $this->getAppConfig()->getAssoc('wysiwyg_editor_toolbar'))) { $va_toolbar_config = array(); }
-								
-								
-								
+								$o_config = Configuration::load();
+								$use_editor = $o_config->get('wysiwyg_editor');
+								switch($use_editor) {
+									case 'ckeditor':
+										AssetLoadManager::register("ck5");
+										
+										$vs_element = "
+											<script type=\"module\">
+												import {
+												 ClassicEditor, BlockQuote, BlockToolbar, Bold, Code, Essentials, FontBackgroundColor, Font, FontColor, FontFamily, 
+												 FontSize, GeneralHtmlSupport, Heading, Highlight, HtmlComment, ImageBlock, ImageCaption, ImageInline, 
+												 ImageTextAlternative, Indent, IndentBlock, Italic, Link, List, ListProperties, MediaEmbed, 
+												 Paragraph, PasteFromOffice, RemoveFormat, SelectAll, SourceEditing, SpecialCharacters, SpecialCharactersArrows, 
+												 SpecialCharactersCurrency, SpecialCharactersEssentials, SpecialCharactersLatin, SpecialCharactersMathematical, 
+												 SpecialCharactersText, Strikethrough, Subscript, Superscript, TextTransformation, TodoList, Underline, Undo, LinkImage
+												} from 'ckeditor5';
+												
+												import { ResizableHeight} from 'ckresizeable';
+											
+												ClassicEditor
+													.create( document.querySelector( '#".($pa_options['id'] ?? null)."' ), {
+														plugins: [ 
+															BlockQuote, BlockToolbar, Bold, Code, Essentials, FontBackgroundColor, FontColor, FontFamily, FontSize, 
+															GeneralHtmlSupport, Heading, Highlight, HtmlComment, ImageBlock, ImageCaption, ImageInline, 
+															ImageTextAlternative, Indent, IndentBlock, Italic, Link, List, ListProperties, MediaEmbed, 
+															Paragraph, PasteFromOffice, RemoveFormat, SelectAll, SourceEditing, SpecialCharacters, 
+															SpecialCharactersArrows, SpecialCharactersCurrency, SpecialCharactersEssentials, 
+															SpecialCharactersLatin, SpecialCharactersMathematical, SpecialCharactersText, Strikethrough, 
+															Subscript, Superscript, TextTransformation, TodoList, Underline, Undo, LinkImage, ResizableHeight
+														],
+														toolbar: {
+															items: ".json_encode(caGetCK5Toolbar()).",
+															shouldNotGroupWhenFull: true
+														},
+														ResizableHeight: {
+															resize: true,
+															height: '{$height_w_suffix}',
+															minHeight: '50px',
+															maxHeight: '1500px'
+														}
+													} ).then(editor => {
+														// Don't let CKEditor pollute the top-level DOM with editor bits
+														const body = editor.ui.view.body._bodyCollectionContainer
+														body.remove()
+														editor.ui.view.element.appendChild(body);
+														
+														// Add current instance to list of initialized editors
+														if(!caUI) { caUI = {}; }
+														if(!caUI.ckEditors) { caUI.ckEditors = []; }
+														caUI.ckEditors.push(editor);
+													}).catch((e) => console.log('Error initializing CKEditor: ' + e));
+											</script>\n";
+															
+											$vs_element .= "<div style='width: {$vs_width}; overflow-y: auto;' class='ckeditor-wrapper'>".caHTMLTextInput(
+												$pa_options["name"], 
+												$attr, $opts
+											)."</div>\n";
+										break;
+									case 'quilljs';
+									default:
+										AssetLoadManager::register("quilljs");
+										$quill_opts = [
+											'viewSource' => true,
+											'okText' => _t('OK'),
+											'cancelText' => _t('Cancel'),
+											'buttonHTML' => _t('HTML'),
+											'buttonTitle' => _t('Show HTML source')
+										];
+										
+										$vs_element = "<div id='".$pa_options['id']."_container' class='ql-ca-container' style='width: {$vs_width};'>";
+										$vs_element .= "
+											<script type='text/javascript'>
+												caUI.newTextEditor(
+													'".$pa_options['id']."_editor', 
+													'".$pa_options['id']."',
+													'".$attr['value']."',
+													".json_encode(caGetQuillToolbar()).",
+													".json_encode($quill_opts)."
+												);
+											</script>\n";
+										$attr['style'] = 'display: none;';
+										$vs_element .= "<div id='".$pa_options['id']."_editor' style='height: {$vs_height};' class='ql-ca-editor'></div>";
+												
+										$vs_element .= caHTMLTextInput(
+											$pa_options['id'].'', 
+											$attr, $opts
+										);
+										$vs_element .= "</div>\n";
+										break;
+								}
 							}
 						}
 					}
@@ -9552,7 +9655,7 @@ $pa_options["display_form_field_tips"] = true;
 			if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
 			if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 			if(!is_null($ps_source_info)){ $t_item_rel->set("source_info",$ps_source_info); }
-			$t_item_rel->insert();
+			$t_item_rel->insert(['source' => $pm_rel_table_name_or_num]);
 			
 			if ($t_item_rel->numErrors() > 0) {
 				$this->errors = array_merge($this->errors(), $t_item_rel->errors());
@@ -9584,7 +9687,7 @@ $pa_options["display_form_field_tips"] = true;
 						$t_item_rel->set('is_primary', $is_primary);	
 					}
 					
-					$t_item_rel->insert();
+					$t_item_rel->insert(['source' => $pm_rel_table_name_or_num]);
 					
 					if ($t_item_rel->numErrors() > 0) {
 						$this->errors = array_merge($this->errors(), $t_item_rel->errors());
@@ -9597,7 +9700,7 @@ $pa_options["display_form_field_tips"] = true;
 					if ($this->tableName() == $va_rel_info['rel_keys']['one_table']) {
 						if ($t_item_rel->load($pn_rel_id)) {
 							$t_item_rel->set($va_rel_info['rel_keys']['many_table_field'], $this->getPrimaryKey());
-							$t_item_rel->update();
+							$t_item_rel->update(['source' => $pm_rel_table_name_or_num]);
 							
 							if ($t_item_rel->numErrors() > 0) {
 								$this->errors = array_merge($this->errors(), $t_item_rel->errors());
@@ -9607,7 +9710,7 @@ $pa_options["display_form_field_tips"] = true;
 							$t_item_rel->set($t_item_rel->getLeftTableFieldName(), $this->getPrimaryKey());
 							$t_item_rel->set($t_item_rel->getRightTableFieldName(), $pn_rel_id);
 							if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }
-							$t_item_rel->insert();
+							$t_item_rel->insert(['source' => $pm_rel_table_name_or_num]);
 							
 							if ($t_item_rel->numErrors() > 0) {
 								$this->errors = array_merge($this->errors(), $t_item_rel->errors());
@@ -9617,7 +9720,7 @@ $pa_options["display_form_field_tips"] = true;
 						return $t_item_rel;
 					} else {
 						$this->set($va_rel_info['rel_keys']['many_table_field'], $pn_rel_id);
-						$this->update();
+						$this->update(['source' => $pm_rel_table_name_or_num]);
 					
 						if ($this->numErrors() > 0) {
 							$this->errors = array_merge($this->errors(), $t_item_rel->errors());
