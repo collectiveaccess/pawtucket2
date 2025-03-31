@@ -170,7 +170,6 @@ class IIIFService {
 		} else {
 			$va_operations = [];
 			
-			
 			if(is_array($highlight_op)) {
 				$va_operations[] = ['HIGHLIGHT' => $highlight_op];
 			}
@@ -289,6 +288,7 @@ class IIIFService {
 			
 			// TODO: should we be caching output?
 			$response->setContentType($vs_mimetype);
+			$response->sendHeaders();
 			header("Content-length: ".filesize($vs_output_path));
 			header("Access-Control-Allow-Origin: *");
 			
