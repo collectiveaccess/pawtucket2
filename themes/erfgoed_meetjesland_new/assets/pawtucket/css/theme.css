@@ -388,6 +388,9 @@ body.frontContainer #footer{
 .parallax.hero3 {
     background-image: url("../graphics/hero_3.jpg");
 }
+.parallax.hero4 {
+    background-image: url("../graphics/hero_4.jpg");
+}
 @media(max-width:420px), (max-height:420px){
 	/*.heroSearch H1{
 		font-size:50px;
