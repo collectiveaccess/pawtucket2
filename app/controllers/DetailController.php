@@ -132,21 +132,37 @@ class DetailController extends FindController {
 		
 		if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($load_params, ['returnAs' => 'firstModelInstance'])))) {
 			// invalid id - throw error
-			throw new ApplicationException("Invalid id");
-		}
+			throw new ApplicationException("Invalid id {$id}");
+		} 
 		$t_subject->autoConvertLineBreaks(true);
 		
+		$log = caGetLogger();
+		// $context = $this->request->getParameter('context', pString);
+		// $detail_id = $this->request->getParameter('id', pInteger);		
+		// $representation_id = $this->request->getParameter('representation_id', pInteger);
+
+		if($completed_id = $this->request->getParameter('reviewComplete', pInteger)) {
+			if($t_review_completed = ca_objects::findAsInstance($completed_id)) {
+				$t_review_completed->replaceAttribute(['media_reviewed' => 'yes'], 'media_reviewed');
+				$log->logInfo("Review has been completed for {$completed_id}");
+				if(!$t_review_completed->update()) {
+					throw new ApplicationException("Could not set review complete for id {$completed_id}");
+					$log->logError("Review could not be completed for {$completed_id}");
+				}
+			}
+		}
+
 		$item_is_in_users_lightbox = caItemIsInUserLightbox($t_subject, $this->request->getUserID());
 		$access_is_anonymous = caItemAccessIsAnonymous($t_subject);
 		$this->view->setVar('itemIsInUsersLightbox', $item_is_in_users_lightbox);
 		
 		$this->view->setVar('metadataAccess', $this->_evaluateMetadataAccess($this->request->user, $options));
 
-		$log = caGetAccessLogger();
+		$alog = caGetAccessLogger();
 		
 		if($access_is_anonymous) {
 			// do logging
-			$log->logJSON('Access is anonymous', [
+			$alog->logJSON('Access is anonymous', [
 				'user' => $this->request->user->get('user_name'),
 				'message' => 'Accessis anonymous',
 			], 'INFO');
@@ -374,13 +390,15 @@ class DetailController extends FindController {
 						'return_primary_only' => $return_primary_reps_only
 					]
 				);
-				$this->view->setVar('media_list', $media_list =  caRepresentationList($this->request, $t_subject, $media_opts));
-				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail'])));
+				$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
+				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail', 'detail_options' => $options])));
+
 				$this->view->setVar('media_options', [
 					'media_list' => $media_list,
 					
 					'next_button_id' => 'mediaviewer-next',
 					'previous_button_id' => 'mediaviewer-previous',
+					'remove_media_button_id' => 'mediaviewer-remove',
 					'overlay_next_button_id' => 'mediaviewer-overlay-next',
 					'overlay_previous_button_id' => 'mediaviewer-overlay-previous',
 					'show_overlay_button_id' => 'mediaviewer-show-overlay',
@@ -395,7 +413,8 @@ class DetailController extends FindController {
 					'media_count_id' => 'media-count',
 					
 					'base_url' => $this->request->getThemeUrlPath(),
-					'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}"
+					'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}",
+					'media_remove_url' => $this->request->getBaseUrlPath()."/Detail/RemoveRepresentation?context={$function}&id={$id}"
 				]);
 			} else {
 				$this->view->setVar('media_list', null);
@@ -1491,6 +1510,53 @@ class DetailController extends FindController {
 		}
 	
 		$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $context_str, 'checkAccess' => $this->opa_access_values]));
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function RemoveRepresentation() {
+		$log = caGetLogger();
+		
+		$context = $this->request->getParameter('context', pString);
+		$id = $this->request->getParameter('id', pInteger);
+		
+		$detail_config = $this->opa_detail_types[$context] ?? [];
+		
+		$table = $detail_config['table'];
+		
+		if(!($t_rec = $table::findAsInstance($id))) {
+			throw new ApplicationException(_('Invalid id'));
+		}
+		
+		$representation_id = $this->request->getParameter('representation_id', pInteger);
+		
+		if(!$this->request->isLoggedIn() || !$this->request->user->canDoAction('is_administrator')) {
+			throw new ApplicationException(_('Access denied'));
+		}
+		
+		if(!($t_rep = ca_object_representations::findAsInstance($representation_id))) {
+			throw new ApplicationException(_('Invalid representation_id'));
+		}
+		if($deleted_media_dir = ($detail_config['options']['deleted_media_directory'] ?? null)) {
+			$path = $t_rep->get('ca_object_representations.media.original.path');
+			$filename = $t_rep->get('ca_object_representations.original_filename');
+			if(!$filename) {
+				$filename = pathinfo($path, PATHINFO_BASENAME);
+			}
+			copy($path, __CA_BASE_DIR__.$deleted_media_dir."/".$filename);
+		}
+		
+		$ret = $t_rec->removeRepresentation($representation_id);
+		$resp = ['ok' => $ret ? 1 : 0];
+		
+		if($ret) {
+			$log->logInfo("Deleted representation {$representation_id} for {$context}::{$id}");
+		} else {
+			$log->logError("Could not delete representation {$representation_id} for {$context}::{$id}");
+		}
+		
+		print json_encode($resp);
 	}
 	# -------------------------------------------------------
 	/**

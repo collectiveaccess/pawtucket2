@@ -139,6 +139,9 @@
 							}elseif($vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|'><if rule='^ca_objects.series =~ /Announcement/'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</if></unit>", array("checkAccess" => $va_access_values))){
 								$va_tmp = explode("|", $vs_thumbnails);
 								$vs_thumbnail = $va_tmp[0];
+							}elseif($vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|'><if rule='^ca_objects.series =~ /Catalogue/'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</if></unit>", array("checkAccess" => $va_access_values))){
+								$va_tmp = explode("|", $vs_thumbnails);
+								$vs_thumbnail = $va_tmp[0];
 							}elseif($vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|'><if rule='^ca_objects.series =~ /Photographic Material/'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</if></unit>", array("checkAccess" => $va_access_values))){
 								$va_tmp = explode("|", $vs_thumbnails);
 								$vs_thumbnail = $va_tmp[0];
