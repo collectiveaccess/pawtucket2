@@ -139,6 +139,8 @@ class DetailController extends FindController {
 		$item_is_in_users_lightbox = caItemIsInUserLightbox($t_subject, $this->request->getUserID());
 		$access_is_anonymous = caItemAccessIsAnonymous($t_subject);
 		$this->view->setVar('itemIsInUsersLightbox', $item_is_in_users_lightbox);
+		
+		$this->view->setVar('metadataAccess', $this->_evaluateMetadataAccess($this->request->user, $options));
 
 		$log = caGetAccessLogger();
 		
@@ -350,11 +352,29 @@ class DetailController extends FindController {
 				
 				$media_display_config = caGetMediaDisplayConfig();
 				
+				$return_primary_reps_only = false;
+				$show_all_reps_role_list = $options['showAllRepresentationsForRoles'] ?? null;
+				
+				if(is_array($show_all_reps_role_list) && (sizeof($show_all_reps_role_list) > 0)) {
+					$return_primary_reps_only = true;
+					if($this->request->isLoggedIn()) {
+						foreach($show_all_reps_role_list as $r) {
+							if($this->request->user->hasRole($r)) {
+								$return_primary_reps_only = false;
+								break;
+							}
+						}
+					}
+				}
+				
 				$media_opts = array_merge(
 					$options,
-					['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]
+					[
+						'checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values,
+						'return_primary_only' => $return_primary_reps_only
+					]
 				);
-				$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
+				$this->view->setVar('media_list', $media_list =  caRepresentationList($this->request, $t_subject, $media_opts));
 				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail'])));
 				$this->view->setVar('media_options', [
 					'media_list' => $media_list,
@@ -1561,6 +1581,29 @@ class DetailController extends FindController {
 	 */
 	public function __destruct() {
 		if($this->ops_tmp_download_file_path) { @unlink($this->ops_tmp_download_file_path); }
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	private function _evaluateMetadataAccess($t_user, $options) {
+		if(!is_object($t_user)) { return []; }
+		$access = $options['metadataAccess'] ?? null;
+		if(!is_array($access) || !sizeof($access)) { return []; }
+		
+		$levels = [];
+		foreach($access as $key => $info) {
+			$roles = $info['roles'] ?? null;
+			if(!is_array($roles) || !sizeof($roles)) { continue; }
+			foreach($roles as $role) {
+				if($t_user->hasRole($role)) { 
+					$levels[] = $key;
+					break;
+				}
+			}
+		}
+		
+		return $levels;
 	}
 	# -------------------------------------------------------
 }
