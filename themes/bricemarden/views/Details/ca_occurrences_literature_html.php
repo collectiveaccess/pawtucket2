@@ -73,9 +73,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<div class="col text-center text-md-end">
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
-				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_occurrences", "id" => $id));
-				}
 				if($pdf_enabled) {
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_occurrences", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'));
 				}
@@ -156,10 +153,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<unit relativeTo="ca_entities" delimiter="" restrictToTypes="org"><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
 				</ifcount>
 
-				<!-- <ifcount code="ca_occurrences" min="1">
-					<dt><ifcount code="ca_occurrences.related" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences.related" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-					<unit relativeTo="ca_occurrences.related" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount> -->
 			</dl>}}}
 		</div>
 	</div>

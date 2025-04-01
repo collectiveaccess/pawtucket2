@@ -42,6 +42,8 @@ $media_options = $this->getVar('media_options') ?? [];
 $lightboxes = $this->getVar('lightboxes') ?? [];
 $in_lightboxes = $this->getVar('inLightboxes') ?? [];
 
+$metadata_access = $this->getVar('metadataAccess');
+
 $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
 ]);
@@ -76,9 +78,6 @@ if($show_nav){
 		<div class="col text-center text-md-end">
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
-				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
-				}
 				if($pdf_enabled) {
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
 				}
@@ -106,17 +105,12 @@ if($show_nav){
 							<ifdef code="ca_objects.preferred_labels">
 								<dd><i>^ca_objects.preferred_labels</i></dd>
 							</ifdef>
-							
-							<ifdef code="ca_objects.sort_number">
-								<dt><?= _t('Number in CR'); ?></dt>
-								<dd>^ca_objects.sort_number</dd>
-							</ifdef>
 
-							<ifdef code="ca_objects.common_date">
+							<ifdef code="ca_objects.print_date">
 								<dt><?= _t('Date'); ?></dt>
-								<dd>^ca_objects.common_date</dd>
+								<dd>^ca_objects.print_date</dd>
 							</ifdef>
-
+							
 							<ifdef code="ca_objects.medium.medium_notes_text">
 								<dt><?= _t('Medium'); ?></dt>
 								<dd>^ca_objects.medium.medium_notes_text</dd>
@@ -125,6 +119,14 @@ if($show_nav){
 							<ifdef code="ca_objects.master_dimensions">
 								<dt><?= _t('Master Dimensions'); ?></dt>
 								<dd>^ca_objects.master_dimensions</dd>
+							</ifdef>
+
+							<!-- TODO: Admin Only -->
+<?php if(in_array('extended', $metadata_access)) { ?>
+
+							<ifdef code="ca_objects.sort_number">
+								<dt><?= _t('Number in CR'); ?></dt>
+								<dd>^ca_objects.sort_number</dd>
 							</ifdef>
 
 							<ifdef code="ca_objects.inscription_text">
@@ -140,35 +142,36 @@ if($show_nav){
 									<div style="margin-bottom: 10px;"><ifdef code="ca_objects_x_entities.interstitial_notes">^ca_objects_x_entities.interstitial_notes</ifdef><ifnotdef code="ca_objects_x_entities.interstitial_notes"><ifdef code="ca_entities.preferred_labels">[^ca_entities.preferred_labels]</ifdef></ifnotdef></div></unit>
 							</dd>
 
-<ifcount code="ca_objects_x_occurrences"  restrictToTypes="exhibition" skipIfExpression="^ca_occurrences.solo_group !~ /solo/" min="1">
-							<dt><?= _t('Solo Exhibitions'); ?></dt>
-							<dd>
-								<unit relativeTo="ca_objects_x_occurrences" restrictToTypes="exhibition" skipIfExpression="^ca_occurrences.solo_group !~ /solo/" delimiter="<br>" >
-									<unit relativeTo="ca_occurrences">
-											<unit relativeTo="ca_entities_x_occurrences" delimiter="/" restrictToRelationshipTypes="venue" sort="ca_entities_x_occurrences.common_date" sortDirection="ASC">
-													<l relativeTo='ca_occurrences'>^ca_entities.preferred_labels</l><if rule="(^ca_entities.location_display.city_display =~ /yes/)">, ^ca_entities.address.city</if><if rule="(^ca_entities.location_display.state_display =~ /yes/)">, ^ca_entities.address.stateprovince</if><if rule="(^ca_entities.location_display.country_display =~ /yes/)">, ^ca_entities.address.country</if></unit>, ^ca_occurrences.exhibition_year</unit><ifdef code="ca_objects_x_occurrences.interstitial_notes"> [^ca_objects_x_occurrences.interstitial_notes]</ifdef></unit>
-							</dd>
-</ifcount>
-<ifcount code="ca_objects_x_occurrences"  restrictToTypes="exhibition" skipIfExpression="^ca_occurrences.solo_group !~ /group/" min="1">
-							<dt><?= _t('Group Exhibitions'); ?></dt>
-							<dd>
-								<unit relativeTo="ca_objects_x_occurrences" restrictToTypes="exhibition" skipIfExpression="^ca_occurrences.solo_group !~ /group/" delimiter="<br>">
-									<unit relativeTo="ca_occurrences"><unit relativeTo="ca_entities_x_occurrences" delimiter="/" restrictToRelationshipTypes="venue" sort="ca_entities_x_occurrences.common_date" sortDirection="ASC">
-												<l relativeTo='ca_occurrences'>^ca_entities.preferred_labels</l><if rule="(^ca_entities.location_display.city_display =~ /yes/)">, ^ca_entities.address.city</if><if rule="(^ca_entities.location_display.state_display =~ /yes/)">, ^ca_entities.address.stateprovince</if><if rule="(^ca_entities.location_display.country_display =~ /yes/)">, ^ca_entities.address.country</if></unit>, ^ca_occurrences.exhibition_year</unit><ifdef code="ca_objects_x_occurrences.interstitial_notes"> [^ca_objects_x_occurrences.interstitial_notes]</ifdef></unit>
-							</dd>
-</ifcount>
-							<if rule="^ca_occurrences.status !~ /not for publication/i">
-<ifcount code="ca_objects_x_occurrences"  restrictToTypes="literature" min="1">
-
-								<dt><?= _t('Literature'); ?></dt>
+							<ifcount code="ca_objects_x_occurrences"  restrictToTypes="exhibition" skipIfExpression="^ca_occurrences.solo_group !~ /solo/" min="1">
+								<dt><?= _t('Solo Exhibitions'); ?></dt>
 								<dd>
-									<unit relativeTo="ca_objects_x_occurrences" sort="ca_occurrences.pub_date" sortDirection="ASC" restrictToTypes="literature" delimiter="<br>">
-										<unit relativeTo="ca_occurrences"><l>
-											<ifnotdef code="ca_occurrences.citation_abbreviated">[^ca_occurrences.preferred_labels]</ifnotdef>^ca_occurrences.citation_abbreviated%stripEnclosingParagraphTags=1</l></unit><ifdef code="ca_objects_x_occurrences.citation">: ^ca_objects_x_occurrences.citation%stripEnclosingParagraphTags=1</ifdef><ifdef code="ca_objects.citation_abbreviated">: ^ca_objects_x_occurrences.citation%stripEnclosingParagraphTags=1</ifdef><if rule="^ca_objects_x_occurrences.illustrated =~ /yes/i"> (illustrated)</if><ifdef code="ca_objects_x_occurrences.bib_notes">.  [^ca_objects_x_occurrences.bib_notes%stripEnclosingParagraphTags=1]</ifdef>
-										<ifdef code="ca_objects_x_occurrences.bib_notes">]</ifdef>
-									</unit>
+									<unit relativeTo="ca_objects_x_occurrences" restrictToTypes="exhibition" skipIfExpression="^ca_occurrences.solo_group !~ /solo/" delimiter="<br>" >
+										<unit relativeTo="ca_occurrences">
+												<unit relativeTo="ca_entities_x_occurrences" delimiter="/" restrictToRelationshipTypes="venue" sort="ca_entities_x_occurrences.common_date" sortDirection="ASC">
+														<l relativeTo='ca_occurrences'>^ca_entities.preferred_labels</l><if rule="(^ca_entities.location_display.city_display =~ /yes/)">, ^ca_entities.address.city</if><if rule="(^ca_entities.location_display.state_display =~ /yes/)">, ^ca_entities.address.stateprovince</if><if rule="(^ca_entities.location_display.country_display =~ /yes/)">, ^ca_entities.address.country</if></unit>, ^ca_occurrences.exhibition_year</unit><ifdef code="ca_objects_x_occurrences.interstitial_notes"> [^ca_objects_x_occurrences.interstitial_notes]</ifdef></unit>
 								</dd>
-</ifcount>
+							</ifcount>
+
+							<ifcount code="ca_objects_x_occurrences"  restrictToTypes="exhibition" skipIfExpression="^ca_occurrences.solo_group !~ /group/" min="1">
+								<dt><?= _t('Group Exhibitions'); ?></dt>
+								<dd>
+									<unit relativeTo="ca_objects_x_occurrences" restrictToTypes="exhibition" skipIfExpression="^ca_occurrences.solo_group !~ /group/" delimiter="<br>">
+										<unit relativeTo="ca_occurrences"><unit relativeTo="ca_entities_x_occurrences" delimiter="/" restrictToRelationshipTypes="venue" sort="ca_entities_x_occurrences.common_date" sortDirection="ASC">
+													<l relativeTo='ca_occurrences'>^ca_entities.preferred_labels</l><if rule="(^ca_entities.location_display.city_display =~ /yes/)">, ^ca_entities.address.city</if><if rule="(^ca_entities.location_display.state_display =~ /yes/)">, ^ca_entities.address.stateprovince</if><if rule="(^ca_entities.location_display.country_display =~ /yes/)">, ^ca_entities.address.country</if></unit>, ^ca_occurrences.exhibition_year</unit><ifdef code="ca_objects_x_occurrences.interstitial_notes"> [^ca_objects_x_occurrences.interstitial_notes]</ifdef></unit>
+								</dd>
+							</ifcount>
+
+							<if rule="^ca_occurrences.status !~ /not for publication/i">
+								<ifcount code="ca_objects_x_occurrences"  restrictToTypes="literature" min="1">
+									<dt><?= _t('Literature'); ?></dt>
+									<dd>
+										<unit relativeTo="ca_objects_x_occurrences" sort="ca_occurrences.pub_date" sortDirection="ASC" restrictToTypes="literature" delimiter="<br>">
+											<unit relativeTo="ca_occurrences"><l>
+												<ifnotdef code="ca_occurrences.citation_abbreviated">[^ca_occurrences.preferred_labels]</ifnotdef>^ca_occurrences.citation_abbreviated%stripEnclosingParagraphTags=1</l></unit><ifdef code="ca_objects_x_occurrences.citation">: ^ca_objects_x_occurrences.citation%stripEnclosingParagraphTags=1</ifdef><ifdef code="ca_objects.citation_abbreviated">: ^ca_objects_x_occurrences.citation%stripEnclosingParagraphTags=1</ifdef><if rule="^ca_objects_x_occurrences.illustrated =~ /yes/i"> (illustrated)</if><ifdef code="ca_objects_x_occurrences.bib_notes">.  [^ca_objects_x_occurrences.bib_notes%stripEnclosingParagraphTags=1]</ifdef>
+											<ifdef code="ca_objects_x_occurrences.bib_notes">]</ifdef>
+										</unit>
+									</dd>
+								</ifcount>
 							</if>
 
 							<ifdef code="ca_objects.nonpreferred_labels">
@@ -185,6 +188,7 @@ if($show_nav){
 								<dt><?= _t('Notes'); ?></dt>
 								<dd>^ca_objects.notes</dd>
 							</ifdef>
+<?php } ?>
 						</dl>
 					}}}
 				</div>

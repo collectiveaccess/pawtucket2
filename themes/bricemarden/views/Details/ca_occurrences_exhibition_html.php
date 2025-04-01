@@ -73,9 +73,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<div class="col text-center text-md-end">
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
-				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_occurrences", "id" => $id));
-				}
 				if($pdf_enabled) {
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_occurrences", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'));
 				}
@@ -101,10 +98,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			{{{<dl class="mb-0">
 				<ifcount code="ca_entities" min="1">
 					<dt><?= _t('Venue'); ?></dt>
-					<!-- <unit relativeTo="ca_entities" delimiter="<br>">
-						<l>^ca_entities.preferred_labels.displayname</l><if rule="(^ca_entities.location_display.city_display =~ /yes/)">, ^ca_entities.address.city</if>
-						<if rule="(^ca_entities.location_display.state_display =~ /yes/)">, ^ca_entities.address.stateprovince</if><if rule="(^ca_entities.location_display.country_display =~ /yes/)">, ^ca_entities.address.country</if>
-					</unit> -->
+
 					<unit relativeTo="ca_entities_x_occurrences" delimiter="<br>" sort="ca_entities_x_occurrences.common_date" direction="ASC">
 						<unit relativeTo="ca_entities" restrictToRelationshipTypes="venue">
 							<l>^ca_entities.preferred_labels.displayname</l>
@@ -119,15 +113,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 						</unit>
 					</unit>
 				</ifcount>
-<!-- 
-				<ifcount code="ca_entities_x_occurrences" min="1">
-					<dt><?= _t(''); ?></dt>
-					<unit relativeTo="ca_entities_x_occurrences" delimiter="<br>">
-						<ifdef code="ca_entities_x_occurrences.exhibition_name"><l>^ca_entities_x_occurrences.exhibition_name</l></ifdef>
-						<ifdef code="ca_entities_x_occurrences.common_date">^ca_entities_x_occurrences.common_date</ifdef>
-						<ifdef code="ca_entities_x_occurrences.interstitial_notes">Notes: ^ca_entities_x_occurrences.interstitial_notes</ifdef>
-					</unit>
-				</ifcount> -->
+
 			</dl>}}}
 		</div>
 		<div class="col">

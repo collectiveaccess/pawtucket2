@@ -74,9 +74,6 @@ if($show_nav){
 		<div class="col text-center text-md-end">
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
-				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
-				}
 				if($pdf_enabled) {
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
 				}
@@ -100,29 +97,14 @@ if($show_nav){
 			<div class="bg-light py-3 px-4 h-100"><!-- height is to make the gray background of box same height as the containing row -->				
 				<div class="mb-3">
 					{{{
-						<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="artist">
-							<unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", ">
-								<dd>^ca_entities.preferred_labels.displayname</dd>
-							</unit>
-						</ifcount>
 
 						<ifdef code="ca_objects.preferred_labels">
 							<dd><i>^ca_objects.preferred_labels</i></dd>
 						</ifdef>
-
-						<ifdef code="ca_objects.art_numbers.id_value">
-							<dt><?= _t('Other Identifiers'); ?></dt>
-							<dd>
-								^ca_objects.art_numbers.id_value
-								<ifdef code="ca_objects.art_numbers.id_types">
-									, ^ca_objects.art_numbers.id_types
-								</ifdef>
-							</dd>
-						</ifdef>
 						
-						<ifdef code="ca_objects.common_date">
+						<ifdef code="ca_objects.print_date">
 							<dt><?= _t('Date'); ?></dt>
-							<dd>^ca_objects.common_date</dd>
+							<dd>^ca_objects.print_date</dd>
 						</ifdef>
 
 						<ifdef code="ca_objects.medium.medium_notes_text">
@@ -137,33 +119,6 @@ if($show_nav){
 
 					}}}
 				</div>
-				{{{<ifcount code="ca_objects.children" min="1">
-					<dl class="mb-0">
-						<dt>Edition Contains:</dt>
-						<unit relativeTo="ca_objects.children" delimiter=" ">
-							<dd>
-							<l><ifdef code="ca_objects.edition_item.edition_item_number">^ca_objects.edition_item.edition_item_number</ifdef></l>
-							</dd>
-						</unit>
-					</dl>
-						
-				</ifcount>}}}
-				{{{<ifdef code="ca_objects.parent_id">
-					<dl class="mb-0">
-						<dt>Part of Edition:</dt>
-						<unit relativeTo="ca_objects.parent" delimiter=" ">
-							<dd>
-							<l>
-								<ifdef code="ca_objects.preferred_labels"><i>^ca_objects.preferred_labels</i></ifdef><ifdef code="ca_objects.date_container.date,ca_objects.preferred_labels">, </ifdef><ifdef code="ca_objects.date_container.date">^ca_objects.date_container.date</ifdef><ifdef code="ca_objects.date_container.date|ca_objects.preferred_labels"><br/></ifdef>
-								<ifdef code="ca_objects.medium_container.medium">^ca_objects.medium_container.medium<br/></ifdef>
-								<ifdef code="ca_objects.dimensions_container.display_dimensions">^ca_objects.dimensions_container.display_dimensions<br/></ifdef>
-								<ifdef code="ca_objects.edition_size">^ca_objects.edition_size</ifdef>
-							</l>
-							</dd>
-						</unit>
-					</dl>
-						
-				</ifdef>}}}
 			</div>
 		</div>
 	</div>
