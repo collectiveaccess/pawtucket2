@@ -338,6 +338,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		unset($this->BUNDLES['nonpreferred_labels']); // sets have no nonpreferred labels
 		$this->BUNDLES['ca_users'] = array('type' => 'special', 'repeating' => true, 'label' => _t('User access'));
 		$this->BUNDLES['ca_user_groups'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Group access'));
+		$this->BUNDLES['anonymous_access'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Anonymous access'));
 		$this->BUNDLES['ca_set_items'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Set items'));
 		
 		$this->BUNDLES['_itemCount'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Number of items in set'));
@@ -1047,7 +1048,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * @param array $set_ids The id of the set to check. If omitted then currently loaded set will be checked.
 	 * @param array $options Options include:
 	 * 		sharesOnly = Only check access for shared users. Access via administrative roles and set ownership is not considered. [Default is false]
-	 *
+	 *		dontCheckAccessValue = Don't consider "access" value when determining accessibility. [Default is false]
 	 * @return array Array of access levels, keyed on set_id
 	 */
 	public function haveAccessToSets(?int $user_id, int $access, ?array $set_ids, ?array $options=null) {
@@ -3597,8 +3598,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$t_rel->load(['name' => $data['name'], 'set_id' => $id]);		// try to load existing record
 			$t_rel->set('set_id', $id);
 			$t_rel->set('name', $data['name']);
-			$t_rel->set('access', $data['access']);
-			$t_rel->set('effective_date', $data['effective_date']);
+			$t_rel->set('access', $data['access'] ?? 0);
+			$t_rel->set('effective_date', $data['effective_date'] ?? null);
 			
 			if(is_array($data['downloads'] ?? null)) {
 				$t_rel->setSetting('download_versions', $data['downloads']);
@@ -3657,14 +3658,13 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	public function removeAnonymousAccessTokens(array $guids) : ?bool {
 		if (!($id = (int)$this->getPrimaryKey())) { return null; }
 		
-		if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
-		
 		$existing_tokens = $this->getAnonymousAccessTokens();
 		
 		foreach($guids as $guid) {
 			if (!isset($existing_tokens[$guid])) { continue; }
 			
 			if ($t_rel = ca_sets_x_anonymous_access::findAsInstance(['set_id' => $id, 'guid' => $guid])) {
+				if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
 				$t_rel->delete(true);
 				
 				if ($t_rel->numErrors()) {
@@ -3725,7 +3725,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *
 	 * @return string
 	 */
-	public function getAnonymousAccessTokenHTMLFormBundle($request, $form_name, $placement_code, $table_num, $item_id, $user_id=null, $options=null) : string {
+	public function getAnonymousAccessHTMLFormBundle($request, $form_name, $placement_code, $table_num, $item_id, $user_id=null, $options=null) : string {
 		$view_path = (isset($options['viewPath']) && $options['viewPath']) ? $options['viewPath'] : $request->getViewsDirectoryPath();
 		$o_view = new View($request, "{$view_path}/bundles/");
 		$t_rel = new ca_sets_x_anonymous_access();
@@ -3736,9 +3736,19 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$o_view->setVar('id_prefix', $form_name);	
 		$o_view->setVar('placement_code', $placement_code);		
 		$o_view->setVar('request', $request);	
-		$o_view->setVar('initialValues', $this->getAnonymousAccessTokens());
 		
-		return $o_view->render('ca_sets_x_anonymous_access.php');
+		$downloads = caGetPawtucketLightboxDownloadVersions(Datamodel::getTableName($this->get('table_num')));
+		$o_view->setVar('downloads', $downloads);
+		
+		$initial_values = $this->getAnonymousAccessTokens();
+		foreach($initial_values as $i => $iv) {
+			foreach($downloads as $d => $di) {
+				$initial_values[$i]["download_{$d}"] = in_array($d, $iv['downloads'] ?? []) ? 'CHECKED="1"' : '';
+			}
+		}
+		$o_view->setVar('initialValues', $initial_values);
+		
+		return $o_view->render('anonymous_access.php');
 	}
 	# ---------------------------------------------------------------
 	/**
