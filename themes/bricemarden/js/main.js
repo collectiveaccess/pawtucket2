@@ -5,6 +5,10 @@ require('bootstrap-icons/font/bootstrap-icons.css');
 
 window.htmx = require('htmx.org');
 
+
+import autoComplete from "@tarekraafat/autocomplete.js";
+require('@tarekraafat/autocomplete.js/dist/css/autoComplete.02.css');
+
 const domContainer = document.querySelector("#pawtucketApp");
 if (!Object.entries)
   Object.entries = function( obj ){

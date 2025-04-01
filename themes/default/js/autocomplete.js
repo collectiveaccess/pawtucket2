@@ -18,7 +18,11 @@ function makeAutocompleter(autocompleters) {
 			cache: false,
 			data: {
 				src: async function(q) {
-					const response = await fetch(url + '/term/' + q);
+					const response = await fetch(url + '/term/' + q, {
+						headers: {
+							'X-Requested-With': 'XMLHttpRequest'
+						}
+					});
 					if (!response.ok) {
 					  throw new Error(`Response status: ${response.status}`);
 					}
