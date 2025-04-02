@@ -31,13 +31,21 @@
  */
 	$access_values = $this->getVar("access_values");
 	$o_config = $this->getVar("config");
-	$vs_caption_template = $o_config->get("set_item_caption_template");
+	$vs_caption_template = $o_config->get("set_item_caption_template_productions");
 	if(!$vs_caption_template){
-		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
+		$vs_caption_template = "<l>^ca_occurrences.preferred_labels.name</l>";
 	}
-	$featured_ids = $this->getVar("featured_set_item_ids");
+	if($set_code = $o_config->get("set_code_productions")){
+		$t_set = new ca_sets();
+		$t_set->load(['set_code' => $set_code]);
+		$shuffle = (bool)$o_config->get("set_random_productions");			
+		// Enforce access control on set
+		if((sizeof($access_values) == 0) || (sizeof($access_values) && in_array($t_set->get("access"), $access_values))){
+			$featured_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => $shuffle])) ? $tmp : []);
+		}
+	}
 	if(is_array($featured_ids) && sizeof($featured_ids)){
-		$qr_res = caMakeSearchResult('ca_entities', $featured_ids);
+		$qr_res = caMakeSearchResult('ca_occurrences', $featured_ids);
 	}
 	if($qr_res && $qr_res->numHits()){
 ?>   
@@ -49,8 +57,8 @@
 			if($vs_caption){
 				$vs_caption = "<div class='pt-1 px-2 pb-4'><hr/><div class='frontGridCaption fs-4 fw-bold lh-sm'>".$vs_caption."</div></div>";
 			}
-			
-			$vs_link = $qr_res->getWithTemplate('<l class="text-decoration-none h-100 d-block bg-secondary">^ca_object_representations.media.iconlarge'.$vs_caption.'</l>', array("checkAccess" => $access_values));
+			$vs_image = $qr_res->getWithTemplate("<ifcount code='ca_objects' restrictToRelationshipTypes='select' min='1'><unit relativeTo='ca_objects' restrictToRelationshipTypes='select'>^ca_object_representations.media.iconlarge</unit></ifcount>");
+			$vs_link = $qr_res->getWithTemplate('<l class="text-decoration-none h-100 d-block bg-secondary">'.$vs_image.$vs_caption.'</l>', array("checkAccess" => $access_values));
 			if($vn_col == 0){
 				print "<div class='row g-4'>";
 			}

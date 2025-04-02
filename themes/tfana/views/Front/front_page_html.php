@@ -101,19 +101,30 @@
 
 ?>
 <div class="container-xxl text-center pb-4 mb-4">
-	<div class="row pt-4 mt-4 mb-4 pb-4 justify-content-center">
-		<div class="col-sm-12 col-md-10 col-lg-8">
+	<div class="row pt-4 mt-4 justify-content-center">
+		<div class="col-sm-12 col-md-10">
 			<h2 class="pt-4">{{{hp_productions_title}}}</h2>
 			<div class="pt-3 pb-4 mb-4 display-6">{{{hp_productions_text}}}</div>
-			<div class="row justify-content-center">
-				<div class="col-sm-12 col-md-12 col-lg-8 mb-4">
 <?php
-					print caNavLink($this->request, "Production Timeline<hr/>", "btn btn-featured btn-primary", "", "Browse", "seasons");
+		# --- this is featured entitites
+		print $this->render("Front/featured_set_grid_productions_html.php");	
 ?>
-				</div>
-			</div>
+
 		</div>
 	</div>
+	<div class="row pt-4 mb-4 pb-4 justify-content-center">
+		<div class="col-sm-12 col-md-6 col-lg-5 col-xl-4 mb-4">
+<?php
+			print caNavLink($this->request, "Browse All Seasons<hr/>", "btn btn-featured btn-primary", "", "Browse", "seasons");
+?>
+		</div>
+		<div class="col-sm-12 col-md-6 col-lg-5 col-xl-4 mb-4">
+<?php
+			print caNavLink($this->request, "Browse All Productions<hr/>", "btn btn-featured btn-primary", "", "Browse", "productions");
+?>
+		</div>
+	</div>
+
 </div>
 <div class="container-xxl sectionHighlight">
 		<div class="container">
@@ -145,10 +156,19 @@
 	<div class="container-xxl text-center pb-4">
 		<div class="row pt-4 mt-4 pb-4 justify-content-center">
 			<div class="col-sm-12 col-md-10">
+				<h2 class="pt-4">{{{hp_people_title}}}</h2>
+				<div class="pt-3 pb-4 mb-4 display-6">{{{hp_people_text}}}</div>
 <?php
-		print $this->render("Front/featured_set_grid_html.php");
-	
+		# --- this is featured entitites
+		print $this->render("Front/featured_set_grid_html.php");	
 ?>
+				<div class="row justify-content-center py-5">
+					<div class="col-sm-12 col-md-12 col-lg-8 mb-4">
+<?php
+					print caNavLink($this->request, "Browse All People<hr/>", "btn btn-featured btn-primary", "", "Browse", "entities");
+?>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
