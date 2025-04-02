@@ -115,12 +115,12 @@
 	<div class="row pt-4 mb-4 pb-4 justify-content-center">
 		<div class="col-sm-12 col-md-6 col-lg-5 col-xl-4 mb-4">
 <?php
-			print caNavLink($this->request, "Browse All Seasons<hr/>", "btn btn-featured btn-primary", "", "Browse", "seasons");
+			print caNavLink($this->request, "Browse All Productions<hr/>", "btn btn-featured btn-primary", "", "Browse", "productions");
 ?>
 		</div>
 		<div class="col-sm-12 col-md-6 col-lg-5 col-xl-4 mb-4">
 <?php
-			print caNavLink($this->request, "Browse All Productions<hr/>", "btn btn-featured btn-primary", "", "Browse", "productions");
+			print caNavLink($this->request, "Browse All Seasons<hr/>", "btn btn-featured btn-primary", "", "Browse", "seasons");
 ?>
 		</div>
 	</div>
@@ -154,9 +154,9 @@
 </div>
 <div class="">
 	<div class="container-xxl text-center pb-4">
-		<div class="row pt-4 mt-4 pb-4 justify-content-center">
+		<div class="row mt-4 pb-4 justify-content-center">
 			<div class="col-sm-12 col-md-10">
-				<h2 class="pt-4">{{{hp_people_title}}}</h2>
+				<h2>{{{hp_people_title}}}</h2>
 				<div class="pt-3 pb-4 mb-4 display-6">{{{hp_people_text}}}</div>
 <?php
 		# --- this is featured entitites
