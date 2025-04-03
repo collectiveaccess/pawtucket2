@@ -43,7 +43,7 @@ Unless a waiver is received, the completed work must carry the following credit:
   <br>
 
   <em>Streaming video (YouTube, etc.)</em><br>
-  $10 per second<br>
+  $30 per second<br>
   <br>
   
   <em>Broadcast Television (TV, Cable, Satellite)</em><br>
