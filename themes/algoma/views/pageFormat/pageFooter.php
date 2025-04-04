@@ -49,14 +49,14 @@
 					</div>
 					
 				</div>
-				<div class="row pt-5">
+				<div class="row pt-5 pb-5">
 					<div class="col-12 text-center fs-6">
-						Copyright &copy; <?= date("Y"); ?> Algoma University. All Rights Reserved.
+						Copyright &copy; <?= date("Y"); ?> Algoma University. All Rights Reserved. <?= ((CookieOptionsManager::cookieManagerEnabled()) ? caNavLink($this->request, _t("Manage Cookies"), "", "", "Cookies", "manage") : ""); ?>
 					</div>
 				</div>
 			</div>
 		</footer><!-- end footer -->
-		
+		<?= $this->render("Cookies/banner_html.php"); ?>
 		<script>
 			window.initApp();
 		</script>
