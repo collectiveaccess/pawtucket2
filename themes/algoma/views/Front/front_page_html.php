@@ -96,12 +96,12 @@
 				</div>
 			</div>
 			<div class="col-md-6 offset-md-1 img-fluid">
-				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'frontCollections.jpg', array("alt" => "Page from CAS information sheets")), "", "", "Browse", "collections"); ?>
+				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'algoma-uni-fall.jpg', array("alt" => "Page from CAS information sheets")), "", "", "Browse", "collections"); ?>
 			</div>
 		</div>
 		<div class="row align-items-center mb-5 pb-5">
 			<div class="col-md-6 img-fluid mb-3 mb-md-0">
-				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'frontFiles.jpg', array("alt" => "Photo album image in balck and white")), "", "", "Browse", "files"); ?>
+				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'algoma-uni-fall.jpg', array("alt" => "Photo album image in balck and white")), "", "", "Browse", "files"); ?>
 			</div>
 			<div class="col-md-5 offset-md-1">
 				<H2 class="fw-semibold fs-3">Explore Files</H2>

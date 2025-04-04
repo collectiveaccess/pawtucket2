@@ -346,6 +346,19 @@ $yellow: #fec02f;
 	h2{
 		font-size:60px;
 	}
+	.btn-white:hover{
+		background-color:#dfe9f6;
+	}
+	.frontGrid{
+		
+		hr{
+			opacity:1;
+			border-block-start: 2px solid #FEC02F;
+		}
+		a:hover{
+			box-shadow: rgba(0, 0, 0, 0.15) 0px 1px 8px 0px;
+		}
+	}
 }
 /* ------------------------- footer ------------------------- */
 .footerLogo img{
