@@ -29,7 +29,9 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
+$va_access_values = $this->getVar("access_values");
+$o_config = $this->getVar("config");
+print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 	<div class="row">
 		<div class="col-sm-3"></div>
@@ -41,3 +43,16 @@
 		</div><!--end col-sm-8-->
 		<div class="col-sm-3"></div>
 	</div><!-- end row -->
+<?php
+	if($qr = ca_sets::findAsSearchResult(['type_id' => 'public_presentation'], ['checkAccess' => $va_access_values])) {
+		$front_page_set_code = $o_config->get('front_page_set_code');
+		while($qr->nextHit()) {
+			if($qr->get('ca_sets.set_code') === $front_page_set_code) { continue; }
+			if (!$t_set = $qr->getInstance()) { continue; }
+			$this->setVar('t_set', $t_set);
+			$this->setVar('set_code', $qr->get('ca_sets.set_code'));
+			$this->setVar('set_items_as_search_result', $t_set->getItemsAsSearchResult(['checkAccess' => $va_access_values]));
+			print $this->render('Front/slideshow_html.php');
+		}
+	}
+?>
