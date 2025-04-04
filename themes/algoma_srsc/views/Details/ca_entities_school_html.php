@@ -92,6 +92,9 @@ $map_options = $this->getVar('mapOptions') ?? [];
 </ifdef>}}}
 	<div class="row row-cols-1 row-cols-md-2 mb-5">
 		<div class="col">				
+			<div id="map" class="map">{{{map}}}</div>
+		</div>
+		<div class="col">
 			{{{<dl class="mb-0">
 				<ifdef code="ca_entities.bio_history.bio">
 					<dt><?= _t('History'); ?></dt>
@@ -99,11 +102,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 						^ca_entities.bio_history.bio
 					</dd>
 				</ifdef>
-			</dl>}}}
-			<div id="map" class="map">{{{map}}}</div>
-		</div>
-		<div class="col">
-			{{{<dl class="mb-0">
+				<ifdef code="ca_entities.date.date_value">
+					<dt><?= _t('Dates of Operation'); ?></dt>
+					<dd>
+						^ca_entities.date.date_value
+					</dd>
+				</ifdef>
 				<ifcount code="ca_entities" min="1">
 					<dt><ifcount code="ca_entities.related" min="1" max="1"><?= _t('Related Person/Group'); ?></ifcount><ifcount code="ca_entities.related" min="2"><?= _t('Related People/Groups'); ?></ifcount></dt>
 					<unit relativeTo="ca_entities.related" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
@@ -111,7 +115,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 				<ifcount code="ca_places" min="1">
 					<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-					<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
+					<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l></dd></unit>
 				</ifcount>
 			</dl>}}}					
 		</div>

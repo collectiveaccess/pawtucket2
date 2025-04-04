@@ -19,7 +19,7 @@ $config = $this->getVar('config');
 	</div>
 </div>
 <div class="row"><div class="col mb-4">
-	<div id="map" style="width: 100%; min-height: 300px;" class="map">{{{map}}}</div>
+	<div id="map" style="width: 100%; min-height: 400px;" class="map">{{{map}}}</div>
 </div></div>
 <div class="row mb-4">
 	<div class="col-md-6 col-lg-4 col-xl-3">
@@ -38,7 +38,7 @@ $config = $this->getVar('config');
 	</div>
 </div>
 <div class="row" id="browseResultsContainer">	
-	<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'schools', array('search' => '*', 'view' => 'list', 'dontSetFind' => 1)); ?>">
+	<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'schools', array('search' => '*', 'view' => 'images', 'dontSetFind' => 1)); ?>">
 		<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 	</div>
 </div>
