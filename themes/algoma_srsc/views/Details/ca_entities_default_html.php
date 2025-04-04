@@ -75,9 +75,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_entities", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_entities_summary'));
 				}
 				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
+					print $this->render('Details/snippets/copy_link_html.php');
 				}
 ?>
 			</div>
