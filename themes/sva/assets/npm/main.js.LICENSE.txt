@@ -16,6 +16,8 @@ Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
 version 0.6.9
 */
 
+/*! Axios v1.8.1 Copyright (c) 2025 Matt Zabriskie and contributors */
+
 /*! chevrotain - v9.0.1 */
 
 /**

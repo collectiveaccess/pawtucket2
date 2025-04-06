@@ -2474,7 +2474,7 @@ function caGetMediaDisplayInfo($ps_context, $ps_mimetype) {
  *
  * @return
  */
-function caGetMediaDisplayInfoForMimetype(string $context, string $mimetype) : ?array {
+function caGetMediaDisplayInfoForMimetype(string $context, ?string $mimetype) : ?array {
 	$o_config = Configuration::load();
 	$o_media_display_config = caGetMediaDisplayConfig();
 
@@ -4515,7 +4515,8 @@ function caRepresentationViewer($request, $subject, ?array $options=null) {
 	$o_view->setVar('media_viewers', $viewer_html);
 	$o_view->setVar('media_viewer_overlays', $viewer_overlay_html);
 	$o_view->setVar('subject', $subject);
-
+	$o_view->setVar('detail_options', $options['detail_options'] ?? null);
+	
 	return $o_view->render('representation_viewer_html.php');
 }
 # ---------------------------------------

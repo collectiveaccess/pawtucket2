@@ -131,7 +131,7 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav nav-pills mb-2 mb-lg-0 d-flex justify-content-between w-100 align-items-center">				
 					<li class="nav-item dropdown">
-						<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<a class="text-nowrap nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<?= _t("About"); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
 						</a>
 						<ul class="dropdown-menu">

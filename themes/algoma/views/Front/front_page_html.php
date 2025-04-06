@@ -46,8 +46,8 @@
 				<div class="col-md-12 col-lg-10 col-xl-10 d-flex h-100 align-items-center">
 					<div class="text-white p-5 text-left w-100">
 						<div class="py-3">
-							<div class="fs-2 fw-light ">Welcome to the</div>
-							<div class="pt-2 display-4 fw-medium">Engracia De Jesus Matias Archives & Special Collections at the Arthur A. Wishart Library</div>
+							<div class="fw-light "><span class="display-2 fw-medium">Welcome </span><span class="fs-3">to the</span></div>
+							<div class="display-5 fw-medium">Engracia De Jesus Matias Archives & Special Collections at the Arthur A. Wishart Library</div>
 						</div>
 						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'all_collections'); ?>">
 							<div class="input-group pb-3 w-50">
@@ -96,12 +96,12 @@
 				</div>
 			</div>
 			<div class="col-md-6 offset-md-1 img-fluid">
-				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'frontCollections.jpg', array("alt" => "Page from CAS information sheets")), "", "", "Browse", "collections"); ?>
+				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'algoma-uni-fall.jpg', array("alt" => "Page from CAS information sheets")), "", "", "Browse", "collections"); ?>
 			</div>
 		</div>
 		<div class="row align-items-center mb-5 pb-5">
 			<div class="col-md-6 img-fluid mb-3 mb-md-0">
-				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'frontFiles.jpg', array("alt" => "Photo album image in balck and white")), "", "", "Browse", "files"); ?>
+				<?= caNavLink($this->request, caGetThemeGraphic($this->request, 'algoma-uni-fall.jpg', array("alt" => "Photo album image in balck and white")), "", "", "Browse", "files"); ?>
 			</div>
 			<div class="col-md-5 offset-md-1">
 				<H2 class="fw-semibold fs-3">Explore Files</H2>

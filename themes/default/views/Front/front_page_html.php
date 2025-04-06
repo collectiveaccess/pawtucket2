@@ -121,7 +121,6 @@
 	#TODO: this does not render
 	print $this->render("Front/featured_set_grid_html.php");
 
-	print $this->render("Front/gallery_set_links_html.php");
 ?>
 <div class="container">
 	<div class="row justify-content-center my-5">
