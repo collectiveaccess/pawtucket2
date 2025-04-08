@@ -104,13 +104,13 @@
 			<H2 class="mb-3">Explore</H2>
 			<div class="row">
 				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Find</div></div>", "", "", "Browse", "objects"); ?>
+					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>"._t("Find")."</div></div>", "", "", "Browse", "objects"); ?>
 				</div>
 				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Contribute</div></div>", "", "", "*", "*"); ?>
+					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>"._t("Contribute")."</div></div>", "", "", "Contribute", "Index"); ?>
 				</div>
 				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Contact</div></div>", "", "", "Contact", "Form"); ?>
+					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>"._t("Contact")."</div></div>", "", "", "Contact", "Form"); ?>
 				</div>
 			</div>
 		</div>

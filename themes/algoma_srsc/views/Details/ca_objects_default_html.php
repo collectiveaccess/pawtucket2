@@ -121,16 +121,16 @@ if($t_object->get("ca_objects.content_warning.check", array("convertCodesToDispl
 									</dd>
 								</unit>
 							</ifdef>
-							<ifdef code="ca_objects.gmd">
-								<dt><?= _t('General Material Designation'); ?></dt>
-								<dd>
-									^ca_objects.gmd%delimiter=,_
-								</dd>
-							</ifdef>
 							<ifdef code="ca_objects.phys_desc">
 								<dt><?= _t('Physical Description'); ?></dt>
 								<dd>
 									^ca_objects.phys_desc
+								</dd>
+							</ifdef>
+							<ifdef code="ca_objects.gmd">
+								<dt><?= _t('General Material Designation'); ?></dt>
+								<dd>
+									^ca_objects.gmd%delimiter=,_
 								</dd>
 							</ifdef>
 							<ifdef code="ca_objects.scope_content">
@@ -166,12 +166,6 @@ if($t_object->get("ca_objects.content_warning.check", array("convertCodesToDispl
 									<ifdef code="ca_objects.biblio.volume">^ca_objects.biblio.volume<ifdef code="ca_objects.biblio.issue|ca_objects.biblio.standard">, </ifdef></ifdef>
 									<ifdef code="ca_objects.biblio.issue">^ca_objects.biblio.issue<ifdef code="ca_objects.biblio.standard">, </ifdef></ifdef>
 									<ifdef code="ca_objects.biblio.standard">^ca_objects.biblio.standard</ifdef>
-								</dd>
-							</ifdef>
-							<ifdef code="ca_objects.geographic_access">
-								<dt><?= _t('Geographic Access'); ?></dt>
-								<dd>
-									^ca_objects.geographic_access%delimiter=,_
 								</dd>
 							</ifdef>
 							<ifdef code="ca_objects.rights.statement">
@@ -216,18 +210,16 @@ if($t_object->get("ca_objects.content_warning.check", array("convertCodesToDispl
 								<unit relativeTo="ca_collections" restrictToRelationshipTypes="related" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 							</ifcount>
 			
+							<ifdef code="ca_objects.geographic_access">
+								<dt><?= _t('Geographic Access'); ?></dt>
+								<dd>
+									^ca_objects.geographic_access%delimiter=,_
+								</dd>
+							</ifdef>
 							<ifcount code="ca_places" min="1">
 								<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
 								<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l></dd></unit>
 							</ifcount>
-							<ifdef code="ca_objects.ex_pub">
-								<dt><?= _t('Exhibition and Publication History'); ?></dt>
-								<unit relativeTo="ca_objects.ex_pub" delimiter=" ">
-									<dd>
-									^ca_objects.ex_pub
-									</dd>
-								</unit>
-							</ifdef>
 							
 						</dl>}}}
 						

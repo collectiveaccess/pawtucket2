@@ -37,7 +37,7 @@
 				<div class="display-4">CollectiveAccess</div>
 				<ul class="list-inline pt-3 fw-medium">
   					<li class="list-inline-item text-bg-dark small">&copy; <?= date('Y'); ?></li>
-  					<?= ((CookieOptionsManager::cookieManagerEnabled()) ? '<li class="list-inline-item">'.caNavLink($this->request, _t("Manage Cookies"), "text-bg-dark small", "", "Cookies", "manage")."</li>" : ""); ?></li>
+  					<?= ((CookieOptionsManager::cookieManagerEnabled()) ? '<li class="list-inline-item">'.caNavLink($this->request, _t("Manage Cookies"), "text-bg-dark small", "", "Cookies", "manage")."</li>" : ""); ?>
 					<li class="list-inline-item"><a href="#" class="text-bg-dark small">Link</a></li>
 					<li class="list-inline-item"><a href="#" class="text-bg-dark small">Link</a></li>
 				</ul>

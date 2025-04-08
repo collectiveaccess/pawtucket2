@@ -311,7 +311,6 @@ class ContributeController extends BasePawtucketController {
 		$this->view->setVar('t_subject', $t_subject = $this->subject);
 		$idno_fld_name = $t_subject->getProperty('ID_NUMBERING_ID_FIELD');
 		
-		$t_subject->setMode(ACCESS_WRITE);
 		$t_subject->purify(true); // run all input through HTMLpurifier
 		
 		$o_trans = new Transaction();
@@ -376,15 +375,18 @@ class ContributeController extends BasePawtucketController {
 		$has_media = false;
 		
 		$text_delimiters = caGetOption('text_delimiters', $form_info, []);
+		$required_list = caGetOption('required', $form_info, []);
 		
 		// Assemble content tree
-		$content_tree = array();
+		$content_tree = [];
 		foreach($fields as $fi => $field) {
 			$fld_bits = explode(".", $field);
 			$field_proc = str_replace(".", "_", $field);		// PHP replaces periods in names with underscores :-(
 			
 			$fld_tag_parsed = caParseTagOptions($field_tags[$fi]);
 			$fld_tag_opts = $fld_tag_parsed['options'];
+			
+			$is_required = in_array($field, $required_list, true);
 			
 			$table = $fld_bits[0];
 			if ($field_proc == "{$subject_table}_type_id") { continue; }
@@ -432,6 +434,11 @@ class ContributeController extends BasePawtucketController {
 							}
 						} elseif ($t_subject->hasElement($fld_bits[1])) {
 							if (!isset($fld_bits[2])) { $fld_bits[2] = $fld_bits[1]; }
+							
+							if(in_array(ca_metadata_elements::getDataTypeForElementCode($fld_bits[2]), [__CA_ATTRIBUTE_VALUE_MEDIA__, __CA_ATTRIBUTE_VALUE_FILE__], true)) {
+								$vals = $_FILES[$field_proc]['tmp_name'] ?? null;
+							}
+							
 							if (!is_array($vals)) { break; }
 						
 							$vals = self::_applyTextDelimiters($vals, $fld_tag_opts, $text_delimiters);
@@ -563,6 +570,25 @@ class ContributeController extends BasePawtucketController {
 
 		// Set other content
 		$cleared_rels = [];
+		
+		// check required fields
+		foreach($required_list as $r) {
+			$tmp = explode('.', $r);
+			if(sizeof($tmp) <= 2) { $tmp[2] = $tmp[1]; }
+			$b = $content_tree[$tmp[0]][$tmp[1]] ?? [];
+			$fld = array_pop($tmp);
+			$bx = array_filter($b, function($v) use ($fld) {
+				if(!is_array($v) || !sizeof($v)) { return false; }
+				if(!isset($v[$fld]) || !strlen($v[$fld])) { return false; }
+				return true;
+			});
+			if(!sizeof($bx)) {
+				$l = $r;
+				if($t = Datamodel::getInstance($tmp[0], true)) { $l = $t->getDisplayLabel($r); }
+				$response_data['errors'][$r][] = _t('%1 must be set', trim($l));
+				$vn_num_errors++;
+			}
+		}
 		
 		foreach($content_tree as $table => $content_by_table) {
 			if ($subject_table == $table) {	// subject table
