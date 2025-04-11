@@ -52,7 +52,6 @@ if($collections_config->get("do_not_display_collection_browser")){
 $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 ?>
 <script>
-	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 <?php 
@@ -199,10 +198,13 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				
 			</dl>}}}
 <?php
-			if($t_item->get("ca_collections.tk_permissions")){
-				$t_list_item = new ca_list_items($t_item->get("ca_collections.tk_permissions"));
+			if($t_item->get("ca_collections.tk_permissions.tk_permissions_label")){
+				$t_list_item = new ca_list_items($t_item->get("ca_collections.tk_permissions.tk_permissions_label"));
 				$vs_permission_name = $t_list_item->get("ca_list_items.preferred_labels.name_singular");
-				$vs_permission_desc = $t_list_item->get("ca_list_items.preferred_labels.description");
+				$vs_permission_desc = $t_item->get("ca_collections.tk_permissions.tk_permissions_description");
+				if(!$vs_permission_desc){
+					$vs_permission_desc = $t_list_item->get("ca_list_items.preferred_labels.description");
+				}
 				$vs_icon = $t_list_item->get("ca_list_items.icon.original", array("alt" => $vs_permission_name, "class" => "tkIcon me-2"));
 				
 				print "<div class='mt-2'>
