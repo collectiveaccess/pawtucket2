@@ -91,27 +91,48 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</div>
 	</div>
 </ifdef>}}}
-{{{<ifcount code="ca_objects" restrictToRelationshipTypes="repository" min="1">
-	<div class="row row-cols-1">
-		<div class="col">							
-			<dl class="mb-0">
-				<ifdef code="ca_entities.address">
-					<dt><?= _t('Address'); ?></dt>
-					<unit relativeTo="ca_entities.address" delimiter="<br/><br/>">
-						<dd><ifdef code="ca_entities.address.address1">^ca_entities.address.address1<br/></ifdef>
-							<ifdef code="ca_entities.address.address2">^ca_entities.address.address2<br/></ifdef>
-							<ifdef code="ca_entities.address.city">^ca_entities.address.city, </ifdef>
-							<ifdef code="ca_entities.address.stateprovince">^ca_entities.address.stateprovince </ifdef>
-							<ifdef code="ca_entities.address.postalcode">^ca_entities.address.postalcode</ifdef>
-							<ifdef code="ca_entities.address.city|ca_entities.address.stateprovince|ca_entities.address.postalcode"><br/></ifdef>
-							<ifdef code="ca_entities.address.country">^ca_entities.address.country</ifdef>
-						</dd>
-					</unit>
-				</ifdef>
-			</dl>			
-		</div>
-	</div>
-</ifcount>}}}
+{{{<case>
+	<ifcount code="ca_objects" restrictToRelationshipTypes="repository" min="1">
+		<ifdef code="ca_entities.contact|ca_entities.external_link.url_entry">
+			<div class="row row-cols-1">
+				<div class="col">							
+					<dl class="mb-4">
+						<ifdef code="ca_entities.contact">
+							<dt><?= _t('Contact'); ?></dt>
+							<dd>^ca_entities.contact</dd>
+						</ifdef>
+						<ifdef code="ca_entities.external_link.url_entry">
+							<dt><?= _t('Website'); ?></dt>
+							<unit relativeTo="ca_entities.external_link" delimiter=" ">
+								<dd><a href="^ca_entities.external_link.url_entry"><ifdef code="ca_entities.external_link.url_source">^ca_entities.external_link.url_source</ifdef><ifnotdef code="ca_entities.external_link.url_source">^ca_entities.external_link.url_entry</ifnotdef></a></dd>
+							</unit>
+						</ifdef>
+					</dl>			
+				</div>
+			</div>
+		</ifdef>
+	</ifcount>
+	<if rule="^ca_entities.type_id =~ /Group/">
+		<ifdef code="ca_entities.contact|ca_entities.external_link.url_entry">
+			<div class="row row-cols-1">
+				<div class="col">							
+					<dl class="mb-4">
+						<ifdef code="ca_entities.contact">
+							<dt><?= _t('Contact'); ?></dt>
+							<dd>^ca_entities.contact</dd>
+						</ifdef>
+						<ifdef code="ca_entities.external_link.url_entry">
+							<dt><?= _t('Website'); ?></dt>
+							<unit relativeTo="ca_entities.external_link" delimiter=" ">
+								<dd><a href="^ca_entities.external_link.url_entry"><ifdef code="ca_entities.external_link.url_source">^ca_entities.external_link.url_source</ifdef><ifnotdef code="ca_entities.external_link.url_source">^ca_entities.external_link.url_entry</ifnotdef></a></dd>
+							</unit>
+						</ifdef>
+					</dl>			
+				</div>
+			</div>
+		</ifdef>
+	</if>
+</case>}}}
 <div class="row">
 	<div class="col-12">
 		<div id="map" class="map py-3">{{{map}}}</div>
@@ -119,7 +140,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 </div>
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row mt-4">
-		<div class="col"><h2>Related Objects</h2><hr></div>
+		<div class="col"><h2><?= _t("Related Objects"); ?></h2><hr></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"))); ?>">

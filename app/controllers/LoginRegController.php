@@ -335,7 +335,13 @@ class LoginRegController extends BasePawtucketController {
 			}
 			
 			$controller = $module_path = '';
-			if ($default_action = $this->request->config->get('default_action')) {
+			
+			if ($default_action = $this->request->config->get('default_login_action')) {
+				$tmp = explode('/', $default_action);
+				$action = array_pop($tmp);
+				if (sizeof($tmp)) { $controller = array_pop($tmp); }
+				if (sizeof($tmp)) { $module_path = join('/', $tmp); }
+			} elseif ($default_action = $this->request->config->get('default_action')) {
 				$tmp = explode('/', $default_action);
 				$action = array_pop($tmp);
 				if (sizeof($tmp)) { $controller = array_pop($tmp); }

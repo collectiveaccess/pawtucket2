@@ -8,9 +8,9 @@
 			
 			<?= $this->formElement('ca_objects.preferred_labels', ['label' => _t('Title'), 'description' => _t("Limit your search to Object Titles only.")]); ?>			
 
-			<?= $this->formElement('ca_objects.material.material_generated', ['class' => 'form-select w-100', 'label' => _t('Material'), 'description' => _t("Search by the material objects are made from.")]); ?>
+			<?= $this->formElement('ca_objects.materials', ['class' => 'form-select w-100', 'label' => _t('Material'), 'description' => _t("Search by the material objects are made from.")]); ?>
 
-			<?= $this->formElement('ca_objects.date.range', ['label' => _t('Date Range <em>(e.g. 1970-1979)</em>'), 'description' => _t("Search records of a particular date or date range.")]); ?>
+			<?= $this->formElement('ca_objects.date', ['label' => _t('Date <em>(e.g. 1970-1979)</em>'), 'description' => _t("Search records of a particular date or date range.")]); ?>
 			
 			<?= $this->formElement('ca_objects.collector', ['label' => _t('Collector'), 'description' => _t("Limit your search by collector.")]); ?>
 			

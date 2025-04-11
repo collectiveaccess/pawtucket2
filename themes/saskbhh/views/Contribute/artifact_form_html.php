@@ -27,7 +27,6 @@
  */
  # --- look up: need to style; width being passed is not set - prob don't need that anyway
  # --- errors - no fields are required - we should - when there is an erorr like bad date, general error appears at top, but not above the field
- # --- how put multiple - like Materials if I want multiple dropdowns isn't working
  # --- pass class to media upload input
  
 $t_subject = $this->getVar('t_subject');
@@ -39,8 +38,9 @@ $form_info = $this->getVar('form_info');
 			</div><?= _t("Contribute"); ?></h1>
 			
 			<div class="py-3">
-				Submit metadata for your artifact using the form below. 
-				It will be made visible on the site once it's been reviewed and edited.
+<?php
+				print _t("Submit metadata for your artefact using the form below. It will be made visible on the site once it's been reviewed and edited.");
+?>
 			</div>
 			
 			{{{<ifdef code="errors"><div class="notificationMessage">^errors</div></ifdef>}}}
@@ -49,87 +49,86 @@ $form_info = $this->getVar('form_info');
 				{{{form}}}
 					<div class='row mt-3'>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_entities:error}}}
-							<label class='form-label' for=''>Repository name</label><br/>
-							{{{ca_entities%autocomplete=1&width=350px&relationshipType=repository&index=0&placeholder=Search+for+repository}}}
+							{{{ca_objects.repository:error}}}
+							<label class='form-label' for=''><?= _t("Repository name"); ?></label><br/>
+							{{{ca_objects.repository%class=form-control w-100}}}
 						</div>										
 						<div class="col-sm-12 col-md-4 mb-3">
 							{{{ca_objects.accession_num:error}}}
-							<label class='form-label' for='ca_objects_accession_num'>Repository accession number</label>
+							<label class='form-label' for='ca_objects_accession_num'><?= _t("Repository accession number"); ?></label>
 							{{{ca_objects.accession_num%&class=form-control w-100}}}
 						</div>
 						<div class="col-sm-12 col-md-4 mb-3">
 							{{{ca_objects.storage:error}}}
-							<label class='form-label' for='ca_objects_accession_num'>Repository storage location</label>
+							<label class='form-label' for='ca_objects_accession_num'><?= _t("Repository storage location"); ?></label>
 							{{{ca_objects.storage%&class=form-control w-100}}}
 						</div>
 					</div>
 					<div class='row'>
 						<div class="col-sm-12 col-md-4 mb-3">
 							{{{ca_objects.preferred_labels:error}}}
-							<label class='form-label' for='ca_objects_preferred_labels_name'>Title</label>
+							<label class='form-label' for='ca_objects_preferred_labels_name'><?= _t("Title"); ?></label>
 							{{{ca_objects.preferred_labels.name%&class=form-control w-100}}}
 						</div>										
 						<div class="col-sm-12 col-md-4 mb-3">
 							{{{ca_objects.collector:error}}}
-							<label class='form-label' for=''>Original collector</label><br/>
-							{{{ca_objects.collector%&class=form-control w-100}}}
+							<label class='form-label' for=''><?= _t("Original collector"); ?></label><br/>
+							{{{ca_objects.collector%class=form-control w-100}}}
 						</div>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_entities:error}}}
-							<label class='form-label' for=''>Creator(s)</label><br/>
-							{{{ca_entities%autocomplete=1&width=200px&relationshipType=creator&index=0&placeholder=Search+for+creator}}}
+							{{{ca_objects.creator:error}}}
+							<label class='form-label' for=''><?= _t("Creator(s)"); ?></label><br/>
+							{{{ca_objects.creator%class=form-control w-100}}}
 						</div>
 					</div>
 					<div class='row'>										
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.material.material_generated:error}}}
-							<label class='form-label' for=''>Material(s)</label>
-							<div class="mb-2">{{{ca_objects.material.material_generated%class=form-select w-100}}}</div>
-							<div class="mb-2">{{{ca_objects.material.material_generated%class=form-select w-100}}}</div>
+							{{{ca_objects.materials:error}}}
+							<label class='form-label' for=''><?= _t("Material(s)"); ?></label>
+							<div class="mb-2">{{{ca_objects.materials%class=form-select w-100}}}</div>
 						</div>
 						<div class="col-sm-12 col-md-4 mb-3">
 							{{{ca_objects.dimensions.measurement_notes:error}}}
-							<label class='form-label' for=''>Measurements</label>
+							<label class='form-label' for=''><?= _t("Measurements"); ?></label>
 							{{{ca_objects.dimensions.measurement_notes%class=form-control w-100}}}
 						</div>
 						<div class="col-sm-12 col-md-4 mb-3">
 							{{{ca_objects.marksLabel:error}}}
-							<label class='form-label' for=''>Marks, labels, or inscriptions</label>
+							<label class='form-label' for=''><?= _t("Marks, labels, or inscriptions"); ?></label>
 							{{{ca_objects.marksLabel%class=form-control w-100}}}
 						</div>
 					</div>
 					<div class='row'>
 						<div class="col-sm-12 col-md-4 mb-3">
 							{{{ca_objects.culture_notes:error}}}
-							<label class='form-label' for=''>Associated Indigenous culture</label>
+							<label class='form-label' for=''><?= _t("Associated Indigenous culture"); ?></label>
 							{{{ca_objects.culture_notes%class=form-control w-100}}}
 						</div>										
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.sensitive.yn:error}}}
-							<label class='form-label' for=''>Is the object culturally sensitive?</label>
-							{{{ca_objects.sensitive.yn%class=form-select w-100}}}
+							{{{ca_objects.culture_yn:error}}}
+							<label class='form-label' for=''><?= _t("Is the object culturally sensitive?"); ?></label>
+							{{{ca_objects.culture_yn%class=form-select w-100}}}
 						</div>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.sensitive.details:error}}}
-							<label class='form-label' for=''>Details about cultural sensitivity</label>
-							{{{ca_objects.sensitive.details%class=form-control w-100}}}
+							{{{ca_objects.sensitive:error}}}
+							<label class='form-label' for=''><?= _t("Details about cultural sensitivity"); ?></label>
+							{{{ca_objects.sensitive%class=form-control w-100}}}
 						</div>
 					</div>
 					<div class='row'>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.date.range:error}}}
-							<label class='form-label' for=''>Estimated date created</label>
-							{{{ca_objects.date.range%class=form-control w-100}}}
+							{{{ca_objects.date:error}}}
+							<label class='form-label' for=''><?= _t("Estimated date created"); ?></label>
+							{{{ca_objects.date%class=form-control w-100}}}
 						</div>										
 						<div class="col-sm-12 col-md-4 mb-3">
 							{{{ca_objects.description:error}}}
-							<label class='form-label' for=''>Description</label>
+							<label class='form-label' for=''><?= _t("Description"); ?></label>
 							{{{ca_objects.description%class=form-control w-100}}}
 						</div>										
 						<div class="col-sm-12 col-md-4 mb-3">
 							{{{ca_objects.place_notes:error}}}
-							<label class='form-label' for=''>Associated geographic place</label>
+							<label class='form-label' for=''><?= _t("Associated geographic place"); ?></label>
 							<div class="mb-2">{{{ca_objects.place_notes%class=form-control w-100}}}</div>
 						</div>
 					</div>
@@ -137,7 +136,7 @@ $form_info = $this->getVar('form_info');
 					<div class='row'>
 						<div class="col-12 mb-3">
 							{{{ca_objects.contributor_notes:error}}}
-							<label class='form-label' for=''>Other notes</label>
+							<label class='form-label' for=''><?= _t("Other notes"); ?></label>
 							{{{ca_objects.contributor_notes%class=form-control w-100}}}
 						</div>
 					</div>
@@ -145,7 +144,7 @@ $form_info = $this->getVar('form_info');
 						<div class="col-12 mb-3">
 							{{{ca_object_representations.media:error}}}
 							
-							<label class='form-label'>Image</label>
+							<label class='form-label'><?= _t("Image"); ?></label>
 							{{{ca_object_representations.media%autocomplete=0&class=form-control}}} 
 							{{{<ifcount code='ca_object_representations.media' min='1'><div class="pt-2">^ca_object_representations.media%previewExistingValues=1&delimiter=-</div></ifcount>}}}
 							
