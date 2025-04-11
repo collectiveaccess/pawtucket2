@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2024 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -735,7 +735,7 @@ class DetailController extends FindController {
 				//
 				// Perform metadata embedding
 				$t_rep = new ca_object_representations($va_rep['representation_id']);
-				if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
+				if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep, $version, []))) {
 					$vs_path = $t_rep->getMediaPath('media', $version);
 				}
 				$va_file_paths[$vs_path] = $vs_filename;

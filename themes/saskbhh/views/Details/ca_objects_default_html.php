@@ -57,7 +57,7 @@ if($show_nav){
 	</div>
 <?php
 }
-if($t_object->get("ca_objects.sensitive.yn", array("convertCodesToDisplayText" => true)) == "Yes"){
+if($t_object->get("ca_objects.culture_yn", array("convertCodesToDisplayText" => true)) == "Yes"){
 	$generic_detail_cultaral_sensitivity_warning = $this->getVar("detail_cultural_sensitivity_warning");
 	print '<div class="row">
 				<div class="col"><div class="alert alert-danger text-center" role="alert">'.$generic_detail_cultaral_sensitivity_warning.'</div>
@@ -137,13 +137,11 @@ if($t_object->get("ca_objects.sensitive.yn", array("convertCodesToDisplayText" =
 									^ca_objects.description
 								</dd>
 							</ifdef>
-							<ifdef code="ca_objects.material">
+							<ifdef code="ca_objects.materials">
 								<dt><?= _t('Material(s)'); ?></dt>
-								<unit relativeTo="ca_objects.material" delimiter=" ">
-									<dd>
-										<ifdef code="ca_objects.material.material_generated">^ca_objects.material.material_generated</ifdef>
-									</dd>
-								</unit>
+								<dd>
+									<ifdef code="ca_objects.materials">^ca_objects.materials</ifdef>
+								</dd>
 							</ifdef>
 							<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth">
 								<dt><?= _t('Dimensions'); ?></dt>
@@ -155,10 +153,10 @@ if($t_object->get("ca_objects.sensitive.yn", array("convertCodesToDisplayText" =
 									</dd>
 								</unit>
 							</ifdef>
-							<ifdef code="ca_objects.date.range">
+							<ifdef code="ca_objects.date">
 								<dt><?= _t('Date(s)'); ?></dt>
-								<unit relativeTo="ca_objects.date.range" delimiter=" ">
-									<dd>^ca_objects.date.range</dd>
+								<unit relativeTo="ca_objects.date" delimiter=" ">
+									<dd>^ca_objects.date</dd>
 								</unit>
 							</ifdef>
 							<ifcount code="ca_entities" restrictToRelationshipTypes="home" min="1">
