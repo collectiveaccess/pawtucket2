@@ -52,7 +52,12 @@ h6 {font-size:12px; font-weight:600;margin:0px 0px 5px 0px; padding:0px;}
 }
 .tkLabel img{
 	width:30px;
-	height:auto
+	height:auto;
+}
+.tkLabel b{
+	position:relative;
+	top:-8px;
+	left:3px;
 }
 .collectionContents p{
 	padding-top:0px;
