@@ -487,6 +487,12 @@ a.browseRemoveFacet .glyphicon{
 	font-size: 13px;
 	line-height: 1.1em;
 }
+#bMorePanel #bAncestorList a {
+  font-size: 16px;
+}
+#bMorePanel #bScrollList a {
+  font-size: 14px;
+}
 /* front */
 html.frontContainer {
     height: 100%;
