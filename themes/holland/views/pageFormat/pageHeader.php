@@ -167,6 +167,13 @@
 		})
 	});
 </script>
+<?php
+			if($vs_message = $this->getVar("header_message")){
+?>
+				<div class="headerMessage"><?= $vs_message; ?></div>
+<?php
+			}
+?>
 				<div class='menuContainer'><ul class="nav navbar-nav navbar-right menuItems">
 					<li><a href="http://www.hollandmuseum.org" target="_blank">Museum Home</a></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", ""); ?></li>

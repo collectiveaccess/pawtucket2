@@ -316,6 +316,28 @@ body.initial .navbar-brand img{
 .headerTagLine{
 	display:none;
 }
+.headerMessage{
+	border: 4px solid #16a0da;
+	padding: 10px;
+	font-family: 'Playfair Display', serif;
+}
+@media (max-width: 1334px) {
+	.headerMessage{
+		margin: 0px 10px 20px 10px;
+		display: block;
+		clear: both;
+		top: 10px;
+		position: relative;
+	}	
+}
+@media (min-width: 1335px) {
+	.headerMessage{
+		margin: 10px 0px 0px 0px;
+		display: inline-block;
+		width: 550px;
+		float: right;
+	}	
+}
 @media (min-width: 768px) {
 	.navbar-brand{
 		display:none;
