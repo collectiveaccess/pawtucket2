@@ -94,23 +94,33 @@ class MetsALTOSearch {
 	 *
 	 */
 	public function search($search) {
-		$query = $this->client->createSelect();
-		
-		$query->setQuery($search);
-		$query->setStart(0)->setRows(1000);
-		$query->setFields(['id', 'name', 'page', 'content']);
-		
-		$query->addSort('page', $query::SORT_ASC);
-		$resultset = $this->client->select($query);
-		
-		$num_found = $resultset->getNumFound();
-		$max_score = $resultset->getMaxScore();
-		
 		$ids = [];
-		// show documents using the resultset iterator
-		foreach($resultset as $document) {
-			if($document['id'] ?? null) {
-				$ids[(int)$document['id']] = ['index_id' => 0, 'boost' => 100, 'page' => $document['page'] ?? null];
+		try {
+			$query = $this->client->createSelect();
+			$search = trim(str_replace("%q", '"', trim($search, '"')));
+			
+			$query->setQueryDefaultField("content");
+			$query->setQuery($search);
+			$query->setStart(0)->setRows(1000);
+			$query->setFields(['id', 'name', 'page', 'content']);
+			
+			$query->addSort('page', $query::SORT_ASC);
+			$resultset = $this->client->select($query);
+			
+			$num_found = $resultset->getNumFound();
+			$max_score = $resultset->getMaxScore();
+			
+			$ids = [];
+			// show documents using the resultset iterator
+			foreach($resultset as $document) {
+				if($document['id'] ?? null) {
+					$ids[(int)$document['id']] = ['index_id' => 0, 'boost' => 100, 'page' => $document['page'] ?? null];
+				}
+			}
+		} catch(Exception $e) {
+			$search_proc = preg_replace("![^A-Z0-9 _\-\.]+!i", " ", $search);
+			if($search_proc !== $search) {
+				return $this->search($search_proc);
 			}
 		}
 		return $ids;

@@ -778,6 +778,7 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 	
 	$pa_form_values = caPurifyArray($pa_form_values);
 	
+	$is_metsalto = [];
 	foreach($va_form_contents as $vn_i => $vs_element) {
 		$vs_dotless_element = str_replace('.', '_', $vs_element);
 		
@@ -790,21 +791,25 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 					$va_default_values['_fieldlist_value'][] = trim($pa_form_values[$vs_dotless_element.'_value'][$vn_j]);
 					$va_booleans["_fieldlist:boolean"][] = $va_booleans["{$vs_fieldlist_field}:boolean"][] = isset($pa_form_values["_fieldlist:boolean"][$vn_j]) ? $pa_form_values["_fieldlist:boolean"][$vn_j] : null;
 					
+					$is_metsalto[] = false;
 				}
 				break;
 			case 'metsalto':
 				foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
-						if(!strlen(trim($vs_element_value))) { continue; }
-						$va_default_values[$vs_element.$vs_element_rel_type][] = trim($vs_element_value);
-						$va_values[$vs_element.$vs_element_rel_type][] = trim($vs_element_value);
-						$va_booleans["{$vs_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
-					}
+					if(!strlen(trim($vs_element_value))) { continue; }
+					$va_default_values[$vs_element.$vs_element_rel_type][] = trim($vs_element_value);
+					$va_values[$vs_element.$vs_element_rel_type][] = trim($vs_element_value);
+					$va_booleans["{$vs_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
+					
+					$is_metsalto[] = true;
+				}
 				break;
 			case 'metsalto_exclude':
 				foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
 					if(!strlen(trim($vs_element_value))) { continue; }
 					$va_default_values['metsalto'.$vs_element_rel_type][] = $va_values['metsalto'.$vs_element_rel_type][] = '-'.trim(preg_replace("!^\-!", "", $vs_element_value));
 					$va_booleans["metsalto{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
+					$is_metsalto[] = false;
 				}
 				break;
 			default:
@@ -826,6 +831,8 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 							
 							$va_values[$vs_search_element.$vs_element_rel_type][] = trim($vs_element_value);
 							$va_booleans["{$vs_search_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
+							
+							$is_metsalto[] = false;
 						}
 						continue(2);
 					}
@@ -834,6 +841,8 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 						$va_default_values[$vs_element.$vs_element_rel_type][] = trim($vs_element_value);
 						$va_values[$vs_element.$vs_element_rel_type][] = trim($vs_element_value);
 						$va_booleans["{$vs_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
+						
+						$is_metsalto[] = false;
 					}
 				}
 				break;
@@ -850,15 +859,8 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 		foreach($va_values as $vs_element => $va_value_list) {
 			foreach($va_value_list as $vn_i => $vs_value) {
 				if (!strlen(trim($vs_value))) { continue; }
-				if ((strpos($vs_value, ' ') !== false) && ($vs_value[0] != '[')) {
-					if($vs_value[0] === '-') {
-						$vs_query_element = '-"'.mb_substr($vs_value, 1).'"';
-					} else {
-						$vs_query_element = '"'.str_replace('"', '', $vs_value).'"';
-					}
-				} else {
-					$vs_query_element = $vs_value;
-				}
+				
+				$vs_query_element = $vs_value;
 				
 				$vs_query_element = caMatchOnStem($vs_query_element, $pa_options);
 				
@@ -875,7 +877,7 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 						$va_query_elements[$vs_element][] = "(".$va_values['_fieldlist_field'][$vn_i].":".$pa_form_values['_fieldlist_value'][$vn_i].")";
 						break;
 					case 'metsalto':
-						$va_query_elements[$vs_element][] = $vs_query_element;
+						$va_query_elements[$vs_element][] = "metsalto:".'"'.str_replace('"', '%q', $vs_query_element).'"';
 						break;
 					case 'metsalto_exclude':
 						$va_query_elements[$vs_element][] = $vs_query_element;
@@ -887,12 +889,8 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 						break;
 				}
 			}
-			if($vs_element === 'metsalto') {
-				$va_query_elements[$vs_element] = ['metsalto:"'.str_replace('"', "",join(' ', $va_query_elements[$vs_element])).'"'];
-			}
 		}
 	}
-
 	$vs_query_string = '';
 	foreach($va_query_elements as $vs_element => $va_query_elements_by_element) {
 		$vs_query_string .= ($vs_query_string ? (($vs_b = $va_query_booleans[$vs_element][0]) ? " {$vs_b} " : ' AND ') : '').'(';
@@ -1070,7 +1068,8 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 				break;
 		}
 	}
-
+	$va_query = array_map(function($v) { return str_replace("%q", '', $v); }, $va_query);
+	
 	return join(caGetOption('delimiter', $pa_options, ' '), $va_query);
 }
 # ---------------------------------------
@@ -2449,8 +2448,10 @@ function caExtractTermsForSearch($search, ?array $options=null) {
 		$parsed = $search;
 	}
 	if(!is_object($parsed)) { return []; }
-	$terms = _caExtractTermsForSearchParsedItem($parsed);
+	$terms = _caExtractTermsForSearchParsedItem($parsed, $options);
 	
+	$terms = array_map(function($v) { return str_replace("%q", '', $v); }, $terms);
+	$terms = array_map(function($v) { return preg_replace("![^A-Za-z0-9 \-]+!i", '', $v); }, $terms);
 	return $terms;
 }
 # ---------------------------------------
@@ -2511,6 +2512,10 @@ function caConvertSearchTermsToText($field, $term, ?array $options=null) : strin
 	$sign = caGetOption('sign', $options, '');
 	$prefix = caGetOption('prefix', $options, null);
 	$tmp = $field ? explode('.', $field) : [];
+	
+	if(caGetOption('metsaltoOnly', $options, false) && ($field !== 'metsalto')) {
+		return '';
+	}
 	
 	if($t_instance = Datamodel::getInstance($tmp[0], true)) {
 		if ($tmp[1] === $t_instance->getProperty('ATTRIBUTE_TYPE_ID_FLD')) {

@@ -290,17 +290,6 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 	 *
 	 */
 	public function divineFileFormat($filepath) {
-		// Is it a camera raw image?
-		if ($this->ops_dcraw_path) {
-			caExec($this->ops_dcraw_path." -i ".caEscapeShellArg($filepath)." 2> /dev/null", $va_output, $vn_return);
-			if ($vn_return == 0) {
-				if (is_array($va_output) && isset($va_output[0]) && (!preg_match("/^Cannot decode/", $va_output[0])) && (!preg_match("/Master/i", $va_output[0]))) {
-					$this->opa_raw_list[$filepath] = true;
-					return 'image/x-dcraw';
-				}
-			}
-		}
-		
 		try {
 			if ($filepath != '' && ($r_handle = new Gmagick($filepath))) {
 				$this->setResourceLimits($r_handle);
@@ -311,7 +300,17 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 					return '';
 				}
 			} 
-		} catch (Exception $e) {
+		} catch (Exception $e) {			
+			// Is it a camera raw image?
+			if ($this->ops_dcraw_path) {
+				caExec($this->ops_dcraw_path." -i ".caEscapeShellArg($filepath)." 2> /dev/null", $va_output, $vn_return);
+				if ($vn_return == 0) {
+					if (is_array($va_output) && isset($va_output[0]) && (!preg_match("/^Cannot decode/", $va_output[0])) && (!preg_match("/Master/i", $va_output[0]))) {
+						$this->opa_raw_list[$filepath] = true;
+						return 'image/x-dcraw';
+					}
+				}
+			}
 			// Is it a tilepic?
 			$tp = new TilepicParser();
 			if ($tp->isTilepic($filepath)) {

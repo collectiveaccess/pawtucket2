@@ -98,7 +98,7 @@ $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_defa
 
 		$t_list_item = new ca_list_items();
 		$rcriteria = $this->getVar('criteria_raw');
-		$terms = caExtractTermsForSearch(join(' ', array_keys($rcriteria['_search'] ?? [])));
+		$terms = caExtractTermsForSearch(join(' ', array_keys($rcriteria['_search'] ?? [])), ['metsaltoOnly' => true]);
 		$terms = array_map(function($v) {
 			$v = preg_replace('!["\']+!', '', $v);
 			$v = preg_replace('![^A-Za-z0-9]+[0-9]*!', '', $v);

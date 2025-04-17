@@ -85,13 +85,17 @@ $annotations = $this->getVar("annotations");
 			.annotationImageTall img {
 				object-fit: contain;
 				width: auto;
-				height: 100%;
+				height: auto;
+				max-width: 90%;
+				max-height: 90%;
 			}
 			
 			.annotationImageWide img {
 				object-fit: contain;
-				width: 100%;
+				width: auto;
 				height: auto;
+				max-width: 90%;
+				max-height: 90%;
 			}
 			-->
 		</style>
@@ -108,7 +112,7 @@ $annotations = $this->getVar("annotations");
 			<div class="annotationImage annotationImage<?= $aspect; ?>"><?= $anno['original']; ?></div></td>
 
 			<div class="sourceInfo">
-				<div class='objectLabel'><?= _t('From <em>%1</em>', $anno['object_label']); ?></div>
+				<div class='objectLabel'><?= _t('From <em>%1</em>, page %2', $anno['object_label'], $anno['page']); ?></div>
 				<div class='annotationLabel'><?= $anno['label']; ?></div>
 				<div class='annotationLabel'><?= $anno['created'] ? _t('Created %1', $anno['created']) : ''; ?></div>
 			</div>

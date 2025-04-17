@@ -34,7 +34,7 @@ print "<p>Enter your search terms in the fields below</p>";
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by publication title">Publication Title</span>
-			{{{ca_collections.preferred_labels}}}
+			{{{ca_collections.preferred_labels%select=1&restrictToTypes=newspaper&rootOnly=0}}}
 		</div>
 	</div>
 	<div class='row'>

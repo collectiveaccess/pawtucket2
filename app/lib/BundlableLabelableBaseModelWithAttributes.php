@@ -2654,7 +2654,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 									if (!($t_instance = Datamodel::getInstanceByTableName($va_tmp[0], true))) { return null; }
 								
 									$vs_label_display_field = $t_instance->getLabelDisplayField();
-									$va_find_params = array('parent_id' => null);
+									$va_find_params = caGetOption('rootOnly', $pa_options, true) ? ['parent_id' => null] : [];
 								
 									switch($va_tmp[0]) {
 										case 'ca_list_items':
@@ -2664,8 +2664,12 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 											break;
 									}
 									
+									if($restrict_to_types = caGetOption('restrictToTypes', $pa_options, null)) {
+										$restrict_to_types = caMakeTypeIDList($t_instance->tableName(), $restrict_to_types);
+									}
+									
 									$vs_sort = caGetOption('sort', $pa_options, $t_instance->tableName().'.preferred_labels.'.$vs_label_display_field);
-									$qr_res = call_user_func_array($va_tmp[0].'::find', array($va_find_params, array('restrictToTypes' => caGetOption('restrictToTypes', $pa_options, null), 'sort' => $vs_sort, 'returnAs' => 'searchResult')));
+									$qr_res = call_user_func_array($va_tmp[0].'::find', array($va_find_params, array('restrictToTypes' => $restrict_to_types, 'sort' => $vs_sort, 'returnAs' => 'searchResult')));
 
 									$vs_pk = $t_instance->primaryKey();
 									$va_opts = array('-' => '');

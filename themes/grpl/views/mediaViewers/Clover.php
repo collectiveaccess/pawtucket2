@@ -34,7 +34,7 @@ $display_info = $this->getVar('displayInfo');
 $t_subject = $this->getVar('t_subject');
 $q = ($rc = ResultContext::getResultContextForLastFind($this->request, 'ca_objects')) ? $rc->getSearchExpression() : '';
 
-$terms = caExtractTermsForSearch($q);
+$terms = caExtractTermsForSearch($q, ['metsaltoOnly' => true]);
 $terms = array_map(function($v) {
 	$v = preg_replace('!["\']+!', '', $v);
 	$v = preg_replace('![^A-Za-z0-9]+[0-9]*!', '', $v);

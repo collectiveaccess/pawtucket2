@@ -157,9 +157,11 @@ class SearchController extends FindController {
 		//
 		if($vb_is_advanced) { 
 			if (!$this->request->isAjax()) {
-				$this->opo_result_context->setSearchExpression(
-					$vs_search_expression = stripSlashes(caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])]))
-				); 
+				if($vs_search_expression = stripSlashes(caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])]))) {
+					$this->opo_result_context->setSearchExpression(
+						$vs_search_expression
+					); 
+				}
 			}
 			if (!$this->request->isAjax() && ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context))) {
 				$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);

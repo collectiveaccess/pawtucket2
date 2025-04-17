@@ -128,6 +128,10 @@ class IIIFService {
 					$highlight_region_tmp[1] -= 200;
 					$highlight_region_tmp[2] += 400;
 					$highlight_region_tmp[3] += 400;
+					
+					if($highlight_region_tmp[0] < 0) { $highlight_region_tmp[0] = 0; }
+					if($highlight_region_tmp[1] < 0) { $highlight_region_tmp[1] = 0; }
+					
 					$ps_region = join(',', $highlight_region_tmp);
 				}
 			}
@@ -170,7 +174,6 @@ class IIIFService {
 		} else {
 			$va_operations = [];
 			
-			
 			if(is_array($highlight_op)) {
 				$va_operations[] = ['HIGHLIGHT' => $highlight_op];
 			}
@@ -186,7 +189,7 @@ class IIIFService {
 			// size	
 			$va_dimensions = IIIFService::calculateSize($vn_width, $vn_height, $ps_size);
 			$va_operations[] = ['SCALE' => $va_dimensions];
-				
+			
 			// Can we use a pre-generated tilepic tile for this request?
 			$vn_tile_width = $va_tilepic_info['PROPERTIES']['tile_width'];
 			$vn_tile_height = $va_tilepic_info['PROPERTIES']['tile_height'];
@@ -289,6 +292,7 @@ class IIIFService {
 			
 			// TODO: should we be caching output?
 			$response->setContentType($vs_mimetype);
+			$response->sendHeaders();
 			header("Content-length: ".filesize($vs_output_path));
 			header("Access-Control-Allow-Origin: *");
 			
