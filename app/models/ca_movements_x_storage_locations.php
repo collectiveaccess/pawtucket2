@@ -283,7 +283,7 @@ class ca_movements_x_storage_locations extends LocationRelationshipBaseModel {
 				$qr = ca_movements_x_storage_locations::findAsSearchResult(['relation_id' => $row_id]);
 				if($qr->nextHit()) {
 					$data = $qr->get('ca_movements_x_storage_locations.source_info', ['returnAsArray' => true]);
-					$path = $data[0]['display'] ?? join(" - ", $data[0]['path'] ?? []);
+					$path = $data[0]['display'] ?? join($delimiter, $data[0]['path'] ?? []);
 					
 					return $path;
 				}
