@@ -760,8 +760,16 @@ class DetailController extends FindController {
 			if (!($limit = ini_get('max_execution_time'))) { $limit = 30; }
 			set_time_limit($limit * 2);
 			$o_zip = new ZipStream();
+			$seen_names = [];
 			foreach($file_paths as $path => $name) {
-				$o_zip->addFile($path, $name);
+				$c = 0;
+				$n = $name;
+				while($seen_names[$n] ?? false) {
+					$c++;
+					$n = "{$name}_{$c}";
+				};
+				$seen_names[$n] = true;
+				$o_zip->addFile($path, $n);
 			}
 			$this->view->setVar('zip_stream', $o_zip);
 			$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t->get('idno')).'.zip');
