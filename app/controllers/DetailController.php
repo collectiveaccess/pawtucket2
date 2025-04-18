@@ -763,10 +763,11 @@ class DetailController extends FindController {
 			$seen_names = [];
 			foreach($file_paths as $path => $name) {
 				$c = 0;
-				$n = $name;
+				$n = pathinfo($name, PATHINFO_FILENAME);
+				$ext = pathinfo($name, PATHINFO_EXTENSION);
 				while($seen_names[$n] ?? false) {
 					$c++;
-					$n = "{$name}_{$c}";
+					$n = "{$name}_{$c}.{$ext}";
 				};
 				$seen_names[$n] = true;
 				$o_zip->addFile($path, $n);
