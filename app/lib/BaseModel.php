@@ -1298,6 +1298,7 @@ class BaseModel extends BaseObject {
 	 */
 	static public function getIDsForIdnos($idnos, $options=null) {
 	    if (!is_array($idnos) && strlen($idnos)) { $idnos = [$idnos]; }
+	    if(!is_array($idnos)) { return null; }
 	    
 	    $access_values = caGetOption('checkAccess', $options, null);
 
@@ -1307,7 +1308,7 @@ class BaseModel extends BaseObject {
 		$table_name = get_called_class();
 		
 		if ($restrict_to_types = caGetOption('restrictToTypes', $options, null)) {
-			$restrict_to_types = caMakeTypeIDList($table_name, $restrict_to_types);
+			$restrict_to_types = caMakeTypeIDList($table_name, $restrict_to_types, $options);
 		}
 		
 		if (!($t_instance = Datamodel::getInstanceByTableName($table_name, true))) { return null; }
@@ -2324,9 +2325,12 @@ class BaseModel extends BaseObject {
 	/**
 	 *
 	 */
-	private function _processDatabaseException($e, $o_db) {
+	private function _processDatabaseException(DatabaseException $e, Db $o_db, ?string $source=null) {
+		$context = $e->getContext();
+		if(is_null($source)) { $source = $e->getContext(); }
 		switch($e->getNumber()) {
 			case 251: // Duplicate key error
+			case 1062:
 				$indices = $o_db->getIndices($this->tableName());	// try to get key info
 
 				if (preg_match("/for key [']{0,1}([\w]+)[']{0,1}$/", $e->getMessage(), $matches)) {
@@ -2345,10 +2349,11 @@ class BaseModel extends BaseObject {
 				} else {
 					$msg = $e->getMessage();
 				}
-				$this->postError($e->getNumber(), $msg, $e->getContext());
-				$o_db->postError($e->getNumber(), $msg, $e->getContext());
+				$this->postError($e->getNumber(), $msg, $context, $source);
+				$o_db->postError($e->getNumber(), $msg, $context, $source);
 				break;
 			case 250: // Invalid foreign key error
+			case 1452:
 				$msg = $e->getMessage();
 				if (preg_match("!FOREIGN KEY \([`]*([A-Za-z0-9_]+)!", $msg, $m)) {
 					if ($m[1] === 'type_id') {
@@ -2357,12 +2362,12 @@ class BaseModel extends BaseObject {
 						$msg = _t('Invalid relationship reference for %1', $m[1]);
 					}
 				}
-				$this->postError($e->getNumber(), $msg, $e->getContext());
-				$o_db->postError($e->getNumber(), $msg, $e->getContext());
+				$this->postError($e->getNumber(), $msg, $context, $source);
+				$o_db->postError($e->getNumber(), $msg, $context, $source);
 				break;
 			default:
-				$this->postError($e->getNumber(), $e->getMessage(), $e->getContext());
-				$o_db->postError($e->getNumber(), $e->getMessage(), $e->getContext());
+				$this->postError($e->getNumber(), $e->getMessage(), $context, $source);
+				$o_db->postError($e->getNumber(), $e->getMessage(), $context, $source);
 				break;
 		}
 		return false;
@@ -2462,7 +2467,7 @@ class BaseModel extends BaseObject {
 		foreach($this->FIELDS as $vs_field => $va_attr) {
 
 			$vs_field_type = $va_attr["FIELD_TYPE"];				# field type
-			$vs_field_value = $this->get($vs_field, array("TIMECODE_FORMAT" => "RAW"));
+			$vs_field_value = self::get($vs_field, array("TIMECODE_FORMAT" => "RAW"));
 			
 			if (isset($va_attr['DONT_PROCESS_DURING_INSERT_UPDATE']) && (bool)$va_attr['DONT_PROCESS_DURING_INSERT_UPDATE']) { continue; }
 			
@@ -2752,7 +2757,7 @@ class BaseModel extends BaseObject {
 			try {
 				$o_db->query($vs_sql);
 			} catch (DatabaseException $e) {
-				$this->_processDatabaseException($e, $o_db);
+				$this->_processDatabaseException($e, $o_db, caGetOption('source', $pa_options, null));
 			}
 			
 			if ($this->numErrors() == 0) {
@@ -2900,7 +2905,7 @@ class BaseModel extends BaseObject {
 	 *		force = if set field values are not verified prior to performing the update
 	 *		dontLogChange = don't log change in change log. [Default is false]
 	 *      dontUpdateHistoryCurrentValueTracking = Skip updating current value tracking caches. Used internally when deleting rows. [Default is false]
-	 *		dontDoSearchIndexing = if set to true then no search indexing on the inserted record is performed. [Default is false]
+	 *		dontDoSearchIndexing = if set to true then no search indexing on the updated record is performed. [Default is false]
 	 * @return bool success state
 	 */
 	public function update($pa_options=null) {
@@ -3338,7 +3343,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 				try {
 					$o_db->query($vs_sql);
 				} catch(DatabaseException $e) {
-					$this->_processDatabaseException($e, $o_db);
+					$this->_processDatabaseException($e, $o_db, caGetOption('source', $pa_options, null));
 				}
 				
 				if ($this->numErrors()) {
@@ -3612,22 +3617,29 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 						WHERE
 							(".$va_relationship["many_table_field"]." = ".$this->getPrimaryKey(1).")
 					");
-					
 					$pa_table_list[$vs_many_table.'/'.$va_relationship["many_table_field"]] = true;
 
 					if ($qr_record_check->numRows() > 0) {
 						if ($pb_delete_related) {
-							while($qr_record_check->nextRow()) {
-								if ($t_related->load($qr_record_check->get($t_related->primaryKey()))) {
-									$t_related->delete($pb_delete_related, array_merge($pa_options, array('hard' => true)), null, $pa_table_list);
-									
-									if ($t_related->numErrors()) {
-										$this->postError(790, _t("Can't delete item because items related to it have sub-records (%1)", $vs_many_table),"BaseModel->delete()");
-										if ($vb_we_set_transaction) { $this->removeTransaction(false); }
-										if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
-										return false;
+							if((SearchIndexer::isIndexed($vs_many_table) || $t_related->getProperty('LOG_CHANGES_TO_SELF')) || !in_array($vs_many_table, ['ca_acl']) ) {
+								while($qr_record_check->nextRow()) {
+									if ($t_related->load($qr_record_check->get($t_related->primaryKey()))) {
+										$t_related->delete($pb_delete_related, array_merge($pa_options, array('hard' => true)), null, $pa_table_list);
+										
+										if ($t_related->numErrors()) {
+											$this->postError(790, _t("Can't delete item because items related to it have sub-records (%1)", $vs_many_table),"BaseModel->delete()");
+											if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+											if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+											return false;
+										}
 									}
 								}
+							} else {
+								$o_db->query("
+									DELETE FROM {$vs_many_table}
+									WHERE
+										({$va_relationship['many_table_field']} = ".$this->getPrimaryKey(1).")
+								");
 							}
 						} else {
 							$this->postError(780, _t("Can't delete item because it is in use (%1)", $vs_many_table),"BaseModel->delete()");
@@ -3646,7 +3658,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 		try {
 			$o_db->query($vs_sql);
 		} catch(DatabaseException $e) {
-			$this->_processDatabaseException($e, $o_db);
+			$this->_processDatabaseException($e, $o_db, caGetOption('source', $pa_options, null));
 		}
 		
 		if ($this->numErrors() > 0) {
@@ -4098,9 +4110,9 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 				return $va_media_info[$ps_version];
 			} else {
 				// Try key as passed, then all UPPER and all lowercase
-				if($vs_v = $va_media_info[$ps_version][$ps_property]) { return $vs_v; }
-				if($vs_v = $va_media_info[$ps_version][strtoupper($ps_property)]) { return $vs_v; }
-				if($vs_v = $va_media_info[$ps_version][strtolower($ps_property)]) { return $vs_v; }
+				if($vs_v = ($va_media_info[$ps_version][$ps_property] ?? null)) { return $vs_v; }
+				if($vs_v = ($va_media_info[$ps_version][strtoupper($ps_property)] ?? null)) { return $vs_v; }
+				if($vs_v = ($va_media_info[$ps_version][strtolower($ps_property)] ?? null)) { return $vs_v; }
 			}
 		} else {
 			return $va_media_info;
@@ -4417,6 +4429,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 	 *		these_versions_only = if set to an array of valid version names, then only the specified versions are updated with the currently updated file; ignored if no media already exists
 	 *		dont_allow_duplicate_media = if set to true, and the model has a field named "md5" then media will be rejected if a row already exists with the same MD5 signature
 	 *		skipWhen = skip processing of specific versions of media when file size exceeds threshold and use an existing version in its place. An array should be set, indexed by version name. Each skipped version should have an array with two keys, "threshold" (size in bytes) and "replaceWithVersion" (the version to use). [Default is null]
+	 *		skipUrlIfMediaExistsAsRepresentation = When media is a URL, check if downloaded media already exists as an object representation before processing. [Default is false]
 	 */
 	public function _processMedia($ps_field, $pa_options=null) {
 		global $AUTH_CURRENT_USER_ID;
@@ -4498,6 +4511,13 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 						$vn_url_fetched_on = time();
 						
 						$this->_SET_FILES[$ps_field]['tmp_name'] = $vs_tmp_file;
+						if((bool)$this->_CONFIG->get('skip_remote_url_if_media_exists_as_representation')) {
+							if(ca_object_representations::mediaExists($vs_tmp_file)) {
+								$this->postError(1600, _t('Media already exists as representation'), "BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);								
+								set_time_limit($vn_max_execution_time);
+								return false;
+							}
+						}
 						$vb_is_fetched_file = true;
 					} catch(Exception $e) {
 						$this->postError(1600, $e->getMessage(), "BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
@@ -4943,7 +4963,10 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 							}
 							$magic = rand(0,99999);
 							$filepath = $vi["absolutePath"]."/".$dirhash."/".$magic."_".$this->_genMediaName($ps_field)."_".$v;
-
+	
+							if($cs = $this->_CONFIG->get('force_image_to_colorspace')) {
+								$m->set('colorspace', $cs);
+							}
 							if (!($vs_output_file = $m->write($filepath, $output_mimetype, $va_media_write_options))) {
 								$this->postError(1600,_t("Couldn't write file: %1", join("; ", $m->getErrors())),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 								$m->cleanup();
@@ -6624,8 +6647,8 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 								$id = $t->get($field);
 							} elseif($is_metadata_value) {
 								$t_attr = new ca_attributes($this->get('attribute_id'));
-								if(!($row_id = $t_attr->get('row_id'))) { return false; }
-								if(!$t->load($row_id)) { return false; }
+								if(!($xrow_id = $t_attr->get('row_id'))) { return false; }
+								if(!$t->load($xrow_id)) { return false; }
 								$id = $t->get($field);
 							} else {
 								$id = $this->get($field);
@@ -6657,15 +6680,16 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 						$cur_table = $primary_table = $this->tableName();
 						$cur_table_pk = $primary_table_pk = $this->primaryKey();
 						
+						$xrow_id = $this->getPrimaryKey();
 						if($is_metadata_value && (($id = $this->get('attribute_id')) > 0)) {
 							$t_attr = new ca_attributes($id);
 							$cur_table = $primary_table = Datamodel::getTableName($t_attr->get('table_num'));
 							$cur_table_pk = $primary_table_pk = Datamodel::primaryKey($t_attr->get('table_num'));
-							$row_id = $t_attr->get('row_id');
+							$xrow_id = $t_attr->get('row_id');
 						} elseif ($is_metadata && (($id = $this->get('row_id')) > 0)) {	// At a minimum always log self as subject
 							$cur_table = $primary_table = Datamodel::getTableName($this->get('table_num'));
 							$cur_table_pk = $primary_table_pk = Datamodel::primaryKey($this->get('table_num'));
-							$row_id = $this->get('row_id');
+							$xrow_id = $this->get('row_id');
 						}
 
 						$sql = "SELECT {$dest_table}.{$dest_primary_key} FROM {$cur_table}\n";
@@ -6679,7 +6703,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 						}
 						$sql .= "WHERE {$primary_table}.{$primary_table_pk} = ?";
 
-						if ($qr_subjects = $o_db->query($sql, [$row_id])) {
+						if ($qr_subjects = $o_db->query($sql, [$xrow_id])) {
 							if (!isset($subjects[$dest_table_num]) || !is_array($subjects[$dest_table_num])) { $subjects[$dest_table_num] = []; }
 							while($qr_subjects->nextRow()) {
 								if (($id = $qr_subjects->get($dest_primary_key)) > 0) {
@@ -6687,7 +6711,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 								}
 							}
 						} else {
-							throw new ApplicationException(_t('Error is subject logging: %1', $sql));
+							throw new ApplicationException(_t('Error in subject logging: %1', $sql));
 						}
 					}
 				}
@@ -6749,7 +6773,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 			$snapshot = $this->getSnapshot(($change_type === 'U') ? true : false); 
 		}
 
-		if (!(($change_type == 'U') && (!sizeof($snapshot)))) {
+		if (!(($change_type == 'U') && (!sizeof($snapshot))) || caGetOption('touch', $options, false)) {
 			$snapshot = caSerializeForDatabase($snapshot, true);
 			// Create primary log entry
 			$this->opqs_change_log->execute(
@@ -9102,7 +9126,6 @@ $pa_options["display_form_field_tips"] = true;
 							}
 							
 							if (isset($pa_options['usewysiwygeditor']) && $pa_options['usewysiwygeditor']) {
-								AssetLoadManager::register("ckeditor");
 								$vs_width = $vn_display_width;
 								$vs_height = $vn_display_height;
 								if (!preg_match("!^[\d\.]+px$!i", $vs_width)) {
@@ -9111,27 +9134,107 @@ $pa_options["display_form_field_tips"] = true;
 								if (!preg_match("!^[\d\.]+px$!i", $vs_height)) {
 									$vs_height = ((int)$vs_height * 16)."px";
 								}
+								$attr = [
+									'width' => $vs_width, 
+									'height' => $vs_height, 
+									'value' => $this->escapeHTML($vm_field_value), 
+									'id' => $pa_options['id'] ?? null,
+									'class' => $pa_options['classname'] ?? null
+								];
+								$opts = [
+									'textAreaTagName' => caGetOption('textAreaTagName', $pa_options, null)
+								];
 								
-								if(!is_array($va_toolbar_config = $this->getAppConfig()->getAssoc('wysiwyg_editor_toolbar'))) { $va_toolbar_config = array(); }
-								
-								
-								$vs_element .= "<script type='text/javascript'>jQuery(document).ready(function() {
-								var ckEditor = CKEDITOR.replace( '".$pa_options['id']."',
-								{
-									toolbar : ".json_encode(array_values($va_toolbar_config)).",
-									width: '{$vs_width}',
-									height: '{$vs_height}',
-									toolbarLocation: 'top',
-									enterMode: CKEDITOR.ENTER_BR,
-                                    lookupUrls: ".json_encode(caGetLookupUrlsForTables()).",
-                                    key: '".$pa_options['id']."_lookup'
-								});
-						
-								ckEditor.on('instanceReady', function(){ 
-									 ckEditor.document.on( 'keydown', function(e) {if (caUI && caUI.utils) { caUI.utils.showUnsavedChangesWarning(true); } });
-								});
- 	});									
-</script>";
+								$o_config = Configuration::load();
+								$use_editor = $o_config->get('wysiwyg_editor');
+								switch($use_editor) {
+									case 'ckeditor':
+										AssetLoadManager::register("ck5");
+										
+										$vs_element = "
+											<script type=\"module\">
+												import {
+												 ClassicEditor, BlockQuote, BlockToolbar, Bold, Code, Essentials, FontBackgroundColor, Font, FontColor, FontFamily, 
+												 FontSize, GeneralHtmlSupport, Heading, Highlight, HtmlComment, ImageBlock, ImageCaption, ImageInline, 
+												 ImageTextAlternative, Indent, IndentBlock, Italic, Link, List, ListProperties, MediaEmbed, 
+												 Paragraph, PasteFromOffice, RemoveFormat, SelectAll, SourceEditing, SpecialCharacters, SpecialCharactersArrows, 
+												 SpecialCharactersCurrency, SpecialCharactersEssentials, SpecialCharactersLatin, SpecialCharactersMathematical, 
+												 SpecialCharactersText, Strikethrough, Subscript, Superscript, TextTransformation, TodoList, Underline, Undo, LinkImage
+												} from 'ckeditor5';
+												
+												import { ResizableHeight} from 'ckresizeable';
+											
+												ClassicEditor
+													.create( document.querySelector( '#".($pa_options['id'] ?? null)."' ), {
+														plugins: [ 
+															BlockQuote, BlockToolbar, Bold, Code, Essentials, FontBackgroundColor, FontColor, FontFamily, FontSize, 
+															GeneralHtmlSupport, Heading, Highlight, HtmlComment, ImageBlock, ImageCaption, ImageInline, 
+															ImageTextAlternative, Indent, IndentBlock, Italic, Link, List, ListProperties, MediaEmbed, 
+															Paragraph, PasteFromOffice, RemoveFormat, SelectAll, SourceEditing, SpecialCharacters, 
+															SpecialCharactersArrows, SpecialCharactersCurrency, SpecialCharactersEssentials, 
+															SpecialCharactersLatin, SpecialCharactersMathematical, SpecialCharactersText, Strikethrough, 
+															Subscript, Superscript, TextTransformation, TodoList, Underline, Undo, LinkImage, ResizableHeight
+														],
+														toolbar: {
+															items: ".json_encode(caGetCK5Toolbar()).",
+															shouldNotGroupWhenFull: true
+														},
+														ResizableHeight: {
+															resize: true,
+															height: '{$height_w_suffix}',
+															minHeight: '50px',
+															maxHeight: '1500px'
+														}
+													} ).then(editor => {
+														// Don't let CKEditor pollute the top-level DOM with editor bits
+														const body = editor.ui.view.body._bodyCollectionContainer
+														body.remove()
+														editor.ui.view.element.appendChild(body);
+														
+														// Add current instance to list of initialized editors
+														if(!caUI) { caUI = {}; }
+														if(!caUI.ckEditors) { caUI.ckEditors = []; }
+														caUI.ckEditors.push(editor);
+													}).catch((e) => console.log('Error initializing CKEditor: ' + e));
+											</script>\n";
+															
+											$vs_element .= "<div style='width: {$vs_width}; overflow-y: auto;' class='ckeditor-wrapper'>".caHTMLTextInput(
+												$pa_options["name"], 
+												$attr, $opts
+											)."</div>\n";
+										break;
+									case 'quilljs';
+									default:
+										AssetLoadManager::register("quilljs");
+										$quill_opts = [
+											'viewSource' => true,
+											'okText' => _t('OK'),
+											'cancelText' => _t('Cancel'),
+											'buttonHTML' => _t('HTML'),
+											'buttonTitle' => _t('Show HTML source')
+										];
+										
+										$vs_element = "<div id='".$pa_options['id']."_container' class='ql-ca-container' style='width: {$vs_width};'>";
+										$vs_element .= "
+											<script type='text/javascript'>
+												caUI.newTextEditor(
+													'".$pa_options['id']."_editor', 
+													'".$pa_options['id']."',
+													'".$attr['value']."',
+													".json_encode(caGetQuillToolbar()).",
+													".json_encode($quill_opts)."
+												);
+											</script>\n";
+										$attr['style'] = 'display: none;';
+										$vs_element .= "<div id='".$pa_options['id']."_editor' style='height: {$vs_height};' class='ql-ca-editor'></div>";
+												
+										$vs_element .= caHTMLTextInput(
+											$pa_options['id'].'', 
+											$attr, $opts
+										);
+										$vs_element .= "</div>\n";
+										break;
+								}
 							}
 						}
 					}
@@ -9335,7 +9438,7 @@ $pa_options["display_form_field_tips"] = true;
 
 
 						if (!isset($pa_options['no_tooltips']) || !$pa_options['no_tooltips']) {
-							TooltipManager::add('#'.$vs_field_id, "<h3>{$vs_field_label}</h3>".((isset($pa_options["description"]) && $pa_options["description"]) ? $pa_options["description"] : $va_attr["DESCRIPTION"]), $pa_options['tooltip_namespace']);
+							TooltipManager::add('#'.$vs_field_id, "<div class='tooltipHead'>{$vs_field_label}</div>".((isset($pa_options["description"]) && $pa_options["description"]) ? $pa_options["description"] : $va_attr["DESCRIPTION"]), $pa_options['tooltip_namespace']);
 						}
 					}
 
@@ -9552,7 +9655,7 @@ $pa_options["display_form_field_tips"] = true;
 			if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
 			if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 			if(!is_null($ps_source_info)){ $t_item_rel->set("source_info",$ps_source_info); }
-			$t_item_rel->insert();
+			$t_item_rel->insert(['source' => $pm_rel_table_name_or_num]);
 			
 			if ($t_item_rel->numErrors() > 0) {
 				$this->errors = array_merge($this->errors(), $t_item_rel->errors());
@@ -9584,7 +9687,7 @@ $pa_options["display_form_field_tips"] = true;
 						$t_item_rel->set('is_primary', $is_primary);	
 					}
 					
-					$t_item_rel->insert();
+					$t_item_rel->insert(['source' => $pm_rel_table_name_or_num]);
 					
 					if ($t_item_rel->numErrors() > 0) {
 						$this->errors = array_merge($this->errors(), $t_item_rel->errors());
@@ -9597,7 +9700,7 @@ $pa_options["display_form_field_tips"] = true;
 					if ($this->tableName() == $va_rel_info['rel_keys']['one_table']) {
 						if ($t_item_rel->load($pn_rel_id)) {
 							$t_item_rel->set($va_rel_info['rel_keys']['many_table_field'], $this->getPrimaryKey());
-							$t_item_rel->update();
+							$t_item_rel->update(['source' => $pm_rel_table_name_or_num]);
 							
 							if ($t_item_rel->numErrors() > 0) {
 								$this->errors = array_merge($this->errors(), $t_item_rel->errors());
@@ -9607,7 +9710,7 @@ $pa_options["display_form_field_tips"] = true;
 							$t_item_rel->set($t_item_rel->getLeftTableFieldName(), $this->getPrimaryKey());
 							$t_item_rel->set($t_item_rel->getRightTableFieldName(), $pn_rel_id);
 							if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }
-							$t_item_rel->insert();
+							$t_item_rel->insert(['source' => $pm_rel_table_name_or_num]);
 							
 							if ($t_item_rel->numErrors() > 0) {
 								$this->errors = array_merge($this->errors(), $t_item_rel->errors());
@@ -9617,7 +9720,7 @@ $pa_options["display_form_field_tips"] = true;
 						return $t_item_rel;
 					} else {
 						$this->set($va_rel_info['rel_keys']['many_table_field'], $pn_rel_id);
-						$this->update();
+						$this->update(['source' => $pm_rel_table_name_or_num]);
 					
 						if ($this->numErrors() > 0) {
 							$this->errors = array_merge($this->errors(), $t_item_rel->errors());
@@ -10510,37 +10613,121 @@ $pa_options["display_form_field_tips"] = true;
 	 * Returns a list of tables for which relationships exist.
 	 *
 	 * @param array $pa_options Options are:
-	 *		None yet
+	 *		restrictToTypes = Only consider relationships to related records with specified types. Pass restrictions in an array with keys set to table names (ex. "ca_objects") and values as lists of types for each table. [Default is null]
+	 *		restrictToRelationshipTypes = Only consider relationships to related records with specified relationship types. Pass restrictions in an array with keys set to table names (ex. "ca_objects") and values as lists of relationship types for each table. [Default is null]
+	 *		excludeTypes = Only consider relationships to related records that are not in the list of types. Pass restrictions in an array with keys set to table names (ex. "ca_objects") and values as lists of types to exclude for each table. [Default is null]
+	 *		excludeRelationshipTypes = Only consider relationships to related records that are not in the list of relationship types. Pass restrictions in an array with keys set to table names (ex. "ca_objects") and values as lists of relationship types to exclude for each table. [Default is null]
+	 *		manyManyRelationshipsOnly = Only consider many-to-many [Default is false]
 	 *
 	 * @return mixed Array of table names for which this row has at least one relationship, with keys set to table names and values set to the number of relationships per table.
 	 */
-	public function hasRelationships($pa_options=null) {
-		$va_one_to_many_relations = Datamodel::getOneToManyRelations($this->tableName());
-
-		if (is_array($va_one_to_many_relations)) {
+	public function hasRelationships(?array $options=null) {		
+		$table = $this->tableName();
+		$one_to_many_relations = Datamodel::getOneToManyRelations($table);
+		
+		$restrict_to_types = caGetOption('restrictToTypes', $options, null);
+		$restrict_to_relationship_types = caGetOption('restrictToRelationshipTypes', $options, null);
+		$exclude_types = caGetOption('excludeTypes', $options, null);
+		$restrict_to_relationship_types = caGetOption('excludeRelationshipTypes', $options, null);
+	
+		$many_many_only = caGetOption('manyManyRelationshipsOnly', $options, false);
+		
+		$tables = [];
+		if (is_array($one_to_many_relations)) {
 			$o_db = $this->getDb();
-			$vn_id = $this->getPrimaryKey();
-			$o_trans = $this->getTransaction();
+			$id = $this->getPrimaryKey();
 			
-			$va_tables = array();
-			foreach($va_one_to_many_relations as $vs_many_table => $va_info) {
-				foreach($va_info as $va_relationship) {
+			foreach($one_to_many_relations as $many_table => $info) {
+				foreach($info as $relationship) {
 					# do any records exist?
-					$vs_rel_pk = Datamodel::primaryKey($vs_many_table);
+					$t = $relationship['many_table_field'];
+					$rel_pk = Datamodel::primaryKey($many_table);
+					if($many_many_only && !Datamodel::isRelationship($many_table)) { continue; }
 					
 					$qr_record_check = $o_db->query("
-						SELECT {$vs_rel_pk}
-						FROM {$vs_many_table}
+						SELECT {$rel_pk}
+						FROM {$many_table}
 						WHERE
-							({$va_relationship['many_table_field']} = ?)"
-					, array((int)$vn_id));
-					
-					if (($vn_count = $qr_record_check->numRows()) > 0) {
-						$va_tables[$vs_many_table] = $vn_count;	
+							({$t} = ?)"
+					, [(int)$id]);
+	
+					if (($count = $qr_record_check->numRows()) > 0) {
+						$tables[$many_table] = $count;	
 					}
 				}
 			}
-			return $va_tables;
+
+			if(
+				(is_array($restrict_to_types) && sizeof($restrict_to_types)) || 
+				(is_array($exclude_types) && sizeof($exclude_types)) ||
+				(is_array($restrict_to_relationship_types) && sizeof($restrict_to_relationship_types)) || 
+				(is_array($restrict_to_relationship_types) && sizeof($restrict_to_relationship_types))
+			) {
+				if(is_array($many_to_many_relations = Datamodel::getManyToManyRelations($table))) {
+					foreach($many_to_many_relations as $r) {
+						$rtypes = $etypes = null;
+						$side = ($r['left_table'] === $table) ? 'right' : 'left';
+						
+						$rt = $r["{$side}_table"];
+						$lt = $r["linking_table"];
+						$rtfld = $r["{$side}_table_field"];
+						$ltrfld = $r["linking_table_{$side}_field"];
+						
+						$lt_k = $r["linking_table_".(($side == 'left') ? 'right' : 'left')."_field"];
+						
+						$sql_wheres = ["{$lt}.{$lt_k} = ?"];
+						$params = [(int)$id];
+						
+						$do_check = false;
+						
+						if($delete_sql = (Datamodel::getFieldNum($rt, 'deleted')) ? "{$rt}.deleted = 0" : '') {
+							$sql_wheres[] = $delete_sql;
+						}
+						if(is_array($restrict_to_types[$rt] ?? null))  {
+							if(is_array($rtypes = caMakeTypeIDList($rt, $restrict_to_types[$rt])) && sizeof($rtypes)) {
+								$sql_wheres[] = "({$rt}.type_id IN (?))";
+								$params[] = $rtypes;
+								$do_check = true;
+							}
+						} elseif(is_array($exclude_types[$rt] ?? null)) {
+							if(is_array($etypes = caMakeTypeIDList($rt, $exclude_types[$rt])) && sizeof($etypes)) {
+								$sql_wheres[] = "({$rt}.type_id NOT IN (?))";
+								$params[] = $etypes;
+								$do_check = true;
+							}
+						}
+						
+						if(Datamodel::getFieldNum($lt, 'type_id')) {
+							if(is_array($restrict_to_relationship_types[$rt] ?? null))  {
+								if(is_array($rreltypes = caMakeRelationshipTypeIDList($lt, $restrict_to_relationship_types[$rt])) && sizeof($rreltypes)) {
+									$sql_wheres[] = "({$lt}.type_id IN (?))";
+									$params[] = $rreltypes;
+									$do_check = true;
+								}
+							} elseif(is_array($exclude_relationship_types[$rt] ?? null)) {
+								if(is_array($ereltypes = caMakeRelationshipTypeIDList($lt, $exclude_relationship_types[$rt])) && sizeof($ereltypes)) {
+									$sql_wheres[] = "({$lt}.type_id NOT IN (?))";
+									$params[] = $ereltypes;
+									$do_check = true;
+								}
+							}
+						}
+						if($do_check) {
+							$qr_record_check = $o_db->query("
+								SELECT {$lt}.relation_id
+								FROM {$lt}
+								INNER JOIN {$rt} ON {$rt}.{$rtfld} = {$lt}.{$ltrfld}
+								WHERE
+									".join(" AND ", $sql_wheres), $params);
+									
+							if (($count = $qr_record_check->numRows()) > 0) {
+								$tables[$lt] = $count;	
+							}
+						}
+					}
+				}
+			}
+			return $tables;
 		}
 		
 		return null;
@@ -10569,7 +10756,6 @@ $pa_options["display_form_field_tips"] = true;
 		if (is_array($many_to_many_relations)) {
 			$o_db = $this->getDb();
 			$id = (int)$this->getPrimaryKey();
-			$o_trans = $this->getTransaction();
 			$tables = [];
 			foreach($many_to_many_relations as $rel_info) {
 				$rel_pk = Datamodel::primaryKey($many_table = $rel_info['linking_table']);
@@ -10803,7 +10989,8 @@ $pa_options["display_form_field_tips"] = true;
 		}
 		
 		if ($pn_user_id) {
-			if ($t_ixt->get('user_id') != $pn_user_id) {
+			$tag_user_id = $t_ixt->get('user_id');
+			if ($tag_user_id && ($tag_user_id != $pn_user_id)) {
 				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
 				return false;
 			}
@@ -10854,7 +11041,8 @@ $pa_options["display_form_field_tips"] = true;
 		}
 		
 		if ($g_request && $g_request->isLoggedIn() && ($user_id = $g_request->getUserID())) {
-			if ($t_ixt->get('user_id') != $user_id) {
+			$tag_user_id = $t_ixt->get('user_id');
+			if ($tag_user_id && ($tag_user_id != $user_id)) {
 				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
 				return false;
 			}
@@ -10899,7 +11087,8 @@ $pa_options["display_form_field_tips"] = true;
 		}
 		
 		if ($pn_user_id) {
-			if ($t_ixt->get('user_id') != $pn_user_id) {
+			$tag_user_id = $t_ixt->get('user_id');
+			if ($tag_user_id && ($tag_user_id != $pn_user_id)) {
 				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->removeTag()', 'ca_item_tags');
 				return false;
 			}
@@ -12120,6 +12309,36 @@ $pa_options["display_form_field_tips"] = true;
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
+	 * Return primary key and idno for record with idno following or preceding that of currently loaded record
+	 *
+	 * @param string $mode Either "next" or "previous"
+	 *
+	 * @return array Array with key 'id' with primary key of next or previous record, key 'idno' with idno of next or previous record; null if no record found
+	 */
+	public function getAdjacentByIdno(string $mode) : ?array {
+		if(!$this->getPrimaryKey()) { return null; }
+		$idno_fld = $this->getProperty('ID_NUMBERING_ID_FIELD');
+		if(!$idno_fld || !$this->hasField("{$idno_fld}_sort_num")) { return null; }
+		$pk = $this->primaryKey();
+		$table = $this->tableName();
+		$db = $this->getDb();
+		$n = $this->get("{$idno_fld}_sort_num");
+		$deleted = ($this->hasField('deleted')) ? ' AND deleted = 0' : '';
+		if (strtolower($mode) === 'previous') {
+			$qr = $db->query("SELECT {$pk}, {$idno_fld} FROM {$table} WHERE {$idno_fld}_sort_num < {$n} {$deleted} ORDER BY {$idno_fld}_sort_num DESC LIMIT 1");
+		} else {
+			$qr = $db->query("SELECT {$pk}, {$idno_fld} FROM {$table} WHERE {$idno_fld}_sort_num > {$n} {$deleted} ORDER BY {$idno_fld}_sort_num ASC LIMIT 1");
+		}
+		if($qr && $qr->nextRow()) {
+			return [
+				'id' => $qr->get($pk),
+				'idno' => $qr->get($idno_fld)
+			];
+		}
+		return null;
+	}
+	# --------------------------------------------------------------------------------------------
+	/**
 	 * Find row(s) with fields having values matching specific values. 
 	 * Results can be returned as model instances, numeric ids or search results (when possible).
 	 *
@@ -12205,6 +12424,9 @@ $pa_options["display_form_field_tips"] = true;
 		$ps_boolean 			= caGetOption('boolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
 		$o_trans 				= caGetOption('transaction', $pa_options, null);
 		$pa_check_access 		= caGetOption('checkAccess', $pa_options, null);
+		$ps_sort 				= caGetOption('sort', $pa_options, null);
+		$ps_sort_direction 		= caGetOption('sortDirection', $pa_options, 'ASC', ['validValues' => ['ASC', 'DESC']]);
+		
 		
 		$created_ts = $modified_ts = null;
 		if($created = caGetOption('created', $pa_options, null)) {
@@ -12234,8 +12456,13 @@ $pa_options["display_form_field_tips"] = true;
 		$vs_type_restriction_sql = '';
 		$va_type_restriction_params = [];
 		if ($va_restrict_to_types = caGetOption('restrictToTypes', $pa_options, null)) {
-			$include_subtypes = caGetOption('dontIncludeSubtypesInTypeRestriction', $pa_options, false);
-			if (is_array($va_restrict_to_types = caMakeTypeIDList($vs_table, $va_restrict_to_types, ['dontIncludeSubtypesInTypeRestriction' => $include_subtypes])) && sizeof($va_restrict_to_types)) {
+			$dont_include_subtypes_in_type_restriction = isset($pa_options['dontIncludeSubtypesInTypeRestriction']) ? (bool)$pa_options['dontIncludeSubtypesInTypeRestriction'] : null;
+			if(!is_null($dont_include_subtypes_in_type_restriction)) {
+				$include_subtypes = $dont_include_subtypes_in_type_restriction;
+			} else {
+				$include_subtypes = isset($pa_options['includeSubtypes']) ? (bool)$pa_options['includeSubtypes'] : true;
+			}
+			if (is_array($va_restrict_to_types = caMakeTypeIDList($vs_table, $va_restrict_to_types, ['dontIncludeSubtypesInTypeRestriction' => !$include_subtypes])) && sizeof($va_restrict_to_types)) {
 				$vs_type_restriction_sql = "{$vs_table}.".$t_instance->getTypeFieldName()." IN (?)";
 				$va_type_restriction_params[] = $va_restrict_to_types;
 			}
@@ -12362,7 +12589,7 @@ $pa_options["display_form_field_tips"] = true;
 				$vs_op = strtolower($va_field_value[0]);
 				$vm_value = $va_field_value[1];
 				
-				if (($vs_op == '=') && ($vm_value == '*')) { $vb_find_all = true; break(2); }
+				if (($vs_op == '=') && ($vm_value == '*') && (sizeof($pa_values) === 1)) { $vb_find_all = true; break(2); }
 				
 				if($vs_list_code = $t_instance->getFieldInfo($vs_field, 'LIST_CODE')) {
 					if (!caIsValidSqlOperator($vs_op, ['type' => 'numeric', 'nullable' => $t_instance->getFieldInfo($vs_field, 'IS_NULL'), 'isList' => is_array($vm_value)])) { throw new ApplicationException(_t('Invalid numeric operator: %1', $vs_op)); }
@@ -12478,20 +12705,19 @@ $pa_options["display_form_field_tips"] = true;
 		$vs_sql = "SELECT {$select_flds} FROM {$vs_table} ".((sizeof($va_sql) > 0) ? " WHERE (".join(" AND ", $va_sql).")" : "");
 
 		$vs_orderby = '';
-		if ($vs_sort = caGetOption('sort', $pa_options, null)) {
-			$vs_sort_direction = caGetOption('sortDirection', $pa_options, 'ASC', array('validValues' => array('ASC', 'DESC')));
-			$va_tmp = explode(".", $vs_sort);
+		if ($ps_sort) {
+			$va_tmp = explode(".", $ps_sort);
 			if (sizeof($va_tmp) > 0) {
 				switch($va_tmp[0]) {
 					case $vs_table:
 						if ($t_instance->hasField($va_tmp[1])) {
-							$vs_orderby = " ORDER BY `{$va_tmp[1]}` {$vs_sort_direction}";
+							$vs_orderby = " ORDER BY `{$va_tmp[1]}` {$ps_sort_direction}";
 						}
 						break;
 					default:
 						if (sizeof($va_tmp) == 1) {
 							if ($t_instance->hasField($va_tmp[0])) {
-								$vs_orderby = " ORDER BY `{$vs_sort}` {$vs_sort_direction}";
+								$vs_orderby = " ORDER BY `{$ps_sort}` {$ps_sort_direction}";
 							}
 						}
 						break;
@@ -12596,7 +12822,7 @@ $pa_options["display_form_field_tips"] = true;
 					if ($limit && (sizeof($va_ids) >= $limit)) { break; }
 				}
 				if ($ps_return_as == 'searchresult') {
-					return $t_instance->makeSearchResult($t_instance->tableName(), array_values($va_ids));
+					return $t_instance->makeSearchResult($t_instance->tableName(), array_values($va_ids), ['sort' => $ps_sort, 'sortDirection' => $ps_sort_direction]);
 				} else {
 					return array_unique(array_values($va_ids));
 				}
