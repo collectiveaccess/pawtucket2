@@ -3,6 +3,7 @@ $submissions_by_form = $this->getVar('submissions_by_form');
 $completed_status_codes = $this->getVar('completed_status_list');
 $available_forms = $this->getVar('available_forms');
 $introduction_global_value = $this->getVar('introduction_global_value');
+$access_values = caGetUserAccessValues($this->request);
 ?>
 		<div class="row">
 			<div class="col">
@@ -60,6 +61,11 @@ if (!$this->request->isLoggedIn()) {
 				</div><!-- end btn-group -->
 			</div><!-- end col -->
 		</div><!-- end row -->
+		<div class="row">
+			<div class="col">
+				<?= _t("New submissions may be edited while their status is <i>submitted</i>.  Once the status changes to <i>under review</i>, <i>accepted</i>, or <i>rejected</i> you are no longer able to edit your submission."); ?>
+			</div><!-- end col -->
+		</div><!-- end row -->
 		<div class="row pt-2 pb-3">
 			<div class="col"><hr class="my-0"></div>
 		</div>
@@ -75,7 +81,7 @@ if (!$this->request->isLoggedIn()) {
 				<div class="col"><h3><?= caUcFirstUTF8Safe(caGetOption('shortNamePlural', $form_info, $form_code)); ?></h3></div>
 			</div>
 			<div class="row"><div class="col mb-5">
-				<table class="table table-striped align-middle">
+				<table class="table table-striped align-middle w-100">
 					<thead>
 						<tr>
 							<th><?= _t('Submission'); ?></th>
@@ -92,27 +98,36 @@ if (!$this->request->isLoggedIn()) {
 						$created = $qr->get("{$table}.created");
 						$modified = $qr->get("{$table}.lastModified");
 						$is_editable = !in_array($status_code, $completed_status_codes);
+						$id = $qr->get("{$table}.".$pk);
 ?>
 						<tr>
 <?php
 						$label = $qr->get("{$table}.idno");
-						if($tmp = $qr->get("{$table}.preferred_labels")){
-							$label .= ": ".$tmp;
-						}
-						if(!$label && ($table == "ca_occurrences")){
+						if($table != "ca_occurrences"){
+							if($tmp = $qr->get("{$table}.preferred_labels")){
+								$label .= ": ".$tmp;
+							}
+						}else{
 							$t->load($qr->get("{$table}.".$pk));
-							$label = $t->get("ca_occurrences.submitted_data", array('version' => "original", "return" => 'url', "returnAsArray" => false));
+							#if($tmp = $t->getWithTemplate("^ca_occurrences.submitted_data")){
+							#	$label .= ": ".$tmp;
+							#}
 						}
 						if (!$is_editable) {
 							print '<td>'.$label."</td>";
 						} else {
-							print '<td>'.caNavLink($this->request, $label, '', '*', '*', $form_code, ['id' => $id = $qr->get("{$table}.".$pk)])."</td>";
+							print '<td>'.caNavLink($this->request, $label, '', '*', '*', $form_code, ['id' => $id])."</td>";
 						}
 						print "<td>{$status}</td>";
 						print "<td>{$created}</td>";
 						print "<td>{$modified}</td>";
-					
-						print "<td class='contributeSubmit'>".($is_editable ? caNavLink($this->request, _t('Edit').' <i class="bi bi-arrow-right-square"></i>', 'btn btn-sm btn-white bg-transparent', '*', '*', $form_code, ['id' => $id]) : '')."</td>";
+						$link = "";
+						if(in_array($qr->get("{$table}.access"), $access_values)){
+							$link = caDetailLink($this->request, _t('View Published Record').' <i class="bi bi-arrow-right-square"></i>', 'btn btn-sm btn-white bg-transparent', $table, $id);
+						}elseif($is_editable){
+							$link = caNavLink($this->request, _t('Edit').' <i class="bi bi-arrow-right-square"></i>', 'btn btn-sm btn-white bg-transparent', '*', '*', $form_code, ['id' => $id]);
+						}
+						print "<td>".$link."</td>";
 ?>
 						</tr>
 <?php

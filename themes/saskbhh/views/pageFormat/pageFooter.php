@@ -52,7 +52,7 @@
 			</div>
 		</footer><!-- end footer -->
 		<section>
-			<div class="container-xl mt-4 pt-4">
+			<div class="container-xl mt-4 pt-4 mb-4">
 				<div class="row justify-content-center text-center text-secondary mb-4 pb-4 small">
 					<div class="col-8 col-md-12">
 						{{{footer_text}}}
@@ -69,6 +69,8 @@
 				</div>
 			</div>
 		</section>
+		<div id="contentWarningBanner" class="position-fixed bottom-0 w-100"><div role="alert" class="bg-gradient bg-dark m-0 p-2 text-light text-center">{{{content_warning_banner}}}</div></div>
+		
 		<script>
 			window.initApp();
 		</script>
