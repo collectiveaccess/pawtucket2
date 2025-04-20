@@ -206,7 +206,7 @@ class FileAttributeValue extends AttributeValue implements IAttributeValue {
 			||
 			(is_string($ps_value) && ($vb_is_file_path = isURL($ps_value)))
 			||
-			($vb_is_user_media = preg_match("!^".caGetUserDirectoryName()."/!", $ps_value))
+			(is_string($ps_value) && ($vb_is_user_media = preg_match("!^".caGetUserDirectoryName()."/!", $ps_value)))
 		) {
 			// got file
 			$vs_original_name = pathinfo(caGetOption('original_filename', $pa_options, null), PATHINFO_BASENAME);
@@ -259,10 +259,8 @@ class FileAttributeValue extends AttributeValue implements IAttributeValue {
 	 * @return string
 	 */
 	public function htmlFormElement($pa_element_info, $pa_options=null) {
-		//$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '');
-		
 		// TODO: this should be prettier
-		$vs_element = '<div>';
+		$vs_element = '<div '._caHTMLMakeAttributeString(['class' => caGetOption('class', $pa_options, null)]).'>';
 		$vs_element .= '<div>{'.$pa_element_info['element_id'].'}</div>';
 		$vs_element .= '<div id="{fieldNamePrefix}upload_control_{n}" class="attributeFileDownloadControl">'._t("Set file").': <input type="file" name="{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}"></div>' ;
 		$vs_element .= '</div>';
