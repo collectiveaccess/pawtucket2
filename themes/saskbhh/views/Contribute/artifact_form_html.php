@@ -49,104 +49,103 @@ $form_info = $this->getVar('form_info');
 				{{{form}}}
 					<div class='row mt-3'>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.repository:error}}}
-							<label class='form-label' for=''><?= _t("Repository name"); ?></label><br/>
+							<label class='form-label' for='ca_objects_repository[]'><?= _t("Repository name"); ?></label><br/>
 							{{{ca_objects.repository%class=form-control w-100}}}
+							{{{ca_objects.repository:error}}}
 						</div>										
 						<div class="col-sm-12 col-md-4 mb-3">
+							<label class='form-label' for='ca_objects_accession_num[]'><?= _t("Repository accession number"); ?></label>
+							{{{ca_objects.accession_num%class=form-control w-100}}}
 							{{{ca_objects.accession_num:error}}}
-							<label class='form-label' for='ca_objects_accession_num'><?= _t("Repository accession number"); ?></label>
-							{{{ca_objects.accession_num%&class=form-control w-100}}}
 						</div>
 						<div class="col-sm-12 col-md-4 mb-3">
+							<label class='form-label' for='ca_objects_storage[]'><?= _t("Repository storage location"); ?></label>
+							{{{ca_objects.storage%class=form-control w-100}}}
 							{{{ca_objects.storage:error}}}
-							<label class='form-label' for='ca_objects_accession_num'><?= _t("Repository storage location"); ?></label>
-							{{{ca_objects.storage%&class=form-control w-100}}}
 						</div>
 					</div>
 					<div class='row'>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.preferred_labels:error}}}
-							<label class='form-label' for='ca_objects_preferred_labels_name'><?= _t("Title"); ?></label>
-							{{{ca_objects.preferred_labels.name%&class=form-control w-100}}}
+							<label class='form-label' for='ca_objects.preferred_labels.name[]'><?= _t("Name / Title"); ?></label>
+							{{{ca_objects.preferred_labels.name%class=form-control w-100}}}
+							{{{ca_objects.preferred_labels.name:error}}}
 						</div>										
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.collector:error}}}
-							<label class='form-label' for=''><?= _t("Original collector"); ?></label><br/>
+							<label class='form-label' for='ca_objects_collector[]'><?= _t("Original collector"); ?></label><br/>
 							{{{ca_objects.collector%class=form-control w-100}}}
+							{{{ca_objects.collector:error}}}
 						</div>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.creator:error}}}
-							<label class='form-label' for=''><?= _t("Creator(s)"); ?></label><br/>
+							<label class='form-label' for='ca_objects_creator[]'><?= _t("Creator(s)"); ?></label><br/>
 							{{{ca_objects.creator%class=form-control w-100}}}
+							{{{ca_objects.creator:error}}}
 						</div>
 					</div>
 					<div class='row'>										
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.materials:error}}}
-							<label class='form-label' for=''><?= _t("Material(s)"); ?></label>
+							<label class='form-label' for='ca_objects_materials[]'><?= _t("Material(s)"); ?></label>
 							<div class="mb-2">{{{ca_objects.materials%class=form-select w-100}}}</div>
+							{{{ca_objects.materials:error}}}
 						</div>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.dimensions.measurement_notes:error}}}
-							<label class='form-label' for=''><?= _t("Measurements"); ?></label>
+							<label class='form-label' for='ca_objects_dimensions_measurement_notes[]'><?= _t("Measurements"); ?></label>
 							{{{ca_objects.dimensions.measurement_notes%class=form-control w-100}}}
+							{{{ca_objects.dimensions.measurement_notes:error}}}
 						</div>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.marksLabel:error}}}
-							<label class='form-label' for=''><?= _t("Marks, labels, or inscriptions"); ?></label>
+							<label class='form-label' for='ca_objects_marksLabel[]'><?= _t("Marks, labels, or inscriptions"); ?></label>
 							{{{ca_objects.marksLabel%class=form-control w-100}}}
+							{{{ca_objects.marksLabel:error}}}
 						</div>
 					</div>
 					<div class='row'>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.culture_notes:error}}}
-							<label class='form-label' for=''><?= _t("Associated Indigenous culture"); ?></label>
+							<label class='form-label' for='ca_objects_culture_notes[]'><?= _t("Associated Indigenous culture"); ?></label>
 							{{{ca_objects.culture_notes%class=form-control w-100}}}
+							{{{ca_objects.culture_notes:error}}}
 						</div>										
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.culture_yn:error}}}
-							<label class='form-label' for=''><?= _t("Is the object culturally sensitive?"); ?></label>
+							<label class='form-label' for='ca_objects_culture_yn[]'><?= _t("Is the object culturally sensitive?"); ?></label>
 							{{{ca_objects.culture_yn%class=form-select w-100}}}
 						</div>
 						<div class="col-sm-12 col-md-4 mb-3">
 							{{{ca_objects.sensitive:error}}}
-							<label class='form-label' for=''><?= _t("Details about cultural sensitivity"); ?></label>
+							<label class='form-label' for='ca_objects_sensitive[]'><?= _t("Details about cultural sensitivity"); ?></label>
 							{{{ca_objects.sensitive%class=form-control w-100}}}
+							{{{ca_objects.culture_yn:error}}}
 						</div>
 					</div>
 					<div class='row'>
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.date:error}}}
-							<label class='form-label' for=''><?= _t("Estimated date created"); ?></label>
+							<label class='form-label' for='ca_objects_date[]'><?= _t("Estimated date created"); ?></label>
 							{{{ca_objects.date%class=form-control w-100}}}
+							{{{ca_objects.date:error}}}
 						</div>										
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.description:error}}}
-							<label class='form-label' for=''><?= _t("Description"); ?></label>
+							<label class='form-label' for='ca_objects_description[]'><?= _t("Description"); ?></label>
 							{{{ca_objects.description%class=form-control w-100}}}
+							{{{ca_objects.description:error}}}
 						</div>										
 						<div class="col-sm-12 col-md-4 mb-3">
-							{{{ca_objects.place_notes:error}}}
-							<label class='form-label' for=''><?= _t("Associated geographic place"); ?></label>
+							<label class='form-label' for='ca_objects_place_notes[]'><?= _t("Associated geographic place"); ?></label>
 							<div class="mb-2">{{{ca_objects.place_notes%class=form-control w-100}}}</div>
+							{{{ca_objects.place_notes:error}}}
 						</div>
 					</div>
 					
 					<div class='row'>
 						<div class="col-12 mb-3">
-							{{{ca_objects.contributor_notes:error}}}
-							<label class='form-label' for=''><?= _t("Other notes"); ?></label>
+							<label class='form-label' for='ca_objects_contributor_notes[]'><?= _t("Other notes"); ?></label>
 							{{{ca_objects.contributor_notes%class=form-control w-100}}}
+							{{{ca_objects.contributor_notes:error}}}
 						</div>
 					</div>
 					<div class='row'>
 						<div class="col-12 mb-3">
-							{{{ca_object_representations.media:error}}}
-							
-							<label class='form-label'><?= _t("Image"); ?></label>
+							<label class='form-label' for='ca_object_representations_media'><?= _t("Image"); ?></label>
 							{{{ca_object_representations.media%autocomplete=0&class=form-control}}} 
 							{{{<ifcount code='ca_object_representations.media' min='1'><div class="pt-2">^ca_object_representations.media%previewExistingValues=1&delimiter=-</div></ifcount>}}}
+							{{{ca_object_representations.media:error}}}
 							
 						</div>
 					</div><!-- end row -->
