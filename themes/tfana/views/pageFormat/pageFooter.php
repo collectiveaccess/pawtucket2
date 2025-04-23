@@ -64,6 +64,11 @@
 		</footer><!-- end footer -->
 		
 		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				document.addEventListener('contextmenu', event => {
+					event.preventDefault();
+				});
+			});
 			window.initApp();
 		</script>
 	</body>
