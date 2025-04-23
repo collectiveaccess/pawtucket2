@@ -54,9 +54,18 @@
 	<div class="unit"><H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6></div>
 	<div class="unit">
 	{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></H6></ifdef>}}}
-	{{{<ifdef code="ca_collections.label">^ca_collections.label<br/></ifdev>}}}
 	</div>
+		
 <?php
+	$va_reps = $t_item->getRepresentations(array("small", "medium"));
+
+	if(sizeof($va_reps) > 0){
+		print '<div class="representationList">';
+		foreach($va_reps as $va_rep) {
+			print "<div class='representationListImage'>".$va_rep['tags']['small']."</div>\n";
+		}
+		print '</div>';
+	}
 	$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("contributor", "creator")));
 	# --- note this needs to be placed within <dl></dl> tags
 	if(is_array($va_entities) && sizeof($va_entities)){

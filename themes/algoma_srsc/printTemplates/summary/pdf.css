@@ -36,6 +36,10 @@ body{ font-family:TTNorms; margin:0px; padding:0px;}
 /* summary styles */
 .title { font-family:GiovanniStdBook; font-weight: 600; font-size: 18px; width:100%; padding-top:25px; margin:25px 0px 25px 0px; text-align: center;}
 .representationList { width: 100%; margin-top:10px; text-align: center; }
+.representationList .representationListImage{
+	display:inline-block;
+	margin:0px 10px 10px 10px;
+}
 .unit {font-family:TTNorms; font-size:12px;margin-bottom:12px;}
 h6 {font-size:12px; font-weight:600;margin:0px 0px 5px 0px; padding:0px;}
 .tombstone { margin-top:20px;}
