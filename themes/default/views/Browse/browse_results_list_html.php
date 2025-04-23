@@ -89,7 +89,7 @@
 				}
 			
 				$qr_res->seek($start);
-				$va_images = caGetDisplayImagesForAuthorityItems($table, $va_ids, array('version' => 'medium', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($table, $va_ids, array('class' => 'test', 'version' => 'medium', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			} else {
 				$va_images = null;
 			}
@@ -120,7 +120,13 @@
 						$thumbnail = "";
 						$type_placeholder = "";
 						$typecode = "";
-						$image = ($table === 'ca_objects') ? $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $image_class)) : $va_images[$id];
+						#$image = ($table === 'ca_objects') ? $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $image_class)) : $va_images[$id];
+						$image = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $image_class));
+						if(!$image){
+							if($va_images[$id]){
+								$image = str_replace("<img", "<img class='".$image_class."'", $va_images[$id]);
+							}
+						}
 				
 						if(!$image){
 							if ($table == 'ca_objects') {

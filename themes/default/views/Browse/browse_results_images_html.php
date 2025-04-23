@@ -112,29 +112,31 @@ if ($start < $qr_res->numHits()) {
 			print ExternalCache::fetch($cache_key, 'browse_result');
 		}else{			
 			$caption 	= $qr_res->getWithTemplate($result_caption_template, array("checkAccess" => $va_access_values));
-			$thumbnail = "";
+			$image = "";
 			$type_placeholder = "";
 			$typecode = "";
 			
-			if ($table == 'ca_objects') {
-				if(!($thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $image_class)))){
+			$image = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $image_class));
+			if(!$image){
+				if($va_images[$id]){
+					$image = str_replace("<img", "<img class='".$image_class."'", $va_images[$id]);
+				}
+			}
+				
+			if(!$image){
+				if ($table == 'ca_objects') {
 					$t_list_item->load($qr_res->get("type_id"));
 					$typecode = $t_list_item->get("idno");
 					if($type_placeholder = caGetPlaceholder($typecode, "placeholder_media_icon")){
-						$thumbnail = $type_placeholder;
+						$image = $type_placeholder;
 					}else{
-						$thumbnail = $default_placeholder;
+						$image = $default_placeholder;
 					}
-				}
-				$rep_detail_link 	= caDetailLink($this->request, $thumbnail, '', $table, $id);				
-			} else {
-				if($va_images[$id]){
-					$thumbnail = $va_images[$id];
 				}else{
-					$thumbnail = $default_placeholder;
+					$image = $default_placeholder;
 				}
-				$rep_detail_link 	= caDetailLink($this->request, $thumbnail, '', $table, $id);			
 			}
+			$rep_detail_link 	= caDetailLink($this->request, $image, '', $table, $id);
 			$select_button = "";
 			if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
 				$select_button = "<button type='button' 
