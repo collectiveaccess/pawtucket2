@@ -28,12 +28,22 @@
 $representation_count 			= $this->getVar('representation_count');
 $representation_ids				= $this->getVar('representation_ids');
 $show_annotations_mode			= $this->getVar('display_annotations');
-$context							= $this->getVar('context');
+$context						= $this->getVar('context');
+$default_annotation_id			= $this->getVar('default_annotation_id');
+$start_timecode					= $this->getVar('start_timecode');
 
 $t_subject						= $this->getVar('t_subject');
 $subject_id						= $t_subject->getPrimaryKey();
 
 $slide_list = $this->getVar('slide_list');
+
+$params = ['context' => $context, 'id' => $subject_id, 'representation_id' => $representation_ids[0]];
+if($default_annotation_id > 0) {
+	$params['default_annotation_id'] = $default_annotation_id;
+}
+if(strlen($start_timecode) > 0) {
+	$params['start_timecode'] = $start_timecode;
+}
 
 
 if ($representation_count > 1) {
@@ -100,7 +110,7 @@ if ($representation_count > 1) {
 ?>	
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $context, 'id' => $subject_id, 'representation_id' => $representation_ids[0])); ?>'); }
+			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?= caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', $params); ?>'); }
 	});
 </script>
 <?php
