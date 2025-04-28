@@ -113,7 +113,7 @@
 				}
 			}
 			# -- dimensions
-			if($vs_dimensions = $o_object->get("ca_objects.dimensions.display_dimensions")){
+			if($vs_dimensions = $o_object->get("ca_objects.dimensions.display_dimensions", array("delimiter" => ", "))){
 				$va_caption_parts[] = $vs_dimensions;
 			}
 			# --- availability
