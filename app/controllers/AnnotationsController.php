@@ -159,7 +159,7 @@ class AnnotationsController extends BasePawtucketController {
 	public function DownloadPDF() {
 		$annotation_id = $this->request->getParameter('annotation_id', pInteger);
 		$representation_id = $this->request->getParameter('representation_id', pInteger);
-		if(!($t_rep = ca_object_representations::findAsInstance($representation_id))) {
+		if($representation_id && !($t_rep = ca_object_representations::findAsInstance($representation_id))) {
 			throw new ApplicationException(_t('Invalid representation_id'));
 		}
 	
@@ -182,7 +182,7 @@ class AnnotationsController extends BasePawtucketController {
 	 */
 	public function DownloadFiles() {
 		$representation_id = $this->request->getParameter('representation_id', pInteger);
-		if(!($t_rep = ca_object_representations::findAsInstance($representation_id))) {
+		if($representation_id && !($t_rep = ca_object_representations::findAsInstance($representation_id))) {
 			throw new ApplicationException(_t('Invalid representation_id'));
 		}
 		$annotations = ca_user_representation_annotations::getAnnotations(['request' => $this->request, 'representation_id' => $representation_id]);
