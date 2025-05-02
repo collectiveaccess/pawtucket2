@@ -1,0 +1,156 @@
+/* green: #1D8B45; */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
+.libre-baskerville-regular {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.libre-baskerville-bold {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.libre-baskerville-regular-italic {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+// <weight>: Use a value from 200 to 900
+// <uniquifier>: Use a unique and descriptive class name
+
+.source-sans-normal {
+  font-family: "Source Sans 3", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+.source-sans-bold {
+  font-family: "Source Sans 3", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+.green{
+	color: #1D8B45;
+}
+.bg-gold{
+	background-color:#F2BB47;
+}
+/* ------------------------- Navbar ------------------------- */
+.navbar-brand{
+	width:550px;
+}
+/* color of dropdown text when activated */
+.navbar-nav{
+	.nav-link.show{
+		color:#000;
+	}
+}
+/* ------------------------- Footer ------------------------- */
+footer{
+	border-top: 5px solid #1D8B45;
+	img{
+		width:130px;
+		height:auto;
+	}
+}
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .2), rgba(0, 0, 0, .8)), url("../assets/graphics/hp_familyportrait_76_cropped.jpg");
+   
+    /* not Full height */
+    height: 50vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/hp_familyportrait_76_cropped.jpg");
+    }
+    .divide{
+    	width:170px;
+    }
+    text-shadow: 1px 0 5px #000;
+}
+/* ------------------------- Themes ------------------------- */
+.linkBox{
+	@media(max-width:768px){
+		margin-bottom:30px;
+	}
+	img{
+		height:325px;
+	}
+	div{
+		text-shadow: 0px 0px 15px #000;
+		padding-top:45%;
+		//background: rgba(38, 103, 88, .7);
+		background: rgba(41, 47, 95, .5);
+		transition: all 300ms linear;
+		@media(max-width:1199px){
+			padding-top:55%;
+		}
+		@media(max-width:768px){
+			padding-top:30%;
+		}
+	}
+	div:hover{
+		background: rgba(29, 139, 69, .9);
+	}
+}
+
+/* ------------------------- Details ------------------------ */
+.subProjects#browseResultsContainer{
+	img{
+		height: 300px;
+		width: 100%;
+		object-fit: cover !important;
+	}
+}
+/* ------------------------- Results ------------------------ */
+.results{
+	.card{
+		.card-body{
+			padding: .5rem !important;
+		}
+		.card-footer{
+			display:none;
+		}
+	}
+	.card.flex-grow-1{
+		box-shadow:none !important;
+	}
+}
+.detail{
+	.card{
+		.card-body{
+			padding: .5rem !important;
+		}
+		.card-footer{
+			display:none;
+		}
+	}
+	.card.flex-grow-1{
+		box-shadow:none !important;
+	}
+}
+/* ------------------------- Results ------------------------ */
+.collections{	
+	.card{
+		box-shadow:none !important;
+		margin-bottom: 3rem !important;
+		img{
+  			height: 300px;
+  			width: 100%;
+  		}
+  		.card-body{
+			padding: .5rem !important;
+		}
+  	}
+}
