@@ -65,6 +65,10 @@ if (!defined("__CA_APP_DISPLAY_NAME__")) {
 	define("__CA_APP_DISPLAY_NAME__", "My First CollectiveAccess System");
 }
 
+# Allow overriding log directory via setup.php
+if (!defined("__CA_LOG_DIR__")) {
+       define("__CA_LOG_DIR__", __CA_APP_DIR__."/log");
+}
 
 # __CA_ADMIN_EMAIL__ = the email address from which to send administrative messages
 #
