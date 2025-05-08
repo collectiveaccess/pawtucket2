@@ -123,7 +123,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 				<ifcount code="ca_places" min="1">
 					<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-					<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
+					<unit relativeTo="ca_places" delimiter=""><dd>^ca_places.preferred_labels (^relationship_typename)</dd></unit>
 				</ifcount>
 			</dl>}}}					
 		</div>
