@@ -57,9 +57,16 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row">
 		<div class="col-md-12 mb-3">
 <?php
-	$theme_link = caNavLink($this->request, $t_item->getWithTemplate("^proj_theme"), "", "", "Themes", "theme", array("item_id" => $t_item->get("proj_theme")));
+	$proj_themes = $t_item->get("ca_occurrences.proj_theme", array("checkAccess" => $access_values, "returnAsArray" => true, "convertCodesToDisplayText" => true));
+	$proj_theme_ids = $t_item->get("ca_occurrences.proj_theme", array("checkAccess" => $access_values, "returnAsArray" => true));
+	$theme_links = array();
+	if(is_array($proj_themes) && sizeof($proj_themes)){
+		foreach($proj_themes as $i => $proj_theme){
+			$theme_links[] = caNavLink($this->request, $proj_theme, "", "", "Themes", "theme", array("item_id" => $proj_theme_ids[$i]));
+		}
+	}
+	print join(", ", $theme_links);
 ?>
-			<?= $theme_link; ?>
 		</div>
 	</div>
 
@@ -92,7 +99,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-	<div class="row row-cols-1">
+	<div class="row row-cols-1 {{{<ifdef code="ca_occurrences.embed_code|ca_occurrences.externalLink.url_entry">row-cols-md-2</ifdef>}}}">
 		<div class="col">				
 			{{{<dl class="mb-0">
 				<ifdef code="ca_occurrences.description_w_type.description">
@@ -103,6 +110,19 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</ifdef>
 			</dl>}}}
 		</div>
+		{{{<ifdef code="ca_occurrences.embed_code|ca_occurrences.externalLink.url_entry">
+		<div class="col">
+			<ifdef code="embed_code">
+				^ca_occurrences.embed_code
+			</ifdef>
+			
+			<dl class="mb-0">
+				<ifdef code="ca_occurrences.externalLink.url_entry">
+					<dt><?= _t('Links'); ?></ifcount></dt>
+					<unit relativeTo="ca_occurrences.externalLink" delimiter=""><dd><a href="^ca_occurrences.externalLink.url_entry"><ifdef code="ca_occurrences.externalLink.url_source">^ca_occurrences.externalLink.url_source</ifdef><ifnotdef code="ca_occurrences.externalLink.url_source">^ca_occurrences.externalLink.url_entry</ifnotdef></a></dd></unit>
+				</ifdef>
+			</dl>					
+		</div>}}}
 	</div>
 {{{<ifcount code="ca_collections" min="1">
 	<dl class="row">
@@ -126,3 +146,40 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</div>
 	</div>
 </ifcount>}}}
+<?php
+	$t_list = new ca_lists();
+	$object_types = $t_list->getItemsForList("object_types", array("checkAccess" => $access_values));
+	if(is_array($object_types) && sizeof($object_types)){
+		foreach($object_types as $object_type){
+			$object_type = array_pop($object_type);
+			$type_name = $object_type["name_plural"];
+			$type_idno = $object_type["idno"];
+			$type_id = $object_type["item_id"];
+			print $t_item->getWithTemplate("<ifcount code='ca_objects' restrictToTypes='".$type_idno."' min='1'>
+												<div class=' mb-5'>
+													<div class='row'>
+														<div class='col'><h2>".$type_name."</h2><hr></div>
+													</div>
+													<div class='row'>
+													<unit relativeTo='ca_objects' restrictToTypes='".$type_idno."' limit='6' delimiter=''>
+														<div class='col-md-6 col-lg-4 d-flex'>
+															<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
+															  <l><ifdef code='ca_object_representations.media'>^ca_object_representations.media.medium%class=card-img-top,test-style</ifdef><ifnotdef code='ca_object_representations.media'><div class='display-1 text-center d-flex bg-light ca-placeholder' aria-label='media placeholder' role='img'><i class='bi bi-card-image align-self-center w-100'></i></div></ifnotdef></l>
+																<div class='card-body'>
+																	<div class='card-title'><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div>
+																</div>
+															 </div>	
+														</div>
+													</unit>
+													</div>
+													<ifcount code='ca_objects' restrictToTypes='".$type_idno."' min='7'>
+														<div class='row'>
+															<div class='col text-center'>".caNavLink($this->request, _t("View All %1", $type_name), "btn btn-primary", "", "Browse", "objects", array("facets" => "type_facet:".$type_id.";project_facet:".$t_item->get("ca_occurrences.occurrence_id")))."</div>
+														</div>
+													</ifcount>
+												</div>
+											</ifcount>");
+		}
+		
+	}
+?>

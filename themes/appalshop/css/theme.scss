@@ -135,6 +135,11 @@ footer{
 		.card-footer{
 			display:none;
 		}
+		img{
+			object-fit: cover !important;
+			height: 200px;
+			width: 100%;
+		}
 	}
 	.card.flex-grow-1{
 		box-shadow:none !important;

@@ -34,7 +34,7 @@
 ?>
 		<footer id="footer" class="p-5 text-center mt-auto">
 			<div class="container-xl">
-				<div><?php print caGetThemeGraphic($this->request, 'appalshopLogo.png', array("alt" => "Appalshop logo")); ?></div>
+				<div><a href="https://www.appalshop.org"><?php print caGetThemeGraphic($this->request, 'appalshopLogo.png', array("alt" => "Appalshop logo")); ?></a></div>
 				<div class="pt-3">Appalshop - 91 Madison Ave.- Whitesburg, KY 41858 - 606-633-0108 - 606-633-1009 (fax)</div>
 				<ul class="list-inline pt-4">
 					<li class="list-inline-item fs-2"><a href="https://www.facebook.com/appalarchive" class="green" aria-label="Facebook Link"><i class="bi bi-facebook"></i></a></li>

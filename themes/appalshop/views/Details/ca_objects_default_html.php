@@ -63,7 +63,7 @@ if($show_nav){
 ?>
 	<div class="row">
 		<div class="col-md-12">
-			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
+			<H1>{{{^ca_objects.preferred_labels.name<ifdef code="ca_objects.title_type">, ^ca_objects.title_type</ifdef>}}}</H1>
 			{{{<ifdef code="ca_objects.type_id"><div class="fw-medium mb-3">^ca_objects.type_id</div></ifdef>}}}
 			<hr class="mb-0">
 		</div>

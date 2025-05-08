@@ -58,9 +58,16 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<div class="col-md-12 mb-3">
 <?php
 	$t_parent = new ca_occurrences($t_item->get("ca_occurrences.parent_id"));
-	$theme_link = caNavLink($this->request, $t_parent->getWithTemplate("^proj_theme"), "", "", "Themes", "theme", array("item_id" => $t_parent->get("proj_theme")));
+	$proj_themes = $t_parent->get("ca_occurrences.proj_theme", array("checkAccess" => $access_values, "returnAsArray" => true, "convertCodesToDisplayText" => true));
+	$proj_theme_ids = $t_parent->get("ca_occurrences.proj_theme", array("checkAccess" => $access_values, "returnAsArray" => true));
+	$theme_links = array();
+	if(is_array($proj_themes) && sizeof($proj_themes)){
+		foreach($proj_themes as $i => $proj_theme){
+			$theme_links[] = caNavLink($this->request, $proj_theme, "", "", "Themes", "theme", array("item_id" => $proj_theme_ids[$i]));
+		}
+	}
 ?>
-			<?= $theme_link; ?> > {{{<unit relativeTo="ca_occurrences.parent"><l>^ca_occurrences.preferred_labels</l></unit>}}}
+			<?= join(", ", $theme_links); ?> > {{{<unit relativeTo="ca_occurrences.parent"><l>^ca_occurrences.preferred_labels</l></unit>}}}
 		</div>
 	</div>
 	<div class="row">
@@ -99,7 +106,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</div>
 	</div>
 </ifdef>}}}
-	<div class="row row-cols-1 row-cols-md-2">
+	<div class="row row-cols-1 {{{<ifdef code="ca_occurrences.embed_code|ca_occurrences.externalLink.url_entry">row-cols-md-2</ifdef>}}}">
 		<div class="col">				
 			{{{<dl class="mb-0">
 				<ifdef code="ca_occurrences.description_w_type.description">
@@ -110,9 +117,10 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</ifdef>
 			</dl>}}}
 		</div>
+		{{{<ifdef code="ca_occurrences.embed_code|ca_occurrences.externalLink.url_entry">
 		<div class="col">
-			{{{<ifdef code="embed_code">
-				^embed_code
+			<ifdef code="embed_code">
+				^ca_occurrences.embed_code
 			</ifdef>
 			
 			<dl class="mb-0">
@@ -120,8 +128,8 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<dt><?= _t('Links'); ?></ifcount></dt>
 					<unit relativeTo="ca_occurrences.externalLink" delimiter=""><dd><a href="^ca_occurrences.externalLink.url_entry"><ifdef code="ca_occurrences.externalLink.url_source">^ca_occurrences.externalLink.url_source</ifdef><ifnotdef code="ca_occurrences.externalLink.url_source">^ca_occurrences.externalLink.url_entry</ifnotdef></a></dd></unit>
 				</ifdef>
-			</dl>}}}					
-		</div>
+			</dl>					
+		</div>}}}
 	</div>
 {{{<ifcount code="ca_collections" min="1">
 	<dl class="row">
@@ -135,13 +143,40 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<unit relativeTo="ca_occurrences.related" restrictToType="work" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels</l></dd></unit>
 	</dl>
 </ifcount>}}}
-{{{<ifcount code="ca_objects" min="1">
-	<div class="row">
-		<div class="col"><h2>Related Objects</h2><hr></div>
-	</div>
-	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_occurrences.occurrence_id:'.$t_item->get("ca_occurrences.occurrence_id"), 'view' => 'images')); ?>">
-			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
-		</div>
-	</div>
-</ifcount>}}}
+<?php
+	$t_list = new ca_lists();
+	$object_types = $t_list->getItemsForList("object_types", array("checkAccess" => $access_values));
+	if(is_array($object_types) && sizeof($object_types)){
+		foreach($object_types as $object_type){
+			$object_type = array_pop($object_type);
+			$type_name = $object_type["name_plural"];
+			$type_idno = $object_type["idno"];
+			$type_id = $object_type["item_id"];
+			print $t_item->getWithTemplate("<ifcount code='ca_objects' restrictToTypes='".$type_idno."' min='1'>
+												<div class=' mb-5'>
+													<div class='row'>
+														<div class='col'><h2>".$type_name."</h2><hr></div>
+													</div>
+													<div class='row'>
+													<unit relativeTo='ca_objects' restrictToTypes='".$type_idno."' limit='6' delimiter=''>
+														<div class='col-md-6 col-lg-4 d-flex'>
+															<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
+															  <l><ifdef code='ca_object_representations.media'>^ca_object_representations.media.medium%class=card-img-top</ifdef><ifnotdef code='ca_object_representations.media'><div class='display-1 text-center d-flex bg-light ca-placeholder' aria-label='media placeholder' role='img'><i class='bi bi-card-image align-self-center w-100'></i></div></ifnotdef></l>
+																<div class='card-body'>
+																	<div class='card-title'><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div>
+																</div>
+															 </div>	
+														</div>
+													</unit>
+													</div>
+													<ifcount code='ca_objects' restrictToTypes='".$type_idno."' min='7'>
+														<div class='row'>
+															<div class='col text-center'>".caNavLink($this->request, _t("View All %1", $type_name), "btn btn-primary", "", "Browse", "objects", array("facets" => "type_facet:".$type_id.";project_facet:".$t_item->get("ca_occurrences.occurrence_id")))."</div>
+														</div>
+													</ifcount>
+												</div>
+											</ifcount>");
+		}
+		
+	}
+?>

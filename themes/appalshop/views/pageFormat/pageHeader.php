@@ -68,7 +68,7 @@ if($this->request->isLoggedIn()){
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<nav class="navbar navbar-expand-lg nav-pills shadow-sm p-4">
 		<div class="container-fluid">
-			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'appalshop_banner_w_img.jpg', array("alt" => "Appalshop Archive logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
+			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'appalshop_banner_w_img.png', array("alt" => "Appalshop Archive logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
@@ -96,7 +96,7 @@ if($this->request->isLoggedIn()){
 						<?= caNavlink($this->request, _t('News'), "nav-link".((strToLower($this->request->getController()) == "news") ? " active" : ""), "", "News", "index", "", ((strToLower($this->request->getController()) == "news") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Browse'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? " active" : ""), "", "Browse", "objects", array("facet" => "has_media_facet", "id" => "yes"), (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Browse'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? " active" : ""), "", "Browse", "objects", null, (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>

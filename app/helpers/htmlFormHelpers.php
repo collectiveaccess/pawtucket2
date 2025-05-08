@@ -517,6 +517,7 @@ $vs_tag = "
 		if (is_array($pa_attributes)) {
 			foreach($pa_attributes as $vs_attr => $vs_attr_val) {
 				if (is_array($vs_attr_val)) { $vs_attr_val = join(" ", $vs_attr_val); }
+				if($vs_attr === 'class') { $vs_attr_val = join(' ', array_map('trim', explode(',', $vs_attr_val))); }
 				if (is_object($vs_attr_val)) { continue; }
 				if (isset($pa_options['dontConvertAttributeQuotesToEntities']) && $pa_options['dontConvertAttributeQuotesToEntities']) {
 					$va_attr_settings[] = $vs_attr.'="'.$vs_attr_val.'"';
