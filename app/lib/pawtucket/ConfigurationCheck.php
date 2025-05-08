@@ -220,7 +220,7 @@ final class ConfigurationCheck {
 	}
 	# -------------------------------------------------------
 	public static function logDirQuickCheck() {
-		$vs_log_path = __CA_APP_DIR__."/log";
+		$vs_log_path = __CA_LOG_DIR__;
 		if(!file_exists($vs_log_path) || !is_writable($vs_log_path)){
 			self::addError(_t("It looks like the log directory is not writable by the webserver. Please change the permissions of %1 (or create it if it doesn't exist already) and enable the user which runs the webserver to write to this directory.",$vs_log_path));
 		}
