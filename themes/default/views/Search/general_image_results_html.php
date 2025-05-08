@@ -57,7 +57,7 @@ $vb_has_more 		= (bool)$this->getVar('hasMore');
 
 	if ($qr_results->numHits() > 0) {
 		$vn_c = 0;
-		print "<div class='row'><div class='col-12 mt-3 mb-2 text-capitalize fw-semibold'>".$qr_results->numHits()." ".(($qr_results->numHits() == 1) ? $va_block_info["labelSingular"] : $va_block_info["labelPlural"])."</div></div>";
+		print "<div class='row'><div class='col-12 mt-3 mb-2 text-capitalize fw-bold'>".$qr_results->numHits()." ".(($qr_results->numHits() == 1) ? $va_block_info["labelSingular"] : $va_block_info["labelPlural"])."</div></div>";
 		print "<div class='row'>";
 		if ($vs_table != 'ca_objects') {
 			$va_ids = array();
