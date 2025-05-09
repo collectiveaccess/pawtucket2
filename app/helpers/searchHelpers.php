@@ -492,6 +492,8 @@ function caGeneralSearch(RequestHTTP $request, string $search_expression, array 
 				$o_browse->addCriteria($facet, $value);
 			}
 			$o_browse->addCriteria("_search", [caMatchOnStem($search_expression)], [$search_expression_for_display]);
+			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, $target_info); }
+		
 			$o_browse->execute($target_options);
 			$qr_res = $o_browse->getResults($target_options);
 			
