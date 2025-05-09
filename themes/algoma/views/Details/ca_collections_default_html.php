@@ -254,15 +254,9 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					<unit relativeTo="ca_collections.related" restrictToRelationshipTypes="related" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 				</ifcount>
 
-				<ifdef code="ca_collections.geographic_access">
-					<dt><?= _t('Geographic Access'); ?></dt>
-					<dd>
-						^ca_collections.geographic_access%delimiter=,_
-					</dd>
-				</ifdef>
 				<ifcount code="ca_places" min="1">
 					<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-					<unit relativeTo="ca_places" delimiter=""><dd>^ca_places.preferred_labels</dd></unit>
+					<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l></dd></unit>
 				</ifcount>
 				
 			</dl>}}}					
