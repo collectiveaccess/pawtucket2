@@ -154,113 +154,126 @@
 	<!-- End Google Tag Manager (noscript) -->
 	<div class="page <?php print $this->request->getController();?>" >
 		<div class="wrapper">
-			<div class="sidebar hidden-sm hidden-xs">
-				<div class='logo'>
+			<div class="sidebar hidden-sm hidden-xs"><div class="inner">
+				<div class='custom-logo'>
 					<a href='https://www.stormking.org'><?php print caGetThemeGraphic($this->request, '2021_SKAC_Logo_Website.svg'); ?></a>			
                 </div>	
 				<div class="main-menu">
 					<ul class="nav menuItems">
-						<li><a href='https://stormking.org/about/'>About</a></li>
 						<li><a href='https://stormking.org/visit/'>Visit</a></li>
-					
-						<li>
-							<?php print caNavLink($this->request, _t("Collection"), "", "", "About", "collection"); ?>
-<?php
-						if ((($this->request->getController() == "Browse") && ($this->request->getAction() != "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) {
-?>								
+						<li><a href='#'>Art</a>
 							<ul class='subMenu'>
-								<li style="padding-top:6px;" <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art"), "", "", "Browse", "objects"); ?></li>					
-								<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>					
-							</ul>												
-<?php						
-						} 
-?>							
-						</li>					
-						<li>
-<?php 
-							#print caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "exhibitions", array("sort" => "default", "direction" => "desc"));
-							print caNavLink($this->request, _t("Exhibitions"), "", "", "About", "exhibitions");
-
-							if (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "exhibitions") || (strtolower($this->request->getAction()) == "index") || (strtolower($this->request->getAction()) == "theme"))) || ((strtolower($this->request->getController()) == "about") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "browse") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "listing") && ($this->request->getAction() == "currentexhibitions"))  | ((strtolower($this->request->getController()) == "listing") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "detail") && ($this->request->getAction() == "occurrences"))) {
-?>							
-								<ul class='subMenu'>
-									<li style="padding-top:6px;" <?php print ((($this->request->getAction() == "currentexhibitions") ) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?></li>					
-									<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Past"), "", "", "Browse", "exhibitions"); ?></li>					
-									<li <?php print ((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "exhibitions") || (strtolower($this->request->getAction()) == "index") || (strtolower($this->request->getAction()) == "theme"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Online"), "", "", "Featured", "index"); ?></li>					
-								</ul>
+								<li>
+									<?php print caNavLink($this->request, _t("Collection"), "", "", "About", "collection"); ?>
 <?php
-							}
+								if ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) {
+?>								
+									<ul class='subMenu'>
+										<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>					
+									</ul>												
+<?php						
+								} 
+?>							
+								</li>
+<?php
+								print "<li>".caNavLink($this->request, _t("Exhibitions"), "", "", "About", "exhibitions");
+
+						if (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "exhibitions") || (strtolower($this->request->getAction()) == "index") || (strtolower($this->request->getAction()) == "theme"))) || ((strtolower($this->request->getController()) == "about") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "browse") && ($this->request->getAction() != "entities")) | ((strtolower($this->request->getController()) == "listing") && ($this->request->getAction() == "currentexhibitions"))  | ((strtolower($this->request->getController()) == "listing") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "detail") && ($this->request->getAction() == "occurrences"))) {
+?>							
+									<ul class='subMenu'>
+										<li <?php print ((($this->request->getAction() == "currentexhibitions") ) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?></li>					
+										<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Past"), "", "", "Browse", "exhibitions"); ?></li>					
+										<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art"), "", "", "Browse", "objects"); ?></li>					
+										<li <?php print ((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "exhibitions") || (strtolower($this->request->getAction()) == "index") || (strtolower($this->request->getAction()) == "theme"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Digital"), "", "", "Featured", "index"); ?></li>					
+									</ul>
+<?php
+						}
 ?>							
 						
-						</li>
-						<li><a href='https://stormking.org/education-2/'>Education</a></li>
-						<li>
-							<?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?> 
+								</li>
+								<li>
 <?php
-							if (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) || ($this->request->getController() == "Collections") | (($this->request->getController() == "Listing") && ($this->request->getAction() == "oralhistory")) | (($this->request->getController() == "About") && ($this->request->getAction() == "archives")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "collections")) | ($this->request->getAction() == "oralhistory") | (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival"))) {
+									print caNavLink($this->request, _t("Archives"), "", "", "About", "archives");
+
+						if (((($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) || ($this->request->getController() == "Collections") | (($this->request->getController() == "Listing") && ($this->request->getAction() == "oralhistory")) | (($this->request->getController() == "About") && ($this->request->getAction() == "archives")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "collections")) | ($this->request->getAction() == "oralhistory") | (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival"))) {
 ?>							
-								<ul class='subMenu'>
-									<li style="padding-top:6px;" <?php print (($this->request->getController() == "Listing")| ($this->request->getAction() == "oralhistory") ) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Oral History"), "", "", "Listing", "oralhistory"); ?></li>					
-									<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Search"), "", "", "Search", "advanced/objects"); ?></li>-->
-									<li <?php print ( (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival")) | ($this->request->getController() == "Collections") | ($this->request->getAction() == "collections")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Special Collections"), "", "", "Collections", "index"); ?></li>					
-									<li <?php print ((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured"), "", "", "Featured", "archives"); ?></li>					
-								</ul>
+										<ul class='subMenu'>
+											<li style="padding-top:6px;" <?php print (($this->request->getController() == "Listing")| ($this->request->getAction() == "oralhistory") ) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Oral History"), "", "", "Listing", "oralhistory"); ?></li>					
+											<li <?php print ( (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival")) | ($this->request->getController() == "Collections") | ($this->request->getAction() == "collections")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Special Collections"), "", "", "Collections", "index"); ?></li>					
+										</ul>
 <?php
-							}
+						}
 ?>							
-						</li>
-						<li><a href='https://stormking.org/support/'>Support</a></li>
-						<li><a href='https://stormking.org/calendar/'>Calendar</a></li>
-						<li><a href='https://shop.stormking.org/'>Shop</a></li>
-					</ul>
+								</li>
+							</ul>
+						</li>					
+						<li><a href='https://stormking.org/learning/'>Programs</a></li>
+						<li><a href='https://stormking.org/support/'>Join</a></li>
+						<li class="smallLinks first"><a href='https://stormking.org/about/'>About</a></li>
+						<li class="smallLinks"><a href='https://stormking.org/calendar/'>Calendar</a></li>
+						<li class="smallLinks"><a href='https://shop.stormking.org/'>Shop</a></li>
+					</ul>	
+						
+
 				</div>
-				<form class="navbar-form " role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>"> 
-					<div class="formOutline">
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search..." name="search">
-						</div>						
+				<footer class="nav-footer">
+					<form class="navbar-form " role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>"> 
+						<div class="formOutline">
+							<button type="submit" class="btn-search"><span class="icon">
+								<svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+								  <path fill="none" d="M7.7 2.7c-1.3 0-2.6.5-3.5 1.5-1 .9-1.5 2.2-1.5 3.5 0 1.3.5 2.6 1.5 3.5 2 1.9 5.1 1.9 7.1 0 .9-.9 1.5-2.2 1.5-3.5 0-1.3-.5-2.6-1.5-3.5-1-1-2.3-1.5-3.6-1.5z"></path>
+								  <path d="M7.7 0c-2.1 0-4 .8-5.5 2.3C.8 3.7 0 5.7 0 7.7c0 2.1.8 4 2.3 5.5 3 3 7.9 3 10.9 0 1.5-1.5 2.3-3.4 2.2-5.5 0-2.1-.8-4-2.3-5.5C11.7.8 9.8 0 7.7 0zm3.6 11.3c-1.9 2-5.1 2-7.1 0-.9-.9-1.5-2.2-1.5-3.5 0-1.3.5-2.6 1.5-3.5.9-.9 2.2-1.5 3.5-1.5 1.3 0 2.6.5 3.5 1.5.9.9 1.5 2.2 1.5 3.5 0 1.2-.5 2.5-1.4 3.5z"></path>
+								  <path d="M11.333 13.54l2.263-2.263 6.435 6.435-2.26 2.263z"></path>
+								</svg>
+							</span></button>
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="Search..." name="search">
+							</div>						
+						</div>
+					</form>
+					<nav class="secondary-menu"><ul id="menu-secondary-menu" class="menu">
+						<li><a href="https://stormking.org/press/">Press</a></li>
+						<li><a href="https://lp.constantcontactpages.com/su/1eyaAGn">Subscribe</a></li>
+						<li><a href="https://stormking.org/jobs/">Careers</a></li>
+						<li><a href="https://stormking.org/contact/">Contact</a></li>
+						<li><a href="https://stormking.org/termsprivacycredits/">Terms &amp; Privacy Policy</a></li>
+						<li><a href="https://stormking.org">©<?php print date("Y"); ?> Storm King Art Center</a></li>
+					</ul></nav>	
+					<div class="social">
+						<ul>
+							<li>
+								<a class="instagram" href="https://www.instagram.com/stormkingartcenter/" target="_blank">
+									<svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 18 18">
+									  <path d="M91.871,135.881H79.196v-7.718h0.991a5.521,5.521,0,1,0,10.692,0h0.992v7.718Zm-6.338-9.518a3.181,3.181,0,1,1-3.181,3.181,3.18461,3.18461,0,0,1,3.181-3.181m3.444-3.011a0.75177,0.75177,0,0,1,.752-0.752h1.984a0.75241,0.75241,0,0,1,.752.752v1.984a0.75177,0.75177,0,0,1-.752.752H89.729a0.75113,0.75113,0,0,1-.752-0.752v-1.984ZM76.533,138.544h18v-18h-18v18Z" transform="translate(-76.53295 -120.544)" fill="#231f20"></path>
+									</svg>
+								</a>
+							</li>
+							<li>
+								<a class="twitter" href="https://twitter.com/stormkingartctr" target="_blank">
+									<svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 18 18">
+									  <path d="M122.744,145.232a3.54841,3.54841,0,0,0,2.987-.187,1.45532,1.45532,0,1,1,1.355,2.576,6.69563,6.69563,0,0,1-3.115.77,5.62356,5.62356,0,0,1-2.598-.591c-2.344-1.251-2.332-3.652-2.305-8.911,0.004-.675.008-1.408,0.007-2.204a1.456,1.456,0,0,1,2.912,0c0,0.801-.004,1.539-0.008,2.219,0,0.084-.001.16-0.001,0.242h4.437a1.4555,1.4555,0,1,1,0,2.911h-4.424c0.047,1.962.219,2.89,0.753,3.175M113.999,151h18V133h-18v18Z" transform="translate(-113.999 -133)" fill="#231f20"></path>
+									</svg>
+								</a>
+							</li>
+							<li>
+								<a class="facebook" href="https://www.facebook.com/StormKingArtCenter/" target="_blank">
+									<svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 18 18">
+									  <path d="M143.9996,133v18h9.276v-7.058h-1.505v-2.595h1.505v-0.44a5.24083,5.24083,0,0,1,1.414-3.799,4.6451,4.6451,0,0,1,3.15-1.136,7.70461,7.70461,0,0,1,1.853.232l-0.139,2.71a3.85652,3.85652,0,0,0-1.135-.161c-1.158,0-1.645.904-1.645,2.016v0.578h2.27v2.595h-2.246V151h5.202V133h-18Z" transform="translate(-143.9996 -133)" fill="#231f20"></path>
+									</svg>
+								</a>
+							</li>
+							<li>
+								<a class="email" href="mailto:info@stormkingartcenter.org" target="_blank">
+									<svg style="width:28px;" xmlns="https://www.w3.org/2000/svg" viewBox="0 0 25.00009 18.0001">
+									  <path fill="#231f20" d="M23.2 0H1.8l10.7 10.868L23.2 0M0 1.828V15.89l6.055-7.91L0 1.827"></path>
+									  <path fill="#231f20" d="M12.5 14.525l-4.63-4.7L1.615 18h21.77L17.13 9.823l-4.63 4.702m6.445-6.547L25 15.89V1.828l-6.055 6.15"></path>
+									</svg>
+								</a>
+							</li>
+						</ul>
 					</div>
-				</form>
-				<div class="copyright">©2021 Storm King Art Center</div>
-				<nav class="secondary-menu"><ul id="menu-secondary-menu" class="menu"><li id="menu-item-345" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-345"><a href="https://stormking.org/termsprivacycredits/">Terms/Privacy/Credits</a></li>
-					<li id="menu-item-348" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-348"><a href="https://stormking.org/job-opportunities/">Job Opportunities</a></li>
-					<li id="menu-item-15356" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-15356"><a href="https://visitor.r20.constantcontact.com/d.jsp?llr=zkiggxcab&amp;p=oi&amp;m=1102437359961&amp;sit=o5slr77db&amp;f=08547c94-ef10-4ab8-a2c7-141650bcbd20">Join Mailing List</a></li>
-				</ul></nav>	
-				<div class="social">
-					<ul>
-						<li>
-							<a class="instagram" href="https://www.instagram.com/stormkingartcenter/" target="_blank">
-								<svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 18 18">
-								  <path d="M91.871,135.881H79.196v-7.718h0.991a5.521,5.521,0,1,0,10.692,0h0.992v7.718Zm-6.338-9.518a3.181,3.181,0,1,1-3.181,3.181,3.18461,3.18461,0,0,1,3.181-3.181m3.444-3.011a0.75177,0.75177,0,0,1,.752-0.752h1.984a0.75241,0.75241,0,0,1,.752.752v1.984a0.75177,0.75177,0,0,1-.752.752H89.729a0.75113,0.75113,0,0,1-.752-0.752v-1.984ZM76.533,138.544h18v-18h-18v18Z" transform="translate(-76.53295 -120.544)" fill="#231f20"></path>
-								</svg>
-							</a>
-						</li>
-						<li>
-							<a class="twitter" href="https://twitter.com/stormkingartctr" target="_blank">
-								<svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 18 18">
-								  <path d="M122.744,145.232a3.54841,3.54841,0,0,0,2.987-.187,1.45532,1.45532,0,1,1,1.355,2.576,6.69563,6.69563,0,0,1-3.115.77,5.62356,5.62356,0,0,1-2.598-.591c-2.344-1.251-2.332-3.652-2.305-8.911,0.004-.675.008-1.408,0.007-2.204a1.456,1.456,0,0,1,2.912,0c0,0.801-.004,1.539-0.008,2.219,0,0.084-.001.16-0.001,0.242h4.437a1.4555,1.4555,0,1,1,0,2.911h-4.424c0.047,1.962.219,2.89,0.753,3.175M113.999,151h18V133h-18v18Z" transform="translate(-113.999 -133)" fill="#231f20"></path>
-								</svg>
-							</a>
-						</li>
-						<li>
-							<a class="facebook" href="https://www.facebook.com/StormKingArtCenter/" target="_blank">
-								<svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 18 18">
-								  <path d="M143.9996,133v18h9.276v-7.058h-1.505v-2.595h1.505v-0.44a5.24083,5.24083,0,0,1,1.414-3.799,4.6451,4.6451,0,0,1,3.15-1.136,7.70461,7.70461,0,0,1,1.853.232l-0.139,2.71a3.85652,3.85652,0,0,0-1.135-.161c-1.158,0-1.645.904-1.645,2.016v0.578h2.27v2.595h-2.246V151h5.202V133h-18Z" transform="translate(-143.9996 -133)" fill="#231f20"></path>
-								</svg>
-							</a>
-						</li>
-						<li>
-							<a class="email" href="mailto:info@stormkingartcenter.org" target="_blank">
-								<svg style="width:28px;" xmlns="https://www.w3.org/2000/svg" viewBox="0 0 25.00009 18.0001">
-								  <path fill="#231f20" d="M23.2 0H1.8l10.7 10.868L23.2 0M0 1.828V15.89l6.055-7.91L0 1.827"></path>
-								  <path fill="#231f20" d="M12.5 14.525l-4.63-4.7L1.615 18h21.77L17.13 9.823l-4.63 4.702m6.445-6.547L25 15.89V1.828l-6.055 6.15"></path>
-								</svg>
-							</a>
-						</li>
-					</ul>
-				</div>							
-			</div>	
+				</footer>							
+			</div></div>	
 
 
 
@@ -288,76 +301,69 @@
 			<div id="header-mobile-content">
 				<div class="container">
 					<nav class="main-menu"><ul id="menu-main-menu-1" class="menu">
-						<li class="menu-item menu-item-type-post_type menu-item-object-page page_item page-item-30 current_page_item menu-item-has-children menu-item-32"><a href="https://stormking.org/about/">About</a>
-							<ul class="sub-menu">
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-59"><a href="https://stormking.org/about/history/">History</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16643"><a href="https://stormking.org/town-of-cornwall/">Town of Cornwall</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-64"><a href="https://stormking.org/about/landscape/">Landscape</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-72"><a href="https://stormking.org/about/press/">Press</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-105"><a href="https://stormking.org/about/leadership/">Leadership</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-15419"><a href="https://stormking.org/about/donors/">Donors</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-113"><a href="https://stormking.org/about/contact/">Contact</a></li>
-							</ul>
-						</li>
 						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-130"><a href="https://stormking.org/visit/">Visit</a>
 							<ul class="sub-menu">
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-156"><a href="https://stormking.org/visit/plan-your-visit/">Plan your visit</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-17310"><a href="https://stormking.org/visit/groups/">Groups</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16572"><a href="https://stormking.org/visit/food/">Food</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-186"><a href="https://stormking.org/visit/bikes/">Bikes</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-189"><a href="https://stormking.org/visit/local-amenities/">Local Amenities</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/visit/tickets/">Tickets</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/visit/plan-your-visit/">Plan Your Visit</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/visit/groups/">Group Visits</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/visit/accessibility/">Accessibility</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/visit/policies/">Visitor Policies</a></li>
 							</ul>
 						</li>
-
-
-						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children">
-							<?php print caNavLink($this->request, _t("Collection"), "", "", "About", "collection"); ?>
-							<ul class='sub-menu <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() != "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) ? ' active' : ''; ?>'>
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Art"), "", "", "Browse", "objects"); ?></li>					
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>
-							</ul>												
-						</li>					
-						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children">
-							<?php print caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "exhibitions", array("sort" => "default", "direction" => "desc")); ?>
-							<ul class='sub-menu <?php print (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "exhibitions") || (strtolower($this->request->getAction()) == "index") || (strtolower($this->request->getAction()) == "theme"))) || ((strtolower($this->request->getController()) == "about") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "browse") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "listing") && ($this->request->getAction() == "currentexhibitions"))  | ((strtolower($this->request->getController()) == "listing") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "detail") && ($this->request->getAction() == "occurrences"))) ? ' active' : ''; ?>'>
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getAction() == "currentexhibitions") ) ? ' current-menu-item' : ''); ?>'><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?></li>					
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) ? ' current-menu-item' : ''); ?>'><?php print caNavLink($this->request, _t("Past"), "", "", "Browse", "exhibitions"); ?></li>					
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "exhibitions") || (strtolower($this->request->getAction()) == "index") || (strtolower($this->request->getAction()) == "theme"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Online"), "", "", "Featured", "index"); ?></li>					
-							</ul>
-						</li>
-						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-15458"><a href="https://stormking.org/education-2/">Education</a>
+						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-130"><a href="#">Art</a>
 							<ul class="sub-menu">
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-15447"><a href="https://stormking.org/education-2/public-programs/">Public Programs</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-15448"><a href="https://stormking.org/education-2/family-programs/">Children and Families Programs</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16252"><a href="https://stormking.org/education-2/students-teachers/">Schools &amp; Teachers</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-241"><a href="https://stormking.org/education-2/summercamp/">Summer Camps</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-252"><a href="https://stormking.org/education-2/artist-residency/">Artist Residency</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children">
+									<?php print caNavLink($this->request, _t("Collection"), "", "", "About", "collection"); ?>
+									<ul class='sub-sub-menu<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) ? ' active' : ''; ?>'>
+										<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>
+									</ul>												
+								</li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children">
+									<?php print caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "exhibitions", array("sort" => "default", "direction" => "desc")); ?>
+									<ul class='sub-sub-menu <?php print (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "exhibitions") || (strtolower($this->request->getAction()) == "index") || (strtolower($this->request->getAction()) == "theme"))) || ((strtolower($this->request->getController()) == "about") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "browse") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "listing") && ($this->request->getAction() == "currentexhibitions"))  | ((strtolower($this->request->getController()) == "listing") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "detail") && ($this->request->getAction() == "occurrences")) || (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects"))) ? ' active' : ''; ?>'>
+										<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getAction() == "currentexhibitions") ) ? ' current-menu-item' : ''); ?>'><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?></li>					
+										<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) ? ' current-menu-item' : ''); ?>'><?php print caNavLink($this->request, _t("Past"), "", "", "Browse", "exhibitions"); ?></li>					
+										<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Art"), "", "", "Browse", "objects"); ?></li>					
+										<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "exhibitions") || (strtolower($this->request->getAction()) == "index") || (strtolower($this->request->getAction()) == "theme"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Digital"), "", "", "Featured", "index"); ?></li>					
+									</ul>
+								</li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children">
+									<?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?> 
+									<ul class='sub-sub-menu<?php print (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) | ($this->request->getController() == "Collections") | (($this->request->getController() == "Listing") && ($this->request->getAction() == "oralhistory")) | (($this->request->getController() == "About") && ($this->request->getAction() == "archives")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "collections")) | ($this->request->getAction() == "oralhistory") | (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival"))) ? " active" : ""; ?>'>
+										<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print (($this->request->getAction() == "oralhistory") ) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Oral History"), "", "", "Listing", "oralhistory"); ?></li>					
+										<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ( (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival")) | ($this->request->getController() == "Collections") | ($this->request->getAction() == "collections")) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Special Collections"), "", "", "Collections", "index"); ?></li>					
+									</ul>
+								</li>
 							</ul>
 						</li>
-						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children">
-							<?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?> 
-							<ul class='sub-menu<?php print (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) | ($this->request->getController() == "Collections") | (($this->request->getController() == "Listing") && ($this->request->getAction() == "oralhistory")) | (($this->request->getController() == "About") && ($this->request->getAction() == "archives")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "collections")) | ($this->request->getAction() == "oralhistory") | (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival"))) ? " active" : ""; ?>'>
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print (($this->request->getController() == "Listing")| ($this->request->getAction() == "oralhistory") ) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Oral History"), "", "", "Listing", "oralhistory"); ?></li>					
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ( (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival")) | ($this->request->getController() == "Collections") | ($this->request->getAction() == "collections")) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Special Collections"), "", "", "Collections", "index"); ?></li>					
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Featured"), "", "", "Featured", "archives"); ?></li>					
-							</ul>
-						</li>
-						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-264"><a href="https://stormking.org/support/">Support</a>
+						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-15458"><a href="https://stormking.org/learning/">Programs</a>
 							<ul class="sub-menu">
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16799"><a href="https://stormking.org/support/annualfund/">Annual Fund</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-269"><a href="https://stormking.org/support/membership/">Membership</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16595"><a href="https://stormking.org/support/council/">Council</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-328"><a href="https://stormking.org/support/gala2017/">Annual Gala</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-322"><a href="https://stormking.org/support/summer-solstice/">Summer Solstice</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-14645"><a href="https://stormking.org/support/project-support/">Project Support</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-290"><a href="https://stormking.org/support/corporate-support/">Corporate Support</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-15233"><a href="https://stormking.org/support/planned-giving/">Planned Giving</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-314"><a href="https://stormking.org/support/host-an-event/">Host an Event</a></li>
-								<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-285"><a href="https://stormking.org/support/donate/">Donate</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/education-2/public-programs/">Public Programs</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/education-2/family-programs/">Children &amp; Families</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/education-2/students-teachers/">Schools &amp; Teachers</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/education-2/artist-residency/">Artist Residency</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/education-2/digital-highlights/">Digital Highlights</a></li>
+							</ul>
+						</li>
+						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-20416"><a href="https://stormking.org/support/">Join</a>
+							<ul class="sub-menu">
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/donate/">Donate – Annual Fund</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/membership/">Membership</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/council/">Council Membership</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/gala/">Gala</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/corporatemembership/">Corporate Support</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/support/donors/">Donor List</a></li>
+							</ul>
+						</li>
+						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-20797"><a href="https://stormking.org/about/">About</a>
+							<ul class="sub-menu">
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/about/mission/">Mission &amp; Values</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/about/leadership/">Leadership</a></li>
+								<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://stormking.org/capitalproject/">Capital Project</a></li>
 							</ul>
 						</li>
 						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-14503"><a href="https://stormking.org/calendar/">Calendar</a></li>
-						<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12"><a target="_blank" href="https://shop.stormking.org/">Shop</a></li>
+						<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12"><a href="http://shop.stormkingst.wpengine.com/">Shop</a></li>
 					</ul>
 				</nav>
 					<div class="search">
@@ -378,13 +384,13 @@
 						</form>
 					</div>
 
-					<div class="copyright">©2021 Storm King Art Center</div>
-				
-
 					<nav class="secondary-menu">
-						<ul id="menu-secondary-menu-1" class="menu"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-345"><a href="https://stormking.org/termsprivacycredits/">Terms/Privacy/Credits</a></li>
-							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-348"><a href="https://stormking.org/job-opportunities/">Job Opportunities</a></li>
-							<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-15356"><a href="https://visitor.r20.constantcontact.com/d.jsp?llr=zkiggxcab&amp;p=oi&amp;m=1102437359961&amp;sit=o5slr77db&amp;f=08547c94-ef10-4ab8-a2c7-141650bcbd20">Join Mailing List</a></li>
+						<ul id="menu-secondary-menu-1" class="menu"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-20534"><a href="https://stormking.org/press/">Press</a></li>
+							<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-15356"><a href="https://lp.constantcontactpages.com/su/1eyaAGn">Subscribe</a></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-348"><a href="https://stormking.org/jobs/">Careers</a></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-20535"><a href="https://stormking.org/contact/">Contact</a></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-345"><a href="https://stormking.org/termsprivacycredits/">Terms &amp; Privacy Policy</a></li>
+							<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-20504"><a href="https://stormkingst.wpengine.com">©<?php print date("Y"); ?> Storm King Art Center</a></li>
 						</ul>
 					</nav>
 					<div class="social">
