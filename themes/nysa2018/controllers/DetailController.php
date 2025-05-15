@@ -677,7 +677,7 @@
 			if (sizeof($va_file_paths) > 1) {
 				if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
 				set_time_limit($vn_limit * 2);
-				//$o_zip = new ZipFile(__CA_APP_DIR__."/tmp/foo.zip");
+				//$o_zip = new ZipFile(__CA_TEMP_DIR__."/foo.zip");
 				require_once(__CA_LIB_DIR__."/Parsers/ZipStream.php");
 				$o_zip = new ZipStream();
 				foreach($va_file_paths as $vs_path => $vs_name) {
