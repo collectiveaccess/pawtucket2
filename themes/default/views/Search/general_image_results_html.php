@@ -68,7 +68,7 @@ $vb_has_more 		= (bool)$this->getVar('hasMore');
 			$images = caGetDisplayImagesForAuthorityItems($table, $ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $options, null), 'checkAccess' => $access_values));
 		
 			$c = 0;	
-			$qr_results->seek(1);
+			$qr_results->seek(0);
 		}
 		
 		$t_list_item = new ca_list_items();
