@@ -196,9 +196,11 @@ class BrowseController extends FindController {
 		$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 		$show_base_criteria = caGetOption('showBaseCriteria', $va_browse_info, false);
 		
-		if (is_array($va_base_criteria) && !$vs_remove_criterion) {
-			foreach($va_base_criteria as $vs_facet => $vs_value) {
-				$o_browse->addCriteria($vs_facet, $vs_value);
+		if (($o_browse->numCriteria() == 0)) {
+			if (is_array($va_base_criteria) && !$vs_remove_criterion) {
+				foreach($va_base_criteria as $vs_facet => $vs_value) {
+					$o_browse->addCriteria($vs_facet, $vs_value);
+				}
 			}
 		}
 		if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
