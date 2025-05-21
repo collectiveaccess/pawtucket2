@@ -83,7 +83,13 @@ if($this->request->isLoggedIn()){
 								<?= caNavlink($this->request, _t('About the Archive'), "dropdown-item".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							<li>
-								<?= caNavlink($this->request, _t('Services'), "dropdown-item".((strToLower($this->request->getController()) == "services") ? " active" : ""), "", "Services", "", "", ((strToLower($this->request->getController()) == "services") ? array("aria-current" => "page") : null)); ?>
+								<?= caNavlink($this->request, _t('Donate Materials'), "dropdown-item".((strToLower($this->request->getController()) == "donations") ? " active" : ""), "", "Donations", "", "", ((strToLower($this->request->getController()) == "donations") ? array("aria-current" => "page") : null)); ?>
+							</li>
+							<li>
+								<?= caNavlink($this->request, _t('Licensing'), "dropdown-item".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
+							</li>
+							<li>
+								<?= caNavlink($this->request, _t('Staff'), "dropdown-item".((strToLower($this->request->getController()) == "staff") ? " active" : ""), "", "Staff", "", "", ((strToLower($this->request->getController()) == "staff") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							<li>
 								<a href="https://www.appalshop.org" class="dropdown-item"><?= _t('Appalshop Home'); ?></a>
@@ -116,7 +122,7 @@ if($this->request->isLoggedIn()){
 				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
 					<div class="input-group">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-						<input type="text" name="search" class="form-control rounded-0 border-0 bg-light" id="nav-search-input" placeholder="Search">
+						<input type="text" name="search" class="form-control rounded-0 border-0 bg-white" id="nav-search-input" placeholder="Search">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
 				</form>

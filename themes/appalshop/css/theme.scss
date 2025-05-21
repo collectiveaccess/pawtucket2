@@ -39,6 +39,9 @@
 .bg-gold{
 	background-color:#F2BB47;
 }
+body{
+	background-color:#f9f9f2;
+}
 /* ------------------------- Navbar ------------------------- */
 .navbar-brand{
 	width:550px;
@@ -55,6 +58,11 @@ footer{
 	img{
 		width:130px;
 		height:auto;
+	}
+	.img-fluid{
+		img{
+			max-width:200px;
+		}
 	}
 }
 /* ------------------------- Front ------------------------- */
@@ -113,24 +121,13 @@ footer{
 		object-fit: cover !important;
 	}
 }
-/* ------------------------- Results ------------------------ */
-.results{
-	.card{
-		.card-body{
-			padding: .5rem !important;
-		}
-		.card-footer{
-			display:none;
-		}
-	}
-	.card.flex-grow-1{
-		box-shadow:none !important;
-	}
-}
 .detail{
+	.btn-white{
+		background-color: transparent;
+	}
 	.card{
 		.card-body{
-			padding: .5rem !important;
+			padding: 1rem !important;
 		}
 		.card-footer{
 			display:none;
@@ -139,6 +136,20 @@ footer{
 			object-fit: cover !important;
 			height: 200px;
 			width: 100%;
+		}
+	}
+	.card.flex-grow-1{
+		box-shadow:none !important;
+	}
+}
+/* ------------------------- Results ------------------------ */
+.results{
+	.card{
+		.card-body{
+			padding: 1rem !important;
+		}
+		.card-footer{
+			display:none;
 		}
 	}
 	.card.flex-grow-1{
@@ -155,7 +166,28 @@ footer{
   			width: 100%;
   		}
   		.card-body{
-			padding: .5rem !important;
+			padding: 1.5rem !important;
 		}
   	}
+}
+/* ------------------------- staticPage ------------------------ */
+.staticPage{
+	iframe{
+		width:100%;
+	}
+	img{
+		margin-bottom:30px;
+	}
+	.staffPage{
+		img{
+			margin: 0 auto 1rem;
+			background: #5C6C7A;
+			border-radius: 50vh;
+			overflow: hidden;
+			position: relative;
+			display: block;
+			width: 80%;
+			max-width:200px;
+		}
+	}
 }

@@ -20,7 +20,6 @@
 		$enable-dark-mode:            true !default;
 		$color-mode-type:             data !default; // `data` or `media-query`
 		
-		
 $gray-100: #f8f8f8 !default;
 		$gray-200: #ecedee !default;
 		$gray-300: #d0d3d5 !default;
@@ -34,9 +33,10 @@ $gray-700: #495057;
 $primary:       #1E7B55;
 /* $secondary:     #F2BB47; */
 $secondary: #292F5F;
-$light:         $gray-100;
+/*$light:         $gray-100;*/
+$light: #f2f2ea;
 $dark:          #292F5F; /* used for .bg-dark style */
-		
+	
 		// scss-docs-start spacer-variables-maps
 		$spacer: 1rem !default;
 		$spacers: (
@@ -88,15 +88,15 @@ $headings-color:              $dark;
 //$headings-color: #1D8B45;
 		// scss-docs-end headings-variables
 		
-		// scss-docs-start display-headings
-		$display-font-sizes: (
-		  1: 4rem,
-		  2: 3.5rem,
-		  3: 3rem,
-		  4: 2.5rem,
-		  5: 2rem,
-		  6: 1.5rem
-		) !default;
+// scss-docs-start display-headings
+$display-font-sizes: (
+  1: 4rem,
+  2: 3.5rem,
+  3: 3rem,
+  4: 2.5rem,
+  5: 2rem,
+  6: 1.4rem
+);
 		
 $display-font-family: $headings-font-family;
 		$display-font-style:  null !default;
@@ -119,7 +119,7 @@ $display-font-weight: 700;
 		$body-secondary-bg:         $gray-300 !default; /* used for .bg-body-secondary */
 		
 		$body-tertiary-color:       rgba($body-color, .5) !default;
-		$body-tertiary-bg:          $gray-200 !default; /* used for .bg-body-tertiary */
+$body-tertiary-bg:          $light; /* used for .bg-body-tertiary */
 		
 		$light-bg-subtle:         mix($gray-100, #FFF) !default;
 		$dark-bg-subtle:          $gray-400 !default;
@@ -195,10 +195,10 @@ $nav-pills-link-active-color: $navbar-light-active-color; /* note this is over r
 		// scss-docs-end focus-ring-variables
 		
 		$accordion-bg: $light-bg-subtle !default;
-		$accordion-button-bg: $light !default;
+$accordion-button-bg: $light;
 		$accordion-button-active-bg: $light-bg-subtle !default;
 		$accordion-border-color: $light-bg-subtle !default;
-		
+$list-group-bg: transparent;	
 		/* dropdowns */
 		/*$dropdown-border-width:             0px !default;
 		$dropdown-box-shadow:               0 .25rem .25rem rgba(#000, .075) !default; // --- this is only used when shadows are enabled so shadow is set in main.scss
