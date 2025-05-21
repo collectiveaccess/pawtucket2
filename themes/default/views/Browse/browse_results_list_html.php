@@ -129,14 +129,10 @@
 						}
 				
 						if(!$image){
-							if ($table == 'ca_objects') {
-								$t_list_item->load($qr_res->get("type_id"));
-								$typecode = $t_list_item->get("idno");
-								if($type_placeholder = caGetPlaceholder($typecode, "placeholder_media_icon")){
-									$image = "<div class='bResultItemImgPlaceholder'>".$type_placeholder."</div>";
-								}else{
-									$image = $default_placeholder_tag;
-								}
+							$t_list_item->load($qr_res->get("type_id"));
+							$typecode = $t_list_item->get("idno");
+							if($type_placeholder = caGetPlaceholder($typecode, "placeholder_media_icon")){
+								$image = "<div class='bResultItemImgPlaceholder'>".$type_placeholder."</div>";
 							}else{
 								$image = $default_placeholder_tag;
 							}

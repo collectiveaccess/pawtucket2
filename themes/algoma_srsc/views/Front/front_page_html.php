@@ -50,7 +50,7 @@
 						</div>
 						<div class="row justify-content-center">
 							<div class="col-12 col-lg-8 col-xl=6">
-								<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'all_collections'); ?>">
+								<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
 									<div class="input-group pb-3">
 										<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
 										<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">

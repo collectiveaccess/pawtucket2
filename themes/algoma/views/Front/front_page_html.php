@@ -49,7 +49,7 @@
 							<div class="fw-light "><span class="display-2 fw-medium">Welcome </span><span class="fs-3">to the</span></div>
 							<div class="display-5 fw-medium">Engracia De Jesus Matias Archives & Special Collections at the Arthur A. Wishart Library</div>
 						</div>
-						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'all_collections'); ?>">
+						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
 							<div class="input-group pb-3 w-50">
 								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
 								<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">

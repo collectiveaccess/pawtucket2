@@ -38,12 +38,6 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_item->get('ca_entities.entity_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
-?>
-<script>
-	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
-</script>
-
-<?php
 	if($show_nav){
 ?>
 	<div class="row">
@@ -54,7 +48,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-	<div class="row<?php print ($show_nav) ? " mt-2" : ""; ?>">
+	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-3">{{{^ca_entities.preferred_labels.displayname}}}</H1>
 			{{{<ifdef code="ca_entities.type_id"><div class="fw-medium mb-3 text-capitalize">^ca_entities.type_id</div></ifdef>}}}
@@ -93,10 +87,11 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row row-cols-1 row-cols-md-2">
 		<div class="col">				
 			{{{<dl class="mb-0">
-				<ifdef code="ca_entities.bio_history">
+				<ifdef code="ca_entities.bio_history.bio">
 					<dt><?= _t('Biography/History'); ?></dt>
 					<dd>
-						^ca_entities.biography
+						^ca_entities.bio_history.bio
+						<ifdef code="ca_entities.bio_history.bio_note"><div class="mt-1 small"><i>^ca_entities.bio_history.bio_note</i></div></ifdef>
 					</dd>
 				</ifdef>
 			</dl>}}}
@@ -112,19 +107,38 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</div>
 		<div class="col">
 			{{{<dl class="mb-0">
-				<ifcount code="ca_collections" min="1">
-					<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-					<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
-				</ifcount>
 				<ifcount code="ca_entities" min="1">
-					<dt><ifcount code="ca_entities.related" min="1" max="1"><?= _t('Related Person/Group'); ?></ifcount><ifcount code="ca_entities.related" min="2"><?= _t('Related People/Groups'); ?></ifcount></dt>
-					<unit relativeTo="ca_entities.related" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
+					<dt><ifcount code="ca_entities.related" restrictToTypes="group,individual" min="1" max="1"><?= _t('Related Person/Group'); ?></ifcount><ifcount code="ca_entities.related" restrictToTypes="group,individual" min="2"><?= _t('Related People/Groups'); ?></ifcount></dt>
+					<unit relativeTo="ca_entities.related" restrictToTypes="group,individual" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
+				</ifcount>
+				<ifcount code="ca_entities" restrictToTypes="school" min="1">
+					<dt><ifcount code="ca_entities.related" restrictToTypes="school" min="1" max="1"><?= _t('Related School'); ?></ifcount><ifcount code="ca_entities.related" restrictToTypes="school" min="2"><?= _t('Related Schools'); ?></ifcount></dt>
+					<unit relativeTo="ca_entities.related" restrictToTypes="school" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
 				</ifcount>
 
 				<ifcount code="ca_places" min="1">
 					<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-					<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
+					<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l></dd></unit>
 				</ifcount>
 			</dl>}}}					
 		</div>
 	</div>
+{{{<ifcount code="ca_collections" excludeTypes="file" min="1" restrictToSources="SRSC">
+	<dl class="row">
+		<dt class="col-12 mt-3 mb-2"><H2 class="d-inline"><?= _t('Related Collections, Sous-Fonds, & Series'); ?></H2> <ifcount code="ca_collections" excludeTypes="file" min="9" restrictToSources="SRSC"><?php print caNavLink($this->request, 'Browse All', 'btn btn-light ms-3 mt-n3', '', 'Browse', 'collections_non_files', array('facet' => 'entity_facet', 'id' => $t_item->get("ca_entities.entity_id"))); ?></ifcount></dt>
+		<unit relativeTo="ca_collections" excludeTypes="file" unique="1" delimiter="" limit="8" restrictToSources="SRSC"><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black px-2">^ca_collections.preferred_labels</l></dd></unit>
+	</dl>
+</ifcount>}}}
+{{{<ifcount code="ca_collections" restrictToTypes="file" min="1" restrictToSources="SRSC">
+	<div class="row">
+		<div class="col"><h2 class="d-inline">Related Files</h2> <?php print caNavLink($this->request, 'Browse All', 'btn btn-light ms-3 mt-n3', '', 'Browse', 'files', array('facet' => 'entity_facet', 'id' => $t_item->get("ca_entities.entity_id"), 'view' => 'images')); ?></div>
+	</div>
+	<div class="row">
+		<div class="col"><hr></div>
+	</div>
+	<div class="row" id="browseResultsContainer">	
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'files', array('facet' => 'entity_facet', 'id' => $t_item->get("ca_entities.entity_id"), 'view' => 'images', 'sort' => 'Identifier')); ?>">
+			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+		</div>
+	</div>
+</ifcount>}}}
