@@ -98,10 +98,10 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</div>
 		<div class="col">
 				{{{<dl class="mb-0">
-					<ifdef code="ca_occurrences.idno"><div class="unit"><dt>Identifier</dt><dd>^ca_occurrences.idno</dd></ifdef>
-					<ifdef code="ca_occurrences.dateProduced"><div class="unit"><dt>Date of Production</dt><dd>^ca_occurrences.dateProduced</dd></ifdef>
-					<ifdef code="ca_occurrences.color"><div class="unit"><dt>Color</dt><dd>^ca_occurrences.color</dd></ifdef>
-					<ifdef code="ca_occurrences.duration"><div class="unit"><dt>Duration</dt><dd>Run time: ^ca_occurrences.duration.runTime</dd></ifdef>
+					<ifdef code="ca_occurrences.idno"><dt>Identifier</dt><dd>^ca_occurrences.idno</dd></ifdef>
+					<ifdef code="ca_occurrences.dateProduced"><dt>Date of Production</dt><dd>^ca_occurrences.dateProduced</dd></ifdef>
+					<ifdef code="ca_occurrences.color"><dt>Color</dt><dd>^ca_occurrences.color</dd></ifdef>
+					<ifdef code="ca_occurrences.duration"><dt>Duration</dt><dd>Run time: ^ca_occurrences.duration.runTime</dd></ifdef>
 					<ifcount code="ca_entities" restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer" code="ca_entities" min="1" max="1"><dt>Creator</dt></ifcount>
 					<ifcount code="ca_entities" restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer" code="ca_entities" min="2"><dt>Creators</dt></ifcount>
 					<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer"><dd>^ca_entities.preferred_labels.displayname (^relationship_typename)</dd></unit>
@@ -109,7 +109,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<ifcount code="ca_entities" restrictToRelationshipTypes="actor,animator,audio_engineer,author,broadcast_engineer,camera_assistant,camera_operator,cinematographer,composer,contributing_artist,editor,engineer,filmmaker,interviewee,interviewer,musician,narrator,performer,recording_engineer,sound_mixer,subject,writer" min="1" max="1"><dt>Contributor</dt></ifcount>
 					<ifcount code="ca_entities" restrictToRelationshipTypes="actor,animator,audio_engineer,author,broadcast_engineer,camera_assistant,camera_operator,cinematographer,composer,contributing_artist,editor,engineer,filmmaker,interviewee,interviewer,musician,narrator,performer,recording_engineer,sound_mixer,subject,writer" min="2"><dt>Contributors</dt></ifcount>
 					<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="actor,animator,audio_engineer,author,broadcast_engineer,camera_assistant,camera_operator,cinematographer,composer,contributing_artist,editor,engineer,filmmaker,interviewee,interviewer,musician,narrator,performer,recording_engineer,sound_mixer,subject,writer"><dd>^ca_entities.preferred_labels.displayname (^relationship_typename)</dd></unit>
-					<ifdef code="ca_occurrences.abstract"><div class="unit"><dt>Summary</dt><dd>^ca_occurrences.abstract</dd></ifdef>
+					<ifdef code="ca_occurrences.abstract"><dt>Summary</dt><dd>^ca_occurrences.abstract</dd></ifdef>
 					<ifdef code="ca_occurrences.externalLink"><dt>External Links</dt><unit relativeTo="ca_occurrences" delimiter=""><dd><a href="^ca_occurrences.externalLink.url_entry" target="_blank">^ca_occurrences.externalLink.url_source</a></dd></ifdef>
 					
 				</dl>}}}

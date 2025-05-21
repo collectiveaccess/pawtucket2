@@ -141,6 +141,16 @@ footer{
 	.card.flex-grow-1{
 		box-shadow:none !important;
 	}
+	.imgList{
+		img{
+			object-fit: contain !important;
+			height: 400px;
+			width: 100%;
+		}
+		iframe{
+			width:100%;
+		}
+	}
 }
 /* ------------------------- Results ------------------------ */
 .results{

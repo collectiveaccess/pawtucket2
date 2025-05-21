@@ -99,7 +99,7 @@ if($this->request->isLoggedIn()){
 						</ul>	
 					</li>
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('News'), "nav-link".((strToLower($this->request->getController()) == "news") ? " active" : ""), "", "News", "index", "", ((strToLower($this->request->getController()) == "news") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('News'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "news")) ? " active" : ""), "", "Browse", "news", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "news")) ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('Browse'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? " active" : ""), "", "Browse", "objects", null, (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? array("aria-current" => "page") : null)); ?>
