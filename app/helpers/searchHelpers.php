@@ -473,11 +473,11 @@ function caGeneralSearch(RequestHTTP $request, string $search_expression, array 
 			'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $target_info, null),
 			'rootRecordsOnly' => caGetOption('omitChildRecords', $target_info, null)
 		];
-		$target_options = array_merge($options, $target_options);
+		$target_ojptions = array_merge($options, $target_options);
 			
 		$va_types = caGetOption('restrictToTypes', $target_info, array(), array('castTo' => 'array'));
 	
-		if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, $target_info); }
+		if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $target_info, false))); }
 		
 		
 		$base_criteria = caGetOption('baseCriteria', $target_info, null);
@@ -492,7 +492,7 @@ function caGeneralSearch(RequestHTTP $request, string $search_expression, array 
 				$o_browse->addCriteria($facet, $value);
 			}
 			$o_browse->addCriteria("_search", [caMatchOnStem($search_expression)], [$search_expression_for_display]);
-			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, $target_info); }
+			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array_merge($target_info, ['dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $target_info, false)])); }
 		
 			$o_browse->execute($target_options);
 			$qr_res = $o_browse->getResults($target_options);
