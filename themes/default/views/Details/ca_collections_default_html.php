@@ -73,7 +73,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
-			<div class="btn-group" role="group" aria-label="Detail Controls">
+			<div class="btn-group" role="toolbar" aria-label="Detail Controls">
 <?php
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $id));

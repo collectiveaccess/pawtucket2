@@ -66,7 +66,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
-			<div class="btn-group" role="group" aria-label="Detail Controls">
+			<div class="btn-group">
 <?php
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_entities", "id" => $id));
@@ -144,12 +144,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				<ifcount code="ca_entities" min="1">
 					<dl class="row">
 						<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities.related" min="1"><h2 class="fs-3"><?= _t('Related People & Organizations'); ?></h2><hr></ifcount></dt>
-						<unit relativeTo="ca_entities.related" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-2 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black"><div class="d-block">^ca_entities.preferred_labels<br><i>^relationship_typename</i></div></l></dd></unit>
+						<unit relativeTo="ca_entities.related" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-2 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black"><div class="d-block">^ca_entities.preferred_labels<br aria-hidden="true"><i>^relationship_typename</i></div></l></dd></unit>
 					</dl>
 				</ifcount>}}}
 	{{{<ifcount code="ca_occurrences" min="1">
 		<dl class="row">
 			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1"><h2 class="fs-3"><?= _t('Related Exhibitions & Events'); ?></h2><hr></ifcount></dt>
-			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-2 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black"><div class="d-block">^ca_occurrences.preferred_labels<br><i>^relationship_typename</i></div></l></dd></unit>
+			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-2 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black"><div class="d-block">^ca_occurrences.preferred_labels<br aria-hidden="true"><i>^relationship_typename</i></div></l></dd></unit>
 		</dl>
 	</ifcount>}}}

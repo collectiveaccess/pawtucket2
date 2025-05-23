@@ -77,7 +77,7 @@ $top_level_collection_id = $va_collection_hier_ids[1];
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
-			<div class="btn-group" role="group" aria-label="Detail Controls">
+			<div class="btn-group">
 <?php
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $id));
@@ -108,7 +108,7 @@ if($t_item->get("ca_collections.parent_id") || $t_item->get("ca_collections.date
 				array_pop($hier_parts);				
 ?>
 				<dt>Part of</dt>
-				<dd><?php print join(" > ", $hier_parts); ?></dd>
+				<dd><?php print join("<span aria-hidden='true'> > </span>", $hier_parts); ?></dd>
 <?php
 			}
 ?>				
