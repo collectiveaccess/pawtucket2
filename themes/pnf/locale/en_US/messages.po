@@ -1,0 +1,598 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CollectiveAccess Pawtucket2 PNF Theme\n"
+"POT-Creation-Date: 2016-10-26 14:33-0400\n"
+"PO-Revision-Date: 2016-10-26 14:33-0400\n"
+"Last-Translator: Seth <Seth@collectiveacess.org>\n"
+"Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-Basepath: ../..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _t\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: views/Browse/browse_refine_subview_html.php:43
+msgid "Filter by"
+msgstr ""
+
+#: views/Browse/browse_refine_subview_html.php:54
+#: views/Browse/browse_results_html.php:245
+#: views/Details/ca_entities_default_html.php:72
+#: views/Details/ca_entities_default_html.php:80
+#: views/Details/ca_occurrences_default_html.php:52
+#: views/Details/ca_occurrences_default_html.php:60
+msgid "Loading..."
+msgstr ""
+
+#: views/Browse/browse_refine_subview_html.php:80
+#: views/Browse/browse_refine_subview_html.php:84
+msgid "and %1 more"
+msgstr ""
+
+#: views/Browse/browse_refine_subview_html.php:81
+msgid "close"
+msgstr ""
+
+#: views/Browse/browse_results_html.php:72
+msgid "Sort by:"
+msgstr ""
+
+#: views/Browse/browse_results_html.php:85
+msgid "desc"
+msgstr ""
+
+#: views/Browse/browse_results_html.php:85
+msgid "asc"
+msgstr ""
+
+#: views/Browse/browse_results_html.php:152
+msgid "Ascending"
+msgstr ""
+
+#: views/Browse/browse_results_html.php:153
+msgid "Descending"
+msgstr ""
+
+#: views/Browse/browse_results_html.php:203
+msgid "Did you mean one of these: %1?"
+msgstr ""
+
+#: views/Browse/browse_results_html.php:205
+msgid "Did you mean %1?"
+msgstr ""
+
+#: views/Browse/browse_results_images_html.php:148
+#: views/Browse/browse_results_list_html.php:146
+msgid "Next %1"
+msgstr ""
+
+#: views/Details/ca_occurrences_default_html.php:28
+msgid "Identifier"
+msgstr ""
+
+#: views/Details/ca_occurrences_default_html.php:31
+#: views/Search/ca_objects_advanced_search_objects_html.php:20
+msgid "Author"
+msgstr ""
+
+#: views/Details/ca_occurrences_default_html.php:34
+#: views/Search/ca_objects_advanced_search_objects_html.php:32
+msgid "Title"
+msgstr ""
+
+#: views/Details/ca_occurrences_default_html.php:37
+msgid "Publication Information"
+msgstr ""
+
+#: views/Details/ca_occurrences_default_html.php:40
+msgid "Notes"
+msgstr ""
+
+#: views/Details/ca_occurrences_default_html.php:43
+msgid "Link"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:3
+msgid "How to use the image viewer"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:6
+msgid ""
+"Click and drag with the mouse to pan across the image. You can use the "
+"mousewheel or trackpad to zoom in or out of the image. \n"
+"\tThe <code>+</code> and <code>-</code> buttons and zoom slider bar at the "
+"top of viewer may also be used. The viewer displays the image at full "
+"resolution, loading \n"
+"\tdetail as you zoom. The more you zoom the more detail will be visible.\n"
+"\t"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:12
+msgid "Keyboard shortcuts"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:15
+msgid ""
+"Single-key shortcuts are available for common actions. Pressing the key is "
+"equivalent to the corresponding mouse action."
+msgstr ""
+
+#: views/Details/viewer_help_html.php:18
+msgid "%1 to activate image panning"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:19
+msgid "%1 to toggle visibility of the image overview"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:20
+msgid "%1 to return the image to the centered, zoomed out \"home\" position"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:21
+msgid "%1 to toggle visibility of viewer controls"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:22
+msgid "%1 to hide controls and labels"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:23
+msgid "%1 or %2 to zoom in in small increments"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:24
+msgid "%1 or %2 to zoom out in small increments"
+msgstr ""
+
+#: views/Details/viewer_help_html.php:25
+msgid "%1, %2, %3 or %4 to pan the image in small increments"
+msgstr ""
+
+#: views/Listing/ca_entities_listing_subview_html.php:46
+msgid ""
+"This list of playwrights, translators, and adaptors has been compiled from "
+"indexes in the"
+msgstr ""
+
+#: views/Listing/ca_entities_listing_subview_html.php:46
+msgid " in the US and Toronto."
+msgstr ""
+
+#: views/Listing/ca_entities_listing_subview_html.php:47
+msgid ""
+"The form of name most frequently appears as printed on the sueltas. In some "
+"cases, spelling and diacritics have been adapted according to modern "
+"practice. Birth and death dates are repeated in each instance. When known, "
+"the more commonly accepted form of a name is in italics."
+msgstr ""
+
+#: views/Listing/ca_objects_listing_subview_html.php:46
+#: views/Listing/ca_occurrences_listing_subview_html.php:52
+msgid ""
+"\"Comprehensive sources\" refers to bibliographies, catalogs, checklists, "
+"and indexes that include sueltas by several playwrights and are not limited "
+"to a single author. It is assumed that researchers investigating a "
+"particular dramatist will be thoroughly familiar with the scholarship on "
+"that person, including modern editions of his or her plays, which frequently "
+"discuss suelta editions."
+msgstr ""
+
+#: views/Listing/ca_objects_listing_subview_html.php:48
+msgid ""
+"This is a selective and narrowly focused bibliography of materials related "
+"to suelta studies. It does not reproduce the vast area of drama that once "
+"appeared in the Bulletin of the Comediantes or that continues to be gathered "
+"in the MLA Bibliography."
+msgstr ""
+
+#: views/Listing/ca_occurrences_listing_subview_html.php:41
+msgid "author, title and keyword search"
+msgstr ""
+
+#: views/Listing/ca_occurrences_listing_subview_html.php:54
+msgid ""
+"This is a selective and narrowly focused bibliography of materials related "
+"to suelta studies. It does not reproduce the vast area of drama that once "
+"appeared in the Bulletin of the Comediantes or that continues to be gathered "
+"in the MLA Bibliography"
+msgstr ""
+
+#: views/Search/ca_collections_search_subview_html.php:47
+#: views/Search/ca_objects_search_subview_html.php:61
+msgid "sort by:"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:4
+#: views/pageFormat/pageHeader.php:233
+msgid "Advanced Search"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:9
+msgid "Keyword"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:13
+#: views/Search/ca_objects_advanced_search_objects_html.php:112
+msgid "Reset"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:14
+#: views/Search/ca_objects_advanced_search_objects_html.php:113
+msgid "Search"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:24
+msgid "Place of Publication"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:36
+msgid "Printer"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:43
+msgid "Translator"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:47
+msgid "Publisher"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:53
+msgid "Language"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:57
+msgid "Bookseller"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:64
+msgid "Date Range"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:71
+msgid "Caption Title"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:75
+msgid "Holding Institution"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:83
+msgid "Physical Description"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:87
+msgid "Presence of Ornament(s)"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:94
+msgid "Local Note(s)"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:98
+msgid "Attribution Issues"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:104
+msgid "Ownership"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:108
+msgid "Holding Institution Call Number"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:122
+msgid "User's guide"
+msgstr ""
+
+#: views/Search/ca_objects_advanced_search_objects_html.php:124
+msgid "Enter your search terms in the fields to the left"
+msgstr ""
+
+#: views/Search/ca_objects_search_subview_html.php:56
+msgid "Full results"
+msgstr ""
+
+#: views/pageFormat/browseMenu_alt.php:38
+#: views/pageFormat/browseMenu_alt.php:50
+#: views/pageFormat/browseMenu_alt.php:59
+msgid "Browse"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:44
+msgid "User Profile"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:45
+msgid "Logout"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:47
+msgid "Login"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:48
+msgid "Register"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:127
+msgid "Database"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:128
+msgid "Ornaments"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:129
+msgid "Resources"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:131
+msgid "About these resources"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:132
+msgid "Playwrights, translators, and adaptors"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:133
+msgid "Printers, publishers, booksellers, and bookstores"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:134
+msgid "Institutions"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:135
+msgid "Comprehensive sources of comedias sueltas"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:136
+msgid "Studies related specifically to comedias sueltas"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:137
+msgid "US Catalogs of Spanish Drama/Comedias Sueltas Collections"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:140
+msgid "Essays"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:141
+msgid "Zarzuela"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:142
+msgid "About"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:144
+msgid "About this website"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:145
+msgid "Participating Institutions"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:146
+msgid "Contributors and team"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:147
+msgid "Contact"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:225
+msgid "Search Sueltas"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:230
+msgid "Search The Database"
+msgstr ""
+
+#: views/system/configuration_error_install_html.php:36
+msgid ""
+"<div class='error'>An error in your system configuration has been detected</"
+"div>\n"
+"\t    General installation instructions can be found\n"
+"\t    <a href='http://wiki.collectiveaccess.org/index.php?"
+"title=Installation_(Pawtucket)' target='_blank'>here</a>.\n"
+"\t    For more specific hints on the existing issues please have a look at "
+"the messages below."
+msgstr ""
+
+#: conf/browse.conf:9
+msgid "comedia suelta"
+msgstr ""
+
+#: conf/browse.conf:10
+msgid "comedia sueltas"
+msgstr ""
+
+#: conf/browse.conf:57 conf/browse.conf:323
+msgid "institution"
+msgstr ""
+
+#: conf/browse.conf:58 conf/browse.conf:324
+msgid "institutions"
+msgstr ""
+
+#: conf/browse.conf:95
+msgid "Objects"
+msgstr ""
+
+#: conf/browse.conf:108 conf/browse.conf:141 conf/browse.conf:164
+#: conf/browse.conf:187 conf/browse.conf:305 conf/contact.conf:13
+msgid "Name"
+msgstr ""
+
+#: conf/browse.conf:109 conf/browse.conf:142 conf/browse.conf:165
+#: conf/browse.conf:188
+msgid "Role"
+msgstr ""
+
+#: conf/browse.conf:110 conf/browse.conf:143 conf/browse.conf:166
+#: conf/browse.conf:189
+msgid "Type"
+msgstr ""
+
+#: conf/browse.conf:116
+msgid "author"
+msgstr ""
+
+#: conf/browse.conf:117
+msgid "authors"
+msgstr ""
+
+#: conf/browse.conf:118 conf/browse.conf:151 conf/browse.conf:174
+#: conf/browse.conf:197
+msgid ""
+"Find objects according to the people associated with your records.  You can "
+"browse by name&#44; role&#44; or entity type according to your configuration."
+msgstr ""
+
+#: conf/browse.conf:126
+msgid "title"
+msgstr ""
+
+#: conf/browse.conf:127
+msgid "titles"
+msgstr ""
+
+#: conf/browse.conf:128 conf/browse.conf:269 conf/browse.conf:280
+#: conf/browse.conf:291
+msgid ""
+"Find objects according to associated dates.  You can normalize these dates "
+"by year&#44; decade or century."
+msgstr ""
+
+#: conf/browse.conf:149
+msgid "printer"
+msgstr ""
+
+#: conf/browse.conf:150
+msgid "printers"
+msgstr ""
+
+#: conf/browse.conf:172
+msgid "publisher"
+msgstr ""
+
+#: conf/browse.conf:173
+msgid "publishers"
+msgstr ""
+
+#: conf/browse.conf:195
+msgid "bookseller"
+msgstr ""
+
+#: conf/browse.conf:196
+msgid "booksellers"
+msgstr ""
+
+#: conf/browse.conf:227
+msgid "place"
+msgstr ""
+
+#: conf/browse.conf:228
+msgid "places"
+msgstr ""
+
+#: conf/browse.conf:229
+msgid ""
+"Find objects according to the place relationships in your collection.  You "
+"can choose to view the available places as a list or heirarchy of place "
+"names."
+msgstr ""
+
+#: conf/browse.conf:256
+msgid "term"
+msgstr ""
+
+#: conf/browse.conf:257
+msgid "terms"
+msgstr ""
+
+#: conf/browse.conf:258
+msgid ""
+"Browse keywords and vocabulary terms you have associated with your records.  "
+"You can displays your keywords as a list or hierarchy of terms."
+msgstr ""
+
+#: conf/browse.conf:267
+msgid "century"
+msgstr ""
+
+#: conf/browse.conf:268
+msgid "centuries"
+msgstr ""
+
+#: conf/browse.conf:278
+msgid "date"
+msgstr ""
+
+#: conf/browse.conf:279
+msgid "dates"
+msgstr ""
+
+#: conf/browse.conf:289
+msgid "year"
+msgstr ""
+
+#: conf/browse.conf:290
+msgid "years"
+msgstr ""
+
+#: conf/browse.conf:306
+msgid "Years"
+msgstr ""
+
+#: conf/browse.conf:311
+msgid "occurrence"
+msgstr ""
+
+#: conf/browse.conf:312
+msgid "occurrences"
+msgstr ""
+
+#: conf/browse.conf:313
+msgid ""
+"Find objects by Occurrences associated with your records&#44; such as "
+"historical events&#44; productions&#44; and other record types in your "
+"collection."
+msgstr ""
+
+#: conf/browse.conf:325
+msgid "Find objects according to the Collections they belong to."
+msgstr ""
+
+#: conf/browse.conf:335
+msgid "Has media"
+msgstr ""
+
+#: conf/browse.conf:336
+msgid "Does not have media"
+msgstr ""
+
+#: conf/browse.conf:340 conf/browse.conf:341
+msgid "has image(s)"
+msgstr ""
+
+#: conf/browse.conf:342
+msgid "Find objects that have associated media."
+msgstr ""
+
+#: conf/contact.conf:12
+msgid "Email address"
+msgstr ""
+
+#: conf/contact.conf:14
+msgid "Message"
+msgstr ""

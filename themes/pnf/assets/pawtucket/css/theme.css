@@ -608,6 +608,10 @@ a.facetApply, button.facetApplySlider {
 .bResultListSimpleResult{
 	padding:0px 30px 30px 30px;
 }
+.miscImageList{
+	margin:0px 50px 50px 50px;
+	text-align:center;
+}
 /* Ornaments Intro */
 .ornamentsCatItem{
     padding: 35px 0px 0px 0px;
@@ -1065,8 +1069,28 @@ div.caMediaOverlayControls {
 		padding-right:0px;
 	}						
 }
-
-
+.listingSubHeading {
+	margin-bottom: 10px;
+	margin-top: 25px;
+	line-height: 1.3em;
+	font-weight: bold;
+	font-size: 20px;
+	color: #7f4539;
+	font-family: 'Lusitana', serif;
+}
+.listingSubHeading img{
+	width: 30px;
+	height: 100%;
+	margin-top: -10px;
+}
+.listingColHeading {
+  margin-bottom: 5px;
+  line-height: 1.3em;
+  font-weight: bold;
+  font-size: 18px;
+  color: #7f4539;
+  font-family: 'Lusitana', serif;
+}
 .tl-timeline a {
 	color: #7f4539 !important;
 }
@@ -1088,6 +1112,13 @@ a.readmore-js-toggle{
 	top: -15px;
 	display: block;
 	position: relative;
+}
+.listing-content.printersBooksellersList{
+	padding-right:0px;
+}
+.listing-content.printersBooksellersList a.readmore-js-toggle{
+	top: 0px;
+	padding-top:10px;
 }
 #glossaryBodyIntro a.readmore-js-toggle{
 	top:0px;

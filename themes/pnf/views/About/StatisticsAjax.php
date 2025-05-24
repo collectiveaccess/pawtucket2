@@ -43,10 +43,10 @@ $qr_authors = $o_browse_authors->getResults();
 
 ?>
 		
-			<li class="menu-item menu-item-type-post_type menu-item-object-lists">
+			<div>
 				<b>INSTITUTIONS</b> in public view <?php print $q_institutions_public->numRows(); ?>, in protected view <?php print $q_institutions_protected->numRows(); ?>
 				<br/><b>NUMBER OF SUELTAS</b> <?php print $q_sueltas_public->numRows(); ?>
 				<br/><b>AUTHORS</b> <?php print $qr_authors->numHits(); ?>
 				<br/><b>PRINTERS</b> <?php print $qr_printers->numHits(); ?>
-			</li>			
-			<li class="menu-item menu-item-type-post_type menu-item-object-lists hpStatsButton"><?php print caNavLink($this->request, "Browse the Database", "", "", "",""); ?></li>		
+			</div>			
+			<div class="hpStatsButton"><?php print caNavLink($this->request, "Browse the Database", "", "", "",""); ?></div>		
