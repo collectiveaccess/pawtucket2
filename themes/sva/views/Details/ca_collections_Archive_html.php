@@ -73,22 +73,14 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 		</div>
 	</div>
 <?php
-	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
+	if($inquire_enabled){
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
-			<div class="btn-group" role="group" aria-label="Detail Controls">
+			<div class="btn-group">
 <?php
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $id));
-				}
-				#if($pdf_enabled) {
-				#	print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm ps-3 pe-0 fw-medium", "ca_collections", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
-				#}
-				if($copy_link_enabled){
-?>
-				<button type="button" class="btn btn-sm ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-<?php
 				}
 ?>
 			</div>

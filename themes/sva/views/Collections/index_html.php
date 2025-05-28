@@ -38,11 +38,12 @@
 	<?php
 				$i = 0;
 				while($qr_collections->nextHit()) { 
+					$link_options = null;
 					if($i == 8){
 						print "</div>";
 						print "<div class='collapse' id='collapseArchive".$qr_archives->get("ca_collections.collection_id")."'>";
 						print "<div class='row'>";
-	
+						$link_options = array("id" => "collapseArchive".$qr_archives->get("ca_collections.collection_id")."First");
 					}
 					# --- image on collection record
 					$vs_thumbnail = "";
@@ -54,7 +55,7 @@
 					$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 bg-white border-0 pb-3 px-3 mb-4'>".$vs_thumbnail."
 									<div class='card-body px-0 pb-0'>".$qr_collections->getWithTemplate($vs_item_display_template)."</div>
 								</div>";
-					print caDetailLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
+					print caDetailLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "ca_collections",  $qr_collections->get("ca_collections.collection_id"), null, $link_options);
 					print "</div>";
 					$i++;
 				}
@@ -63,7 +64,7 @@
 					print "</div></div>";
 					print "<div class='row'>
 								<div class='col-sm-12 text-center'>
-									<button class='btn btn-primary' type='button' id='collapseArchiveButton".$qr_archives->get("ca_collections.collection_id")."' data-bs-toggle='collapse' data-bs-target='#collapseArchive".$qr_archives->get("ca_collections.collection_id")."' aria-expanded='false' aria-controls='collapseArchive".$qr_archives->get("ca_collections.collection_id")."'>More</button>
+									<button class='btn btn-primary' type='button' id='collapseArchiveButton".$qr_archives->get("ca_collections.collection_id")."' data-bs-toggle='collapse' data-bs-target='#collapseArchive".$qr_archives->get("ca_collections.collection_id")."' aria-expanded='false' aria-controls='collapseArchive".$qr_archives->get("ca_collections.collection_id")."'>Show More Collections</button>
 								</div>
 							</div>";
 ?>
@@ -73,13 +74,15 @@
 							myCollapsible.addEventListener('show.bs.collapse', event => {
 								var button = document.getElementById('collapseArchiveButton<?php print $qr_archives->get("ca_collections.collection_id"); ?>');
 								// Set HTML content
-								button.innerHTML = 'Show Less';
-	
+								button.innerHTML = 'Show Less Collections';
+							});
+							myCollapsible.addEventListener('shown.bs.collapse', event => {
+								document.getElementById('collapseArchive<?php print $qr_archives->get("ca_collections.collection_id"); ?>First').focus();
 							});
 							myCollapsible.addEventListener('hide.bs.collapse', event => {
 								var button = document.getElementById('collapseArchiveButton<?php print $qr_archives->get("ca_collections.collection_id"); ?>');
 								// Set HTML content
-								button.innerHTML = 'More';
+								button.innerHTML = 'Show More Collections';
 	
 							});
 						})

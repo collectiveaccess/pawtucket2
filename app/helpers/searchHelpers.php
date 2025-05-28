@@ -473,7 +473,7 @@ function caGeneralSearch(RequestHTTP $request, string $search_expression, array 
 			'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $target_info, null),
 			'rootRecordsOnly' => caGetOption('omitChildRecords', $target_info, null)
 		];
-		$target_ojptions = array_merge($options, $target_options);
+		$target_options = array_merge($options, $target_options);
 			
 		$va_types = caGetOption('restrictToTypes', $target_info, array(), array('castTo' => 'array'));
 	

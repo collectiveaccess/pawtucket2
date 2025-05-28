@@ -110,7 +110,7 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='list-inline-item me-1'>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
 						}
 						if($i < sizeof($va_sorts)){
-							print "<li class='list-inline-item me-2'>|</li>";
+							print "<li class='list-inline-item me-2'><span aria-hidden='true'>|</span></li>";
 						}
 					}
 					print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? "desc" : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
@@ -193,7 +193,7 @@ if (!$vb_ajax) {	// !ajax
 					print "<li class='list-inline-item p-0 m-0'>".caNavLink($this->request, $vs_l, 'btn p-1 fw-medium'.(($vs_letter == $vs_l) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))."</li>";
 				}
 			}
-			print "<li class='list-inline-item py-0 my-0'> | </li><li class='list-inline-item p-0 m-0'>".caNavLink($this->request, _t("All"), 'btn p-1 fw-medium'.((!$vs_letter) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all'))."</li>"; 
+			print "<li class='list-inline-item py-0 my-0'> <span aria-hidden='true'>|</span> </li><li class='list-inline-item p-0 m-0'>".caNavLink($this->request, _t("All"), 'btn p-1 fw-medium'.((!$vs_letter) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all'))."</li>"; 
 			print "</ul>";
 		}
 ?>

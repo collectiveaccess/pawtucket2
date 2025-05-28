@@ -49,7 +49,7 @@
 			$vn_i++;
 			if($vn_i == $vn_num_items_to_show){
 				if($qr_results->numHits() > $vn_num_items_to_show){
-					print "<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>".caNavLink($this->request, _t("Full Results")."  <i class='ps-2 bi bi-box-arrow-up-right' aria-label='link out'></i>", "pt-3 pb-4 px-3 d-flex align-items-center justify-content-center bg-dark h-100 w-100 text-white", "", "Search", $vs_block, array("search" => $vs_search))."</dd>";
+					print "<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>".caNavLink($this->request, _t("Full Results")."  <i class='ps-2 bi bi-box-arrow-up-right'></i>", "d-flex align-items-center justify-content-center h-100 w-100 btn btn-dark", "", "Search", $vs_block, array("search" => $vs_search))."</dd>";
 				}
 				break;
 			}
