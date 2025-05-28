@@ -158,7 +158,7 @@
 						case "ca_collections":
 							$vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $vs_image_class));
 							if(!$vs_thumbnail){
-								$vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|' limit='1'>^ca_object_representations.media.medium%class=".$vs_image_class_occ."</unit>", array("checkAccess" => $va_access_values));
+								$vs_thumbnails = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' delimiter='|' limit='1'>^ca_object_representations.media.medium%class=".str_replace(" ", "|", $vs_image_class)."</unit>", array("checkAccess" => $va_access_values));
 								$va_tmp = explode("|", $vs_thumbnails);
 								$vs_thumbnail = $va_tmp[0];
 							}
@@ -178,14 +178,12 @@
 						break;
 						# -------------------------------
 					}
-					$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
+					$vs_detail_button_link = caDetailLink($this->request, $vs_thumbnail."<div class='card-body'>".$vs_caption."</div>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
+					$vs_thumbnail_caption_link = caDetailLink($this->request, "", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 					$vs_result_output = "
 			<div class='col-md-6 col-lg-4 d-flex'>
 				<div id='row{$vn_id}' class='card flex-grow-1 width-100 rounded-0 shadow-sm bg-white border-0 mb-4'>
-				  {$vs_rep_detail_link}
-				  	<div class='card-body'>
-						{$vs_caption}
-					</div>
+				  {$vs_detail_button_link}
 				 </div>	
 			</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));

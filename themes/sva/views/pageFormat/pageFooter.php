@@ -36,7 +36,13 @@
 			<div class="container-fluid">
 				<div class="row align-items-center">
 					<div class="col-lg-6">
-						<?= caNavlink($this->request, _t("<div>Milton Glaser Design Study Center and Archives</div><div class='divide border-bottom border-black my-1'></div><div>SVA Archives</div>"), "text-black fs-2 navbar-brand", "", "", ""); ?>
+<?php
+						if(strToLower($this->request->getController()) == "front"){
+							print "<a class='text-black fs-2 navbar-brand'>"._t("<div>Milton Glaser Design Study Center and Archives</div><div class='divide border-bottom border-black my-1'></div><div>SVA Archives</div>")."</a>";
+						}else{
+							print caNavlink($this->request, _t("<div>Milton Glaser Design Study Center and Archives</div><div class='divide border-bottom border-black my-1'></div><div>SVA Archives</div>"), "text-black fs-2 navbar-brand", "", "", "");
+						}						
+?>
 					</div>
 					<div class="col-lg-2"></div>
 					<div class="col-lg-4 text-lg-end">

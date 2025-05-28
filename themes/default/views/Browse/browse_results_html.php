@@ -84,7 +84,7 @@ if (!$ajax) {	// !ajax
 <?php
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<li class='list-group-item border-0 px-0 pt-1'>\n";
-					print "<ul class='list-inline p-0 me-2'><li class='list-inline-item fw-medium text-uppercase me-1'>"._t("Sort by:")."</li>\n";
+					print "<div class='d-inline-block fw-medium text-uppercase me-1'>"._t("Sort by:")."</div><ul class='list-inline p-0 me-2'>\n";
 					$i = 0;
 					foreach($va_sorts as $sort => $sort_flds) {
 						$i++;
