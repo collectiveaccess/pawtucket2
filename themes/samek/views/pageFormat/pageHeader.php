@@ -95,7 +95,7 @@ if($this->request->isLoggedIn()){
 					</li> -->
 
 					<li class="nav-item dropdown">
-						<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">About</a>
+						<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">About <svg style="stroke: #000;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5"></path></svg></a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/about/mission/">Mission</a></li>
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/spaces/">Spaces</a></li>
@@ -104,14 +104,14 @@ if($this->request->isLoggedIn()){
 					</li>
 
 					<li class="nav-item dropdown">
-						<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visit</a>
+						<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visit <svg style="stroke: #000;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5"></path></svg></a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/visit/">Plan A Visit</a></li>
 						</ul>
 					</li>
 
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Exhibitions</a>
+						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Exhibitions <svg style="stroke: #000;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5"></path></svg></a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/category/upcoming-exhibitions/">Upcoming Exhibitions</a></li>
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/category/current-exhibitions/">Current Exhibitions</a></li>
@@ -121,7 +121,7 @@ if($this->request->isLoggedIn()){
 					</li>
 
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Collection</a>
+						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Collection <svg style="stroke: #000;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5"></path></svg></a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item">
 								<?= caNavlink($this->request, _t('Search'), ((strToLower($this->request->getController()) == "") ? " active" : ""), "", "", "", "", ((strToLower($this->request->getController()) == "") ? array("aria-current" => "page") : null)); ?>
@@ -152,7 +152,7 @@ if($this->request->isLoggedIn()){
 					</li>
 
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events</a>
+						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events <svg style="stroke: #000;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5"></path></svg></a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/category/upcoming-events/">Upcoming Events</a></li>
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/category/past-events/">Past Events</a></li>
@@ -161,7 +161,7 @@ if($this->request->isLoggedIn()){
 					</li>
 
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Engage</a>
+						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Engage <svg style="stroke: #000;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5"></path></svg></a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/category/samek-voices/">Samek Voices</a></li>
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/join-our-team/">Join Our Team</a></li>
