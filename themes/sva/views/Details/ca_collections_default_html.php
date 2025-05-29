@@ -149,10 +149,10 @@ if($vs_collections_item_availablity = $this->getVar("collections_item_availablit
 		<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" delimiter="" limit="8">
 			<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
 				<div class='card flex-grow-1 width-100 rounded-0 shadow-sm bg-white border-0 mb-4'>
-				  <l>^ca_object_representations.media.large%class=' card-img-top object-fit-contain px-3 pt-3 rounded-0 '</l>
+				  <l>^ca_object_representations.media.large%class='card-img-top|object-fit-contain|px-3|pt-3|rounded-0'
 				  	<div class='card-body'>
-						<l>^ca_objects.preferred_labels.name</l>
-					</div>
+						^ca_objects.preferred_labels.name
+					</div></l>
 				 </div>
 			</div>
 		</unit>
