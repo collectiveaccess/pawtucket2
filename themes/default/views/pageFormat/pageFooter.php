@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2022 Whirl-i-Gig
+ * Copyright 2015-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -44,15 +44,6 @@
 			</ul>
 			<div><small>&copy; <a href="https://www.collectiveaccess.org">CollectiveAccess 2022</a></small></div>
 		</footer><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
-	
 		<?= TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel" role="complementary"> 
 			<div id="caMediaPanelContentArea">

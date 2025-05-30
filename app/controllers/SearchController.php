@@ -121,6 +121,8 @@ class SearchController extends FindController {
 		
 		
 		// Allow plugins to rewrite search prior to execution
+		$vs_search_expression = $this->opo_result_context->getSearchExpression();
+		
 		$qr_res = null;
 		$this->opo_app_plugin_manager->hookReplaceSearch(['search' => $ps_function, 'browseInfo' => &$va_browse_info, 'searchExpression' => &$vs_search_expression, 'result' => &$qr_res]);
 		$vb_search_was_replaced = ($qr_res) ? true : false;
@@ -132,8 +134,6 @@ class SearchController extends FindController {
 			return;
 		}
 		
-		
-		$vs_search_expression = $this->opo_result_context->getSearchExpression();
 		if(!$this->request->isAjax()) {
 			if ($ps_label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
 				$this->opo_result_context->setSearchExpressionForDisplay("{$ps_label}: {$vs_search_expression}"); 
