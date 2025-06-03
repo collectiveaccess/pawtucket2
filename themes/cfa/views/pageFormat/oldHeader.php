@@ -85,16 +85,6 @@
     	});
 	</script>
 
-	<?php
-		if(Debug::isEnabled()) {		
-			//
-			// Pull in JS and CSS for debug bar
-			// 
-			$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-			$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-			print $o_debugbar_renderer->renderHead();
-		}
-	?>
 
 </head> 
 

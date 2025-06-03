@@ -90,16 +90,7 @@
 	</script>
 	<script type="text/javascript" async defer src="//assets.pinterest.com/js/pinit.js"></script>
 
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Oswald:300,400|Roboto:400,700" rel="stylesheet"></head>
 <body>
 	<!-- facebook share js -->

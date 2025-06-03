@@ -59,16 +59,7 @@
 		$( "#entityTable" ).tabs();
 	  });
   </script>	
-<?php
-	//
-	// Pull in JS and CSS for debug bar
-	// 
-	if(Debug::isEnabled()) {
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 
     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 </head>

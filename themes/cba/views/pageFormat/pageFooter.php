@@ -63,14 +63,7 @@ CLOSED Sun          </span>
           <span class="copyright">© 2021 <a href="https://centerforbookarts.org/" rel="home">Center for Book Arts</a>, Incorporated 1974 • A 501(c)(3) not-for-profit organization</span>
         </div>
       </footer>
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel" role="complementary"> 

@@ -31,14 +31,7 @@
 			<p>© Copyright 2007 | <a href="http://arts.osu.edu" title="College of Arts and Sciences Web Site">College of Arts and Sciences</a> | Images © CsuriVision Ltd. | All Rights Reserved | <a href="http://accad.osu.edu" title="The Advanced Computing Center for the Arts and Design Web Site">ACCAD</a> | 331 Sullivant Hall, 1813 N. High Street | Columbus, OH 43210</p>
 			<small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2014-2020</a></small></div>
 		</div><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	</div><!-- end pageArea --></div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

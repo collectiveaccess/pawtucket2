@@ -31,12 +31,6 @@
 	TooltipManager::add('.setsButton', 'Add to lightbox');
 	TooltipManager::add('.dlButton', 'Download');
 	
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
 ?>
 	</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 
