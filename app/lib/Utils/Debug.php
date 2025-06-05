@@ -55,7 +55,7 @@ class Debug {
 	 * @param string $message Optional message to prefix stacktrace with
 	 */
 	public static function trace($message=null) {
-		$msg = $message."\n".caPrintStackTrace(array('skip' => 1)));
+		$msg = $message."\n".caPrintStackTrace(array('skip' => 1));
 		
 		// noop
 	}
