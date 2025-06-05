@@ -58,7 +58,7 @@
 	$vs_result_col_class = $o_config->get('result_col_class');
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
-	if ($vs_table == "ca_collections") { $vs_class = "collectionsBrowse col-sm-8";}
+	if ($vs_table == "ca_collections") { $vs_class = "collectionsBrowse col-sm-12";}
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
@@ -225,17 +225,6 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 					print "<div class='mapInfo'>Haga clic en los nombres de colección para las direcciones y sitios web de las bibliotecas.</div>";
 				}
 			}
-			if ($this->request->getAction() == "collections") {
-				print "<div class='institutionList col-sm-4'>";
-				$qr_res->seek(0);
-				$i = 0;
-				while($qr_res->nextHit()) {
-					print "<div class='institutionUnit'>".caNavLink($this->request, "<i class='fa fa-bank'></i> ".$qr_res->get('ca_collections.preferred_labels'), 'institutionLink', '', 'Detail', 'collections/'.$qr_res->get('ca_collections.collection_id'))."</div>";
-					print "<hr>";
-				}
-				$qr_res->seek(0);
-				print "</div>";
-			}
 ?>		
 			<div id="browseResultsContainer" <?php print "class='".$vs_class."'";?> >
 <?php
@@ -243,11 +232,39 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 
 print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
 
+
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end browseResultsContainer -->
 		</div><!-- end row -->
 		</form>
+<?php
+		if ($this->request->getAction() == "collections") {
+			print "<div class='institutionList'>";
+			$qr_res->seek(0);
+			$i = 0;
+			while($qr_res->nextHit()) {
+				if($i == 0){
+					print "<div class='row'>";
+				}
+				print "<div class='col-sm-12 col-md-6 col-lg-4'>
+							<div class='institutionUnit'>".caNavLink($this->request, "<i class='fa fa-landmark'></i> ".$qr_res->get('ca_collections.preferred_labels'), 'institutionLink', '', 'Detail', 'collections/'.$qr_res->get('ca_collections.collection_id'))."
+							</div>
+							<hr>
+						</div>";
+				$i++;
+				if($i == 3){
+					print "</div>";
+					$i = 0;
+				}
+			}
+			if($i > 0){
+				print "</div>";
+			}
+			$qr_res->seek(0);
+			print "</div>";
+		}
+?>
 	</div><!-- end col-8 -->
 <?php
 	if(!in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies"))){

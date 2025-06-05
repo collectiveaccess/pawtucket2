@@ -588,6 +588,7 @@ a.facetApply, button.facetApplySlider {
 .institutionMore {
 	display:none;
 }
+/*
 .institutionUnit{
 	padding-left:10px;
 }
@@ -598,6 +599,15 @@ a.facetApply, button.facetApplySlider {
 	padding-left:11px;
     text-indent:-11px;
     display:inline-block;
+}
+*/
+.institutionUnit a.institutionLink {
+	text-decoration:none;
+	font-size:15px;
+	font-weight:bold;
+}
+.institutionList{
+	padding-top:30px;
 }
 .institutionList hr{
 	margin-top:15px;
@@ -1144,4 +1154,4 @@ a.readmore-js-toggle{
 }
 .close a{
 	color: red !important;
-{
+}
