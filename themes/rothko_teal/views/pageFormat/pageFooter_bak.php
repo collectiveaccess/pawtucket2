@@ -28,7 +28,14 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 
-
+<?php
+	//
+	// Output HTML for debug bar
+	//
+	if(Debug::isEnabled()) {
+		print Debug::$bar->getJavascriptRenderer()->render();
+	}
+?>
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 	<div id="footer">
 		<div class="container">
