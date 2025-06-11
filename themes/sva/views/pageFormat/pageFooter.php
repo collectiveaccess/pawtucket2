@@ -46,20 +46,6 @@
 					</div>
 					<div class="col-lg-2"></div>
 					<div class="col-lg-4 text-lg-end">
-						<div class="text-lg-end">
-							<form name="appbundle_subscriber_footer" method="post" id="nwl_subscribe_form_footer" aria-label="Newsletter form">
-							<input type="hidden" name="_method" value="PUT">
-                				<div class="text-start ">
-                					<label for="appbundle_subscriber_footer_email" class="form-label">Enter your email to receive our newsletter</label>
-                				</div>
-                				<div class="input-group">
-									<input class="form-control rounded-0 border-white bg-white" type="email" id="appbundle_subscriber_footer_email" name="appbundle_subscriber_footer[email]" required="required" autocomplete="email" placeholder="name@email.com">
-									<button class="btn btn-primary" aria-label="Submit">
-										<i class="bi bi-arrow-right"></i>
-									</button>
-								</div>
-							<input type="hidden" id="appbundle_subscriber_footer__token" name="appbundle_subscriber_footer[_token]" value="1daa4e09c326830.rnD2YeqEbdMwfLKqwsbCG-S9J6XJXaimNRZw61WlIo8.2wDDAJDlXbsCGv-flImKLMmJZOa8HOvwAFMIoTv1G-n-SJ8rjeg55God2Q"></form>
-						</div>
 						<div class="text-center">
 							<ul class="list-inline pt-3 mb-0">
 								<li class="list-inline-item fs-4 px-2"><?php print caNavlink($this->request, '<i class="bi bi-envelope" aria-label="contact the archive"></i>', '', '', "Contact", 'form'); ?></li>
