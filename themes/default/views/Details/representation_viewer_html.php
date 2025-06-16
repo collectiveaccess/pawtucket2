@@ -133,7 +133,65 @@ $subject = $this->getVar("subject");
 
 <!-- START: Media selector bar -->
 <?php
-	if(sizeof($media_list) > 1) {
+	if(sizeof($media_list) > 12){
+		$group_size = 4;
+		$media_icons = [];
+		$g = -1;
+		foreach($media_list as $i => $m) {
+			if(($i % $group_size) === 0) { 
+				$g++; 
+				$media_icons[$g] = ['g' => $g, 'items' => []];	
+			};
+			$media_icons[$g]['items'][] = "<div class='col-3 img-fluid'><button class='mediaviewer-selector-control mediaIcon' id='mediaviewer-selector-control".$i."' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".$m['icon_tag'].'</button></div>';
+		}
+		$media_icons = array_map(function($v) {
+			return "<div class='carousel-item gx-12 row ".(($v['g'] == 0) ? 'active' : '')."'>".join('', $v['items'])."</div>";
+		}, $media_icons);
+?>
+<div id="mediaviewer-selector" class='mx-auto my-3 justify-content-center'>
+	<div id="multiCarousel" class="carousel slide multiSlideCarousel">
+        <div class="row">
+        	<div class="col-2 col-sm-1 align-content-center">
+        		<a class="btn btn-white p-2" href="#multiCarousel" role="button" data-bs-slide="prev" aria-label="previous slide">
+					<i class="bi bi-arrow-left"></i>
+				</a>
+			</div>
+			<div class="col-8 col-sm-10">
+				<div class="carousel-inner" role="listbox"><?= join(" ", $media_icons); ?></div>
+        	</div>
+        	<div class="col-2 col-sm-1 align-content-center">
+				<a class="btn btn-white p-2" href="#multiCarousel" role="button" data-bs-slide="next" aria-label="next slide" onClick="return false;">
+					<i class="bi bi-arrow-right"></i>
+				</a>
+    		</div>
+    	</div>
+    </div>
+</div>
+<style>
+	.multiSlideCarousel .carousel-inner .carousel-item.active,
+	.multiSlideCarousel .carousel-inner .carousel-item-next,
+	.multiSlideCarousel .carousel-inner .carousel-item-prev {
+		display: flex;
+	}
+	
+		
+		.multiSlideCarousel .carousel-inner .carousel-item-end.active,
+		.multiSlideCarousel .carousel-inner .carousel-item-next {
+			transform: translateX(100%);
+		}
+		
+		.multiSlideCarousel .carousel-inner .carousel-item-start.active, 
+		.multiSlideCarousel .carousel-inner .carousel-item-prev {
+			transform: translateX(-100%);
+		}
+	
+	.multiSlideCarousel .carousel-inner .carousel-item-end,
+	.multiSlideCarousel .carousel-inner .carousel-item-start { 
+		transform: translateX(0);
+	}
+</style>
+<?php
+	}elseif(sizeof($media_list) > 1){
 		$media_icons = [];
 		foreach($media_list as $i => $m) {
 			$media_icons[] = "<div class='col-2 img-fluid mb-3'><button class='mediaviewer-selector-control mediaIcon' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".$m['icon_tag'].'</button></div>';
