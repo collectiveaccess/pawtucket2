@@ -33,7 +33,7 @@
 	}
 ?>
 		<footer id="footer" class="p-5 text-center mt-auto bg-secondary text-bg-dark">
-			<div class="container-xl mb-5">
+			<div class="container-xl mb-5 pb-5 pb-sm-0">
 				<div class="row justify-content-center">
 					<div class="col-xs-12 col-md-4 col-lg-8 text-center">
 					
