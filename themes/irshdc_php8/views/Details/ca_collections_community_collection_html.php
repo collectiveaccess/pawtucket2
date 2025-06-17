@@ -25,34 +25,51 @@
  * http://www.CollectiveAccess.org
  *
  * ----------------------------------------------------------------------
- */
- 
-	$t_item = 				$this->getVar("item");
-	$va_comments =			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
-	$vn_id =				$t_item->get('ca_entities.entity_id');
-	# --- get collections configuration
-	$o_collections_config = caGetCollectionsConfig();
-	$vb_show_hierarchy_viewer = true;
-	if($o_collections_config->get("do_not_display_collection_browser")){
-		$vb_show_hierarchy_viewer = false;	
-	}
-	# --- get the collection hierarchy parent to use for exporting finding aid
-	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
-	$va_access_values = $this->getVar("access_values");
-	
-	include("restricted_access_warning.php");	
+*/
+$t_item = 				$this->getVar("item");
+$va_comments =			$this->getVar("comments");
+$va_tags = 				$this->getVar("tags_array");
+$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+$vn_share_enabled = 	$this->getVar("shareEnabled");	
+$vn_id =				$t_item->get('ca_entities.entity_id');
+# --- get collections configuration
+$o_collections_config = caGetCollectionsConfig();
+$vb_show_hierarchy_viewer = true;
+if($o_collections_config->get("do_not_display_collection_browser")){
+	$vb_show_hierarchy_viewer = false;	
+}
+# --- get the collection hierarchy parent to use for exporting finding aid
+$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
+$va_access_values = $this->getVar("access_values");
+
+include("restricted_access_warning.php");	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 	</div><!-- end detailTop -->
 </div>
-			<div class="row">
+		<div class="row ">
+<?php
+			$vs_representationViewer = trim($this->getVar("representationViewer"));	
+			if($vs_representationViewer){				
+?>
+				<div class='col-sm-12 col-md-5'>	
+					<?php print $vs_representationViewer; ?>
+				
+				
+					<div id="detailAnnotations"></div>
+<?php				
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
+?>
+				</div>
+				<div class='col-sm-12 col-md-4'>
+<?php				
+			}else{
+?>				
 				<div class='col-sm-12 col-md-9'>					
 <?php
+			}
 					$vs_source = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>', array("checkAccess" => $va_access_values));						
 					$vs_source_link = $t_item->get("ca_collections.link");
 					if($vs_source_link){
@@ -174,7 +191,14 @@
 ?>
 					{{{<ifcount code="ca_objects" min="1">
 								<div class="relatedBlock">
-								<h3>Records</H3>
+									<div class="row">
+										<div class="col-sm-6">
+											<h3>Records</H3>
+										</div>
+										<div class="col-sm-6 text-right">
+											<?php print caNavLink($this->request, "Browse All", "btn btn-default", "", "Browse", "objects", array("facet" => "detail_collection", "id" => $t_item->get("ca_collections.collection_id"))); ?>
+										</div>
+									</div>
 									<div class="row">
 										<div id="browseResultsContainer">
 											<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

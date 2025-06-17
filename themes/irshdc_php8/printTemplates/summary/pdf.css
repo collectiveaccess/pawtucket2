@@ -33,9 +33,13 @@ h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5p
 	height:14px;
 	display:inline-block;
 }
-.small{
+.small, .source{
 	font-size:10px;
 	padding-top:4px;
+	font-weight:normal;
+}
+.text-center{
+	text-align:center;
 }
 .quote{
 	font-size:18px;

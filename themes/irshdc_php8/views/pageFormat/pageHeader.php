@@ -154,7 +154,8 @@
 							<li><?php print caNavLink($this->request, "<span>"._t("BC Residential Schools")."</span>", "", "", "Explore", "schools"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Residential Schools Map")."</span>", "", "", "Browse", "schools", array("view" => "map")); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Featured Collections")."</span>", "", "", "Gallery", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, "<span>"._t("Learning Resources")."</span>", "", "", "Listing", "Resources"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Community Collections")."</span>", "", "", "Explore", "CommunityCollections"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Learning Resources")."</span>", "", "", "Listing", "Resources"); ?></li>						
 <?php
 	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewDigExh")){
 ?>
@@ -166,12 +167,7 @@
 							<li><?php print caNavLink($this->request, "<span>"._t("Educational Resources")."</span>", "", "", "Explore", "EducationalResources"); ?></li>
 <?php
 	}
-	if($this->request->isLoggedIn()){
 ?>
-							<li><?php print caNavLink($this->request, "<span>"._t("Community Collections")."</span>", "", "", "Explore", "CommunityCollections"); ?></li>
-<?php	
-	}
-?>					
 							<li><a href='/UserGuide'><span><?php print _t("User Guide"); ?></span></a></li>
 						</ul>
 					</li>

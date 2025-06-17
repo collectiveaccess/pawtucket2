@@ -37,21 +37,22 @@
 	<div class="row tanBg exploreRow exploreRow exploreCommunityCollectionRow">
 		<div class="col-sm-12">
 			<H1>Community Collections</H1>
-			<p>
-				{{{community_collections_intro}}}
-			</p>
+<?php
+			if(	$this->request->isLoggedIn()){
+?>
+				{{{community_collections_logged_in}}}<br/><br/>
+<?php			
+			}
+?>
 		</div>
 	</div>
+	<div class='row'>
+		<div class="col-lg-10 col-lg-offset-1 col-md-12">
 <?php
-		if($qr_collections->numHits()){
-?>
-		<div class='row'>
-			<div class="col-lg-10 col-lg-offset-1 col-md-12">
-<?php
+	if($qr_collections->numHits()){
 			$i = 0;	
 			while($qr_collections->nextHit()) {
 				
-				if($this->request->isLoggedIn()){
 					if($i == 0){
 						print "<div class='row'>";
 					}
@@ -67,7 +68,6 @@
 						print "</div>";
 						$i = 0;
 					}
-				}
 
 			
 			}
@@ -75,8 +75,23 @@
 				print "</div>";
 			}
 ?>
-			</div>
-		</div>
 <?php
+	}else{
+		if(!$this->request->isLoggedIn()){
+?>				
+			<div class="staticPage">{{{community_collections_intro}}}</div>
+			<br/><br/><p class="text-center">
+				<?= caNavLink($this->request, "Register", "btn-default btn-lg", "", "LoginReg", "RegisterForm")." ".caNavLink($this->request, "Login", "btn-default btn-lg", "", "LoginReg", "LoginForm"); ?>	
+			</p>
+<?php
+		}else{
+?>
+			<div class="exploreCommunityCollectionDesc text-center">{{{community_collections_no_collections}}}</div>
+<?php
+		}
+
+
 	}
 ?>
+		</div>
+	</div>

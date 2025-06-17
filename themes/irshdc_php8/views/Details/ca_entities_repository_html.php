@@ -35,6 +35,7 @@ if($vs_mode == "map"){
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_pdf_enabled = 	$this->getVar("pdfEnabled");	
 	$vn_id =				$t_item->get('ca_entities.entity_id');
 	
 		
@@ -112,6 +113,12 @@ if($vs_mode == "map"){
 							</div>
 						</div>
 					</ifdef>}}}
+<?php
+					if($vn_pdf_enabled){
+						print "<div class='relatedBlock'><H3>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_entities",  $t_item->get("ca_entities.entity_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_entities_repository_summary'))." <span class='glyphicon glyphicon-file'></span></H3></div>";
+					}
+?>
+
 				</div>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
 	<?php
@@ -131,6 +138,9 @@ if($vs_mode == "map"){
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_entities", "row_id" => $t_item->get("entity_id")))."</div>";
+					if($vn_pdf_enabled){
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_entities",  $t_item->get("ca_entities.entity_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_entities_repository_summary'))."</div>";
+					}
 					print '</div><!-- end detailTools -->';			
 
 					if ($vn_comments_enabled) {

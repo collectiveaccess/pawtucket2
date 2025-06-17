@@ -113,7 +113,7 @@
 				}
 				print "
 	<div class='bResultItemCol col-xs-12 col-sm-3 col-lg-2'>
-		<div class='bResultItem{{{$restricted_class}}}' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+		<div class='bResultItem{$restricted_class}' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
 					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
