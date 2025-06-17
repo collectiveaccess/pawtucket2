@@ -92,16 +92,7 @@
 	<!-- wig account <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5935c2532e01ff00121c67cf&product=inline-share-buttons"></script>-->
 	<script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=5941a2411684e40011e407a5&product=social-ab' async='async'></script>
 	<link rel="icon" type="image/png" href="/favico.ico">
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 </head>
 <body>
 <?php

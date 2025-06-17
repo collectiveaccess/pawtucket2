@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2023 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -93,7 +93,7 @@ class ExcelDataReader extends BaseDataReader {
 				}
 				$headers = array_map(function($v) { return mb_strtolower($v); }, $headers);
 
-				if(caGetOption('headers', $pa_options, false) || (sizeof(array_filter($headers, function($v) { $v = trim($v); return !(!strlen($v) || preg_match('!^[a-z0-9_\-\.:]+$!', $v)); })) === 0)) {
+				if(caGetOption('headers', $pa_options, false) || (sizeof(array_filter($headers, function($v) { $v = trim($v); return !(!strlen($v) || preg_match('!^[a-z0-9_\-\.:\/]+$!', $v)); })) === 0)) {
 					// looks like headers
 					array_unshift($headers, ''); // 1-based
 					$this->headers = $headers;
@@ -147,7 +147,7 @@ class ExcelDataReader extends BaseDataReader {
 					}
 					
 					if(sizeof($this->headers) && isset($this->headers[$vn_col])) {
-						$this->opa_row_buf[$this->headers[$vn_col]] = $this->opa_row_buf['/'.$this->headers[$vn_col]] = $vs_val;	
+						$this->opa_row_buf[$this->headers[$vn_col]] = $this->opa_row_buf[str_replace('/', '', $this->headers[$vn_col])] = $this->opa_row_buf['/'.$this->headers[$vn_col]] = $vs_val;	
 					}
 
 					$vn_col++;
@@ -302,7 +302,7 @@ class ExcelDataReader extends BaseDataReader {
 	 *
 	 */
 	public static function getCellAsHTML($po_cell) {
-		$o_value = $po_cell->getCalculatedValue();
+		$o_value = $po_cell->getValue();
 		
 		if ($o_value instanceof \PhpOffice\PhpSpreadsheet\RichText\RichText) {
 			$va_elements = $o_value->getRichTextElements();
@@ -326,8 +326,24 @@ class ExcelDataReader extends BaseDataReader {
 				} 
 			}
 			return join('', $va_values);
+		} else {
+			$o_value = $po_cell->getCalculatedValue();
+			if($po_cell->getStyle()->getFont()->getItalic()) {
+				$o_value = "<i>".$o_value."</i>";
+			}
+			if($po_cell->getStyle()->getFont()->getBold()) {
+				$o_value = "<b>".$o_value."</b>";
+			}
+			if($po_cell->getStyle()->getFont()->getSuperScript()) {
+				$o_value = "<sup>".$o_value."</sup>";
+			}
+			if($po_cell->getStyle()->getFont()->getSubScript()) {
+				$o_value = "<sub>".$o_value."</sub>";
+			}
+			if($po_cell->getStyle()->getFont()->getStrikethrough()) {
+				$o_value = "<strike>".$o_value."</strike>";
+			}
 		}
-		
 		return $o_value;
 	}
 	# -------------------------------------------------------

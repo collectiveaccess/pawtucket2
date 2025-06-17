@@ -19,6 +19,7 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
+<!--                <H2>{{{^ca_entities.preferred_labels.displayname%locale=kor_KO}}}</H2> -->
 					<HR/>
 				</div><!-- end col -->
 			</div><!-- end row -->

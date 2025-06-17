@@ -65,7 +65,9 @@ try {
 	$resp = $app->getResponse();
 	
 	if (($g_request->getController() !== 'Ban') && !BanHammer::verdict($g_request)) {
-		Session::setVar('pawtucket2_page_at_ban', $g_request->getFullUrlPath());
+		if(!$g_request->isAjax()) {
+			Session::setVar('pawtucket2_page_at_ban', $g_request->getFullUrlPath());
+		}
 		$g_request->setInternalRedirect(['module' => '', 'controller' => 'Ban', 'action' => 'verify']);
 	}
 

@@ -44,12 +44,7 @@
 		</div><!-- end footer -->
 <?php
 	}
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
+
 ?>
 	</div><!-- end pageArea --></div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>

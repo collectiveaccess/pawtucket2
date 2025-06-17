@@ -295,14 +295,6 @@
 			</div>
 		</div>
 
-		<?php
-			//
-			// Output HTML for debug bar
-			//
-			if(Debug::isEnabled()) {
-				print Debug::$bar->getJavascriptRenderer()->render();
-			}
-		?>
 		
 		<?php print TooltipManager::getLoadHTML(); ?>
 

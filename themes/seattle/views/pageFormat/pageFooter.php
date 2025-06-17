@@ -61,14 +61,7 @@ if (window.location.href =="http://archives.seattle.gov/digital-collections/"){
 
 
 </script>
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

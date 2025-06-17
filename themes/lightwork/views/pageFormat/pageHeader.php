@@ -74,16 +74,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Chivo:400" rel="stylesheet" type="text/css">
 	<link rel="icon" href="<?php print $this->request->getThemeUrlPath();?>/assets/pawtucket/graphics/favicon.ico" type="image/x-icon"  sizes="16x16">
 
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 </head>
 <body>
 	<nav class="navbar navbar-default yamm" role="navigation">

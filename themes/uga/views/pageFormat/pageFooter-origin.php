@@ -43,14 +43,7 @@
 				<li><a href="#">Link 3</a></li>
 			</ul> -->
 		</div><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
