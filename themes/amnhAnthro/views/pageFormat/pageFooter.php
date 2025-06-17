@@ -50,14 +50,7 @@
 				<li><a href="https://www.amnh.org/about/notice-of-non-discrimination-and-harassment">Non-Discrimination Notice</a></li>
 			</ul>
 		</footer><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel" role="complementary"> 

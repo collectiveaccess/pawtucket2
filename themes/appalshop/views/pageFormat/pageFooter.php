@@ -33,14 +33,7 @@
 				<div class='footInfo'>Appalshop - 91 Madison Ave.- Whitesburg, KY 41858 - 606-633-0108 - 606-633-1009 (fax) - <a href="mailto:caroline@appalshop.org">caroline@appalshop.org</a></div>
 		</footer><!-- end footer -->
 </div>
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

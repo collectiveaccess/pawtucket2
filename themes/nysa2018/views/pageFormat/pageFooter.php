@@ -70,14 +70,7 @@
 			<p class="bottom-paragraph">To report technical problems with this web site, please contact the New York State Archives at <a href="mailto:archinfo@nysed.gov">archinfo@nysed.gov</a> </p>
 		</div>
 	</div><!-- end pageArea -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

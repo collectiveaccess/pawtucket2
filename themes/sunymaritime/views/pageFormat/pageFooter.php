@@ -48,14 +48,7 @@ Bronx, NY 10465<br>
 Phone — (718) 409-7231
 Email — library@sunymaritime.edu
 		</footer><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

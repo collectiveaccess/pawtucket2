@@ -2419,7 +2419,7 @@ function caFileIsIncludable($ps_file) {
 	 *		defaultOnEmptyString = Force use of default value when option is set to an empty string). [Default is false]
 	 * @return mixed
 	 */
-	function caGetOption($pm_option, ?array $pa_options, $pm_default=null, ?array $pa_parse_options=null) {
+	function caGetOption($pm_option, $pa_options, $pm_default=null, ?array $pa_parse_options=null) {
 		if (is_object($pa_options) && is_a($pa_options, 'Zend_Console_Getopt')) {
 			$pa_options = array($pm_option => $pa_options->getOption($pm_option));
 		}
@@ -5196,5 +5196,23 @@ function caFileIsIncludable($ps_file) {
 	function caGetHTTPResponse() : ResponseHTTP { 		
 		$app = AppController::getInstance();
 		return $app->getResponse();
+	}
+	# ----------------------------------------
+	/**
+	 * Remove enclosing <p> tags from text, when text is single paragraph
+	 * 
+	 * @param string $text
+	 *
+	 * @return string
+	 */
+	function caStripEnclosingParagraphHTMLTags(?string $text) : ?string { 
+		if(is_null($text)) { return null; }
+		$l = strlen($text);
+		if($l > 8192) { $l = 8192; }
+		if(preg_match("!^<p>!i", $text) && ((substr_count($text, "<p>", 0, $l) == 1) || (substr_count($text, "<P>", 0, $l) == 1))) {
+			$text = preg_replace("!^<p>!i", "", $text);
+			$text = preg_replace("!</p>$!i", "", $text);
+		}
+		return $text;
 	}
 	# ----------------------------------------

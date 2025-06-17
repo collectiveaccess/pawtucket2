@@ -243,7 +243,7 @@ class DetailController extends FindController {
 		#
 		# Enforce access control
 		#
-		if(sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
+		if(!caACLIsEnabled($t_subject, ['forPawtucket' => true]) && sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
 			$this->notification->addNotification(_t("This item is not available for view"), __NOTIFICATION_TYPE_INFO__);
 			$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
 			return;
@@ -717,7 +717,7 @@ class DetailController extends FindController {
 				//
 				// Perform metadata embedding
 				$t_rep = new ca_object_representations($va_rep['representation_id']);
-				if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
+				if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep, $ps_version))) {
 					$vs_path = $t_rep->getMediaPath('media', $ps_version);
 				}
 				$va_file_paths[$vs_path] = $vs_filename;
@@ -837,7 +837,7 @@ class DetailController extends FindController {
 		
 		//
 		// Perform metadata embedding
-		if ($this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_instance->getPrimaryKey(), $t_instance->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode())) {
+		if ($this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep, $ps_version)) {
 			$this->view->setVar('version_path', $this->ops_tmp_download_file_path);
 		} else {
 			$this->view->setVar('version_path', $t_rep->getMediaPath('media', $ps_version));

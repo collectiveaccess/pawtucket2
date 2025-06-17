@@ -81,16 +81,7 @@
     	});
 	</script>
 	<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=58e54a3021bc4400110fdfdb&product=inline-share-buttons"></script>
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 </head>
 <body>
 	<nav class="navbar navbar-default yamm" role="navigation">

@@ -2097,7 +2097,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 						if (is_array($ids) && (sizeof($ids) > 0)) {
 							if ($log_erp) { $o_log->logInfo(_t('[%1] Skipped import because of existing record matched on label by policy %2', $vs_idno, $vs_existing_record_policy)); }
 							$this->num_records_skipped++;
-							continue(3);	// skip because label matched
+							continue(2);	// skip because label matched
 						}
 						break;
 					case 'merge_on_idno_and_preferred_labels':
@@ -3501,6 +3501,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 					if ($vs_table_name == $vs_subject_table) {		
 						foreach($va_content as $vn_i => $va_element_data) {
 							foreach($va_element_data as $vs_element => $va_element_content) {	
+								if(!is_array($va_element_content)) { continue; }
 								$vn_locale_id = caGetOption('_locale', $va_element_content ?? [], $mapping_default_locale_id);
 								
 								$o_log->logDebug(_t('Started insert of %1.%2 for idno %3 at %4 seconds [id=%3]', $vs_table_name, $vs_element, $vs_idno, $t->getTime(4), $t_subject->getPrimaryKey()));

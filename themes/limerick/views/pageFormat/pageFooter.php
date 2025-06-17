@@ -31,14 +31,7 @@
 		<footer id="footer">
 			<div>©<?= date('Y'); ?> <a href="https://www.limerick.ie/discover/eat-see-do/arts-culture/museums/limerick-museum">Limerick City Museum</a></div>
 		</footer><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

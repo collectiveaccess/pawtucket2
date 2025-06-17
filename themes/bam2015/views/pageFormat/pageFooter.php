@@ -28,14 +28,7 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	</div><!-- end pageArea -->
 <?php
 	if($this->request->getController() != "Front"){
