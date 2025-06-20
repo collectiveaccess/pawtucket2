@@ -122,7 +122,7 @@ if($show_nav){
 					<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
 					<ifcount code="ca_collections" min="1">
 						<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-						<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
+						<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter="<span aria-hidden='true'> > </span>"><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 					</ifcount>
 		
 					<ifcount code="ca_entities" min="1">

@@ -69,7 +69,7 @@ if($show_nav){
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
-			<div class="btn-group" role="group" aria-label="Detail Controls">
+			<div class="btn-group">
 <?php
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
@@ -141,10 +141,9 @@ if($show_nav){
 								<dt><?= _t('ID'); ?></dt>
 								<dd>^ca_objects.idno</dd>
 							</ifdef>
-							<ifdef code="ca_objects.location">
-							<ifcount code="ca_collections" min="1">
-								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Part of'); ?></ifcount></dt>
-								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
+							<ifcount code="ca_collections" restrictToRelationshipTypes="part_of" min="1">
+								<dt><?= _t('Part of'); ?></dt>
+								<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="part_of"><dd><unit relativeTo="ca_collections.hierarchy" delimiter="<span aria-hidden='true'> > </span>"><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 							</ifcount>
 							<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibitions">
 								<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="exhibitions"><?= _t('Related Exhibition'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="exhibitions"><?= _t('Related Exhibitions'); ?></ifcount></dt>

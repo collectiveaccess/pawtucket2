@@ -113,7 +113,7 @@ $vb_has_more 		= (bool)$this->getVar('hasMore');
 			$c++;
 			if($c == $num_items_to_show){
 				if($qr_results->numHits() > $num_items_to_show){
-					print "<div class='row justify-content-center'><div class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>".caNavLink($this->request, _t("Full Results")."  <i class='ps-2 bi bi-box-arrow-up-right' aria-label='link out'></i>", "pt-3 pb-4 px-2 d-flex align-items-center justify-content-center bg-dark h-100 w-100 text-white", "", "Search", $block, array("search" => $search))."</div></div>";
+					print "<div class='row justify-content-center'><div class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>".caNavLink($this->request, _t("Full Results")."  <i class='ps-2 bi bi-box-arrow-up-right'></i>", "pt-4 pb-4 d-flex align-items-center justify-content-center h-100 w-100 btn btn-dark", "", "Search", $block, array("search" => $search))."</div></div>";
 				}
 				
 				break;

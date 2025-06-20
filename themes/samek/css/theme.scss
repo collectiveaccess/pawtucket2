@@ -69,12 +69,13 @@ nav{
 	@media(min-width:576px){
 		.dropdown-menu{
 			width:200px;
-			padding-top:30px !important;
+			padding-top:0px !important;
 			border-top:0px;
 			border-right:0px;
 			border-left:0px;
-			border-bottom: 1px solid #000;
+			border: 1px solid #00000026;
 			padding-bottom: 0px;
+			margin-left: 20px;
 			box-shadow: none;
 			top:100% !Important;
 			.dropdown-menu-sub{
@@ -85,6 +86,7 @@ nav{
 			}
 		}
 		.dropdown:hover, .dropdown-menu:hover {
+			text-decoration: underline;
 			.dropdown-menu {
 				display: block;
 			}
@@ -96,22 +98,22 @@ nav{
 		}
 		.dropdown-item{
 			white-space: normal;
-			border: 1px solid #000;
 			border-bottom: 0px;
 		}
 		.dropdown-item a{
-			color:#808080;
+			color:#000;
 			padding: 15px 3px;
 			display: inline-block;
 		}
-		.dropdown-item:hover{
-			background-color:#000;
+		.dropdown-item a:hover{
+			text-decoration: underline;
 		}
 		.nav-link, .dropdown-item a{
-			font-size: 21.42px !important;
-			font-weight: 300;
-			line-height: 21.42px;
+			font-weight: 400;
+			line-height: clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.625), 20px);
 			text-decoration: none;
+			
+			font-size: clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.625), 20px)
 		}
 	}
 
@@ -160,9 +162,15 @@ nav{
 		.dropdown-item{
 			padding: 0px 20px 14px 20px;
 		}
+		.dropdown-item:hover{
+			background-color:#cc0000;
+			text-decoration: underline;
+		}
+		
 		.dropdown-item a{
-			font-size: 21.42px;
+			font-size: clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.625), 20px);
 			text-decoration: none;
+			color: #000;
 		}
 	}
 
@@ -201,9 +209,13 @@ footer{
  	
 	.footerUnit{
 		margin-bottom:24px;
+		font-weight: 400;
 	}
 	.display-6{
 		margin-bottom:16px;
+		
+		font-family: 'Merriweather', serif !important;
+		font-weight: bold;
 	}
 	.footerTop{
 		padding-top:59px;
@@ -252,7 +264,8 @@ footer{
 		transition: opacity 0.5s ease;
 		text-decoration: none;
 
-		background-color: rgba(0, 0, 0, 0.34);
+		/* background-color: rgba(0, 0, 0, 0.34); */
+		background-color: #000;
 		max-height: 50%;
 		overflow-wrap: break-word;
 		font-family: 'Merriweather', serif;
@@ -281,4 +294,18 @@ footer{
 
 input#search-within::placeholder {
 	font-size: 14px !important;
+}
+.stl-img-wrapper {
+	mask-size: 100% 100%;
+	width: 100%;
+	margin: 20px 0 0 0;
+	overflow: hidden;
+	position: relative;
+}
+.stl-img-wrapper img {
+	display: block;
+	height: 100% !important;
+	width: 100% !important;
+	margin: 0 !important;
+	object-fit: cover;
 }
