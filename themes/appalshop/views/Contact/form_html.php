@@ -103,16 +103,19 @@ if($id && $t_item->getPrimaryKey()){
 ?>
 	</div><!-- end row -->
 	<div class="row mb-2">
-		<div class="col-lg-8 col-xl-4 mb-4">
+		<div class="col-12">
 			<label for="message" class="form-label"><?= _t("Message (required)"); ?></label>
 			<textarea class="form-control<?= (($errors["message"]) ? " is-invalid" : ""); ?>" id="message" name="message" rows="5">{{{message}}}</textarea>
 		</div><!-- end col -->
-		<div class="col-lg-8 col-xl-4 mb-4">
-			<label for="licensing" class="form-label"><?= _t("Interested in licensing materials from the Archive?"); ?></label>
-			<textarea class="form-control<?= (($errors["licensing"]) ? " is-invalid" : ""); ?>" id="licensing" name="licensing" rows="5">{{{licensing}}}</textarea>
-		</div><!-- end col -->
-		<div class="col-lg-8 col-xl-4 mb-4">
-			<label for="project" class="form-label"><?= _t("Tell us about your project"); ?></label>
+	</div>
+	<div class="row mt-4 mb-2">
+		<div class="col-12">
+			<H2>Are you interested in licensing materials from the Archive?</H2>
+		</div>
+	</div>
+	<div class="row mb-4">
+		<div class="col-12">
+			<label for="project" class="form-label"><?= _t("Tell us about your project and what you're interested in licensing."); ?></label>
 			<textarea class="form-control<?= (($errors["project"]) ? " is-invalid" : ""); ?>" id="project" name="project" rows="5">{{{project}}}</textarea>
 		</div><!-- end col -->
 	</div><!-- end row -->
