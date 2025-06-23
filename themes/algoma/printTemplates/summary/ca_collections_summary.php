@@ -51,7 +51,7 @@
 ?>
 	<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
 		
-	<div class="unit"><H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6></div>
+	<div class="unit"><H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno"><if rule="^ca_collections.idno <> '-'">, ^ca_collections.idno</if></ifdef>}}}</H6></div>
 	<div class="unit">
 	{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></H6></ifdef>}}}
 	</div>
