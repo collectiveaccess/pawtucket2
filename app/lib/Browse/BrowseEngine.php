@@ -1238,6 +1238,7 @@ class BrowseEngine extends BaseFindEngine {
 		}
 		$this->opb_criteria_have_changed = false;
 
+		$t_item = Datamodel::getInstanceByTableName($this->ops_browse_table_name, true);
 
 		$va_results = array();
 
@@ -3375,6 +3376,7 @@ class BrowseEngine extends BaseFindEngine {
 			$pa_options['checkAccess'] = $force_access;
 		}
 
+		$t_subject = $this->getSubjectInstance();
 
 		$vb_is_relative_to_parent = false;
 		if ($va_facet_info['relative_to'] ?? null) {

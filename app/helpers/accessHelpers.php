@@ -915,7 +915,16 @@ function caACLIsEnabled($t_item=null, ?array $options=null) : bool {
 }
 # ---------------------------------------------------------------------------------------------
 /**
-<<<<<<< HEAD
+ * 
+ *
+ */
+function caGetACLItemLevelMap() : ?array {
+	$config = Configuration::load();
+	$map = $config->get('access_to_acl_item_access_level_map') ?? null;
+	return $map;
+}
+# ---------------------------------------------------------------------------------------------
+/**
  * 
  *
  * @param BaseModel|string $t_item A model instance or model name to test. If null system-wide ACL status is returned. [Default is null]
@@ -949,6 +958,23 @@ function caSuspendCheckAccessChecks($t_item) : bool {
 	return (caAppIsPawtucket() && $acl_is_enabled);
 }
 # ---------------------------------------------------------------------------------------------
+/**
+ * 
+ *
+ * 
+ * @return bool
+ */
+function caDontEnforceACLForAdministrators(?ca_users $t_user) : bool {
+	$config = Configuration::load();
+	$bypass_enabled = $config->get('acl_dont_enforce_for_administrator');
+	if(!$bypass_enabled) { return false; }
+	
+	$is_admin = (is_a($t_user, 'ca_users') && $t_user->canDoAction('is_administrator'));
+	if($is_admin) { return true; }
+	
+	return false;
+}
+# ---------------------------------------------------------------------------------------------
 /*
  * Determine if source access control is enabled system wide, or for a specific row
  *
@@ -963,5 +989,26 @@ function caSourceAccessControlIsEnabled($t_item=null, ?array $options=null) : bo
 	if(!is_a($t_item, 'BaseModel')) { $t_item = Datamodel::getInstance($t_item, true); }
 	if($config->get($t_item->tableName().'_dont_do_source_access_control')) { return false; } 
 	return true;
+}
+# ---------------------------------------------------------------------------------------------
+/**
+ *
+ */
+function caGetAccessConfigOption(BaseModelWithAttributes $t_item, string $config_opt, ?array $options=null) : mixed {
+	$config = Configuration::load();
+	
+	$keys = [$config_opt];
+	if(is_a($t_item, 'BaseModelWithAttributes')) {
+		array_unshift($keys, $t_item->tableName().'_'.$config_opt);
+		array_unshift($keys, $t_item->tableName().'_'.$t_item->getTypeCode().'_'.$config_opt);
+	}
+	$ret = null;
+	foreach($keys as $a) {
+		if($config->exists($a)) { 
+			$ret = (bool)$config->get($a); 
+			break;
+		}
+	}
+	return $ret;
 }
 # ---------------------------------------------------------------------------------------------

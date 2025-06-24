@@ -4608,6 +4608,7 @@ function caRepresentationViewer($request, $data, $subject, $options=null) {
 	if (method_exists($vo_data, 'filterNonPrimaryRepresentations')) { $vo_data->filterNonPrimaryRepresentations(false); }
 	while($vo_data->nextHit()) {
 		if (!($vn_representation_id = $vo_data->get('ca_object_representations.representation_id', ['checkAccess' => $va_access_values, 'limit' => 1]))) { continue; }
+		
 		$t_instance->load($vo_data->getPrimaryKey());
 		if($t_instance->getPrimaryRepresentationId()){
 			$vn_representation_id = $t_instance->getPrimaryRepresentationId();
