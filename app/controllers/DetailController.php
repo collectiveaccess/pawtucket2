@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2023 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -310,7 +310,7 @@ class DetailController extends FindController {
 				$t_representation = Datamodel::getInstance("ca_object_representations", true);
 				$t_representation->load($pn_representation_id);
 			}else{
-				$t_representation = $t_subject->getPrimaryRepresentationInstance(array("checkAccess" => $this->opa_access_values));
+				$t_representation = $t_subject->getPrimaryRepresentationInstance(["checkAccess" => $this->opa_access_values]);
 			}
 			if ($t_representation) {
 				$this->view->setVar("t_representation", $t_representation);
