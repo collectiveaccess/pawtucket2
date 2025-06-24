@@ -55,12 +55,22 @@ main{
 	.nav-link{
 		text-transform:uppercase;
 	}
+	@media(max-width:991px){
+		.nav-link{
+			padding-left:15px;
+		}
+	}
 	.nav-link:hover, .nav-link.active:hover, .nav-link:focus, .nav-link.active:focus{
 		background-color: $primary;
 		color:#FFF;
 	}
 	.navbar-brand {
 		width:350px
+	}
+	@media(max-width: 465px) {
+		.navbar-brand {
+			width:250px
+		}
 	}
 }
 @media(min-width: 992px) {

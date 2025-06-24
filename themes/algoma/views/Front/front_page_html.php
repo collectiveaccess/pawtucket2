@@ -44,18 +44,22 @@
 		<div class="container h-100">
 			<div class="row h-100">
 				<div class="col-md-12 col-lg-10 col-xl-10 d-flex h-100 align-items-center">
-					<div class="text-white p-5 text-left w-100">
+					<div class="text-white py-5 p-md-5 text-left w-100">
 						<div class="py-3">
 							<div class="fw-light "><span class="display-2 fw-medium">Welcome </span><span class="fs-3">to the</span></div>
 							<div class="display-5 fw-medium">Engracia De Jesus Matias Archives & Special Collections at the Arthur A. Wishart Library</div>
 						</div>
-						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
-							<div class="input-group pb-3 w-50">
-								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
-								<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
-								<button type="submit" class="btn rounded-0 bg-white text-primary" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
+						<div class="row">
+							<div class="col-12 col-sm-8 col-md-6">
+								<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
+									<div class="input-group pb-3">
+										<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
+										<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
+										<button type="submit" class="btn rounded-0 bg-white text-primary" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
+									</div>
+								</form>
 							</div>
-						</form>
+						</div>
 					</div>
 				</div>
 			</div>
