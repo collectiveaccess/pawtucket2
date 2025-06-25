@@ -178,7 +178,7 @@
 						break;
 						# -------------------------------
 					}
-					$vs_detail_button_link = caDetailLink($this->request, $vs_thumbnail."<div class='card-body'>".$vs_caption."</div>", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
+					$vs_detail_button_link = caDetailLink($this->request, $vs_thumbnail."<div class='card-body'>".$vs_caption."</div>", 'link-dark mx-1', $vs_table, $vn_id, null);
 					$vs_thumbnail_caption_link = caDetailLink($this->request, "", 'link-dark mx-1', $vs_table, $vn_id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 					$vs_result_output = "
 			<div class='col-md-6 col-lg-4 d-flex'>
