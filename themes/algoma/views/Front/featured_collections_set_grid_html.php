@@ -44,7 +44,7 @@
 	<?php
 				$i = $vn_col = 0;
 				while($qr_res->nextHit()){
-					print "<div class='col-md-4 mb-3 mb-md-0'><div class='p-2 p-lg-5 bg-primary h-100'>".$qr_res->getWithTemplate("<l class='text-decoration-none text-white'>".$vs_thumbnail."<div class='text-start fw-semibold display-6'>^ca_collections.preferred_labels.name</div></l>")."</div></div>";
+					print "<div class='col-md-4 mb-3 mb-md-0'><div class='p-3 p-lg-5 bg-primary h-100'>".$qr_res->getWithTemplate("<l class='text-decoration-none text-white'>".$vs_thumbnail."<div class='text-start fw-semibold display-6'>^ca_collections.preferred_labels.name</div></l>")."</div></div>";
 					$i++;
 					if($i == 3){
 						break;

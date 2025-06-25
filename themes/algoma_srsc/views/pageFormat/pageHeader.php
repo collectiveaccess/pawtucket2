@@ -125,6 +125,9 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 								<?= caNavlink($this->request, _t('Contact Us'), "dropdown-item".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							<li>
+								<?= caNavlink($this->request, _t('Education'), "dropdown-item".((strToLower($this->request->getController()) == "education") ? " active" : ""), "", "education", "", "", ((strToLower($this->request->getController()) == "education") ? array("aria-current" => "page") : null)); ?>
+							</li>
+							<li>
 								<?= caNavlink($this->request, _t('Wellness Supports'), "dropdown-item".((strToLower($this->request->getController()) == "wellnesssupports") ? " active" : ""), "", "WellnessSupports", "", "", ((strToLower($this->request->getController()) == "wellnesssupports") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							

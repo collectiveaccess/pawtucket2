@@ -68,6 +68,11 @@ b, strong{
 	.nav-link{
 		text-transform:uppercase;
 	}
+	@media(max-width:1200px){
+		.nav-link{
+			padding-left:15px;
+		}
+	}
 	.nav-link:hover, .nav-link.active:hover, .nav-link:focus, .nav-link.active:focus{
 		background-color: $primary;
 		color:#FFF;
@@ -80,6 +85,11 @@ b, strong{
 	.navbar-brand img{
 		width:30%;
 		min-width: 50px;
+	}	
+	@media(max-width:440px){
+		.navbar-brand > div{
+			font-size: .9rem !important;
+		}
 	}
 }
 @media(min-width: 992px) {
@@ -137,6 +147,10 @@ background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0
 			@media(max-width:768px){
 				padding-top:30%;
 			}
+			@media(max-width:440px){
+				padding-top:40%;
+			}
+			
 		}
 		div:hover{
 			background: rgba(41, 39, 86, .9);
@@ -166,7 +180,25 @@ background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0
 	.leaflet-popup-content{
 		img{
 			width:100%;
-			height:200px;
+			height:150px;
 		}
 	}
+}
+/* ------------------------- Browse ------------------------- */
+#bRefine {
+	padding-bottom: 100px;
+}
+@media (min-width: 480px) {
+  #bRefine {
+    padding-bottom: 74px;
+  }
+}
+@media (min-width: 768px) {
+  #bRefine {
+    padding-bottom: 40px;
+  }
+}
+/* ------------------------- gallery ------------------------- */
+.gallery .btn-primary{
+	padding:10px;
 }

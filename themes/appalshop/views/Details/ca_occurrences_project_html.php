@@ -178,7 +178,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 														</div>
 													</ifcount>
 												</div>
-											</ifcount>");
+											</ifcount>", array("checkAccess" => $access_values));
 		}
 		
 	}

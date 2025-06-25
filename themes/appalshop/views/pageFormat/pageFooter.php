@@ -44,12 +44,21 @@
 				</div>
 				<div class="bg-white py-5 px-5 g-5 shadow">
 					<div class="container-xl">
-						<div class="row mb-5">
-							<div class="col-md-4 offset-md-4 col-lg-2 offset-lg-5 img-fluid">
+						<div class="row">
+							<div class="col-md-6 offset-md-3 col-lg-4 offset-lg-4 img-fluid img-fluid-larger">
 								<a href="https://www.ironmountain.com" target="_blank"><?php print caGetThemeGraphic($this->request, 'IM_Logo.png', array("alt" => "Iron Mountain logo")); ?></a>
 							</div>
 						</div>
-						<div class="row g-5">
+						<div class="row">
+							<div class="col-12">
+								{{{iron_mountain_sponsor_note}}}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="bg-white py-5 px-5 g-5 shadow">
+					<div class="container-xl">
+						<div class="row g-5 justify-content-center">
 							<div class="col-md-4 col-lg-2 mb-4 img-fluid d-flex align-items-center justify-content-center">
 								<a href="https://americanarchive.org/" target="_blank"><?php print caGetThemeGraphic($this->request, 'AAPB.png', array("alt" => "American Archive of Public Broadcasting")); ?></a>
 							</div>
@@ -59,6 +68,8 @@
 							<div class="col-md-4 col-lg-2 mb-4 img-fluid d-flex align-items-center justify-content-center">
 								<a href="https://www.neh.gov/" target="_blank"><?php print caGetThemeGraphic($this->request, 'NEH.jpg', array("alt" => "National Endowment for the Humanities logo")); ?></a>
 							</div>
+						</div>
+						<div class="row g-5 justify-content-center">
 							<div class="col-md-4 col-lg-2 mb-4 img-fluid d-flex align-items-center justify-content-center">
 								<a href="https://www.filmpreservation.org/" target="_blank"><?php print caGetThemeGraphic($this->request, 'National_Film_Preservation_Foundation.png', array("alt" => "National Film Preservation Foundation logo")); ?></a>
 							</div>
@@ -67,6 +78,9 @@
 							</div>
 							<div class="col-md-4 col-lg-2 mb-4 img-fluid d-flex align-items-center justify-content-center">
 								<a href="https://www.nps.gov" target="_blank"><?php print caGetThemeGraphic($this->request, 'Save-Americas-Treasures.png', array("alt" => "Save America's Treasures logo")); ?></a>
+							</div>
+							<div class="col-md-4 col-lg-2 mb-4 img-fluid d-flex align-items-center justify-content-center">
+								<a href="https://www.recordingpreservation.org" target="_blank"><?php print caGetThemeGraphic($this->request, 'National_Recording_Preservation_Foundation_logo_small.jpg', array("alt" => "National Recording Preservation Foundation logo")); ?></a>
 							</div>
 						</div>
 					</div>
