@@ -473,7 +473,7 @@ class CataloguingService extends BaseService {
 
 		// This is kinda C-ish ... maybe there is a better way to copy URL content to a local file?
 		$vr_src_file = fopen($media_url, "r");
-		$vs_tmpfile = __CA_APP_DIR__."/tmp/soap_cataloguing_service_".md5($media_url);
+		$vs_tmpfile = __CA_TEMP_DIR__."/soap_cataloguing_service_".md5($media_url);
 		$vr_dst_file = fopen($vs_tmpfile,"w+");
 		while (!feof($vr_src_file)) {
 			$vs_buffer = fgets($vr_src_file, 4096);
