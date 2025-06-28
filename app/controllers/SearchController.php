@@ -592,6 +592,7 @@ class SearchController extends FindController {
 		
 		$this->view->setVar('search', $search);
 		$this->view->setVar('searchForDisplay', $search_display);
+		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search results for '%1'", $search_display));		
 		$this->view->setVar('config', $this->config);
 		$this->view->setVar('blocks', $search_targets);
 		$this->view->setVar('blockNames', $search_targets);

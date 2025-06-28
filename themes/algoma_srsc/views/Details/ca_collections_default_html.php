@@ -52,7 +52,6 @@ if($collections_config->get("do_not_display_collection_browser")){
 $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 ?>
 <script>
-	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 <?php 
@@ -74,7 +73,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-3">{{{^ca_collections.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_collections.type_id|ca_collections.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_collections.type_id">^ca_collections.type_id</ifdef><ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef></div></ifdef>}}}
+			{{{<ifdef code="ca_collections.type_id|ca_collections.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_collections.type_id">^ca_collections.type_id</ifdef><ifdef code="ca_collections.idno"><if rule="^ca_collections.idno <> '-'">, ^ca_collections.idno</if></ifdef></div></ifdef>}}}
 			<hr class="mb-0">
 		</div>
 	</div>
@@ -137,16 +136,16 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 						</dd>
 					</unit>
 				</ifdef>
-				<ifdef code="ca_collections.gmd">
-					<dt><?= _t('General Material Designation'); ?></dt>
-					<dd>
-						^ca_collections.gmd%delimiter=,_
-					</dd>
-				</ifdef>
 				<ifdef code="ca_collections.phys_desc">
 					<dt><?= _t('Physical Description'); ?></dt>
 					<dd>
 						^ca_collections.phys_desc
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.gmd">
+					<dt><?= _t('General Material Designation'); ?></dt>
+					<dd>
+						^ca_collections.gmd%delimiter=,_
 					</dd>
 				</ifdef>
 				<ifdef code="ca_collections.arrangement">
@@ -170,12 +169,6 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 						<ifdef code="ca_collections.biblio.volume">^ca_collections.biblio.volume<ifdef code="ca_collections.biblio.issue|ca_collections.biblio.standard">, </ifdef></ifdef>
 						<ifdef code="ca_collections.biblio.issue">^ca_collections.biblio.issue<ifdef code="ca_collections.biblio.standard">, </ifdef></ifdef>
 						<ifdef code="ca_collections.biblio.standard">^ca_collections.biblio.standard</ifdef>
-					</dd>
-				</ifdef>
-				<ifdef code="ca_collections.geographic_access">
-					<dt><?= _t('Geographic Access'); ?></dt>
-					<dd>
-						^ca_collections.geographic_access%delimiter=,_
 					</dd>
 				</ifdef>
 				<ifdef code="ca_collections.rights.statement">
@@ -204,6 +197,22 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				</ifdef>
 				
 			</dl>}}}
+<?php
+			if($t_item->get("ca_collections.tk_permissions.tk_permissions_label")){
+				$t_list_item = new ca_list_items($t_item->get("ca_collections.tk_permissions.tk_permissions_label"));
+				$vs_permission_name = $t_list_item->get("ca_list_items.preferred_labels.name_singular");
+				$vs_permission_desc = $t_item->get("ca_collections.tk_permissions.tk_permissions_description");
+				if(!$vs_permission_desc){
+					$vs_permission_desc = $t_list_item->get("ca_list_items.preferred_labels.description");
+				}
+				$vs_icon = $t_list_item->get("ca_list_items.icon.original", array("alt" => $vs_permission_name, "class" => "tkIcon me-2"));
+				
+				print "<div class='mt-2'>
+						  <button class='btn btn-white' type='button' data-bs-toggle='collapse' data-bs-target='#tkDescription' aria-expanded='false' aria-controls='tkDescription'>{$vs_icon} <b>{$vs_permission_name}</b></button>
+						<div class='collapse mt-2' id='tkDescription'>{$vs_permission_desc}</div>
+					</div>";
+			}
+?>
 		</div>
 		<div class="col">
 			{{{<dl class="mb-0">
@@ -247,16 +256,8 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 
 				<ifcount code="ca_places" min="1">
 					<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-					<unit relativeTo="ca_places" delimiter=""><dd>^ca_places.preferred_labels</dd></unit>
+					<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l></dd></unit>
 				</ifcount>
-				<ifdef code="ca_collections.ex_pub">
-					<dt><?= _t('Exhibition and Publication History'); ?></dt>
-					<unit relativeTo="ca_collections.ex_pub" delimiter=" ">
-						<dd>
-						^ca_collections.ex_pub
-						</dd>
-					</unit>
-				</ifdef>
 				
 			</dl>}}}					
 		</div>
@@ -274,7 +275,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	<div class="col"><h2>Files in this ^ca_collections.type_id</h2><hr/></div>
 </div>
 <div class="row" id="browseResultsContainer">	
-	<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'files', array('search' => 'ca_collections.parent_id:'.$t_item->get("ca_collections.collection_id"))); ?>">
+	<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'files', array('search' => 'ca_collections.parent_id:'.$t_item->get("ca_collections.collection_id"), 'sort' => 'Identifier')); ?>">
 		<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 	</div>
 </ifcount>}}}

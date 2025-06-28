@@ -150,11 +150,11 @@ class ListingController extends BasePawtucketController {
 		}else{
 			$sort_changed = true;
 		}
-		$sort_direction = caGetOption('sortDirection', $listing_info, null);
+		$sort_direction_list = caGetOption('sortDirection', $listing_info, null);
 		
 		if (!($sort_direction = $this->request->getParameter("direction", pString))) {  			    
 			# --- set the default sortDirection if available
-			if(!($sort_direction = $sort_direction[$sort])){
+			if(!($sort_direction = $sort_direction_list[$sort])){
 				$sort_direction = 'asc';
 			} 
 			$this->opo_result_context->setCurrentSortDirection($sort_direction);

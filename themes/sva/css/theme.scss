@@ -70,8 +70,12 @@ $sansserif:FuturaLTPro-Heavy,sans-serif;
 a{
 	text-underline-offset: .15rem;
 }
-a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
+a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active,
+button.bg-body-tertiary:hover, button.bg-body-tertiary:focus, button.bg-body-tertiary:active {
     filter: brightness(97%);
+}
+.btn.btn-dark:focus, .btn.btn-secondary:focus, .btn.btn-primary:focus{
+	border:1px solid #FFF;
 }
 /* ------------------------- header ------------------------- */
 .navbar{

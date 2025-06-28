@@ -1,0 +1,105 @@
+<div class="row staffPage">
+	<div class="col-sm-12 col-xl-10 fs-4">
+		<h1 class="mb-4">{{{title}}}</h1>
+<?php
+	if($this->getVar("staff_name_1")){
+?>
+		<div class="row mb-4">
+			<div class="col-sm-12 col-md-3 img-fluid pt-4">
+				{{{media:1:original}}}
+			</div>
+			<div class="col-sm-12 col-md-9">
+				<H2>{{{staff_name_1}}}</H2>
+				<div class="fs-5 mb-2"><i>{{{staff_title_1}}}</i></div>
+				<div class="fs-4">{{{staff_bio_1}}}</div>
+			</div>
+		</div>
+<?php
+	}
+	if($this->getVar("staff_name_2")){
+?>
+		<div class="row mb-4">
+			<div class="col-sm-12 col-md-3 img-fluid pt-4">
+				{{{media:2:original}}}
+			</div>
+			<div class="col-sm-12 col-md-9">
+				<H2>{{{staff_name_2}}}</H2>
+				<div class="fs-5 mb-2"><i>{{{staff_title_2}}}</i></div>
+				<div class="fs-4">{{{staff_bio_2}}}</div>
+			</div>
+		</div>
+<?php
+	}
+	if($this->getVar("staff_name_3")){
+?>
+		<div class="row mb-4">
+			<div class="col-sm-12 col-md-3 img-fluid pt-4">
+				{{{media:3:original}}}
+			</div>
+			<div class="col-sm-12 col-md-9">
+				<H2>{{{staff_name_3}}}</H2>
+				<div class="fs-5 mb-2"><i>{{{staff_title_3}}}</i></div>
+				<div class="fs-4">{{{staff_bio_3}}}</div>
+			</div>
+		</div>
+<?php
+	}
+	if($this->getVar("staff_name_4")){
+?>
+		<div class="row mb-4">
+			<div class="col-sm-12 col-md-3 img-fluid pt-4">
+				{{{media:4:original}}}
+			</div>
+			<div class="col-sm-12 col-md-9">
+				<H2>{{{staff_name_4}}}</H2>
+				<div class="fs-5 mb-2"><i>{{{staff_title_4}}}</i></div>
+				<div class="fs-4">{{{staff_bio_4}}}</div>
+			</div>
+		</div>
+<?php
+	}
+	if($this->getVar("staff_name_5")){
+?>
+		<div class="row mb-4">
+			<div class="col-sm-12 col-md-3 img-fluid pt-4">
+				{{{media:5:original}}}
+			</div>
+			<div class="col-sm-12 col-md-9">
+				<H2>{{{staff_name_5}}}</H2>
+				<div class="fs-5 mb-2"><i>{{{staff_title_5}}}</i></div>
+				<div class="fs-4">{{{staff_bio_5}}}</div>
+			</div>
+		</div>
+<?php
+	}
+	if($this->getVar("staff_name_6")){
+?>
+		<div class="row mb-4">
+			<div class="col-sm-12 col-md-3 img-fluid pt-4">
+				{{{media:6:original}}}
+			</div>
+			<div class="col-sm-12 col-md-9">
+				<H2>{{{staff_name_6}}}</H2>
+				<div class="fs-5 mb-2"><i>{{{staff_title_6}}}</i></div>
+				<div class="fs-4">{{{staff_bio_6}}}</div>
+			</div>
+		</div>
+<?php
+	}
+	if($this->getVar("advisory_committee")){
+?>
+		<div class="row my-4">
+			<div class="col-sm-12 offset-md-3 col-md-9">
+				<H2>Archive Advisory Committee</H2>
+			</div>
+		</div>
+		<div class="row mb-4">
+			<div class="col-sm-12 offset-md-3 col-md-9">
+				{{{advisory_committee}}}
+			</div>
+		</div>
+<?php
+	}
+?>
+	</div>
+</div>

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2024 Whirl-i-Gig
+ * Copyright 2011-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -477,7 +477,7 @@ function caGeneralSearch(RequestHTTP $request, string $search_expression, array 
 			
 		$va_types = caGetOption('restrictToTypes', $target_info, array(), array('castTo' => 'array'));
 	
-		if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, $target_info); }
+		if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $target_info, false))); }
 		
 		
 		$base_criteria = caGetOption('baseCriteria', $target_info, null);
@@ -492,6 +492,8 @@ function caGeneralSearch(RequestHTTP $request, string $search_expression, array 
 				$o_browse->addCriteria($facet, $value);
 			}
 			$o_browse->addCriteria("_search", [caMatchOnStem($search_expression)], [$search_expression_for_display]);
+			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array_merge($target_info, ['dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $target_info, false)])); }
+		
 			$o_browse->execute($target_options);
 			$qr_res = $o_browse->getResults($target_options);
 			
@@ -931,7 +933,7 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 				}
 				
 				$vs_field_disp = caGetLabelForBundle($vs_field);
-				$va_query[] = ($vs_field_disp && !$pb_omit_field_names ? "{$vs_field_disp}: \"" : "").caGetDisplayValueForBundle($vs_field, join(" ", $va_terms))."\"";
+				$va_query[] = ($vs_field_disp && !$pb_omit_field_names ? "{$vs_field_disp}: \"" : "\"").caGetDisplayValueForBundle($vs_field, join(" ", $va_terms))."\"";
 				break;
 			case 'Zend_Search_Lucene_Index_Term':
 				$subquery = new Zend_Search_Lucene_Search_Query_Term($subquery);
@@ -1085,7 +1087,7 @@ function caGetDisplayValueForBundle(?string $bundle, string $value) {
 			default:
 				if ($t_instance->hasField($va_tmp[1])) {		// intrinsic
 					return $value;
-				} elseif($t_instance->hasElement($va_tmp[1])) {	// metadata element
+				} elseif(method_exists($t_instance, 'hasElement') && $t_instance->hasElement($va_tmp[1])) {	// metadata element
 					if($t_element = ca_metadata_elements::getInstance($va_tmp[1])) {
 						switch(ca_metadata_elements::getElementDatatype($va_tmp[1])) {
 							case __CA_ATTRIBUTE_VALUE_LIST__:

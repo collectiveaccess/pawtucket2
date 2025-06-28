@@ -100,42 +100,42 @@ if (!$vb_ajax) {	// !ajax
 <?php
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<li class='list-group-item border-0 px-0 pt-1'>\n";
-					print "<ul class='list-inline p-0 me-2'><li class='list-inline-item fw-medium text-uppercase me-1'>"._t("Sort by:")."</li>\n";
+					print "<div role='group' class='d-inline-block'><div class='fw-medium text-uppercase me-1 d-inline-block'>"._t("Sort by:")."</div>";
 					$i = 0;
 					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 						$i++;
 						if ($vs_current_sort === $vs_sort) {
-							print "<li class='list-inline-item me-1'>{$vs_sort}</li>\n";
+							print "<div class='d-inline-block me-1'>{$vs_sort}</div>\n";
 						} else {
-							print "<li class='list-inline-item me-1'>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+							print "<div class='d-inline-block me-1'>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</div>\n";
 						}
 						if($i < sizeof($va_sorts)){
-							print "<li class='list-inline-item me-2'>|</li>";
+							print "<div class='d-inline-block me-2'><span aria-hidden='true'>|</span></div>";
 						}
 					}
-					print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? "desc" : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-					print "</ul>\n";
+					print "<div class='d-inline'>".caNavLink($this->request, '<i class="bi bi-sort-down'.(($vs_sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? "desc" : "asc"), '_advanced' => $vn_is_advanced ? 1 : 0))."</div>";
+					print "</div>\n";
 					print "</li>\n";
 				}
 
 				if(is_array($va_views) && (sizeof($va_views) > 1)){
 					print "<li class='list-group-item border-0 px-0 pt-0'>\n";
-					print "<ul class='list-inline p-0 me-2'>\n";
+					print "<div role='group' class='d-inline-block ms-3'>\n";
 					foreach($va_views as $vs_view => $va_view_info) {
-						print "<li class='list-inline-item me-1'>";
+						print "<div class='d-inline-block me-1'>";
 						if ($vs_current_view === $vs_view) {
 							print '<button class="btn btn-dark btn-sm disabled" aria-label="'.$vs_view.'"  title="'.$vs_view.'"><i class="bi '.$va_view_icons[$vs_view]['icon'].'"></i></button>';
 						} else {
 							print caNavLink($this->request, '<i class="bi '.$va_view_icons[$vs_view]['icon'].'"></i>', 'btn btn-light btn-sm', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key), array("title" => $vs_view, "aria-label" => $vs_view));
 						}
-						print "</li>\n";
+						print "</div>\n";
 					}
-					print "</ul>\n";
+					print "</div>\n";
 					print "</li>\n";
 				}
 				if(is_array($va_export_formats) && sizeof($va_export_formats)){
 ?>
-					<li class='list-group-item border-0 px-0 pt-0'>
+					<li class='list-group-item border-0 px-0 pt-0 ms-3'>
 						<div class="dropdown inline w-auto">
 							<button class="btn btn-light btn-sm dropdown-toggle small" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="<?php print _t("Export Results"); ?>">
 								<i class="bi bi-download"></i>
@@ -193,7 +193,7 @@ if (!$vb_ajax) {	// !ajax
 					print "<li class='list-inline-item p-0 m-0'>".caNavLink($this->request, $vs_l, 'btn p-1 fw-medium'.(($vs_letter == $vs_l) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))."</li>";
 				}
 			}
-			print "<li class='list-inline-item py-0 my-0'> | </li><li class='list-inline-item p-0 m-0'>".caNavLink($this->request, _t("All"), 'btn p-1 fw-medium'.((!$vs_letter) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all'))."</li>"; 
+			print "<li class='list-inline-item py-0 my-0'> <span aria-hidden='true'>|</span> </li><li class='list-inline-item p-0 m-0'>".caNavLink($this->request, _t("All"), 'btn p-1 fw-medium'.((!$vs_letter) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all'))."</li>"; 
 			print "</ul>";
 		}
 ?>
@@ -229,7 +229,18 @@ if (!$vb_ajax) {	// !ajax
 	
 	
 </div><!-- end row -->
-
+<?php
+	if($this->request->getParameter("removeCriterion", pString)){
+?>
+	<script>
+		htmx.onLoad(function(content) {
+			var jumpTo = document.getElementById("page-content-anchor");
+			jumpTo.focus();
+		})
+	</script>
+<?php
+	}
+?>
 <?php
 } //!ajax
 ?>

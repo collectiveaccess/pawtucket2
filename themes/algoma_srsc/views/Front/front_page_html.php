@@ -50,7 +50,7 @@
 						</div>
 						<div class="row justify-content-center">
 							<div class="col-12 col-lg-8 col-xl=6">
-								<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'all_collections'); ?>">
+								<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
 									<div class="input-group pb-3">
 										<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
 										<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
@@ -102,13 +102,13 @@
 		<div class="col-lg-12 col-xl-10 my-5 hpBoxes">
 			<div class="row">
 				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "hpBeds.jpg", array("alt" => "Image of beds in residential school", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bold fs-3 text-white'>Schools</div></div>", "", "", "Browse", "schools"); ?>
+					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "hpSchoolIllustration.jpg", array("alt" => "Illustration of Shingwauk Home in Sault Ste. Marie, Ontario", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bold fs-3 text-white'>Schools</div></div>", "", "", "Schools", "index"); ?>
 				</div>
 				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "hpSchoolIllustration.jpg", array("alt" => "Illustration of Shingwauk Home in Sault Ste. Marie, Ontario", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bold fs-3 text-white'>Collections</div></div>", "", "", "Browse", "collections"); ?>
+					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "hpCollections.jpg", array("alt" => "Circle of people in field", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bold fs-3 text-white'>Collections</div></div>", "", "", "Browse", "collections"); ?>
 				</div>
 				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "hpSchoolGrounds.jpg", array("alt" => "Black and white images of school grounds", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bold fs-2 text-white'>Files</div></div>", "", "", "Browse", "files"); ?>
+					<?php print caNavLink($this->request, "<div class='hpBox position-relative'>".caGetThemeGraphic($this->request, "hpFiles.jpg", array("alt" => "Shingwauk Reunion '81 Schedule of Events cover", "class" => "object-fit-cover w-100 shadow"))."<div class='position-absolute top-0 w-100 h-100 fw-bold fs-2 text-white'>Files</div></div>", "", "", "Browse", "files"); ?>
 				</div>
 			</div>
 		</div>

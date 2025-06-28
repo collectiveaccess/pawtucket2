@@ -77,7 +77,7 @@ $top_level_collection_id = $va_collection_hier_ids[1];
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
-			<div class="btn-group" role="group" aria-label="Detail Controls">
+			<div class="btn-group">
 <?php
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $id));
@@ -108,7 +108,7 @@ if($t_item->get("ca_collections.parent_id") || $t_item->get("ca_collections.date
 				array_pop($hier_parts);				
 ?>
 				<dt>Part of</dt>
-				<dd><?php print join(" > ", $hier_parts); ?></dd>
+				<dd><?php print join("<span aria-hidden='true'> > </span>", $hier_parts); ?></dd>
 <?php
 			}
 ?>				
@@ -149,10 +149,10 @@ if($vs_collections_item_availablity = $this->getVar("collections_item_availablit
 		<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" delimiter="" limit="8">
 			<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
 				<div class='card flex-grow-1 width-100 rounded-0 shadow-sm bg-white border-0 mb-4'>
-				  <l>^ca_object_representations.media.large%class=' card-img-top object-fit-contain px-3 pt-3 rounded-0 '</l>
+				  <l>^ca_object_representations.media.large%class='card-img-top|object-fit-contain|px-3|pt-3|rounded-0'
 				  	<div class='card-body'>
-						<l>^ca_objects.preferred_labels.name</l>
-					</div>
+						^ca_objects.preferred_labels.name
+					</div></l>
 				 </div>
 			</div>
 		</unit>

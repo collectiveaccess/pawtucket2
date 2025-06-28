@@ -36,29 +36,21 @@
 			<div class="container-fluid">
 				<div class="row align-items-center">
 					<div class="col-lg-6">
-						<?= caNavlink($this->request, _t("<div>Milton Glaser Design Study Center and Archives</div><div class='divide border-bottom border-black my-1'></div><div>SVA Archives</div>"), "text-black fs-2 navbar-brand", "", "", ""); ?>
+<?php
+						if(strToLower($this->request->getController()) == "front"){
+							print "<a class='text-black fs-2 navbar-brand'>"._t("<div>Milton Glaser Design Study Center and Archives</div><div class='divide border-bottom border-black my-1'></div><div>SVA Archives</div>")."</a>";
+						}else{
+							print caNavlink($this->request, _t("<div>Milton Glaser Design Study Center and Archives</div><div class='divide border-bottom border-black my-1'></div><div>SVA Archives</div>"), "text-black fs-2 navbar-brand", "", "", "");
+						}						
+?>
 					</div>
 					<div class="col-lg-2"></div>
 					<div class="col-lg-4 text-lg-end">
-						<div class="text-lg-end">
-							<form name="appbundle_subscriber_footer" method="post" id="nwl_subscribe_form_footer" aria-label="Newsletter form">
-							<input type="hidden" name="_method" value="PUT">
-                				<div class="text-start ">
-                					<label for="appbundle_subscriber_footer_email" class="form-label">Enter your email to receive our newsletter</label>
-                				</div>
-                				<div class="input-group">
-									<input class="form-control rounded-0 border-white bg-white" type="email" id="appbundle_subscriber_footer_email" name="appbundle_subscriber_footer[email]" required="required" autocomplete="email" placeholder="name@email.com">
-									<button class="btn btn-primary" aria-label="Submit">
-										<i class="bi bi-arrow-right"></i>
-									</button>
-								</div>
-							<input type="hidden" id="appbundle_subscriber_footer__token" name="appbundle_subscriber_footer[_token]" value="1daa4e09c326830.rnD2YeqEbdMwfLKqwsbCG-S9J6XJXaimNRZw61WlIo8.2wDDAJDlXbsCGv-flImKLMmJZOa8HOvwAFMIoTv1G-n-SJ8rjeg55God2Q"></form>
-						</div>
 						<div class="text-center">
 							<ul class="list-inline pt-3 mb-0">
-								<li class="list-inline-item fs-4 px-2"><?php print caNavlink($this->request, '<i class="bi bi-envelope" aria-label="contact"></i>', '', '', "Contact", 'form'); ?></li>
-								<li class="list-inline-item fs-4 px-2"><a href="https://www.instagram.com/glaserarchives/" class="" aria-label="Instagram Link"><i class="bi bi-instagram"></i></a></li>
-								<li class="list-inline-item fs-4 px-2"><a href="https://twitter.com/glaserarchives" class="" aria-label="X Link"><i class="bi bi-twitter-x"></i></a></li>
+								<li class="list-inline-item fs-4 px-2"><?php print caNavlink($this->request, '<i class="bi bi-envelope" aria-label="contact the archive"></i>', '', '', "Contact", 'form'); ?></li>
+								<li class="list-inline-item fs-4 px-2"><a href="https://www.instagram.com/glaserarchives/" class="" aria-label="Visit the archive on Instagram"><i class="bi bi-instagram"></i></a></li>
+								<li class="list-inline-item fs-4 px-2"><a href="https://twitter.com/glaserarchives" class="" aria-label="Visit the archive on X"><i class="bi bi-twitter-x"></i></a></li>
 							</ul>
 						</div>
 					</div>

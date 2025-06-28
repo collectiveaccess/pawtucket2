@@ -39,11 +39,11 @@
 				<div class="row">
 					<div class="col">
 						<div class="fw-bold text-start lh-lg">					
-							Museums Association of Saskatchewan<br>
+							<?= _t("Museums Association of Saskatchewan"); ?><br>
 							
 							424 McDonald Street | Regina, SK | S4N 6E1<br>
 							
-							Phone: (306) 780-9279 | Email: <a href="mailto:mas@saskmuseums.org" class="text-light">mas@saskmuseums.org</a><br>
+							<?= _t("Phone"); ?>: (306) 780-9279 | <?= _t("Email"); ?>: <a href="mailto:mas@saskmuseums.org" class="text-light">mas@saskmuseums.org</a><br>
 							
 							<a href="http://www.saskmuseums.org" class="text-light">www.saskmuseums.org</a>
 						</div>
@@ -52,7 +52,7 @@
 			</div>
 		</footer><!-- end footer -->
 		<section>
-			<div class="container-xl mt-4 pt-4">
+			<div class="container-xl mt-4 pt-4 mb-4">
 				<div class="row justify-content-center text-center text-secondary mb-4 pb-4 small">
 					<div class="col-8 col-md-12">
 						{{{footer_text}}}
@@ -61,14 +61,16 @@
 				<div class="row justify-content-center text-center">
 					<div class="col-8 col-md-12">
 						<div class="row justify-content-center text-center">
-							<div class="col-12 col-md-4 col-lg-3 img-fluid pb-4 mb-4"><?php print caGetThemeGraphic($this->request, 'logo-sasklotteries-2021.png', array("class" => "w-50", "alt" => "Funded by SASK Lotteries")); ?></div>
-							<div class="col-12 col-md-4 col-lg-3 img-fluid pb-4 mb-4"><?php print caGetThemeGraphic($this->request, 'logo-saskculture-2021.png', array("class" => "w-50", "alt" => "Supported by SASK Culture Program")); ?></div>
-							<div class="col-12 col-md-4 col-lg-3 img-fluid pb-4 mb-4"><?php print caGetThemeGraphic($this->request, 'logo-canada.png', array("class" => "w-50", "alt" => "Canada")); ?></div>
+							<div class="col-12 col-md-4 col-lg-3 img-fluid pb-4 mb-4"><?php print caGetThemeGraphic($this->request, 'logo-sasklotteries-2021.png', array("class" => "w-50", "alt" => _t("Funded by SASK Lotteries"))); ?></div>
+							<div class="col-12 col-md-4 col-lg-3 img-fluid pb-4 mb-4"><?php print caGetThemeGraphic($this->request, 'logo-saskculture-2021.png', array("class" => "w-50", "alt" => _t("Supported by SASK Culture Program"))); ?></div>
+							<div class="col-12 col-md-4 col-lg-3 img-fluid pb-4 mb-4"><?php print caGetThemeGraphic($this->request, 'logo-canada.png', array("class" => "w-50", "alt" => _t("Canada"))); ?></div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
+		<div id="contentWarningBanner" class="position-fixed bottom-0 w-100"><div role="alert" class="bg-gradient bg-dark m-0 p-2 text-light text-center">{{{content_warning_banner}}}</div></div>
+		
 		<script>
 			window.initApp();
 		</script>

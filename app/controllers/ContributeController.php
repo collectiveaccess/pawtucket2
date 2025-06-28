@@ -155,7 +155,7 @@ class ContributeController extends BasePawtucketController {
 		$tag_counts = [];
 		$default_form_values = [];
 		foreach($tags as $c => $tag) {
-			if(strpos($tag, "^")) { // process any display templates in the context of the currently loaded record
+			if(strpos($tag, "^") !== false) { // process any display templates in the context of the currently loaded record
 				$this->view->setVar($tag, $t_subject->getWithTemplate($tag, ['filterNonPrimaryRepresentations' => false]));	// pull all media if that's what we're pulling; filterNonPrimaryRepresentations ignored for non-media
 				continue; 
 			}
@@ -272,6 +272,9 @@ class ContributeController extends BasePawtucketController {
 							$opts['restrictToRelationshipTypes'] = [$rel_type];
 						}
 						$opts['noJQuery'] = true;
+						if($response_data['errors'][$tag_proc]){
+							$opts['class'] = caGetOption('errorInputClass', $form_info, 'is-invalid')." ".caGetOption('class', $opts, null);
+						}
 						if ($tag_val = $t_subject->htmlFormElementForSimpleForm($this->request, $tag_proc, array_merge($opts, caGetOption('multiple', $opts, null) ? [] : ['index' => $tag_counts[$tag_proc], 'valueIndex' => $tag_counts[$tag_proc_with_opts]]))) {
 							$this->view->setVar($tag, $tag_val);
 							$tag_counts[$tag_proc]++;
@@ -311,7 +314,6 @@ class ContributeController extends BasePawtucketController {
 		$this->view->setVar('t_subject', $t_subject = $this->subject);
 		$idno_fld_name = $t_subject->getProperty('ID_NUMBERING_ID_FIELD');
 		
-		$t_subject->setMode(ACCESS_WRITE);
 		$t_subject->purify(true); // run all input through HTMLpurifier
 		
 		$o_trans = new Transaction();
@@ -376,15 +378,18 @@ class ContributeController extends BasePawtucketController {
 		$has_media = false;
 		
 		$text_delimiters = caGetOption('text_delimiters', $form_info, []);
+		$required_list = caGetOption('required', $form_info, []);
 		
 		// Assemble content tree
-		$content_tree = array();
+		$content_tree = [];
 		foreach($fields as $fi => $field) {
 			$fld_bits = explode(".", $field);
 			$field_proc = str_replace(".", "_", $field);		// PHP replaces periods in names with underscores :-(
 			
 			$fld_tag_parsed = caParseTagOptions($field_tags[$fi]);
 			$fld_tag_opts = $fld_tag_parsed['options'];
+			
+			$is_required = in_array($field, $required_list, true);
 			
 			$table = $fld_bits[0];
 			if ($field_proc == "{$subject_table}_type_id") { continue; }
@@ -432,12 +437,32 @@ class ContributeController extends BasePawtucketController {
 							}
 						} elseif ($t_subject->hasElement($fld_bits[1])) {
 							if (!isset($fld_bits[2])) { $fld_bits[2] = $fld_bits[1]; }
+							
+							if(in_array(ca_metadata_elements::getDataTypeForElementCode($fld_bits[2]), [__CA_ATTRIBUTE_VALUE_MEDIA__, __CA_ATTRIBUTE_VALUE_FILE__], true)) {
+								$files = [];
+								if(is_array($_FILES[$field_proc]['tmp_name'])) {
+									foreach($_FILES[$field_proc]['tmp_name'] as $vn_index => $tmp_name) {
+										if (!trim($tmp_name)) { continue; }
+										$files[$vn_index] = array(
+											'tmp_name' => $tmp_name,
+											'name' => $_FILES[$field_proc]['name'][$vn_index],
+											'type' => $_FILES[$field_proc]['type'][$vn_index],
+											'error' => $_FILES[$field_proc]['error'][$vn_index],
+											'size' => $_FILES[$field_proc]['size'][$vn_index],
+											'_uploaded_file' => true
+										);
+									}
+									
+									$vals = $files;
+								}
+							}
+							
 							if (!is_array($vals)) { break; }
 						
 							$vals = self::_applyTextDelimiters($vals, $fld_tag_opts, $text_delimiters);
 					
 							foreach($vals as $vn_i => $val) {
-								if(strlen($val) === 0) { continue; }
+								if((!is_array($val) && (strlen($val) === 0)) || (is_array($val) && !($val['tmp_name'] ?? null))) { continue; }
 								$content_tree[$subject_table][$fld_bits[1]][$vn_i][$fld_bits[2]] = $vals[$vn_i]; 
 							}
 						}
@@ -454,7 +479,7 @@ class ContributeController extends BasePawtucketController {
 							if ($t_instance->hasField($fld_bits[1])) {		// intrinsic
 							
 								if($t_instance->getFieldInfo($fld_bits[1], 'FIELD_TYPE') == FT_MEDIA) {
-									$files = array();
+									$files = [];
 									if(is_array($_FILES[$field_proc]['tmp_name'])) {
 										foreach($_FILES[$field_proc]['tmp_name'] as $vn_index => $tmp_name) {
 											if (!trim($tmp_name)) { continue; }
@@ -463,7 +488,8 @@ class ContributeController extends BasePawtucketController {
 												'name' => $_FILES[$field_proc]['name'][$vn_index],
 												'type' => $_FILES[$field_proc]['type'][$vn_index],
 												'error' => $_FILES[$field_proc]['error'][$vn_index],
-												'size' => $_FILES[$field_proc]['size'][$vn_index]
+												'size' => $_FILES[$field_proc]['size'][$vn_index],
+												'_uploaded_file' => true
 											);
 										}
 										foreach($files as $vn_index => $file) {
@@ -564,6 +590,25 @@ class ContributeController extends BasePawtucketController {
 		// Set other content
 		$cleared_rels = [];
 		
+		// check required fields
+		foreach($required_list as $r) {
+			$tmp = explode('.', $r);
+			if(sizeof($tmp) <= 2) { $tmp[2] = $tmp[1]; }
+			$b = $content_tree[$tmp[0]][$tmp[1]] ?? [];
+			$fld = array_pop($tmp);
+			$bx = array_filter($b, function($v) use ($fld) {
+				if(!is_array($v) || !sizeof($v)) { return false; }
+				if(!isset($v[$fld]) || (is_string($v[$fld]) && !strlen($v[$fld]))) { return false; }
+				return true;
+			});
+			if(!sizeof($bx)) {
+				$l = $r;
+				if($t = Datamodel::getInstance($tmp[0], true)) { $l = $t->getDisplayLabel($r); }
+				$response_data['errors'][$r][] = _t('%1 must be set', trim($l));
+				$vn_num_errors++;
+			}
+		}
+		
 		foreach($content_tree as $table => $content_by_table) {
 			if ($subject_table == $table) {	// subject table
 				foreach($content_by_table as $bundle => $data_for_bundle) {
@@ -590,12 +635,12 @@ class ContributeController extends BasePawtucketController {
 									if ($i == 0) {
 										$t_subject->replaceAttribute(
 											array_merge($data, array('locale_id' => $locale_id)), 
-											$bundle
+											$bundle, ['original_filename' => $data[$bundle]['name'] ?? null]
 										);
 									} else {
 										$t_subject->addAttribute(
 											array_merge($data, array('locale_id' => $locale_id)), 
-											$bundle
+											$bundle, ['original_filename' => $data[$bundle]['name'] ?? null]
 										);
 									}
 									$i++;

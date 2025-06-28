@@ -124,6 +124,13 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 							<li>
 								<?= caNavlink($this->request, _t('Contact Us'), "dropdown-item".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 							</li>
+							<li>
+								<?= caNavlink($this->request, _t('Education'), "dropdown-item".((strToLower($this->request->getController()) == "education") ? " active" : ""), "", "education", "", "", ((strToLower($this->request->getController()) == "education") ? array("aria-current" => "page") : null)); ?>
+							</li>
+							<li>
+								<?= caNavlink($this->request, _t('Wellness Supports'), "dropdown-item".((strToLower($this->request->getController()) == "wellnesssupports") ? " active" : ""), "", "WellnessSupports", "", "", ((strToLower($this->request->getController()) == "wellnesssupports") ? array("aria-current" => "page") : null)); ?>
+							</li>
+							
 											
 						</ul>	
 					</li>
@@ -140,7 +147,7 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 					}
 ?>
 				</ul>
-				<form action="<?= caNavUrl($this->request, '', 'Search', 'all_collections'); ?>" role="search">
+				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
 					<div class="input-group mt-4">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search">

@@ -96,7 +96,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		if($vs_page_title){
 ?>
-			<H1 class="text-capitalize display-3 mb-3 pb-2 fw-bold" aria-live="polite">
+			<H1 class="display-3 mb-3 pb-2 fw-bold" aria-live="polite">
 <?php
 			print _t("%1 <span class='fw-normal fs-3'>(%2)</span>", $vs_page_title, $vn_result_size);	
 ?>		
