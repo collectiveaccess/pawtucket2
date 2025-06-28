@@ -38,24 +38,23 @@ $caption_template	= $this->getVar('resultCaption');
 $access_values 		= caGetUserAccessValues($this->request);
 
 
-	if ($qr_results->numHits() > 0) {
-		$vn_i = 0;
-		print "<dl class='row'><dt class='col-12 mt-3 mb-2 text-capitalize'>".$qr_results->numHits()." ".(($qr_results->numHits() == 1) ? $va_block_info["labelSingular"] : $va_block_info["labelPlural"])."</dt>";
-		while($qr_results->nextHit()) {
-			print "<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>";
-			print $qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values));
-			print "</dd>";
-			$vn_i++;
-			if($vn_i == $vn_num_items_to_show){
-				if($qr_results->numHits() > $vn_num_items_to_show){
-					print "<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>".caNavLink($this->request, _t("Full Results")."  <i class='ps-2 bi bi-box-arrow-up-right'></i>", "d-flex align-items-center justify-content-center h-100 w-100 btn btn-dark", "", "Search", $vs_block, array("search" => $vs_search))."</dd>";
-				}
-				break;
+if ($qr_results->numHits() > 0) {
+	$vn_i = 0;
+	print "<dl class='row'><dt class='col-12 mt-3 mb-2 text-capitalize'>".$qr_results->numHits()." ".(($qr_results->numHits() == 1) ? $va_block_info["labelSingular"] : $va_block_info["labelPlural"])."</dt>";
+	while($qr_results->nextHit()) {
+		print "<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>";
+		print $qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values));
+		print "</dd>";
+		$vn_i++;
+		if($vn_i == $vn_num_items_to_show){
+			if($qr_results->numHits() > $vn_num_items_to_show){
+				print "<dd class='col-12 col-sm-6 col-md-4 col-lg-3 mb-3 text-center'>".caNavLink($this->request, _t("Full Results")."  <i class='ps-2 bi bi-box-arrow-up-right'></i>", "d-flex align-items-center justify-content-center h-100 w-100 btn btn-dark", "", "Search", $vs_block, array("search" => $vs_search))."</dd>";
 			}
 			break;
 		}
+		break;
 	}
+}
 ?>
 	</dl>
-<?php
-}
+	
