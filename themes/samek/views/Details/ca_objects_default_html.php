@@ -115,7 +115,16 @@ if($show_nav){
 								<dt><?= _t('Medium'); ?></dt>
 								<dd>^ca_objects.medium_container.display_medium_support</dd>
 							</ifdef>
-
+							<?php
+								if($t_object->get("ca_objects.style")){
+									if($acc_links = caGetBrowseLinks($t_object, 'ca_objects.style', ['template' => '<l>^ca_objects.style</l>', 'linkTemplate' => '^LINK'])) {
+							?>
+										<dt><?= _t('Style'); ?></dt>
+										<dd><?= join(", ", $acc_links); ?></dd>
+							<?php
+									}
+								}
+							?>
 							<ifdef code="ca_objects.dimensions.display_dimensions">
 								<dt><?= _t('Dimensions'); ?></dt>
 								<dd><unit delimiter="<br>">^ca_objects.dimensions.display_dimensions (^ca_objects.dimensions.Type)</unit></dd>
@@ -153,7 +162,7 @@ if($show_nav){
 									if($acc_links = caGetBrowseLinks($t_object, 'ca_objects.academic_tags', ['template' => '<l>^ca_objects.academic_tags</l>', 'linkTemplate' => '^LINK'])) {
 							?>
 										<dt><?= _t('Academic Tags'); ?></dt>
-										<dd><?= join(",", $acc_links); ?></dd>
+										<dd><?= join(", ", $acc_links); ?></dd>
 							<?php
 									}
 								}

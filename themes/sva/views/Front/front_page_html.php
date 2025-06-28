@@ -45,9 +45,13 @@
 			<div class="row justify-content-center h-100">
 				<div class="col-md-9 col-lg-6 col-xl-5 d-flex h-100 align-items-center">
 					<div class="bg-body p-5 text-center shadow w-100">
-						<h1 class="py-3 display-4 text-center">
-							<div>Milton Glaser<br/>Design Study Center<br/>and Archives</div><div class='divide border-bottom border-black mt-2 mb-3 d-inline-block'></div><div>SVA Archives</div>
-						</h1>
+						<div class="py-3">
+							<h1 class="display-4 text-center">
+								Milton Glaser<br aria-hidden="true"/>Design Study Center<br aria-hidden="true"/>and Archives
+							</h1>
+							<div class='divide border-bottom border-black mt-3 mb-3 d-inline-block'></div>
+							<h2 class="display-4 text-center">SVA Archives</h2>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -61,7 +65,7 @@
 ?>
 		<div class="px-3"><div class="container-xxl">
 			<div class="row justify-content-center">
-				<div class="col-md-10 my-5 py-5 text-center">
+				<div class="col-md-10 my-5 py-5 text-center hpIntro">
 <?php
 					if($vs_hp_intro_title){
 						print "<div class='display-3 lh-base'>".$vs_hp_intro_title."</div>";

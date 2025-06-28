@@ -168,7 +168,7 @@ if (!$vb_ajax) {	// !ajax
 			print "</ul>";
 		}
 ?>
-			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
+			<a href="#filters" id="skipBrowse" class="visually-hidden"><?= _t("Skip to Result Filters"); ?></a>
 			<div id="browseResultsContainer">
 				<div class="row">
 <?php

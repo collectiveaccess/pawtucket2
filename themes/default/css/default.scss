@@ -221,7 +221,9 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 	}
 }
 #collectionsWrapper{
-	height:400px;
+	.overflow-y-auto{
+		height:400px;
+	}
 }
 /* ------------------------- Gallery ------------------------- */
 .gallery{
@@ -326,76 +328,6 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 	width: 100%;
 }
 
-/* ------------------------- Cookie Manager ------------------------------ */
-#cookieNotice{
-	position: fixed;
-	bottom: 0px;
-	width: 100%;
-	text-align: left;
-	color: #000;
-	background-color: #FFF;
-	padding: 30px 0px 30px 0px;
-	font-size: 16px;
-	z-index: 9999;
-	box-shadow: rgba(0,0,0,.5) 0px 5px 50px;
-	padding-left:15px;
-	padding-right:15px;
-}
-#cookieNotice .cookieNoticeHeading{
-	font-weight:bold;
-	font-size:1.25em;
-	font-family: lato;
-}
-#cookieNotice .btn{
-	margin:10px 10px 0px 10px;
-}
-#cookieNotice .btn-inverse{
-	color:#000;
-	background-color:#dfdfdf;
-}
-#cookieNotice .btn-inverse:hover{
-	color:#000;
-	background-color:#f1f1f1;
-}
-.cookieIntro{
-	font-size: 1.2em;
-}
-@media(max-width:768px){
-	.cookies .btn-group{
-		margin-top:20px;
-	}
-}
-.cookies label{
-	font-size:15px;
-}
-.cookieByCategory{
-	cursor: pointer;
-}
-.cookieByCategory .cookieCount{
-	text-decoration:underline;
-	font-size:.9em;
-	padding-bottom:10px;
-}
-.cookieByCategory .cookieCount .bi{
-	color:#777;
-}
-.cookieByCategory .cookiesList{
-	// display:none;
-	padding:10px;
-	margin:10px;
-	background-color:#F2F2F2;
-}
-.cookieByCategory .cookiesList .row{
-	padding-top:5px;
-	padding-bottom:5px;
-}
-
-.highlightText {
-	background-color: #FBF719;
-	opacity: 0.8;
-}
-
-
 /* ------------------------- Bans ------------------------------ */
 div.banHeadline {
 	text-align: center;
@@ -417,7 +349,6 @@ div.banContinue {
 	display: none;
 	margin: 48px 0 0 0;
 }
-
 /* ------------------------- Contribute Form ------------------------------ */
 .contribute{
 	table{

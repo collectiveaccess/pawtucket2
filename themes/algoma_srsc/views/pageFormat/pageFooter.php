@@ -32,22 +32,30 @@
 		print "</div> <!-- end container -->";
 	}
 ?>
-		<footer id="footer" class="p-5 text-center mt-auto bg-dark text-bg-dark">
-			<div class="container-xl mb-5 pb-5">
-				<div class="display-4">Shingwauk Residential Schools Centre</div>
-				<ul class="list-inline pt-3 fw-medium">
-  					<li class="list-inline-item text-bg-dark small">&copy; 2025</li>
-					<li class="list-inline-item"><a href="#" class="text-bg-dark small">Link</a></li>
-					<li class="list-inline-item"><a href="#" class="text-bg-dark small">Link</a></li>
-				</ul>
-				<ul class="list-inline pt-3">
-  					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Facebook Link"><i class="bi bi-facebook"></i></a></li>
-					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark" aria-label="Instagram Link"><i class="bi bi-instagram"></i></a></li>
-				</ul>
+		<footer id="footer" class="p-5 text-center mt-auto bg-secondary text-bg-dark">
+			<div class="container-xl mb-5 pb-5 pb-sm-0">
+				<div class="row justify-content-center">
+					<div class="col-xs-12 col-md-4 col-lg-8 text-center">
+					
+			
+						<div class="display-4">Shingwauk</div><div class="display-5">Residential Schools Centre</div>
+						<div class="black small fs-6 pt-3">&copy; <?= date("Y"); ?> Shingwauk Residential Schools Centre.  All rights reserved.  <?= ((CookieOptionsManager::cookieManagerEnabled()) ? caNavLink($this->request, _t("Manage Cookies"), "text-black", "", "Cookies", "manage") : ""); ?></div>
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<div class="col-6 col-md-3 col-lg-2 img-fluid pt-5">
+						<a href="https://algomau.ca" target="_blank"><?= caGetThemeGraphic($this->request, 'algoma_logo_rgb_black.png', array("alt" => "Algoma University")); ?></a>
+					</div>
+				</div>
 			</div>
 		</footer><!-- end footer -->
-		<div class="position-fixed bottom-0 w-100"><div role="alert" class="alert alert-warning m-0 p-2 text-center">{{{srsc_content_warning}}}</div></div>
-		
+		<div id="contentWarningBanner" class="position-fixed bottom-0 w-100"><div role="alert" class="bg-gradient border-top border-2 border-primary bg-light-green m-0 p-2 text-center">{{{srsc_content_warning}}}</div></div>
+<?php
+		if(CookieOptionsManager::showBanner()){
+			# --- SRSC onnly wants the manage link to be able to change cookie options and not the initial banner with need to accept
+			CookieOptionsManager::allowAll();
+		}
+?>
 		<script>
 			window.initApp();
 		</script>

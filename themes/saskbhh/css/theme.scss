@@ -64,6 +64,9 @@ footer{
 		position: absolute;
 	}
 }
+#contentWarningBanner{
+	z-index:1000;
+}
 /* ------------------------- Front ------------------------- */
 .parallax {
     position: relative;

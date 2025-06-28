@@ -1,7 +1,204 @@
-/* details */
+/* colors ochre: #d69c21; light blue: #a8bedf; dark blue: #292756; red: #b42a2e; light green #99a590; mid green #788372; */
+@font-face {
+  font-family:TTNorms;
+  src:url("fonts/TT-Norms-Fonts/TTNorms-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family:TTNormsMedium;
+  src:url("fonts/TT-Norms-Fonts/TTNorms-Medium.otf") format("opentype");
+}
+@font-face {
+  font-family:TTNormsMedium;
+  font-weight:600;
+  src:url("fonts/TT-Norms-Fonts/TTNorms-Bold.otf") format("opentype");
+}
+@font-face {
+  font-family:GiovanniStdBook;
+  src:url("fonts/ITCGiovanniStdBook/ITCGiovanniStdBook.otf") format("opentype");
+}
+@font-face {
+  font-family:GiovanniStdBook;
+  font-weight:600;
+  src:url("fonts/ITCGiovanniStdBook/ITCGiovanniStdBold.otf") format("opentype");
+}
+
+
+$primary:       #d69c21; /* gold */
+$red:       #b42a2e; /* red */
+$light_green: #99a590;
+$dark_blue: #292756;
+.red{
+	color:$red;
+}
+.black{
+	color:#000;
+}
+.bg-light-green{
+	background-color: $light_green;
+}
+h2{
+	font-weight:400;
+	font-family:TTNormsMedium;
+}
+.btn-primary {
+	text-transform:uppercase;
+	padding: 10px 30px;
+	font-size: 15px;
+}
+.btn-white{
+	color:$red;
+}
+.giovanni{
+	font-family:GiovanniStdBook;
+}
+#contentWarningBanner{
+	z-index:1000;
+	a{
+		color:#000;
+	}
+	p{
+		margin:0px;
+	}
+}
+b, strong{
+	font-weight: 600;
+}
+/* ------------------------- Navbar ------------------------- */
+.navbar{
+	.nav-link{
+		text-transform:uppercase;
+	}
+	@media(max-width:1200px){
+		.nav-link{
+			padding-left:15px;
+		}
+	}
+	.nav-link:hover, .nav-link.active:hover, .nav-link:focus, .nav-link.active:focus{
+		background-color: $primary;
+		color:#FFF;
+	}
+	@media(min-width:768px){
+		.navbar-brand {
+			width:375px;
+		}
+	}
+	.navbar-brand img{
+		width:30%;
+		min-width: 50px;
+	}	
+	@media(max-width:440px){
+		.navbar-brand > div{
+			font-size: .9rem !important;
+		}
+	}
+}
+@media(min-width: 992px) {
+  .navbar-expand-lg .dropdown-menu, .navbar-expand-xl .dropdown-menu {
+	top:100%;
+  }
+}
+
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: url("../assets/graphics/hero_sepia.jpg");
+background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4)), url("../assets/graphics/hero_sepia.jpg");
+
+    /* Full height */
+    height: 100vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/hero_sepia.jpg");
+    }
+    .divide{
+    	width:170px;
+    }
+    .hpHeroText{
+    	text-shadow: #000 0px 0px 5px;
+    }
+}
+.hpExplore{
+	img{
+		height:250px;
+	}
+}
+.hpBoxes{
+	.hpBox{
+		@media(max-width:768px){
+			margin-bottom:30px;
+		}
+		img{
+			height:350px;
+		}
+		div{
+			text-shadow: 0px 0px 5px #000;
+			padding-top:45%;
+			background: rgba(0, 0, 0, .5);
+			transition: all 300ms linear;
+			@media(max-width:1199px){
+				padding-top:55%;
+			}
+			@media(max-width:768px){
+				padding-top:30%;
+			}
+			@media(max-width:440px){
+				padding-top:40%;
+			}
+			
+		}
+		div:hover{
+			background: rgba(41, 39, 86, .9);
+		}
+	}
+}
+
+/* ------------------------- Details ------------------------- */
 .detailRepresentationGrid{
 	img{
 		height:400px;
 		width:100%;
 	}
+}
+.detail{
+	.tkIcon{
+		width:50px;
+		height:auto;
+	}
+}
+/* ------------------------- Results ------------------------- */
+.ca-placeholder{
+	color:$dark_blue;
+}
+/* ------------------------- Schools ------------------------- */
+.schools{
+	.leaflet-popup-content{
+		img{
+			width:100%;
+			height:150px;
+		}
+	}
+}
+/* ------------------------- Browse ------------------------- */
+#bRefine {
+	padding-bottom: 100px;
+}
+@media (min-width: 480px) {
+  #bRefine {
+    padding-bottom: 74px;
+  }
+}
+@media (min-width: 768px) {
+  #bRefine {
+    padding-bottom: 40px;
+  }
+}
+/* ------------------------- gallery ------------------------- */
+.gallery .btn-primary{
+	padding:10px;
 }

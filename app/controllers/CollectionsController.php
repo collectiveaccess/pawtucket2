@@ -87,7 +87,7 @@ class CollectionsController extends ActionController {
 	 *
 	 */ 
 	public function Index() {
-		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
+		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("collections_section_name"));
 		
 		$t_list = new ca_lists();
 		$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", ($this->opo_config->get("landing_page_collection_type")) ? $this->opo_config->get("landing_page_collection_type") : "collection");

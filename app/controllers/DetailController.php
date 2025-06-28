@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2024 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -135,11 +135,26 @@ class DetailController extends FindController {
 		
 		if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($load_params, ['returnAs' => 'firstModelInstance'])))) {
 			// invalid id - throw error
-			throw new ApplicationException("Invalid id");
+			throw new ApplicationException("Invalid id {$id}");
 		} 
 		$t_subject->autoConvertLineBreaks(true);
 		
-		
+		$log = caGetLogger();
+		// $context = $this->request->getParameter('context', pString);
+		// $detail_id = $this->request->getParameter('id', pInteger);		
+		// $representation_id = $this->request->getParameter('representation_id', pInteger);
+
+		if($completed_id = $this->request->getParameter('reviewComplete', pInteger)) {
+			if($t_review_completed = ca_objects::findAsInstance($completed_id)) {
+				$t_review_completed->replaceAttribute(['media_reviewed' => 'yes'], 'media_reviewed');
+				$log->logInfo("Review has been completed for {$completed_id}");
+				if(!$t_review_completed->update()) {
+					throw new ApplicationException("Could not set review complete for id {$completed_id}");
+					$log->logError("Review could not be completed for {$completed_id}");
+				}
+			}
+		}
+
 		$item_is_in_users_lightbox = caItemIsInUserLightbox($t_subject, $this->request->getUserID());
 		$this->view->setVar('itemIsInUsersLightbox', $item_is_in_users_lightbox);
 		
@@ -342,12 +357,13 @@ class DetailController extends FindController {
 					['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]
 				);
 				$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
-				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail'])));
+				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail', 'detail_options' => $options])));
 				$this->view->setVar('media_options', [
 					'media_list' => $media_list,
 					
 					'next_button_id' => 'mediaviewer-next',
 					'previous_button_id' => 'mediaviewer-previous',
+					'remove_media_button_id' => 'mediaviewer-remove',
 					'overlay_next_button_id' => 'mediaviewer-overlay-next',
 					'overlay_previous_button_id' => 'mediaviewer-overlay-previous',
 					'show_overlay_button_id' => 'mediaviewer-show-overlay',
@@ -362,7 +378,8 @@ class DetailController extends FindController {
 					'media_count_id' => 'media-count',
 					
 					'base_url' => $this->request->getThemeUrlPath(),
-					'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}"
+					'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}",
+					'media_remove_url' => $this->request->getBaseUrlPath()."/Detail/RemoveRepresentation?context={$function}&id={$id}"
 				]);
 			} else {
 				$this->view->setVar('media_list', null);
@@ -643,115 +660,133 @@ class DetailController extends FindController {
 			return;
 		}
 		
+		$detail = $this->request->getActionExtra();
+		$detail_config = (isset($this->opa_detail_types[$detail]) && is_array($this->opa_detail_types[$detail])) ? $this->opa_detail_types[$detail] : null;
+		if(!is_array($detail_config)) { 
+			throw new ApplicationException(_t('Invalid detail type'));
+		}
 		$o_app_plugin_manager = new ApplicationPluginManager();
 		
-		$pn_object_id = $this->request->getParameter('object_id', pInteger);
-		$pb_exclude_ancestors = $this->request->getParameter('exclude_ancestors', pInteger);
-		$pn_value_id = $this->request->getParameter('value_id', pInteger);
-		if ($pn_value_id) {
+		$table = $detail_config['table'];
+		$id = $this->request->getParameter('id', pInteger);
+		if(!($t = Datamodel::getInstance($table, false, $id))) {
+			throw new ApplicationException(_t('Invalid table'));
+		}
+		if(!$t->isLoaded() || !$t->isReadable($this->request)) {
+			throw new ApplicationException(_t('Invalid id'));
+		}
+		$exclude_ancestors = $this->request->getParameter('exclude_ancestors', pInteger);
+		$value_id = $this->request->getParameter('value_id', pInteger);
+		if ($value_id) {
 			return $this->DownloadAttributeMedia();
 		}
-		$t_object = new ca_objects($pn_object_id);
-		if (!($vn_object_id = $t_object->getPrimaryKey())) { return; }
-		if(sizeof($this->opa_access_values) && (!in_array($t_object->get("access"), $this->opa_access_values))){
+		if(sizeof($this->opa_access_values) && (!in_array($t->get("access"), $this->opa_access_values))){
 			return;
 		}
 		
-		$ps_version = $this->request->getParameter('version', pString);
+		$version = $this->request->getParameter('version', pString);
 		
-		if (!$ps_version) { $ps_version = 'original'; }
-		$this->view->setVar('version', $ps_version);
+		if (!$version) { $version = 'original'; }
+		$this->view->setVar('version', $version);
 		
-		if($pb_exclude_ancestors){
-			$va_ancestor_ids = array($pn_object_id);
+		if($exclude_ancestors){
+			$ancestor_ids = array($id);
 		}else{
-			$va_ancestor_ids = $t_object->getHierarchyAncestors(null, array('idsOnly' => true, 'includeSelf' => true));
-			if ($vn_parent_id = array_pop($va_ancestor_ids)) {
-				$t_object->load($vn_parent_id);
-				if(!sizeof($this->opa_access_values) || (in_array($t_object->get("access"), $this->opa_access_values))){
-					array_unshift($va_ancestor_ids, $vn_parent_id);
+			$ancestor_ids = $t->getHierarchyAncestors(null, array('idsOnly' => true, 'includeSelf' => true));
+			if ($parent_id = array_pop($ancestor_ids)) {
+				$t->load($parent_id);
+				if(!sizeof($this->opa_access_values) || (in_array($t->get("access"), $this->opa_access_values))){
+					array_unshift($ancestor_ids, $parent_id);
 				}
 			}
 		}			
-		$va_child_ids = $t_object->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $this->opa_access_values));
+		$child_ids = $t->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $this->opa_access_values));
 		
-		foreach($va_ancestor_ids as $vn_id) {
-			array_unshift($va_child_ids, $vn_id);
+		foreach($ancestor_ids as $id) {
+			array_unshift($child_ids, $id);
 		}
 		
-		$vn_c = 1;
-		$va_file_names = array();
-		$va_file_paths = array();
+		$c = 1;
+		$file_names = $file_paths = [];
 		
-		// Allow plugins to modify object_id list
-		$va_child_ids =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($va_child_ids);
-		$va_child_ids = array_unique($va_child_ids);
+		// Allow plugins to modify id list
+		$child_ids =  $o_app_plugin_manager->hookDetailDownloadMediaIDs($child_ids);
+		$child_ids = array_unique($child_ids);
 		$t_download_log = new Downloadlog();
-		foreach($va_child_ids as $vn_object_id) {
-			$t_child_object = new ca_objects($vn_object_id);
-			if (!$t_child_object->getPrimaryKey()) { continue; }
+		foreach($child_ids as $child_id) {
+			$t_child = $table::findAsInstance($child_id);
+			if (!$t_child->getPrimaryKey()) { continue; }
 			
 			$t_download_log->log(array(
 					"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
 					"ip_addr" => RequestHTTP::ip(), 
-					"table_num" => $t_object->TableNum(), 
-					"row_id" => $vn_object_id, 
+					"table_num" => $t->TableNum(), 
+					"row_id" => $child_id, 
 					"representation_id" => null, 
 					"download_source" => "pawtucket"
 			));
-			$va_reps = $t_child_object->getRepresentations([$ps_version, 'download'], null, array("checkAccess" => $this->opa_access_values));
-			$vs_idno = $t_child_object->get('idno');
+			$reps = $t_child->getRepresentations([$version, 'download'], null, ["checkAccess" => $this->opa_access_values]);
+			$idno = $t_child->get('idno');
 			
-			foreach($va_reps as $vn_representation_id => $va_rep) {
-				if(!($t_rep = ca_object_representations::findAsInstance($vn_representation_id))) { continue; }
+			foreach($reps as $representation_id => $rep) {
+				if(!($t_rep = ca_object_representations::findAsInstance($representation_id))) { continue; }
 				if(!is_array($media_display_info = caGetMediaDisplayInfoForMimetype('download', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
 				
-				$version = $media_display_info['download_version'] ?? $ps_version;
+				$version = $media_display_info['download_version'] ?? $version;
 				
-				$va_rep_info = $va_rep['info'][$version];
+				$rep_info = $rep['info'][$version];
 				
-				$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
+				$filename = caGetRepresentationDownloadFileName($table, ['idno' => $idno, 'index' => $c, 'version' => $version, 'extension' => $rep_info['EXTENSION'], 'original_filename' => $rep['info']['original_filename'], 'representation_id' => $representation_id]);
 		
-				$va_file_names[$vs_filename] = true;
-				$this->view->setVar('version_download_name', $vs_filename);
+				$file_names[$filename] = true;
+				$this->view->setVar('version_download_name', $filename);
 			
 				//
 				// Perform metadata embedding
-				$t_rep = new ca_object_representations($va_rep['representation_id']);
-				if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
-					$vs_path = $t_rep->getMediaPath('media', $version);
+				$t_rep = new ca_object_representations($rep['representation_id']);
+				if (!($path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep, $version, []))) {
+					$path = $t_rep->getMediaPath('media', $version);
 				}
-				$va_file_paths[$vs_path] = $vs_filename;
+				$file_paths[$path] = $filename;
 				
-				$vn_c++;
+				$c++;
 			}
 		}
 		
 		// Allow plugins to modify file path list
-		$va_file_paths = $o_app_plugin_manager->hookDetailDownloadMediaFilePaths($va_file_paths);
+		$file_paths = $o_app_plugin_manager->hookDetailDownloadMediaFilePaths($file_paths);
 		
-		if (sizeof($va_file_paths) > 1) {
-			if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
-			set_time_limit($vn_limit * 2);
+		if (sizeof($file_paths) > 1) {
+			if (!($limit = ini_get('max_execution_time'))) { $limit = 30; }
+			set_time_limit($limit * 2);
 			$o_zip = new ZipStream();
-			foreach($va_file_paths as $vs_path => $vs_name) {
-				$o_zip->addFile($vs_path, $vs_name);
+			$seen_names = [];
+			foreach($file_paths as $path => $name) {
+				$c = 0;
+				$n = pathinfo($name, PATHINFO_FILENAME);
+				$ext = pathinfo($name, PATHINFO_EXTENSION);
+				while($seen_names[$n] ?? false) {
+					$c++;
+					$n = "{$name}_{$c}.{$ext}";
+				};
+				$seen_names[$n] = true;
+				$o_zip->addFile($path, $n);
 			}
 			$this->view->setVar('zip_stream', $o_zip);
-			$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
+			$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t->get('idno')).'.zip');
 			
-			$vn_rc = $this->render('Download/download_file_binary.php');
+			$rc = $this->render('Download/download_file_binary.php');
 			
-			if ($vs_path) { unlink($vs_path); }
+			if ($path) { unlink($path); }
 		} else {
-			foreach($va_file_paths as $vs_path => $vs_name) {
-				$this->view->setVar('archive_path', $vs_path);
-				$this->view->setVar('archive_name', $vs_name);
+			foreach($file_paths as $path => $name) {
+				$this->view->setVar('archive_path', $path);
+				$this->view->setVar('archive_name', $name);
 			}
-			$vn_rc = $this->render('Download/download_file_binary.php');
+			$rc = $this->render('Download/download_file_binary.php');
 		}
 		
-		return $vn_rc;
+		return $rc;
 	}
 	# -------------------------------------------------------
 	/**
@@ -784,7 +819,7 @@ class DetailController extends FindController {
 // 			return;
 // 		}
 		$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
-		$ps_version = $this->request->getParameter('version', pString);
+		$version = $this->request->getParameter('version', pString);
 		
 		$this->view->setVar('representation_id', $pn_representation_id);
 		$t_rep = new ca_object_representations($pn_representation_id);
@@ -814,15 +849,15 @@ class DetailController extends FindController {
 // 			
 		$va_versions = $t_rep->getMediaVersions('media');
 		
-		if (!in_array($ps_version, $va_versions)) { $ps_version = $va_versions[0]; }
+		if (!in_array($version, $va_versions)) { $version = $va_versions[0]; }
 		
 		// $available_versions = caGetAvailableDownloadVersions($this->request, $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-// 		if(!in_array($ps_version, $available_versions, true)) { 
+// 		if(!in_array($version, $available_versions, true)) { 
 // 			return;
 // 		}
-		$this->view->setVar('version', $ps_version);
+		$this->view->setVar('version', $version);
 		
-		$va_rep_info = $t_rep->getMediaInfo('media', $ps_version);
+		$va_rep_info = $t_rep->getMediaInfo('media', $version);
 		$this->view->setVar('version_info', $va_rep_info);
 		
 		$va_info = $t_rep->getMediaInfo('media');
@@ -834,16 +869,16 @@ class DetailController extends FindController {
 			$vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
 		}
 		
-		$vs_filename = caGetRepresentationDownloadFileName($va_context['table'], ['idno' => $t_instance->get('idno'), 'index' => null, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_info['ORIGINAL_FILENAME'], 'representation_id' => $pn_representation_id]);
+		$vs_filename = caGetRepresentationDownloadFileName($va_context['table'], ['idno' => $t_instance->get('idno'), 'index' => null, 'version' => $version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_info['ORIGINAL_FILENAME'], 'representation_id' => $pn_representation_id]);
 		$this->view->setVar('version_download_name', $vs_filename);
 		
 		
 		//
 		// Perform metadata embedding
-		if ($this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_instance->getPrimaryKey(), $t_instance->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode())) {
+		if ($this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $version), 'ca_objects', $t_instance->getPrimaryKey(), $t_instance->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode())) {
 			$this->view->setVar('version_path', $this->ops_tmp_download_file_path);
 		} else {
-			$this->view->setVar('version_path', $t_rep->getMediaPath('media', $ps_version));
+			$this->view->setVar('version_path', $t_rep->getMediaPath('media', $version));
 		}
 		$this->render('Details/object_representation_download_binary.php', true);
 	}
@@ -1196,7 +1231,7 @@ class DetailController extends FindController {
 		$this->request->setParameter(Datamodel::primaryKey($table_num), $t_attr->get('row_id'));
 		
 		list($subject_id, $t_subject) = $this->_initView($options);
-		$ps_version = $this->request->getParameter('version', pString);
+		$version = $this->request->getParameter('version', pString);
 		
 		
 		if (!$this->_checkAccess($t_subject)) { return false; }
@@ -1518,6 +1553,53 @@ class DetailController extends FindController {
 		}
 	
 		$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $context_str, 'checkAccess' => $this->opa_access_values]));
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function RemoveRepresentation() {
+		$log = caGetLogger();
+		
+		$context = $this->request->getParameter('context', pString);
+		$id = $this->request->getParameter('id', pInteger);
+		
+		$detail_config = $this->opa_detail_types[$context] ?? [];
+		
+		$table = $detail_config['table'];
+		
+		if(!($t_rec = $table::findAsInstance($id))) {
+			throw new ApplicationException(_('Invalid id'));
+		}
+		
+		$representation_id = $this->request->getParameter('representation_id', pInteger);
+		
+		if(!$this->request->isLoggedIn() || !$this->request->user->canDoAction('is_administrator')) {
+			throw new ApplicationException(_('Access denied'));
+		}
+		
+		if(!($t_rep = ca_object_representations::findAsInstance($representation_id))) {
+			throw new ApplicationException(_('Invalid representation_id'));
+		}
+		if($deleted_media_dir = ($detail_config['options']['deleted_media_directory'] ?? null)) {
+			$path = $t_rep->get('ca_object_representations.media.original.path');
+			$filename = $t_rep->get('ca_object_representations.original_filename');
+			if(!$filename) {
+				$filename = pathinfo($path, PATHINFO_BASENAME);
+			}
+			copy($path, __CA_BASE_DIR__.$deleted_media_dir."/".$filename);
+		}
+		
+		$ret = $t_rec->removeRepresentation($representation_id);
+		$resp = ['ok' => $ret ? 1 : 0];
+		
+		if($ret) {
+			$log->logInfo("Deleted representation {$representation_id} for {$context}::{$id}");
+		} else {
+			$log->logError("Could not delete representation {$representation_id} for {$context}::{$id}");
+		}
+		
+		print json_encode($resp);
 	}
 	# -------------------------------------------------------
 	/**

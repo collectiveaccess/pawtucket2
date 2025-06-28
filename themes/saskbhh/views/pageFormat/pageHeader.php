@@ -42,7 +42,7 @@ if($this->request->isLoggedIn()){
 	$user_links .= "<li>".caNavLink($this->request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array())."</li>";
 	
 	if ($this->request->config->get('use_submission_interface')) {
-		$user_links .= "<li>".caNavLink($this->request, _t('Submit content'), 'dropdown-item', '', 'Contribute', 'Index', array())."</li>";
+		$user_links .= "<li>".caNavLink($this->request, _t('Contribute content'), 'dropdown-item', '', 'Contribute', 'Index', array())."</li>";
 	}
 	$user_links .= "<li>".caNavLink($this->request, _t('Logout'), 'dropdown-item', '', 'LoginReg', 'Logout', array())."</li>";
 	$user_links .= "</ul></li>";
@@ -88,7 +88,7 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 					<div class="modal-footer justify-content-center border-0">
 							<form method="POST" action="<?php print caNavUrl($this->request, '*', '*', '*'); ?>">
 							<input type="hidden" name="confirmEnter" value="1">
-							<div class="enterButton"><button type="submit" class="btn btn-primary">Enter Site</button></div>
+							<div class="enterButton"><button type="submit" class="btn btn-primary"><?= _t("Enter Site"); ?></button></div>
 						</form>
 					</div>
 				</div>
@@ -109,7 +109,7 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 <?php
 }
 ?>
-	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
+	<a href="#page-content" id="skip" class="visually-hidden"><?= _t("Skip to main content"); ?></a>
 	<header>
 		<div class="container-xl my-3">
 			<div class="row align-items-center">
@@ -131,7 +131,7 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav nav-pills mb-2 mb-lg-0 d-flex justify-content-between w-100 align-items-center">				
 					<li class="nav-item dropdown">
-						<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<a class="text-nowrap nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<?= _t("About"); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
 						</a>
 						<ul class="dropdown-menu">
@@ -150,14 +150,28 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('Contributors'), "nav-link".((strToLower($this->request->getAction()) == "contributors") ? " active" : ""), "", "Contributors", "List", "", ((strToLower($this->request->getAction()) == "contributors") ? array("aria-current" => "page") : null)); ?>
 					</li>
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Search Heritage in Collections'), "nav-link".((strToLower($this->request->getAction()) == "objects") ? " active" : ""), "", "Browse", "Objects", "", ((strToLower($this->request->getAction()) == "objects") ? array("aria-current" => "page") : null)); ?>
-					</li>
-					
-					<li class="nav-item">
-						<?= caNavLink($this->request, _t("Advanced search"), "nav-link".(((strToLower($this->request->getController()) == "search") && (strToLower($this->request->getAction()) == "advanced")) ? " active" : ""), "", "Search", "advanced/objects", (((strToLower($this->request->getController()) == "search") && (strToLower($this->request->getAction()) == "advanced")) ? array("aria-current" => "page") : null)); ?>
+					<li class="nav-item dropdown">
+						<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<?= _t("Search Heritage in Collections"); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<?= caNavlink($this->request, _t('Browse All'), "dropdown-item".((strToLower($this->request->getController()) == "search") && (strToLower($this->request->getAction()) == "advanced")), "", "Browse", "Objects", "", ((strToLower($this->request->getAction()) == "objects") ? array("aria-current" => "page") : null)); ?>
+							</li>
+							<li>
+								<?= caNavlink($this->request, _t('Advanced Search'), "dropdown-item".(((strToLower($this->request->getController()) == "search") && (strToLower($this->request->getAction()) == "advanced")) ? " active" : ""), "", "Search", "advanced/objects", "", (((strToLower($this->request->getController()) == "search") && (strToLower($this->request->getAction()) == "advanced")) ? array("aria-current" => "page") : null)); ?>
+							</li>
+											
+						</ul>	
 					</li>
 <?php
+				if($this->request->isLoggedIn()){
+?>
+					<li class="nav-item">
+						<?= caNavlink($this->request, _t('Contribute Content'), "nav-link".((strToLower($this->request->getAction()) == "contribute") ? " active" : ""), "", "Contribute", "Index", "", ((strToLower($this->request->getAction()) == "contribute") ? array("aria-current" => "page") : null)); ?>
+					</li>
+<?php
+				}
 					if($user_links){
 						print $user_links;
 					}
@@ -165,8 +179,8 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 					<li class="nav-item">
 						<form class="pt-2 pb-2" action="<?= caNavUrl($this->request, '', 'Search', 'Objects'); ?>" role="search">
 							<div class="input-group">
-								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-								<input type="text" name="search" class="form-control-sm rounded-start-1 border-0 shadow-sm" id="nav-search-input" placeholder="Search">
+								<label for="nav-search-input" class="form-label visually-hidden"><?= _t("Search"); ?></label>
+								<input type="text" name="search" class="form-control-sm rounded-start-1 border-0 shadow-sm" id="nav-search-input" placeholder="<?= _t("Search"); ?>">
 								<button type="submit" class="px-3 py-2 btn btn-primary rounded-end-1" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 							</div>
 						</form>

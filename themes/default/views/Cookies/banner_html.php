@@ -29,20 +29,21 @@ if(CookieOptionsManager::showBanner()) {
 	$config = caGetCookiesConfig();
 	$text = $this->getVar($config->get("cookiesBannerGlobalValue")) ?? $config->get("cookiesBannerText");
 ?>
-	<div id="cookieNotice" role="dialog" aria-labelledby="Cookie Window">
+	<div id="cookieNotice" role="dialog" aria-labelledby="Cookie Window" class="fixed-bottom w-100 bg-white p-4 shadow">
 		<div class="row justify-content-center">
-			<div class="col-sm-12 col-md-offset-3 col-md-6">
-				<div class="cookieNoticeHeading">
+			<div class="col-sm-12 col-md-12 col-lg-9 col-xl-6">
+				<div class="fw-bold fs-4">
 					<?= _t('This website uses cookies'); ?>
 				</div>
 				<div>
 					<?= $text; ?>
 				</div>
-				<div class="text-center">
-					<?php print caNavLink($this->request, _t("Manage"), "btn btn-default btn-inverse", "", "Cookies", "manage").caNavLink($this->request, _t("Accept"), "btn btn-default", "", "Cookies", "manage", ['accept' => 1]); ?>
+				<div class="text-center p-2">
+					<?php print caNavLink($this->request, _t("Manage"), "btn", "", "Cookies", "manage").caNavLink($this->request, _t("Accept"), "btn btn-success", "", "Cookies", "manage", ['accept' => 1]); ?>
 				</div>
 			</div>
 		</div>
 	</div>
 <?php
 }
+?>

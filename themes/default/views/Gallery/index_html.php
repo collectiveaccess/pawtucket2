@@ -48,7 +48,7 @@
 						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-cover w-100'>", "", "", "Gallery", $vn_featured_set_id)."</div>";
 						
 						print "<div class='col-sm-6'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", $vn_featured_set_id);
-						if($vs_desc = $t_set->get("ca_sets.".$vs_description_element_code)){
+						if($vs_desc = strip_tags($t_set->get("ca_sets.".$vs_description_element_code))){
 							if(mb_strlen($vs_desc) > 400){
 								$vs_desc = mb_substr($vs_desc, 0, 400)."...";						
 							}

@@ -65,7 +65,7 @@
 ?>
 <div class="container-fluid pb-5">
 	<div class="row">
-		<div class="col-sm-12"><H2 class="pb-2"><?= $section_name; ?></H2></div>
+		<div class="col-sm-12"><H3 class="pb-2 fs-1"><?= $section_name; ?></H3></div>
 	</div>
 	<div class="row">
 		<div class="col-sm-12">
@@ -74,26 +74,32 @@
 					foreach($va_sets as $vn_set_id => $va_set){
 						$va_first_item = array_shift($va_set_first_items[$vn_set_id]);
 						if($vn_col == 0){
-							print "<div class='row g-5 mb-5'>";
+							print "<ul class='list-unstyled row g-5 mb-2'>";
 						}
-						print "<div class='col-sm-3 col-xs-6 img-fluid'>";
+						print "<li class='col-md-3 col-sm-6 col-12 img-fluid'>";
 						if($va_set["name"]){
 							$vs_name = "<div class='text-center text-black sansserif fs-5 pt-2'>".$va_set["name"]."</div>"; 
 						}
-						print caNavLink($this->request, $va_first_item["representation_tag"].$vs_name, "", "", "Gallery", $vn_set_id);
-						print "</div>";						
+						$t_set = new ca_sets($vn_set_id);
+						$presentation_type = $t_set->get("set_presentation_type", array("convertCodesToDisplayText" => true));
+						if($presentation_type == "Result lists"){
+							print caNavLink($this->request, $va_first_item["representation_tag"].$vs_name, "", "", "Search", "objects", array("search" => "ca_sets.set_id:".$vn_set_id));
+						}else{
+							print caNavLink($this->request, $va_first_item["representation_tag"].$vs_name, "", "", "Gallery", $vn_set_id);
+						}
+						print "</li>";						
 						$i++;
 						$vn_col++;
-						if($vn_col == 4){
-							print "</div>";
-							$vn_col = 0;
-						}
+						#if($vn_col == 4){
+						#	print "</ul>";
+						#	$vn_col = 0;
+						#}
 						if($i == 4){
 							break;
 						}
 					}
 					if($vn_col > 0){
-						print "</div><!-- end row -->";
+						print "</ul><!-- end row/list -->";
 					}
 					print "<div class='text-center pb-2'>".caNavLink($this->request, "All ".$section_name, "btn btn-primary", "", "Gallery", "Index")."</div>";
 ?>
