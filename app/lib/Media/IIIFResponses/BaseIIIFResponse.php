@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/Media/IIIFManifests/Document.php
+ * app/lib/Media/IIIFResponses/BaseIIIFResponse.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2023-2024 Whirl-i-Gig
+ * Copyright 2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,23 +29,47 @@
  *
  * ----------------------------------------------------------------------
  */
-namespace CA\Media\IIIFManifests;
+namespace CA\Media\IIIFResponses;
 
-class Document extends BaseIIIFManifest {
+abstract class BaseIIIFResponse {
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	protected $config;
+	
+	/**
+	 *
+	 */
+	protected $base_url;
+	
+	/**
+	 *
+	 */
+	protected $response_url;
+	
+	/**
+	 *
+	 */
+	protected $response_type;
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
 	public function __construct() {
-		parent::__construct();
-		$this->manifest_name = 'Document';
+		$this->config = \Configuration::load();
+		$this->base_url = $this->config->get('site_host').$this->config->get('ca_url_root'); //.$request->getBaseUrlPath();
+		
+		if(isset($_SERVER['REQUEST_URI'])) {
+			$this->response_url = $this->config->get('site_host').$_SERVER['REQUEST_URI'];
+		} else {
+			$this->response_url = $this->base_url."/".$this->response_type;
+		}
 	}
 	# -------------------------------------------------------
 	/**
-	 *
+	 * Return JSON IIIF response
 	 */
-	public function manifest(array $identifiers, ?array $options=null) : array {
-		return ['MANIFEST GOES HERE'];
-	}
+	abstract public function response(array $data, ?array $options=null) : array;
 	# -------------------------------------------------------
 }

@@ -30,7 +30,7 @@
  * ----------------------------------------------------------------------
  */
 require_once(__CA_LIB_DIR__.'/Parsers/ganon.php');
-
+ 
 class DisplayTemplateParser {
 	# -------------------------------------------------------------------
 	/**
@@ -228,8 +228,11 @@ class DisplayTemplateParser {
 			if ($vb_check_deleted && ($qr_res->get("{$ps_tablename}.deleted") !== '0')) { continue; }
 			
 			// check access
-			if ($pa_check_access && !in_array($qr_res->get("{$ps_tablename}.access"), $pa_check_access)) { continue; }
+			$acl_is_enabled = caACLIsEnabled($qr_res, ['forPawtucket' => true]);
+			if (caAppIsPawtucket() && !$acl_is_enabled && is_array($pa_check_access) && !in_array($qr_res->get("{$ps_tablename}.access"), $pa_check_access)) { continue; }
 			
+			$check_access_for_row = (caAppIsPawtucket() && $acl_is_enabled) ? null : $pa_check_access;
+
 			// check if we skip this row because of skipIfExpression
 			if(strlen($ps_skip_if_expression) > 0) {
 				$va_expression_vars = [];
@@ -243,7 +246,7 @@ class DisplayTemplateParser {
 			}
 			
 			if ($pa_options['relativeToContainer'] ?? false) {
-				$va_vals = DisplayTemplateParser::_getValues($qr_res, array_merge($va_template['tags'], array_flip(caGetTemplateTags($ps_skip_when))), $pa_options);
+				$va_vals = DisplayTemplateParser::_getValues($qr_res, array_merge($va_template['tags'], array_flip(caGetTemplateTags($ps_skip_when))), array_merge($pa_options, ['checkAccess' => $check_access_for_row]));
 				if(isset($pa_options['sort'])&& is_array($pa_options['sort'])) {
 					$va_vals = caSortArrayByKeyInValue($va_vals, array('__sort__'), $pa_options['sortDirection'], array('dontRemoveKeyPrefixes' => true));
 				}
@@ -256,7 +259,7 @@ class DisplayTemplateParser {
 							// noop
 						}
 					
-						$v = is_array($va_val_list) ? DisplayTemplateParser::_processChildren($qr_res, $va_template['tree']->children, $va_val_list, array_merge($pa_options, ['index' => $vn_index, 'returnAsArray' => $pa_options['aggregateUnique'] ?? false])) : '';
+						$v = is_array($va_val_list) ? DisplayTemplateParser::_processChildren($qr_res, $va_template['tree']->children, $va_val_list, array_merge($pa_options, ['index' => $vn_index, 'returnAsArray' => $pa_options['aggregateUnique'] ?? false, 'checkAccess' => $check_access_for_row])) : '';
 						if ($pb_index_with_ids) {
 							$va_proc_templates[$qr_res->get($vs_pk)] = $v;
 						} else {
@@ -264,18 +267,18 @@ class DisplayTemplateParser {
 						}
 					}
 				} elseif(sizeof($va_template['units']) > 0) {
-					$v = DisplayTemplateParser::_processChildren($qr_res, $va_template['tree']->children, [], array_merge($pa_options, ['returnAsArray' => $pa_options['aggregateUnique'] ?? false]));
+					$v = DisplayTemplateParser::_processChildren($qr_res, $va_template['tree']->children, [], array_merge($pa_options, ['returnAsArray' => $pa_options['aggregateUnique'] ?? false, 'checkAccess' => $check_access_for_row]));
 					$va_proc_templates[$qr_res->get($vs_pk)] = $v;
 				}
 			} else {
-			    $va_val_list = DisplayTemplateParser::_getValues($qr_res, array_merge($va_template['tags'], array_flip(caGetTemplateTags($ps_skip_when))), $pa_options);
+			    $va_val_list = DisplayTemplateParser::_getValues($qr_res, array_merge($va_template['tags'], array_flip(caGetTemplateTags($ps_skip_when))), array_merge($pa_options, ['checkAccess' => $check_access_for_row]));
 			    
 			    try {
 			        if ($ps_skip_when && ExpressionParser::evaluate($ps_skip_when, $va_val_list)) { continue; }
 			    } catch (Exception $e) {
 			        // noop
 			    }
-				$v = DisplayTemplateParser::_processChildren($qr_res, $va_template['tree']->children, $va_val_list, $o=array_merge($pa_options, ['returnAsArray' => $pa_options['aggregateUnique'] ?? false]));
+				$v = DisplayTemplateParser::_processChildren($qr_res, $va_template['tree']->children, $va_val_list, $o=array_merge($pa_options, ['returnAsArray' => $pa_options['aggregateUnique'] ?? false, 'checkAccess' => $check_access_for_row]));
 			
 				if ($pb_index_with_ids) {
 					$va_proc_templates[$qr_res->get($vs_pk)] = $v;
@@ -308,7 +311,7 @@ class DisplayTemplateParser {
 			$va_proc_templates = caCreateLinksFromText(
 				$va_proc_templates, $ps_tablename, $pa_row_ids,
 				null, caGetOption('linkTarget', $pa_options, null),
-				array_merge(['addRelParameter' => true, 'requireLinkTags' => true], $pa_options)
+				array_merge(['addRelParameter' => true, 'requireLinkTags' => true], $pa_options, ['checkAccess' => $check_access_for_row])
 			);
 		}
 		
@@ -486,6 +489,7 @@ class DisplayTemplateParser {
 						'excludeRelationshipTypes' => $va_exclude_to_relationship_types,
 						'restrictToSources' => $va_restrict_to_sources,
 						'locale' => caGetOption('locale', $pa_options, null),
+						'noLocaleFallback' => caGetOption('noLocaleFallback', $pa_options, null),
 						'filterNonPrimaryRepresentations' => $filter_non_primary_reps
 					];
 					
@@ -652,7 +656,8 @@ class DisplayTemplateParser {
 
 					$locale = caGetOption('locale', $o_node->locale, null);
 					if($o_node->locale) {
-						$va_get_options['locale'] = $locale = $o_node->locale;
+						$va_get_options['locale'] = $locale
+						$va_get_options['noLocaleFallback'] = $o_node->noLocaleFallback;
 					}
 					
 					if ($o_node->sort) {
@@ -706,7 +711,7 @@ class DisplayTemplateParser {
 							case 'nonpreferred_labels':
 								/** @var LabelableBaseModelWithAttributes $t_instance */
 								$ps_tablename = $t_instance->getLabelTableName();
-								$va_relative_ids = $pr_res->get($t_rel_instance->tableName().'.'.$va_relative_to_tmp[1].'.label_id', ['restrictToTypes' => $va_get_options['restrictToTypes'], 'returnAsArray' => true]);
+								$va_relative_ids = $pr_res->get($t_rel_instance->tableName().'.'.$va_relative_to_tmp[1].'.label_id', ['restrictToTypes' => $va_get_options['restrictToTypes'], 'returnAsArray' => true, 'locale' => $va_get_options['locale'] ?? null, 'returnAllLocales' => (isset($va_get_options['locale']) && $va_get_options['locale'])]);
 								break;
 							default:
 								// If relativeTo is not set to a valid attribute try to guess from template, looking for container
@@ -774,7 +779,8 @@ class DisplayTemplateParser {
 									'aggregateUnique' => $vb_aggregate_unique,
 									'checkAccess' => $va_get_options['checkAccess'],
 									'filterNonPrimaryRepresentations' => $filter_non_primary_reps,
-									'locale' => $locale
+									'locale' => $va_get_options['locale'] ?? null,
+									'noLocaleFallback' => $va_get_options['noLocaleFallback'] ?? null
 								]
 							)
 						);
@@ -980,7 +986,8 @@ class DisplayTemplateParser {
 									'filterNonPrimaryRepresentations' => $filter_non_primary_reps,
 									'primaryIDs' => $va_get_options['primaryIDs'] ?? null,
 									'checkAccess' => $va_get_options['checkAccess'],
-									'locale' => $locale
+									'locale' => $va_get_options['locale'] ?? null,
+									'noLocaleFallback' => $va_get_options['noLocaleFallback'] ?? null
 								]
 							)
 						);
@@ -1688,6 +1695,8 @@ class DisplayTemplateParser {
 	 *		delimiter = value to string together template values with when returnAsArray is false. Default is ';' (semicolon)
 	 *		sort = optional list of tag values to sort repeating values within a label template on. The tag must reference a label field. You can specify more than one tag by separating the tags with semicolons.
 	 *		sortDirection = the direction of the sort of repeating values within a label template. May be either ASC (ascending) or DESC (descending). [Default is ASC]
+	 *		locale = 
+	 *		noLocaleFallback = 
 	 * @return array
 	 */
 	public static function _processLabelTemplate($t_instance, $ps_template, array $pa_row_ids, array $pa_options) {
@@ -1700,6 +1709,11 @@ class DisplayTemplateParser {
 		$sort_direction = caGetOption('sortDirection', $pa_options, null, array('forceUppercase' => true));
 		if(!in_array($sort_direction, array('ASC', 'DESC'))) { $sort_direction = 'ASC'; }
 
+		$locale = caGetOption('locale', $pa_options, null);
+		$locale_id = $locale ? (is_numeric($locale) ? $locale : ca_locales::codeToId($locale)) : null;
+		$no_fallback = caGetOption('noLocaleFallback', $pa_options, false);
+		
+		$rules = caGetUserLocaleRules($locale, null, ['noFallback' => true]);
 
 		$va_tags = caGetTemplateTags($ps_template);
 		if(!is_array($va_tags) || (sizeof($va_tags) < 1)) { return []; }
@@ -1708,6 +1722,8 @@ class DisplayTemplateParser {
 		$sort_map = [];
 		foreach($pa_row_ids as $vn_row_id) {
 			if(!$t_instance->load($vn_row_id)) { continue; }
+			
+			if($no_fallback && $locale_id && ($t_instance->get('locale_id') != $locale_id)) { continue; }
 
 			$pb_is_preferred = (bool) ($t_instance->hasField('is_preferred') ? $t_instance->get('is_preferred') : false);
 
@@ -1738,6 +1754,8 @@ class DisplayTemplateParser {
 				$sort_map[$vn_row_id] = join('', $sort_keys);
 			}
 			$va_return[$vn_row_id] = caProcessTemplate($ps_template, $va_tag_values);
+			
+			if($locale && ($rules['preferred'][$locale] ?? null)) { break; }
 		}
 		
 		if(sizeof($sort_map)) {

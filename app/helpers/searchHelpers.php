@@ -753,7 +753,7 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 			foreach($va_value_list as $vn_i => $vs_value) {
 				if (!strlen(trim($vs_value))) { continue; }
 				if ((strpos($vs_value, ' ') !== false) && ($vs_value[0] != '[')) {
-					$vs_query_element = '"'.str_replace('"', "\\\"", $vs_value).'"';
+					$vs_query_element = '"'.str_replace('"', '', $vs_value).'"';
 				} else {
 					$vs_query_element = $vs_value;
 				}
@@ -1498,7 +1498,7 @@ function caGetAvailableSortFields($ps_table, $pn_type_id = null, $options=null) 
 					}
 					
 					if (isset($va_placement['settings']['label'])) {
-						if ($vs_label_tmp = isset($va_placement['settings']['label'][$g_ui_locale_id]) ? $va_placement['settings']['label'][$g_ui_locale_id] : array_shift($va_placement['settings']['label'])) {
+						if ($vs_label_tmp = isset($va_placement['settings']['label'][$g_ui_locale_id]) ? $va_placement['settings']['label'][$g_ui_locale_id] : (is_array($va_placement['settings']['label']) ? array_shift($va_placement['settings']['label']) : $va_placement['settings']['label'])) {
 							$ui_bundle_label_map[$vs_bundle_name] = $vs_label_tmp;
 						}
 					}

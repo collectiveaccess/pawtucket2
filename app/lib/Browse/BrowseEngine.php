@@ -1179,6 +1179,11 @@ class BrowseEngine extends BaseFindEngine {
 	public function execute($pa_options=null) {
 		$this->searched_terms = [];
 		$this->seach_result_desc = [];
+		$t_item = Datamodel::getInstanceByTableName($this->ops_browse_table_name, true);
+		
+		if(caACLIsEnabled($t_item, ['forPawtucket' => true])) {
+			unset($pa_options['checkAccess']);
+		}
 		
 		global $AUTH_CURRENT_USER_ID;
 		if (!is_array($this->opa_browse_settings)) { return null; }
@@ -1215,23 +1220,15 @@ class BrowseEngine extends BaseFindEngine {
 				$vb_results_cached = true;
 				$this->opo_ca_browse_cache->setParameter('created_on', time() + $vn_cache_timeout);
 				$vb_need_to_save_in_cache = true;
-
-				Debug::msg("Cache hit for {$vs_cache_key}");
 			} else {
 				$va_criteria = $this->getCriteria();
-				//$this->opo_ca_browse_cache->remove();
-				//$this->opo_ca_browse_cache->setParameter('criteria', $va_criteria);
 
 				$vb_need_to_save_in_cache = true;
 				$vb_need_to_cache_facets = true;
-
-				Debug::msg("Cache expire for {$vs_cache_key}");
 			}
 		} else {
 			$va_criteria = $this->getCriteria();
 			$vb_need_to_save_in_cache = true;
-
-			Debug::msg("Cache miss for {$vs_cache_key}");
 		}
 		if (!$vb_results_cached) {
 			$this->opo_ca_browse_cache->setParameter('sort', null);
@@ -3346,6 +3343,10 @@ class BrowseEngine extends BaseFindEngine {
 	 */
 	public function getFacetContent($ps_facet_name, $pa_options=null) {
 		global $AUTH_CURRENT_USER_ID;
+		$t_subject = $this->getSubjectInstance();
+		if(caACLIsEnabled($t_subject, ['forPawtucket' => true])) {
+			unset($pa_options['checkAccess']);
+		}
 
 		$vs_browse_table_name = $this->ops_browse_table_name;
 		$vs_browse_table_num = $this->opn_browse_table_num;

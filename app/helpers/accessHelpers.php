@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2024 Whirl-i-Gig
+ * Copyright 2010-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,8 +29,6 @@
  * 
  * ----------------------------------------------------------------------
  */ 
-require_once(__CA_LIB_DIR__.'/Configuration.php');
- 
  # --------------------------------------------------------------------------------------------
  /**
   * Return list of values to validate object/entity/place/etc 'access' field against
@@ -224,10 +222,11 @@ function caGetSourceRestrictionsForUser($pm_table_name_or_num, $pa_options=null)
 	}
 	$t_instance = Datamodel::getInstanceByTableName($vs_table_name, true);
 	if (!$t_instance) { return null; }	// bad table
+	if(!caSourceAccessControlIsEnabled($t_instance)) { return null; }
 	
 	// get sources user has at least read-only access to
 	$va_source_ids = null;
-	if ((bool)$t_instance->getAppConfig()->get('perform_source_access_checking') && $g_request && $g_request->isLoggedIn()) {
+	if (caSourceAccessControlIsEnabled($t_instance) && $g_request && $g_request->isLoggedIn()) {
 		if (is_array($va_source_ids = $g_request->user->getSourcesWithAccess($t_instance->tableName(), $vn_min_access, $pa_options))) {
 			$va_source_ids = caMakeSourceIDList($pm_table_name_or_num, $va_source_ids, array_merge($pa_options, array('dont_include_subsources_in_source_restriction' => true)));
 		}
@@ -684,7 +683,7 @@ function caMergeSourceRestrictionLists($t_instance, $pa_options) {
 	$va_sources = null;
 	
 	$o_config = Configuration::load();
-	if ((bool)$o_config->get('perform_source_access_checking') && method_exists($t_instance, 'getSourceFieldName') && ($vs_source_field_name = $t_instance->getSourceFieldName())) {
+	if (caSourceAccessControlIsEnabled($t_instance) && method_exists($t_instance, 'getSourceFieldName') && ($vs_source_field_name = $t_instance->getSourceFieldName())) {
 		$va_sources = caGetSourceRestrictionsForUser($t_instance->tableName());
 	}
 	if (is_array($va_sources) && sizeof($va_sources) && is_array($va_restrict_to_source_ids) && sizeof($va_restrict_to_source_ids)) {
@@ -716,7 +715,7 @@ function caGetBundleAccessLevel($ps_table_name, $ps_bundle_name) {
 	if (isset($g_bundle_access_level_cache[$ps_table_name][$ps_bundle_name])) { return $g_bundle_access_level_cache[$ps_table_name][$ps_bundle_name]; }
 	list($ps_table_name, $ps_bundle_name) = caTranslateBundlesForAccessChecking($ps_table_name, $ps_bundle_name);
 
-	if ($g_request) {
+	if ($g_request && $g_request->isLoggedIn()) {
 		return $g_bundle_access_level_cache[$ps_table_name][$ps_bundle_name] = $g_request->user->getBundleAccessLevel($ps_table_name, $ps_bundle_name);
 	}
 	
@@ -874,22 +873,142 @@ function caTranslateBundlesForAccessChecking($ps_table_name, $ps_bundle_name) {
 }
 # ---------------------------------------------------------------------------------------------
 /**
- * Determine if ACL is enabled system wide, or for a specific row
+ * Determine if ACL is enabled system wide, or for a specific row. Default to returning back-end ACL availability only.
+ * To check if ACL is enabled for front-end (Pawtucket) use set the 'forPawtucket' option.
  *
  * @param BaseModel|string $t_item A model instance or model name to test. If null system-wide ACL status is returned. [Default is null]
- * @param array $options Array of options from caller. If 'dontFilterByACL' key is set to true then ACL will be returned as disabled.
- * 
+ * @param array $options Array of options. Options include:
+ *		dontFilterByACL = If set to true then ACL will be returned as disabled even if configured to be active. [Default is false]
+ *		forPawtucket = Check if ACL is enabled for front-end only use. Will return true if set, even if back-end ACL is disabled. [Default is false]
+ * 		anywhere = Check if ACL is enabled for front-end or back-end use. [Default is false]
  * @return bool
  */
 function caACLIsEnabled($t_item=null, ?array $options=null) : bool {
 	if(defined("__CA_DISABLE_ACL__") && __CA_DISABLE_ACL__) { return false; }
 	if($options['dontFilterByACL'] ?? false) { return false; }
 	$config = Configuration::load();
-	if(!$config->get('perform_item_level_access_checking')) { return false; } 
+	
+	if(($options['forPawtucket'] ?? false) || ($options['anywhere'] ?? false)) { 
+		if(!is_a($t_item, 'BaseModel')) { 
+			if(is_a($t_item, 'SearchResult')) {
+				$t_item = Datamodel::getInstance($t_item->tableName(), true); 
+			} elseif(is_string($t_item) || is_numeric($t_item)) {
+				$t_item = Datamodel::getInstance($t_item, true); 
+			} else {
+				return false;
+			}
+		}
+		$paw_only = ($config->get('pawtucket_only_acl') || ($t_item && $config->get($t_item->tableName().'_pawtucket_only_acl')) || $config->get('perform_item_level_access_checking'));
+		if(($options['anywhere'] ?? false) && $paw_only) { 	
+			return true; 
+		} elseif($options['forPawtucket'] ?? false) {
+			return $paw_only;
+		}
+	}
 	if(!is_a($t_item, 'BaseModel')) { $t_item = Datamodel::getInstance($t_item, true); }
+	
+	if(!$config->get('perform_item_level_access_checking') || ($t_item && $config->get($t_item->tableName().'_dont_do_item_level_access_control'))) { return false; } 
 	if($t_item && method_exists($t_item, "supportsACL")) {
 		return (bool)$t_item->supportsACL();
 	}
 	return true;
+}
+# ---------------------------------------------------------------------------------------------
+/**
+ * 
+ *
+ */
+function caGetACLItemLevelMap() : ?array {
+	$config = Configuration::load();
+	$map = $config->get('access_to_acl_item_access_level_map') ?? null;
+	return $map;
+}
+# ---------------------------------------------------------------------------------------------
+/**
+ * 
+ *
+ * @param BaseModel|string $t_item A model instance or model name to test. If null system-wide ACL status is returned. [Default is null]
+ * @param array $options Array of options from caller. If 'dontFilterByACL' key is set to true then ACL will be returned as disabled.
+ * 
+ * @return bool
+ */
+function caShowAccessControlScreen($t_item=null, ?array $options=null) : bool {
+	if(caACLIsEnabled($t_item, $options)) { return true; }
+	
+	$config = Configuration::load();
+	if($config->get('acl_show_public_access_controls')) { return true; }
+	
+	if(!is_a($t_item, 'BaseModel')) { $t_item = Datamodel::getInstance($t_item, true); }
+	
+	if($t_item) {
+		if($config->get($t_item->tableName().'_acl_show_public_access_controls')) { return true; }
+	}
+	
+	return false;
+}
+# ---------------------------------------------------------------------------------------------
+/**
+ * 
+ *
+ * 
+ * @return bool
+ */
+function caSuspendCheckAccessChecks($t_item) : bool {
+	$acl_is_enabled = caACLIsEnabled($t_item, ['forPawtucket' => true]);
+	return (caAppIsPawtucket() && $acl_is_enabled);
+}
+# ---------------------------------------------------------------------------------------------
+/**
+ * 
+ *
+ * 
+ * @return bool
+ */
+function caDontEnforceACLForAdministrators(?ca_users $t_user) : bool {
+	$config = Configuration::load();
+	$bypass_enabled = $config->get('acl_dont_enforce_for_administrator');
+	if(!$bypass_enabled) { return false; }
+	
+	$is_admin = (is_a($t_user, 'ca_users') && $t_user->canDoAction('is_administrator'));
+	if($is_admin) { return true; }
+	
+	return false;
+}
+# ---------------------------------------------------------------------------------------------
+/*
+ * Determine if source access control is enabled system wide, or for a specific row
+ *
+ * @param BaseModel|string $t_item A model instance or model name to test. If null system-wide ACL status is returned. [Default is null]
+ * @param array $options Array of options from caller. No options current implemented.
+ * 
+ * @return bool
+ */
+function caSourceAccessControlIsEnabled($t_item=null, ?array $options=null) : bool {
+	$config = Configuration::load();
+	if(!$config->get('perform_source_access_checking')) { return false; } 
+	if(!is_a($t_item, 'BaseModel')) { $t_item = Datamodel::getInstance($t_item, true); }
+	if($config->get($t_item->tableName().'_dont_do_source_access_control')) { return false; } 
+	return true;
+}
+# ---------------------------------------------------------------------------------------------
+/**
+ *
+ */
+function caGetAccessConfigOption(BaseModelWithAttributes $t_item, string $config_opt, ?array $options=null) : mixed {
+	$config = Configuration::load();
+	
+	$keys = [$config_opt];
+	if(is_a($t_item, 'BaseModelWithAttributes')) {
+		array_unshift($keys, $t_item->tableName().'_'.$config_opt);
+		array_unshift($keys, $t_item->tableName().'_'.$t_item->getTypeCode().'_'.$config_opt);
+	}
+	$ret = null;
+	foreach($keys as $a) {
+		if($config->exists($a)) { 
+			$ret = (bool)$config->get($a); 
+			break;
+		}
+	}
+	return $ret;
 }
 # ---------------------------------------------------------------------------------------------

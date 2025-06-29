@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2019 Whirl-i-Gig
+ * Copyright 2016-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,31 +28,27 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
- */
- 
- /**
-  *
-  */
-  require_once(__CA_LIB_DIR__."/View.php");
-  require_once(__CA_MODELS_DIR__."/ca_site_templates.php");
-  
-  class SitePageTemplateManager {
-  	# -------------------------------------------------------
-  	/**
-  	 *
-  	 */
-  	static public function getTemplateDirectories() {
-  		return [__CA_THEME_DIR__.'/templates', __CA_APP_DIR__.'/conf/local/templates'];
-  	}
-  	# -------------------------------------------------------
-  	/**
-  	 *
-  	 */
-  	static public function getTemplateNames() {
-  		$template_dirs = SitePageTemplateManager::getTemplateDirectories();
-  		
+*/
+require_once(__CA_LIB_DIR__."/View.php");
+require_once(__CA_MODELS_DIR__."/ca_site_templates.php");
+
+class SitePageTemplateManager {
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function getTemplateDirectories() {
+		return [__CA_THEME_DIR__.'/templates', __CA_APP_DIR__.'/conf/local/templates'];
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function getTemplateNames() {
+		$template_dirs = SitePageTemplateManager::getTemplateDirectories();
+		
 		$va_templates = [];
-  		foreach($template_dirs as $template_dir) {
+		foreach($template_dirs as $template_dir) {
 			if(!file_exists($template_dir)) { continue; }
 		
 			if (is_resource($r_dir = opendir($template_dir))) {
@@ -68,23 +64,23 @@
 		}
 		
 		return $va_templates;
-  	}
-  	# -------------------------------------------------------
-  	/**
-  	 *
-  	 */
-  	static public function scan() {
-  		$template_dirs = SitePageTemplateManager::getTemplateDirectories();
-  		$va_template_names = SitePageTemplateManager::getTemplateNames();
-  		
-  		$vn_template_insert_count = $vn_template_update_count = 0;
-  		$va_errors = [];
-  		foreach($template_dirs as $template_dir) {
-  			if (!is_array($va_template_names[$template_dir])) { continue; }
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function scan() {
+		$template_dirs = SitePageTemplateManager::getTemplateDirectories();
+		$va_template_names = SitePageTemplateManager::getTemplateNames();
+		
+		$vn_template_insert_count = $vn_template_update_count = 0;
+		$va_errors = [];
+		foreach($template_dirs as $template_dir) {
+			if (!is_array($va_template_names[$template_dir])) { continue; }
 			foreach($va_template_names[$template_dir] as $vs_template_name) {
 				$vs_template_path = "{$template_dir}/{$vs_template_name}.tmpl";
 				$vs_template_content = file_get_contents($vs_template_path);
-
+	
 				$o_view = new View(null, $vs_template_path);
 				$va_tags = $o_view->getTagList($vs_template_path);
 			
@@ -145,15 +141,15 @@
 				}
 			}
 		}
-  		
-  		return ['insert' => $vn_template_insert_count, 'update' => $vn_template_update_count, 'errors' => $va_errors];
-  	}
-  	# -------------------------------------------------------
-  	/**
-  	 *
-  	 */
-  	static public function getTemplateConfig() {
-  		return Configuration::load(__CA_THEME_DIR__."/conf/templates.conf");	
-  	}
-  	# -------------------------------------------------------
-  }
+		
+		return ['insert' => $vn_template_insert_count, 'update' => $vn_template_update_count, 'errors' => $va_errors];
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function getTemplateConfig() {
+		return Configuration::load(__CA_THEME_DIR__."/conf/templates.conf");	
+	}
+	# -------------------------------------------------------
+}

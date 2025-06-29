@@ -1676,6 +1676,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 	 * @return string HTML for list element
 	 */ 
 	public function getTypeListAsHTMLFormElement($ps_name, $pa_attributes=null, $pa_options=null) {
+		if(!is_array($pa_options)) { $pa_options = []; }
 		$t_list = new ca_lists();
 		if (isset($pa_options['childrenOfCurrentTypeOnly']) && $pa_options['childrenOfCurrentTypeOnly']) {
 			$pa_options['childrenOnlyForItemID'] = $this->get('type_id');
@@ -1997,9 +1998,6 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 		
 		// get all elements of this element set
 		$va_element_set = $t_element->getElementsInSet();
-
-		// get attributes of this element attached to this row
-		$va_attributes = $this->getAttributesByElement($pm_element_code_or_id);
 		
 		$t_attr = new ca_attributes();
 		$t_attr->setTransaction($this->getTransaction());
@@ -2095,7 +2093,6 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 				't_subject' => $this,
 				'request' => $po_request,
 				'form_name' => $ps_form_name,
-				'format' => '',
 				'dontDoRefSubstitution' => true,
 				'format' => 
 					// Set format to single line when displaying yes_no checkboxes
@@ -2208,7 +2205,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 		// Set the list of existing attributes for the current row
 		$vs_sort = $pa_bundle_settings['sort'] ?? null;
 		$vs_sort_dir = $pa_bundle_settings['sortDirection'] ?? null;
-		$va_attribute_list = $this->getAttributesByElement($t_element->get('element_id'), array('sort' => $vs_sort, 'sortDirection' => $vs_sort_dir));
+		$va_attribute_list = $this->getAttributesByElement($t_element->get('element_id'), ['sort' => $vs_sort, 'sortDirection' => $vs_sort_dir]);
 		
 		$o_view->setVar('attribute_list', $va_attribute_list);
 		
@@ -2317,7 +2314,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 				'value' => $vm_values,
 				'forSearch' => true,
 				'textAreaTagName' => caGetOption('textAreaTagName', $pa_options, null),
-				'render' => $va_element['settings']['render'] ?? null,
+				'render' => $pa_options['render'] ?? $va_element['settings']['render'] ?? null,
 				'attributes' => $attributes
 			], array_merge($pa_options, $va_override_options));
 			
@@ -2346,8 +2343,9 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 				// prep element for use as search element
 				//
 				// ... replace value
-				$vs_form_element = str_replace('{{'.$va_element['element_id'].'}}', $vm_values, $vs_form_element);
-			
+				if(!is_array($vm_values)) {
+					$vs_form_element = str_replace('{{'.$va_element['element_id'].'}}', $vm_values, $vs_form_element);
+				}
 			
 				// escape any special characters in jQuery selectors
 				$f = (isset($pa_options['name']) && $pa_options['name']) ? $pa_options['name'] : $vs_fld_name;
@@ -2409,7 +2407,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 			$vs_element = null;
 			switch($ps_field) {
 				case $vs_source_id_fld_name:
-					if ((bool)$this->getAppConfig()->get('perform_source_access_checking')) {
+					if (caSourceAccessControlIsEnabled($this)) {
 						$pa_options['value'] = $this->get($ps_field);
 						$pa_options['disableItemsWithID'] = caGetSourceRestrictionsForUser($this->tableName(), array('access' => __CA_BUNDLE_ACCESS_READONLY__, 'exactAccess' => true));
 						$vs_element = $this->getSourceListAsHTMLFormElement($pa_options['name'], array(), $pa_options);

@@ -345,9 +345,10 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 		// Try to extract text
 		$this->handle['content_by_location'] = $this->ohandle['content_by_location'] = [];
 		
-
-		if($locations = caExtractTextFromPDF($ps_filepath)) {
-			$this->handle['content'] = $locations ?? '';
+		if($locations = caExtractTextLocationsFromPDF($ps_filepath)) {
+			$this->handle['content'] = join("\n", $locations['__pages__'] ?? []);
+			unset($locations['__pages__']);
+			$this->handle['content_by_location'] = $this->ohandle['content_by_location'] = $locations;
 		} elseif ($this->ops_pdftotext_path) {
 			if(($page_start = (int)$this->opo_config->get("document_text_extraction_start_page")) <= 0) { $page_start = 1; }
 			if(($num_pages = (int)$this->opo_config->get("document_text_extraction_max_number_of_pages")) <= 0) { $num_pages = null; }
