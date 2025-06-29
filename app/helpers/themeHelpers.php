@@ -1420,7 +1420,8 @@ function caGetBrowseLinks($t_instance, string $bundle, ?array $options=null) : ?
 	if($facet) {
 		$access_values = caGetUserAccessValues($g_request);	
 		$bt = caGetBrowseForType($table, $t_instance->getTypeCode());
-		$text = $template ? explode('|', $t_instance->getWithTemplate($z="<unit relativeTo='{$bundle}' delimiter='|' {$restrict_to_types_attr} {$restrict_to_relationship_types_attr}>{$template}</unit>", ['returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $access_values])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $access_values]);
+		if(!$bt) { return null; }
+		$text = $template ? explode('|', $t_instance->getWithTemplate("<unit relativeTo='{$bundle}' delimiter='|' {$restrict_to_types_attr} {$restrict_to_relationship_types_attr}>{$template}</unit>", ['returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $access_values])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $access_values]);
 		if(!sizeof(array_filter($text, 'strlen'))) { return null; }
 		
 		$text = array_map(function($v) {
