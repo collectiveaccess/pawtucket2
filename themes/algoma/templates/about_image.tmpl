@@ -1,3 +1,12 @@
+<?php
+	$vn_num_media = 0;
+	if ($t_page = $this->getVar("page")) {
+		$va_media = $t_page->getPageMedia(array("large", "medium"));
+		if(is_array($va_media) && sizeof($va_media)){
+			$vn_num_media = sizeof($va_media);
+		}
+	}
+?>
 <div class="row">
 	<div class="col-sm-12">
 		<h1>{{{title}}}</h1>
@@ -10,12 +19,22 @@
 			<div class="img-fluid mb-5">
 				{{{media:1:original}}}
 			</div>
+<?php
+	if($vn_num_media > 1){
+?>
 			<div class="img-fluid mb-5">
 				{{{media:2:original}}}
 			</div>
+<?php
+	}
+	if($vn_num_media > 2){
+?>
 			<div class="img-fluid mb-5">
 				{{{media:3:original}}}
 			</div>
+<?php
+	}
+?>
 		</div>
 	</div>
 </div>
