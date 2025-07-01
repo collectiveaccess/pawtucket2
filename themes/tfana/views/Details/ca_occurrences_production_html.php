@@ -149,14 +149,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					</ifdef>}}}					
 					<div class="col">
 						{{{<dl class="mb-0">
-							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="director">
-								<dt><ifcount code="ca_entities" restrictToRelationshipTypes="director" min="1" max="1"><?= _t('Director'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="director" min="2"><?= _t('Directors'); ?></ifcount></dt>
-								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></dd>
-							</ifcount>
-							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="created_by">
-								<dt><?= _t('Created by'); ?></dt>
-								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="created_by" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></dd>
-							</ifcount>
 							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="actor">
 								<dt><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="1" max="1"><?= _t('Performer'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="actor" min="2"><?= _t('Performers'); ?></ifcount></dt>
 								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="actor" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></dd>
