@@ -139,7 +139,7 @@
 	if ($t_item->get("ca_collections.children.collection_id") || $t_item->get("ca_objects.object_id")){
 		print "<hr/><br/>Collection Contents";
 		if ($t_item->get('ca_collections.collection_id')) {
-			print caGetCollectionLevelSummary($this->request, array($t_item->get('ca_collections.collection_id')), 1);
+			print caGetCollectionLevelSummaryTFANA($this->request, array($t_item->get('ca_collections.collection_id')), 1);
 		}
 	}
 	print $this->render("pdfEnd.php");
