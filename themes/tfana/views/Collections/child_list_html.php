@@ -74,12 +74,13 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				$vs_output .= "</span>";
 			}
 			if($vn_rel_object_count){
-				$vs_output .= " <small class='fw-normal'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+				$vs_output .= " <small class='fw-normal'>(".$vn_rel_object_count." publicly available record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 			}
 			$vs_output .= "</div>";
 			
 			$vs_desc = "";
-			if($vs_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_desc_template, array("checkAccess" => $va_access_values)))){
+			# --- not checking access on the display template because they want to show non accessible objects
+			if($vs_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_desc_template))){
 				$vs_output .= "<div>".$vs_desc."</div>";
 			}
 			$vs_output .= "</div>";
