@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2024 Whirl-i-Gig
+ * Copyright 2007-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -927,7 +927,7 @@ class SearchEngine extends SearchBase {
 			if (!$vn_type_id) { return false; }
 			
 			if (isset($va_type_list[$vn_type_id]) && $va_type_list[$vn_type_id]) {	// is valid type for this subject
-				if (caGetOption('includeSubtypes', $options, true) && !caGetOption('dontExpandTypesHierarchically', $options, false)) {
+				if (caGetOption('includeSubtypes', $options, true) && !caGetOption(['dontExpandTypesHierarchically', 'dontExpandHierarchically'], $options, false)) {
 					// See if there are any child types
 					$t_item = new ca_list_items($vn_type_id);
 					$va_ids = $t_item->getHierarchyChildren(null, array('idsOnly' => true));
