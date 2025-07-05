@@ -110,6 +110,8 @@ define('__CA_NAV_ICON_SPLIT__', 72);
 define('__CA_NAV_ICON_TOGGLE__', 73);
 define('__CA_NAV_ICON_CHECKBOX__', 74);
 define('__CA_NAV_ICON_TRASH__', 75);
+define('__CA_NAV_ICON_AUTO_DELETE__', 76);
+define('__CA_NAV_ICON_NO_AUTO_DELETE__', 77);
 
 /**
  * Icon position constants
@@ -931,6 +933,12 @@ function _caNavIconTypeToName($pn_type) {
 			break;				
 		case __CA_NAV_ICON_TRASH__:
 			$vs_fa_class = 'fas fa-trash';
+			break;				
+		case __CA_NAV_ICON_AUTO_DELETE__:
+			$vs_fa_class = 'fas fa-recycle caIconRed';
+			break;				
+		case __CA_NAV_ICON_NO_AUTO_DELETE__:
+			$vs_fa_class = 'fas fa-recycle';
 			break;															
 		default:
 			print "INVALID CONSTANT $pn_type<br>\n";

@@ -248,7 +248,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				if ((bool)$this->get('access_inherit_from_parent') && (($vn_parent_id = $this->get('parent_id')) > 0)) {
 					$t_parent = Datamodel::getInstanceByTableNum($this->tableNum(), false);
 					if ($t_parent->load($vn_parent_id)) {
-						$this->set('access', $t_parent->set('access'));
+						$this->set('access', $t_parent->get('access'));
 					}
 				}
 			}
