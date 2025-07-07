@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2024 Whirl-i-Gig
+ * Copyright 2009-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -746,7 +746,7 @@ function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=nu
 									$coordinate_pairs[] = ['latitude' => $pair[0], 'longitude' => $pair[1]];
 								}
 							   
-								$georef_list[] = ['coordinates' => $coordinate_pairs, 'info' => $info, 'ajaxContentUrl' => $ajax_content, 'ajaxContentID' => $id,  'group' => $group];
+								$georef_list[] = ['coordinates' => $coordinate_pairs, 'info' => $info, 'ajaxContentUrl' => $ajax_content, 'ajaxContentIDs' => [$id],  'group' => $group];
 							} else {
 								$coord = explode(',', $path[0]);
 								list($lng, $radius) = explode('~', $coord[1]);
@@ -754,10 +754,16 @@ function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=nu
 								
 								if($fuzz > 0) { $coord[0] = ''.round($coord[0], $fuzz); $lng = ''.round($lng, $fuzz); }
 						 
-								$d = ['latitude' => $coord[0], 'longitude' => $lng, 'info' => $info, 'ajaxContentUrl' => $ajax_content, 'ajaxContentID' => $id, 'group' => $group];
+						 		if(!isset($georef_list[$coord[0].'/'.$lng])) {
+									$d = ['latitude' => $coord[0], 'longitude' => $lng, 'info' => [$id => $info], 'ajaxContentUrl' => $ajax_content, 'ajaxContentIDs' => [$id], 'group' => $group];
+								} else {
+									$d = $georef_list[$coord[0].'/'.$lng];
+									$d['info'][$id] = $info;
+									$d['ajaxContentIDs'][] = $id;
+								}
 								if ($radius) { $d['radius'] = $radius; }
 								if ($angle) { $d['angle'] = $angle; }
-							   $georef_list[] = $d;
+								$georef_list[$coord[0].'/'.$lng] = $d;
 							}
 						}
 					}
@@ -765,7 +771,7 @@ function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=nu
 				}
 			}
 		}	
-		return ['coordinates' => $georef_list];
+		return ['coordinates' => array_values($georef_list)];
 	}
 	return null;
 }
