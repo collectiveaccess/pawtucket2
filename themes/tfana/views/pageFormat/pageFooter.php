@@ -43,13 +43,14 @@
 								Brooklyn, NY 11217
 							</div>
 						</div>
-						<div class="col-sm-6 fw-semibold text-uppercase text-center text-sm-end">
+						<div class="col-sm-6 fw-semibold text-center text-sm-end">
 							<ul class="list-inline pt-3">
 								<li class="list-inline-item fs-4 px-2"><a href="https://www.instagram.com/theatreforanewa/?hl=en" aria-label="Instagram Link" target="_blank"><i class="bi bi-instagram"></i></a></li>
 								<li class="list-inline-item fs-4 px-2"><a href="https://www.facebook.com/TheatreforaNewAudience" aria-label="Facebook Link" target="_blank"><i class="bi bi-facebook"></i></a></li>
 								<li class="list-inline-item fs-4 px-2"><a href="https://www.youtube.com/user/TheatreNewAudience#p/a" aria-label="YouTube Link" target="_blank"><i class="bi bi-youtube"></i></a></li>
 								<li class="list-inline-item fs-4 px-2"><a href="https://twitter.com/TheatreforaNewA" aria-label="X Link" target="_blank"><i class="bi bi-twitter-x"></i></a></li>
 							</ul>
+							<?= caNavlink($this->request, _t('Terms of Use'), "small", "", "Terms", "", ""); ?>
 						</div>
 					</div>
 				</div>
