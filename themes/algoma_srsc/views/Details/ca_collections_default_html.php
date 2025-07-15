@@ -100,18 +100,9 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php
 	}
 ?>
-{{{<ifcount code="ca_object_representations" min="1">
-	<!--<div class="row justify-content-center mb-3 py-3 bg-light">
-		<unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="0" delimiter=" ">
-			<div class="col-sm-6 col-md-4 detailRepresentationGrid text-center">
-				^ca_object_representations.media.large%class=object-fit-contain
-			</div>
-		</unit>
-	</div>-->
-</ifcount>}}}
 {{{<ifdef code="ca_object_representations.media.large">
 	<div class="row justify-content-center mb-3 py-3 bg-light">
-		<div class="col-sm-12 col-md-6 bg-white">
+		<div class="col-11 col-md-6 bg-white pt-3 pb-2">
 			<div><?= $this->getVar("media_viewer"); ?></div>
 		</div>
 	</div>

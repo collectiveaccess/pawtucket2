@@ -54,7 +54,7 @@ if (sizeof($va_criteria) > 0) {
 if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->numHits() > 1)){
 ?>		
 	<div id='bRefine' class='bg-light sticky-md-top vh-100 collapse overflow-y-auto'>
-		<div id='bMorePanel' tabindex='-1' class='position-absolute w-100 z-3 bg-light h-100 collapse'><!-- long lists of facets are loaded here --></div>
+		<div id='bMorePanel' tabindex='-1' class='sticky-top w-100 z-3 bg-light h-100 collapse'><!-- long lists of facets are loaded here --></div>
 		<div class="text-end float-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php
 	if($qr_res->numHits() > 1){

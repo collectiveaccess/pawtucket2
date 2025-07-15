@@ -151,16 +151,16 @@ $subject = $this->getVar("subject");
 <div id="mediaviewer-selector" class='mx-auto my-3 justify-content-center'>
 	<div id="multiCarousel" class="carousel slide multiSlideCarousel">
         <div class="row">
-        	<div class="col-2 col-sm-1 align-content-center">
-        		<a class="btn btn-white p-2" href="#multiCarousel" role="button" data-bs-slide="prev" aria-label="previous slide">
+        	<div class="col-2 col-sm-1 align-content-center text-start">
+        		<a class="btn btn-white p-0" href="#multiCarousel" role="button" data-bs-slide="prev" aria-label="previous slide">
 					<i class="bi bi-arrow-left"></i>
 				</a>
 			</div>
 			<div class="col-8 col-sm-10">
 				<div class="carousel-inner" role="listbox"><?= join(" ", $media_icons); ?></div>
         	</div>
-        	<div class="col-2 col-sm-1 align-content-center">
-				<a class="btn btn-white p-2" href="#multiCarousel" role="button" data-bs-slide="next" aria-label="next slide" onClick="return false;">
+        	<div class="col-2 col-sm-1 align-content-center text-end">
+				<a class="btn btn-white p-0" href="#multiCarousel" role="button" data-bs-slide="next" aria-label="next slide" onClick="return false;">
 					<i class="bi bi-arrow-right"></i>
 				</a>
     		</div>
