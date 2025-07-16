@@ -23,7 +23,7 @@ $config = $this->getVar('config');
 </div></div>
 <div class="row mb-4">
 	<div class="col-md-6 col-lg-4 col-xl-3">
-		<form role="search" id="searchWithin" hx-post="<?= caNavUrl($this->request, '', 'Search', 'schools', ['view' => 'list', 'dontSetFind' => 1]); ?>" hx-target="#browseResultsContainer" hx-swap="innerHTML" hx-on::after-request="if(event.detail.successful) document.getElementById('clear-search').classList.remove('d-none')">
+		<form role="search" id="searchWithin" hx-post="<?= caNavUrl($this->request, '', 'Search', 'schools', ['view' => 'images', 'dontSetFind' => 1]); ?>" hx-target="#browseResultsContainer" hx-swap="innerHTML" hx-on::after-request="if(event.detail.successful) document.getElementById('clear-search').classList.remove('d-none')">
 			<div class="input-group">
 				<label for="search-within" class="form-label visually-hidden"><?= _t('Search within'); ?></label>
 				<input name="search" id="search-within" type="text" class="form-control rounded-0 border-end-0" placeholder="<?= _t('Search within...'); ?>" value="<?= $this->getVar('search'); ?>">
