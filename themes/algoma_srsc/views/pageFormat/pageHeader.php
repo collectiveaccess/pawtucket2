@@ -63,6 +63,7 @@ if($this->request->isLoggedIn()){
 	<script>
 		let pawtucketUIApps = {};
 	</script>
+	<meta name="format-detection" content="telephone=no">
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 <?php

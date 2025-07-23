@@ -157,7 +157,7 @@ $subject = $this->getVar("subject");
 				</a>
 			</div>
 			<div class="col-8 col-sm-10">
-				<div class="carousel-inner" role="listbox"><?= join(" ", $media_icons); ?></div>
+				<div class="carousel-inner"><?= join(" ", $media_icons); ?></div>
         	</div>
         	<div class="col-2 col-sm-1 align-content-center text-end">
 				<a class="btn btn-white p-0" href="#multiCarousel" role="button" data-bs-slide="next" aria-label="next slide" onClick="return false;">

@@ -36,6 +36,16 @@ $dark_blue: #292756;
 .bg-light-green{
 	background-color: $light_green;
 }
+* {
+	font-variant-ligatures: none;
+	font-feature-settings: "liga" 0;
+}
+body{
+	-webkit-font-feature-settings: "liga" 0 !important;
+    -moz-font-feature-settings: "liga" 0 !important;
+    font-feature-settings: "liga" 0 !important;
+    font-variant-ligatures: none !important;
+}
 h2{
 	font-weight:400;
 	font-family:TTNormsMedium;
