@@ -23,9 +23,9 @@
 		$vn_cols = 6;
 		while($qr_categories->nextHit()){
 			$vs_tmp = "";
-			if(!in_array($qr_categories->get("ca_list_items.item_id"), $va_available_ids)){
-				continue;
-			}
+			#if(!in_array($qr_categories->get("ca_list_items.item_id"), $va_available_ids)){
+			#	continue;
+			#}
 			$vs_img = $qr_categories->get("ca_list_items.cat_image.iconlarge");
 			if(!$vs_img){
 				# --- get one object with this category
