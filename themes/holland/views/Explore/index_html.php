@@ -6,9 +6,9 @@
 	$vb_subcategory = $this->getVar("subcategory");
 	$vs_category_name = $this->getVar("category_name"); // only shown whe this is a sub category
 	
-	$o_browse = caGetBrowseInstance('ca_objects');
+	#$o_browse = caGetBrowseInstance('ca_objects');
 	#$o_browse->execute(array('checkAccess' => $va_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true));
-	$va_available_ids = array_keys($o_browse->getFacet("category_facet", array("checkAccess" => $va_access_values)));
+	#$va_available_ids = array_keys($o_browse->getFacet("category_facet", array("checkAccess" => $va_access_values)));
 	$o_search = caGetSearchInstance("ca_objects");
  				
 ?>
