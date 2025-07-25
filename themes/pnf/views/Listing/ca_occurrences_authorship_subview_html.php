@@ -111,32 +111,74 @@
 					$display_type = "Pseudonyms & Anagrams";
 				break;
 				# ---------------
+				default:
+					$display_type = $type;
+				break;
+				# ---------------
 			}
-			$rows_by_type[$display_type][] =  "<div class='row'>
+			# --- False Attribution and Author Not Printed on Suelta are in a different order
+			switch($type){
+				case "Author Not Printed on Suelta":
+					$rows_by_type[$display_type][] =  "<div class='row'>
+										<div class='col-sm-4 col-md-4'>".$qr_list->get('ca_occurrences.example_title')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.person_identified')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.510_citation_reference')."</div>
+										<div class='col-sm-4 col-md-4'>".$qr_list->get('ca_occurrences.general_notes')."</div>
+									</div>";
+				break;
+				# --------------------------
+				case "False Attribution":
+					$rows_by_type[$display_type][] =  "<div class='row'>
+										<div class='col-sm-3 col-md-3'>".$qr_list->get('ca_occurrences.example_title')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.preferred_labels')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.person_identified')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.510_citation_reference')."</div>
+										<div class='col-sm-3 col-md-3'>".$qr_list->get('ca_occurrences.general_notes')."</div>
+									</div>";
+				break;
+				# --------------------------
+				default:
+					$rows_by_type[$display_type][] =  "<div class='row'>
 										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.preferred_labels')."</div>
 										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.person_identified')."</div>
 										<div class='col-sm-3 col-md-3'>".$qr_list->get('ca_occurrences.example_title')."</div>
 										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.510_citation_reference')."</div>
 										<div class='col-sm-3 col-md-3'>".$qr_list->get('ca_occurrences.general_notes')."</div>
 									</div>";
+				break;
+				# --------------------------
+			}
 		}
 	}
 	ksort($rows_by_type);
 	$types = array_keys($rows_by_type);
-	print "<div class='listingSubHeading' style='padding-top:30px; color:#000;'>Show: ";
+	print "<div class='listingSubHeading' style='padding-top:30px; color:#000;'>";
 	$type_count = 0;
-	foreach($types as $type){
-		$type_no_spaces = str_replace(array(" ", "&", "(", ")"), "_", $type);
-		if(!$cur_type){
-			$cur_type = $type_no_spaces;
-		}
-
+	$all_types_in_order = array("Initials & Acronyms", "Pseudonyms & Anagrams", "False Attribution", "Ingenio(s)", "Author Not Printed on Suelta");
+	foreach($all_types_in_order as $type){
+		if(in_array($type, $types)){
+			$type_no_spaces = str_replace(array(" ", "&", "(", ")"), "_", $type);
+			if(!$cur_type){
+				$cur_type = $type_no_spaces;
+			}
+			switch($type){
+				case "Ingenio(s)":
+					$type = "<i>Ingenio(s)</i>";
+				break;
+				# ----------------------
+				case "Author Not Printed on Suelta":
+					$type = "Author Not Printed on <i>Suelta</i>";
+				break;
+				# ----------------------
+			}
+	
 ?>
-		<a class="sortLinks sortLink<?php print $type_no_spaces; ?>" style="<?php print ($cur_type == $type_no_spaces) ? "color: #7f4539; " : "color: #000000; "; ?>text-decoration:underline;" href="#" onclick="jQuery('.sortLinks').css('color', '#000000'); jQuery('.sortLink<?php print $type_no_spaces; ?>').css('color', '#7f4539'); jQuery('.typeListings').hide(); jQuery('#Type<?php print $type_no_spaces; ?>').show(); return false;"><?php print $type; ?></a> 
+			<a class="sortLinks sortLink<?php print $type_no_spaces; ?>" style="<?php print ($cur_type == $type_no_spaces) ? "color: #7f4539; " : "color: #000000; "; ?>text-decoration:underline;" href="#" onclick="jQuery('.sortLinks').css('color', '#000000'); jQuery('.sortLink<?php print $type_no_spaces; ?>').css('color', '#7f4539'); jQuery('.typeListings').hide(); jQuery('#Type<?php print $type_no_spaces; ?>').show(); return false;"><?php print $type; ?></a> 
 <?php	
-		$type_count++;
-		if($type_count < sizeof($types)){
-			print " | ";
+			$type_count++;
+			if($type_count < sizeof($types)){
+				print " | ";
+			}
 		}
 	}
 	print "</div>";
@@ -155,11 +197,39 @@
 			<div class='col-sm-12'>
 				<div style='padding:20px 10px 0px 10px;'>
 					<div class='row'>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Label") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? $autho_type_display : $autho_type_display), "", "*", "*", "*", array("sort" => "Label", "type" => $type_no_spaces)); ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Person") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Person Identified As" : "Person Identified As"), "", "*", "*", "*", array("sort" => "Person", "type" => $type_no_spaces)); ?></div>
-						<div class='col-sm-3 col-md-3 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Example") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Example of a Title Where This Appears" : "Example of a Title Where This Appears"), "", "*", "*", "*", array("sort" => "Example", "type" => $type_no_spaces)); ?></div>
+<?php
+			switch($autho_type){
+				case "Author Not Printed on Suelta":
+?>
+						<div class='col-sm-4 col-md-4 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Example") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Title Where This Appears" : "Title Where This Appears"), "", "*", "*", "*", array("sort" => "Example", "type" => $type_no_spaces)); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Person") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Author(s) Identified As" : "Author(s) Identified AsS"), "", "*", "*", "*", array("sort" => "Person", "type" => $type_no_spaces)); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Citation") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Citation" : "Citation"), "", "*", "*", "*", array("sort" => "Citation", "type" => $type_no_spaces)); ?></div>
+						<div class='col-sm-4 col-md-4 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Notes") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Notes" : "Notas"), "", "*", "*", "*", array("sort" => "Notes", "type" => $type_no_spaces)); ?></div>
+<?php
+				break;
+				# --------------------------
+				case "False Attribution":
+?>
+						<div class='col-sm-3 col-md-3 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Example") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Title Where This Appears" : "Title Where This Appears"), "", "*", "*", "*", array("sort" => "Example", "type" => $type_no_spaces)); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Label") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Erroneous Author As Printed On Suelta" : "Erroneous Author As Printed On Suelta"), "", "*", "*", "*", array("sort" => "Label", "type" => $type_no_spaces)); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Person") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Author(s) Subsequently Identified As" : "Author(s) Subsequently Identified As"), "", "*", "*", "*", array("sort" => "Person", "type" => $type_no_spaces)); ?></div>
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Citation") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Citation" : "Citation"), "", "*", "*", "*", array("sort" => "Citation", "type" => $type_no_spaces)); ?></div>
 						<div class='col-sm-3 col-md-3 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Notes") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Notes" : "Notas"), "", "*", "*", "*", array("sort" => "Notes", "type" => $type_no_spaces)); ?></div>
+<?php			break;
+				# --------------------------
+				default:
+?>						
+						
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Label") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? $autho_type_display : $autho_type_display), "", "*", "*", "*", array("sort" => "Label", "type" => $type_no_spaces)); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Person") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Person Identified As" : "Person Identified As"), "", "*", "*", "*", array("sort" => "Person", "type" => $type_no_spaces)); ?></div>
+						<div class='col-sm-3 col-md-3 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Example") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Title Where This Appears" : "Title Where This Appears"), "", "*", "*", "*", array("sort" => "Example", "type" => $type_no_spaces)); ?></div>
+						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Citation") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Citation" : "Citation"), "", "*", "*", "*", array("sort" => "Citation", "type" => $type_no_spaces)); ?></div>
+						<div class='col-sm-3 col-md-3 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Notes") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Notes" : "Notas"), "", "*", "*", "*", array("sort" => "Notes", "type" => $type_no_spaces)); ?></div>
+<?php
+				break;
+				# --------------------------
+			}
+?>
 					</div>
 				</div>
 			</div>
