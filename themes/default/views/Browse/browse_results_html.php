@@ -104,7 +104,7 @@ if (!$ajax) {	// !ajax
 
 				if(is_array($va_views) && (sizeof($va_views) > 1)){
 					print "<li class='list-group-item border-0 px-0 pt-0'>\n";
-					print "<ul class='list-inline p-0 me-2'>\n";
+					print "<ul class='list-inline p-0 me-2 text-nowrap'>\n";
 					foreach($va_views as $view => $va_view_info) {
 						print "<li class='list-inline-item me-1'>";
 						if ($current_view === $view) {

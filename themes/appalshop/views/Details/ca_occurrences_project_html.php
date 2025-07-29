@@ -38,6 +38,10 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_item->get('ca_occurrences.occurrence_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+MetaTagManager::addMeta("og:description", $t_item->get("ca_occurrences.description_w_type.description"));
+MetaTagManager::addMeta("og:title", $t_item->get("ca_occurrences.preferred_labels.name"));
+MetaTagManager::addMeta("og:image", $t_item->getWithTemplate("^ca_object_representations.media.large.url", array("checkAccess" => $access_values)));		
+
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;

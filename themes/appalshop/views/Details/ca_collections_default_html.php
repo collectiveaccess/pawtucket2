@@ -37,6 +37,9 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =					$t_item->get('ca_collections.collection_id');
 $show_nav = 			($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = 			$this->getVar('mapOptions') ?? [];
+MetaTagManager::addMeta("og:description", $t_item->get("ca_collections.scope_contents"));
+MetaTagManager::addMeta("og:title", $t_item->get("ca_collections.preferred_labels.name"));
+MetaTagManager::addMeta("og:image", $t_item->getWithTemplate("<unit relativeTo='ca_objects' limit='1'>^ca_object_representations.media.large.url</unit>", array("checkAccess" => $access_values)));		
 
 # --- get collections configuration
 $collections_config = caGetCollectionsConfig();

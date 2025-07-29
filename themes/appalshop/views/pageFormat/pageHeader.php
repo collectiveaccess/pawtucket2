@@ -63,6 +63,12 @@ if($this->request->isLoggedIn()){
 	<script>
 		let pawtucketUIApps = {};
 	</script>
+<?php
+	$cur_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")."://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+?>
+	<meta property="og:url" content="<?php print $cur_url; ?>">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="<?php print $this->request->config->get("app_display_name"); ?>">
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>

@@ -45,6 +45,9 @@ $in_lightboxes = $this->getVar('inLightboxes') ?? [];
 $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
 ]);
+MetaTagManager::addMeta("og:description", $t_object->get("ca_objects.description_w_type.description"));
+MetaTagManager::addMeta("og:title", $t_object->get("ca_objects.preferred_labels.name"));
+MetaTagManager::addMeta("og:image", $t_object->getWithTemplate("^ca_object_representations.media.large.url", array("checkAccess" => $access_values)));		
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;

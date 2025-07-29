@@ -2,6 +2,8 @@
 	$theme = $this->getVar("theme_name");
 	$access_values = caGetUserAccessValues($this->request);
 	$qr_res = $this->getVar("results");
+	
+	MetaTagManager::addMeta("og:title", $theme);
 ?>	
 	<div class="row justify-content-center">
 		<div class="col-md-10 my-5 py-2">
