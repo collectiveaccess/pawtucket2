@@ -16,7 +16,7 @@
 			if(!$img){
 				$img = caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "theme image", "class" => "object-fit-cover w-100 shadow rounded-3"));
 			}
-			print '<div class="col-md-4 mb-4">'.caDetailLink($this->request, "<div class='linkBox position-relative rounded-3'>".$img."<div class='position-absolute top-0 w-100 h-100 display-3 fs-3 text-white rounded-3'>".$qr_res->get("ca_occurrences.preferred_labels")."</div></div>", "", "ca_occurrences", $qr_res->get("ca_occurrences.occurrence_id")).'</div>';				
+			print '<div class="col-md-4 mb-4">'.caDetailLink($this->request, "<div class='linkBox position-relative rounded-3'>".$img."<div class='position-absolute top-0 w-100 h-100 display-3 fs-3 text-white rounded-3 d-flex align-items-center justify-content-center'>".$qr_res->get("ca_occurrences.preferred_labels")."</div></div>", "", "ca_occurrences", $qr_res->get("ca_occurrences.occurrence_id")).'</div>';				
 		}
 ?>
 			</div>

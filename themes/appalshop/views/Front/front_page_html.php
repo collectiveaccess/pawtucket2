@@ -58,13 +58,15 @@
 							<div class="fw-light "><span class="fs-2">Welcome to the</span></div>
 							<div class="display-2 fw-medium">Appalshop Archive</div>
 						</div>
-						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
-							<div class="input-group pb-3 w-50">
-								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
-								<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
-								<button type="submit" class="btn rounded-0 bg-white text-primary" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
-							</div>
-						</form>
+						<div class="row"><div class="col-12 col-md-6">
+							<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
+								<div class="input-group pb-3">
+									<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
+									<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
+									<button type="submit" class="btn rounded-0 bg-white text-primary" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
+								</div>
+							</form>
+						</div></div>
 					</div>
 				</div>
 			</div>
@@ -101,7 +103,7 @@
 			if(!$img){
 				$img = caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow rounded-3"));
 			}
-			print '<div class="col-md-4 mb-4 text-center">'.caNavLink($this->request, "<div class='linkBox position-relative rounded-3'>".$img."<div class='position-absolute top-0 w-100 h-100 display-3 fs-3 text-white rounded-3'>".$theme_for_display["name"]."</div></div>", "", "", "Themes", "theme", array("item_id" => $item_id)).'</div>';
+			print '<div class="col-md-4 mb-4 text-center">'.caNavLink($this->request, "<div class='linkBox position-relative rounded-3'>".$img."<div class='position-absolute top-0 w-100 h-100 display-3 fs-3 text-white rounded-3  d-flex align-items-center justify-content-center'>".$theme_for_display["name"]."</div></div>", "", "", "Themes", "theme", array("item_id" => $item_id)).'</div>';
 				
 		}
 				
