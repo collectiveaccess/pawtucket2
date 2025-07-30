@@ -46,7 +46,7 @@
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
 			}else{
-				print "<H2>Authorship: Attributions, Pseudonyms, Unidentified</H2>\n";	
+				print "<H2>Authorship Issues</H2>\n";	
 			
 			}		
 			if ($g_ui_locale == 'en_US'){			

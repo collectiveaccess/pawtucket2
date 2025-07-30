@@ -138,7 +138,7 @@ $( document ).ready(function() {
 <?php
 if($this->request->isLoggedIn()){
 ?>
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Authorship: Attributions, Pseudonyms, Unidentified'), '', '', 'Listing', 'authorship');?></a></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Authorship Issues'), '', '', 'Listing', 'authorship');?></a></li>
 <?php
 }
 ?>
