@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2020-2021 Whirl-i-Gig
+ * Copyright 2020-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,11 +29,9 @@
  *
  * ----------------------------------------------------------------------
  */
+require_once(__CA_LIB_DIR__.'/Media/BaseMediaViewer.php');
+require_once(__CA_LIB_DIR__.'/Media/IMediaViewer.php');
 
-/**
- *
- */
- 
 class pdfjs extends BaseMediaViewer implements IMediaViewer {
 	# -------------------------------------------------------
 	/**
