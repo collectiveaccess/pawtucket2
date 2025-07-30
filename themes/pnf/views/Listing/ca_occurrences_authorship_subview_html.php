@@ -152,9 +152,9 @@
 	}
 	ksort($rows_by_type);
 	$types = array_keys($rows_by_type);
-	print "<div class='listingSubHeading' style='padding-top:30px; color:#000;'>";
+	print "<div class='listingSubHeading text-center' style='padding-top:30px; color:#000; border-bottom: 1px solid #7f4539; padding-bottom: 1px;'>";
 	$type_count = 0;
-	$all_types_in_order = array("Initials & Acronyms", "Pseudonyms & Anagrams", "False Attribution", "Ingenio(s)", "Author Not Printed on Suelta");
+	$all_types_in_order = array("Author Not Printed on Suelta", "False Attribution", "Ingenio(s)", "Initials & Acronyms", "Pseudonyms & Anagrams");
 	foreach($all_types_in_order as $type){
 		if(in_array($type, $types)){
 			$type_no_spaces = str_replace(array(" ", "&", "(", ")"), "_", $type);
@@ -173,12 +173,8 @@
 			}
 	
 ?>
-			<a class="sortLinks sortLink<?php print $type_no_spaces; ?>" style="<?php print ($cur_type == $type_no_spaces) ? "color: #7f4539; " : "color: #000000; "; ?>text-decoration:underline;" href="#" onclick="jQuery('.sortLinks').css('color', '#000000'); jQuery('.sortLink<?php print $type_no_spaces; ?>').css('color', '#7f4539'); jQuery('.typeListings').hide(); jQuery('#Type<?php print $type_no_spaces; ?>').show(); return false;"><?php print $type; ?></a> 
+			<a class="button btn-default sortLinks sortLink<?php print $type_no_spaces; ?> authorshipTab <?php print ($cur_type == $type_no_spaces) ? "currentAuthorshipTab" : ""; ?>" href="#" onclick="jQuery('.sortLinks').removeClass('currentAuthorshipTab'); jQuery('.sortLink<?php print $type_no_spaces; ?>').addClass('currentAuthorshipTab'); jQuery('.typeListings').hide(); jQuery('#Type<?php print $type_no_spaces; ?>').show(); return false;"><?php print $type; ?></a> 
 <?php	
-			$type_count++;
-			if($type_count < sizeof($types)){
-				print " | ";
-			}
 		}
 	}
 	print "</div>";

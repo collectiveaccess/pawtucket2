@@ -1130,6 +1130,27 @@ a.readmore-js-toggle{
 	top: 0px;
 	padding-top:10px;
 }
+/* authorship */
+.authorshipTab.btn-default{
+	margin-left:5px;
+	margin-right:5px;
+	font-family: 'Lusitana', serif;
+}
+.authorshipTab.btn-default.currentAuthorshipTab{
+	background-color:#EDEDED;
+	color:#7f4539;
+}
+.authorshipTab.btn-default{
+	font-size:12px;
+	text-wrap: nowrap;
+	margin-top:5px;
+	display:inline-block;
+}
+@media (min-width:1515px){
+	.authorshipTab.btn-default{
+		font-size:15px;
+	}
+}
 #glossaryBodyIntro a.readmore-js-toggle{
 	top:0px;
 	margin-top:15px;
