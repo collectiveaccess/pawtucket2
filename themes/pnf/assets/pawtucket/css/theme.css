@@ -114,6 +114,7 @@ a:hover{
 }
 .btn-default{
 	background-color: #7f4539;
+	color:#FFF !important;
 }
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
 	background-color:#333333;
@@ -1138,7 +1139,7 @@ a.readmore-js-toggle{
 }
 .authorshipTab.btn-default.currentAuthorshipTab{
 	background-color:#EDEDED;
-	color:#7f4539;
+	color:#7f4539 !important;
 }
 .authorshipTab.btn-default{
 	font-size:12px;
