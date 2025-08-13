@@ -650,6 +650,7 @@ a .ornamentsCatItem:hover{
 	width:100% !important;
 	margin-top:5px;
 	border: 1px solid #828282;
+	height: 22px !important;
 }
 .advancedSearch .field {
 	height:45px;
