@@ -59,7 +59,7 @@ if($id && $t_item->getPrimaryKey()){
 		<div class="row mt-2">
 			<div class="col-sm-12 mb-4">
 				<div class="pb-2"><b>Title: </b><?= $name; ?></div>
-				<div class="pb-2"><b>Regarding this URL: </b><a href="<?= $url; ?>" class="purpleLink"><?= $url; ?></a></div>
+				<div class="pb-2"><b>Regarding this URL: </b><a href="<?= $url; ?>" class="text-break"><?= $url; ?></a></div>
 				<input type="hidden" name="itemId" value="<?= $idno; ?>">
 				<input type="hidden" name="itemTitle" value="<?= $name; ?>">
 				<input type="hidden" name="itemURL" value="<?= $url; ?>">

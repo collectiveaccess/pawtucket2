@@ -100,18 +100,9 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 <?php
 	}
 ?>
-{{{<ifcount code="ca_object_representations" min="1">
-	<!--<div class="row justify-content-center mb-3 py-3 bg-light">
-		<unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="0" delimiter=" ">
-			<div class="col-sm-6 col-md-4 detailRepresentationGrid text-center">
-				^ca_object_representations.media.large%class=object-fit-contain
-			</div>
-		</unit>
-	</div>-->
-</ifcount>}}}
 {{{<ifdef code="ca_object_representations.media.large">
 	<div class="row justify-content-center mb-3 py-3 bg-light">
-		<div class="col-sm-12 col-md-6 bg-white">
+		<div class="col-11 col-md-6 bg-white pt-3 pb-2">
 			<div><?= $this->getVar("media_viewer"); ?></div>
 		</div>
 	</div>
@@ -275,7 +266,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 	<div class="col"><h2>Files in this ^ca_collections.type_id</h2><hr/></div>
 </div>
 <div class="row" id="browseResultsContainer">	
-	<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'files', array('search' => 'ca_collections.parent_id:'.$t_item->get("ca_collections.collection_id"), 'sort' => 'Identifier')); ?>">
+	<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'files', array('search' => 'ca_collections.parent_id:'.$t_item->get("ca_collections.collection_id"), 'sort' => 'Identifier', '_advanced' => 0)); ?>">
 		<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 	</div>
 </ifcount>}}}

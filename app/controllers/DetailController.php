@@ -251,7 +251,13 @@ class DetailController extends FindController {
 			return;
 		}
 		
-		if ($this->request->config->get("{$table}_dont_use_labels")) { 
+		if (
+			($page_title_template = $this->config->get("{$table}_page_title_template")) 
+			||
+			($page_title_template = caGetOption('page_title_template', $options, null)) 
+		) { 
+			MetaTagManager::setWindowTitle($t_subject->getWithTemplate($page_title_template));
+		} elseif ($this->request->config->get("{$table}_dont_use_labels")) { 
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").(($idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? "{$idno}" : ""));
 		} else {
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").$t_subject->get('preferred_labels').(($idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$idno}]" : ""));

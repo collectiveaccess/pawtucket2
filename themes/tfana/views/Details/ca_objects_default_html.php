@@ -192,6 +192,14 @@ if($show_nav){
 								<dt><?= _t('Rights Statement'); ?></dt>
 								<dd>^ca_objects.rightsStatement.rightsStatement_text</dd>
 							</ifdef>
+<?php
+							if($rights = $this->getVar("object_rights_summary_text")){
+?>
+								<dt><?= _t('Rights Summary'); ?></dt>
+								<dd><?= $rights; ?></dd>
+<?php
+							}
+?>
 						</dl>}}}
 						
 					</div>

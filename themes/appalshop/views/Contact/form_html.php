@@ -74,51 +74,64 @@ if($id && $t_item->getPrimaryKey()){
 ?>
 <div class="bg-light px-4 pt-4 pb-2 mb-4">		
 	<div class="row mt-2">
-		<div class="col-lg-8 col-xl-4 mb-4">
-			<label for="name" class="form-label"><?= _t("Name (required)"); ?></label>
-			<input type="text" class="form-control<?= (($errors["name"]) ? " is-invalid" : ""); ?>" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
-		</div><!-- end col -->
-		<div class="col-lg-8 col-xl-4 mb-4">
-			<label for="email" class="form-label"><?= _t("Email address (required)"); ?></label>
-			<input type="text" class="form-control<?= (($errors["email"]) ? " is-invalid" : ""); ?>" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
-		</div><!-- end col -->
-		<div class="col-lg-8 col-xl-4 mb-4">
-			<label for="phone" class="form-label"><?= _t("Phone number"); ?></label>
-			<input type="text" class="form-control<?= (($errors["phone"]) ? " is-invalid" : ""); ?>" aria-label="enter phone number" placeholder="Enter your phone number" name="phone" value="{{{phone}}}" id="phone">
-		</div><!-- end col -->
-<?php
-	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
-?>
-		<script type="text/javascript">
-			var gCaptchaRender = function(){
-				grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
-			};
-		</script>
-		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
-		<div class="col-md-4 mb-4">
-			<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+		<div class="col-12 col-md-6">
+			<div class="row">
+				<div class="col-12 mb-4">
+					<label for="name" class="form-label"><?= _t("Name (required)"); ?></label>
+					<input type="text" class="form-control<?= (($errors["name"]) ? " is-invalid" : ""); ?>" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
+				</div><!-- end col -->
+			</div>
+			<div class="row">
+				<div class="col-12 mb-4">
+					<label for="email" class="form-label"><?= _t("Email address (required)"); ?></label>
+					<input type="text" class="form-control<?= (($errors["email"]) ? " is-invalid" : ""); ?>" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
+				</div><!-- end col -->
+			</div>
+			<div class="row">
+				<div class="col-12 mb-4">
+					<label for="phone" class="form-label"><?= _t("Phone number"); ?></label>
+					<input type="text" class="form-control<?= (($errors["phone"]) ? " is-invalid" : ""); ?>" aria-label="enter phone number" placeholder="Enter your phone number" name="phone" value="{{{phone}}}" id="phone">
+				</div><!-- end col -->
+			</div>
+			<div class="row">
+		<?php
+			if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+		?>
+				<script type="text/javascript">
+					var gCaptchaRender = function(){
+						grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+					};
+				</script>
+				<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+				<div class="col-md-4 mb-4">
+					<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+				</div>
+		<?php
+			}
+		?>
+			</div><!-- end row -->
+			<div class="row mb-2">
+				<div class="col-12">
+					<label for="message" class="form-label"><?= _t("Message (required)"); ?></label>
+					<textarea class="form-control<?= (($errors["message"]) ? " is-invalid" : ""); ?>" id="message" name="message" rows="5">{{{message}}}</textarea>
+				</div><!-- end col -->
+			</div>
+			<div class="row mt-4 mb-2">
+				<div class="col-12">
+					<H2>Are you interested in licensing materials from the Archive?</H2>
+				</div>
+			</div>
+			<div class="row mb-4">
+				<div class="col-12">
+					<label for="project" class="form-label"><?= _t("Tell us about your project and what you're interested in licensing."); ?></label>
+					<textarea class="form-control<?= (($errors["project"]) ? " is-invalid" : ""); ?>" id="project" name="project" rows="5">{{{project}}}</textarea>
+				</div><!-- end col -->
+			</div><!-- end row -->
 		</div>
-<?php
-	}
-?>
-	</div><!-- end row -->
-	<div class="row mb-2">
-		<div class="col-12">
-			<label for="message" class="form-label"><?= _t("Message (required)"); ?></label>
-			<textarea class="form-control<?= (($errors["message"]) ? " is-invalid" : ""); ?>" id="message" name="message" rows="5">{{{message}}}</textarea>
-		</div><!-- end col -->
-	</div>
-	<div class="row mt-4 mb-2">
-		<div class="col-12">
-			<H2>Are you interested in licensing materials from the Archive?</H2>
+		<div class="col-12 col-md-6">
+			{{{licensing_text}}}
 		</div>
 	</div>
-	<div class="row mb-4">
-		<div class="col-12">
-			<label for="project" class="form-label"><?= _t("Tell us about your project and what you're interested in licensing."); ?></label>
-			<textarea class="form-control<?= (($errors["project"]) ? " is-invalid" : ""); ?>" id="project" name="project" rows="5">{{{project}}}</textarea>
-		</div><!-- end col -->
-	</div><!-- end row -->
 </div>
 	<div class="row mb-4">
 		<div class="col-12 mb-4">

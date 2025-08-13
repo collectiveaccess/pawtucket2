@@ -98,7 +98,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 									^ca_object_representations.media.large
 								</div></ifdef>
 							</unit></ifcount>
-							<div class="fw-bold">^ca_occurrences.preferred_labels</div><ifdef code="ca_occurrences.date"><div class="small">^ca_occurrences.date</div></ifdef>
+							<div class="fw-bold">^ca_occurrences.preferred_labels</div><ifdef code="ca_occurrences.date"><div class="small">^ca_occurrences.date%delimiter=,_</div></ifdef>
 						</l>
 					</dd>
 				</unit>
@@ -113,7 +113,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 									^ca_object_representations.media.large
 								</div></ifdef>
 							</unit></ifcount>
-							<div class="fw-bold">^ca_occurrences.preferred_labels</div><ifdef code="ca_occurrences.date"><div class="small">^ca_occurrences.date</div></ifdef>
+							<div class="fw-bold">^ca_occurrences.preferred_labels</div><ifdef code="ca_occurrences.date"><div class="small">^ca_occurrences.date%delimiter=,_</div></ifdef>
 						</l>
 					</dd>
 				</unit>
@@ -128,7 +128,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 									^ca_object_representations.media.large
 								</div></ifdef>
 							</unit></ifcount>
-							<div class="fw-bold">^ca_occurrences.preferred_labels</div><ifdef code="ca_occurrences.date"><div class="small">^ca_occurrences.date</div></ifdef>
+							<div class="fw-bold">^ca_occurrences.preferred_labels</div><ifdef code="ca_occurrences.date"><div class="small">^ca_occurrences.date%delimiter=,_</div></ifdef>
 						</l>
 					</dd>
 				</unit>
@@ -156,7 +156,7 @@ if($rel_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" 
 					<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
 					  <l>^ca_object_representations.media.medium%class="card-img-top object-fit-contain px-3 pt-3 rounded-0"</l>
 						<div class='card-body'>
-							<div class='card-title'><small class='text-body-secondary'>^ca_objects.type_id, ^ca_objects.idno</small><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div><ifdef code='ca_objects.date'><p class='card-text small lh-sm text-truncate'>^ca_objects.date</p></ifdef>
+							<div class='card-title'><small class='text-body-secondary'>^ca_objects.type_id, ^ca_objects.idno</small><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div><ifdef code='ca_objects.date'><p class='card-text small lh-sm text-truncate'>^ca_objects.date%delimiter=,_</p></ifdef>
 						</div>
 						<div class='card-footer text-end bg-transparent'>
 							<l class="link-dark mx-1"><i class='bi bi-arrow-right-square' aria-label='view record'></i></l>

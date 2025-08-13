@@ -36,8 +36,7 @@ function makeMap(options) {
 			} else {
 				m = L.marker([parseFloat(c.latitude), parseFloat(c.longitude)], opts).addTo(g);
 			}
-			
-			if(c.info) { m.bindPopup(c.info); }
+			if(c.info) { m.bindPopup(Object.values(data[index].info).join("<br>")); }
 		}
 		mapElement.style.display = 'block';
 	} else {
