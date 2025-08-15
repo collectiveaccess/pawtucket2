@@ -233,7 +233,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			if(($vs_current_view == "images") && (in_array($this->request->getAction(), array("objects", "archival", "acquisitions")))){
 				$vs_compare_help_text = $this->getVar("compare_images_help");
 				if($vs_compare_help_text){
-					print "<i class='fa fa-clone' aria-hidden='true'></i> ".$vs_compare_help_text."</p>";
+					print "<i class='fas fa-clone' aria-hidden='true'></i> ".$vs_compare_help_text."</p>";
 				}
 			}
 		}

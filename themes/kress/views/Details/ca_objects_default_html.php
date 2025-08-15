@@ -231,7 +231,7 @@
 							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 						}
 						if($this->getVar("representation_id")){
-							print "<div class='detailTool'><i class='fa fa-clone' aria-hidden='true' aria-label='Compare Images'></i></span><a href='#' class='compare_link' data-id='object:{$vn_id}' title='Compare Images'>Compare Image</a></div>";
+							print "<div class='detailTool'><i class='fas fa-clone' aria-hidden='true' aria-label='Compare Images'></i></span><a href='#' class='compare_link' data-id='object:{$vn_id}' title='Compare Images'>Compare Image</a></div>";
 						}
 						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Record Link")."'></span><a href='#' onClick='$(\"#permalink\").toggle(); return false;' title='Copy link to share or save record'>Record Link</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_objects', $t_object->get("object_id"))."</textarea></div>";					
 
