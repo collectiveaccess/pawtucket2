@@ -192,6 +192,14 @@ $_CA_THEMES_BY_DEVICE = [
 	'_default_' 	=> 'default'		// use the 'default' theme for everything else
 ];
 
+# This constant is used to specify a Providence-generated page that handles 404 errors (page not found).
+# When a requested resource cannot be found, the system will use the page defined by this constant to display
+# an appropriate error message to the user. Use the path of the page.
+#
+#
+if (!defined("__CA_404_PAGE_PATH__")) {
+	 define("__CA_404_PAGE_PATH__", "");
+}
 
 # *** 
 # __   __          _                _                  
