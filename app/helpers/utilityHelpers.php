@@ -2419,7 +2419,7 @@ function caFileIsIncludable($ps_file) {
 	 *		defaultOnEmptyString = Force use of default value when option is set to an empty string). [Default is false]
 	 * @return mixed
 	 */
-	function caGetOption($pm_option, $pa_options, $pm_default=null, ?array $pa_parse_options=null) {
+	function caGetOption($pm_option, ?array $pa_options, $pm_default=null, ?array $pa_parse_options=null) {
 		if (is_object($pa_options) && is_a($pa_options, 'Zend_Console_Getopt')) {
 			$pa_options = array($pm_option => $pa_options->getOption($pm_option));
 		}
@@ -4238,6 +4238,8 @@ function caFileIsIncludable($ps_file) {
 		$omit_article = caGetOption('omitArticle', $options, true);
 		$move_articles = caGetOption('moveArticles', $options, true);
 
+		$display_value = trim(preg_replace('![^\p{L}0-9 ]+!u', ' ', $text));
+		$display_value = preg_replace('![ ]+!u', ' ', $display_value);
 		$display_value = preg_replace('![ ]+!u', ' ', $text);
 		
 		if($locale && $move_articles) {
@@ -5231,4 +5233,3 @@ function caFileIsIncludable($ps_file) {
 	 	return null;
 	 }
 	# ----------------------------------------
-	
