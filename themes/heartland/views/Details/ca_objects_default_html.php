@@ -55,10 +55,10 @@
 <?php
 				if((strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))) == "sound") && (is_array($va_rep_ids)) && (sizeof($va_rep_ids) > 2)){
 					print "<div class='unit'><label>Play List</label>";
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array_merge($va_options, array("returnAs" => "list", "linkTo" => "carousel", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array_merge($va_options, array("returnAs" => "list", "linkTo" => "basic", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)));
 					print "</div>";
 				}else{
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array_merge($va_options, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array_merge($va_options, array("returnAs" => "bsCols", "linkTo" => "basic", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)));
 				}
 ?>
 				<div id="detailAnnotations"></div>
