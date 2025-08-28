@@ -139,37 +139,6 @@ MetaTagManager::addMeta("og:image", $t_item->getWithTemplate("^ca_object_represe
 	</div>
 </ifcount>}}}
 <?php
-	if($t_item->get("ca_occurrences.obj_map", array("convertCodesToDisplayText" => true)) == "Yes"){
-		$rel_object_ids = $t_item->get("ca_objects.object_id", array("checkAccess" => $access_values, "returnAsArray" => true));
-		if(is_array($rel_object_ids) && sizeof($rel_object_ids)){
-			$qr_rel_objects = caMakeSearchResult("ca_objects", $rel_object_ids);
-			
-			$map_options = array("width" => "100%",
-								"height" => "500px",
-								"zoom" => "5",
-								"minZoom" => "2",
-								"maxZoom" => "18",
-								"infoTemplate" =>  "<l><ifdef code='ca_object_representations.media'><div>^ca_object_representations.media.medium%class=object-fit-cover</div></ifdef><div class='text-center mt-1 fw-bold mb-3'>^ca_objects.preferred_labels.name</div></l>",
-								"themePath" => __CA_THEMES_URL__."/default"
-			);
-			$map_attribute = "ca_places.georeference";
-			$adata = caGetCoordinateDataFromResult($qr_rel_objects, $map_attribute, $map_options);
-			$map_data = $adata['coordinates'];
-			$map_options['data'] = $map_data;
-			if (sizeof($map_data ?? []) > 0) {
-?>
-				<script>
-					pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
-				</script>
-				<div class="row"><div class="col mb-4">
-					<div id="map" style="width: 100%; min-height: 500px;" class="map">{{{map}}}</div>
-				</div></div>
-<?php	
-			}
-
-		}
-	}
-
 	$t_list = new ca_lists();
 	$object_types = $t_list->getItemsForList("object_types", array("checkAccess" => $access_values));
 	if(is_array($object_types) && sizeof($object_types)){
