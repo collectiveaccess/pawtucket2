@@ -117,7 +117,7 @@ if($this->request->isLoggedIn()){
 						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
-						<a href="https://appalshop.salsalabs.org/AppalshopGeneralGiving" class="nav-link bg-gold"><?= _t('Donate'); ?></a>
+						<a href="https://aebtuxjk.donorsupport.co/page/donate" class="nav-link bg-gold"><?= _t('Donate'); ?></a>
 					</li>
 <?php
 					if($user_links){

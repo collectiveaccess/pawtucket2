@@ -130,20 +130,21 @@ MetaTagManager::addMeta("og:image", $t_item->getWithTemplate("^ca_object_represe
 	</div>
 <?php
 	if($t_item->get("ca_occurrences.obj_map", array("convertCodesToDisplayText" => true)) == "Yes"){
-		$rel_object_ids = $t_item->get("ca_objects.object_id", array("checkAccess" => $access_values, "returnAsArray" => true));
-		if(is_array($rel_object_ids) && sizeof($rel_object_ids)){
-			$qr_rel_objects = caMakeSearchResult("ca_objects", $rel_object_ids);
+		$rel_place_ids = $t_item->get("ca_places.place_id", array("checkAccess" => $access_values, "returnAsArray" => true));
+		if(is_array($rel_place_ids) && sizeof($rel_place_ids)){
+			$qr_rel_places = caMakeSearchResult("ca_places", $rel_place_ids);
 			
 			$map_options = array("width" => "100%",
 								"height" => "500px",
-								"zoom" => "5",
+								"zoom" => "8",
 								"minZoom" => "2",
 								"maxZoom" => "18",
-								"infoTemplate" =>  "<l><ifdef code='ca_object_representations.media'><div>^ca_object_representations.media.medium%class=object-fit-cover</div></ifdef><div class='text-center mt-1 fw-bold mb-3'>^ca_objects.preferred_labels.name</div></l>",
+								#"infoTemplate" =>  "<l><ifcount code='ca_objects' min='1'><unit relativeTo='ca_objects' length='1'><ifdef code='ca_object_representations.media'><div>^ca_object_representations.media.medium%class=object-fit-cover</div></ifdef></unit></ifcount><div class='text-center mt-1 fw-bold mb-3'>^ca_places.preferred_labels.name</div></l>",
+								"infoTemplate" =>  "<div class='text-center mt-1 fw-bold mb-3'>^ca_places.preferred_labels.name</div><ifcount code='ca_places.children' min='1' restrictToTypes='church'><unit relativeTo='ca_places.children' delimiter=' ' restrictToTypes='church'><div><l>^ca_places.preferred_labels.name</l></div></unit></ifcount>",
 								"themePath" => __CA_THEMES_URL__."/default"
 			);
 			$map_attribute = "ca_places.georeference";
-			$adata = caGetCoordinateDataFromResult($qr_rel_objects, $map_attribute, $map_options);
+			$adata = caGetCoordinateDataFromResult($qr_rel_places, $map_attribute, $map_options);
 			$map_data = $adata['coordinates'];
 			$map_options['data'] = $map_data;
 			if (sizeof($map_data ?? []) > 0) {

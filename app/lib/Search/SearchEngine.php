@@ -229,7 +229,6 @@ class SearchEngine extends SearchBase {
 		if (!$vb_no_cache && ($o_cache->load($vs_cache_key, $this->opn_tablenum, $options))) {
 			$vn_created_on = $o_cache->getParameter('created_on');
 			if((time() - $vn_created_on) < $vn_cache_timeout) {
-				Debug::msg('SEARCH cache hit for '.$vs_cache_key);
 				$va_hits = $o_cache->getResults();
 				$result_desc = $this->opo_search_config->get('return_search_result_description_data') ? $o_cache->getRawResultDesc() : [];
 				
@@ -241,14 +240,11 @@ class SearchEngine extends SearchBase {
 				$o_res = new WLPlugSearchEngineCachedResult($va_hits, $result_desc, $this->opn_tablenum);
 				$vb_from_cache = true;
 			} else {
-				Debug::msg('SEARCH cache expire for '.$vs_cache_key);
 				$o_cache->remove();
 			}
 		}
 
 		if(!$vb_from_cache) {
-			Debug::msg('SEARCH cache miss for '.$vs_cache_key);
-			
 			$o_query_parser = new LuceneSyntaxParser();
 			$o_query_parser->setEncoding('UTF-8');
 			$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
@@ -324,7 +320,7 @@ class SearchEngine extends SearchBase {
 					$this->opo_engine->setOption('excludeFieldsFromSearch', $va_exclude_fields_from_search);
 				}
 				
-				$vb_do_acl = $this->opo_app_config->get('perform_item_level_access_checking') && method_exists($t_table, "supportsACL") && $t_table->supportsACL();
+				$vb_do_acl = caACLIsEnabled($t_table);
 
 				$o_res =  $this->opo_engine->search($this->opn_tablenum, $vs_search, $this->opa_result_filters, $o_rewritten_query);
 				
@@ -582,6 +578,7 @@ class SearchEngine extends SearchBase {
 				$va_terms = [];
 				$vs_term = (string)$po_term->getTerm()->text;
 				foreach($va_fields as $vs_field) {
+					$vs_term = (string)$po_term->getTerm()->text;
 					$va_tmp = explode(".", $vs_field);
 					
 					// Rewrite FT_BIT fields to accept yes/no values

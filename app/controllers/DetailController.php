@@ -193,7 +193,7 @@ class DetailController extends FindController {
 					} else {
 						$o_browse->removeCriteria($ps_remove_facet, array($this->request->getParameter('removeID', pString)));
 					}
-					$o_browse->execute();
+					$o_browse->execute(array('checkAccess' => $this->opa_access_values));
 					$ps_cache_key = $o_browse->getBrowseID();
 					$this->request->setParameter('key', $ps_cache_key);
 				} else {
@@ -203,7 +203,7 @@ class DetailController extends FindController {
 						$o_browse->reload($ps_cache_key);
 					} else {
 						$o_browse->addCriteria("collection_facet", $t_subject->getPrimaryKey() ); 
-						$o_browse->execute();
+						$o_browse->execute(array('checkAccess' => $this->opa_access_values));
 					}
 					return $this->getFacet($o_browse);
 				}
@@ -441,7 +441,7 @@ class DetailController extends FindController {
 				$o_browse->addCriteria("collection_facet", $t_subject->getPrimaryKey() ); 
 				$ps_cache_key = $o_browse->getBrowseID();
 			}
-			$o_browse->execute();
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
 			
 			$this->view->setVar('key', $o_browse->getBrowseID());
 			$this->view->setVar('browse', $o_browse);
@@ -452,7 +452,7 @@ class DetailController extends FindController {
 				$o_browse->setFacetGroup($facet_group);
 			}
 		
-			$o_browse->execute();
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
 			$available_facet_list = caGetOption('availableFacets', $browse_info, null);
 			$facets = $o_browse->getInfoForAvailableFacets();
 			foreach($facets as $facet_name => $facet_info) {
