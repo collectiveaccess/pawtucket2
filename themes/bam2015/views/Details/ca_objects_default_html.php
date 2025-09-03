@@ -227,6 +227,9 @@
 				if ($va_source_description = $t_object->get('ca_objects.description.description_text')) {
 					$vs_buf .= "<div class='unit'><span class='label'>Description: </span>".$va_source_description."</div>";
 				}
+				if ($vs_dimension = $t_object->get('ca_objects.dimension')) {
+					$vs_buf .= "<div class='unit'><span class='label'>Dimensions </span>".$vs_dimension."</div>";
+				}
 				#if ($va_rights_statement = $t_object->get('ca_objects.rightsStatement.rightsStatement_text', array('delimiter' => '<br/>'))) {
 				#	$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>".$va_rights_statement."</div>";
 				#}
