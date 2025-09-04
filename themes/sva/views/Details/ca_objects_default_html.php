@@ -99,7 +99,10 @@ if($show_nav){
 				<div class="row">
 					<div class="col">				
 						{{{<dl class="mb-0">
-							<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
+<?php
+								$this->setVar("exclude_relationship_types", array("donor"));
+								print $this->render("Details/snippets/related_entities_by_rel_type_html.php");
+?>
 
 							<ifdef code="ca_objects.dates.dates_value">
 								<dt><?= _t('Date'); ?></dt>
