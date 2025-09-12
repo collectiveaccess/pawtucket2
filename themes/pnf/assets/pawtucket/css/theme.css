@@ -1178,3 +1178,10 @@ a.readmore-js-toggle{
 .close a{
 	color: red !important;
 }
+
+.banDescription{
+	line-height:1.3em;
+}
+#banContinueButton{
+	color:#FFF !important;
+}
