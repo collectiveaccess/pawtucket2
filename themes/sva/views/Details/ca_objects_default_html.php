@@ -99,7 +99,10 @@ if($show_nav){
 				<div class="row">
 					<div class="col">				
 						{{{<dl class="mb-0">
-							<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
+<?php
+								$this->setVar("exclude_relationship_types", array("donor"));
+								print $this->render("Details/snippets/related_entities_by_rel_type_html.php");
+?>
 
 							<ifdef code="ca_objects.dates.dates_value">
 								<dt><?= _t('Date'); ?></dt>
@@ -115,7 +118,7 @@ if($show_nav){
 								}
 							}
 ?>
-							<ifdef code="ca_objects.dimensions">
+							<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth">
 								<dt><?= _t('Dimensions'); ?></dt>
 								<dd>
 									<ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height<ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth"> x </ifdef></ifdef>
@@ -169,3 +172,22 @@ if($show_nav){
 			</div>
 		</div>
 	</div>
+
+{{{<ifcount code="ca_objects.related" min="1">
+	
+	<div class="row pt-5">
+		<div class="col"><h2 class="fs-4">Related Objects</h2><hr/></div>
+	</div>
+	<div id="browseResultsContainer" class="row mb-3">
+		<unit relativeTo="ca_objects.related" delimiter="">
+			<div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
+				<div class='card flex-grow-1 width-100 rounded-0 shadow-sm bg-white border-0 mb-4'>
+				  <l>^ca_object_representations.media.large%class='card-img-top|object-fit-contain|px-3|pt-3|rounded-0'
+				  	<div class='card-body'>
+						^ca_objects.preferred_labels.name
+					</div></l>
+				 </div>
+			</div>
+		</unit>
+	</div>
+</ifcount>}}}

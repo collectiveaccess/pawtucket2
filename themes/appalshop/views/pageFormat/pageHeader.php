@@ -74,7 +74,7 @@ if($this->request->isLoggedIn()){
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<nav class="navbar navbar-expand-lg nav-pills shadow-sm p-md-4">
 		<div class="container-fluid">
-			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'appalshop_banner_w_img.png', array("alt" => "Appalshop Archive logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
+			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'appalshop_archive_logo.jpg', array("alt" => "Appalshop Archive logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
@@ -117,7 +117,7 @@ if($this->request->isLoggedIn()){
 						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
-						<a href="https://appalshop.salsalabs.org/AppalshopGeneralGiving" class="nav-link bg-gold"><?= _t('Donate'); ?></a>
+						<a href="https://aebtuxjk.donorsupport.co/page/donate" class="nav-link bg-gold"><?= _t('Donate'); ?></a>
 					</li>
 <?php
 					if($user_links){

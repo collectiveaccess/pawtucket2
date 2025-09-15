@@ -43,14 +43,12 @@ body{
 	background-color:#f9f9f2;
 }
 /* ------------------------- Navbar ------------------------- */
+.navbar-brand{
+	width:150px;
+}
 @media(min-width:768px){
 	.navbar-brand{
-		width:300px;
-	}
-}
-@media(min-width:1300px){
-	.navbar-brand{
-		width:550px;
+		width:170px;
 	}
 }
 /* color of dropdown text when activated */
