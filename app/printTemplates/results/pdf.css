@@ -4,12 +4,12 @@ img.headerImg {height:50px; width:auto; position:absolute; left:0px; top:20px;}
 .pagingText { position: absolute; top: 30px; right: 30px; font: "helvetica"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px;}
 .searchTermText { position: absolute; top: 20px; left: 30px; font: "helvetica"; font-size: 11px; text-align: left;  margin: 0px 25px 10px 0px;}
 #footer .pagingText{ top:20px; }
-body{ font: "helvetica, sans-serif"; }
+body{ font: "helvetica, sans-serif"; font-family: "helvetica, sans-serif"; }
 
 /* dompdf */
 @page { margin: 65px 56px 65px 56px; }
 
-#headerdompdf { position: fixed; left: 0px; top: -75px; right: 0px; height: 55px;  text-align: left; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
+#headerdompdf { position: fixed; left: 0px; top: -55px; right: 0px; height: 55px;  text-align: left; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
 #footerdompdf { position: fixed; left: 0px; bottom: -0px; right: 0px; height: 0px; text-align: center; vertical-align: bottom; }
 #footerdompdf .pagingText:after { content: counter(page, decimal); }
 #footerdompdf .pagingText { bottom:0px; }
@@ -24,7 +24,7 @@ body{ font: "helvetica, sans-serif"; }
 .clear { clear: both; height: 1px; }
 
 /* checklist template */
-.row { font: "helvetica, sans-serif"; font-size: 11px; border-bottom: 1px solid #eee; width: 100%; height: auto; margin: 5px 0 0 0; padding: 3px 0px 5px 0px; overflow: none}	
+.row { font: "helvetica, sans-serif"; font-family: "helvetica, sans-serif"; font-size: 11px; border-bottom: 1px solid #eee; width: 100%; height: auto; margin: 5px 0 0 0; padding: 3px 0px 5px 0px; overflow: none}	
 .imageTiny { width: 120px; margin: 0 5px 0 0; border-radius: 5px; text-align:center;}
 .imageTinyPlaceholder { width: 120px; height: 100px; border: 1px solid #eee; background-color: #eee; margin: 0 5px 0 0; border-radius: 5px;}
 .displayHeader {border-bottom:1px solid #666; color:#666; font-weight:bold;}
