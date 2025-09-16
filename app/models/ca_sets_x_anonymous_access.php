@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/models/ca_sets_x_user_groups.php
+ * app/models/ca_sets_x_anonymous_access.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2025 Whirl-i-Gig
+ * Copyright 2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -30,44 +30,54 @@
  * ----------------------------------------------------------------------
  */
 require_once(__CA_LIB_DIR__.'/BaseRelationshipModel.php');
+require_once(__CA_LIB_DIR__.'/ModelSettings.php');
 require_once(__CA_MODELS_DIR__.'/ca_sets.php');
 
-BaseModel::$s_ca_models_definitions['ca_sets_x_user_groups'] = array(
- 	'NAME_SINGULAR' 	=> _t('group-set assocation'),
- 	'NAME_PLURAL' 		=> _t('group-set assocations'),
+BaseModel::$s_ca_models_definitions['ca_sets_x_anonymous_access'] = array(
+ 	'NAME_SINGULAR' 	=> _t('anonymous access token'),
+ 	'NAME_PLURAL' 		=> _t('anonymous access tokens'),
  	'FIELDS' 			=> array(
  		'relation_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_HIDDEN, 
 			'IDENTITY' => true, 'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 			'IS_NULL' => false, 
 			'DEFAULT' => '',
-			'LABEL' => 'Relation id', 'DESCRIPTION' => 'Identifier for Relation'
+			'LABEL' => 'Relation id', 'DESCRIPTION' => 'Identifier for token'
 		),
 		'set_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
 			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 			'IS_NULL' => false, 
 			'DEFAULT' => '',
-			'LABEL' => 'Set id', 'DESCRIPTION' => 'Identifier for Set'
-		),
-		'group_id' => array(
-			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
-			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-			'IS_NULL' => false, 
-			'DEFAULT' => '',
-			'LABEL' => 'Group id', 'DESCRIPTION' => 'Identifier for Group'
+			'LABEL' => 'Set id', 'DESCRIPTION' => 'Identifier for set'
 		),
 		'access' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
 			'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
 			'IS_NULL' => false, 
-			'DEFAULT' => __CA_SET_NO_ACCESS__,
+			'DEFAULT' => __CA_SET_READ_ACCESS__,
 			'BOUNDS_CHOICE_LIST' => array(
 				_t('has no access') => __CA_SET_NO_ACCESS__,
 				_t('can read') => __CA_SET_READ_ACCESS__,
 				_t('can edit') => __CA_SET_EDIT_ACCESS__
 			),
-			'LABEL' => _t('Access'), 'DESCRIPTION' => _t('Indicates group&apos;s level of access to the set. ')
+			'LABEL' => _t('Access'), 'DESCRIPTION' => _t('Indicates level of access to the set. ')
+		),
+		'guid' => array(
+			'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_OMIT,
+			'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
+			'IS_NULL' => false,
+			'DEFAULT' => '',
+			'BOUNDS_LENGTH' => [0, 100],
+			'LABEL' => _t('guid'), 'DESCRIPTION' => _t('Unique access token.')
+		),
+		'name' => array(
+			'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_OMIT,
+			'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
+			'IS_NULL' => true,
+			'DEFAULT' => false,
+			'BOUNDS_LENGTH' => [0, 255],
+			'LABEL' => _t('Name of link'), 'DESCRIPTION' => _t('Descriptive name for token.')
 		),
 		'settings' => array(
 			'FIELD_TYPE' => FT_VARS, 'DISPLAY_TYPE' => DT_OMIT, 
@@ -83,11 +93,18 @@ BaseModel::$s_ca_models_definitions['ca_sets_x_user_groups'] = array(
 			'DEFAULT' => '',
 			'START' => 'sdatetime', 'END' => 'edatetime',
 			'LABEL' => _t('Effective date'), 'DESCRIPTION' => _t('Period of time for which this access is in effect. Leave blank if you do not wish to restrict access to a specific period of time.')
-		)
+		),
+		'settings' => array(
+			'FIELD_TYPE' => FT_VARS, 'DISPLAY_TYPE' => DT_OMIT, 
+			'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
+			'IS_NULL' => false, 
+			'DEFAULT' => '',
+			'LABEL' => _t('Settings'), 'DESCRIPTION' => _t('Share settings')
+		),
  	)
 );
 
-class ca_sets_x_user_groups extends BaseRelationshipModel {
+class ca_sets_x_anonymous_access extends BaseModel {
 	use ModelSettings;
 	
 	# ---------------------------------
@@ -101,7 +118,7 @@ class ca_sets_x_user_groups extends BaseRelationshipModel {
 	# --- Basic object parameters
 	# ------------------------------------------------------
 	# what table does this class represent?
-	protected $TABLE = 'ca_sets_x_user_groups';
+	protected $TABLE = 'ca_sets_x_anonymous_access';
 	      
 	# what is the primary key of the table?
 	protected $PRIMARY_KEY = 'relation_id';
@@ -154,21 +171,12 @@ class ca_sets_x_user_groups extends BaseRelationshipModel {
 	protected $LOG_CHANGES_TO_SELF = true;
 	protected $LOG_CHANGES_USING_AS_SUBJECT = array(
 		"FOREIGN_KEYS" => array(
-			'set_id', 'group_id'
+			'set_id'
 		),
 		"RELATED_TABLES" => array(
 		
 		)
 	);
-	
-	# ------------------------------------------------------
-	# --- Relationship info
-	# ------------------------------------------------------
-	protected $RELATIONSHIP_LEFT_TABLENAME = 'ca_sets';
-	protected $RELATIONSHIP_RIGHT_TABLENAME = 'ca_user_groups';
-	protected $RELATIONSHIP_LEFT_FIELDNAME = 'set_id';
-	protected $RELATIONSHIP_RIGHT_FIELDNAME = 'group_id';
-	protected $RELATIONSHIP_TYPE_FIELDNAME = null;
 	
 	# ------------------------------------------------------
 	# $FIELDS contains information about each field in the table. The order in which the fields
@@ -184,6 +192,14 @@ class ca_sets_x_user_groups extends BaseRelationshipModel {
 		parent::__construct($id, $options);
 		
 		$this->initSettings();
+	}
+	# ------------------------------------------------------
+	/**
+	 * Override insert() to add set token
+	 */ 
+	public function insert($options=null) {
+		$this->set('guid', caGenerateGUID());
+		return parent::insert($options);
 	}
 	# ------------------------------------------------------
 	/**
@@ -203,6 +219,15 @@ class ca_sets_x_user_groups extends BaseRelationshipModel {
 		];
 				
 		$this->setAvailableSettings($settings);
+	}
+	# ------------------------------------------------------
+	public function __destruct() {
+		unset($this->SETTINGS);
+	}
+	# ------------------------------------------------------
+	protected function initLabelDefinitions($options=null) {
+		parent::initLabelDefinitions($options);
+		$this->BUNDLES['settings'] = ['type' => 'special', 'repeating' => false, 'label' => _t('Share settings')];
 	}
 	# ------------------------------------------------------
 }
