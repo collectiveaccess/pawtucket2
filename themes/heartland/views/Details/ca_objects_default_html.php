@@ -26,16 +26,17 @@
  * ----------------------------------------------------------------------
  */
 $t_object = 			$this->getVar("item");
-$va_comments = 			$this->getVar("comments");
-$va_tags = 				$this->getVar("tags_array");
-$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-$vn_share_enabled = 	$this->getVar("shareEnabled");
-$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+$comments = 			$this->getVar("comments");
+$tags = 				$this->getVar("tags_array");
+$comments_enabled = 	$this->getVar("commentsEnabled");
+$share_enabled = 	$this->getVar("shareEnabled");
+$pdf_enabled = 		$this->getVar("pdfEnabled");
 $audio_recorder_enabled = $this->getVar("audio_recorder_enabled");
-$vn_id =				$t_object->get('ca_objects.object_id');
-$va_access_values = $this->getVar("access_values");
-$va_options = $this->getVar('config_options');
-$va_rep_ids = $t_object->get('ca_object_representations.representation_id', array('filterNonPrimaryRepresentations' => false, 'checkAccess' => $va_access_values, 'returnAsArray' => true));
+$id =				$t_object->get('ca_objects.object_id');
+$access_values = $this->getVar("access_values");
+$options = $this->getVar('config_options');
+$rep_ids = $t_object->get('ca_object_representations.representation_id', array('filterNonPrimaryRepresentations' => false, 'checkAccess' => $access_values, 'returnAsArray' => true));
+$audio_recorder_attributes = $audio_recorder_enabled ? ($options["audio_recorder"]["attributes"] ?? []) : [];
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -51,7 +52,7 @@ $va_rep_ids = $t_object->get('ca_object_representations.representation_id', arra
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 
 <?php if ($this->request->isLoggedIn() && $this->request->user->canDoAction('can_add_audio_commentary') && $this->getVar("audio_recorder_enabled")): ?>
-				<div class="audio-recorder">
+				<div class="audio-recorder" id="audio-recorder">
 					<div class="text-center">
 						<h4>Record Audio</h4>
 					</div>
@@ -82,17 +83,55 @@ $va_rep_ids = $t_object->get('ca_object_representations.representation_id', arra
 								<audio id="audioPlayback" controls></audio>
 							</div>
 
-							<form class="form-horizontal">
+							<form id="audioRecorder">
+								<div id="termsError" class="alert alert-danger" style="display:none;">Please accept the consent for use</div>
 								<div class="form-group">
-									<label for="audioName" class="text-left">Name:</label>
-									<input type="text" id="audioName" class="form-control" placeholder="Enter name">
+									<label for="audioTitle" class="text-left">Title:</label>
+									<input type="text" id="audioTitle" name="title" class="form-control" placeholder="Enter a title for the recording">
 								</div>
-
+<?php
+							if(is_array($audio_recorder_attributes) && sizeof($audio_recorder_attributes)){
+								foreach($audio_recorder_attributes as $audio_recorder_attribute => $attribute_info){
+?>
+									<div class="form-group">
+										<label for="audio<?= $audio_recorder_attribute; ?>" class="text-left"><?= $attribute_info["label"]; ?>:</label>
+<?php
+										switch($attribute_info["type"]){
+											# -------------------------------
+											case "textarea":
+												print "<textarea id='{$audio_recorder_attribute}' name='{$audio_recorder_attribute}' class='form-control' rows='3' placeholder='{$attribute_info['description']}'></textarea>";
+												break;
+											# -------------------------------
+											default:
+												print "<input type='text' id='{$audio_recorder_attribute}' name='{$audio_recorder_attribute}' class='form-control' placeholder='{$attribute_info['description']}'>";
+												break;
+											# -------------------------------
+										}
+?>										
+									</div>
+<?php									
+								}
+							}
+							if($options["audio_recorder"]["require_consent"]){
+?>
 								<div class="form-group">
-									<label for="audioNotes" class="text-left">Notes:</label>
-									<textarea id="audioNotes" class="form-control" rows="3" placeholder="Enter notes"></textarea>
+									<input type="checkbox" id="consent" name="consent" value="1"> I consent to my contribution being used on the Chesapeake Heartland website.
 								</div>
-
+								<div id="consentError" class="alert alert-danger" style="display:none;">Please consent to the terms of use</div>
+								<script type='text/javascript'>
+									$(document).ready(function() {
+										$('#audioRecorder').submit(function(e) {
+											if ($('#audioRecorder').find('input[name="consent"]')[0].checked === false) {
+												e.preventDefault();
+												$('#consentError').fadeIn(800);
+												return false;
+											}
+										});
+									});
+								</script>
+<?php
+							}
+?>								
 								<div id="actionButtons" class="form-group text-center">
 									<button id="cancelBtn" type="button" class="btn">
 										<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel
@@ -118,35 +157,35 @@ $va_rep_ids = $t_object->get('ca_object_representations.representation_id', arra
 				{{{representationViewer}}}
 				
 <?php
-				if((strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))) == "sound") && (is_array($va_rep_ids)) && (sizeof($va_rep_ids) > 2)){
+				if((strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))) == "sound") && (is_array($rep_ids)) && (sizeof($rep_ids) > 2)){
 					print "<div class='unit'><label>Play List</label>";
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array_merge($va_options, array("returnAs" => "list", "linkTo" => "carousel", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array_merge($options, array("returnAs" => "list", "linkTo" => "carousel", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)));
 					print "</div>";
 				}else{
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array_merge($va_options, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array_merge($options, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)));
 				}
 ?>
 				<div id="detailAnnotations"></div>
 				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><div class="col-xs-2 col-sm-2"><l>^ca_object_representations.media.iconlarge</l></div><div class="col-xs-10 col-sm-10"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
 <?php
 				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+				if ($comments_enabled | $share_enabled | $pdf_enabled) {
 						
 					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
+					if ($comments_enabled) {
 ?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?php print _t("Comments and tags"); ?>"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?= _t("Comments and tags"); ?>"></span>Comments and Tags (<?= sizeof($comments) + sizeof($tags); ?>)</a></div><!-- end detailTool -->
+						<div id='detailComments'><?= $this->getVar("itemComments");?></div><!-- end itemComments -->
 <?php				
 					}
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This Item", "", "", "Contact", "Form", array("contactType" => "inquire", "table" => "ca_objects", "id" => $t_object->get("object_id")))."</div>";
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "table" => "ca_objects", "id" => $t_object->get("object_id")))."</div>";
 					
-					if ($vn_share_enabled) {
+					if ($share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt" aria-label="'._t("Share").'"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
-					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+					if ($pdf_enabled) {
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
 					print '</div><!-- end detailTools -->';
 				}				
@@ -179,37 +218,37 @@ $va_rep_ids = $t_object->get('ca_object_representations.representation_id', arra
 				{{{<ifdef code="ca_objects.aat"><label>Original Object Format</label>^ca_objects.aat%delimiter=,_<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.keywords"><label>Keywords</label>^ca_objects.keywords%delimiter=,_<br/></ifdef>}}}
 <?php
-				$va_LcshSubjects = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
-				$va_LcshSubjects_processed = array();
-				if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
-					foreach($va_LcshSubjects as $vs_LcshSubjects){
-						if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
-							$vs_LcshSubjects = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
+				$LcshSubjects = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
+				$LcshSubjects_processed = array();
+				if(is_array($LcshSubjects) && sizeof($LcshSubjects)){
+					foreach($LcshSubjects as $LcshSubjects){
+						if($LcshSubjects && (strpos($LcshSubjects, " [") !== false)){
+							$LcshSubjects = mb_substr($LcshSubjects, 0, strpos($LcshSubjects, " ["));
 						}
-						$va_LcshSubjects_processed[] = $vs_LcshSubjects;
+						$LcshSubjects_processed[] = $LcshSubjects;
 			
 					}
-					print "<label>Library of Congress Subject Headings</label>".join(", ", $va_LcshSubjects_processed);
+					print "<label>Library of Congress Subject Headings</label>".join(", ", $LcshSubjects_processed);
 				}
 				
-				$va_LcshNames = $t_object->get("ca_objects.lc_names", array("returnAsArray" => true));
-				$va_LcshNames_processed = array();
-				if(is_array($va_LcshNames) && sizeof($va_LcshNames)){
-					foreach($va_LcshNames as $vs_LcshNames){
-						if($vs_LcshNames && (strpos($vs_LcshNames, " [") !== false)){
-							$vs_LcshNames = mb_substr($vs_LcshNames, 0, strpos($vs_LcshNames, " ["));
+				$LcshNames = $t_object->get("ca_objects.lc_names", array("returnAsArray" => true));
+				$LcshNames_processed = array();
+				if(is_array($LcshNames) && sizeof($LcshNames)){
+					foreach($LcshNames as $LcshNames){
+						if($LcshNames && (strpos($LcshNames, " [") !== false)){
+							$LcshNames = mb_substr($LcshNames, 0, strpos($LcshNames, " ["));
 						}
-						$va_LcshNames_processed[] = $vs_LcshNames;
+						$LcshNames_processed[] = $LcshNames;
 			
 					}
-					print "<label>Library of Congress Name Authority File</label>".join(", ", $va_LcshNames_processed);
+					print "<label>Library of Congress Name Authority File</label>".join(", ", $LcshNames_processed);
 				}
 ?>
 				{{{<ifdef code="ca_objects.tgn"><label>Location</label>^ca_objects.tgn%delimiter=,_<br/></ifdef>}}}
 
 <?php
-				if($vs_map = trim($this->getVar("map"))){
-					print "<br/><div class='unit'>".$vs_map."</div>";
+				if($map = trim($this->getVar("map"))){
+					print "<br/><div class='unit'>".$map."</div>";
 				}
 ?>
 
@@ -233,8 +272,10 @@ $va_rep_ids = $t_object->get('ca_object_representations.representation_id', arra
 
 <script type='text/javascript'>
 	caUI.initAudioRecorder({
-		vnId: <?php echo json_encode($vn_id); ?>, // object id
-		saveUrl: <?= json_encode(caNavUrl($this->request, '*', '*', '*', ['recorder' => 1])); ?> // endpoint
+		containerId: 'audio-recorder',	// wrapper around recorder
+		itemId: <?= json_encode($id); ?>, // object id
+		saveUrl: <?= json_encode(caNavUrl($this->request, '*', '*', '*', ['recorder' => 1])); ?>,  // endpoint
+		uiAttributes: <?= json_encode($audio_recorder_attributes); ?>
 	});
 </script>
 
