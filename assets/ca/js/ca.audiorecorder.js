@@ -24,7 +24,6 @@
  *
  * ----------------------------------------------------------------------
  */ 
-
 var caUI = caUI || {};
 
 caUI.initAudioRecorder = function (options) {
@@ -44,24 +43,24 @@ caUI.initAudioRecorder = function (options) {
 		source: null,
 		animationFrame: null,
 
-		vnId: null,   // Object ID to be set manually
+		itemId: null,   // Object ID to be set manually
 		saveUrl: null, // Save endpoint URL
 
 		// IDs for UI Elements (defaults)
+		containerId: "audioRecorder",	// id of wrapper around UI
 		startBtnId: "startBtn",
 		pauseBtnId: "pauseBtn",
 		stopBtnId: "stopBtn",
 		downloadBtnId: "downloadBtn",
 		audioPlaybackId: "audioPlayback",
-		postRecordingContainerId: "postRecordingContainer",
-		audioNameId: "audioName",
-		audioNotesId: "audioNotes",
+		postRecordingitemId: "postRecordingContainer",
+		audioTitleId: "audioTitle",
 		visualizerId: "visualizer",
 		cancelBtnId: "cancelBtn",
 		saveBtnId: "saveBtn",
 		successMessageId: "successMessage",
-		errorMessageId: "errorMessage"
-
+		errorMessageId: "errorMessage",
+		uiAttributes: []	// additional user interface form elements
 	}, options);
 
 	// Assign UI elements
@@ -70,9 +69,8 @@ caUI.initAudioRecorder = function (options) {
 	that.stopBtn = document.getElementById(that.stopBtnId);
 	that.downloadBtn = document.getElementById(that.downloadBtnId);
 	that.audioPlayback = document.getElementById(that.audioPlaybackId);
-	that.postRecordingContainer = document.getElementById(that.postRecordingContainerId);
-	that.audioName = document.getElementById(that.audioNameId);
-	that.audioNotes = document.getElementById(that.audioNotesId);
+	that.postRecordingContainer = document.getElementById(that.postRecordingitemId);
+	that.audioTitle = document.getElementById(that.audioTitleId);
 	that.visualizer = document.getElementById(that.visualizerId);
 	that.canvasContext = that.visualizer.getContext("2d");
 	that.cancelBtn = document.getElementById(that.cancelBtnId);
@@ -83,7 +81,7 @@ caUI.initAudioRecorder = function (options) {
 	// Ensure elements exist
 	if (!that.startBtn) console.error("Missing Start Button ID: " + that.startBtnId);
 
-	if (!that.vnId) console.error("Missing vnId: Set it when initializing.");
+	if (!that.itemId) console.error("Missing itemId: Set it when initializing.");
 	if (!that.saveUrl) console.error("Missing saveUrl: Set it when initializing.");
 
 	// Start Recording
@@ -188,8 +186,15 @@ caUI.initAudioRecorder = function (options) {
 		that.pauseBtn.disabled = true;
 		that.stopBtn.disabled = true;
 		that.downloadBtn.classList.add("hidden");
-		that.audioName.value = "";
-		that.audioNotes.value = "";
+		that.audioTitle['value'] = "";
+		
+		if(that.uiAttributes) {
+			for(let k in that.uiAttributes) {
+				let e = jQuery('#' + that.containerId + ' input[name="' + k + '"], #' + that.containerId + ' textarea[name="' + k + '"]');
+				jQuery(e).val('');
+			}
+		}
+		
 		that.postRecordingContainer.classList.add("hidden");
 
 		// Clear Visualizer
@@ -222,10 +227,17 @@ caUI.initAudioRecorder = function (options) {
 
 			const formData = new FormData();
 			formData.append("audio", that.audioBlob, `recording.${that.mimeType.split("/")[1]}`);
-			formData.append("id", that.vnId); // Manually set when initializing
+			formData.append("id", that.itemId); // Manually set when initializing
 			formData.append("download", "1");
-			formData.append("name", that.audioName.value.trim());
-			formData.append("notes", that.audioNotes.value.trim());
+			formData.append("title", that.audioTitle ? that.audioTitle.value.trim() : '');
+			
+			//console.log("attributes as ", that.uiAttributes);
+			if(that.uiAttributes) {
+				for(let k in that.uiAttributes) {
+					let e = jQuery('#' + that.containerId + ' input[name="' + k + '"], #' + that.containerId + ' textarea[name="' + k + '"]');
+					formData.append(k, jQuery(e).val());
+				}
+			}
 
 			console.log("Submitting FormData:", Object.fromEntries(formData.entries()));
 

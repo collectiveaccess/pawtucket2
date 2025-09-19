@@ -1623,8 +1623,7 @@ class DetailController extends FindController {
 			}
 		
 			$id = $this->request->getParameter('id', pString);
-			$name = $this->request->getParameter('name', pString); 
-			$notes = $this->request->getParameter('notes', pString);
+			$title = strip_tags($this->request->getParameter('title', pString)); 
 			$link_id = null;
 			
 			// Validate required parameters
@@ -1639,27 +1638,34 @@ class DetailController extends FindController {
 			
 			$o = new ca_objects();
 			$o->set([
-				'type_id' => $options['audio_recorder']['type_id'], 
-				'access' => $options['audio_recorder']['access'],
-				'idno' => $options['audio_recorder']['idno']
+				'type_id' => $options['audio_recorder']['type_id'] ?? null, 
+				'access' => $options['audio_recorder']['access'] ?? 0,
+				'idno' => $options['audio_recorder']['idno'] ?? null
 			]);
 
 			if (!$o->insert()) {
 				throw new AudioCommentarySaveException($o->getErrors());
 			}
-			$o->insert();
-			
-			if (!$o->addLabel(['name' => $name], __CA_DEFAULT_LOCALE__, null, true)) {
-				throw new AudioCommentarySaveException($o->getErrors());
-			}
-			if (!empty($name)) {
-				$o->addLabel(['name' => $name], __CA_DEFAULT_LOCALE__, null, true);
+		
+			if (!empty($title)) {
+				$o->addLabel(['name' => $title], __CA_DEFAULT_LOCALE__, null, true);
 			} else {
-				$o->addLabel(['name' => _t('Commentary from %1', $name)], __CA_DEFAULT_LOCALE__, null, true);
+				$o->addLabel(['name' => _t('Audio Commentary')], __CA_DEFAULT_LOCALE__, null, true);
 			}
-			
-			if (!empty($notes)) {
-				$o->addAttribute([$options['audio_recorder']['notes_element_code'] => $notes], $options['audio_recorder']['notes_element_code']);
+			$audio_recorder_attributes = $options["audio_recorder"]["attributes"] ?? [];
+			if(is_array($audio_recorder_attributes) && sizeof($audio_recorder_attributes)){
+				foreach($audio_recorder_attributes as $audio_recorder_attribute => $attribute_info){
+					$attribute = strip_tags($this->request->getParameter($audio_recorder_attribute, pString)); 
+					if (!empty($attribute)) {
+						$o->addAttribute([$audio_recorder_attribute => $attribute], $audio_recorder_attribute);
+					}
+				}
+			}
+			if(($options["audio_recorder"]["require_consent"] ?? null) && ($consent_attribute = $options["audio_recorder"]["consent_attribute"])){
+				$attribute_val = strip_tags($this->request->getParameter($consent_attribute, pString)); 
+				if (!empty($attribute_val)) {
+					$o->addAttribute([$consent_attribute => $attribute_val], $consent_attribute);
+				}
 			}
 
 			if (!$o->update()) {
@@ -1667,13 +1673,15 @@ class DetailController extends FindController {
 			}
 			$o->update();
 			
-			if (!$o->addRelationship('ca_objects', $id, $options['audio_recorder']['relationship_type'])) {
+			$rel_type = $options['audio_recorder']['relationship_type'] ?? null;
+			$rep_type = $options['audio_recorder']['representation_type'] ?? null;
+			if (!$o->addRelationship('ca_objects', $id, $rel_type)) {
 				throw new AudioCommentarySaveException($o->getErrors());
 			}
-			$o->addRelationship('ca_objects', $id, $options['audio_recorder']['relationship_type']);
+			$o->addRelationship('ca_objects', $id, $rel_type);
 			
-			$link_id = $o->addRepresentation($_FILES['audio']['tmp_name'], $options['audio_recorder']['representation_type'], __CA_DEFAULT_LOCALE__, 0, $access, true, [], []);
-			
+			$link_id = $o->addRepresentation($_FILES['audio']['tmp_name'], $rep_type, __CA_DEFAULT_LOCALE__, 0, $access, true, [], []);
+			copy($_FILES['audio']['tmp_name'], "/tmp/foo");
 			// If the representation fails, delete the object, print error
 			if(!$link_id) {
 				$errors = $o->getErrors();
