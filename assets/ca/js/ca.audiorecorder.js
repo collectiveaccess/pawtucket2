@@ -102,7 +102,7 @@ caUI.initAudioRecorder = function (options) {
 
 			// Select supported MIME type
 			that.mimeType = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "audio/webm";
-			console.log("Using MIME type:", that.mimeType);
+			//console.log("Using MIME type:", that.mimeType);
 
 			that.mediaRecorder = new MediaRecorder(that.stream, { mimeType: that.mimeType });
 
@@ -231,7 +231,6 @@ caUI.initAudioRecorder = function (options) {
 			formData.append("download", "1");
 			formData.append("title", that.audioTitle ? that.audioTitle.value.trim() : '');
 			
-			//console.log("attributes as ", that.uiAttributes);
 			if(that.uiAttributes) {
 				for(let k in that.uiAttributes) {
 					let e = jQuery('#' + that.containerId + ' input[name="' + k + '"], #' + that.containerId + ' textarea[name="' + k + '"]');
@@ -239,7 +238,7 @@ caUI.initAudioRecorder = function (options) {
 				}
 			}
 
-			console.log("Submitting FormData:", Object.fromEntries(formData.entries()));
+			//console.log("Submitting FormData:", Object.fromEntries(formData.entries()));
 
 			$.ajax({
 				url: that.saveUrl, // Passed during initialization
@@ -248,7 +247,7 @@ caUI.initAudioRecorder = function (options) {
 				processData: false,
 				contentType: false,
 				success: function (response) {
-					console.log("Upload response:", response);
+					//console.log("Upload response:", response);
 
 					// Parse concatenated JSON responses
 					if (typeof response === "string") {
