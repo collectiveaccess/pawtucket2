@@ -141,7 +141,7 @@
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 								
 				if($excerpts = caTextExcerptForSearchResult($vn_id, $result_desc, ['maxExcerpts' => 1])) {
-					$vs_expanded_info .= join("<br/>", $excerpts);
+					$vs_expanded_info .= join("<br/>", $excerpts ?? []);
 				}
 
 				print "
