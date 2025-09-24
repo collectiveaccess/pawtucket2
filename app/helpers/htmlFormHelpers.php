@@ -308,7 +308,7 @@ function caHTMLTextInput($name, $attributes=null, $options=null) {
 								Paragraph, 
 								PasteFromOffice, 
 								RemoveFormat, 
-								ResizeableHeight,
+								ResizableHeight,
 								SelectAll, 
 								SourceEditing, 
 								SpecialCharacters, 
