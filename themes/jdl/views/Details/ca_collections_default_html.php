@@ -134,10 +134,6 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					<dt><?= _t('Language'); ?></dt>
 					<dd>^ca_collections.language</dd>
 				</ifdef>
-				<ifdef code="ca_collections.access_conditions">
-					<dt><?= _t('Access Conditions'); ?></dt>
-					<dd>^ca_collections.access_conditions</dd>
-				</ifdef>
 				<ifdef code="ca_collections.arrangement">
 					<dt><?= _t('Arrangement'); ?></dt>
 					<dd>^ca_collections.arrangement</dd>

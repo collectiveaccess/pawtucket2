@@ -137,17 +137,9 @@ if($show_nav){
 						<dt><?= _t('Ephemera Language'); ?></dt>
 						<dd>^ca_objects.language</dd>
 					</ifdef>
-					<ifdef code="ca_objects.source">
-						<dt><?= _t('Source'); ?></dt>
-						<dd>^ca_objects.source</dd>
-					</ifdef>
 					<ifdef code="ca_objects.rights.copyright_logo|ca_objects.rights.rights_holder">
 						<dt><?= _t('Rights'); ?></dt>
 						<dd><ifdef code="ca_objects.rights.copyright_logo">^ca_objects.rights.copyright_logo<ifdef code="ca_objects.rights.rights_holder">, </ifdef></ifdef><ifdef code="ca_objects.rights.rights_holder">^ca_objects.rights.rights_holder</ifdef></dd>
-					</ifdef>
-					<ifdef code="ca_objects.access_conditions">
-						<dt><?= _t('Access Conditions'); ?></dt>
-						<dd>^ca_objects.access_conditions</dd>
 					</ifdef>
 					<ifdef code="ca_objects.citation">
 						<dt><?= _t('Preferred Citation'); ?></dt>

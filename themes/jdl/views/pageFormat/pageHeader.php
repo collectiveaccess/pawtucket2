@@ -70,19 +70,11 @@ if($this->request->isLoggedIn()){
 		<div class="container-fluid d-block">
 			<div class="container-xl">
 				<div class="row">
-					<div class="col-8 py-3">
-						<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'JDL_logo.png', array("alt" => "Jackson District Library logo", "role" => "banner")), "navbar-brand  img-fluid d-inline-block", "", "", ""); ?>
+					<div class="col-6 py-3">
+						<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'JDL_Logo.jpg', array("alt" => "Jackson District Library logo", "role" => "banner")), "navbar-brand  img-fluid d-inline-block", "", "", ""); ?>
 					</div>
-					<div class="col-4 text-end mt-3">
-						<div class="fs-2 lh-1 p-0 mb-0 d-none d-lg-inline-block">Local History Archive</div>
-						<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search" class="d-none d-lg-inline-block w-100">
-							<div class="input-group mt-1">
-								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-								<input type="text" name="search" class="form-control rounded-0" id="nav-search-input" placeholder="Search">
-								<button type="submit" class="btn btn-primary rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
-							</div>
-							<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
-						</form>
+					<div class="col-6 text-end mt-4">
+						<div class="display-5 p-0 mb-0 d-none d-lg-inline-block">Jackson District Library<br/>Local History Archive</div>
 						<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						  <span class="navbar-toggler-icon"></span>
 						</button>
@@ -101,6 +93,9 @@ if($this->request->isLoggedIn()){
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4 w-100 justify-content-center">				
 							<?= $this->render("pageFormat/browseMenu.php"); ?>	
+							<li class="nav-item">
+								<?= caNavLink($this->request, _t("Search"), "nav-link".((strToLower($this->request->getController()) == "search") ? " active" : ""), "", "Search", "advanced/objects"); ?>
+							</li>
 							<li class="nav-item">
 								<?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
 							</li>

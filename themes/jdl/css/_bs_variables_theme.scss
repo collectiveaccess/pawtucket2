@@ -86,15 +86,15 @@ $font-family-sans-serif: "Gotham-Medium";
 $headings-color: #01263e;
 		// scss-docs-end headings-variables
 		
-		// scss-docs-start display-headings
-		$display-font-sizes: (
-		  1: 4rem,
-		  2: 3.5rem,
-		  3: 3rem,
-		  4: 2.5rem,
-		  5: 2rem,
-		  6: 1.5rem
-		) !default;
+// scss-docs-start display-headings
+$display-font-sizes: (
+  1: 4rem,
+  2: 3.5rem,
+  3: 3rem,
+  4: 2.5rem,
+  5: 2.25rem,
+  6: 1.5rem
+);
 		
 		$display-font-family: null !default;
 		$display-font-style:  null !default;
