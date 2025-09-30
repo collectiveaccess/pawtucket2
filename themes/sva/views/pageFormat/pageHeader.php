@@ -82,7 +82,7 @@ if($this->request->isLoggedIn()){
 						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
-						<a href="https://archives.sva.edu/blog/?autoscroll=0" class="nav-link"><?= _t('Blog'); ?></a>
+						<a href="https://archives-blog.sva.edu/" class="nav-link"><?= _t('Blog'); ?></a>
 					</li>
 <?php
 					if($user_links){
