@@ -85,10 +85,6 @@
 					<div class="unit"><H6><?= _t('Language'); ?></H6>
 					^ca_collections.language</div>
 				</ifdef>
-				<ifdef code="ca_collections.access_conditions">
-					<div class="unit"><H6><?= _t('Access Conditions'); ?></H6>
-					^ca_collections.access_conditions</div>
-				</ifdef>
 				<ifdef code="ca_collections.arrangement">
 					<div class="unit"><H6><?= _t('Arrangement'); ?></H6>
 					^ca_collections.arrangement</div>

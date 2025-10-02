@@ -100,9 +100,9 @@ H1, H2, H3, H4, H5, H6{
 }
 /* ----------- footer -------------- */
 footer{
-	.container-xl{
+	/*.container-xl{
 		background: url("../assets/graphics/bkg-footer.jpg") bottom right no-repeat scroll;
-	}
+	}*/
 	@media(max-width:991px){
 		.border-start{
 			border:none;
@@ -134,7 +134,10 @@ footer{
 	.hpExploreBlock{
 		min-height:360px;
 		img{
-			height:150px;
+			height:250px;
+		}
+		a:hover{
+			color: $primary !important;
 		}
 	}
 }
