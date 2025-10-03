@@ -36,7 +36,7 @@
 	}
 ?>
 	</div><!--end col-sm-1-->
-	<div class="col-12 col-sm-4">
+	<div class="col-12 col-sm-4 small">
 <?php
 	# --- display the metadata fro the item
 	$t_item = $this->getVar("instance");
@@ -71,22 +71,22 @@
 					#$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-title" => $va_subject["name_singular"], "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");
 					$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");							
 				}
-				$va_subjects_sorted[$va_subject["name_singular"]] = "<dd>".caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]), $va_popover)."</dd>";
+				$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]), $va_popover);
 				$va_list_ids[] = $va_subject["item_id"];
 			}
 			ksort($va_subjects_sorted);
 			print "<dt class='pt-3'>";
 			print "Keyword".((sizeof($va_subjects) > 1) ? "s" : "")."</dt>";
-			print join("", $va_subjects_sorted);
+			print "<dd>".join(", ", $va_subjects_sorted)."</dd>";
 		}
 	}
 	print $t_item->getWithTemplate('<ifdef code="ca_objects.public_description"><dt class="pt-3">Description</dt><dd>^ca_objects.public_description</dd></ifdef>');
 	if($va_sources = $t_item->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("donor"), "checkAccess" => caGetUserAccessValues($this->request)))){
 		if(is_array($va_sources) && sizeof($va_sources)){
-			print "<dt class='pt-3'>Source".((sizeof($va_sources) > 1) ? "s" : "").": </dt>";
+			print "<dt class='pt-3 d-inline'>Source".((sizeof($va_sources) > 1) ? "s" : "").": </dt>";
 			$va_source_display = array();
 			foreach($va_sources as $va_source){
-				$va_source_display[] = "<dd>".caNavLink($this->request, $va_source["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_source["entity_id"]))."</dd>";
+				$va_source_display[] = "<dd class='d-inline'>".caNavLink($this->request, $va_source["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_source["entity_id"]))."</dd>";
 			}
 			print implode("", $va_source_display);
 		}
@@ -99,10 +99,10 @@
 		$vs_credit_line = $t_item->get("ca_object_lots.credit_line");
 	}
 	if($vs_credit_line){
-		print "<dt class='pt-3'>Credit Line:</dt><dd><i>".$vs_credit_line."</i></dd>";
+		print "<dt class='pt-3 d-inline'><br/>Credit Line: </dt><dd class='d-inline'><i>".$vs_credit_line."</i></dd>";
 	}
 
-	print $t_item->getWithTemplate('<ifdef code="ca_objects.idno"><dt class="pt-3">Accession Number:</dt><dd>^ca_objects.idno</dd></ifdef>');
+	print $t_item->getWithTemplate('<ifdef code="ca_objects.idno"><dt class="pt-3 d-inline"><br/>Accession Number: </dt><dd class="d-inline">^ca_objects.idno</dd></ifdef>');
 
 	print "<div class='text-center py-2 text-capitalize'>".caDetailLink($this->request, _t("View")." <i class='bi bi-arrow-right'></i>", 'btn btn-primary', $this->getVar("table"), $this->getVar("row_id"))."</div>";
 	

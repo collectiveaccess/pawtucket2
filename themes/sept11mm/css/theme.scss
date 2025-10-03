@@ -1,10 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
-/*$primary: #00a3e0;
-@font-face {
-  font-family:Gotham-Book;
-  src:url("fonts/Gotham-Book.otf") format("opentype");
-}*/
+$primary: #007db3;
 
 @font-face{
 	font-family:'gotham-book';
@@ -53,14 +49,14 @@
 	text-transform: initial;
 	text-align: center;
 	line-height: 1.5;
-	color: #007db3;
+	color: $primary;
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
 	background-color: #fff;
 }
 .btn-primary:hover{
-	background-color: #007db3;
+	background-color: $primary;
 	color: #fff;
 	-webkit-box-shadow: 0 1px 4px 0 rgba(0,0,0,0.25);
 	box-shadow: 0 1px 4px 0 rgba(0,0,0,0.25);
@@ -95,6 +91,15 @@
 		padding-top: .5rem;
 		padding-bottom: .5rem;
 	}
+	@media(max-width:1199px){
+		.navbar-nav{
+			.nav-item{
+				.nav-link:hover, .nav-link:focus {
+  					color: $primary;
+				}	
+			}
+		}
+	}
 	@media(min-width:1200px){
 		.navbar-brand {
 			width: 308px;
@@ -110,6 +115,7 @@
 				.nav-link{
 					text-transform:uppercase;
 					position:relative;
+					color:$primary;
 				}
 				.nav-link::before{
 					content: '';
@@ -118,8 +124,8 @@
 					left: 0px;
 					width: 100%;
 					height: 0;
-					background-color: #007db3;
-					outline: 1px solid #007db3;
+					background-color: $primary;
+					outline: 1px solid $primary;
 					z-index: -1;
 					-webkit-transition: height 0.25s;
 					transition: height 0.25s;
@@ -127,7 +133,7 @@
 				.nav-link:hover{
 					-webkit-transition: color 0.25s;
 					transition: color 0.25s;
-					color:#FFF !important;
+					color:#FFF;
 				}
 				@media(max-width:992px){
 					.nav-link{
@@ -146,6 +152,9 @@
 			.nav-item:hover{
 				.nav-link::before{
 					height:100%;
+				}
+				.nav-link.show{
+					color:#FFF;
 				}
 			}
 		}

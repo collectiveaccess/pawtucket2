@@ -132,7 +132,7 @@ if($show_nav){
 	<div class="row">
 		<div class="col-md-6 offset-6 text-center">
 			<div class="pt-3">
-				{{{<ifdef code="ca_objects.curators_comment"><span id="curatorCommentsButton" class="curatorCommentsShowHide collapse show"><button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorComments curatorCommentsButton"><i class='bi bi-justify'></i> Curator Comments</button></span></ifdef>}}}<?php
+				{{{<ifdef code="ca_objects.curators_comment"><span id="curatorCommentsButton" class="curatorCommentsShowHide collapse show"><button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorComments curatorCommentsButton"><i class='bi bi-justify'></i> Curator's Comment</button></span></ifdef>}}}<?php
 				print caNavLink($this->request, "<i class='bi bi-book'></i> "._t("Ask a Question"), "btn btn-primary ms-4", "", "Contact", "Form");
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-chat-left'></i> "._t("Feedback"), "btn btn-primary ms-4", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
@@ -243,7 +243,14 @@ if($show_nav){
 			</div>		
 		</div>
 	</div>
-	
+{{{<div class="row">
+		<div class="col"><h2>Related Items</h2><hr></div>
+	</div>
+	<div class="row" id="browseResultsContainer">	
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.preferred_labels:'.$t_object->get("ca_objects.preferred_labels"), '_advanced' => 0)); ?>">
+			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+		</div>
+	</div>}}}	
 <script>
 	document.addEventListener("load", function() {
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

@@ -30,7 +30,7 @@ $lightbox_sectionHeading = ucFirst($lightboxDisplayName["section_heading"]);
 
 # Collect the user links
 $user_links = "";
-if($this->request->isLoggedIn()){
+if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']))){
 	$user_links .= "<li class='nav-item dropdown'><a class='nav-link".(($this->request->getController() == 'LoginReg') ? ' active' : '')."' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'><i class='bi bi-person-circle' aria-label='"._t('User Options')."'></i></a>
 						<ul class='dropdown-menu'>";
 	
