@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.roboto {
+	font-family: "Roboto", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	font-variation-settings:
+	"wdth" 100;
+}
+/* ------------------------- TopBar ------------------------- */
+.topBar{
+	.container{
+		padding-bottom: 6px;
+		padding-top: 2px;
+	}
+	a{
+		font-weight: bold;
+		color: #ffffff;
+		font-size: .79em;
+		text-decoration:none;
+	}
+}
+/* ------------------------- Navbar ------------------------- */
+.navbar-brand{
+	width:185px;
+}
+/* ------------------------- Maps --------------------------- */
+.leaflet-popup-content{
+	min-width:250px;
+}
+/* ------------------------- Buttons ------------------------ */
+.btn-primary{
+	background-color: #CF4240;
+	border-color: #CF4240;
+}
+.btn-primary:hover{
+	background-color: #99302f;
+	border-color: #99302f;
+}
