@@ -36,7 +36,8 @@
 	$o_config = $this->getVar("config");
 	$vs_hero = $this->request->getParameter("hero", pString);
 	if(!$vs_hero){
- 		$vs_hero = rand(1, 3);
+ 		#$vs_hero = rand(1, 3);
+ 		$vs_hero = 1;
 	}
 ?>
 
@@ -102,24 +103,24 @@
 			<H2 class="mb-3">Explore The Archive</H2>
 			<div class="row">
 				<div class="col-md-4 hpExploreBlock hpExploreBlock mb-4">
-					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>AV Materials</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_av_materials_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "44")); ?>
+					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "AV_Materials_Thumbnail.jpg", array("alt" => "Video still", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>AV Materials</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_av_materials_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "44")); ?>
 				</div>
 				<div class="col-md-4 hpExploreBlock mb-4">
-					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>Documents</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_documents_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "22")); ?>
+					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "Documents_Thumbnail.jpg", array("alt" => "Hand written document", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>Documents</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_documents_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "22")); ?>
 				</div>
 				<div class="col-md-4 hpExploreBlock mb-4">
-					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>Ephemera</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_ephemera_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "29")); ?>
+					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "Ephemera_Thumbnail.jpg", array("alt" => "Ornage banner", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>Ephemera</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_ephemera_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "29")); ?>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-4 hpExploreBlock mb-4">
-					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>Images</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_images_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "39")); ?>
+					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "Images_Thumbnail.jpg", array("alt" => "Black and white group photo", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>Images</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_images_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "39")); ?>
 				</div>
 				<div class="col-md-4 hpExploreBlock mb-4">
-					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>Publications</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_publications_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "32")); ?>
+					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "Publications_Thumbnail.jpg", array("alt" => "Theatre program cover", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>Publications</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_publications_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "32")); ?>
 				</div>
 				<div class="col-md-4 hpExploreBlock mb-4">
-					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>Scrapbooks</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_scrapbooks_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "30")); ?>
+					<?php print caNavLink($this->request, "<div class='bg-light border border-1 border-dark shadow h-100'>".caGetThemeGraphic($this->request, "Scrabooks_Thumbnail.jpg", array("alt" => "Scrip book page spread", "class" => "object-fit-cover w-100 link-dark"))."<div class='p-4'><div class='fw-medium fs-4 pt-2'>Scrapbooks</div><div class='py-1'>&mdash;</div><div>".$this->getVar("hp_scrapbooks_desc")."</div></div></div>", "text-decoration-none link-dark", "", "Browse", "objects", array("facet" => "type_facet", "id" => "30")); ?>
 				</div>
 			</div>
 		</div>
