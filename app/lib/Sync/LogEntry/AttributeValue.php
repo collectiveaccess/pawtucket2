@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2018 Whirl-i-Gig
+ * Copyright 2016-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,7 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
-
 namespace CA\Sync\LogEntry;
 
 require_once(__CA_LIB_DIR__.'/Sync/LogEntry/Base.php');
@@ -63,8 +62,13 @@ class AttributeValue extends Base {
 		// check if attribute guid is present and valid
 		if (isset($va_snapshot['attribute_guid']) && ($vs_attribute_guid = $va_snapshot['attribute_guid'])) {
 			$t_attr = new \ca_attributes();
-			if($this->isUpdate() && !$t_attr->loadByGUID($vs_attribute_guid)) {
-				throw new InvalidLogEntryException(_t("Could not find attribute with guid %1", $vs_attribute_guid));
+			if(!$t_attr->loadByGUID($vs_attribute_guid)) {
+				if($this->isUpdate()) {
+					throw new InvalidLogEntryException(_t("Could not find attribute with guid %1", $vs_attribute_guid));
+				} else {
+					// Attribute applies to an attribute that was skipped
+					throw new IrrelevantLogEntry();	
+				}
 			}
 		} else {
 			throw new InvalidLogEntryException(_t("No attribute_guid found for attribute value log entry"));
@@ -128,7 +132,6 @@ class AttributeValue extends Base {
 		$va_snapshot = $this->getSnapshot();
 
 		foreach($va_snapshot as $vs_field => $vm_val) {
-
 			if($vs_field == 'element_id') {
 				if (isset($va_snapshot['element_code']) && ($vs_element_code = $va_snapshot['element_code'])) {
 					if ($vn_element_id = \ca_metadata_elements::getElementID($vs_element_code)) {
@@ -175,8 +178,12 @@ class AttributeValue extends Base {
 						}
 					}
 				}
+			} elseif(($vs_field == 'value_longtext1') && ($va_snapshot['value_longtext1_guid'] ?? null)) {		// authority value
+				if(is_array($info = \ca_guids::getInfoForGUID($va_snapshot['value_longtext1_guid']))) {
+					$this->getModelInstance()->set('value_longtext1', $info['row_id']);
+					$this->getModelInstance()->set('value_integer1', $info['row_id']);
+				}
 			}
 		}
 	}
-
 }
