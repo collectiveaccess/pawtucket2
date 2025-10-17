@@ -42,23 +42,24 @@
 ?>
 
 <div class="container-flex">
-	<div class="parallax hero<?php print $vs_hero; ?>">
-		<div class="container-fluid h-100">
-			<div class="row justify-content-end h-100">
-				<div class="col-md-6 col-lg-6 col-xl-5 d-flex h-100 bg-dark shadow align-items-center">
-					<div class="text-bg-dark text-center w-100 parallax-search">
-						<div class="pb-3">
-							<div class="fs-3 Gotham-Book">Welcome to</div>
-							<div class="pt-2 display-5">Jackson District Library<br/>Local History Archive</div>
-						</div>
-						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
-							<div class="input-group px-4">
-								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
-								<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
-								<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
-							</div>
-						</form>
+	<div class="hpHero">
+		<div class="row h-100 g-0">
+			<div class="d-none d-md-block col-md-6 col-lg-6 col-xl-7 h-100">
+			<?php print caGetThemeGraphic($this->request, "Large_Hero_Image.jpg", array("alt" => "Postcard image", "class" => "object-fit-cover w-100 h-100")); ?>
+			</div>
+			<div class="col-md-6 col-lg-6 col-xl-5 d-flex h-100 bg-dark shadow align-items-center">
+				<div class="text-bg-dark text-center w-100 parallax-search">
+					<div class="pb-3">
+						<div class="fs-3 Gotham-Book">Welcome to</div>
+						<div class="pt-2 display-5">Jackson District Library<br/>Local History Archive</div>
 					</div>
+					<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
+						<div class="input-group px-4">
+							<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
+							<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
+							<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
