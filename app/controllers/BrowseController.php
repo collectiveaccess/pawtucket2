@@ -55,8 +55,8 @@ class BrowseController extends FindController {
 	/**
 	 *
 	 */
-	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
-		parent::__construct($po_request, $po_response, $pa_view_paths);
+	public function __construct(&$po_request, &$po_response, $view_paths=null) {
+		parent::__construct($po_request, $po_response, $view_paths);
 		if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
 			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
 		}
@@ -70,47 +70,47 @@ class BrowseController extends FindController {
 	/**
 	 *
 	 */ 
-	public function __call($ps_function, $pa_args) {
+	public function __call($function, $args) {
 		$this->view->setVar("config", $this->opo_config);
-		$ps_function = strtolower($ps_function);
-		$ps_type = $this->request->getActionExtra();
+		$function = strtolower($function);
+		$type = $this->request->getActionExtra();
 		
 		$o_search_config = caGetSearchConfig();
 		
-		if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
+		if (!($browse_info = caGetInfoForBrowseType($function))) {
 			// invalid browse type – throw error
 			throw new ApplicationException("Invalid browse type");
 		}
-		$this->opa_access_values = caGetOption('checkAccess', $va_browse_info, $this->opa_access_values);
+		$this->opa_access_values = caGetOption('checkAccess', $browse_info, $this->opa_access_values);
 		
-		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Browse %1", $va_browse_info["displayName"]));
-		$this->view->setVar("browse_type", $ps_function);
-		$vs_class = $this->ops_tablename = $va_browse_info['table'];
-		$t_instance = Datamodel::getInstance($vs_class, true);
+		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Browse %1", $browse_info["displayName"]));
+		$this->view->setVar("browse_type", $function);
+		$class = $this->ops_tablename = $browse_info['table'];
+		$t_instance = Datamodel::getInstance($class, true);
 		
 		// Now that table name is known we can set standard view vars
-		parent::setTableSpecificViewVars($va_browse_info);
+		parent::setTableSpecificViewVars($browse_info);
 		
-		$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
-		$vb_omit_child_records = caGetOption('omitChildRecords', $va_browse_info, [], array('castTo' => 'bool'));
+		$types = caGetOption('restrictToTypes', $browse_info, array(), array('castTo' => 'array'));
+		$omit_child_records = caGetOption('omitChildRecords', $browse_info, [], array('castTo' => 'bool'));
 		
 		
-		$vb_is_nav = (bool)$this->request->getParameter('isNav', pString, ['forcePurify' => true]);
+		$is_nav = (bool)$this->request->getParameter('isNav', pString, ['forcePurify' => true]);
 		
-		$vs_type_key = caMakeCacheKeyFromOptions($va_types);
-		if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
-			$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable{$vs_type_key}"));
+		$type_key = caMakeCacheKeyFromOptions($types);
+		if(ExternalCache::contains("{$class}totalRecordsAvailable{$type_key}")) {
+			$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$class}totalRecordsAvailable{$type_key}"));
 		} else {
 			$params = ['deleted' => 0];
-			if ($vb_omit_child_records && ($f = $t_instance->getProperty('HIERARCHY_PARENT_ID_FLD'))) { $params[$f] = null; }
-			ExternalCache::save("{$vs_class}totalRecordsAvailable{$vs_type_key}", $vn_count = $vs_class::find($params, ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
-			$this->view->setVar('totalRecordsAvailable', $vn_count);
+			if ($omit_child_records && ($f = $t_instance->getProperty('HIERARCHY_PARENT_ID_FLD'))) { $params[$f] = null; }
+			ExternalCache::save("{$class}totalRecordsAvailable{$type_key}", $count = $class::find($params, ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($types)) ? $types : null]));
+			$this->view->setVar('totalRecordsAvailable', $count);
 		}
 		
 		# --- row id passed when click back button on detail page - used to load results to and jump to last viewed item
-		$this->view->setVar('row_id', $pn_row_id = $this->request->getParameter('row_id', pInteger));
+		$this->view->setVar('row_id', $row_id = $this->request->getParameter('row_id', pInteger));
 		
-		$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
+		$this->opo_result_context = new ResultContext($this->request, $browse_info['table'], $this->ops_find_type);
 		
 		// Don't set last find when loading facet (or when the 'dontSetFind' request param is explicitly set)
 		// as some other controllers use this action and setting last find will disrupt ResultContext navigation 
@@ -119,62 +119,62 @@ class BrowseController extends FindController {
 			$this->opo_result_context->setAsLastFind();
 		}
 		
-		$this->view->setVar('browseInfo', $va_browse_info);
-		$this->view->setVar('paging', in_array(strtolower($va_browse_info['paging']), array('continous', 'nextprevious', 'letter')) ? strtolower($va_browse_info['paging']) : 'continous');
+		$this->view->setVar('browseInfo', $browse_info);
+		$this->view->setVar('paging', in_array(strtolower($browse_info['paging']), array('continous', 'nextprevious', 'letter')) ? strtolower($browse_info['paging']) : 'continous');
 		
-		$this->view->setVar('name', $va_browse_info['displayName']);
-		$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
+		$this->view->setVar('name', $browse_info['displayName']);
+		$this->view->setVar('options', caGetOption('options', $browse_info, array(), array('castTo' => 'array')));
 		
-		$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
-		if(!is_array($va_views) || (sizeof($va_views) == 0)){
-			$va_views = array('list' => array(), 'images' => array(), 'chronology' => array(), 'chronology_images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
+		$views = caGetOption('views', $browse_info, array(), array('castTo' => 'array'));
+		if(!is_array($views) || (sizeof($views) == 0)){
+			$views = array('list' => array(), 'images' => array(), 'chronology' => array(), 'chronology_images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
 		} else {
-			$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = $va_views['chronology_images'] = array();
+			$views['pdf'] = $views['timelineData'] = $views['xlsx'] = $views['pptx'] = $views['chronology_images'] = array();
 		}
 		
-		if (!($ps_view = $this->request->getParameter("view", pString, ['forcePurify' => true]))) {
-			$ps_view = $this->opo_result_context->getCurrentView();
+		if (!($view = $this->request->getParameter("view", pString, ['forcePurify' => true]))) {
+			$view = $this->opo_result_context->getCurrentView();
 		}
-		if(!in_array($ps_view, array_keys($va_views))) {
-			$ps_view = array_shift(array_keys($va_views));
+		if(!in_array($view, array_keys($views))) {
+			$view = array_shift(array_keys($views));
 		}
 		# --- only set the current view if it's not an export format
-		if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData", "chronology_images"))){
-			$this->opo_result_context->setCurrentView($ps_view);
+		if(!in_array($view, array("pdf", "xlsx", "pptx", "timelineData", "chronology_images"))){
+			$this->opo_result_context->setCurrentView($view);
 		}
 		
-		$va_view_info = $va_views[$ps_view];
+		$view_info = $views[$view];
 		
-		$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
+		$format = ($view == 'timelineData') ? 'json' : 'html';
 
-		caAddPageCSSClasses(array($vs_class, $ps_function));
+		caAddPageCSSClasses(array($class, $function));
 
-		$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
+		$type_id = $t_instance->getTypeIDForCode($type);
 		
 		$this->view->setVar('t_instance', $t_instance);
-		$this->view->setVar('table', $va_browse_info['table']);
+		$this->view->setVar('table', $browse_info['table']);
 		$this->view->setVar('primaryKey', $t_instance->primaryKey());
 	
-		$this->view->setVar('browse', $o_browse = caGetBrowseInstance($vs_class));
-		$this->view->setVar('views', caGetOption('views', $va_browse_info, array(), array('castTo' => 'array')));
-		$this->view->setVar('view', $ps_view);
+		$this->view->setVar('browse', $o_browse = caGetBrowseInstance($class));
+		$this->view->setVar('views', caGetOption('views', $browse_info, array(), array('castTo' => 'array')));
+		$this->view->setVar('view', $view);
 		$this->view->setVar('viewIcons', $this->opo_config->getAssoc("views"));
 	
 		//
 		// Load existing browse if key is specified
 		//
-		if ($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
-			$o_browse->reload($ps_cache_key);
+		if ($cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
+			$o_browse->reload($cache_key);
 		}
 	
-		if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $va_browse_info, false))); }
+		if (is_array($types) && sizeof($types)) { $o_browse->setTypeRestrictions($types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $browse_info, false))); }
 	
 		//
 		// Clear criteria if required
 		//
 		
-		if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString, ['forcePurify' => true])) {
-			$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString, ['forcePurify' => true])));
+		if ($remove_criterion = $this->request->getParameter('removeCriterion', pString, ['forcePurify' => true])) {
+			$o_browse->removeCriteria($remove_criterion, array($this->request->getParameter('removeID', pString, ['forcePurify' => true])));
 		}
 		
 		if ((bool)$this->request->getParameter('clear', pInteger)) {
@@ -193,28 +193,28 @@ class BrowseController extends FindController {
 		//
 		
 		// Get any preset-criteria
-		$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
-		$show_base_criteria = caGetOption('showBaseCriteria', $va_browse_info, false);
+		$base_criteria = caGetOption('baseCriteria', $browse_info, null);
+		$show_base_criteria = caGetOption('showBaseCriteria', $browse_info, false);
 		
 		if (($o_browse->numCriteria() == 0)) {
-			if (is_array($va_base_criteria) && !$vs_remove_criterion) {
-				foreach($va_base_criteria as $vs_facet => $vs_value) {
-					$o_browse->addCriteria($vs_facet, $vs_value);
+			if (is_array($base_criteria) && !$remove_criterion) {
+				foreach($base_criteria as $facet => $value) {
+					$o_browse->addCriteria($facet, $value);
 				}
 			}
 		}
-		if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
-			foreach ($va_facets as $vs_facet_spec) {
-				if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
-				$vs_facet = array_shift($va_tmp);
-				$o_browse->addCriteria($vs_facet, preg_split("![\|,]+!", join(":", array_map(function($v) { 
+		if (($facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($facets = explode(';', $facets)) && sizeof($facets)) {
+			foreach ($facets as $facet_spec) {
+				if (!sizeof($tmp = explode(':', $facet_spec))) { continue; }
+				$facet = array_shift($tmp);
+				$o_browse->addCriteria($facet, preg_split("![\|,]+!", join(":", array_map(function($v) { 
 					return urldecode($v);
-				}, $va_tmp)))); 
+				}, $tmp)))); 
 			}
 	
-		} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
+		} elseif (($facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
 			$p = array_map('urldecode', $p);
-			$o_browse->addCriteria($vs_facet, $p);
+			$o_browse->addCriteria($facet, $p);
 		} else { 
 			if (($o_browse->numCriteria() == 0)) {
 				$o_browse->addCriteria("_search", array("*"));
@@ -224,224 +224,208 @@ class BrowseController extends FindController {
 		//
 		// Sorting
 		//
-		$vb_sort_changed = false;
-		if (!($ps_sort = urldecode($this->request->getParameter("sort", pString, ['forcePurify' => true])))) {
-			$ps_sort = $this->opo_result_context->getCurrentSort();
-		}elseif($ps_sort != $this->opo_result_context->getCurrentSort()){ 
-			$vb_sort_changed = true; 
+		$sort_changed = false;
+		if (!($sort = urldecode($this->request->getParameter("sort", pString, ['forcePurify' => true])))) {
+			$sort = $this->opo_result_context->getCurrentSort();
+		}elseif($sort != $this->opo_result_context->getCurrentSort()){ 
+			$sort_changed = true; 
 		}
-		if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
-			if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
-				$ps_sort = array_shift(array_keys($va_sorts));
-				$vb_sort_changed = true;
+		if(is_array($sorts = caGetOption('sortBy', $browse_info, null))) {
+			if (!$sort || (!in_array($sort, array_keys($sorts)))) {
+				$sort = array_shift(array_keys($sorts));
+				$sort_changed = true;
 			}
 		}
-		if($vb_sort_changed){
+		if($sort_changed){
 			# --- set the default sortDirection if available
-			$va_sort_direction = caGetOption('sortDirection', $va_browse_info, null);
-			if($ps_sort_direction = $va_sort_direction[$ps_sort]){
-				$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
+			$sort_direction = caGetOption('sortDirection', $browse_info, null);
+			if($sort_direction = $sort_direction[$sort]){
+				$this->opo_result_context->setCurrentSortDirection($sort_direction);
 			} 			
 		}
-		if (!($ps_sort_direction = strtolower($this->request->getParameter("direction", pString, ['forcePurify' => true])))) {
-			if (!($ps_sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
-				$ps_sort_direction = 'asc';
+		if (!($sort_direction = strtolower($this->request->getParameter("direction", pString, ['forcePurify' => true])))) {
+			if (!($sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
+				$sort_direction = 'asc';
 			}
 		}
-		if(!in_array($ps_sort_direction, ['asc', 'desc'])) {  $ps_sort_direction = 'asc'; }
+		if(!in_array($sort_direction, ['asc', 'desc'])) {  $sort_direction = 'asc'; }
 		
-		$this->opo_result_context->setCurrentSort($ps_sort);
-		$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
+		$this->opo_result_context->setCurrentSort($sort);
+		$this->opo_result_context->setCurrentSortDirection($sort_direction);
 		
-		$va_sort_by = caGetOption('sortBy', $va_browse_info, null);
-		$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
-		$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
-		$this->view->setVar('sortControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');
-		$this->view->setVar('sort', $ps_sort);
-		$this->view->setVar('sort_direction', $ps_sort_direction);
+		$sort_by = caGetOption('sortBy', $browse_info, null);
+		$this->view->setVar('sortBy', is_array($sort_by) ? $sort_by : null);
+		$this->view->setVar('sortBySelect', $sort_by_select = (is_array($sort_by) ? caHTMLSelect("sort", $sort_by, array('id' => "sort"), array("value" => $sort)) : ''));
+		$this->view->setVar('sortControl', $sort_by_select ? _t('Sort with %1', $sort_by_select) : '');
+		$this->view->setVar('sort', $sort);
+		$this->view->setVar('sort_direction', $sort_direction);
 
-		if (caGetOption('dontShowChildren', $va_browse_info, false)) {
+		if (caGetOption('dontShowChildren', $browse_info, false)) {
 			$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
 		}
 		
 		//
 		// Current criteria
 		//
-		$va_criteria = $o_browse->getCriteriaWithLabels();
-		if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
-			unset($va_criteria['_search']);
+		$criteria = $o_browse->getCriteriaWithLabels();
+		if (isset($criteria['_search']) && (isset($criteria['_search']['*']))) {
+			unset($criteria['_search']);
 		} 
 		
 		$x = [];
-		foreach($va_criteria as $facet => $values) {
+		foreach($criteria as $facet => $values) {
 			$x[] = $facet.":".join("|", array_keys($values));
 		}
 		
 		$this->view->setVar('share_url', caNavUrl($this->request, '*', '*', '*', ['facets' => join(";", $x)], ['absolute' => true]));
 
-		$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
+		$expand_results_hierarchically = caGetOption('expandResultsHierarchically', $browse_info, array(), array('castTo' => 'bool'));
 		
-		$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'omitChildRecords' => $vb_omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $va_browse_info, null)));
+		$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $expand_results_hierarchically, 'omitChildRecords' => $omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $browse_info, null)));
 		
 		//
 		// Set highlight text
 		//
-		MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $va_criteria['_search'] ?? '', ['persist' => !RequestHTTP::isAjax()]);
+		MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $criteria['_search'] ?? '', ['persist' => !RequestHTTP::isAjax()]);
 		
 		//
 		// Facets
 		//
-		if ($vs_facet_group = caGetOption('facetGroup', $va_browse_info, null)) {
-			$o_browse->setFacetGroup($vs_facet_group);
+		if ($facet_group = caGetOption('facetGroup', $browse_info, null)) {
+			$o_browse->setFacetGroup($facet_group);
 		}
 		
-		$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
-		$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
-		foreach($va_facets as $vs_facet_name => $va_facet_info) {
-			if(!$show_base_criteria && isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
+		$available_facet_list = caGetOption('availableFacets', $browse_info, null);
+		$facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
+		foreach($facets as $facet_name => $facet_info) {
+			if(!$show_base_criteria && isset($base_criteria[$facet_name])) { continue; } // skip base criteria 
 			
 			// Enforce role-restricted facets here
-			if (isset($va_facet_info['require_roles']) && is_array($va_facet_info['require_roles']) && sizeof($va_facet_info['require_roles'])) {
-				if (!$this->request->isLoggedIn() || !sizeof(array_filter($va_facet_info['require_roles'], function($v) { return $this->request->user->hasUserRole($v); }))) { continue; }
+			if (isset($facet_info['require_roles']) && is_array($facet_info['require_roles']) && sizeof($facet_info['require_roles'])) {
+				if (!$this->request->isLoggedIn() || !sizeof(array_filter($facet_info['require_roles'], function($v) { return $this->request->user->hasUserRole($v); }))) { continue; }
 			}
-			$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'checkAvailabilityOnly' => caGetOption('deferred_load', $va_facet_info, false, array('castTo' => 'bool'))));
+			$facets[$facet_name]['content'] = $o_browse->getFacet($facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'checkAvailabilityOnly' => caGetOption('deferred_load', $facet_info, false, array('castTo' => 'bool'))));
 		}
-		$this->view->setVar('facets', $va_facets);
+		$this->view->setVar('facets', $facets);
 	
-		$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
-		if(!$this->request->isAjax()) { Session::setVar($ps_function.'_last_browse_id', $vs_key); }
+		$this->view->setVar('key', $key = $o_browse->getBrowseID());
+		if(!$this->request->isAjax()) { Session::setVar($function.'_last_browse_id', $key); }
 		
 		
 		// remove base criteria from display list
-		if (!$show_base_criteria && is_array($va_base_criteria)) {
-			foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
-				unset($va_criteria[$vs_base_facet]);
+		if (!$show_base_criteria && is_array($base_criteria)) {
+			foreach($base_criteria as $base_facet => $criteria_value) {
+				unset($criteria[$base_facet]);
 			}
 		}
 		
-		$va_criteria_for_display = array();
-		foreach($va_criteria as $vs_facet_name => $va_criterion) {
-			$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
-			foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
-				$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
+		$criteria_for_display = array();
+		foreach($criteria as $facet_name => $criterion) {
+			$facet_info = $o_browse->getInfoForFacet($facet_name);
+			foreach($criterion as $criterion_id => $criterion) {
+				$criteria_for_display[] = array('facet' => $facet_info['label_singular'], 'facet_name' => $facet_name, 'value' => $criterion, 'id' => $criterion_id);
 			}
 		}
-		$this->view->setVar('criteria', $va_criteria_for_display);
+		$this->view->setVar('criteria', $criteria_for_display);
 		
 		// 
 		// Results
 		//
 		
-		$vs_sort_fld = $va_sort_by[$ps_sort];
-		if ($ps_view == 'timelineData') {
-			$vs_sort_fld = $va_browse_info['views']['timeline']['data'];
-			$ps_sort_direction = 'asc';
+		$sort_fld = $sort_by[$sort];
+		if ($view == 'timelineData') {
+			$sort_fld = $browse_info['views']['timeline']['data'];
+			$sort_direction = 'asc';
 		}
-		$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
+		$qr_res = $o_browse->getResults(array('sort' => $sort_fld, 'sort_direction' => $sort_direction));
 		
-		$va_show_letter_bar_sorts = caGetOption('showLetterBarSorts', $va_browse_info, null);
-		if(is_array($va_show_letter_bar_sorts) && in_array($vs_sort_fld, $va_show_letter_bar_sorts)){
-			if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
-				$va_letters = array();
+		$show_letter_bar_sorts = caGetOption('showLetterBarSorts', $browse_info, null);
+		if(is_array($show_letter_bar_sorts) && in_array($sort_fld, $show_letter_bar_sorts)){
+			if ($letter_bar_field = caGetOption('showLetterBarFrom', $browse_info, null)) { // generate letter bar
+				$letters = array();
 				while($qr_res->nextHit()) {
-					$va_letters[caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($vs_letter_bar_field), "0")), 0, 1)))]++;
+					$letters[caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($letter_bar_field), "0")), 0, 1)))]++;
 				}
-				ksort($va_letters, SORT_STRING);
-				$this->view->setVar('letterBar', $va_letters);
+				ksort($letters, SORT_STRING);
+				$this->view->setVar('letterBar', $letters);
 				$qr_res->seek(0);
 			}
 		}
-		$this->view->setVar('showLetterBar', (bool)$vs_letter_bar_field);
+		$this->view->setVar('showLetterBar', (bool)$letter_bar_field);
 		if($this->request->getParameter('l', pString, ['forcePurify' => true])){
-			$ps_l = trim(mb_strtolower($this->request->getParameter('l', pString, ['forcePurify' => true])));
-			if($ps_l == "all"){
-				$ps_l = "";
+			$l = trim(mb_strtolower($this->request->getParameter('l', pString, ['forcePurify' => true])));
+			if($l == "all"){
+				$l = "";
 			}
 		}else{
-			$ps_l = $this->opo_result_context->getLetterBarPage();
+			$l = $this->opo_result_context->getLetterBarPage();
 		}
-		$this->opo_result_context->setLetterBarPage($ps_l);
+		$this->opo_result_context->setLetterBarPage($l);
 		
-		$this->view->setVar('letter', $ps_l);			
+		$this->view->setVar('letter', $l);			
 		
-		if ($vs_letter_bar_field && ($ps_l)) {
-			$va_filtered_ids = array();
+		if ($letter_bar_field && ($l)) {
+			$filtered_ids = array();
 			while($qr_res->nextHit()) {
-				if (caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($vs_letter_bar_field), "0")), 0, 1))) == $ps_l) {
-					$va_filtered_ids[] = $qr_res->getPrimaryKey();
+				if (caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($letter_bar_field), "0")), 0, 1))) == $l) {
+					$filtered_ids[] = $qr_res->getPrimaryKey();
 				}
 			}
-			if (sizeof($va_filtered_ids) > 0) {
-				$qr_res = caMakeSearchResult($vs_class, $va_filtered_ids);
+			if (sizeof($filtered_ids) > 0) {
+				$qr_res = caMakeSearchResult($class, $filtered_ids);
 			}
 		}
 		
 		$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 		$this->view->setVar('result', $qr_res);
 			
-		if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
-			if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
-				$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
+		if (!($hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
+			if (!($hits_per_block = $this->opo_result_context->getItemsPerPage())) {
+				$hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
 			}
 		}
-		$this->opo_result_context->setItemsPerPage($pn_hits_per_block);
+		$this->opo_result_context->setItemsPerPage($hits_per_block);
 		
-		$this->view->setVar('hits_per_block', $pn_hits_per_block);
+		$this->view->setVar('hits_per_block', $hits_per_block);
 
-		$this->view->setVar('start', $vn_start = (int)$this->request->getParameter('s', pInteger));
+		$this->view->setVar('start', $start = (int)$this->request->getParameter('s', pInteger));
 		
-		$this->opo_result_context->setParameter('key', $vs_key);
+		$this->opo_result_context->setParameter('key', $key);
 		
 		if (!$this->request->isAjax()) {
 			if (($max_result_count = $this->request->config->get('maximum_find_result_list_values')) < 10) {
 				$max_result_count = 1000;
 			}
-			if (($vn_key_start = $vn_start - $max_result_count) < 0) { $vn_key_start = 0; }
-			$qr_res->seek($vn_key_start);
+			if (($key_start = $start - $max_result_count) < 0) { $key_start = 0; }
+			$qr_res->seek($key_start);
 			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues($max_result_count));
-			$qr_res->seek($vn_start);
+			$qr_res->seek($start);
 		}
 			
 		$this->opo_result_context->saveContext();
 		
-		if ($ps_type) {
-			if ($this->render($this->ops_view_prefix."/{$vs_class}_{$ps_type}_{$ps_view}_{$vs_format}.php")) { return; }
+		if ($type) {
+			if ($this->render($this->ops_view_prefix."/{$class}_{$type}_{$view}_{$format}.php")) { return; }
 		} 
-		
-// 		// map
-// 		if ($ps_view === 'map') {
-// 			$va_opts = array(
-// 				'renderLabelAsLink' => false, 
-// 				'request' => $this->request, 
-// 				'color' => '#cc0000', 
-// 				'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
-// 				'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
-// 				'ajaxContentUrl' => (caGetOption('title_template', $va_view_info['display'], null) || caGetOption('description_template', $va_view_info['display'], null)) ? caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view)) : null
-// 			);
-// 			
-// 			$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
-// 			$qr_res->seek(0);
-// 			$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
-// 			$this->view->setVar('map', $o_map->render('HTML', array('labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null), 'circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_view_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_view_info, 12), 'noWrap' => caGetOption("noWrap", $va_view_info, null), 'request' => $this->request)));
-// 		}
 
 		//
 		// Maps
 		//
-		if ($ps_view === 'map') {
+		if ($view === 'map') {
 			$this->view->setVar("showMap", false);
-			if (!is_array($map_attributes = caGetOption(['data', 'mapAttributes', 'map_attributes'], $va_view_info, array())) || !sizeof($map_attributes)) {
-				if ($map_attribute = caGetOption('data', $va_view_info, false)) { $map_attributes = array($map_attribute); }
+			if (!is_array($map_attributes = caGetOption(['data', 'mapAttributes', 'map_attributes'], $view_info, array())) || !sizeof($map_attributes)) {
+				if ($map_attribute = caGetOption('data', $view_info, false)) { $map_attributes = array($map_attribute); }
 			}
 			
 			if(is_array($map_attributes) && sizeof($map_attributes)) {			
 				$map_options = [
-					'width' => caGetOption(['mapWidth', 'map_width'], $va_view_info, 300),
-					'width' => caGetOption(['mapHeight', 'map_height'], $va_view_info, 300),
-					'zoom' => caGetOption(['mapZoomLevel', 'zoom_level'], $va_view_info, 5), 
-					'minZoom' => caGetOption(['mapMinZoomLevel'], $va_view_info, 1), 
-					'maxZoom' => caGetOption(['mapMaxZoomLevel'], $va_view_info, 15),
-					'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $va_view_info, ''),
+					'width' => caGetOption(['mapWidth', 'map_width'], $view_info, 300),
+					'width' => caGetOption(['mapHeight', 'map_height'], $view_info, 300),
+					'zoom' => caGetOption(['mapZoomLevel', 'zoom_level'], $view_info, null), 
+					'minZoom' => caGetOption(['mapMinZoomLevel'], $view_info, 1), 
+					'maxZoom' => caGetOption(['mapMaxZoomLevel'], $view_info, 15),
+					'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $view_info, ''),
+					'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'mapContent', ['browse' => $function]),
 					'themePath' => __CA_THEME_URL__
 				];
 				$this->view->setVar('mapOptions', $map_options);
@@ -460,11 +444,11 @@ class BrowseController extends FindController {
 			}
 		}
 		
-		switch($ps_view) {
+		switch($view) {
 			case 'xlsx':
 			case 'pptx':
 			case 'pdf':
-				$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $ps_search_expression ?? 'browse')), $this->getCriteriaForDisplay($o_browse));
+				$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $browse_info, $search_expression ?? 'browse')), $this->getCriteriaForDisplay($o_browse));
 				break;
 			case 'timelineData':
 				$this->view->setVar('view', 'timeline');
@@ -481,7 +465,7 @@ class BrowseController extends FindController {
 	 * as an array of path components.
 	 */
 	public static function getReturnToResultsUrl($po_request) {
-		$va_ret = array(
+		$ret = array(
 			'module_path' => '',
 			'controller' => 'Browse',
 			'action' => $po_request->getAction(),
@@ -489,20 +473,43 @@ class BrowseController extends FindController {
 				'key'
 			)
 		);
-		return $va_ret;
+		return $ret;
+	}
+	# -------------------------------------------------------
+	/** 
+	 * Return content for map bubble
+	 */
+	public function mapContent() {
+		$ids = explode(';', $this->request->getParameter('ids', pString, ['forcePurify' => true]));
+		$browse = $this->request->getParameter('browse', pString, ['forcePurify' => true]);
+		
+		if(!is_array($browse_info = caGetInfoForBrowseType($browse))) {
+			throw new ApplicationException(_t('Invalid browse'));
+		}
+		$t = $browse_info['views']['map']['mapItemInfoTemplate'] ?? "???";
+		$acc = [];
+		if(sizeof($ids)) {
+			if($qr = caMakeSearchResult($browse_info['table'], $ids)) {
+				while($qr->nextHit()) {
+					$acc[] = $qr->getWithTemplate($t);
+				}
+			}
+		}
+		$this->view->setVar('items', $acc);
+		$this->render("Browse/ajax_map_item_html.php");
 	}
 	# -------------------------------------------------------
 	/** 
 	 * return nav bar code for specified browse target
 	 */
 	public function getBrowseNavBarByTarget() {
-		$ps_target = $this->request->getParameter('target', pString, ['forcePurify' => true]);
-		$this->view->setVar("target", $ps_target);
-		if (!($va_browse_info = caGetInfoForBrowseType($ps_target))) {
+		$target = $this->request->getParameter('target', pString, ['forcePurify' => true]);
+		$this->view->setVar("target", $target);
+		if (!($browse_info = caGetInfoForBrowseType($target))) {
 			// invalid browse type – throw error
 			throw new ApplicationException("Invalid browse type");
 		}
-		$this->view->setVar("browse_name", $va_browse_info["displayName"]);
+		$this->view->setVar("browse_name", $browse_info["displayName"]);
 		$this->render("pageFormat/browseMenuFacets.php");
 	}
 	# ------------------------------------------------------------------
@@ -512,16 +519,16 @@ class BrowseController extends FindController {
 	 * @return string Summary of current browse criteria ready for display
 	 */
 	public function getCriteriaForDisplay($po_browse=null) {
-		$va_criteria = $po_browse->getCriteriaWithLabels();
-		if (!sizeof($va_criteria)) { return ''; }
-		$va_criteria_info = $po_browse->getInfoForFacets();
+		$criteria = $po_browse->getCriteriaWithLabels();
+		if (!sizeof($criteria)) { return ''; }
+		$criteria_info = $po_browse->getInfoForFacets();
 		
-		$va_buf = array();
-		foreach($va_criteria as $vs_facet => $va_vals) {
-			$va_buf[] = caUcFirstUTF8Safe($va_criteria_info[$vs_facet]['label_singular']).': '.join(", ", $va_vals);
+		$buf = array();
+		foreach($criteria as $facet => $vals) {
+			$buf[] = caUcFirstUTF8Safe($criteria_info[$facet]['label_singular']).': '.join(", ", $vals);
 		}
 		
-		return join(" / ", $va_buf);
+		return join(" / ", $buf);
 	}
 	# -------------------------------------------------------
 }
