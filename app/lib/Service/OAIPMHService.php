@@ -167,6 +167,9 @@ class OAIPMHService extends BaseService {
 		if(!is_array($this->opa_provider_info = $this->opa_provider_list[$ps_provider])) {
 			$this->throwError(self::OAI_ERR_BAD_ARGUMENT, _t("Invalid provider '%1'.", $ps_provider));
 		}
+		if(($this->opa_provider_info['dontFilterByACL']) && !defined('__CA_DISABLE_ACL__')) {
+			define('__CA_DISABLE_ACL__', true);
+		}
 	
 		if (!($vn_limit = (int)$this->opa_provider_info['maxRecordsPerRequest'])) {
 			if (!($vn_limit = (int)$this->config->get('maxRecordsPerRequest'))) {
@@ -579,9 +582,6 @@ class OAIPMHService extends BaseService {
 			$vs_range = null;
 		}
 		
-		if(($this->opa_provider_info['dontFilterByACL']) && !defined('__CA_DISABLE_ACL__')) {
-			define('__CA_DISABLE_ACL__', true);
-		}
 		$vs_query = $this->opa_provider_info['query'];
 		if (($set && $this->opa_provider_info['setFacet']) || $vs_range) {
 			if($vs_query === '*') {
@@ -620,7 +620,7 @@ class OAIPMHService extends BaseService {
 			
 			if($q === '*') {
 				$table = $this->table;
-				$qr_res = $table::findAsSearchResult('*', ['includeDeleted' => $vb_show_deleted, 'checkAccess' => $vb_dont_enforce_access_settings ? null : $va_access_values, 'dontFilterByACL' => $this->opa_provider_info['dontFilterByACL'], 'restrictToTypes' => caGetOption('restrictToTypes', $this->opa_provider_info, null), 'excludeTypes' => caGetOption('excludeTypes', $this->opa_provider_info, null)]);
+				$qr_res = $table::findAsSearchResult('*', ['includeDeleted' => $vb_show_deleted, 'checkAccess' => ($vb_dont_enforce_access_settings || $vb_show_deleted) ? null : $va_access_values, 'dontFilterByACL' => $this->opa_provider_info['dontFilterByACL'], 'restrictToTypes' => caGetOption('restrictToTypes', $this->opa_provider_info, null), 'excludeTypes' => caGetOption('excludeTypes', $this->opa_provider_info, null)]);
 			} else {
 				if(is_array($type_res = caGetOption('restrictToTypes', $this->opa_provider_info, null)) && sizeof($type_res)) {
 					$o_search->setTypeRestrictions($type_res);
