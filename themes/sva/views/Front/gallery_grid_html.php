@@ -43,7 +43,7 @@
  	$t_set = new ca_sets();
 	$va_sets = array();
 	if($vn_gallery_set_type_id){
-		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => "ca_objects");
+		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id);
 		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
 		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
 		
@@ -54,9 +54,23 @@
 			if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
 				unset($va_sets[$vn_set_id]); 
 			}
-			$va_first_item = $va_set_first_items[$vn_set_id];
-			$va_first_item = array_shift($va_first_item);
-			$vn_item_id = $va_first_item["item_id"];
+			$first_item = $va_set_first_items[$vn_set_id];
+			$first_item = array_shift($first_item);
+			$vn_item_id = $first_item["item_id"];
+			# --- if there isn't a rep and this is not a set of objects, try to get it's rep or a related object to show something
+			if(!$va_set_first_items[$vn_set_id][$vn_item_id]["representation_tag"]){
+				if(Datamodel::getTableName($va_set['table_num']) != "ca_objects"){
+					if (!($t_instance = Datamodel::getInstanceByTableNum($va_set['table_num']))) { throw new ApplicationException(_t('Invalid item')); }
+					$t_instance->load($first_item["row_id"]);
+					if($vs_thumbnail = $t_instance->getWithTemplate('^ca_object_representations.media.iconlarge', array("checkAccess" => $this->opa_access_values))){
+						$va_set_first_items[$vn_set_id][$vn_item_id]["representation_tag"] = $vs_thumbnail;
+						$va_set_first_items[$vn_set_id][$vn_item_id]["representation_url"] = $t_instance->getWithTemplate('^ca_object_representations.media.iconlarge.url', array("checkAccess" => $this->opa_access_values));
+					}elseif($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $this->opa_access_values))){
+						$va_set_first_items[$vn_set_id][$vn_item_id]["representation_tag"] = $vs_thumbnail;
+						$va_set_first_items[$vn_set_id][$vn_item_id]["representation_url"] = $t_instance->getWithTemplate('<unit relativeTo="ca_objects" length="1">^ca_object_representations.media.iconlarge.url</unit>', array("checkAccess" => $this->opa_access_values));
+					}
+				}
+			}
 		}
 	}
 
