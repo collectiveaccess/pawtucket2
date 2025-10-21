@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2023 Whirl-i-Gig
+ * Copyright 2009-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -114,6 +114,9 @@ class BaseBrowseController extends BaseFindController {
 			$this->opo_result_context->setSearchExpression($this->opo_browse->getBrowseID());
 		}
 		
+		$o_browse_config = caGetBrowseConfig();
+		$browse_config = $o_browse_config->getAssoc($this->ops_tablename);
+		
 		if (!($vn_items_per_page = $this->opo_result_context->getItemsPerPage())) { 
 			$vn_items_per_page = $this->opn_items_per_page_default; 
 			$this->opo_result_context->setItemsPerPage($vn_items_per_page);
@@ -186,7 +189,8 @@ class BaseBrowseController extends BaseFindController {
 		$this->opo_browse->execute([
 			'checkAccess' => $va_access_values, 
 			'no_cache' => !$this->opo_result_context->cacheIsValid(), 
-			'rootRecordsOnly' => $this->view->getVar('hide_children'), 
+			'rootRecordsOnly' => $this->view->getVar('hide_children'),
+			'expandResultsHierarchically' => $browse_config['expandResultsHierarchically'] ?? false,
 			'filterDeaccessionedRecords' => $this->view->getVar('hide_deaccession')]);
 		$this->opo_result_context->validateCache();
 		
@@ -339,7 +343,7 @@ class BaseBrowseController extends BaseFindController {
 				break;
 			# ------------------------------------
 			case 'EXPORT':
-				caExportResult($this->request, $vo_result, $this->request->getParameter("export_format", pString), _t('Browse'), ['output' => 'STREAM', 'display' => $t_display]);
+				caExportResult($this->request, $vo_result, $this->request->getParameter("export_format", pString), _t('Browse'), ['output' => 'STREAM', 'display' => $t_display, 'browseCriteria' => $this->opo_browse->getCriteriaAsStrings(null, ['sense' => 'singular', 'returnAs' => 'array'])]);
 				break;
 			# ------------------------------------
 			case 'EXPORTWITHMAPPING':
@@ -594,14 +598,15 @@ class BaseBrowseController extends BaseFindController {
 							$va_ancestors = $t_item->getHierarchyAncestorsForIDs(array_keys($va_facet), array('returnAs' => 'ids'));
 							
 							$vn_c = 0;
+							$facet_ids = array_flip(array_map(function($v) { return $v['id']; }, $va_facet));
 							while($qr_res->nextHit()) {
 								if ($vn_start > $vn_c) { $vn_c++; continue; }
 								$vn_parent_id = $qr_res->get("{$vs_rel_table}.parent_id");
 								$vn_item_id = $qr_res->get("{$vs_rel_table}.{$vs_pk}");
 								
-								if (!isset($va_facet[$vn_item_id]) && !in_array($vn_item_id, $va_ancestors)) { continue; } 
+								if (!isset($facet_ids[$vn_item_id]) && !in_array($vn_item_id, $va_ancestors)) { continue; } 
 								
-								$va_item = array();
+								$va_item = [];
 								$va_item['item_id'] = $vn_item_id;
 								$va_item['name'] = $qr_res->get("{$vs_rel_table}.preferred_labels");
 								$va_item['children'] = (isset($va_child_counts[$vn_item_id]) && $va_child_counts[$vn_item_id]) ? $va_child_counts[$vn_item_id] : 0;
@@ -656,6 +661,7 @@ class BaseBrowseController extends BaseFindController {
 		
 		$this->view->setVar('facet_list', $va_level_data);
 	
+		$this->response->setContentType('application/json');
 		return $this->render('Browse/facet_hierarchy_level_json.php');
 	}
 	# -------------------------------------------------------
@@ -722,6 +728,8 @@ class BaseBrowseController extends BaseFindController {
 		}
 		
 		$this->view->setVar('ancestors', $va_ancestors);
+		
+		$this->response->setContentType('application/json');
 		return $this->render('Browse/facet_hierarchy_ancestors_json.php');
 	}
 	# -------------------------------------------------------

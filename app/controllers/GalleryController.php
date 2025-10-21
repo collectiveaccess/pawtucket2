@@ -156,26 +156,43 @@ class GalleryController extends BasePawtucketController {
 					AssetLoadManager::register("maps");
 					$views = $this->config->get('views');
 					$views_info = $views['map'][$table];
-					if($views_info['data']){
+					if($views_info['mapAttributes']){						
 						$o_res = caMakeSearchResult(
 							$t_set->get('table_num'),
 							array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))),
 							['checkAccess' => $this->opa_access_values]
 						);
-						$va_map_display = caGetOption("display", $views_info, array());
-						$opts = array(
-							'renderLabelAsLink' => true, 
-							'request' => $this->request, 
-							'color' => '#cc0000', 
-							'labelTemplate' => caGetOption("labelTemplate", $va_map_display, 'ca_places.preferred_labels.name'), 
-							'contentTemplate' => caGetOption("contentTemplate", $va_map_display, 'ca_places.preferred_labels.name'),
-							//'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', ['set_id' => $set_id])
-						);
-		
-						$o_map = new GeographicMap(caGetOption("width", $views_info, "100%"), caGetOption("height", $views_info, "600px"));
-						$o_map->mapFrom($o_res, $views_info['data'], $opts);
-						$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $views_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $views_info, 12), 'request' => $this->request)));
-						$this->render("Gallery/set_detail_map_html.php");
+									
+						if (!is_array($map_attributes = caGetOption(['data', 'mapAttributes', 'map_attributes'], $views_info, array())) || !sizeof($map_attributes)) {
+							if ($map_attribute = caGetOption(['data', 'mapAttributes', 'map_attributes'], $views_info, false)) { $map_attributes = array($map_attribute); }
+						}
+						
+						if(is_array($map_attributes) && sizeof($map_attributes)) {			
+						
+							$map_options = [
+								'width' => caGetOption(['width'], $views_info, 300),
+								'height' => caGetOption(['height'], $views_info, 300),
+								#'zoom' => caGetOption(['zoomLevel'], $views_info, 5), 
+								'minZoom' => caGetOption(['minZoomLevel'], $views_info, 1), 
+								'maxZoom' => caGetOption(['maxZoomLevel'], $views_info, 15),
+								'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $views_info, ''),
+								'themePath' => __CA_THEMES_URL__.'/default'
+							];
+							$this->view->setVar('mapOptions', $map_options);
+							
+							$map_data = [];
+							foreach($map_attributes as $map_attribute) {
+								$adata = caGetCoordinateDataFromResult($o_res, $map_attribute, $map_options);
+								$map_data = array_merge($map_data ?? [], $adata['coordinates'] ?? []);
+							}
+							if (sizeof($map_data ?? []) > 0) {
+								$this->view->setVar("showMap", true);
+								$this->view->setVar('mapData', $map_data);
+								$map_options['data'] = $map_data;
+								$this->view->setVar('mapOptions', $map_options);
+							}
+						}						
+						$this->render("Gallery/detail_map_html.php");
 					}else{
 						$this->render("Gallery/detail_html.php");
 					}
