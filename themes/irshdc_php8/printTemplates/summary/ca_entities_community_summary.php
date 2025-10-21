@@ -49,12 +49,11 @@
 	print $this->render("header.php");
 	print $this->render("footer.php");	
 
-	$vs_entity_image = $t_item->getWithTemplate("<ifdef code='ca_object_representations.media.medium'>^ca_object_representations.media.medium<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if><br/><br/></ifdef>", array("checkAccess" => $va_access_values, "limit" => 1));
+	$vs_entity_image = $t_item->getWithTemplate("<ifdef code='ca_object_representations.media.medium'><img src='^ca_object_representations.media.medium.path'><if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if><br/><br/></ifdef>", array("checkAccess" => $va_access_values, "limit" => 1));
 
 ?>
 	<div class="title">
 		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
-		{{{<ifdef code="ca_entities.preferred_labels.source_info"><div class="source">Source: ^ca_entities.preferred_labels.source_info</div></ifdef>}}}
 		{{{<ifdef code="ca_entities.website.website_url"><div class="source"><a href="^ca_entities.website.website_url" target="_blank">^ca_entities.website.link_text</a></div></ifdef>}}}
 	</div>
 
@@ -69,21 +68,15 @@
 					{{{<ifdef code="ca_entities.description_new.description_new_txt">
 						<div class="unit"><h6>Description</h6>
 							^ca_entities.description_new.description_new_txt
-							<ifdef code="ca_entities.description_new.description_new_source"><div class="source">Source: ^ca_entities.description_new.description_new_source</div></ifdef>
 						</div>
 					</ifdef>}}}
 					{{{<ifdef code="ca_entities.community_history.community_history_text">
-						<div class="unit"><h6>History of Community Name</h6>^ca_entities.community_history.community_history_text
-							<ifdef code="ca_entities.community_history.community_history_source"><div class="source">Source: ^ca_entities.community_history.community_history_source</div></ifdef>
-						</div>
+						<div class="unit"><h6>History of Community Name</h6>^ca_entities.community_history.community_history_text</div>
 					</ifdef>}}}
 					{{{<ifdef code="ca_entities.nonpreferred_labels.displayname">
 						<div class='unit'>
 							<H6>Other Name(s)</H6>
-							<div class="trimTextAltNames"><unit relativeTo="ca_entities.nonpreferred_labels" delimiter="<br/>">
-								^ca_entities.nonpreferred_labels.displayname
-								<ifdef code="ca_entities.nonpreferred_labels.source_info"><div class="source">Source: ^ca_entities.nonpreferred_labels.source_info</div></ifdef>
-							</unit></div>
+							<div class="trimTextAltNames"><unit relativeTo="ca_entities.nonpreferred_labels" delimiter="<br/>">^ca_entities.nonpreferred_labels.displayname</unit></div>
 						</div>
 					</ifdef>}}}
 					{{{<ifdef code="ca_entities.alt_name_note">
@@ -102,6 +95,6 @@
 						</div>
 					</ifdef>}}}
 <?php
-	print $this->render("entities_summary_related_records.php");
+	#print $this->render("entities_summary_related_records.php");
 	print $this->render("pdfEnd.php");
 ?>

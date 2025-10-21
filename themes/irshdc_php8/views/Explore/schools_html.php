@@ -7,7 +7,7 @@
 		<div class="col-sm-12">
 			<H1>BC Schools</H1>
 			<p>
-				{{{explore_school_intro}}}
+				{{{explore_schools_intro}}}
 			</p>
 			<div class="text-center">
 <?php

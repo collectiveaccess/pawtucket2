@@ -49,7 +49,7 @@
 	print $this->render("header.php");
 	print $this->render("footer.php");	
 
-	$vs_entity_image = $t_item->getWithTemplate("<ifdef code='ca_object_representations.media.medium'>^ca_object_representations.media.medium<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if><br/><br/></ifdef>", array("checkAccess" => $va_access_values, "limit" => 1));
+	$vs_entity_image = $t_item->getWithTemplate("<ifdef code='ca_object_representations.media.medium'><img src='^ca_object_representations.media.medium.path'><if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if><br/><br/></ifdef>", array("checkAccess" => $va_access_values, "limit" => 1));
 
 ?>
 	<div class="title">
@@ -67,11 +67,10 @@
 				{{{<ifdef code="ca_entities.org_type"><div class="unit"><unit relativeTo="ca_entities" convertCodesToDisplayText="true">^ca_entities.org_type%useSingular=1</unit></div></ifdef>}}}	
 				{{{<ifdef code="ca_entities.indexingDatesSet"><div class="unit"><unit relativeTo="ca_entities" delimiter=", ">^ca_entities.indexingDatesSet</unit></div></ifdef>}}}
 
-				{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities.related" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+				{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities.related" restrictToTypes="school" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
 					{{{<ifdef code="ca_entities.description_new.description_new_txt">
 						<div class="unit"><h6>Description</h6>
 							^ca_entities.description_new.description_new_txt
-							<ifdef code="ca_entities.description_new.description_new_source"><div class="source">Source: ^ca_entities.description_new.description_new_source</div></ifdef>
 						</div>
 					</ifdef>}}}
 					{{{<ifdef code="ca_entities.public_notes|ca_entities.nonpreferred_labels.displayname">
@@ -85,6 +84,6 @@
 						</div>
 					</ifdef>}}}
 <?php
-	print $this->render("entities_summary_related_records.php");
+	#print $this->render("entities_summary_related_records.php");
 	print $this->render("pdfEnd.php");
 ?>

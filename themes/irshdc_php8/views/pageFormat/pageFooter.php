@@ -33,9 +33,9 @@
 	if(!in_array($vs_controller, array("browse", "search"))){
 ?>
 		<footer id="footer">
-			<div class="darkRedBg text-center">
+			<div class="<?php print (($vs_controller == "listing") && (strToLower($this->request->getAction() == "exhibitions"))) ? "footerExhibitionLanding" : "darkRedBg"; ?> text-center">
 				<div>
-					Need support? The Indian Residential School Survivor Support Society<br/>has established a 24-hour Crisis Line for former students and their families. Call: 1-866-925-4419<br/>
+					Need support? The Indian Residential School Survivor Support Society has established<br/>a 24-hour Crisis Line for former students and their families. Call: 1-866-925-4419<br/>
 					Find additional <a href="https://irshdc.ubc.ca/for-survivors/healing-and-wellness-resources/" target="_blank">wellness resources and supports</a>.
 				</div>
 			</div>
