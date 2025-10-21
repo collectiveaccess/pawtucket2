@@ -656,7 +656,7 @@ class DisplayTemplateParser {
 
 					$locale = caGetOption('locale', $o_node->locale, null);
 					if($o_node->locale) {
-						$va_get_options['locale'] = $locale
+						$va_get_options['locale'] = $locale;
 						$va_get_options['noLocaleFallback'] = $o_node->noLocaleFallback;
 					}
 					
