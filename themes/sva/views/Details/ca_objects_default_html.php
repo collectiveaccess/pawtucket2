@@ -100,7 +100,7 @@ if($show_nav){
 					<div class="col">				
 						{{{<dl class="mb-0">
 <?php
-								$this->setVar("exclude_relationship_types", array("donor"));
+								#$this->setVar("exclude_relationship_types", array("donor"));
 								print $this->render("Details/snippets/related_entities_by_rel_type_html.php");
 ?>
 
