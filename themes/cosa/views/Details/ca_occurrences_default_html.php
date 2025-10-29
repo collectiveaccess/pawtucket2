@@ -90,6 +90,15 @@ if($show_nav){
 			{{{<ifdef code="ca_occurrences.summary"><hr><div>^ca_occurrences.summary</div></ifdef>}}}
 		</div>
 	</div>
+<?php
+	$artists = array();
+	$artist_list = $t_item->getWithTemplate('<ifcount code="ca_objects" min="1"><unit relativeTo="ca_objects" delimiter=", "><ifcount code="ca_entities" min="1" restrictToRelationshipTypes="artist"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></ifcount></unit></ifcount>', array("checkAccess" => $access_values));
+	if($artist_list){
+		$artists = explode(", ", $artist_list);
+		$artists = array_unique($artists);
+		$artist_list = join(", ", $artists);
+	}
+?>
 	<div class="row">
 		<div class="col-md-12">
 			<div class="bg-light pt-3 px-4 mb-4">			
@@ -100,11 +109,11 @@ if($show_nav){
 								<dt><ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="curator"><?= _t('Curator'); ?></ifcount><ifcount code="ca_entities" min="2" restrictToRelationshipTypes="curator"><?= _t('Curators'); ?></ifcount></dt>
 								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="curator" delimiter=", ">^ca_entities.preferred_labels</unit></dd>
 							</ifcount>
-							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="related">
-								<dt><ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="related"><?= _t('Artist'); ?></ifcount><ifcount code="ca_entities" min="2" restrictToRelationshipTypes="related"><?= _t('Artists'); ?></ifcount></dt>
-								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="related" delimiter=", ">^ca_entities.preferred_labels</unit></dd>
-							</ifcount>
-							
+<?php
+								if($artist_list){
+									print "<dt>Artists</dt><dd>".$artist_list."</dd>";
+								}
+?>
 						</dl>}}}
 					</div>
 					<div class="col-md-4 pb-3">

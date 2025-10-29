@@ -30,13 +30,27 @@ function makeMap(options) {
 			let m = null, c = data[index], opts = { };
 			if(c.coordinates) {
 				let pts = c.coordinates.map(c => { return [c.latitude, c.longitude]; });
-				m = L.polygon(pts).addTo(g);
+				//m = L.polygon(pts).addTo(g);
 			} else if(c.radius) {
+				if((c.latitude === '') || (c.longitude === '')) { console.log("Invalid point", c); continue; }
 				m = L.circle([parseFloat(c.latitude), parseFloat(c.longitude)], {radius: c.radius}).addTo(g);
 			} else {
+				if((c.latitude === '') || (c.longitude === '')) { console.log("Invalid point", c); continue; }
 				m = L.marker([parseFloat(c.latitude), parseFloat(c.longitude)], opts).addTo(g);
 			}
-			if(c.info) { m.bindPopup(Object.values(data[index].info).join("<br>")); }
+			if(c.info) { 
+				if(options['ajaxContentUrl'] ?? null) {
+					m.bindPopup(
+							(layer)=>{
+								var el = document.createElement('div');
+								htmx.ajax('GET', options['ajaxContentUrl'] + '?ids=' + c.ajaxContentIDs.join(';'), el);
+				
+								return el;
+							}, { minWidth: 400, maxWidth : 560, minHeight: 300 });
+				} else {
+					m.bindPopup(Object.values(data[index].info).join("<br>")); 
+				}
+			}
 		}
 		mapElement.style.display = 'block';
 	} else {

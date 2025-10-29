@@ -28,6 +28,12 @@
 /* ------------------------- Maps --------------------------- */
 .leaflet-popup-content{
 	min-width:250px;
+	max-width:250px;
+}
+#browseResultsContainer{
+	.leaflet-container{
+		height:500px !important;
+	}
 }
 /* ------------------------- Buttons ------------------------ */
 .btn-primary{

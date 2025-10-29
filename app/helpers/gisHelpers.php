@@ -705,6 +705,9 @@ function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=nu
 			$access_values = $options['checkAccess'];
 		}
 		
+		$info_template = caGetOption('infoTemplate', $options, null);
+		$ajax_content_url = caGetOption('ajaxContentUrl', $options, null);
+		
 		$georef_list = [];
 		while($data->nextHit()) {
 			if (is_array($access_values) && !in_array($data->get($chk_related_for_access ? $chk_related_for_access : "{$table}.access"), $access_values)) {
@@ -725,7 +728,7 @@ function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=nu
 					
 						$label = $content = $ajax_content = null;
 						
-						if (strlen($info_template = caGetOption('infoTemplate', $options, null))) {
+						if (!strlen($ajax_content_url) && strlen($info_template)) {
 							$info = caProcessTemplateForIDs($info_template, $table, [$id], []);
 						} else {
 							$info = '';
