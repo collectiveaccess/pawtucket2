@@ -57,7 +57,7 @@ if($this->request->isLoggedIn()){
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
-	
+	<!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDF0YBY7X9"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-BDF0YBY7X9'); </script>
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
 	<script>

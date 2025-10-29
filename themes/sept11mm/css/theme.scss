@@ -17,6 +17,13 @@ $primary: #007db3;
 	font-style:normal;
 }
 @font-face{
+	font-family:'gotham-book';
+	src:url("fonts/gothmmed-webfont.ttf");
+	src:url("fonts/gothmmed-webfont.ttf") format('truetype'), url("fonts/gothmmed-webfont.eot") format('eot'),url("fonts/gothmmed-webfont.woff") format('woff'),url("fonts/gothmmed-webfont.svg") format('svg');
+	font-weight:bold;
+	font-style:normal;
+}
+@font-face{
 	font-family:'gotham-medium';
 	src:url("fonts/gothmmed-webfont.ttf");
 	src:url("fonts/gothmmed-webfont.ttf") format('truetype'), url("fonts/gothmmed-webfont.eot") format('eot'),url("fonts/gothmmed-webfont.woff") format('woff'),url("fonts/gothmmed-webfont.svg") format('svg');
@@ -30,7 +37,6 @@ $primary: #007db3;
 	font-weight:normal;
 	font-style:normal;
 }
-
 .playfair-display {
   font-family: "Playfair Display", serif;
   font-optical-sizing: auto;
@@ -170,6 +176,26 @@ footer{
 	}
 }
 /* ------------------------- Front ------------------------- */
+.hpHero {
+    position: relative;
+    background-image: url("../assets/graphics/Winters_911_Museum_9428.jpg");
+
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/Winters_911_Museum_9428.jpg");
+    }
+    @media(min-width:992px){
+		.collectionLink{
+			height:25%;
+		}
+	}
+}
+.hpHero1 {
+    background-image: url("../assets/graphics/Winters_911_Museum_9428.jpg");
+}
 .parallax {
     position: relative;
     background-image: url("../assets/graphics/Winters_911_Museum_9428.jpg");

@@ -68,7 +68,8 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<nav class="navbar navbar-expand-xl shadow-sm">
 		<div class="container-fluid">
-			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'logo-full.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")), "navbar-brand  img-fluid ps-3", "", "", ""); ?>
+			<?php #print caNavlink($this->request, caGetThemeGraphic($this->request, 'logo-full.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")), "navbar-brand  img-fluid ps-3", "", "", ""); ?>
+			<a href="https://911memorial.org" class="navbar-brand  img-fluid ps-3"><?= caGetThemeGraphic($this->request, 'logo-full.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")); ?></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
@@ -78,18 +79,6 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 						<a href="https://911memorial.org" class="nav-link">Museum Home</a>
 					</li>
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
-					<!--<li class="nav-item">
-						<?= caNavlink($this->request, _t('Objects'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? " active" : ""), "", "Browse", "objects", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? array("aria-current" => "page") : null)); ?>
-					</li>
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('LMDC Boards'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "boards")) ? " active" : ""), "", "Browse", "boards", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "boards")) ? array("aria-current" => "page") : null)); ?>
-					</li>
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Oral Histories'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "oral_histories")) ? " active" : ""), "", "Browse", "oral_histories", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "oral_histories")) ? array("aria-current" => "page") : null)); ?>
-					</li>-->
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Features'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
-					</li>
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 					</li>
@@ -101,15 +90,18 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 				</ul>
 				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
 					<div class="input-group">
-						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search">
+						<label for="nav-search-input" class="form-label visually-hidden">Search all collections</label>
+						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search all collections">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
 					<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
 				</form>
 			</div>
 		</div>
-	</nav>	
+	</nav>
+	<div class="bg-primary py-3 text-white fw-bold fs-4 px-4"><div class="container-fluid">
+		<?= caNavLink($this->request, _t("Inside the Collection"), "text-decoration-none text-white", "", "", ""); ?>
+	</div></div>
 
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php

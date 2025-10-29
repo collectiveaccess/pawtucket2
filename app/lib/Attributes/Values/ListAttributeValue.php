@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2023 Whirl-i-Gig
+ * Copyright 2008-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,7 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
-
 define("__CA_ATTRIBUTE_VALUE_LIST__", 3);
 
 require_once(__CA_LIB_DIR__.'/Attributes/Values/IAttributeValue.php');
@@ -155,6 +154,18 @@ $_ca_attribute_settings['ListAttributeValue'] = array(		// global
 		'options' => array(
 			_t('Drop-down list') => 'select',
 			_t('Text box') => 'text',
+		)
+	),
+	'useSingular' => array(
+		'formatType' => FT_TEXT,
+		'displayType' => DT_SELECT,
+		'default' => 0,
+		'width' => 40, 'height' => 1,
+		'label' => _t('Display sense'),
+		'description' => _t('Sets whether singular or plural sense of term is displayed.'),
+		'options' => array(
+			_t('Singular') => 1,
+			_t('Plural') => 0,
 		)
 	),
 	'useTextEntryInSearchBuilderWhenListLongerThan' => array(
@@ -347,6 +358,8 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 	 * @return string The value
 	 */
 	public function getDisplayValue($pa_options=null) {
+		$use_singular = caGetOption('useSingular', $pa_options, false);
+		
 		if (isset($pa_options['output'])) {
 			switch(strtolower($pa_options['output'])) {
 				case 'idno':
@@ -377,7 +390,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
                 return caGetListItemIdno($this->opn_item_id, $pa_options);
             }
             if($vb_return_idno = ((isset($pa_options['returnDisplayText']) && (bool)$pa_options['returnDisplayText']))) {
-                return caGetListItemByIDForDisplay($this->opn_item_id, array_merge($pa_options, ['return' => caGetOption('useSingular', $pa_options, false) ? 'singular' : 'plural']));
+                return caGetListItemByIDForDisplay($this->opn_item_id, array_merge($pa_options, ['return' => $use_singular ? 'singular' : 'plural']));
             }
 
             if(is_null($vb_ids_only = isset($pa_options['idsOnly']) ? (bool)$pa_options['idsOnly'] : null)) {
@@ -407,20 +420,18 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 				if ($o_trans) { $t_item->setTransaction($o_trans); }
 			}
 
-			$vs_get_spec = ((isset($pa_options['useSingular']) && $pa_options['useSingular']) ? 'preferred_labels.name_singular' : 'preferred_labels.name_plural');
-
 			// do we need to get the hierarchy?
 			if ($pa_options['showHierarchy'] ?? false) {
+				$vs_get_spec = ((isset($pa_options['useSingular']) && $pa_options['useSingular']) ? 'preferred_labels.name_singular' : 'preferred_labels.name_plural');
+
 				if (!$t_item->isLoaded()) { $t_item->load((int)$this->opn_item_id); }
 				
 				if (is_array($pa_options['filterTypes'])) {
 				    return $t_item->get('ca_list_items.hierarchy.'.$vs_get_spec, array_merge(array('filterTypes' => $pa_options['filterTypes'], 'delimiter' => ' ➔ ', $pa_options)));
 				} 
-				
 				return $t_item->get('ca_list_items.hierarchy.'.$vs_get_spec, array_merge(array('delimiter' => ' ➔ ', $pa_options)));
 			}
-
-			return $t_list->getItemFromListForDisplayByItemID($vn_list_id, $this->opn_item_id, array_merge($pa_options, ['return' => caGetOption('useSingular', $pa_options, false) ? 'singular' : 'plural']));
+			return $t_list->getItemForDisplayByItemID($this->opn_item_id, array_merge($pa_options, ['return' => caGetOption('useSingular', $pa_options, false) ? 'singular' : 'plural']));
 		}
 		return $this->ops_text_value;
 	}
@@ -556,7 +567,9 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 
 		$vb_require_value = (is_null($pa_element_info['settings']['requireValue'] ?? false)) ? false : (bool)($pa_element_info['settings']['requireValue'] ?? false);
 		
-		$render_as = $pa_element_info['settings']['render'] ?? null;
+        $for_search = caGetOption('forSearch', $pa_options, false);
+        $for_form = caGetOption('forForm', $pa_options, false);
+		$render_as =($for_search && !$for_form) ? "" : caGetOption('render', $pa_options, caGetOption('render', $pa_element_info['settings'], ''));
 		
 		if (($pa_element_info['parent_id']) && ($render_as == 'checklist')) { $render_as = ''; }	// checklists can only be top-level
 		
@@ -571,10 +584,8 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 		}
 		
 		$vb_implicit_nulls = caGetOption('implicitNullOption', $pa_element_info['settings'], false);
+		$use_singular = caGetOption('useSingular', $pa_element_info['settings'], false);
 
-        $for_search = caGetOption('forSearch', $pa_options, false);
-
-		$vs_render = $for_search ? "" : caGetOption('render', $pa_options, caGetOption('render', $pa_element_info['settings'], ''));
 		$vb_auto_shrink = (bool) caGetOption('auto_shrink', $pa_options, caGetOption('auto_shrink', $pa_element_info['settings'], false));
 		
 		$current_selection_display_format = caGetOption('currentSelectionDisplayFormat', $pa_options, caGetOption('currentSelectionDisplayFormat', $pa_element_info['settings'], null));
@@ -597,12 +608,13 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 			array_merge(
 				$pa_options,
 				[
-					'render' => $vs_render, 'maxColumns' => $vn_max_columns, 
+					'render' => $render_as, 'maxColumns' => $vn_max_columns, 
 					'element_id' => $pa_element_info['element_id'], 'nullOption' => $vb_null_option, 
 					'implicitNullOption' => $vb_implicit_nulls, 'auto_shrink' => $vb_auto_shrink, 
 					'currentSelectionDisplayFormat' => $current_selection_display_format,
 					'separateDisabledValues' => $separate_disabled_values,
 					'hideDisabledValues' => $hide_disabled_values,
+					'useSingular' => $use_singular,
 					'deferHierarchyLoad' => (bool)($pa_element_info['settings']['deferHierarchyLoad'] ?? false)
 				]
 			)

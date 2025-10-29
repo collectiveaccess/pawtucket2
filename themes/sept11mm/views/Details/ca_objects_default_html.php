@@ -108,7 +108,7 @@ if($show_nav){
 					</ifdef>
 					<ifdef code="ca_objects.teammates">
 						<dt class="pt-3">Teammate(s)</dt>
-						<dd>^ca_objects.teammates</dd>
+						<dd>^ca_objects.teammates%delimiter=,_</dd>
 					</ifdef>
 					<ifdef code="ca_objects.submission_place.submission_city|ca_objects.submission_place.submission_state|ca_objects.submission_place.submission_country">
 						<dt class="pt-3">Submitter Location</dt>
@@ -133,7 +133,6 @@ if($show_nav){
 		<div class="col-md-6 offset-6 text-center">
 			<div class="pt-3">
 				{{{<ifdef code="ca_objects.curators_comment"><span id="curatorCommentsButton" class="curatorCommentsShowHide collapse show"><button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorComments curatorCommentsButton"><i class='bi bi-justify'></i> Curator's Comment</button></span></ifdef>}}}<?php
-				print caNavLink($this->request, "<i class='bi bi-book'></i> "._t("Ask a Question"), "btn btn-primary ms-4", "", "Contact", "Form");
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-chat-left'></i> "._t("Feedback"), "btn btn-primary ms-4", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
 				}
@@ -153,33 +152,7 @@ if($show_nav){
 </ifdef>}}}
 	<div class="row mb-5">
 		<div class="col-md-6 mt-4">
-<?php
-			$va_list_ids = array();
-			if($va_subjects = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("voc_6"), "checkAccess" => caGetUserAccessValues($this->request)))){
-				if(is_array($va_subjects) && sizeof($va_subjects)){
-					# --- loop through to order alphebeticaly
-					$va_subjects_sorted = array();
-					$t_list_item = new ca_list_items();
-					foreach($va_subjects as $va_subject){
-						$t_list_item->load($va_subject["item_id"]);
-						$va_popover = array();
-						if($t_list_item->get("ca_list_item_labels.description")){
-							#$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-title" => $va_subject["name_singular"], "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");
-							$va_popover = array("data-container" => "body", "data-bs-toggle" => "tooltip", "data-bs-placement" => "top", "data-bs-html" => "true", "title" => $t_list_item->get("ca_list_item_labels.description"));							
-						}
-						$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "btn btn-small btn-light me-2 mb-2", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]), $va_popover);
-						$va_list_ids[] = $va_subject["item_id"];
-					}
-					ksort($va_subjects_sorted);
-					print "<div><div class='fw-bold mb-2'>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")." ".caNavLink($this->request, "<i class='bi bi-info-circle'></i>", "", "", "About", "keywords", null, array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => _t("Click for keyword definitions"),  "data-trigger" => "hover"))."</div>";
-					print join("", $va_subjects_sorted);
-					print "</div>";
-				}
-			}
-?>								
-		</div>
-		<div class="col-md-6 mt-4">
-			<div class="px-4">
+			<div class="bg-light py-3 px-4 mb-3">
 				<ul class="list-group small">
 					{{{<ifdef code="ca_objects.idno"><li class='list-group-item p-0 border-0 bg-transparent'><span class="fw-bold">Accession Number: </span>^ca_objects.idno</li></ifdef>}}}
 <?php
@@ -240,17 +213,164 @@ if($show_nav){
 				}		
 ?>
 				</ul>
-			</div>		
+			</div>	
+		</div>
+		<div class="col-md-6 mt-4">
+<?php
+			$va_list_ids = array();
+			if($va_subjects = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("voc_6"), "checkAccess" => caGetUserAccessValues($this->request)))){
+				if(is_array($va_subjects) && sizeof($va_subjects)){
+					# --- loop through to order alphebeticaly
+					$va_subjects_sorted = array();
+					$t_list_item = new ca_list_items();
+					foreach($va_subjects as $va_subject){
+						$t_list_item->load($va_subject["item_id"]);
+						$va_popover = array();
+						if($t_list_item->get("ca_list_item_labels.description")){
+							#$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-title" => $va_subject["name_singular"], "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");
+							$va_popover = array("data-container" => "body", "data-bs-toggle" => "tooltip", "data-bs-placement" => "top", "data-bs-html" => "true", "title" => $t_list_item->get("ca_list_item_labels.description"));							
+						}
+						$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "btn btn-small btn-light me-2 mb-2", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]), $va_popover);
+						$va_list_ids[] = $va_subject["item_id"];
+					}
+					ksort($va_subjects_sorted);
+					print "<div><div class='fw-bold mb-2'>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")." ".caNavLink($this->request, "<i class='bi bi-info-circle'></i>", "", "", "About", "keywords", null, array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => _t("Click for keyword definitions"),  "data-trigger" => "hover"))."</div>";
+					print join("", $va_subjects_sorted);
+					print "</div>";
+				}
+			}
+?>								
 		</div>
 	</div>
-{{{<div class="row">
-		<div class="col"><h2>Related Items</h2><hr></div>
+<?php
+	# --- Related Items
+	# --- items from same donor (source set above) - if not anonymous
+	# --- then related objects on backend
+	# --- then same title
+
+# --- build the search terms
+$va_search = array();
+if($vn_source_id){
+	$va_search[] = "entity_id:".$vn_source_id;
+}
+# --- do the search and see if there are decent results....otherwise broaden it
+$vn_hits = 0;
+$va_related_ids = array();
+if($vn_source_id){
+	$vs_search_term = "entity_id:".$vn_source_id;
+	$t_entity = new ca_entities($vn_source_id);
+	$donor_related_ids = $t_entity->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => caGetUserAccessValues($this->request), "restrictToRelationshipTypes" => array("donor")));
+	if(is_array($donor_related_ids) && sizeof($donor_related_ids)){
+		# --- delete current item from array
+		if (($key = array_search($id, $donor_related_ids)) !== false) {
+			unset($donor_related_ids[$key]);
+		}
+		shuffle($donor_related_ids);
+		$va_related_ids = array_slice($donor_related_ids, 0, 6);
+	}
+}
+$vb_search_again = false;
+
+if(sizeof($va_related_ids) < 6){
+	$vb_search_again = true;
+}
+# add more search terms for broadening and more link
+$va_related_objects = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => caGetUserAccessValues($this->request)));
+if(is_array($va_related_objects) && sizeof($va_related_objects)){
+	if(is_array($va_related_ids) && sizeof($va_related_ids)){
+		$va_related_ids = array_unique(array_merge($va_related_ids, $va_related_objects));
+	}else{
+		$va_related_ids = $va_related_objects;
+	}
+}
+
+# --- not sure how to add related objects to the more link
+
+
+if(sizeof($va_related_ids) < 6){
+	$vb_search_again = true;
+}
+# add more search terms for broadening and more link
+$va_search3 = array();
+if($t_object->get("ca_objects.preferred_labels.name")){
+	$va_search3[] = "ca_objects.preferred_labels.name:'".$t_object->get("ca_objects.preferred_labels.name")."'";
+}
+if($vb_search_again){
+	$vs_search_term = join(" OR ", $va_search3);
+	$o_search = caGetSearchInstance("ca_objects");
+	$qr_res = $o_search->search($vs_search_term, array("checkAccess" => caGetUserAccessValues($this->request), "sort" => "_rand"));
+	$va_related_more = array();
+	if($qr_res->numHits()){
+		while($qr_res->nextHit()){
+			if($qr_res->get("ca_objects.object_id") != $t_object->get("object_id")){
+				$va_related_more[] = $qr_res->get("ca_objects.object_id");
+			}
+		}
+		shuffle($va_related_more);
+		if(is_array($va_related_ids) && sizeof($va_related_ids)){
+			$va_related_ids = array_unique(array_merge($va_related_ids, $va_related_more));
+		}else{
+			$va_related_ids = $va_related_more;
+		}
+	}
+}
+
+if(sizeof($va_related_ids)){
+	$browse_target = "objects";
+	switch(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)))){
+		case "lmdc boards":
+			$browse_target = "boards";
+		break;
+		# -----------------------
+		case "oral history":
+			$browse_target = "oral_histories";
+		break;
+		# -----------------------
+		default:
+			$browse_target = "objects";
+		break;
+		# -----------------------
+	}
+	$vb_show_more_link = false;
+	if(sizeof($va_related_ids) > 6){
+		$vb_show_more_link = true;
+	}
+	$i = 0;
+	$tmp = "";
+	$va_tmp = array();
+	foreach($va_related_ids as $rel_object_id){
+		$tmp = "ca_objects.object_id:".$rel_object_id;
+		$va_tmp[] = $tmp;
+		$i++;
+		if($i == 6){
+			break;
+		}
+	}
+	$search_term = join(" OR ", $va_tmp);
+	#$qr_res = caMakeSearchResult("ca_objects", $va_related_ids);
+?>
+	<div class="row">
+		<div class='col-6'>
+			<H2>Related Item<?php print (sizeof($va_related_ids) > 2) ? "s" : ""; ?></H2>
+		</div><!-- end col -->
+		<div class='col-6 text-end'>
+		<?php
+		if($vb_show_more_link){
+			$vs_search_term = join(" OR ", array_merge($va_search, $va_search3));
+			#print caNavLink($this->request, _t("More"), "btn btn-primary", "", "Search", $browse_target, array("search" => $vs_search_term));
+		}
+?>
+		</div>
 	</div>
+
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.preferred_labels:'.$t_object->get("ca_objects.preferred_labels"), '_advanced' => 0)); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', $browse_target, array('search' => $search_term, '_advanced' => 0)); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
-	</div>}}}	
+	</div>
+<?php
+}
+?>
 <script>
 	document.addEventListener("load", function() {
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

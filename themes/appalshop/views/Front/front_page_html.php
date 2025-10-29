@@ -38,7 +38,7 @@
 	
 	$t_list = new ca_lists();
 	
-	$themes = $t_list->getItemsForList("hp_types", array("directChildrenOnly" => "1", "checkAccess" => $access_values));
+	$themes = $t_list->getItemsForList("hp_types", array("dontCache" => true, "directChildrenOnly" => "1", "checkAccess" => $access_values));
 	$themes_for_display = array();
 	if(is_array($themes) && sizeof($themes)){
 		$t_list_item = new ca_list_items();

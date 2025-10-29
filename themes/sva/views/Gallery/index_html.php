@@ -91,7 +91,18 @@
 							</div>
 						</div>";
 			if($presentation_type == "Result lists"){
-				print caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "Search", "objects", array("search" => "ca_sets.set_id:".$vn_set_id));
+				$browse_type = "";
+				switch($va_set["set_content_type"]){
+					case "objects":
+						$browse_type = "objects";
+					break;
+					# -------------------
+					case "occurrences":
+						$browse_type = "exhibitions";
+					break;
+					# -------------------
+				}
+				print caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "Search", $browse_type, array("search" => "ca_sets.set_id:".$vn_set_id));
 			}else{
 				print caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id);
 			}
