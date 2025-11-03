@@ -181,9 +181,9 @@
 					foreach($va_cross_refs as $va_cross_ref){
 						if($va_cross_ref["direction"] == "ltor"){
 							if ($g_ui_locale == 'en_US'){
-								$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.preferred_labels</l></unit>')."</div>\n";	
+								$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels <i>see</i> &nbsp;<unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.preferred_labels</l></unit>')."</div>\n";	
 							}else{
-								$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('^ca_occurrences.nonpreferred_labels <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.nonpreferred_labels</l></unit>')."</div>\n";	
+								$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('^ca_occurrences.nonpreferred_labels <i>see</i> &nbsp;<unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.nonpreferred_labels</l></unit>')."</div>\n";	
 							}
 							$vb_cross_ref = true;
 							break;

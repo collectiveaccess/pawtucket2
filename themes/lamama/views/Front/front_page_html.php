@@ -32,7 +32,8 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12 text-center">
-			<H1>La MaMa Archives<br/>Ellen Stewart Private Collection</H1>
+			<div class="frontHead">La MaMa Archive</div>
+			<div class="smallHead">&amp; Ellen Stewart Private Collection</div>
 		</div>
 	</div>
 	<div class="row">
