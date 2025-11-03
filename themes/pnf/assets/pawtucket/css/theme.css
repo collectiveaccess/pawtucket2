@@ -114,6 +114,7 @@ a:hover{
 }
 .btn-default{
 	background-color: #7f4539;
+	color:#FFF !important;
 }
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
 	background-color:#333333;
@@ -649,6 +650,7 @@ a .ornamentsCatItem:hover{
 	width:100% !important;
 	margin-top:5px;
 	border: 1px solid #828282;
+	height: 22px !important;
 }
 .advancedSearch .field {
 	height:45px;
@@ -1130,6 +1132,27 @@ a.readmore-js-toggle{
 	top: 0px;
 	padding-top:10px;
 }
+/* authorship */
+.authorshipTab.btn-default{
+	margin-left:5px;
+	margin-right:5px;
+	font-family: 'Lusitana', serif;
+}
+.authorshipTab.btn-default.currentAuthorshipTab{
+	background-color:#EDEDED;
+	color:#7f4539 !important;
+}
+.authorshipTab.btn-default{
+	font-size:12px;
+	text-wrap: nowrap;
+	margin-top:5px;
+	display:inline-block;
+}
+@media (min-width:1515px){
+	.authorshipTab.btn-default{
+		font-size:15px;
+	}
+}
 #glossaryBodyIntro a.readmore-js-toggle{
 	top:0px;
 	margin-top:15px;
@@ -1154,4 +1177,11 @@ a.readmore-js-toggle{
 }
 .close a{
 	color: red !important;
+}
+
+.banDescription{
+	line-height:1.3em;
+}
+#banContinueButton{
+	color:#FFF !important;
 }

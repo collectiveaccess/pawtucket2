@@ -240,38 +240,34 @@
 					print $vs_enriched;																																																																							
 					print "</div>";	
 				}
-				$vs_vocab = "";
-				if ($vs_photographic = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'photographic_processes', 'delimiter' => '; '))) {
-					$vs_vocab.= "<div class='unit'><h6>Photographic Processes</h6>".$vs_photographic."</div>";
+				$vocab =[];
+				
+				$lists = [
+					'photographic_processes' => 'Photographic Processes', 
+					'bindings' => 'Binding', 
+					'genres' => 'Genre', 
+					'paper' => 'Genre', 
+					'print_pub' => 'Printing and Publishing Evidence', 
+					'provenance_evidence' => 'Provenance Evidenc', 
+					'type_evidence' => 'Type Evidence', 
+					'gascoigne_complete' => 'Gascoigne Numbers and Processes', 
+					'gascoigne_reduced' => 'Gascoigne Numbers and Processes'
+				];
+				foreach($lists as $code => $heading) {
+					if ($terms = $t_object->get('ca_list_items.preferred_labels', ['convertCodesToDisplayText' => true, 'list' => $code, 'returnAsArray' => true])) {
+						$data = [];
+						foreach($terms as $t) {
+							$data[] = caNavLink($this->request, $t, '', '', 'Search', 'objects', ['search' => "ca_list_items.preferred_labels:\"{$t}\""]);
+						}
+						
+						$vocab[] = "<div class='unit'><h6>{$heading}</h6>".join("; ", $data)."</div>";
+					}
 				}
-				if ($vs_binding = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'bindings', 'delimiter' => '; '))) {
-					$vs_vocab.= "<div class='unit'><h6>Binding</h6>".$vs_binding."</div>";
-				}	
-				if ($vs_genre = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'genres', 'delimiter' => '; '))) {
-					$vs_vocab.= "<div class='unit'><h6>Genre</h6>".$vs_genre."</div>";
-				}	
-				if ($vs_paper = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'paper', 'delimiter' => '; '))) {
-					$vs_vocab.= "<div class='unit'><h6>Paper</h6>".$vs_paper."</div>";
-				}
-				if ($vs_print_pub = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'print_pub', 'delimiter' => '; '))) {
-					$vs_vocab.= "<div class='unit'><h6>Printing and Publishing Evidence</h6>".$vs_print_pub."</div>";
-				}
-				if ($vs_prov_ev = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'provenance_evidence', 'delimiter' => '; '))) {
-					$vs_vocab.= "<div class='unit'><h6>Provenance Evidence</h6>".$vs_prov_ev."</div>";
-				}
-				if ($vs_type_ev = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'type_evidence', 'delimiter' => '; '))) {
-					$vs_vocab.= "<div class='unit'><h6>Type Evidence</h6>".$vs_type_ev."</div>";
-				}	
-				if ($vs_gasc = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'gascoigne_complete', 'delimiter' => '; '))) {
-					$vs_vocab.= "<div class='unit'><h6>Gascoigne Numbers and Processes</h6>".$vs_gasc."</div>";
-				}
-				if ($vs_gasc_red = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'gascoigne_reduced', 'delimiter' => '; '))) {
-					$vs_vocab.= "<div class='unit'><h6>Gascoigne Numbers and Processes</h6>".$vs_gasc_red."</div>";
-				}																																
-				if ($vs_vocab != "") {
+																																				
+				if (sizeof($vocab)) {
 					print "<a href='#' onclick='$(\"#vocab\").toggle(200); return false;'><h4>Vocabularies <i class='fa fa-chevron-down'></i></h4></a>";
 					print "<div id='vocab' class='drawer'>";
-					print $vs_vocab;																																																																							
+					print join("\n", $vocab);																																																																							
 					print "</div>";	
 				}
 				$vs_location = "";	

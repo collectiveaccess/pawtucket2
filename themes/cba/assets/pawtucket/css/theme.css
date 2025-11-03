@@ -559,3 +559,7 @@ footer{
 	box-shadow: none;
 	width:100%;
 }
+
+#banContinueButton {
+	color: #000;
+}
