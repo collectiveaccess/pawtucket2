@@ -45,6 +45,7 @@
 				</ul>
 			</div>
 		</footer><!-- end footer -->
+		<div id="scrollTop" class="fixed-bottom text-end"><a href="#pageTop" class="btn btn-primary"><i class="bi bi-chevron-up"></i> TOP</a></div>
 		
 		<?= $this->render("Cookies/banner_html.php"); ?>
 		
@@ -53,3 +54,23 @@
 		</script>
 	</body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const scrollTop = document.getElementById('scrollTop');
+  const scrollThreshold = 200; // Adjust this value (in pixels) as needed
+
+  function checkScroll() {
+    if (window.pageYOffset > scrollThreshold) {
+      scrollTop.classList.add('scrollTopVisible');
+    } else {
+      scrollTop.classList.remove('scrollTopVisible');
+    }
+  }
+
+  // Add the scroll event listener
+  window.addEventListener('scroll', checkScroll);
+
+  // Initial check in case the page is already scrolled on load
+  checkScroll();
+});
+</script>

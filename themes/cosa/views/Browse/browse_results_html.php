@@ -69,7 +69,12 @@ if (!$ajax) {	// !ajax
 ?>
 
 <div class="row" style="clear:both;">
-	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
+	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3"><a href="#results" id="skipBrowse" class="visually-hidden">Skip to Results</a>
+<?php
+		print $this->render("Browse/browse_refine_subview_html.php");
+?>			
+	</div><!-- end col-2 -->
+	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-9'>
 		<div class="row">
 			<div class="col-12">
 				<H1>
@@ -93,37 +98,26 @@ if (!$ajax) {	// !ajax
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12 col-lg-5">
-				<div class="text-capitalize fw-bold fs-4">
+			<div class="col-12">
+
+<?php
+				if($tmp = $this->getVar("browse_intro_".strToLower($this->request->getAction()))){
+					print "<div class='fs-5 pb-4'>".$tmp."</div>";
+				}
+?>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 text-end">
+				
+
+				<ul class="list-group list-group-horizontal justify-content-lg-end small">
+					<li class='list-group-item border-0 ps-0 pt-1 text-capitalize'>
 <?php
 					print _t('%1 %2', $result_size, ($result_size == 1) ? (($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_PLURAL')) : (($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL')));	
 ?>		
-				</div>
-			</div>
-			<div class="col-md-12 col-lg-7 text-lg-end">
-
-				<ul class="list-group list-group-horizontal justify-content-lg-end small">
+					</li>
 <?php
-				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-					print "<li class='list-group-item border-0 px-0 pt-1'>\n";
-					print "<ul class='list-inline p-0 me-2'><li class='list-inline-item fw-medium text-uppercase me-1'>"._t("Sort by:")."</li>\n";
-					$i = 0;
-					foreach($va_sorts as $sort => $sort_flds) {
-						$i++;
-						if ($current_sort === $sort) {
-							print "<li class='list-inline-item me-1'>{$sort}</li>\n";
-						} else {
-							print "<li class='list-inline-item me-1'>".caNavLink($this->request, $sort, '', '*', '*', '*', array('view' => $current_view, 'key' => $browse_key, 'sort' => $sort, '_advanced' => $is_advanced ? 1 : 0))."</li>\n";
-						}
-						if($i < sizeof($va_sorts)){
-							print "<li class='list-inline-item me-2'><span aria-hidden='true'>|</span></li>";
-						}
-					}
-					print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-sort-down'.(($sort_dir == 'desc') ? '' : '-alt').'" aria-label="direction"></i>', '', '*', '*', '*', array('view' => $current_view, 'key' => $browse_key, 'direction' => (($sort_dir == 'asc') ? "desc" : "asc"), '_advanced' => $is_advanced ? 1 : 0))."</li>";
-					print "</ul>\n";
-					print "</li>\n";
-				}
-
 				if(is_array($va_views) && (sizeof($va_views) > 1)){
 					print "<li class='list-group-item border-0 px-0 pt-0'>\n";
 					print "<ul class='list-inline p-0 me-2 text-nowrap'>\n";
@@ -189,16 +183,6 @@ if (!$ajax) {	// !ajax
 ?>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-12">
-
-<?php
-				if($tmp = $this->getVar("browse_intro_".strToLower($this->request->getAction()))){
-					print "<div class='fs-5 pb-4'>".$tmp."</div>";
-				}
-?>
-			</div>
-		</div>
 <?php				
 		if($facet_description){
 			print "<div class='py-3'>".$facet_description."</div>";
@@ -215,9 +199,8 @@ if (!$ajax) {	// !ajax
 			print "</ul>";
 		}
 ?>
-			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
 			<div id="browseResultsContainer">
-				<div class="row">
+				<div class="row"><a name="results"></a>
 <?php
 } // !ajax
 
@@ -237,15 +220,7 @@ if (!$ajax) {	// !ajax
 			
 			</div><!-- end row -->
 		</div><!-- end browseResultsContainer -->
-	</div><!-- end col-8 -->
-	
-	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 offset-xl-1"><a name="filters"></a>
-<?php
-		print $this->render("Browse/browse_refine_subview_html.php");
-?>			
-	</div><!-- end col-2 -->
-	
-	
+	</div><!-- end col-8 -->	
 </div><!-- end row -->
 
 <?php

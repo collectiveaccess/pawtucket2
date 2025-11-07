@@ -91,7 +91,6 @@ if($show_nav){
 			<H1 class="fs-2 mb-1">{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="artist"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", ">^ca_entities.preferred_labels</unit><br/></ifcount><i>^ca_objects.preferred_labels.name</i>}}}</H1>
 			{{{<ifdef code="ca_objects.date_completed"><div class="fs-4">^ca_objects.date_completed</div></ifdef>}}}
 			{{{<ifdef code="ca_objects.media"><div class="fs-4">^ca_objects.media</div></ifdef>}}}
-			{{{<ifdef code="ca_objects.description"><hr><div>^ca_objects.description</div></ifdef>}}}
 			{{{<ifdef code="ca_objects.narrative"><hr><div>^ca_objects.narrative</div></ifdef>}}}
 		</div>
 	</div>
@@ -167,6 +166,20 @@ if($show_nav){
 									</ifdef>
 								</dd></unit>
 							</ifcount>
+							<ifdef code="ca_objects.on_display">
+								<if rule='^ca_objects.on_display =~ /Yes/'>
+									<dt>Viewing Information</dt>
+									<dd>On Display <ifdef code="ca_objects.inside_outside">^ca_objects.inside_outside</ifdef></dd>
+								</if>
+								<if rule='^ca_objects.on_display =~ /No/'>
+									<dt>Viewing Information</dt>
+									<dd>Not on display</dd>
+								</if>
+							</ifdef>
+							<if rule='^ca_objects.restrictions.visitation =~ /Yes/'><ifdef code="ca_objects.restrictions.restriction_details">
+									<dt>Visitation Restrictions</dt>
+									<dd>^ca_objects.restrictions.restriction_details</dd>
+							</if></if>
 						</dl>}}}
 					</div>
 					<div class="col-md-4 pb-3">

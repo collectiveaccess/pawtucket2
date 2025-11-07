@@ -64,7 +64,7 @@ if($this->request->isLoggedIn()){
 		let pawtucketUIApps = {};
 	</script>
 </head>
-<body id="pawtucketApp" class="d-flex flex-column h-100">
+<body id="pawtucketApp" class="d-flex flex-column h-100"><a name="pageTop"></a>
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<div class="bg-dark topBar">
 		<div class="container">
@@ -81,18 +81,22 @@ if($this->request->isLoggedIn()){
 	</div>
 	<nav class="navbar navbar-expand-lg bg-light">
 		<div class="container-xl">
-			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'Arts&Culture_COLOR_H.png', array("alt" => "Site logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
+			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'COSA_quatrefoil.png', array("class" => "pe-2", "alt" => "City of San Antonio Texas", "role" => "banner"))."<span>Art Collection</span>", "navbar-brand", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">				
-					<?= $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Tours'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
+					<li class='nav-item'><?php print caNavLink($this->request, "<span>"._t("Artworks")."</span>", 'nav-link'.((strToLower($this->request->getAction()) == "artworks") ? " active" : ""), '', 'Browse', 'artworks', ''); ?></li>
+					<li class="nav-item dropdown">
+						<a class="text-nowrap nav-link<?php print (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "browse")) || (strToLower($this->request->getController()) == "listing")) ? ' active' : ''; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span>Exhibitions</span> <i class="bi bi-chevron-down fs-6"></i></a>
+						<ul class="dropdown-menu">
+							<li class='nav-item'><?php print caNavLink($this->request, _t("Current Exhibitions"), 'nav-link'.((strToLower($this->request->getController()) == "listing") ? " active" : ""), '', 'Listing', 'current_exhibitions', ''); ?></li>
+							<li class='nav-item'><?php print caNavLink($this->request, _t("All Exhibitions"), 'nav-link'.((strToLower($this->request->getAction()) == "exhibitions") ? " active" : ""), '', 'Browse', 'exhibitions', ''); ?></li>
+						</ul>	
 					</li>
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, "<span>"._t('Collection Highlights')."</span>", "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
 					</li>
 <?php
 					if($user_links){
@@ -100,18 +104,75 @@ if($this->request->isLoggedIn()){
 					}
 ?>
 				</ul>
+			</div>
 				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
 					<div class="input-group">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search">
-						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
+						<input type="text" name="search" class="bg-white form-control rounded-0  border-0" id="nav-search-input" placeholder="Search Art Collection">
+						<button type="submit" class="btn btn-primary text-white rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
 				</form>
 			</div>
-		</div>
+		
 	</nav>	
 
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
+		<div class="breadcrumb"><div class='container-xl'><div class="py-2 fs-6">
+<?php
+			print caNavLink($this->request, _t("Art Collection"), '', '', '', '', '');
+			switch(strToLower($this->request->getController())){
+				case "search":
+				case "browse":
+					switch(strToLower($this->request->getAction())){
+						case "artworks":
+							print " / ".caNavLink($this->request, _t("Artworks"), '', '', 'Browse', 'artworks', '');			
+						break;
+						# ----------------
+						case "exhibitions":
+							print " / ".caNavLink($this->request, _t("Exhibitions"), '', '', 'Browse', 'exhibitions', '');			
+						break;
+						# ----------------
+						case "artists":
+							print " / ".caNavLink($this->request, _t("Artists"), '', '', 'Browse', 'artists', '');			
+						break;
+						# ----------------
+						case "advanced":
+							print " / ".caNavLink($this->request, _t("Advanced Search"), '', 'Search', 'advanced', 'objects', '');			
+						break;
+						# ----------------
+					}
+				break;
+				# ------------------------------
+				case "detail":
+					switch(strToLower($this->request->getAction())){
+						case "artworks":
+							print " / ".caNavLink($this->request, _t("Artworks"), '', '', 'Browse', 'artworks', '');			
+						break;
+						# ----------------
+						case "exhibitions":
+							print " / ".caNavLink($this->request, _t("Exhibitions"), '', '', 'Browse', 'exhibitions', '');			
+						break;
+						# ----------------
+						case "entities":
+							print " / ".caNavLink($this->request, _t("Artists"), '', '', 'Browse', 'artists', '');			
+						break;
+						# ----------------
+					}
+				break;
+				# ------------------------------
+				case "listing":
+					switch(strToLower($this->request->getAction())){
+						case "current_exhibitions":
+							print " / ".caNavLink($this->request, _t("Exhibitions"), '', '', 'Listing', 'current_exhibitions', '');			
+						break;
+					}
+				# ------------------------------
+				case "gallery":
+					print " / ".caNavLink($this->request, _t("Collection Highlights"), '', '', 'Gallery', 'index', '');			
+				# ------------------------------
+			}
+?>
+		</div></div></div>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4'>";

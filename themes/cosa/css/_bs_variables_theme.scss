@@ -29,7 +29,7 @@ $gray-100: #EEEEEE;
 	$gray-600: #666 !default;
 	$gray-700: #495057 !default;
 	$gray-800: #343a40 !default;
-	$gray-900: #212529 !default;
+$gray-900: #404041;
 	
 $primary: #1561AC;
 	$secondary:     $gray-600 !default;
@@ -65,7 +65,7 @@ $font-weight-normal:          400;
 	$font-weight-medium:          400 !default;
 	$font-weight-semibold:        600 !default; /* lato doesn't have 600 */
 	$font-weight-bold:            700 !default;
-	$font-weight-bolder:          bolder !default;
+$font-weight-bolder:          900;
 	
 $font-weight-base:            $font-weight-normal;
 	
@@ -143,13 +143,13 @@ $link-color: $primary;
 	
 	$navbar-nav-link-padding-x: 		1rem !default;
 	$nav-link-font-size: 				$font-size-base;
-	$nav-link-font-weight: 				$font-weight-medium !default;
+$nav-link-font-weight: 				$font-weight-bold;
 	$nav-link-color:                    $link-color !default;
 	$nav-link-transition:               color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out !default;
 	
 	$navbar-light-color: 				$body-color;
-$navbar-light-hover-color: 			$primary;
-$navbar-light-active-color: 		$primary;
+$navbar-light-hover-color: 			#000;
+$navbar-light-active-color: 		#000;
 	
 	
 	// scss-docs-start navbar-variables
