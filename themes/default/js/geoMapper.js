@@ -30,7 +30,7 @@ function makeMap(options) {
 			let m = null, c = data[index], opts = { };
 			if(c.coordinates) {
 				let pts = c.coordinates.map(c => { return [c.latitude, c.longitude]; });
-				m = L.polygon(pts).addTo(g);
+				//m = L.polygon(pts).addTo(g);
 			} else if(c.radius) {
 				if((c.latitude === '') || (c.longitude === '')) { console.log("Invalid point", c); continue; }
 				m = L.circle([parseFloat(c.latitude), parseFloat(c.longitude)], {radius: c.radius}).addTo(g);

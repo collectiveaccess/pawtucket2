@@ -85,6 +85,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row">
 		<div class="col-md-4 pb-3">				
 			{{{<dl class="mb-0">
+					<ifdef code="ca_places.URL.link">
+						<dt>More Information</dt>
+						<unit relativeTo="ca_places.URL" delimiter="">
+							<dd><a href="ca_places.URL.link" target="_blank"><ifdef code="ca_places.URL.text">^ca_places.URL.text</ifdef><ifnotdef code="ca_places.URL.text">More Information</ifnotdef>  <i class='bi bi-box-arrow-up-right ms-1'></a></dd>
+						</unit>
+					</ifdef>
 					<ifdef code="ca_places.address">
 						<dt><?= _t('Address'); ?></dt>
 						<dd>
@@ -119,12 +125,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<dt><?= _t('Council District'); ?></dt>
 					<dd>
 						^ca_places.council_district
-					</dd>
-				</ifdef>
-				<ifdef code="ca_places.idno">
-					<dt><?= _t('Identifier'); ?></dt>
-					<dd>
-						^ca_places.idno
 					</dd>
 				</ifdef>
 			</dl>}}}

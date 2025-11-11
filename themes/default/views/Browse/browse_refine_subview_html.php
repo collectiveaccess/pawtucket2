@@ -77,6 +77,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 		}
 		print '<div class="accordion accordion-flush" id="browseRefineFacets">';
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
+			if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 			$vs_more_link = "";
 			print "<div class='accordion-item'>";
 		
@@ -96,7 +97,6 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 <?php
 				print "</div></div>";
 			} else {				
-				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 				print "<div class='accordion-header' id='heading".$vs_facet_name."'><button class='accordion-button collapsed fw-medium text-capitalize ' type='button' data-bs-toggle='collapse' data-bs-target='#".$vs_facet_name."' aria-expanded='false' aria-controls='".$vs_facet_name."'>".$va_facet_info['label_singular']."</button></div>";
 
 				print "<div id='".$vs_facet_name."' class='accordion-collapse collapse' aria-labelledby='heading".$vs_facet_name."' data-bs-parent='#browseRefineFacets'>

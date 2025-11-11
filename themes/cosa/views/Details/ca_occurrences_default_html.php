@@ -56,7 +56,7 @@ $media_options = array_merge($media_options, [
 				<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
 							if($inquire_enabled) {
-								print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
+								print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_occurrences", "id" => $id));
 							}
 							if($pdf_enabled) {
 								print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
@@ -90,6 +90,15 @@ if($show_nav){
 			{{{<ifdef code="ca_occurrences.summary"><hr><div>^ca_occurrences.summary</div></ifdef>}}}
 		</div>
 	</div>
+<?php
+	$artists = array();
+	$artist_list = $t_item->getWithTemplate('<ifcount code="ca_objects" min="1"><unit relativeTo="ca_objects" delimiter=", "><ifcount code="ca_entities" min="1" restrictToRelationshipTypes="artist"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></ifcount></unit></ifcount>', array("checkAccess" => $access_values));
+	if($artist_list){
+		$artists = explode(", ", $artist_list);
+		$artists = array_unique($artists);
+		$artist_list = join(", ", $artists);
+	}
+?>
 	<div class="row">
 		<div class="col-md-12">
 			<div class="bg-light pt-3 px-4 mb-4">			
@@ -100,11 +109,11 @@ if($show_nav){
 								<dt><ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="curator"><?= _t('Curator'); ?></ifcount><ifcount code="ca_entities" min="2" restrictToRelationshipTypes="curator"><?= _t('Curators'); ?></ifcount></dt>
 								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="curator" delimiter=", ">^ca_entities.preferred_labels</unit></dd>
 							</ifcount>
-							<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="related">
-								<dt><ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="related"><?= _t('Artist'); ?></ifcount><ifcount code="ca_entities" min="2" restrictToRelationshipTypes="related"><?= _t('Artists'); ?></ifcount></dt>
-								<dd><unit relativeTo="ca_entities" restrictToRelationshipTypes="related" delimiter=", ">^ca_entities.preferred_labels</unit></dd>
-							</ifcount>
-							
+<?php
+								if($artist_list){
+									print "<dt>Artists</dt><dd>".$artist_list."</dd>";
+								}
+?>
 						</dl>}}}
 					</div>
 					<div class="col-md-4 pb-3">
@@ -145,7 +154,7 @@ if($show_nav){
 		<div class="col"><h2 class="fs-4">Exhibited Artworks</h2><hr></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'all_artworks', array('search' => 'ca_occurrences.occurrence_id:'.$t_item->get("ca_occurrences.occurrence_id"), '_advanced' => 0)); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'all_artworks_list', array('search' => 'ca_occurrences.occurrence_id:'.$t_item->get("ca_occurrences.occurrence_id"), '_advanced' => 0)); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
 	</div>
