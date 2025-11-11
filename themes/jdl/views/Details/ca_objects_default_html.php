@@ -76,7 +76,7 @@ if($show_nav){
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
 				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
+					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire/Give Feedback"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
 				}
 				if($pdf_enabled) {
 					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));

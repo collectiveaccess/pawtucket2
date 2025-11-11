@@ -94,7 +94,7 @@ if($this->request->isLoggedIn()){
 						<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4 w-100 justify-content-center">				
 							<?= $this->render("pageFormat/browseMenu.php"); ?>	
 							<li class="nav-item">
-								<?= caNavLink($this->request, _t("Search"), "nav-link".((strToLower($this->request->getController()) == "search") ? " active" : ""), "", "Search", "advanced/objects"); ?>
+								<?= caNavLink($this->request, _t("Search <i class='bi bi-search'></i>"), "nav-link".((strToLower($this->request->getController()) == "search") ? " active" : ""), "", "Search", "advanced/objects"); ?>
 							</li>
 							<li class="nav-item">
 								<?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
