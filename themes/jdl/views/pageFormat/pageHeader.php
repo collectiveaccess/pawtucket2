@@ -105,6 +105,9 @@ if($this->request->isLoggedIn()){
 								</a>
 								<ul class="dropdown-menu">
 									<li>
+										<?= caNavlink($this->request, _t('Content Statement'), "dropdown-item".((strToLower($this->request->getController()) == "content_statement") ? " active" : ""), "", "content_statement", "", "", ((strToLower($this->request->getController()) == "content_statement") ? array("aria-current" => "page") : null)); ?>
+									</li>
+									<li>
 										<?= caNavlink($this->request, _t('Guide'), "dropdown-item".((strToLower($this->request->getController()) == "guide") ? " active" : ""), "", "Guide", "", "", ((strToLower($this->request->getController()) == "guide") ? array("aria-current" => "page") : null)); ?>
 									</li>
 									<li>
