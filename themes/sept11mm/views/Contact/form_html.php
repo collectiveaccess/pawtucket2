@@ -145,10 +145,6 @@ if($id && $t_item->getPrimaryKey()){
 		</div><!-- end col -->
 	</div>
 	<div class="row mt-2">
-		<div class="col-md-5 mb-4">
-			<label for="phone" class="form-label"><?= _t("Daytime telephone"); ?>*</label>
-			<input type="text" class="form-control<?= (($errors["phone"]) ? " is-invalid" : ""); ?>" aria-label="Enter phone number" placeholder="Enter phone number" name="phone" value="{{{phone}}}" id="phone">
-		</div><!-- end col -->
 <?php
 	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
 ?>
@@ -158,7 +154,7 @@ if($id && $t_item->getPrimaryKey()){
 			};
 		</script>
 		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
-		<div class="col-md-7 mb-4">
+		<div class="col-md-5 mb-4">
 			<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
 		</div>
 <?php

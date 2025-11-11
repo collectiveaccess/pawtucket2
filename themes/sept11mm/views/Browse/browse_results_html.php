@@ -71,12 +71,22 @@ if (!$ajax) {	// !ajax
 <div class="row" style="clear:both;">
 	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
 		<div class="row">
+			<div class="col-12">
+<?php				
+		print "<H1>".$va_browse_info["displayNameFull"]."</H1>";
+		if($browse_intro = $this->getVar("browse_".$this->request->getAction()."_intro")){
+			print "<div class='py-3 fs-4'>".$browse_intro."</div>";
+		}
+?>
+			</div>
+		</div>
+		<div class="row">
 			<div class="col-md-12 col-lg-5">
-				<H1 class="text-capitalize fs-3">
+				<div class="text-capitalize fw-bold">
 <?php
 					print _t('%1 %2', $result_size, ($result_size == 1) ? (($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_PLURAL')) : (($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL')));	
 ?>		
-				</H1>
+				</div>
 			</div>
 			<div class="col-md-12 col-lg-7 text-lg-end">
 
@@ -167,10 +177,7 @@ if (!$ajax) {	// !ajax
 ?>
 			</div>
 		</div>
-<?php				
-		if($browse_intro = $this->getVar("browse_".$this->request->getAction()."_intro")){
-			print "<div class='py-3'>".$browse_intro."</div>";
-		}
+<?php
 		if($facet_description){
 			print "<div class='py-3'>".$facet_description."</div>";
 		}

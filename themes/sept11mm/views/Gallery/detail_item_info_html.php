@@ -104,7 +104,7 @@
 
 	print $t_item->getWithTemplate('<ifdef code="ca_objects.idno"><dt class="pt-3 d-inline"><br/>Accession Number: </dt><dd class="d-inline">^ca_objects.idno</dd></ifdef>');
 
-	print "<div class='text-center py-2 text-capitalize'>".caDetailLink($this->request, _t("View")." <i class='bi bi-arrow-right'></i>", 'btn btn-primary', $this->getVar("table"), $this->getVar("row_id"))."</div>";
+	print "<div class='text-center py-2 text-capitalize'>".caDetailLink($this->request, _t("View Full Record")." <i class='bi bi-arrow-right'></i>", 'btn btn-primary', $this->getVar("table"), $this->getVar("row_id"))."</div>";
 	
 ?>	
 	</div>

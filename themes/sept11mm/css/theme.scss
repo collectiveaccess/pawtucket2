@@ -178,27 +178,43 @@ footer{
 /* ------------------------- Front ------------------------- */
 .hpHero {
     position: relative;
-    background-image: url("../assets/graphics/Winters_911_Museum_9428.jpg");
+    background-image: url("../assets/graphics/hero_2.jpg");
 
     background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
 
-    .hero1, .hero2, .hero3 {
-        background-image: url("../assets/graphics/Winters_911_Museum_9428.jpg");
-    }
     @media(min-width:992px){
 		.collectionLink{
 			height:25%;
 		}
 	}
 }
+
 .hpHero1 {
-    background-image: url("../assets/graphics/Winters_911_Museum_9428.jpg");
+	background-image: url("../assets/graphics/hero_1_cropped.jpg");
+	background-position: center center;
+}
+.hpHero2 {
+	background-image: url("../assets/graphics/hero_2.jpg");
+}
+
+
+.hpHero3 {
+	background-image: url("../assets/graphics/hero_3.jpg");
+	background-position: center center;
+}
+.hpHero4 {
+	background-image: url("../assets/graphics/hero_4.jpg");
+	background-position: center center;
+}
+.hpHero5 {
+	background-image: url("../assets/graphics/hero_5.jpg");
+	background-position: center center;
 }
 .parallax {
     position: relative;
-    background-image: url("../assets/graphics/Winters_911_Museum_9428.jpg");
+    background-image: url("../assets/graphics/hero_2.jpg");
 
     /* Full height */
     height: 100vh;

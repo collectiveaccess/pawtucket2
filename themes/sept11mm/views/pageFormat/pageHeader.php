@@ -80,7 +80,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 					</li>
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Ask A Question'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 					</li>
 <?php
 					if($user_links){
