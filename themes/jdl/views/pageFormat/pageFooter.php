@@ -41,7 +41,7 @@
 					<div class="col-12 col-lg-10 col-xl-8 text-center text-lg-end py-4">
 						<ul class="list-inline pt-2 mb-0 pb-0">
 							<li class="list-inline-item ps-2"><i class="bi bi-house pe-1"></i> <a href="https://myjdl.com" class="text-white">Jackson District Library Home</a></li>
-							<li class="list-inline-item ps-2"><i class="bi bi-envelope pe-1"></i> <a href="mailto:history@myjdl.com" class="text-white">Contact US</a></li>
+							<li class="list-inline-item ps-2"><i class="bi bi-envelope pe-1"></i> <a href="mailto:localhistory@myjdl.com" class="text-white">Contact US</a></li>
 							<li class="list-inline-item ps-2 pe-4"><i class="bi bi-telephone-fill pe-1"></i> 517-788-4087</li>
 							<li class="list-inline-item fs-4"><a href="https://www.facebook.com/jacksondistrictlibrary" class="text-primary" aria-label="Facebook Link"><i class="bi bi-facebook"></i></a></li>
 							<li class="list-inline-item fs-4"><a href="https://www.youtube.com/channel/UCi-x1yLVyPBA21otE7x6fvA" class="text-primary" aria-label="YouTube Link"><i class="bi bi-youtube"></i></a></li>
