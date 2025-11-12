@@ -88,50 +88,54 @@ if($this->request->isLoggedIn()){
 					</div>
 				</div>
 			</div>
-			<div class="row border-bottom border-top">
-				<div class="col">
-					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-						<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4 w-100 justify-content-center">				
-							<?= $this->render("pageFormat/browseMenu.php"); ?>	
-							<li class="nav-item">
-								<?= caNavLink($this->request, _t("Search <i class='bi bi-search'></i>"), "nav-link".((strToLower($this->request->getController()) == "search") ? " active" : ""), "", "Search", "advanced/objects"); ?>
-							</li>
-							<li class="nav-item">
-								<?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
-							</li>
-							<li class="nav-item dropdown">
-								<a class="text-nowrap nav-link<?=((in_array(strToLower($this->request->getController()), array("guide", "faq"))) ? " active" : ""); ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									<?= _t("Help"); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
-								</a>
-								<ul class="dropdown-menu">
-									<li>
-										<?= caNavlink($this->request, _t('Content Statement'), "dropdown-item".((strToLower($this->request->getController()) == "content_statement") ? " active" : ""), "", "content_statement", "", "", ((strToLower($this->request->getController()) == "content_statement") ? array("aria-current" => "page") : null)); ?>
+			<div class="border-bottom border-top">
+				<div class="container-xl">
+					<div class="row">
+						<div class="col">
+							<div class="collapse navbar-collapse" id="navbarSupportedContent">
+								<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4 w-100 justify-content-between">				
+									<?= $this->render("pageFormat/browseMenu.php"); ?>	
+									<li class="nav-item">
+										<?= caNavLink($this->request, _t("Search <i class='bi bi-search'></i>"), "nav-link".((strToLower($this->request->getController()) == "search") ? " active" : ""), "", "Search", "advanced/objects"); ?>
 									</li>
-									<li>
-										<?= caNavlink($this->request, _t('Guide'), "dropdown-item".((strToLower($this->request->getController()) == "guide") ? " active" : ""), "", "Guide", "", "", ((strToLower($this->request->getController()) == "guide") ? array("aria-current" => "page") : null)); ?>
+									<li class="nav-item">
+										<?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
 									</li>
-									<li>
-										<?= caNavlink($this->request, _t('FAQ'), "dropdown-item".((strToLower($this->request->getController()) == "faq") ? " active" : ""), "", "FAQ", "", "", ((strToLower($this->request->getController()) == "faq") ? array("aria-current" => "page") : null)); ?>
+									<li class="nav-item dropdown">
+										<a class="text-nowrap nav-link<?=((in_array(strToLower($this->request->getController()), array("guide", "faq"))) ? " active" : ""); ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+											<?= _t("Help"); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
+										</a>
+										<ul class="dropdown-menu">
+											<li>
+												<?= caNavlink($this->request, _t('Content Statement'), "dropdown-item".((strToLower($this->request->getController()) == "content_statement") ? " active" : ""), "", "content_statement", "", "", ((strToLower($this->request->getController()) == "content_statement") ? array("aria-current" => "page") : null)); ?>
+											</li>
+											<li>
+												<?= caNavlink($this->request, _t('Guide'), "dropdown-item".((strToLower($this->request->getController()) == "guide") ? " active" : ""), "", "Guide", "", "", ((strToLower($this->request->getController()) == "guide") ? array("aria-current" => "page") : null)); ?>
+											</li>
+											<li>
+												<?= caNavlink($this->request, _t('FAQ'), "dropdown-item".((strToLower($this->request->getController()) == "faq") ? " active" : ""), "", "FAQ", "", "", ((strToLower($this->request->getController()) == "faq") ? array("aria-current" => "page") : null)); ?>
+											</li>
+										</ul>
 									</li>
+									<li class="nav-item">
+										<?= caNavlink($this->request, _t('Ask a Question'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
+									</li>
+				<?php
+									if($user_links){
+										print $user_links;
+									}
+				?>
 								</ul>
-							</li>
-							<li class="nav-item">
-								<?= caNavlink($this->request, _t('Ask a Question'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
-							</li>
-		<?php
-							if($user_links){
-								print $user_links;
-							}
-		?>
-						</ul>
-						<form id="mobileSearch" class="d-lg-none" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
-							<div class="input-group mt-4">
-								<label for="nav-search-input" class="form-label visually-hidden">Search</label>
-								<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search">
-								<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
+								<form id="mobileSearch" class="d-lg-none" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
+									<div class="input-group mt-4">
+										<label for="nav-search-input" class="form-label visually-hidden">Search</label>
+										<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search">
+										<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
+									</div>
+									<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
+								</form>
 							</div>
-							<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
-						</form>
+						</div>
 					</div>
 				</div>
 			</div>
