@@ -14,9 +14,16 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vs_collection_number = "";
-	if($vn_top_level_collection_id != $t_item->get("ca_collections.collection_id")){
+	if($vn_top_level_collection_id != $t_item->getPrimaryKey()){
 		$t_top_level_collection = new ca_collections($vn_top_level_collection_id);
-		$vs_collection_number = $t_top_level_collection->get("ca_collections.repository.repository_country");
+		
+		if($t_top_level_collection->get('access') > 0) {
+			$vs_collection_number = $t_top_level_collection->get("ca_collections.repository.repository_country");
+		} else {
+			$vs_collection_number = $t_item->get("ca_collections.repository.repository_country");
+			$vn_top_level_collection_id = $t_item->getPrimaryKey();
+			$t_top_level_collection = $t_item;
+		}
 	}else{
 		$vs_collection_number = $t_item->get("ca_collections.repository.repository_country");
 	}
@@ -70,9 +77,13 @@
 					if($vs_collection_number){
 						print '<div class="unit"><label class="inline">Collection Number: </label>'.$vs_collection_number.'</div>';
 					}
+					
+					if($vn_top_level_collection_id != $t_item->getPrimaryKey()) {
 ?>
 					{{{<ifdef code="ca_collections.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
-					
+<?php
+					}
+?>			
 				</div><!-- end col -->
 			</div><!-- end row -->
 <?php
