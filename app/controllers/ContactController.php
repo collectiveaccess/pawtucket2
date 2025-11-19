@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2023 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -42,6 +42,8 @@ class ContactController extends BasePawtucketController {
 	}
 	# -------------------------------------------------------
 	public function Form() {
+		$fields = $this->config->get("contact_form_elements");
+		$this->view->setVar("contact_form_elements", $fields);
 		$this->render("Contact/form_html.php");
 	}
 	# ------------------------------------------------------
@@ -82,32 +84,33 @@ class ContactController extends BasePawtucketController {
 				}
 			}
 		}
+		
+		$opts = [];
+		$from = $this->request->config->get("ca_admin_email");
+		
 		$va_fields = $this->config->get("contact_form_elements");
-		$email_fields = array_keys(array_filter($va_fields, function($v) {
-			return (bool)$v['email_address'] ?? false;
-		}));
-
-		$from_address = $this->request->config->get("ca_admin_email");
 		$this->view->setVar("contact_form_elements", $va_fields);
 		if(is_array($va_fields) && sizeof($va_fields)){
 			foreach($va_fields as $vs_element_name => $va_options){
 				$vs_element_value = $o_purifier->purify($this->request->getParameter($vs_element_name, pString, ['forcePurify' => true]));
-				
 				if($va_options["required"] && !$vs_element_value){
 					$va_errors[$vs_element_name] = true;
 					$va_errors["display_errors"]["required_error"] = _t("Please enter the required information in the highlighted fields");
 				}
-				if($va_options["email_address"]){
+				if($va_options["email_address"] ?? null){
 					# --- check if entered value is valid email address
 					if (!caCheckEmailAddress($vs_element_value)) {
 						$va_errors["display_errors"]["email_address_error"] = _t("Please enter a valid e-mail address");
 						$va_errors[$vs_element_name] = true;
 					}
 				}
+				if($va_options['use_as_from_address'] ?? false) {
+					if(!is_array($opts['replyTo'])) { $opts['replyTo'] = []; }
+					$opts['replyTo'][] = $vs_element_value;
+				}
 				$this->view->setVar($vs_element_name, $vs_element_value);
 			}
 		}
-
 		if(sizeof($va_errors) == 0){
 			# --- send email
 				$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
@@ -118,7 +121,7 @@ class ContactController extends BasePawtucketController {
 				# -- generate mail text from template - get both the text and the html versions
 				$vs_mail_message_text = $o_view->render("mailTemplates/contact.tpl");
 				$vs_mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
-				if(caSendmail($this->config->get("contact_email"), $from_address ?? $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
+				if(caSendmail($this->config->get("contact_email"), $from, $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html, null, null, null, $opts)){
 					$this->render("Contact/success_html.php");
 				}else{
 					$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");

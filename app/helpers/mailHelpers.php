@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2022  Whirl-i-Gig
+ * Copyright 2009-2025  Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -165,6 +165,20 @@ function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html=
 				$o_mail->addBcc(is_numeric($vs_to_email) ? $vs_to_name : $vs_to_email);
 			}
 		}
+		
+		if($reply_tos = caGetOption('replyTo', $pa_options, null)) {
+			if (!is_array($reply_tos) && $reply_tos) {
+				$reply_tos = preg_split('![,;\|]!', $reply_tos);
+			}
+			
+			foreach($reply_tos as $reply_to_email => $reply_to_name) {
+				if (is_numeric($reply_to_email)) {
+		 			$o_mail->addReplyTo($reply_to_name, $reply_to_name); 
+		 		} else {
+		 			$o_mail->addReplyTo($reply_to_email, $reply_to_name); 
+		 		}
+		 	}
+		 }
 		
 		if(is_array($pa_attachments)) {
 			if (isset($pa_attachments["path"])) { $pa_attachments = [$pa_attachments]; }
