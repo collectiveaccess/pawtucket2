@@ -173,9 +173,9 @@ function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html=
 			
 			foreach($reply_tos as $reply_to_email => $reply_to_name) {
 				if (is_numeric($reply_to_email)) {
-		 			$o_mail->addReplyTo($reply_to_name, $reply_to_name); 
+		 			$o_mail->setReplyTo($reply_to_name, $reply_to_name); 
 		 		} else {
-		 			$o_mail->addReplyTo($reply_to_email, $reply_to_name); 
+		 			$o_mail->setReplyTo($reply_to_email, $reply_to_name); 
 		 		}
 		 	}
 		 }

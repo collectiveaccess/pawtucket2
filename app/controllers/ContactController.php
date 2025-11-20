@@ -111,6 +111,7 @@ class ContactController extends BasePawtucketController {
 				$this->view->setVar($vs_element_name, $vs_element_value);
 			}
 		}
+		
 		if(sizeof($va_errors) == 0){
 			# --- send email
 				$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
