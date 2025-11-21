@@ -233,12 +233,15 @@ if($show_nav){
 						$va_list_ids[] = $va_subject["item_id"];
 					}
 					ksort($va_subjects_sorted);
-					print "<div><div class='fw-bold mb-2'>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")." ".caNavLink($this->request, "<i class='bi bi-info-circle'></i>", "", "", "About", "keywords", null, array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => _t("Click for keyword definitions"),  "data-trigger" => "hover"))."</div>";
+					print "<div class='pb-3'><div class='fw-bold mb-2'>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")." ".caNavLink($this->request, "<i class='bi bi-info-circle'></i>", "", "", "About", "keywords", null, array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => _t("Click for keyword definitions"),  "data-trigger" => "hover"))."</div>";
 					print join("", $va_subjects_sorted);
 					print "</div>";
 				}
 			}
 ?>								
+			<div><div class='fw-bold mb-2'>This item is protected by copyright and/or related rights. <a data-bs-toggle="collapse" href="#rightsStatement" role="button" aria-expanded="false" aria-controls="rightsStatement"><i class='bi bi-info-circle'></i></a></div>
+				<div id="rightsStatement" class="collapse">{{{detail_rights_statement}}}</div>
+			</div>
 		</div>
 	</div>
 <?php

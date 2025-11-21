@@ -75,7 +75,11 @@ if (!$ajax) {	// !ajax
 <?php				
 		print "<H1>".$va_browse_info["displayNameFull"]."</H1>";
 		if($browse_intro = $this->getVar("browse_".$this->request->getAction()."_intro")){
-			print "<div class='py-3 fs-4'>".$browse_intro."</div>";
+			print "<div class='py-3 fs-4'>".$browse_intro;
+			if($this->request->getAction() == "boards"){
+				print "<div class='pb-2'>".caNavLink($this->request, "Learn More", "btn btn-primary btn-sm p-2", "", "lmdc_competition", "")."</div>";
+			}
+			print "</div>";
 		}
 ?>
 			</div>

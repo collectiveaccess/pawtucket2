@@ -100,7 +100,7 @@
 								<div class='card-text small text-body-secondary'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</div>
 							</div>
 							<div class='card-footer text-end bg-transparent border-0'>
-								<button class='btn btn-primary'>View <i class='bi bi-arrow-right small'></i></button>
+								<button class='btn btn-primary'>View Gallery<i class='bi bi-arrow-right small'></i></button>
 							</div>
 						</div>";
 			$output = "";

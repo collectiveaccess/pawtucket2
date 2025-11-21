@@ -43,7 +43,7 @@
 							print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), 'dropdown-item', '', 'Browse', $vs_browse_name, '')."</li>";
 						}
 					}
-					print "<li>".caNavLink($this->request, _t("Features Galleries"), 'dropdown-item', '', 'Gallery', 'Index', '')."</li>";
+					print "<li>".caNavLink($this->request, _t("Feature Galleries"), 'dropdown-item', '', 'Gallery', 'Index', '')."</li>";
 ?>
 				</ul>	
 			</li>
