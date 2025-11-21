@@ -97,6 +97,7 @@ class ContactController extends BasePawtucketController {
 			}
 		}
 		
+		$opts = [];
 		$from = $this->request->config->get("ca_admin_email");
 		
 		$fields = $this->config->get("contact_form_elements");
@@ -116,7 +117,8 @@ class ContactController extends BasePawtucketController {
 					}
 				}
 				if($options['use_as_from_address'] ?? false) {
-					$from = $element_value;
+					if(!is_array($opts['replyTo'])) { $opts['replyTo'] = []; }
+					$opts['replyTo'][] = $element_value;
 				}
 				$this->view->setVar($element_name, $element_value);
 			}
@@ -132,7 +134,7 @@ class ContactController extends BasePawtucketController {
 				// Generate mail text from template - get both the text and the html versions
 				$mail_message_text = $o_view->render("mailTemplates/contact.tpl");
 				$mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
-				if(caSendmail($this->config->get("contact_email"), $from, $subject_line, $mail_message_text, $mail_message_html)){
+				if(caSendmail($this->config->get("contact_email"), $from, $subject_line, $mail_message_text, $mail_message_html, null, null, null, $opts)){
 					$this->render("Contact/success_html.php");
 				} else  {
 					$errors["display_errors"]["send_error"] = _t("Your email could not be sent");

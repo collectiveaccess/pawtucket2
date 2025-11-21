@@ -40,7 +40,7 @@ $vs_facet_list = "";
 
 $vn_c = 0;
 ?>
-<div class="h-100 position:relative p-3 overflow-y-hidden">
+<div class="h-100 p-3 overflow-y-hidden d-flex flex-column">
 <?php	
 foreach($va_facet_content as $vn_id => $va_item) {
 	$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
@@ -64,16 +64,17 @@ foreach($va_facet_content as $vn_id => $va_item) {
 	$vs_facet_list .= "<dd>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</dd>\n";
 	$vn_c++;
 }
-print '<div class="position-absolute end-0 w-auto pe-3"><button type="button" class="btn-close" aria-label="'._t("Close").'" data-bs-toggle="collapse" data-bs-target="#bMorePanel" aria-controls="bMorePanel"></button></div>';
-print "<div class='fw-semibold fs-4 text-capitalize'>".$va_facet_info["label_plural"]."<span class='fw-normal  fs-5'> (".sizeof($va_facet_content)." total)</span></div>";
+print '<div class="position-absolute end-0 w-auto pe-3"><button type="button" class="btn-close" aria-label="'._t("Close").'" data-bs-toggle="collapse" data-bs-target="#bMorePanel" aria-controls="bMorePanel" hx-on:click="htmx.toggleClass(htmx.find(\'#bRefine\'), \'d-none\')"></button></div>';
+print "<div id='bMoreHeading' class='flex-shrink-0'><div class='fw-semibold fs-4 text-capitalize pe-4 me-2 lh-sm'>".$va_facet_info["label_plural"]."<span class='fw-normal  fs-5'> (".sizeof($va_facet_content)." total)</span></div>";
 if($va_facet_info["group_mode"]== "alphabetical"){
-	print "<div class='position-absolute end-0 w-auto p-3 text-center overflow-y-auto bRefineLetterBar'><nav class='nav nav-pills flex-column' id='bRefineLetterBar' aria-label='"._t("Skip to sections by letter")."'>";
+	print "<div class='text-center bRefineLetterBar'><nav class='nav nav-pills lh-1' id='bRefineLetterBar' aria-label='"._t("Skip to sections by letter")."'>";
 	foreach($va_letter_bar as $vs_letter){
-		print "<a href='#facetList".$vs_letter."' class='nav-link py-1 px-1' aria-label='"._t("Skip to section %1", $vs_letter)."'>".$vs_letter."</a>";
+		print "<a href='#facetList".$vs_letter."' class='nav-link p-0 m-1' aria-label='"._t("Skip to section %1", $vs_letter)."'>".$vs_letter."</a>";
 	}
 	print "</nav></div><!-- end bRefineLetterBar -->";
 }
-print "<div class='pt-3 pe-1 me-4 overflow-y-scroll h-100 mb-5 pb-5' data-bs-spy='scroll' data-bs-target='#bRefineLetterBar' data-bs-smooth-scroll='true'><dl>".$vs_facet_list."</dl></div><!-- end bScrollList -->";
+print "</div><!-- end bMoreHeading -->";
+print "<div class='pt-3 overflow-y-scroll flex-grow-1' data-bs-spy='scroll' data-bs-target='#bRefineLetterBar' data-bs-smooth-scroll='true'><dl>".$vs_facet_list."</dl></div><!-- end bScrollList -->";
 print "<div style='clear:both;'></div>";
 ?>
 </div>

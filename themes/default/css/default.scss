@@ -184,8 +184,11 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 #bRefine{
 	z-index:999;
 	.bRefineLetterBar{
-		height:90%;
+		/*height:90%;*/
 	}
+}
+#bMore{
+	z-index:1000;
 }
 @media(max-width:767px) {
 	#bRefine{
@@ -201,13 +204,21 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 	#bRefine.show{
 		display:block !important;
 	}
+	#bMorePanel{
+		position:fixed !important;
+		top: 0px;
+		width: 100%;
+		left: 0px;
+	}
 }
 @media(min-width:768px) {
 	#bRefine{
 		display:block !important;
 	}
 }
-
+#bRefine.d-none{
+	display:none !important;
+}
 /* ------------------------- Collections ------------------------- */
 .collections{
 	.card{
