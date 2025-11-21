@@ -175,7 +175,8 @@ class FindController extends BasePawtucketController {
 		$o_browse = caGetBrowseInstance($vs_class);
 		
 		if(!is_array($va_facet_info = $o_browse->getInfoForFacet($ps_facet_name))) { return null; }
-		if ($ps_cache_key) {
+		$this->view->setVar("facet_info", $va_facet_info);
+ 		if ($ps_cache_key) {
 			$o_browse->reload($ps_cache_key);
 		}
 		
@@ -350,6 +351,7 @@ class FindController extends BasePawtucketController {
 	public function getFacetHierarchyAncestorList() {
 		$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
 		$pn_id = $this->request->getParameter('id', pInteger);
+		$this->view->setVar('id', $pn_id);
 		$va_access_values = caGetUserAccessValues($this->request);
 		$ps_facet_name = $this->request->getParameter('facet', pString, ['forcePurify' => true]);
 		$this->view->setVar("facet_name", $ps_facet_name);
