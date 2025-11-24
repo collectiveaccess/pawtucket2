@@ -176,10 +176,12 @@ if($show_nav){
 									<dd>Not on display</dd>
 								</if>
 							</ifdef>
-							<if rule='^ca_objects.restrictions.visitation =~ /Yes/'><ifdef code="ca_objects.restrictions.restriction_details">
-									<dt>Visitation Restrictions</dt>
-									<dd>^ca_objects.restrictions.restriction_details</dd>
-							</if></if>
+							<ifcount code="ca_places" min="1"><unit relativeTo="ca_places">
+								<if rule='^ca_places.restrictions.visitation =~ /Yes/'><ifdef code="ca_places.restrictions.restriction_details">
+										<dt>Visitation Restrictions</dt>
+										<dd>^ca_places.restrictions.restriction_details</dd>
+								</if></if>
+							</unit></ifcount>
 						</dl>}}}
 					</div>
 					<div class="col-md-4 pb-3">
