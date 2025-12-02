@@ -3897,3 +3897,10 @@ div.caMediaOverlayRepThumbs a.selectedRep img {
 input[type='text'].ui-autocomplete-loading {
     background: white url('../graphics/indicator.gif') right center no-repeat;
 }
+
+h2.front {
+    font-family: Georgia, serif;
+    font-weight: bold;
+    font-style: normal;
+    font-size: 20px;
+}
