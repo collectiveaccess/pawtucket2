@@ -74,7 +74,7 @@ class ContactController extends BasePawtucketController {
 		}
 		
 		$opts = [];
-		$from = $this->request->config->get("ca_admin_email");
+		$from = $this->config->get('from_address') ?: $this->request->config->get("ca_admin_email");
 		
 		$va_fields = $this->config->get("contact_form_elements");
 		$this->view->setVar("contact_form_elements", $va_fields);
