@@ -37,7 +37,7 @@ class WLPlugBanHammerIPAddress Extends BaseBanHammerPlugin  {
 	/**
 	 *
 	 */
-	static $banned_ips_list_filepath = __CA_APP_DIR__.'/tmp/bannedIps.json';
+	static $banned_ips_list_filepath = __CA_TEMP_DIR__.'/bannedIps.json';
 	# ------------------------------------------------------
 	/**
 	 *
@@ -57,6 +57,7 @@ class WLPlugBanHammerIPAddress Extends BaseBanHammerPlugin  {
 			$ip_e = ip2long(str_replace("*", "255", $ip));
 			if (($request_ip_long >= $ip_s) && ($request_ip_long <= $ip_e)) {
 				if($log) { $log->logInfo(_t('[BanHammer::IPAddress] Banned ip %1 because address is on ban list', $request_ip)); }
+				self::setDetails(['details' => _t('%1 is on ban list', $request_ip)]);
 				return 1.0;
 			}
 		}
@@ -118,7 +119,7 @@ class WLPlugBanHammerIPAddress Extends BaseBanHammerPlugin  {
 			if(!file_exists(self::$banned_ips_list_filepath) || ((time() - $filetime) > $threshold) || $force) {
 				$data = file_get_contents($config['ip_ban_feed_url']);
 			 	if(!$data || !is_array($lines = explode("\n", $data)) || !sizeof($lines)) {
-			 		$log->logError(_t('[BanHammer::IPAddress] Could not load ip ban list from URL "%1"', $config['ip_ban_feed_url']));
+			 		if($log) { $log->logError(_t('[BanHammer::IPAddress] Could not load ip ban list from URL "%1"', $config['ip_ban_feed_url'])); }
 			 		return true;
 			 	}
 			 	
@@ -145,10 +146,10 @@ class WLPlugBanHammerIPAddress Extends BaseBanHammerPlugin  {
 			 		$lines[$i] = $tmp[0];
 			 	}
 				
-				$log->logInfo(_t('[BanHammer::IPAddress] Loadedip ban list from URL "%1"; got %2 ip addresses', $config['ip_ban_feed_url'], sizeof($lines)));
-			
+				if($log) { $log->logInfo(_t('[BanHammer::IPAddress] Loaded IP ban list from URL "%1"; got %2 ip addresses', $config['ip_ban_feed_url'], sizeof($lines))); }
+				
 				if(!file_put_contents(self::$banned_ips_list_filepath, json_encode($lines))) {
-					$log->logError(_t('[BanHammer::IPAddress] Could not write ip ban list to "%1"', self::$banned_ips_list_filepath));
+					if($log) { $log->logError(_t('[BanHammer::IPAddress] Could not write ip ban list to "%1"', self::$banned_ips_list_filepath)); }
 				}
 				$appvars->setVar('banhammerIPAddressData_isLoading', false);
 				$appvars->save();	
