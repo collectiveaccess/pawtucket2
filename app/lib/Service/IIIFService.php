@@ -47,7 +47,9 @@ class IIIFService {
 			throw new AccessException(_t('Not logged in'));
 		}
 		if(defined('__CA_APP_TYPE__') && (__CA_APP_TYPE__ === 'PAWTUCKET') && Configuration::load('authentication.conf')->get('iiif_use_authentication') && !$request->isLoggedIn()) {
-			throw new AccessException(_t('Not logged in'));
+			if(!$request->doAuthentication(['noPublicUsers' => true, "dont_redirect" => true, "no_headers" => true])) {
+				throw new AccessException(_t('Not logged in'));
+			}
 		}
 		$response->addHeader('Cache-Control', 'max-age=3600, private', true); // Cache all responses for 1 hour.
 
