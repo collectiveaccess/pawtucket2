@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
-define("__CA_APP_TYPE__", "PROVIDENCE");
+define("__CA_APP_TYPE__", "PAWTUCKET");
 define("__CA_IS_SERVICE_REQUEST__", true);
 if (!file_exists('./setup.php')) { print "No setup.php file found!"; exit; }
 require('./setup.php');
@@ -54,7 +54,13 @@ try {
 	//
 	// Dispatch the request
 	//
-	$app->dispatch(true);
+	try {
+		$app->dispatch(true);
+	} catch (ServiceException $e) {
+		caDisplayException($e);
+	} catch (Exception $e) {
+		caDisplayException($e, ['category' => 'routing']);
+	}
 
 	//
 	// Send output to client
