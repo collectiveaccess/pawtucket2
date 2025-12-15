@@ -73,7 +73,7 @@ class WLPlugBanHammerUserAgent Extends BaseBanHammerPlugin  {
 			}
 		}
 		if(is_array($exclude_list = $config['exclude_useragents'] ?? []) && sizeof($exclude_list)) {
-			foreach($banned_useragents as $u) {
+			foreach($exclude_list as $u) {
 				if (preg_match("!{$u}!i", $request_useragent)) {
 					return 0;
 				}
