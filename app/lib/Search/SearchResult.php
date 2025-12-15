@@ -116,44 +116,131 @@ class SearchResult extends BaseObject {
 	# ------------------------------------------------------------------
 
 	/**
-	 * Clear all internal caches
+	 * Clear internal caches. 
+	 *
+	 * @param string $cache Name of cache to clear. If not set all caches are cleared.
 	 *
 	 * @return void
 	 */ 
-	public static function clearCaches() {
-		self::$s_prefetch_cache = array();
-		self::$s_instance_cache = array();
-		self::$s_timestamp_cache = array();
-		self::$s_rel_prefetch_cache = array();
-		self::$s_parsed_field_component_cache = array();
-		self::$opa_hierarchy_parent_prefetch_cache = array();
-		self::$opa_hierarchy_children_prefetch_cache = array();
-		self::$opa_hierarchy_parent_prefetch_cache_index = array();
-		self::$opa_hierarchy_children_prefetch_cache_index = array();
-		self::$opa_hierarchy_siblings_prefetch_cache = array();
-		self::$opa_hierarchy_siblings_prefetch_cache_index = array();
+	public static function clearCaches(?string $cache=null) {
+		$caches = [
+			'prefetch_cache', 'instance_cache', 'timestamp_cache',
+			'rel_prefetch_cache', 'parsed_field_component_cache', 
+			'hierarchy_parent_prefetch_cache', 'hierarchy_children_prefetch_cache',
+			'hierarchy_parent_prefetch_cache_index', 'hierarchy_children_prefetch_cache_index',
+			'hierarchy_siblings_prefetch_cache', 'hierarchy_siblings_prefetch_cache_index'
+		];
+		
+		if($cache && in_array($cache, $caches)) {
+			$caches = [$cache];
+		}
+		
+		foreach($caches as $c) {
+			switch($c) {
+				case 'prefetch_cache':
+					self::$s_prefetch_cache = [];
+					break;
+				case 'instance_cache':
+					self::$s_instance_cache = [];
+					break;
+				case 'timestamp_cache':
+					self::$s_timestamp_cache = [];
+					break;
+				case 'rel_prefetch_cache':
+					self::$s_rel_prefetch_cache = [];
+					break;
+				case 'parsed_field_component_cache':
+					self::$s_parsed_field_component_cache = [];
+					break;
+				case 'hierarchy_parent_prefetch_cache':
+					self::$opa_hierarchy_parent_prefetch_cache = [];
+					break;
+				case 'hierarchy_children_prefetch_cache':
+					self::$opa_hierarchy_children_prefetch_cache = [];
+					break;
+				case 'hierarchy_parent_prefetch_cache_index':
+					self::$opa_hierarchy_parent_prefetch_cache_index = [];
+					break;
+				case 'hierarchy_children_prefetch_cache_index':
+					self::$opa_hierarchy_children_prefetch_cache_index = [];
+					break;
+				case 'hierarchy_siblings_prefetch_cache':
+					self::$opa_hierarchy_siblings_prefetch_cache = [];
+					break;
+				case 'hierarchy_siblings_prefetch_cache_index':
+					self::$opa_hierarchy_siblings_prefetch_cache_index = [];
+					break;
+				
+			}
+		}
 	}
 	
 	/**
 	 * Get relative sizes of internal caches. The size is the strlen of the cache when serialized and
 	 * is only useful for relative size comparisons.
 	 *
-	 * @return array Array with keys set to cache name, values set to relative sizes
+	 * @param string Optional cache name to retr
+	 *
+	 * @return array Array with keys set to cache name, values set to relative sizes; if $cache parameter is set a single integer size for the specified cache is returned.
 	 */
-	public static function getCacheSizes() {
-		return [
-			'prefetch_cache' => strlen(serialize(self::$s_prefetch_cache)),
-			'instance_cache' => strlen(serialize(self::$s_instance_cache)),
-			'timestamp_cache' => strlen(serialize(self::$s_timestamp_cache)),
-			'rel_prefetch_cache' => strlen(serialize(self::$s_rel_prefetch_cache)),
-			'parsed_field_component_cache' => strlen(serialize(self::$s_parsed_field_component_cache)),
-			'hierarchy_parent_prefetch_cache' => strlen(serialize(self::$opa_hierarchy_parent_prefetch_cache)),
-			'hierarchy_children_prefetch_cache' => strlen(serialize(self::$opa_hierarchy_children_prefetch_cache)),
-			'hierarchy_parent_prefetch_cache_index' => strlen(serialize(self::$opa_hierarchy_parent_prefetch_cache_index)),
-			'hierarchy_children_prefetch_cache_index' => strlen(serialize(self::$opa_hierarchy_children_prefetch_cache_index)),
-			'hierarchy_siblings_prefetch_cache' => strlen(serialize(self::$opa_hierarchy_siblings_prefetch_cache)),
-			'hierarchy_siblings_prefetch_cache_index' => strlen(serialize(self::$opa_hierarchy_siblings_prefetch_cache_index))
+	public static function getCacheSizes(?string $cache=null) {
+		$stats = [];
+		
+		$caches = [
+			'prefetch_cache', 'instance_cache', 'timestamp_cache',
+			'rel_prefetch_cache', 'parsed_field_component_cache', 
+			'hierarchy_parent_prefetch_cache', 'hierarchy_children_prefetch_cache',
+			'hierarchy_parent_prefetch_cache_index', 'hierarchy_children_prefetch_cache_index',
+			'hierarchy_siblings_prefetch_cache', 'hierarchy_siblings_prefetch_cache_index'
 		];
+		
+		if($cache && in_array($cache, $caches)) {
+			$caches = [$cache];
+		}
+		
+		foreach($caches as $c) {
+			switch($c) {
+				case 'prefetch_cache':
+					$stats[$c] = strlen(serialize(self::$s_prefetch_cache));
+					break;
+				case 'instance_cache':
+					$stats[$c] = strlen(serialize(self::$s_instance_cache));
+					break;
+				case 'timestamp_cache':
+					$stats[$c] = strlen(serialize(self::$s_instance_cache));
+					break;
+				case 'rel_prefetch_cache':
+					$stats[$c] = strlen(serialize(self::$s_rel_prefetch_cache));
+					break;
+				case 'parsed_field_component_cache':
+					$stats[$c] = strlen(serialize(self::$s_parsed_field_component_cache));
+					break;
+				case 'hierarchy_parent_prefetch_cache':
+					$stats[$c] = strlen(serialize(self::$opa_hierarchy_parent_prefetch_cache));
+					break;
+				case 'hierarchy_children_prefetch_cache':
+					$stats[$c] = strlen(serialize(self::$opa_hierarchy_children_prefetch_cache));
+					break;
+				case 'hierarchy_parent_prefetch_cache_index':
+					$stats[$c] = strlen(serialize(self::$opa_hierarchy_parent_prefetch_cache_index));
+					break;
+				case 'hierarchy_children_prefetch_cache_index':
+					$stats[$c] = strlen(serialize(self::$opa_hierarchy_children_prefetch_cache_index));
+					break;
+				case 'hierarchy_siblings_prefetch_cache':
+					$stats[$c] = strlen(serialize(self::$opa_hierarchy_siblings_prefetch_cache));
+					break;
+				case 'hierarchy_siblings_prefetch_cache_index':
+					$stats[$c] = strlen(serialize(self::$opa_hierarchy_siblings_prefetch_cache_index));
+					break;
+				
+			}
+		}
+		
+		if(sizeof($stats) == 1) {
+			return array_shift($stats);
+		}
+		return $stats;
 	}
 
 	/**
