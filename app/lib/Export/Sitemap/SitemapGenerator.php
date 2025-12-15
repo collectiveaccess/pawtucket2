@@ -239,7 +239,7 @@ class SitemapGenerator {
 		fputs($r, '<?xml version="1.0" encoding="UTF-8"?>'."\n");
 		fputs($r, '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n");
 		foreach($sitemaps as $sm) {
-			fputs($r, "<url><loc>{$sm['url']}</loc><lastmod>".date('c', $sm['last_modified'])."</lastmod></url>\n");
+			fputs($r, "<sitemap><loc>{$sm['url']}</loc><lastmod>".date('c', $sm['last_modified'])."</lastmod></sitemap>\n");
 		}
 		fputs($r, "\n</sitemapindex>\n");
 		fclose($r);
