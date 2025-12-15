@@ -29,7 +29,7 @@
  * 
  * ----------------------------------------------------------------------
  */
-require_once(__CA_LIB_DIR__.'/export/Sitemap/SitemapGenerator.php');
+require_once(__CA_LIB_DIR__.'/Export/Sitemap/SitemapGenerator.php');
 
 trait CLIUtilsSitemap { 
 	# -------------------------------------------------------
