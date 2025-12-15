@@ -37,10 +37,7 @@ trait CLIUtilsSitemap {
 	 * Rebuild sort values
 	 */
 	public static function export_sitemap($opts=null) {
-		if(!($directory = $opts->getOption('directory'))) {
-			$directory = __CA_BASE_DIR__;
-		}
-		
+		$directory = $opts->getOption('directory');
 		$map = new SitemapGenerator(['directory' => $directory]);
 		$map->export();
 		

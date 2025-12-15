@@ -46,12 +46,17 @@ class SitemapGenerator {
 	/**
 	 *
 	 */
+	static $max_prefetch_cache_length = 8 * 1024 * 1024;
+	
+	/**
+	 *
+	 */
 	protected $directory = null;
 	# -------------------------------------------------------
 	public function __construct(?array $opts=null) {
 		if(!self::$config) { self::$config = Configuration::load("sitemap.conf"); }
 		
-		$this->directory = caGetOption('directory', $opts, __CA_BASE_DIR__);
+		$this->directory = caGetOption('directory', $opts, self::$config->get('sitemap_directory') ?: __CA_BASE_DIR__);
 	}
 	# -------------------------------------------------------
 	#
@@ -59,12 +64,13 @@ class SitemapGenerator {
 	/**
 	 *
 	 */
-	public function export() {
-		ini_set("memory_limit", "4096m");
+	public function export(?array $options=null) {
 		$app_config = Configuration::load();
 		$access_values = $app_config->get('public_access_settings');
 		
-		print "Exporting to {$this->directory}\n";
+		$quiet = caGetOption('quiet', $options, self::$config->get('quiet'));
+		
+		if(!$quiet) { print "Exporting to {$this->directory}\n"; }
 		
 		$sitemaps = [];
 		
@@ -75,69 +81,153 @@ class SitemapGenerator {
 		
 		foreach($map as $m => $minfo) {
 			if(!is_array($minfo)) { continue; }
-			print "\tExport {$m}\n";
 			
-			switch(mb_strtolower($m)) {
-				case 'front':
-					
-					break;
-				case 'gallery':
-					
-					break;
+			switch($mn = mb_strtolower($m)) {
+				// -----------------------------------------------------
 				case 'detail':
+					if(!isset($minfo['pages']) || !is_array($minfo['pages'])) { continue; }
+					
 					$dconfig = caGetDetailConfig();
 					$dtypes = $dconfig->get('detailTypes');
 					
-					if(in_array('*', array_keys($minfo))) {
-						$minfo = [];
+					if(in_array('*', array_keys($minfo['pages'] ?? []))) {
+						$minfo['pages']= [];
 						foreach($dtypes as $d => $dinfo) {
-							$minfo[$d] = [
-							
-							];
+							$minfo['pages'][$d] = [];
 						}
 					}
 					
-					$fc = 0;
+					$limit = caGetOption('limit', $minfo['options'] ?? [], null);
+					$max_urls_per_file = caGetOption('urls_per_file', $minfo['options'] ?? [], self::$max_map_length);
 					
 					$acc = [];
-					foreach($minfo as $s => $sinfo) {
+					$c = 0;
+					foreach($minfo['pages'] as $s => $sinfo) {
+						$fc = 0;
 						if(isset($dtypes[$s])) {
 							$dinfo = $dtypes[$s];
-							print "\t\tExporting {$dinfo['displayName']} ";
-							
 							$table = $dinfo['table'];
 							$qr = $table::findAsSearchResult('*', ['restrictToTypes' => $dinfo['restrictToTypes'] ?? null]);
 							if(!$qr) { continue; }
-							print " (".$qr->numHits(). ")\n";
 							
+							if(!$quiet) { 
+								print CLIProgressBar::start($qr->numHits(), _t('Exporting %1', $dinfo['displayName']));
+							}
+							
+							$latest_mod = null;
+							
+							$pc = 0;
 							while($qr->nextHit()) {
 								$access = $qr->get("{$table}.access");
 								if(!is_null($access) && !in_array($access, $access_values)) { continue; }
 								$id = $qr->getPrimaryKey();
-								$url = __CA_SITE_PROTOCOL__.'://'.__CA_SITE_HOSTNAME__.(__CA_URL_ROOT__ ? '/'.__CA_URL_ROOT__ : '')."/Detail/{$s}/{$id}";
-								$last_mod = date('c', $qr->get("{$table}.lastModified.timestamp") ?: time());
+								$url = $this->itemURL("/Detail/{$s}/{$id}");
+								$last_mod = date('c', $lm = $qr->get("{$table}.lastModified.timestamp") ?: time());
+								if(is_null($latest_mod) || ($latest_mod < $lm)) {
+									$latest_mod = $lm;
+								}
 								$acc[] = "<url><loc>{$url}</loc><lastmod>{$last_mod}</lastmod></url>";
-								
-								if((sizeof($acc) > self::$max_map_length) || (sizeof($acc) && $qr->isLastHit())) {
+								$c++;
+								$pc++;
+								if(SearchResult::getCacheSizes('prefetch_cache') > self::$max_prefetch_cache_length) {
+									SearchResult::clearCaches('prefetch_cache');
+								}
+								if((sizeof($acc) >= $max_urls_per_file) || (sizeof($acc) && $qr->isLastHit())) {
 									$path = $this->directory."/{$table}_{$s}".(($fc > 0) ? "_{$fc}" : "").".xml";
 									if(!$this->writeSitemap($path, $acc)) {
-										print "Could not write file $path\n";
+										throw new ApplicationException(_t('Could not write sitemap file to %1', $path));
 									}
-									
-									$sitemap_url = __CA_SITE_PROTOCOL__.'://'.__CA_SITE_HOSTNAME__.(__CA_URL_ROOT__ ? '/'.__CA_URL_ROOT__ : '')."/".pathinfo($path, PATHINFO_BASENAME);
-									$sitemaps[] = $sitemap_url;
+									$sitemaps[] = [
+										'url' => $this->sitemapURL($path),
+										'last_modified' => $latest_mod
+									];
 									$acc = [];
 									$fc++;
 								}
+								
+								if(!$quiet) {
+									print CLIProgressBar::next(1, _t('Writing site map for %1 (%2)', $dinfo['displayName'], Datamodel::getTableProperty($table, 'NAME_PLURAL')));
+								}
+								if($limit && ($pc >= $limit)) { break; }
+							}
+							if(!$quiet) {
+								CLIProgressBar::finish();
 							}
 						}
 					}
 					break;
+				// -----------------------------------------------------
+				case 'front':
+				case 'gallery':
+				default:
+					if(!isset($minfo['pages']) || !is_array($minfo['pages'])) { continue; }
+					$acc = [];
+					$sitemap_name = caGetOption('sitemap_name', $minfo['options'] ?? [], "{$mn}.xml");
+					if(!pathinfo($sitemap_name, PATHINFO_EXTENSION) === 'xml') { $sitemap_name .= '.xml'; }
+					$path = $this->directory."/{$sitemap_name}";
+					
+					if(!$quiet) { 
+						print CLIProgressBar::start(sizeof($minfo['pages']), _t('Exporting %1', $m));
+					}
+					
+					foreach($minfo['pages'] as $s => $sinfo) {
+						if(!$quiet) {
+							print CLIProgressBar::next(1, _t('Writing site map for %1 (%2)', $m, $s));
+						}
+						$acc[] = "<url><loc>".$this->itemUrl("{$m}/{$s}")."</loc><lastmod>".date('c')."</lastmod></url>";
+					}
+					if(!$this->writeSitemap($path, $acc)) {
+						throw new ApplicationException(_t('Could not write sitemap file to %1', $path));
+					}
+					$sitemaps[] = [
+						'url' => $this->sitemapURL($path),
+						'last_modified' => time()
+					];
+					if(!$quiet) {
+						CLIProgressBar::finish();
+					}
+					break;
+				// -----------------------------------------------------
 			}
 		}
 		
-		$this->writeSitemapIndex($this->directory."/sitemaps.xml", $sitemaps);
+		if(!$this->writeSitemapIndex($path = $this->directory."/sitemaps.xml", $sitemaps)) {
+			throw new ApplicationException(_t('Could not write sitemap index to %1', $path));	
+		}
 	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	private function siteConfig() {
+		$site_protocol = self::$config->get('site_protocol') ?: __CA_SITE_PROTOCOL__;
+		$site_hostname = self::$config->get('site_hostname') ?: __CA_SITE_HOSTNAME__;
+		$site_url_root = self::$config->get('site_url_root') ?: __CA_URL_ROOT__;
+		
+		return [
+			'protocol' => $site_protocol,
+			'hostname' => $site_hostname,
+			'url_root' => $site_url_root
+		];
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	private function sitemapURL(string $path) {
+		$site_config = $this->siteConfig();
+		$sitemap_url = $site_config['protocol'].'://'.$site_config['hostname'].($site_config['url_root'] ? '/'.$site_config['url_root'] : '')."/".pathinfo($path, PATHINFO_BASENAME);
+		return $sitemap_url;
+	} 
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	private function itemURL(string $path) {
+		$site_config = $this->siteConfig();
+		$item_url = $site_config['protocol'].'://'.$site_config['hostname'].($site_config['url_root'] ? '/'.$site_config['url_root'] : '')."/{$path}";
+		return $item_url;
+	} 
 	# -------------------------------------------------------
 	/**
 	 *
@@ -149,7 +239,7 @@ class SitemapGenerator {
 		fputs($r, '<?xml version="1.0" encoding="UTF-8"?>'."\n");
 		fputs($r, '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n");
 		foreach($sitemaps as $sm) {
-			fputs($r, "<url><loc>{$sm}</loc><lastmod>".date('c')."</lastmod></url>\n");
+			fputs($r, "<url><loc>{$sm['url']}</loc><lastmod>".date('c', $sm['last_modified'])."</lastmod></url>\n");
 		}
 		fputs($r, "\n</sitemapindex>\n");
 		fclose($r);
