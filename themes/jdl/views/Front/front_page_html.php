@@ -60,6 +60,7 @@
 							<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
 						</div>
 					</form>
+					<div class="pt-5 fs-6">{{{hp_support}}}</div>
 				</div>
 			</div>
 		</div>
