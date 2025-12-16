@@ -48,10 +48,27 @@ $media_options = array_merge($media_options, [
 	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 
+<div class="breadcrumb"><div class='container-xl'><div class="py-2 fs-6">
+<?php
+	print caNavLink($this->request, _t("Art Collection"), '', '', '', '', '');
+	print " / ";			
+	$url = $this->getVar("resultsURL");
+	if($url && (str_contains($url, "Listing"))){
+		print "<a href='".$url."'>"._t("Current Exhibitions")."</a>";
+	}elseif($url && (str_contains($url, "Browse"))){
+		print "<a href='".$url."'>"._t("Past Exhibitions")."</a>";
+	}else{
+		print caNavLink($this->request, _t("Exhibitions"), '', '', 'Browse', 'exhibitions', '');
+	}
+	print " / ".$t_item->get("ca_occurrences.preferred_labels.name");					
+?>
+</div></div></div>	
+<div class='container-xl pt-4'><?php # --- this container is usually out put in header, but here so the breadcrumb trail can be output
+?>	
 	<div class="row mt-n3">
 		<div class="col-md-6 text-center text-md-start">
 <?php
-			if(caDisplayLightbox($this->request) || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
+			if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
 				<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
@@ -149,13 +166,20 @@ if($show_nav){
 			
 		</div>
 	</div>
-{{{<ifcount code="ca_objects" min="1">
+{{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="featured">
 	<div class="row">
-		<div class="col"><h2 class="fs-4">Exhibited Artworks</h2><hr></div>
+		<div class="col"><hr class="pb-4"></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'all_artworks_list', array('search' => 'ca_occurrences.occurrence_id:'.$t_item->get("ca_occurrences.occurrence_id"), '_advanced' => 0)); ?>">
-			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
-		</div>
+		<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" delimiter="">
+			<div class="col-md-6 col-lg-4 d-flex pb-4"><l>
+				<div id="row2020" class="card flex-grow-1 w-100 h-100 rounded-0 shadow border-0 mb-4"><l>^ca_object_representations.media.medium%class=card-img-top,object-fit-contain,px-3,pt-3,rounded-0
+					<div class="card-body"><div class='card-title'><div class='fw-medium lh-sm fs-5'><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='artist'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist' delimiter=', '>^ca_entities.preferred_labels</unit><br/></ifcount><i>^ca_objects.preferred_labels.name</i></div></div><ifdef code='ca_objects.date_completed|ca_objects.media'><div class='card-text small lh-sm'>^ca_objects.date_completed<ifdef code='ca_objects.date_completed,ca_objects.media'>, </ifdef><ifdef code='ca_objects.date_completed,ca_objects.media'>^ca_objects.media</ifdef></div></ifdef></div></l>
+					<div class="card-footer text-end bg-transparent">
+						<l class="btn btn-white px-2 ms-1" title="View Record" aria-label="View Record"><i class="bi bi-arrow-right-square"></i> Get Details</l>
+					</div>
+				 </div>		
+			</div>
+		</unit>
 	</div>
 </ifcount>}}}

@@ -42,12 +42,40 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
-
+<div class="breadcrumb"><div class='container-xl'><div class="py-2 fs-6">
+<?php
+	print caNavLink($this->request, _t("Art Collection"), '', '', '', '', '');
+	print " / ".$t_item->get("ca_entities.preferred_labels.displayname");					
+?>
+</div></div></div>	
+<div class='container-xl pt-4'><?php # --- this container is usually out put in header, but here so the breadcrumb trail can be output
+?>
 <?php
 	if($show_nav){
 ?>
 	<div class="row mt-n3">
-		<div class="col text-center text-md-end">
+		<div class="col-md-6 text-center text-md-start">
+<?php
+			if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
+?>
+				<div class="btn-group" role="group" aria-label="Detail Controls">
+<?php
+							if($inquire_enabled) {
+								print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_occurrences", "id" => $id));
+							}
+							if($pdf_enabled) {
+								print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
+							}
+							if($copy_link_enabled){
+								print $this->render('Details/snippets/copy_link_html.php');
+							}
+?>				
+						</div>
+<?php
+			}
+?>
+		</div>
+		<div class="col-md-6 text-center text-md-end">
 			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
 		</div>
 	</div>

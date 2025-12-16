@@ -92,7 +92,7 @@ if($this->request->isLoggedIn()){
 						<a class="text-nowrap nav-link<?php print (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "browse")) || (strToLower($this->request->getController()) == "listing")) ? ' active' : ''; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span>Exhibitions</span> <i class="bi bi-chevron-down fs-6"></i></a>
 						<ul class="dropdown-menu">
 							<li class='nav-item'><?php print caNavLink($this->request, _t("Current Exhibitions"), 'nav-link'.((strToLower($this->request->getController()) == "listing") ? " active" : ""), '', 'Listing', 'current_exhibitions', ''); ?></li>
-							<li class='nav-item'><?php print caNavLink($this->request, _t("All Exhibitions"), 'nav-link'.((strToLower($this->request->getAction()) == "exhibitions") ? " active" : ""), '', 'Browse', 'exhibitions', ''); ?></li>
+							<li class='nav-item'><?php print caNavLink($this->request, _t("Past Exhibitions"), 'nav-link'.((strToLower($this->request->getAction()) == "exhibitions") ? " active" : ""), '', 'Browse', 'exhibitions', ''); ?></li>
 						</ul>	
 					</li>
 					<li class="nav-item">
@@ -117,6 +117,10 @@ if($this->request->isLoggedIn()){
 	</nav>	
 
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
+<?php
+	if(strToLower($this->request->getController()) != "detail"){
+		# --- output in detail views so have back link and record title
+?>
 		<div class="breadcrumb"><div class='container-xl'><div class="py-2 fs-6">
 <?php
 			print caNavLink($this->request, _t("Art Collection"), '', '', '', '', '');
@@ -129,11 +133,15 @@ if($this->request->isLoggedIn()){
 						break;
 						# ----------------
 						case "exhibitions":
-							print " / ".caNavLink($this->request, _t("Exhibitions"), '', '', 'Browse', 'exhibitions', '');			
+							print " / ".caNavLink($this->request, _t("Past Exhibitions"), '', '', 'Browse', 'exhibitions', '');			
 						break;
 						# ----------------
 						case "artists":
 							print " / ".caNavLink($this->request, _t("Artists"), '', '', 'Browse', 'artists', '');			
+						break;
+						# ----------------
+						case "exhibitions":
+							print " / ".caNavLink($this->request, _t("Past Exhibitions"), '', '', 'Browse', 'exhibitions', '');				
 						break;
 						# ----------------
 						case "advanced":
@@ -143,38 +151,25 @@ if($this->request->isLoggedIn()){
 					}
 				break;
 				# ------------------------------
-				case "detail":
-					switch(strToLower($this->request->getAction())){
-						case "artworks":
-							print " / ".caNavLink($this->request, _t("Artworks"), '', '', 'Browse', 'artworks', '');			
-						break;
-						# ----------------
-						case "exhibitions":
-							print " / ".caNavLink($this->request, _t("Exhibitions"), '', '', 'Browse', 'exhibitions', '');			
-						break;
-						# ----------------
-						case "entities":
-							print " / ".caNavLink($this->request, _t("Artists"), '', '', 'Browse', 'artists', '');			
-						break;
-						# ----------------
-					}
-				break;
-				# ------------------------------
 				case "listing":
 					switch(strToLower($this->request->getAction())){
 						case "current_exhibitions":
-							print " / ".caNavLink($this->request, _t("Exhibitions"), '', '', 'Listing', 'current_exhibitions', '');			
+							print " / ".caNavLink($this->request, _t("Current Exhibitions"), '', '', 'Listing', 'current_exhibitions', '');			
 						break;
 					}
+				break;
 				# ------------------------------
 				case "gallery":
-					print " / ".caNavLink($this->request, _t("Collection Highlights"), '', '', 'Gallery', 'index', '');			
+					print " / ".caNavLink($this->request, _t("Collection Highlights"), '', '', 'Gallery', 'index', '');	
+				break;		
 				# ------------------------------
 			}
 ?>
 		</div></div></div>
 <?php
-	if(strToLower($this->request->getController()) != "front"){
+	}
+	if(!in_array(strToLower($this->request->getController()), array("front", "detail"))){
+		# --- this is output on detail pages after the breadcrumb trail
 		print "<div class='container-xl pt-4'>";
 	}
 ?>
