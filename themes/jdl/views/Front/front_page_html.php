@@ -155,7 +155,7 @@ if($collection_set_code = $o_config->get("collection_set_code")){
 					print "<div class='pt-2'>".$qr_res->getWithTemplate("<l>^ca_collections.preferred_labels</l>")."</div>";					
 				}
 			}
-			print "<div class='pt-4'>".caNavLink($this->request, "All Collections", "btn btn-primary", "", "Collections", "Index")."</div>";
+			print "<div class='pt-4 pb-4 pb-md-0'>".caNavLink($this->request, "All Collections", "btn btn-primary", "", "Collections", "Index")."</div>";
 ?>
 			</div>
 <?php
