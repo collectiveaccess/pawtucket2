@@ -50,6 +50,18 @@ $media_options = array_merge($media_options, [
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
+<div class="breadcrumb"><div class='container-xl'><div class="py-2 fs-6">
+<?php
+	#$url = $this->getVar("resultsURL");
+	print caNavLink($this->request, _t("Art Collection"), '', '', '', '', '');
+	print " / ".caNavLink($this->request, _t("Artworks"), '', '', 'Browse', 'artworks', '');
+	print " / ".$t_object->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="artist"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", ">^ca_entities.preferred_labels</unit>, </ifcount><i>^ca_objects.preferred_labels.name</i>');					
+?>
+</div></div></div>	
+<div class='container-xl pt-4'>
+<?php # --- this container is usually out put in header, but here so the breadcrumb trail can be output 
+?>	
+
 	<div class="row mt-n3">
 		<div class="col-md-6 text-center text-md-start">
 <?php
@@ -127,7 +139,7 @@ if($show_nav){
 								if($t_object->get("ca_objects.artwork_category")){
 									if($links = caGetBrowseLinks($t_object, 'ca_objects.artwork_category', ['template' => '<l>^ca_objects.artwork_category</l>', 'linkTemplate' => '^LINK'])) {
 ?>
-										<dt><?= _t('Artwork Category'); ?></dt>
+										<dt><?= (sizeof($links) > 1) ? _t('Tags') : _t('Tag'); ?></dt>
 										<dd><?= join(", ", $links); ?></dd>
 <?php
 									}

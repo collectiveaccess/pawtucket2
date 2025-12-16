@@ -897,8 +897,8 @@ class ResultContext {
 		$vs_last_find = ResultContext::getLastFind($po_request, $pm_table_name_or_num);
 		$va_tmp = explode('/', $vs_last_find);
 
-		$o_find_navigation = Configuration::load(((defined('__CA_THEME_DIR__') && (__CA_APP_TYPE__ == 'PAWTUCKET')) ? __CA_THEME_DIR__ : __CA_APP_DIR__).'/conf/find_navigation.conf');
-
+		$o_find_navigation = Configuration::load(((defined('__CA_THEME_DIR__') && file_exists(__CA_THEME_DIR__.'/conf/find_navigation.conf')) ? __CA_THEME_DIR__ : __CA_APP_DIR__).'/conf/find_navigation.conf');
+		
 		$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
 		$va_nav = $va_find_nav[$va_tmp[0] ?? 0] ?? null;
 		if (!$va_nav) { return false; }

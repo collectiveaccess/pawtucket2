@@ -595,12 +595,13 @@ class SearchController extends FindController {
 		$this->view->setVar('config', $this->config);
 		$this->view->setVar('blocks', $search_targets);
 		$this->view->setVar('blockNames', $search_targets);
-		$this->view->setVar('results', $results = caGeneralSearch($this->request, $search, $search_targets, [
-			'access' => $this->opa_access_values, 
-			'contexts' => $result_contexts, 
-			'matchOnStem' => (bool)$this->config->get('matchOnStem')
-		]));
-		
+		if($search){
+			$this->view->setVar('results', $results = caGeneralSearch($this->request, $search, $search_targets, [
+				'access' => $this->opa_access_values, 
+				'contexts' => $result_contexts, 
+				'matchOnStem' => (bool)$this->config->get('matchOnStem')
+			]));
+		}		
 		$result_count = 0;
 		$redirect_to_only_result = null;
 		
