@@ -145,7 +145,33 @@ if($show_nav){
 						<dt><?= _t('Preferred Citation'); ?></dt>
 						<dd>^ca_objects.citation</dd>
 					</ifdef>
-					
+<?php
+					if($t_object->get("ca_objects.tgm_terms")){
+						if($links = caGetBrowseLinks($t_object, 'ca_objects.tgm_terms', ['template' => '<l>^ca_objects.tgm_terms</l>', 'linkTemplate' => '^LINK'])) {
+				?>
+								<dt>Thesaurus of Graphical Materials Subject Headings</dt>
+								<dd><?= join(", ", $links); ?></dd>
+				<?php
+						}
+					}
+					$va_tgm = $t_object->get("ca_objects.tgm_terms", array('returnAsArray' => 1, 'returnAllLocales' => false));
+					if(sizeof($va_tgm) > 0){
+						print "<dt>"._t("Thesaurus of Graphical Materials Subject Headings")."</dt>";
+						foreach($va_tgm as $va_tgm_info){
+							$tgm_term=explode(" [",$va_tgm_info);
+							print "<dd>".caNavLink($this->request, $tgm_term[0], '', '', 'Search', 'Objects', array('search' => 'ca_objects.tgm_terms:"'.$tgm_term['0'].'"'))."</dd>";
+						}
+					}
+					$va_lcsh = $t_object->get("ca_objects.lcsh_terms", array('returnAsArray' => 1, 'returnAllLocales' => false));
+					if(sizeof($va_lcsh) > 0){
+						print "<dt>"._t("Library of Congress Subject Headings")."</dt>";
+						foreach($va_lcsh as $va_lcsh_info){
+							$lcsh_term=explode(" [",$va_lcsh_info);
+							print "<dd>".caNavLink($this->request, $lcsh_term[0], '', '', 'Search', 'Objects', array('search' => 'ca_objects.lcsh_terms:"'.$lcsh_term['0'].'"'))."</dd>";
+						}
+					}
+
+?>					
 					<ifcount code="ca_collections" min="1">
 						<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
 						<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter="<span aria-hidden='true'> > </span>"><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
