@@ -96,7 +96,19 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 		print "</ul>\n";
 		print "</div>\n";
 	}
-
+	if($table == "ca_objects"){
+?>
+		<H2 class='fs-4 px-3 py-2'><?= _t("Search by location"); ?></H2>
+			<form role="search" id="searchLocation" class="pt-1 pt-md-0" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+				<div class="input-group px-3 pb-3">
+					<label for="search-location" class="form-label visually-hidden">Search by location</label>
+					<input name="search_location" id="search-location" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?php print _t("Enter address or zipcode"); ?>" aria-label="<?php print _t("Enter address or zipcode"); ?>">
+					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+					<button type="submit" class="btn rounded-0 bg-white" aria-label="search submit"><i class="bi bi-search"></i></button>
+				</div>
+			</form>
+<?php
+	}
 	if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
 		print "<H2 class='fs-4 px-3 py-2'>"._t("Filter by")."</H2>";
 		

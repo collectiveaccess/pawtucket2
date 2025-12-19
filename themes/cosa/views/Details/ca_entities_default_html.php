@@ -44,6 +44,9 @@ $map_options = $this->getVar('mapOptions') ?? [];
 </script>
 <div class="breadcrumb"><div class='container-xl'><div class="py-2 fs-6">
 <?php
+	if($resultURL = $this->getVar("resultsURL")){
+		print "<a href='".$resultURL."' class='me-4'><i class='bi bi-chevron-left small'></i>Back</a>";
+	}
 	print caNavLink($this->request, _t("Art Collection"), '', '', '', '', '');
 	print " / ".$t_item->get("ca_entities.preferred_labels.displayname");					
 ?>
@@ -76,7 +79,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 		</div>
 		<div class="col-md-6 text-center text-md-end">
-			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
+			<nav aria-label="result">{{{previousLink}}}{{{nextLink}}}</nav>
 		</div>
 	</div>
 <?php
@@ -87,6 +90,18 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			<H1 class="fs-2">{{{^ca_entities.preferred_labels.displayname}}}</H1>
 			{{{<ifdef code="ca_entities.artist_registry"><div class="mb-3"><a href="^ca_entities.artist_registry" target="_blank">Artist Registry Profile <i class='bi bi-box-arrow-up-right ms-1'></i></a></ifdef></div>}}}
 			{{{<ifnotdef code="ca_entities.artist_registry"><div class="mb-3"><a href="https://events.getcreativesanantonio.com/artist/" target="_blank">Artist Registry <i class='bi bi-box-arrow-up-right ms-1'></i></a></div>}}}
+<?php
+			if($exhibitions = $t_item->getWithTemplate('<unit relativeTo="ca_objects" restrictToRelationshipTypes="artist" delimiter=";"><ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1"><unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=";"><l>^ca_occurrences.preferred_labels</l></unit></ifcount></unit>')){
+				$va_exhibitions = array_unique(explode(";", $exhibitions));
+				if(is_array($va_exhibitions) && sizeof($va_exhibitions)){
+					print "<dl><dt>Related Exhibition".((sizeof($va_exhibitions) > 1) ? "s":"")."</dt>";
+					foreach($va_exhibitions as $exhibition_link){
+						print "<dd>".$exhibition_link."</dd>";
+					}
+					print "</dl>";
+				}
+			}
+?>
 		</div>
 	</div>
 <?php
@@ -113,12 +128,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	}
 ?>
 {{{
-	<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
-		<dl>
-		<dt><ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="exhibition"><?= _t('Related exhibition'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="exhibition"><?= _t('Related Exhibitions'); ?></ifcount></dt>
-		<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l></dd></unit>
-		</dl>
-	</ifcount>
 	<ifcount code="ca_objects" min="1">
 		<div class="row">
 			<div class="col"><h2 class="fs-4">Related Artworks</h2><hr></div>
