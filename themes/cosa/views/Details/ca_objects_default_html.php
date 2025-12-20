@@ -34,6 +34,7 @@ $comments_enabled = $this->getVar("commentsEnabled");
 $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
 $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
+$tags_enabled = 	$this->getVar("tagsEnabled");
 $id =				$t_object->getPrimaryKey();
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
@@ -217,6 +218,7 @@ if($show_nav){
 		</div>
 	</div>
 <?php
+if($tags_enabled){
 	$tags = array("Hidden Gem", "Que Chula!", "Selfie-worthy", "Puro San Antonio", "Honoring History", "Love this!", "Learned something new!", "I’ve seen this!");
 ?>
 	<div class="row">
@@ -239,3 +241,6 @@ if($show_nav){
 			</div>
 		</div>
 	</div>
+<?php
+}
+?>
