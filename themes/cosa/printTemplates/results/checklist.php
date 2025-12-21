@@ -81,7 +81,26 @@
 				</td><td>
 					<div class="metaBlock">
 <?php				
-					print $vo_result->getWithTemplate("<div class='title'><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='artist'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist' delimiter=', '>^ca_entities.preferred_labels</unit><br/></ifcount><i>^ca_objects.preferred_labels.name</i></div><ifdef code='ca_objects.date_completed|ca_objects.media'><div class='metadata'>^ca_objects.date_completed<ifdef code='ca_objects.date_completed,ca_objects.media'>, </ifdef><ifdef code='ca_objects.date_completed,ca_objects.media'>^ca_objects.media</ifdef></div></ifdef>");
+					print $vo_result->getWithTemplate("<div class='title'><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='artist'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist' delimiter=', '>^ca_entities.preferred_labels</unit><br/></ifcount><i>^ca_objects.preferred_labels.name</i></div><ifdef code='ca_objects.date_completed|ca_objects.media'><div class='metadata'>^ca_objects.date_completed<ifdef code='ca_objects.date_completed,ca_objects.media'>, </ifdef><ifdef code='ca_objects.date_completed,ca_objects.media'>^ca_objects.media</ifdef></div></ifdef>
+					<ifdef code='ca_objects.on_display'>
+							<if rule='^ca_objects.on_display =~ /Yes/'>
+								<ifcount code='ca_places' min='1'>
+									<unit relativeTo='ca_places' delimiter=''><div class='metadata'>^ca_places.preferred_labels
+										<ifdef code='ca_places.address'><br/>
+											<ifdef code='ca_places.address.address1'>^ca_places.address.address1</ifdef>
+											<ifdef code='ca_places.address.address2'><ifdef code='ca_places.address.address1'><br/></ifdef>^ca_places.address.address2</ifdef>
+											<ifdef code='ca_places.address.city|ca_places.address.state|ca_places.address.zip|ca_places.address.country'>
+												<ifdef code='ca_places.address.address1|ca_places.address.address2'><br/></ifdef>
+												<ifdef code='ca_places.address.city'>^ca_places.address.city</ifdef>
+												<ifdef code='ca_places.address.state'><ifdef code='ca_places.address.city'>, </ifdef>^ca_places.address.state</ifdef>
+												<ifdef code='ca_places.address.zip'> ^ca_places.address.zip</ifdef>
+												<ifdef code='ca_places.address.country'> ^ca_places.address.country</ifdef>
+											</ifdef>
+										</ifdef>
+									<div></unit>
+								</ifcount>
+							</if>
+						</ifdef>");
 					
 ?>
 					</div>				

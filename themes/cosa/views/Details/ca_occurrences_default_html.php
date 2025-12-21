@@ -50,6 +50,9 @@ $media_options = array_merge($media_options, [
 
 <div class="breadcrumb"><div class='container-xl'><div class="py-2 fs-6">
 <?php
+	if($resultURL = $this->getVar("resultsURL")){
+		print "<a href='".$resultURL."' class='me-4'><i class='bi bi-chevron-left small'></i>Back</a>";
+	}
 	print caNavLink($this->request, _t("Art Collection"), '', '', '', '', '');
 	print " / ";			
 	$url = $this->getVar("resultsURL");
@@ -91,7 +94,7 @@ $media_options = array_merge($media_options, [
 if($show_nav){
 ?>
 		<div class="col-md-6 text-center text-md-end">
-			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
+			<nav aria-label="result">{{{previousLink}}}{{{nextLink}}}</nav>
 		</div>
 <?php
 }

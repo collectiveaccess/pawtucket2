@@ -34,6 +34,7 @@ $comments_enabled = $this->getVar("commentsEnabled");
 $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
 $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
+$tags_enabled = 	$this->getVar("tagsEnabled");
 $id =				$t_object->getPrimaryKey();
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
@@ -52,7 +53,9 @@ $media_options = array_merge($media_options, [
 </script>
 <div class="breadcrumb"><div class='container-xl'><div class="py-2 fs-6">
 <?php
-	#$url = $this->getVar("resultsURL");
+	if($resultURL = $this->getVar("resultsURL")){
+		print "<a href='".$resultURL."' class='me-4'><i class='bi bi-chevron-left small'></i>Back</a>";
+	}
 	print caNavLink($this->request, _t("Art Collection"), '', '', '', '', '');
 	print " / ".caNavLink($this->request, _t("Artworks"), '', '', 'Browse', 'artworks', '');
 	print " / ".$t_object->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="artist"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", ">^ca_entities.preferred_labels</unit>, </ifcount><i>^ca_objects.preferred_labels.name</i>');					
@@ -89,7 +92,7 @@ $media_options = array_merge($media_options, [
 if($show_nav){
 ?>
 		<div class="col-md-6 text-center text-md-end">
-			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
+			<nav aria-label="result">{{{previousLink}}}{{{nextLink}}}</nav>
 		</div>
 <?php
 }
@@ -162,45 +165,82 @@ if($show_nav){
 								<dt><ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1" max="1"><?= _t('Related Exhibition'); ?></ifcount><ifcount code="ca_occurrences" min="2" restrictToTypes="exhibition"><?= _t('Related Exhibitions'); ?></ifcount></dt>
 								<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l></dd></unit>
 							</ifcount>
-							<ifcount code="ca_places" min="1">
-								<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Location'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Locations'); ?></ifcount></dt>
-								<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l>
-									<ifdef code="ca_places.address"><br/>
-										<ifdef code="ca_places.address.address1">^ca_places.address.address1</ifdef>
-										<ifdef code="ca_places.address.address2"><ifdef code="ca_places.address.address1"><br/></ifdef>^ca_places.address.address2</ifdef>
-										<ifdef code="ca_places.address.city|ca_places.address.state|ca_places.address.zip|ca_places.address.country">
-											<ifdef code="ca_places.address.address1|ca_places.address.address2"><br/></ifdef>
-											<ifdef code="ca_places.address.city">^ca_places.address.city</ifdef>
-											<ifdef code="ca_places.address.state"><ifdef code="ca_places.address.city">, </ifdef>^ca_places.address.state</ifdef>
-											<ifdef code="ca_places.address.zip"> ^ca_places.address.zip</ifdef>
-											<ifdef code="ca_places.address.country"> ^ca_places.address.country</ifdef>
-										</ifdef>
-									</ifdef>
-								</dd></unit>
-							</ifcount>
+							<ifdef code="ca_objects.on_display">
+								<if rule='^ca_objects.on_display =~ /Yes/'>
+									<ifcount code="ca_places" min="1">
+										<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Location'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Locations'); ?></ifcount></dt>
+										<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l>
+											<ifdef code="ca_places.address"><br/>
+												<ifdef code="ca_places.address.address1">^ca_places.address.address1</ifdef>
+												<ifdef code="ca_places.address.address2"><ifdef code="ca_places.address.address1"><br/></ifdef>^ca_places.address.address2</ifdef>
+												<ifdef code="ca_places.address.city|ca_places.address.state|ca_places.address.zip|ca_places.address.country">
+													<ifdef code="ca_places.address.address1|ca_places.address.address2"><br/></ifdef>
+													<ifdef code="ca_places.address.city">^ca_places.address.city</ifdef>
+													<ifdef code="ca_places.address.state"><ifdef code="ca_places.address.city">, </ifdef>^ca_places.address.state</ifdef>
+													<ifdef code="ca_places.address.zip"> ^ca_places.address.zip</ifdef>
+													<ifdef code="ca_places.address.country"> ^ca_places.address.country</ifdef>
+												</ifdef>
+											</ifdef>
+										</dd></unit>
+									</ifcount>
+								</if>
+							</ifdef>
 							<ifdef code="ca_objects.on_display">
 								<if rule='^ca_objects.on_display =~ /Yes/'>
 									<dt>Viewing Information</dt>
 									<dd>On Display <ifdef code="ca_objects.inside_outside">^ca_objects.inside_outside</ifdef></dd>
+									<ifcount code="ca_places" min="1"><unit relativeTo="ca_places">
+										<if rule='^ca_places.restrictions.visitation =~ /Yes/'><ifdef code="ca_places.restrictions.restriction_details">
+												<dt>Visitation Restrictions</dt>
+												<dd>^ca_places.restrictions.restriction_details</dd>
+										</if></if>
+									</unit></ifcount>
 								</if>
 								<if rule='^ca_objects.on_display =~ /No/'>
 									<dt>Viewing Information</dt>
 									<dd>Not on display</dd>
 								</if>
 							</ifdef>
-							<ifcount code="ca_places" min="1"><unit relativeTo="ca_places">
-								<if rule='^ca_places.restrictions.visitation =~ /Yes/'><ifdef code="ca_places.restrictions.restriction_details">
-										<dt>Visitation Restrictions</dt>
-										<dd>^ca_places.restrictions.restriction_details</dd>
-								</if></if>
-							</unit></ifcount>
 						</dl>}}}
 					</div>
+<?php
+			if($t_object->get("ca_objects.on_display", array("convertCodesToDisplayText" => true)) == "Yes"){
+?>
 					<div class="col-md-4 pb-3">
 						<div><div id="map" class="map">{{{map}}}</div></div>
 					</div>
+<?php
+			}
+?>
 				</div>
 			</div>
 			
 		</div>
 	</div>
+<?php
+if($tags_enabled){
+	$tags = array("Hidden Gem", "Que Chula!", "Selfie-worthy", "Puro San Antonio", "Honoring History", "Love this!", "Learned something new!", "I’ve seen this!");
+?>
+	<div class="row">
+		<div class="col-md-4">
+			<H2 class="fs-4">What People Are Saying</H2>
+			<ul class="list-group list-group-flush mb-5">
+  				<li class="list-group-item">3 people say <strong>Hidden Gem</strong></li>
+				<li class="list-group-item">6 people say <strong>Que Chula!</strong></li>
+				<li class="list-group-item">26 people say <strong>Selfie-worthy</strong></li>
+			</ul>
+		</div>
+		<div class="col-md-8">
+			<H2 class="fs-4">Add Your Review!</H2>
+			<div role="group" class="text-center" aria-label="Tag reviews">
+<?php
+			foreach($tags as $tag){
+				print "<button type='button' class='btn btn-light mx-2 mb-2'>".$tag."</button>";				
+			}
+?>
+			</div>
+		</div>
+	</div>
+<?php
+}
+?>

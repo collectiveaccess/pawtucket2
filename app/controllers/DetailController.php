@@ -573,6 +573,7 @@ class DetailController extends FindController {
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
 		$this->view->setVar('inquireEnabled', (bool)$options['enableInquire']);
 		$this->view->setVar('copyLinkEnabled', (bool)$options['enableCopyLink']);
+		$this->view->setVar('tagsEnabled', (bool)$options['enableTags']);
 		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]);
 		$this->render($path);
 	}
