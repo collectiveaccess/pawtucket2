@@ -51,7 +51,6 @@ $media_options = array_merge($media_options, [
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
-	pawtucketUIApps['clickTagger'] = <?= json_encode(['tag_list_id' => 'tagList']); ?>;
 </script>
 <div class="breadcrumb"><div class='container-xl'><div class="py-2 fs-6">
 <?php
@@ -221,27 +220,9 @@ if($show_nav){
 	</div>
 <?php
 if($tags_enabled){
-	$tags = $tag_list ?? [];
 ?>
-	<div class="row">
-		<div class="col-md-4" id="tagCounts">
-			<H2 class="fs-4">What People Are Saying</H2>
-			<ul class="list-group list-group-flush mb-5">
-  				<li class="list-group-item">3 people say <strong>Hidden Gem</strong></li>
-				<li class="list-group-item">6 people say <strong>Que Chula!</strong></li>
-				<li class="list-group-item">26 people say <strong>Selfie-worthy</strong></li>
-			</ul>
-		</div>
-		<div class="col-md-8">
-			<H2 class="fs-4">Add Your Review!</H2>
-			<div role="group" class="text-center" aria-label="Tag reviews" id="tagList">
-<?php
-			foreach($tags as $tag_id => $tag){
-				print "<button type='button' class='btn btn-light mx-2 mb-2' data-id='{$tag_id}'>{$tag}</button>";				
-			}
-?>
-			</div>
-		</div>
+	<div class="row" id="itemTags">
+		<?= $this->render('Details/item_tags_html.php'); ?>
 	</div>
 <?php
 }

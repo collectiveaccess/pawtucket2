@@ -10966,58 +10966,78 @@ $pa_options["display_form_field_tips"] = true;
 	 *
 	 * @param $tag [string] Text of the tag (mandatory)
 	 * @param $user_id [integer] A valid ca_users.user_id indicating the user who added the tag; is null for tags from non-logged-in users (optional - default is null)
-	 * @param $locale_id [integer] A valid ca_locales.locale_id indicating the language of the comment. If omitted or left null then the value in the global $g_ui_locale_id variable is used. If $g_ui_locale_id is not set and $locale_id is not set then an error will occur (optional - default is to use $g_ui_locale_id)
-	 * @param $access [integer] Determines public visibility of tag; if set to 0 then tag is not visible to public; if set to 1 tag is visible (optional - default is 0)
-	 * @param $moderator [integer] A valid ca_users.user_id value indicating who moderated the tag; if omitted or set to null then moderation status will not be set unless app.conf setting dont_moderate_comments = 1 (optional - default is null)
 	 * @param array $options Array of options. Supported options are:
 	 *				rank = option rank used for sorting. If omitted the tag is added to the end of the display list. [Default is null]
-	 *              forceModeration = force status of newly created tag to moderated. [Default is false]
 	 */
-	public function addItemTag($tag, $user_id=null, $options=null) {
+	public function addItemTag($item_id, $user_id=null, $options=null) {
 		if (!($row_id = $this->getPrimaryKey())) { return null; }
 		
-		$t_tag = new ca_item_tags();
-		
-		$criteria = ['tag' => $tag];
-		if($locale_id > 0) { $criteria['locale_id'] = $locale_id; }
-		
-		if (!$t_tag->load($criteria)) {
-			// create new new
-			$t_tag->set('tag', $tag);
-			$t_tag->set('locale_id', $locale_id);
-			$tag_id = $t_tag->insert();
-			
-			if ($t_tag->numErrors()) {
-				$this->errors = $t_tag->errors;
-				return false;
+		if(!is_numeric($item_id)) {
+			if($t_item = ca_list_items::findAsInstance(['idno' => $item])) {
+				$item_id = $t_item->getPrimaryKey();
 			}
-		} else {
-			$tag_id = $t_tag->getPrimaryKey();
 		}
 		
 		// already linked?
-		if(ca_items_x_tags::find(['table_num' => $this->tableNum(), 'row_id' => $this->getPrimaryKey(), 'tag_id' => $tag_id])) {
+		if(ca_items_x_tags::find(['table_num' => $this->tableNum(), 'row_id' => $this->getPrimaryKey(), 'item_id' => $item_id, 'user_id' => $user_id])) {
 			return true;
 		}
 		$t_ixt = new ca_items_x_tags();
 		$t_ixt->set('table_num', $this->tableNum());
 		$t_ixt->set('row_id', $this->getPrimaryKey());
 		$t_ixt->set('user_id', $user_id);
-		$t_ixt->set('tag_id', $tag_id);
-		$t_ixt->set('item_id', null);
-		$t_ixt->set('access', $access);
+		$t_ixt->set('tag_id', null);
+		$t_ixt->set('item_id', $item_id);
+		$t_ixt->set('access', 1);
 		if ($rank = caGetOption('rank', $options, null)) {
 			$t_ixt->set('rank', $rank);
 		}
-		
-		if (!is_null($moderator)) {
-			$t_ixt->set('moderated_by_user_id', $moderator);
-			$t_ixt->set('moderated_on', _t('now'));
-		}elseif(caGetOption('forceModerated', $options, false) || $this->_CONFIG->get("dont_moderate_comments")){
-			$t_ixt->set('moderated_on', _t('now'));
-		}
+		$t_ixt->set('moderated_on', _t('now'));
 		
 		$t_ixt->insert();
+		
+		if ($t_ixt->numErrors()) {
+			$this->errors = $t_ixt->errors;
+			return false;
+		}
+		return true;
+	}
+	# --------------------------------------------------------------------------------------------
+	/**
+	 * Deletes the item tag relation specified by $item_id (a ca_items_x_tags.item_id value) from the currently loaded row. Will only delete 
+	 * tags attached to the currently loaded row. If you attempt to delete a ca_items_x_tags.item_id not attached to the current row 
+	 * removeTag() will return false and post an error. If you attempt to call removeTag() with no row loaded null will be returned.
+	 * If $user_id is specified then only tags created by the specified user will be deleted; if the tag being
+	 * deleted is not created by the user then false is returned and an error posted.
+	 *
+	 * @param int $item a valid list item_id to be removed; must be related to the currently loaded row (mandatory)
+	 * @param int $user_id  a valid ca_users.user_id value; if specified then only tag relations added by the specified user will be deleted (optional - default is null)
+	 */
+	public function removeItemTag($item_id, $user_id=null) {
+		if (!($row_id = $this->getPrimaryKey())) { return null; }
+		
+		if(!is_numeric($item_id)) {
+			if($t_item = ca_list_items::findAsInstance(['idno' => $item])) {
+				$item_id = $t_item->getPrimaryKey();
+			}
+		}
+		
+		$t_ixt = ca_items_x_tags::findAsInstance(['table_num' => $this->tableNum(), 'row_id' => $row_id, 'user_id' => $user_id, 'item_id' => $item_id]);
+		
+		if (!$t_ixt->getPrimaryKey()) {
+			$this->postError(2800, _t('Tag item id is invalid'), 'BaseModel->removeItemTag()', 'ca_item_tags');
+			return false;
+		}
+		
+		if ($user_id) {
+			$tag_user_id = $t_ixt->get('user_id');
+			if ($tag_user_id && ($tag_user_id != $user_id)) {
+				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->removeItemTag()', 'ca_item_tags');
+				return false;
+			}
+		}
+		
+		$t_ixt->delete();
 		
 		if ($t_ixt->numErrors()) {
 			$this->errors = $t_ixt->errors;
@@ -11031,23 +11051,23 @@ $pa_options["display_form_field_tips"] = true;
 	 * if tag access setting was successfully changed, false if an error occurred in which case the errors will be available
 	 * via the model's standard error methods (getErrors() and friends.
 	 *
-	 * If $pn_user_id is set then only tag relations created by the specified user can be modified. Attempts to modify
-	 * tags created by users other than the one specified in $pn_user_id will return false and post an error.
+	 * If $user_id is set then only tag relations created by the specified user can be modified. Attempts to modify
+	 * tags created by users other than the one specified in $user_id will return false and post an error.
 	 *
-	 * Most of the parameters are optional with the exception of $ps_tag - the text of the tag. Note that 
+	 * Most of the parameters are optional with the exception of $tag - the text of the tag. Note that 
 	 * tag text is monolingual; if you want to do multilingual tags then you must add multiple tags.
 	 *
 	 * The parameters are:
 	 *
-	 * @param $pn_relation_id [integer] A valid ca_items_x_tags.relation_id value specifying the tag relation to modify (mandatory)
-	 * @param $pn_access [integer] Determines public visibility of tag; if set to 0 then tag is not visible to public; if set to 1 tag is visible (optional - default is 0)
-	 * @param $pn_moderator [integer] A valid ca_users.user_id value indicating who moderated the tag; if omitted or set to null then moderation status will not be set (optional - default is null)
-	 * @param $pn_user_id [integer] A valid ca_users.user_id valid; if set only tag relations created by the specified user will be modifed  (optional - default is null)
+	 * @param $relation_id [integer] A valid ca_items_x_tags.relation_id value specifying the tag relation to modify (mandatory)
+	 * @param $access [integer] Determines public visibility of tag; if set to 0 then tag is not visible to public; if set to 1 tag is visible (optional - default is 0)
+	 * @param $moderator [integer] A valid ca_users.user_id value indicating who moderated the tag; if omitted or set to null then moderation status will not be set (optional - default is null)
+	 * @param $user_id [integer] A valid ca_users.user_id valid; if set only tag relations created by the specified user will be modifed  (optional - default is null)
 	 */
-	public function changeTagAccess($pn_relation_id, $pn_access=0, $pn_moderator=null, $pn_user_id=null) {
-		if (!($vn_row_id = $this->getPrimaryKey())) { return null; }
+	public function changeTagAccess($relation_id, $access=0, $moderator=null, $user_id=null) {
+		if (!($row_id = $this->getPrimaryKey())) { return null; }
 		
-		$t_ixt = new ca_items_x_tags($pn_relation_id);
+		$t_ixt = new ca_items_x_tags($relation_id);
 		
 		if (!$t_ixt->getPrimaryKey()) {
 			$this->postError(2800, _t('Tag relation id is invalid'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
@@ -11055,25 +11075,25 @@ $pa_options["display_form_field_tips"] = true;
 		}
 		if (
 			($t_ixt->get('table_num') != $this->tableNum()) ||
-			($t_ixt->get('row_id') != $vn_row_id)
+			($t_ixt->get('row_id') != $row_id)
 		) {
 			$this->postError(2810, _t('Tag is not part of the current row'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
 			return false;
 		}
 		
-		if ($pn_user_id) {
+		if ($user_id) {
 			$tag_user_id = $t_ixt->get('user_id');
-			if ($tag_user_id && ($tag_user_id != $pn_user_id)) {
+			if ($tag_user_id && ($tag_user_id != $user_id)) {
 				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
 				return false;
 			}
 		}
 		
-		$t_ixt->set('access', $pn_access);
+		$t_ixt->set('access', $access);
 		
-		if (!is_null($pn_moderator)) {
-			$t_ixt->set('moderated_by_user_id', $pn_moderator);
-			$t_ixt->set('moderated_on', 'now');
+		if (!is_null($moderator)) {
+			$t_ixt->set('moderated_by_user_id', $moderator);
+			$t_ixt->set('moderated_on', _t('now'));
 		}
 		
 		$t_ixt->update();
@@ -11197,43 +11217,91 @@ $pa_options["display_form_field_tips"] = true;
 	# --------------------------------------------------------------------------------------------
 	/**
 	 * Returns all tags associated with the currently loaded row. Will return null if not row is currently loaded.
-	 * If the optional $ps_user_id parameter is passed then only tags created by the specified user will be returned.
-	 * If the optional $pb_moderation_status parameter is passed then only tags matching the criteria will be returned:
-	 *		Passing $pb_moderation_status = TRUE will cause only moderated tags to be returned
-	 *		Passing $pb_moderation_status = FALSE will cause only unmoderated tags to be returned
+	 * If the optional $user_id parameter is passed then only tags created by the specified user will be returned.
+	 * If the optional $moderation_status parameter is passed then only tags matching the criteria will be returned:
+	 *		Passing $moderation_status = TRUE will cause only moderated tags to be returned
+	 *		Passing $moderation_status = FALSE will cause only unmoderated tags to be returned
 	 *		If you want both moderated and unmoderated tags to be returned then omit the parameter or pass a null value
 	 *
-	 * @param $pn_user_id [integer] A valid ca_users.user_id value. If specified, only tags added by the specified user will be returned. (optional - default is null)
-	 * @param $pb_moderation_status [boolean] To return only unmoderated tags set to FALSE; to return only moderated tags set to TRUE; to return all tags set to null or omit
+	 * @param $user_id [integer] A valid ca_users.user_id value. If specified, only tags added by the specified user will be returned. (optional - default is null)
+	 * @param $moderation_status [boolean] To return only unmoderated tags set to FALSE; to return only moderated tags set to TRUE; to return all tags set to null or omit
 	 */
-	public function getTags($pn_user_id=null, $pb_moderation_status=null, $pn_row_id=null) {
-		if (!($vn_row_id = $pn_row_id)) {
-			if (!($vn_row_id = $this->getPrimaryKey())) { return null; }
+	public function getTags($user_id=null, $moderation_status=null, $row_id=null) {
+		if (!$row_id) {
+			if (!($row_id = $this->getPrimaryKey())) { return null; }
 		}
 		$o_db = $this->getDb();
 		
-		$vs_user_sql = ($pn_user_id) ? ' AND (cixt.user_id = '.intval($pn_user_id).')' : '';
+		$user_sql = ($user_id) ? ' AND (cixt.user_id = '.intval($user_id).')' : '';
 		
-		$vs_moderation_sql = '';
-		if (!is_null($pb_moderation_status)) {
-			$vs_moderation_sql = ($pb_moderation_status) ? ' AND (cixt.moderated_on IS NOT NULL)' : ' AND (cixt.moderated_on IS NULL)';
+		$moderation_sql = '';
+		if (!is_null($moderation_status)) {
+			$moderation_sql = ($moderation_status) ? ' AND (cixt.moderated_on IS NOT NULL)' : ' AND (cixt.moderated_on IS NULL)';
 		}
 		
-		$qr_comments = $o_db->query("
+		$qr_tags = $o_db->query("
 			SELECT *
 			FROM ca_item_tags cit
 			INNER JOIN ca_items_x_tags AS cixt ON cit.tag_id = cixt.tag_id
 			WHERE
-				(cixt.table_num = ?) AND (cixt.row_id = ?) {$vs_user_sql} {$vs_moderation_sql}
+				(cixt.table_num = ?) AND (cixt.row_id = ?) AND (cixt.tag_id IS NOT NULL) {$user_sql} {$moderation_sql}
 			ORDER BY cixt.`rank`
-		", $this->tableNum(), $vn_row_id);
+		", $this->tableNum(), $row_id);
 		
-		return array_map(function($v) { $v['moderation_message'] = $v['access'] ? '' : _t('Needs moderation'); return $v; }, $qr_comments->getAllRows());
+		return array_map(function($v) { $v['moderation_message'] = $v['access'] ? '' : _t('Needs moderation'); return $v; }, $qr_tags->getAllRows());
+	}
+	# --------------------------------------------------------------------------------------------
+	/**
+	 * Returns all item tags associated with the currently loaded row. Will return null if not row is currently loaded.
+	 * If the optional $user_id parameter is passed then only tags created by the specified user will be returned.
+	 *
+	 * @param int $user_id [integer] A valid ca_users.user_id value. If specified, only tags added by the specified user will be returned. (optional - default is null)
+	 * @param int $row_id 
+	 *
+	 * @return array
+	 */
+	public function getItemTags($user_id=null, $row_id=null) {
+		if (!$row_id) {
+			if (!($row_id = $this->getPrimaryKey())) { return null; }
+		}
+		$o_db = $this->getDb();
+		
+		$user_sql = ($user_id) ? ' AND (cixt.user_id = '.intval($user_id).')' : '';
+		
+		$qr_tags = $o_db->query($z="
+			SELECT cli.item_id, count(*) c
+			FROM ca_items_x_tags cixt
+			INNER JOIN ca_list_items AS cli ON cixt.item_id = cli.item_id
+			WHERE
+				(cixt.table_num = ?) AND (cixt.row_id = ?) AND (cli.item_id IS NOT NULL) {$user_sql}
+			GROUP BY cli.item_id
+		",$x= [$this->tableNum(), $row_id]);
+		
+		$item_ids = [];
+		while($qr_tags->nextRow()) {
+			$item_ids[$qr_tags->get('item_id')] = $qr_tags->get('c');
+		}
+		
+		if(sizeof($item_ids)) {
+			if($qr = caMakeSearchResult('ca_list_items', array_keys($item_ids))) {
+				$tags = [];
+				while($qr->nextHit()) {
+					$tags[$item_id = $qr->getPrimaryKey()] = [
+						'name_singular' => $qr->get('ca_list_items.preferred_labels.name_singular'),
+						'name_plural' => $qr->get('ca_list_items.preferred_labels.name_plural'),
+						'count' => $item_ids[$item_id]
+					];
+				}
+				return $tags;
+			}
+		}
+		
+		return null;
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
 	 * Get list of suggested tags based upon text
-	 
+	 *
 	 * @param string $text  A valid ca_users.user_id value. If specified, only tags added by the specified user will be returned. (optional - default is null)
 	 * @param array $options Options include:
 	 *		limit = Maximum number of suggestions to return. [Default is 20]

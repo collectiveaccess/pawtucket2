@@ -87,37 +87,16 @@ class DetailController extends FindController {
 	/**
 	 *
 	 */ 
-	public function __call($function, $args) {
-		$o_search_config = caGetSearchConfig();
-		
-		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
-		//
-		// Media viewer
-		//
-		if ($this->request->getActionExtra() == 'GetMediaInline') {
-			return $this->GetMediaInline();
-		}
-		if ($this->request->getActionExtra() == 'GetMediaOverlay') {
-			return $this->GetMediaOverlay();
-		}
-		if ($this->request->getActionExtra() == 'GetMediaData') {
-			return $this->GetMediaData();
-		}
-		
-		$function = strtolower($function);
-		$id = urldecode($this->request->getActionExtra()); 
+	public function _currentRow(string $detail_type) : ?array {
+		$detail_type = strtolower($detail_type);
+		$id = $this->request->getParameter('id', pInteger) ?: urldecode($this->request->getActionExtra()); 
 	
-		if (!isset($this->opa_detail_types[$function]) || !isset($this->opa_detail_types[$function]['table']) || (!($table = $this->opa_detail_types[$function]['table']))) {
-			// invalid detail type – throw error
-			throw new ApplicationException("Invalid detail type");
+		if (!isset($this->opa_detail_types[$detail_type]) || !isset($this->opa_detail_types[$detail_type]['table']) || (!($table = $this->opa_detail_types[$detail_type]['table']))) {
+			return null;
 		}
-		
 		if (!($t_subject = Datamodel::getInstance($table, true))) {
 			throw new ApplicationException("Invalid detail table");
 		}
-		
-		$this->ops_tablename = $table;
-		
 		$use_alt_identifier_in_urls = caUseAltIdentifierInUrls($table);
 		if ((($use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($use_alt_identifier_in_urls)) && (substr($id, 0, 3) == "id:")) {
 			$tmp = explode(":", $id);
@@ -135,10 +114,57 @@ class DetailController extends FindController {
 		
 		if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($load_params, ['returnAs' => 'firstModelInstance'])))) {
 			// invalid id - throw error
-			throw new ApplicationException("Invalid id {$id}");
+			throw new ApplicationException("Invalid id");
 		} 
 		$t_subject->autoConvertLineBreaks(true);
 		
+		$this->view->setVar('table', $table);
+		$this->view->setVar('id', $id);
+		$this->view->setVar('detail', $detail_type);
+		
+		return [
+			'table' => $table,
+			'id' => $id,
+			'info' => $this->opa_detail_types[$detail_type],
+			'instance' => $t_subject,
+			'options' => $this->opa_detail_types[$detail_type]['options'] ?? []
+		];
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */ 
+	public function __call($function, $args) {
+		$o_search_config = caGetSearchConfig();
+		
+		//
+		// Media viewer
+		//
+		if ($this->request->getActionExtra() == 'GetMediaInline') {
+			return $this->GetMediaInline();
+		}
+		if ($this->request->getActionExtra() == 'GetMediaOverlay') {
+			return $this->GetMediaOverlay();
+		}
+		if ($this->request->getActionExtra() == 'GetMediaData') {
+			return $this->GetMediaData();
+		}
+		
+		$function = strtolower($function);
+		$id = urldecode($this->request->getActionExtra()); 
+		
+		if(!($info = $this->_currentRow($function))) {
+			// invalid detail type – throw error
+			throw new ApplicationException("Invalid detail type");
+		}
+		$id = $info['id'];
+		$table = $info['table'];
+		$t_subject = $info['instance'];
+		$options = $info['options'];
+	
+		$this->ops_tablename = $table;
+		
+	
 		$log = caGetLogger();
 		// $context = $this->request->getParameter('context', pString);
 		// $detail_id = $this->request->getParameter('id', pInteger);		
@@ -557,10 +583,14 @@ class DetailController extends FindController {
 		//
 		$this->view->setVar('tagsEnabled', $tags_enabled = ((bool)$options['enableTags'] ?? false));
 		if($tags_enabled) {
+			// List item-based tags
 			$tags_list_code = ($options['tagsList']?? null);
 			$tags = caGetListItems($tags_list_code);
-			$this->view->setVar('tagsList', $tags);	
+			$this->view->setVar('itemTagsAvailable', $tags);	
+			$this->view->setVar('itemTagsCounts', $t_subject->getItemTags(null));
+			$this->view->setVar('itemTagsSelected', $t_subject->getItemTags($user_id));
 			
+			// Text tags
 			$user_tags = $t_subject->getTags(null, true);
 			$tags = [];
 		
@@ -900,25 +930,38 @@ class DetailController extends FindController {
 	/**
 	 *
 	 */
-	public function TagList(){
+	public function ToggleItemTag(){
+		$item_id = $this->request->getParameter('tag', pInteger);
+		$detail_type = $this->request->getParameter('detail', pString);
+		$user_id = $this->request->getUserID();
+		if(!($info = $this->_currentRow($detail_type))) {
+			// invalid detail type – throw error
+			throw new ApplicationException("Invalid detail type $detail_type");
+		}
+		$id = $info['id'];
+		$t_subject = $info['instance'];
 		
-		$this->render('Details/ajax_xxx.php');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public function AddTag(){
+		// TODO: test access
 		
-		$this->render('Details/ajax_xx.php');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public function RemoveTag(){
+		$tags_list_code = ($info['options']['tagsList']?? null);
+		$available_tags = caGetListItems($tags_list_code);
+		$selected_tags = $t_subject->getItemTags($user_id, $id);
 		
-		$this->render('Details/ajax_xx.php');
+		if($item_id) {
+			if(isset($selected_tags[$item_id])) {
+				$t_subject->removeItemTag($item_id, $user_id);
+				unset($selected_tags[$item_id]);
+			} else {
+				$t_subject->addItemTag($item_id, $user_id);
+				$selected_tags[$item_id] = true;
+			}
+		}
+		
+		$this->view->setVar('itemTagsAvailable', $available_tags);	
+		$this->view->setVar('itemTagsCounts', $t_subject->getItemTags(null));
+		$this->view->setVar('itemTagsSelected', $selected_tags);
+		
+		$this->render('Details/item_tags_html.php');
 	}
 	# -------------------------------------------------------
 	/**
