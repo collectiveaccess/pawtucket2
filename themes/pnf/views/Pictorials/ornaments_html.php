@@ -7,17 +7,21 @@
 ?>
 <div class="row">
 	<div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
-		<H2>Ornaments</H2>
-		<hr/>
 <?php
 			if ($g_ui_locale == 'en_US'){			
 ?>
+				<H2>Ornaments & Illustrations</H2>
+				<hr/>
+
 				<div class='trimText'>
 					{{{ornamentsIntroEnglish}}}
 				</div>
 <?php
 			}else{
 ?>
+				<H2>Ornaments & Illustrations</H2>
+				<hr/>
+
 				<div class='trimText'>
 					{{{ornamentsIntroSpanish}}}
 				</div>

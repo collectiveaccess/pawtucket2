@@ -98,18 +98,6 @@
 					} else {
 						$vs_label_detail_link 	= caDetailLink($this->request, '[Short title]', '', $vs_table, $vn_id);
 					}				
-				}elseif (($vs_table === 'ca_objects') && (strToLower($this->request->getAction()) == "ornaments")) {
-					$va_parts = array();
-					if($vs_rel_suelta = $qr_res->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='book' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='book' length='1' limit='1'>^ca_objects.preferred_labels.name</unit></ifcount>")){
-						$va_parts[] = $vs_rel_suelta;
-					}
-					if($vs_printer = $qr_res->getWithTemplate("<ifcount code='ca_entities' restrictToRelationshipTypes='printer' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='printer' length='1' limit='1'>^ca_entities.preferred_labels.displayname</unit></ifcount>")){
-						$va_parts[] = $vs_printer;
-					}
-					if($vs_year = $qr_res->getWithTemplate("^ca_objects.type_date")){
-						$va_parts[] = $vs_year;
-					}
-					$vs_label_detail_link 	= caDetailLink($this->request, join(", ", $va_parts), '', $vs_table, $vn_id);
 				}
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
@@ -157,20 +145,62 @@
 				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 				}
-				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-
-				print "
-	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span_md} col-lg-{$vn_col_span}'>
-		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
-			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
-				<div class='bResultItemText'>
-					{$vs_author}{$vs_label_detail_link}{$vs_info}
-				</div><!-- end bResultItemText -->
-			</div><!-- end bResultItemContent -->
-		</div><!-- end bResultItem -->
-	</div><!-- end col -->";
-				
+				#$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
+				if (($vs_table === 'ca_objects') && (strToLower($this->request->getAction()) == "ornaments")) {
+					$vs_author = $vs_label_detail_link = $vs_info = "";
+					$va_parts = array();
+					#if($vs_rel_suelta = $qr_res->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='book' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='book' length='1' limit='1'>^ca_objects.preferred_labels.name</unit></ifcount>")){
+					#	$va_parts[] = $vs_rel_suelta;
+					#}
+					#if($vs_printer = $qr_res->getWithTemplate("<ifcount code='ca_entities' restrictToRelationshipTypes='printer' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='printer' length='1' limit='1'>^ca_entities.preferred_labels.displayname</unit></ifcount>")){
+					#	$va_parts[] = $vs_printer;
+					#}
+					#if($vs_year = $qr_res->getWithTemplate("^ca_objects.type_date")){
+					#	$va_parts[] = $vs_year;
+					#}
+					if($vs_tmp = $qr_res->get("ca_objects.preferred_labels.name")){
+						$va_parts[] = $vs_tmp;
+					}
+					if($vs_rel_suelta_id = $qr_res->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='book' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='book' length='1' limit='1'>^ca_objects.object_id</unit></ifcount>")){
+						$va_parts[] = $vs_rel_suelta_id;
+					}
+					
+					$vs_expanded_info 	= "<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>".caDetailLink($this->request, join("<br/>", $va_parts), '', $vs_table, $vn_id)."</div><!-- bResultItemExpandedInfo -->";
+					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values)))){
+						$t_list_item->load($qr_res->get("type_id"));
+						$vs_typecode = $t_list_item->get("idno");
+						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+						}else{
+							$vs_thumbnail = $vs_default_placeholder_tag;
+						}
+					}
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
+					#if(in_array($this->getVar("ornament_category"), array("Headpieces", "Horizontal Divides"))){
+					#	$col_div = "<div style='height:220px;' class='bResultItemCol col-xs-6 col-sm-6'>";
+					#}else{
+						$col_div = "<div style='height:220px;' class='bResultItemCol col-xs-6 col-sm-6 col-md-4'>";
+					#}
+					print "{$col_div}<div class='bResultItem' style='height:auto; min-height:auto' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+									<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
+									<div class='bResultItemContent' style='height:auto; min-height:auto'><div class='text-center bResultItemImg' style='height:auto; max-height:auto; min-height:auto;'>{$vs_rep_detail_link}</div>
+									</div><!-- end bResultItemContent -->
+									{$vs_expanded_info}
+								</div><!-- end bResultItem -->
+							</div><!-- end col -->";
+				}else{
+					print "
+		<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span_md} col-lg-{$vn_col_span}'>
+			<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
+				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+					<div class='bResultItemText'>
+						{$vs_author}{$vs_label_detail_link}{$vs_info}
+					</div><!-- end bResultItemText -->
+				</div><!-- end bResultItemContent -->
+			</div><!-- end bResultItem -->
+		</div><!-- end col -->";
+				}
 				$vn_c++;
 			}
 			
