@@ -179,7 +179,7 @@
 					#if(in_array($this->getVar("ornament_category"), array("Headpieces", "Horizontal Divides"))){
 					#	$col_div = "<div style='height:220px;' class='bResultItemCol col-xs-6 col-sm-6'>";
 					#}else{
-						$col_div = "<div style='height:220px;' class='bResultItemCol col-xs-6 col-sm-6 col-md-4'>";
+						$col_div = "<div style='height:220px;' class='bResultItemCol col-xs-6 col-sm-6 col-md-3'>";
 					#}
 					print "{$col_div}<div class='bResultItem' style='height:auto; min-height:auto' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 									<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
