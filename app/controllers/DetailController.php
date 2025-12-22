@@ -494,58 +494,6 @@ class DetailController extends FindController {
 		}
 		
 		//
-		// comments, tags, rank
-		//
-		$this->view->setVar('commentsEnabled', (bool)$options['enableComments']);
-		
-		if ((bool)$options['enableComments']) {
-			$this->view->setVar('averageRank', $t_subject->getAverageRating(true));
-			$this->view->setVar('numRank', $t_subject->getNumRatings(true));
-		
-			#
-			# User-generated comments, tags and ratings
-			#
-			$user_comments = $t_subject->getComments(null, true);
-			$comments = array();
-			if (is_array($user_comments)) {
-				foreach($user_comments as $user_comment){
-					if($user_comment["comment"] || $user_comment["media1"] || $user_comment["media2"] || $user_comment["media3"] || $user_comment["media4"]){
-						# TODO: format date based on locale
-						$user_comment["date"] = date("n/j/Y", $user_comment["created_on"]);
-					
-						# -- get name of commenter
-						if($user_comment["user_id"]){
-							$t_user = new ca_users($user_comment["user_id"]);
-							$user_comment["author"] = $t_user->getName();
-						}elseif($user_comment["name"]){
-							$user_comment["author"] = $user_comment["name"];
-						}
-						$comments[] = $user_comment;
-					}
-				}
-			}
-			$this->view->setVar('comments', $comments);
-		
-		
-			$user_tags = $t_subject->getTags(null, true);
-			$tags = array();
-		
-			if (is_array($user_tags)) {
-				foreach($user_tags as $user_tag){
-					if(!in_array($user_tag["tag"], $tags)){
-						$tags[] = $user_tag["tag"];
-					}
-				}
-			}
-			$this->view->setVar('tags_array', $tags);
-			$this->view->setVar('tags', implode(", ", $tags));
-		
-			$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_subject->getPrimaryKey(), $t_subject, $comments, $tags));
-		} else {
-			$this->view->setVar("itemComments", '');
-		}
-		
-		//
 		// Set row_id for use within the view
 		//
 		$this->view->setVar('id', $id);
@@ -569,11 +517,68 @@ class DetailController extends FindController {
 				}
 			}
 		}
+		
+		//
+		// Comments
+		//
+		$this->view->setVar('commentsEnabled', $comments_enabled = (bool)$options['enableComments']);
+		
+		if ($comments_enabled) {
+			$this->view->setVar('averageRank', $t_subject->getAverageRating(true));
+			$this->view->setVar('numRank', $t_subject->getNumRatings(true));
+		
+			$user_comments = $t_subject->getComments(null, true);
+			$comments = array();
+			if (is_array($user_comments)) {
+				foreach($user_comments as $user_comment){
+					if($user_comment["comment"] || $user_comment["media1"] || $user_comment["media2"] || $user_comment["media3"] || $user_comment["media4"]){
+						# TODO: format date based on locale
+						$user_comment["date"] = date("n/j/Y", $user_comment["created_on"]);
+					
+						# -- get name of commenter
+						if($user_comment["user_id"]){
+							$t_user = new ca_users($user_comment["user_id"]);
+							$user_comment["author"] = $t_user->getName();
+						}elseif($user_comment["name"]){
+							$user_comment["author"] = $user_comment["name"];
+						}
+						$comments[] = $user_comment;
+					}
+				}
+			}
+			$this->view->setVar('comments', $comments);
+			$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_subject->getPrimaryKey(), $t_subject, $comments, $tags));
+		} else {
+			$this->view->setVar("itemComments", '');
+		}
+		
+		//
+		// Tags
+		//
+		$this->view->setVar('tagsEnabled', $tags_enabled = ((bool)$options['enableTags'] ?? false));
+		if($tags_enabled) {
+			$tags_list_code = ($options['tagsList']?? null);
+			$tags = caGetListItems($tags_list_code);
+			$this->view->setVar('tagsList', $tags);	
+			
+			$user_tags = $t_subject->getTags(null, true);
+			$tags = [];
+		
+			if (is_array($user_tags)) {
+				foreach($user_tags as $user_tag){
+					if(!in_array($user_tag["tag"], $tags)){
+						$tags[] = $user_tag["tag"];
+					}
+				}
+			}
+			$this->view->setVar('tags_array', $tags);
+			$this->view->setVar('tags', implode(", ", $tags));
+		}
+			
 
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
 		$this->view->setVar('inquireEnabled', (bool)$options['enableInquire']);
 		$this->view->setVar('copyLinkEnabled', (bool)$options['enableCopyLink']);
-		$this->view->setVar('tagsEnabled', (bool)$options['enableTags']);
 		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]);
 		$this->render($path);
 	}
@@ -895,6 +900,30 @@ class DetailController extends FindController {
 	/**
 	 *
 	 */
+	public function TagList(){
+		
+		$this->render('Details/ajax_xxx.php');
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function AddTag(){
+		
+		$this->render('Details/ajax_xx.php');
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function RemoveTag(){
+		
+		$this->render('Details/ajax_xx.php');
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	public function CommentForm(){
 		if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
 		$this->view->setVar("item_id", $this->request->getParameter('item_id', pInteger));
@@ -1056,7 +1085,7 @@ class DetailController extends FindController {
 		}
 	}
 	# -------------------------------------------------------
-	# share - email item
+	# Share - email item
 	# -------------------------------------------------------
 	/**
 	 *
@@ -1446,26 +1475,19 @@ class DetailController extends FindController {
 		$this->render('Details/ajax_representation_annotations_json.php');
 	}
 	# -------------------------------------------------------
-	/**
-	 * Returns media viewer help text for display
-	 */
-	public function ViewerHelp() {
-		$this->render('Details/viewer_help_html.php');
-	}
-	# -------------------------------------------------------
 	/** 
 	 * Generate the URL for the "back to results" link from a browse result item
 	 * as an array of path components.
 	 */
 	public static function getReturnToResultsUrl($po_request) {
-		$va_ret = array(
+		$va_ret = [
 			'module_path' => '',
 			'controller' => 'Detail',
 			'action' => $po_request->getAction(),
 			'params' => array(
 				'key'
 			)
-		);
+		];
 		return $va_ret;
 	}
 	# -------------------------------------------------------
@@ -1610,86 +1632,12 @@ class DetailController extends FindController {
 	}
 	# -------------------------------------------------------
 	/**
-	 * Provide in-viewer search for those that support it (Eg. UniversalViewer)
-	 */
-	public function SearchMediaData() {
-	   $context = $context_str = $this->request->getParameter('context', pString);
-		
-		if (!($display_type = $this->request->getParameter('display', pString))) { $display_type = 'media_overlay'; }
-
-		switch($context) {
-			case 'gallery':
-			case 'GetMediaInline':
-			case 'GetMediaOverlay':
-				$context = ['table' => 'ca_objects'];
-				break;
-			default:
-				if(!is_array($context = $this->opa_detail_types[$context])) { 
-					throw new ApplicationException(_t('Invalid context'));
-				}
-				break;
-		}
-	
-		if (!($pt_subject = Datamodel::getInstance($vs_subject = $context['table']))) {
-			throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
-		}
-	
-		if (!($subject_id = $this->request->getParameter('id', pInteger))) { $subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }
-		if (!$pt_subject->load($subject_id)) { 
-			throw new ApplicationException(_t('Invalid id %1', $subject_id));
-		}
-	
-		if (!$pt_subject->isReadable($this->request)) { 
-			throw new ApplicationException(_t('Cannot view media'));
-		}
-
-		$this->response->addContent(caSearchMediaData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $context_str]));
-	}
-	# -------------------------------------------------------
-	/**
 	 * Access to sidecar data (primarily used by 3d viewer)
 	 * Will only return sidecars that are images (for 3d textures), MTL files (for 3d OBJ-format files) or 
 	 * binary (for GLTF .bin buffer data)
 	 */
 	public function GetMediaSidecarData() {
 		caReturnMediaSidecarData($this->request->getParameter('sidecar_id', pInteger), $this->request->user);
-	}
-	# -------------------------------------------------------
-	/**
-	 * Provide in-viewer search for those that support it (Eg. UniversalViewer)
-	 */
-	public function MediaDataAutocomplete() {
-	   $ps_context = $this->request->getParameter('context', pString);
-		
-		if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
-
-		switch($ps_context) {
-			case 'gallery':
-			case 'GetMediaInline':
-			case 'GetMediaOverlay':
-				$va_context = ['table' => 'ca_objects'];
-				break;
-			default:
-				if(!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
-					throw new ApplicationException(_t('Invalid context'));
-				}
-				break;
-		}
-	
-		if (!($pt_subject = Datamodel::getInstance($vs_subject = $va_context['table']))) {
-			throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
-		}
-	
-		if (!($pn_subject_id = $this->request->getParameter('id', pInteger))) { $pn_subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }
-		if (!$pt_subject->load($pn_subject_id)) { 
-			throw new ApplicationException(_t('Invalid id %1', $pn_subject_id));
-		}
-	
-		if (!$pt_subject->isReadable($this->request)) { 
-			throw new ApplicationException(_t('Cannot view media'));
-		}
-
-		$this->response->addContent(caMediaDataAutocomplete($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
 	}
 	# -------------------------------------------------------
 	/**

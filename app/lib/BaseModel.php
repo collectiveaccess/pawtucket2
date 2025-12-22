@@ -10866,81 +10866,154 @@ $pa_options["display_form_field_tips"] = true;
 	 * if tag was successfully added, false if an error occurred in which case the errors will be available
 	 * via the model's standard error methods (getErrors() and friends.
 	 *
-	 * Most of the parameters are optional with the exception of $ps_tag - the text of the tag. Note that 
+	 * Most of the parameters are optional with the exception of $tag - the text of the tag. Note that 
 	 * tag text is monolingual; if you want to do multilingual tags then you must add multiple tags.
 	 *
 	 * The parameters are:
 	 *
-	 * @param $ps_tag [string] Text of the tag (mandatory)
-	 * @param $pn_user_id [integer] A valid ca_users.user_id indicating the user who added the tag; is null for tags from non-logged-in users (optional - default is null)
-	 * @param $pn_locale_id [integer] A valid ca_locales.locale_id indicating the language of the comment. If omitted or left null then the value in the global $g_ui_locale_id variable is used. If $g_ui_locale_id is not set and $pn_locale_id is not set then an error will occur (optional - default is to use $g_ui_locale_id)
-	 * @param $pn_access [integer] Determines public visibility of tag; if set to 0 then tag is not visible to public; if set to 1 tag is visible (optional - default is 0)
-	 * @param $pn_moderator [integer] A valid ca_users.user_id value indicating who moderated the tag; if omitted or set to null then moderation status will not be set unless app.conf setting dont_moderate_comments = 1 (optional - default is null)
-	 * @param array $pa_options Array of options. Supported options are:
+	 * @param $tag [string] Text of the tag (mandatory)
+	 * @param $user_id [integer] A valid ca_users.user_id indicating the user who added the tag; is null for tags from non-logged-in users (optional - default is null)
+	 * @param $locale_id [integer] A valid ca_locales.locale_id indicating the language of the comment. If omitted or left null then the value in the global $g_ui_locale_id variable is used. If $g_ui_locale_id is not set and $locale_id is not set then an error will occur (optional - default is to use $g_ui_locale_id)
+	 * @param $access [integer] Determines public visibility of tag; if set to 0 then tag is not visible to public; if set to 1 tag is visible (optional - default is 0)
+	 * @param $moderator [integer] A valid ca_users.user_id value indicating who moderated the tag; if omitted or set to null then moderation status will not be set unless app.conf setting dont_moderate_comments = 1 (optional - default is null)
+	 * @param array $options Array of options. Supported options are:
 	 *				purify = if true, comment, name and email are run through HTMLPurifier before being stored in the database. Default is true. 
 	 *				rank = option rank used for sorting. If omitted the tag is added to the end of the display list. [Default is null]
 	 *              forceModeration = force status of newly created tag to moderated. [Default is false]
 	 */
-	public function addTag($ps_tag, $pn_user_id=null, $pn_locale_id=null, $pn_access=0, $pn_moderator=null, $pa_options=null) {
+	public function addTag($tag, $user_id=null, $locale_id=null, $access=0, $moderator=null, $options=null) {
 		global $g_ui_locale_id;
-		if (!($vn_row_id = $this->getPrimaryKey())) { return null; }
-		if (!$pn_locale_id) { $pn_locale_id = $g_ui_locale_id; }
-		if (!$pn_locale_id) { 
+		if (!($row_id = $this->getPrimaryKey())) { return null; }
+		if (!$locale_id) { $locale_id = $g_ui_locale_id; }
+		if (!$locale_id) { 
 			if($locale = Session::getVar('lang')) {
-				if(!($pn_locale_id = ca_locales::codeToID($locale))) {
-					$pn_locale_id = ca_locales::codeToID(__CA_DEFAULT_LOCALE__);	
+				if(!($locale_id = ca_locales::codeToID($locale))) {
+					$locale_id = ca_locales::codeToID(__CA_DEFAULT_LOCALE__);	
 				}
 			}
-			if($pn_locale_id) {
+			if($locale_id) {
 				$this->postError(2830, _t('No locale was set for tag'), 'BaseModel->addTag()','ca_item_tags');
 				return false;
 			}
 		}
 		
-		if(!isset($pa_options['purify'])) { $pa_options['purify'] = true; }
+		if(!isset($options['purify'])) { $options['purify'] = true; }
 		
-		if ($this->purify() || (bool)$pa_options['purify']) {
-    		$ps_tag = BaseModel::getPurifier()->purify($ps_tag);
+		if ($this->purify() || (bool)$options['purify']) {
+    		$tag = BaseModel::getPurifier()->purify($tag);
 		}
 		
 		$t_tag = new ca_item_tags();
-		$t_tag->purify($this->purify() || $pa_options['purify']);
+		$t_tag->purify($this->purify() || $options['purify']);
 		
-		$criteria = ['tag' => $ps_tag];
-		if($pn_locale_id > 0) { $criteria['locale_id'] = $pn_locale_id; }
+		$criteria = ['tag' => $tag];
+		if($locale_id > 0) { $criteria['locale_id'] = $locale_id; }
 		
 		if (!$t_tag->load($criteria)) {
 			// create new new
-			$t_tag->set('tag', $ps_tag);
-			$t_tag->set('locale_id', $pn_locale_id);
-			$vn_tag_id = $t_tag->insert();
+			$t_tag->set('tag', $tag);
+			$t_tag->set('locale_id', $locale_id);
+			$tag_id = $t_tag->insert();
 			
 			if ($t_tag->numErrors()) {
 				$this->errors = $t_tag->errors;
 				return false;
 			}
 		} else {
-			$vn_tag_id = $t_tag->getPrimaryKey();
+			$tag_id = $t_tag->getPrimaryKey();
 		}
 		
 		// already linked?
-		if(ca_items_x_tags::find(['table_num' => $this->tableNum(), 'row_id' => $this->getPrimaryKey(), 'tag_id' => $vn_tag_id])) {
+		if(ca_items_x_tags::find(['table_num' => $this->tableNum(), 'row_id' => $this->getPrimaryKey(), 'tag_id' => $tag_id])) {
 			return true;
 		}
 		$t_ixt = new ca_items_x_tags();
 		$t_ixt->set('table_num', $this->tableNum());
 		$t_ixt->set('row_id', $this->getPrimaryKey());
-		$t_ixt->set('user_id', $pn_user_id);
-		$t_ixt->set('tag_id', $vn_tag_id);
-		$t_ixt->set('access', $pn_access);
-		if ($rank = caGetOption('rank', $pa_options, null)) {
+		$t_ixt->set('user_id', $user_id);
+		$t_ixt->set('tag_id', $tag_id);
+		$t_ixt->set('item_id', null);
+		$t_ixt->set('access', $access);
+		if ($rank = caGetOption('rank', $options, null)) {
 			$t_ixt->set('rank', $rank);
 		}
 		
-		if (!is_null($pn_moderator)) {
-			$t_ixt->set('moderated_by_user_id', $pn_moderator);
+		if (!is_null($moderator)) {
+			$t_ixt->set('moderated_by_user_id', $moderator);
 			$t_ixt->set('moderated_on', _t('now'));
-		}elseif(caGetOption('forceModerated', $pa_options, false) || $this->_CONFIG->get("dont_moderate_comments")){
+		}elseif(caGetOption('forceModerated', $options, false) || $this->_CONFIG->get("dont_moderate_comments")){
+			$t_ixt->set('moderated_on', _t('now'));
+		}
+		
+		$t_ixt->insert();
+		
+		if ($t_ixt->numErrors()) {
+			$this->errors = $t_ixt->errors;
+			return false;
+		}
+		return true;
+	}
+	# --------------------------------------------------------------------------------------------
+	/**
+	 * Adds a tag to currently loaded row. Returns null if no row is loaded. Otherwise returns true
+	 * if tag was successfully added, false if an error occurred in which case the errors will be available
+	 * via the model's standard error methods (getErrors() and friends.
+	 *
+	 * Most of the parameters are optional with the exception of $tag - the text of the tag. Note that 
+	 * tag text is monolingual; if you want to do multilingual tags then you must add multiple tags.
+	 *
+	 * The parameters are:
+	 *
+	 * @param $tag [string] Text of the tag (mandatory)
+	 * @param $user_id [integer] A valid ca_users.user_id indicating the user who added the tag; is null for tags from non-logged-in users (optional - default is null)
+	 * @param $locale_id [integer] A valid ca_locales.locale_id indicating the language of the comment. If omitted or left null then the value in the global $g_ui_locale_id variable is used. If $g_ui_locale_id is not set and $locale_id is not set then an error will occur (optional - default is to use $g_ui_locale_id)
+	 * @param $access [integer] Determines public visibility of tag; if set to 0 then tag is not visible to public; if set to 1 tag is visible (optional - default is 0)
+	 * @param $moderator [integer] A valid ca_users.user_id value indicating who moderated the tag; if omitted or set to null then moderation status will not be set unless app.conf setting dont_moderate_comments = 1 (optional - default is null)
+	 * @param array $options Array of options. Supported options are:
+	 *				rank = option rank used for sorting. If omitted the tag is added to the end of the display list. [Default is null]
+	 *              forceModeration = force status of newly created tag to moderated. [Default is false]
+	 */
+	public function addItemTag($tag, $user_id=null, $options=null) {
+		if (!($row_id = $this->getPrimaryKey())) { return null; }
+		
+		$t_tag = new ca_item_tags();
+		
+		$criteria = ['tag' => $tag];
+		if($locale_id > 0) { $criteria['locale_id'] = $locale_id; }
+		
+		if (!$t_tag->load($criteria)) {
+			// create new new
+			$t_tag->set('tag', $tag);
+			$t_tag->set('locale_id', $locale_id);
+			$tag_id = $t_tag->insert();
+			
+			if ($t_tag->numErrors()) {
+				$this->errors = $t_tag->errors;
+				return false;
+			}
+		} else {
+			$tag_id = $t_tag->getPrimaryKey();
+		}
+		
+		// already linked?
+		if(ca_items_x_tags::find(['table_num' => $this->tableNum(), 'row_id' => $this->getPrimaryKey(), 'tag_id' => $tag_id])) {
+			return true;
+		}
+		$t_ixt = new ca_items_x_tags();
+		$t_ixt->set('table_num', $this->tableNum());
+		$t_ixt->set('row_id', $this->getPrimaryKey());
+		$t_ixt->set('user_id', $user_id);
+		$t_ixt->set('tag_id', $tag_id);
+		$t_ixt->set('item_id', null);
+		$t_ixt->set('access', $access);
+		if ($rank = caGetOption('rank', $options, null)) {
+			$t_ixt->set('rank', $rank);
+		}
+		
+		if (!is_null($moderator)) {
+			$t_ixt->set('moderated_by_user_id', $moderator);
+			$t_ixt->set('moderated_on', _t('now'));
+		}elseif(caGetOption('forceModerated', $options, false) || $this->_CONFIG->get("dont_moderate_comments")){
 			$t_ixt->set('moderated_on', _t('now'));
 		}
 		
@@ -11017,16 +11090,16 @@ $pa_options["display_form_field_tips"] = true;
 	 * if tag rank was successfully changed, false if an error occurred in which case the errors will be available
 	 * via the model's standard error methods (getErrors() and friends.
 	 *
-	 * @param $pn_relation_id int A valid ca_items_x_tags.relation_id value specifying the tag relation to modify (mandatory)
-	 * @param $pn_rank int Rank to apply
+	 * @param $relation_id int A valid ca_items_x_tags.relation_id value specifying the tag relation to modify (mandatory)
+	 * @param $rank int Rank to apply
 	 *
 	 * @return bool
 	 */
-	public function changeTagRank($pn_relation_id, $pn_rank) {
+	public function changeTagRank($relation_id, $rank) {
 		global $g_request;
-		if (!($vn_row_id = $this->getPrimaryKey())) { return null; }
+		if (!($row_id = $this->getPrimaryKey())) { return null; }
 		
-		$t_ixt = new ca_items_x_tags($pn_relation_id);
+		$t_ixt = new ca_items_x_tags($relation_id);
 		
 		if (!$t_ixt->getPrimaryKey()) {
 			$this->postError(2800, _t('Tag relation id is invalid'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
@@ -11034,7 +11107,7 @@ $pa_options["display_form_field_tips"] = true;
 		}
 		if (
 			($t_ixt->get('table_num') != $this->tableNum()) ||
-			($t_ixt->get('row_id') != $vn_row_id)
+			($t_ixt->get('row_id') != $row_id)
 		) {
 			$this->postError(2810, _t('Tag is not part of the current row'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
 			return false;
@@ -11048,8 +11121,7 @@ $pa_options["display_form_field_tips"] = true;
 			}
 		}
 		
-		$t_ixt->set('rank', $pn_rank);
-		
+		$t_ixt->set('rank', $rank);
 		$t_ixt->update();
 		
 		if ($t_ixt->numErrors()) {
@@ -11060,19 +11132,19 @@ $pa_options["display_form_field_tips"] = true;
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
-	 * Deletes the tag relation specified by $pn_relation_id (a ca_items_x_tags.relation_id value) from the currently loaded row. Will only delete 
+	 * Deletes the tag relation specified by $relation_id (a ca_items_x_tags.relation_id value) from the currently loaded row. Will only delete 
 	 * tags attached to the currently loaded row. If you attempt to delete a ca_items_x_tags.relation_id not attached to the current row 
 	 * removeTag() will return false and post an error. If you attempt to call removeTag() with no row loaded null will be returned.
-	 * If $pn_user_id is specified then only tags created by the specified user will be deleted; if the tag being
+	 * If $user_id is specified then only tags created by the specified user will be deleted; if the tag being
 	 * deleted is not created by the user then false is returned and an error posted.
 	 *
-	 * @param $pn_relation_id [integer] a valid ca_items_x_tags.relation_id to be removed; must be related to the currently loaded row (mandatory)
-	 * @param $pn_user_id [integer] a valid ca_users.user_id value; if specified then only tag relations added by the specified user will be deleted (optional - default is null)
+	 * @param $relation_id [integer] a valid ca_items_x_tags.relation_id to be removed; must be related to the currently loaded row (mandatory)
+	 * @param $user_id [integer] a valid ca_users.user_id value; if specified then only tag relations added by the specified user will be deleted (optional - default is null)
 	 */
-	public function removeTag($pn_relation_id, $pn_user_id=null) {
-		if (!($vn_row_id = $this->getPrimaryKey())) { return null; }
+	public function removeTag($relation_id, $user_id=null) {
+		if (!($row_id = $this->getPrimaryKey())) { return null; }
 		
-		$t_ixt = new ca_items_x_tags($pn_relation_id);
+		$t_ixt = new ca_items_x_tags($relation_id);
 		
 		if (!$t_ixt->getPrimaryKey()) {
 			$this->postError(2800, _t('Tag relation id is invalid'), 'BaseModel->removeTag()', 'ca_item_tags');
@@ -11080,15 +11152,15 @@ $pa_options["display_form_field_tips"] = true;
 		}
 		if (
 			($t_ixt->get('table_num') != $this->tableNum()) ||
-			($t_ixt->get('row_id') != $vn_row_id)
+			($t_ixt->get('row_id') != $row_id)
 		) {
 			$this->postError(2810, _t('Tag is not part of the current row'), 'BaseModel->removeTag()', 'ca_item_tags');
 			return false;
 		}
 		
-		if ($pn_user_id) {
+		if ($user_id) {
 			$tag_user_id = $t_ixt->get('user_id');
-			if ($tag_user_id && ($tag_user_id != $pn_user_id)) {
+			if ($tag_user_id && ($tag_user_id != $user_id)) {
 				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->removeTag()', 'ca_item_tags');
 				return false;
 			}
@@ -11105,17 +11177,18 @@ $pa_options["display_form_field_tips"] = true;
 	# --------------------------------------------------------------------------------------------
 	/**
 	 * Removes all tags associated with the currently loaded row. Will return null if no row is currently loaded.
-	 * If the optional $ps_user_id parameter is passed then only tags added by the specified user will be removed.
+	 * If the optional $user_id parameter is passed then only tags added by the specified user will be removed.
 	 *
-	 * @param $pn_user_id [integer] A valid ca_users.user_id value. If specified, only tags added by the specified user will be removed. (optional - default is null)
+	 * @param $user_id [integer] A valid ca_users.user_id value. If specified, only tags added by the specified user will be removed. [Optional;  default is null]
+	 * @return bool
 	 */
-	public function removeAllTags($pn_user_id=null) {
-		if (!($vn_row_id = $this->getPrimaryKey())) { return null; }
+	public function removeAllTags($user_id=null) {
+		if (!($row_id = $this->getPrimaryKey())) { return null; }
 		
-		$va_tags = $this->getTags($pn_user_id);
+		$tags = $this->getTags($user_id);
 		
-		foreach($va_tags as $va_tag) {
-			if (!$this->removeTag($va_tag['relation_id'], $pn_user_id)) {
+		foreach($tags as $tag) {
+			if (!$this->removeTag($tag['relation_id'], $user_id)) {
 				return false;
 			}
 		}

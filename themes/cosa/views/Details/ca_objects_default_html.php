@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2024 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -30,6 +30,7 @@ $access_values = 	$this->getVar("access_values");
 $options = 			$this->getVar("config_options");
 $comments = 		$this->getVar("comments");
 $tags = 			$this->getVar("tags_array");
+$tag_list = 		$this->getVar("tagsList");
 $comments_enabled = $this->getVar("commentsEnabled");
 $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
@@ -50,6 +51,7 @@ $media_options = array_merge($media_options, [
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
+	pawtucketUIApps['clickTagger'] = <?= json_encode(['tag_list_id' => 'tagList']); ?>;
 </script>
 <div class="breadcrumb"><div class='container-xl'><div class="py-2 fs-6">
 <?php
@@ -219,10 +221,10 @@ if($show_nav){
 	</div>
 <?php
 if($tags_enabled){
-	$tags = array("Hidden Gem", "Que Chula!", "Selfie-worthy", "Puro San Antonio", "Honoring History", "Love this!", "Learned something new!", "I’ve seen this!");
+	$tags = $tag_list ?? [];
 ?>
 	<div class="row">
-		<div class="col-md-4">
+		<div class="col-md-4" id="tagCounts">
 			<H2 class="fs-4">What People Are Saying</H2>
 			<ul class="list-group list-group-flush mb-5">
   				<li class="list-group-item">3 people say <strong>Hidden Gem</strong></li>
@@ -232,10 +234,10 @@ if($tags_enabled){
 		</div>
 		<div class="col-md-8">
 			<H2 class="fs-4">Add Your Review!</H2>
-			<div role="group" class="text-center" aria-label="Tag reviews">
+			<div role="group" class="text-center" aria-label="Tag reviews" id="tagList">
 <?php
-			foreach($tags as $tag){
-				print "<button type='button' class='btn btn-light mx-2 mb-2'>".$tag."</button>";				
+			foreach($tags as $tag_id => $tag){
+				print "<button type='button' class='btn btn-light mx-2 mb-2' data-id='{$tag_id}'>{$tag}</button>";				
 			}
 ?>
 			</div>
