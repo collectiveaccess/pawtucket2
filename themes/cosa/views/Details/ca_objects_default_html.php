@@ -28,9 +28,8 @@
 $t_object = 		$this->getVar("item");
 $access_values = 	$this->getVar("access_values");
 $options = 			$this->getVar("config_options");
+$tags_enabled = 	$this->getVar("tagEnabled");
 $comments = 		$this->getVar("comments");
-$tags = 			$this->getVar("tags_array");
-$tag_list = 		$this->getVar("tagsList");
 $comments_enabled = $this->getVar("commentsEnabled");
 $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
@@ -38,11 +37,11 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $tags_enabled = 	$this->getVar("tagsEnabled");
 $id =				$t_object->getPrimaryKey();
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
-$map_options = $this->getVar('mapOptions') ?? [];
-$media_options = $this->getVar('media_options') ?? [];
+$map_options = 		$this->getVar('mapOptions') ?? [];
+$media_options = 	$this->getVar('media_options') ?? [];
 
-$lightboxes = $this->getVar('lightboxes') ?? [];
-$in_lightboxes = $this->getVar('inLightboxes') ?? [];
+$lightboxes = 		$this->getVar('lightboxes') ?? [];
+$in_lightboxes = 	$this->getVar('inLightboxes') ?? [];
 
 $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
@@ -73,18 +72,18 @@ $media_options = array_merge($media_options, [
 ?>
 				<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
-							if($inquire_enabled) {
-								print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
-							}
-							if($pdf_enabled) {
-								print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
-							}
-							if($copy_link_enabled){
-								print $this->render('Details/snippets/copy_link_html.php');
-							}
+					if($inquire_enabled) {
+						print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
+					}
+					if($pdf_enabled) {
+						print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
+					}
+					if($copy_link_enabled){
+						print $this->render('Details/snippets/copy_link_html.php');
+					}
 ?>				
-						</div>
-						<?= $this->render('Details/snippets/lightbox_list_html.php'); ?>
+				</div>
+				<?= $this->render('Details/snippets/lightbox_list_html.php'); ?>
 <?php
 			}
 ?>
@@ -221,8 +220,8 @@ if($show_nav){
 <?php
 if($tags_enabled){
 ?>
-	<div class="row" id="itemTags">
-		<?= $this->render('Details/item_tags_html.php'); ?>
+	<div class="row" id="tagList">
+		<?= $this->render('Details/tag_list_html.php'); ?>
 	</div>
 <?php
 }

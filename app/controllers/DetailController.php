@@ -238,7 +238,7 @@ class DetailController extends FindController {
 		
 		$lightbox_conf = caGetLightboxConfig();
 		$this->view->setVar('lightbox_conf', $lightbox_conf);
-		//$lightboxes = caGetLightboxesForUser($this->request->getUserID(), $this->opa_access_values, ['tables' => [$this->ops_tablename]]);
+		
 		$lightboxes = caGetLightboxesForUser($this->request->getUserID(), null, ['tables' => [$this->ops_tablename]]);
 		$this->view->setVar('lightboxes', ($lightboxes && ($lightboxes->numHits() > 0)) ? $lightboxes : null);
 		$this->view->setVar('in_lightboxes', caGetLightboxesForItem($t_subject));
@@ -582,30 +582,29 @@ class DetailController extends FindController {
 		// Tags
 		//
 		$this->view->setVar('tagsEnabled', $tags_enabled = ((bool)$options['enableTags'] ?? false));
-		if($tags_enabled) {
-			// List item-based tags
-			$tags_list_code = ($options['tagsList']?? null);
-			$tags = caGetListItems($tags_list_code);
-			$this->view->setVar('itemTagsAvailable', $tags);	
-			$this->view->setVar('itemTagsCounts', $t_subject->getItemTags(null));
-			$this->view->setVar('itemTagsSelected', $t_subject->getItemTags($user_id));
+		if($tags_enabled) {	
+			if($tags_list_code = ($options['tagList']?? null)) {	
+				// List-based tags
+				$this->view->setVar('tagsAvailable', caGetListItems($tags_list_code, ['checkAccess' => $this->opa_access_values]));	
+				$this->view->setVar('tagCounts', $t_subject->getAllListItemTags());
+				$this->view->setVar('tagsSelected', $t_subject->getListItemTags($this->request->getUserID()));
+			} else {
+				// Text tags
+				$user_tags = $t_subject->getTags(null, true);
+				$tags = [];
 			
-			// Text tags
-			$user_tags = $t_subject->getTags(null, true);
-			$tags = [];
-		
-			if (is_array($user_tags)) {
-				foreach($user_tags as $user_tag){
-					if(!in_array($user_tag["tag"], $tags)){
-						$tags[] = $user_tag["tag"];
+				if (is_array($user_tags)) {
+					foreach($user_tags as $user_tag){
+						if(!in_array($user_tag["tag"], $tags)){
+							$tags[] = $user_tag["tag"];
+						}
 					}
 				}
+				$this->view->setVar('tagsEntered', $tags);
+				$this->view->setVar('tags', implode(", ", $tags));
 			}
-			$this->view->setVar('tags_array', $tags);
-			$this->view->setVar('tags', implode(", ", $tags));
 		}
 			
-
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
 		$this->view->setVar('inquireEnabled', (bool)$options['enableInquire']);
 		$this->view->setVar('copyLinkEnabled', (bool)$options['enableCopyLink']);
@@ -928,40 +927,42 @@ class DetailController extends FindController {
 	# Tagging and commenting
 	# -------------------------------------------------------
 	/**
-	 *
+	 * Register add or remove of tag in tag list
 	 */
-	public function ToggleItemTag(){
+	public function ToggleTagListItem(){
 		$item_id = $this->request->getParameter('tag', pInteger);
 		$detail_type = $this->request->getParameter('detail', pString);
 		$user_id = $this->request->getUserID();
+		
 		if(!($info = $this->_currentRow($detail_type))) {
-			// invalid detail type – throw error
-			throw new ApplicationException("Invalid detail type $detail_type");
+			throw new ApplicationException(_t("Invalid detail type %1", $detail_type));
 		}
 		$id = $info['id'];
 		$t_subject = $info['instance'];
 		
-		// TODO: test access
+		if(sizeof($this->opa_access_values ?? []) && ($t_subject->hasField('access')) && (!in_array((int)$t_subject->get("access"), $this->opa_access_values, true))){
+			throw new ApplicationException(_t("Access denied"));
+		}
 		
-		$tags_list_code = ($info['options']['tagsList']?? null);
-		$available_tags = caGetListItems($tags_list_code);
-		$selected_tags = $t_subject->getItemTags($user_id, $id);
+		$tags_list_code = ($info['options']['tagList']?? null);
+		$available_tags = caGetListItems($tags_list_code, ['checkAccess' => $this->opa_access_values]);
+		$selected_tags = $t_subject->getListItemTags($user_id, $id);
 		
 		if($item_id) {
 			if(isset($selected_tags[$item_id])) {
-				$t_subject->removeItemTag($item_id, $user_id);
+				$t_subject->removeListItemTag($item_id, $user_id);
 				unset($selected_tags[$item_id]);
 			} else {
-				$t_subject->addItemTag($item_id, $user_id);
+				$t_subject->addListItemTag($item_id, $user_id, ['list' => $tags_list_code, 'checkAccess' => $this->opa_access_values, 'access' => $this->opa_access_values[0] ?? 0]);
 				$selected_tags[$item_id] = true;
 			}
 		}
 		
-		$this->view->setVar('itemTagsAvailable', $available_tags);	
-		$this->view->setVar('itemTagsCounts', $t_subject->getItemTags(null));
-		$this->view->setVar('itemTagsSelected', $selected_tags);
+		$this->view->setVar('tagsAvailable', $available_tags);	
+		$this->view->setVar('tagCounts', $t_subject->getAllListItemTags());
+		$this->view->setVar('tagsSelected', $selected_tags);
 		
-		$this->render('Details/item_tags_html.php');
+		$this->render('Details/tag_list_html.php');
 	}
 	# -------------------------------------------------------
 	/**
