@@ -1361,7 +1361,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 * Convert list code to list_id
 	 */
 	private function _getListID($pm_list_name_or_id) {
-		return ca_lists::getListID($pm_list_name_or_id, array('transaction' => $this->getTransaction()));
+		return ca_lists::getListID($pm_list_name_or_id, ['transaction' => $this->getTransaction()]);
 	}
 	# ------------------------------------------------------
 	/**
@@ -1374,7 +1374,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 * @return int list for the specified list, or null if the list does not exist
 	 */
 	static function getListID($pm_list_name_or_id, $pa_options=null) {
-	    $vs_cache_key = caMakeCacheKeyFromOptions($pa_options ?? [], $pm_list_name_or_id);
+	    $vs_cache_key = caMakeCacheKeyFromOptions($pa_options ?? [], $pm_list_name_or_id ?? '');
 		if (ca_lists::$s_list_id_cache[$vs_cache_key] ?? null) {
 			return ca_lists::$s_list_id_cache[$vs_cache_key];
 		}
@@ -1837,7 +1837,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 						jQuery(document).ready(function() {
 							jQuery('#{$ps_name}_autocomplete').autocomplete({
 									source: '{$vs_url}', minLength: 3, delay: 800, html: true,
-									position: { my: 'left top'. at: 'left bottom', collision: 'fit flip' },
+									position: { my: 'left top', at: 'left bottom', collision: 'fit flip' },
 									select: function(event, ui) {
 										
 										if (parseInt(ui.item.id) > 0) {
