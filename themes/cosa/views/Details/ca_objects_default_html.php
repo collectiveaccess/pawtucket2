@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2024 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,8 +28,8 @@
 $t_object = 		$this->getVar("item");
 $access_values = 	$this->getVar("access_values");
 $options = 			$this->getVar("config_options");
+$tags_enabled = 	$this->getVar("tagEnabled");
 $comments = 		$this->getVar("comments");
-$tags = 			$this->getVar("tags_array");
 $comments_enabled = $this->getVar("commentsEnabled");
 $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
@@ -37,11 +37,11 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $tags_enabled = 	$this->getVar("tagsEnabled");
 $id =				$t_object->getPrimaryKey();
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
-$map_options = $this->getVar('mapOptions') ?? [];
-$media_options = $this->getVar('media_options') ?? [];
+$map_options = 		$this->getVar('mapOptions') ?? [];
+$media_options = 	$this->getVar('media_options') ?? [];
 
-$lightboxes = $this->getVar('lightboxes') ?? [];
-$in_lightboxes = $this->getVar('inLightboxes') ?? [];
+$lightboxes = 		$this->getVar('lightboxes') ?? [];
+$in_lightboxes = 	$this->getVar('inLightboxes') ?? [];
 
 $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
@@ -72,18 +72,18 @@ $media_options = array_merge($media_options, [
 ?>
 				<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
-							if($inquire_enabled) {
-								print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
-							}
-							if($pdf_enabled) {
-								print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
-							}
-							if($copy_link_enabled){
-								print $this->render('Details/snippets/copy_link_html.php');
-							}
+					if($inquire_enabled) {
+						print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
+					}
+					if($pdf_enabled) {
+						print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
+					}
+					if($copy_link_enabled){
+						print $this->render('Details/snippets/copy_link_html.php');
+					}
 ?>				
-						</div>
-						<?= $this->render('Details/snippets/lightbox_list_html.php'); ?>
+				</div>
+				<?= $this->render('Details/snippets/lightbox_list_html.php'); ?>
 <?php
 			}
 ?>
@@ -219,27 +219,9 @@ if($show_nav){
 	</div>
 <?php
 if($tags_enabled){
-	$tags = array("Hidden Gem", "Que Chula!", "Selfie-worthy", "Puro San Antonio", "Honoring History", "Love this!", "Learned something new!", "I’ve seen this!");
 ?>
-	<div class="row">
-		<div class="col-md-4">
-			<H2 class="fs-4">What People Are Saying</H2>
-			<ul class="list-group list-group-flush mb-5">
-  				<li class="list-group-item">3 people say <strong>Hidden Gem</strong></li>
-				<li class="list-group-item">6 people say <strong>Que Chula!</strong></li>
-				<li class="list-group-item">26 people say <strong>Selfie-worthy</strong></li>
-			</ul>
-		</div>
-		<div class="col-md-8">
-			<H2 class="fs-4">Add Your Review!</H2>
-			<div role="group" class="text-center" aria-label="Tag reviews">
-<?php
-			foreach($tags as $tag){
-				print "<button type='button' class='btn btn-light mx-2 mb-2'>".$tag."</button>";				
-			}
-?>
-			</div>
-		</div>
+	<div class="row" id="tagList">
+		<?= $this->render('Details/tag_list_html.php'); ?>
 	</div>
 <?php
 }

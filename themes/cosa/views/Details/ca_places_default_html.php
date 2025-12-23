@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_places_default_html.php : 
+ * themes/cosa/views/Detail/ca_places_default_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
-$t_item = 		$this->getVar("item");
+$t_item = 			$this->getVar("item");
 $access_values = 	$this->getVar("access_values");
 $options = 			$this->getVar("config_options");
 $comments = 		$this->getVar("comments");

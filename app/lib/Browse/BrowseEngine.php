@@ -4373,7 +4373,7 @@ class BrowseEngine extends BaseFindEngine {
 						$va_params[] = $va_container_ids[$vs_container_code];
 					}
 					$vs_sql = "
-						SELECT COUNT(distinct ca_attributes.row_id) as _count, ca_attribute_values.value_longtext1, ca_attribute_values.value_decimal1, ca_attribute_values.value_longtext2, ca_attribute_values.value_integer1, ca_attribute_values.element_id
+						SELECT COUNT(".(($va_facet_info['relative_to'] ?? null) ? "*" : "distinct ca_attributes.row_id").") as _count, ca_attribute_values.value_longtext1, ca_attribute_values.value_decimal1, ca_attribute_values.value_longtext2, ca_attribute_values.value_integer1, ca_attribute_values.element_id
 						FROM ca_attributes
 
 						{$vs_join_sql}
@@ -7275,7 +7275,7 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 								$va_facet[$label_values['label_sort_']][$va_fetched_row[$vs_rel_pk]][$va_fetched_row['locale_id']] = $va_facet_item;
 							}
 						}
-						ksort($va_facet);
+						
 						$acc = [];
 						foreach($va_facet as $k => $x) {
 							$acc = array_merge($acc, $x);

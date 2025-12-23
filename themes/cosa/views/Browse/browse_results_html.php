@@ -92,6 +92,10 @@ if (!$ajax) {	// !ajax
 						print _t("City of San Antonio Past Art Exhibitions");
 					break;
 					# ----------------------
+					case "all_exhibitions":
+						print _t("City of San Antonio Art Exhibitions");
+					break;
+					# ----------------------
 				}
 ?>
 				</H1>

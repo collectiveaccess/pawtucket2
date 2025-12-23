@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2023 Whirl-i-Gig
+ * Copyright 2006-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -72,6 +72,8 @@ define("TEP_TOKEN_EARLY", 29);
 define("TEP_TOKEN_MID", 30);
 define("TEP_TOKEN_LATE", 31);
 define("TEP_TOKEN_ACADEMIC_DATE", 32);
+define("TEP_TOKEN_PAST", 33);
+define("TEP_TOKEN_FUTURE", 34);
 
 # --- Meridian types
 define("TEP_MERIDIAN_AM", 0);
@@ -464,6 +466,25 @@ class TimeExpressionParser {
 									'month' => null, 'day' => null, 'year' => null,
 									'hours' => null, 'minutes' => null, 'seconds' => null,
 									'uncertainty' => false, 'uncertainty_units' => '', 'is_circa' => false, 'is_probably' => false, 'is_undated' => true
+								);
+								
+								$this->skipToken();
+								$vn_state = TEP_STATE_ACCEPT;
+								$vb_can_accept = true;
+								
+								break;
+							# ----------------------
+							case TEP_TOKEN_PAST:
+								$va_dates['start']  = [
+									'month' => 1, 'day' => 1, 'year' => TEP_START_OF_UNIVERSE,
+									'hours' => 0, 'minutes' => 0, 'seconds' => 0,
+									'uncertainty' => false, 'uncertainty_units' => '', 'is_circa' => false, 'is_probably' => false, 'is_undated' => false
+								];
+								$va_now = $this->gmgetdate();
+								$va_dates['end'] = array(
+									'month' => $va_now['mon'], 'day' => $va_now['mday'], 'year' => $va_now['year'],
+									'hours' => $va_now['hours'], 'minutes' => $va_now['minutes'], 'seconds' => $va_now['seconds'],
+									'uncertainty' => false, 'uncertainty_units' => '', 'is_circa' => false, 'is_probably' => false
 								);
 								
 								$this->skipToken();
@@ -1847,6 +1868,14 @@ class TimeExpressionParser {
 		// now
 		if (in_array($vs_token_lc, $this->getLanguageSettingsWordList("nowDate"))) {
 			return array('value' => $vs_token, 'type' => TEP_TOKEN_NOW);
+		}
+		// past
+		if (in_array($vs_token_lc, $this->getLanguageSettingsWordList("pastDate"))) {
+			return array('value' => $vs_token, 'type' => TEP_TOKEN_PAST);
+		}
+		// future
+		if (in_array($vs_token_lc, $this->getLanguageSettingsWordList("futureDate"))) {
+			return array('value' => $vs_token, 'type' => TEP_TOKEN_FUTURE);
 		}
 		
 		// early

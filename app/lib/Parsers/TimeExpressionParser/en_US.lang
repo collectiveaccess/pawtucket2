@@ -83,6 +83,8 @@ nowDate = [now]
 todayDate = [today]
 yesterdayDate = [yesterday]
 tomorrowDate = [tomorrow]
+pastDate = [past]
+futureDate = [future]
 undatedDate = [undated, unknown, nd., n.d., nd]
 
 presentDate = [present, ?, ??, ???, ????]
