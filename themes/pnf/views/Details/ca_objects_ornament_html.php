@@ -73,7 +73,7 @@
 ?>
 				<HR>
 <?php
-				if ($vs_tmp = $t_object->getWithTemplate("ca_objects.category%delimiter=,_")) {
+				if ($vs_tmp = $t_object->getWithTemplate("^ca_objects.category%delimiter=,_")) {
 					print "<div class='unit'><h6>Ornament Name</h6>".$vs_tmp."</div>";
 				}
 				if ($vs_tmp = $t_object->getWithTemplate("^ca_objects.use%delimiter=,_")) {
