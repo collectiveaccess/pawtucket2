@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2021 Whirl-i-Gig
+ * Copyright 2008-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -38,14 +38,6 @@
         if(require_once(__CA_MODELS_DIR__."/{$class}.php")) { return true; }
     }
     
-    // strip namespaces if present
- 	$base = $class;
- 	$parts = [$class];
-    if(strpos($class, '\\') !== false) {
-    	$parts = explode('\\', $class);
-    	$base = $parts[sizeof($parts) - 1];
-    }
-    
     $path = explode('\\', $class);
     if(sizeof($path) > 1) {
     	if($path[0] === 'CA') { array_shift($path); }
@@ -53,6 +45,14 @@
     		include_once(__CA_LIB_DIR__.'/'.join('/', $path).'.php');
     		return true;
     	}
+    }
+    
+    // strip namespaces if present
+ 	$base = $class;
+ 	$parts = [$class];
+    if(strpos($class, '\\') !== false) {
+    	$parts = explode('\\', $class);
+    	$base = $parts[sizeof($parts) - 1];
     }
     
     $loaded = false;
@@ -90,7 +90,6 @@ require_once(__CA_LIB_DIR__."/Cache/ExternalCache.php"); // is used in utilityHe
 require_once(__CA_LIB_DIR__."/Cache/CompositeCache.php"); // is used in utilityHelpers
 require_once(__CA_LIB_DIR__."/Cache/PersistentCache.php"); // is used in utilityHelpers
 
-require_once(__CA_LIB_DIR__."/Utils/Debug.php");
 require_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/logHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/requestHelpers.php");
@@ -127,6 +126,8 @@ require_once(__CA_APP_DIR__.'/lib/GarbageCollection.php');
 require_once(__CA_APP_DIR__.'/helpers/guidHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/browseHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
+require_once(__CA_APP_DIR__.'/helpers/pawtucketHelpers.php');
+require_once(__CA_LIB_DIR__."/Process/Background.php");
 
 require_once(__CA_LIB_DIR__."/BanHammer.php");
 require_once(__CA_LIB_DIR__."/Datamodel.php");

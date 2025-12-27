@@ -438,7 +438,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 				$va_params[] = array_keys($va_groups);
 			}
 			
-			$va_roles = $t_user->getUserRoles();
+			$va_roles = array_merge(array_keys($t_user->getUserRoles()), array_keys($t_user->getGroupRoles()));
 			$role_limit_sql = null;
 			if (is_array($va_roles) && sizeof($va_roles)) {
 				$vs_access_sql .= " OR (ceus.screen_id IN 
@@ -449,14 +449,14 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 							role_id IN (?) AND (access > 0)
 					)
 				)";
-				$va_params[] = array_keys($va_roles);
+				$va_params[] = $va_roles;
 				
 				$role_limit_sql = "
 					AND
 					ceus.screen_id NOT IN (
 						SELECT screen_id FROM ca_editor_ui_screens_x_roles WHERE role_id IN (?)
 					)";
-				$va_params[] = array_keys($va_roles);
+				$va_params[] = $va_roles;
 			}
 			$vs_access_sql .= "
 				OR (
@@ -582,12 +582,13 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 			
 			// Check for role access
 			
-			if ((is_array($va_roles = $t_user->getUserRoles())) && sizeof($va_roles)) {
+			$va_roles = array_merge(array_keys($t_user->getUserRoles()), array_keys($t_user->getGroupRoles()));
+			if (is_array($va_roles) && sizeof($va_roles)) {
 				$qr_roles = $t_user->getDb()->query("
 					SELECT ui_id, role_id, access 
 					FROM ca_editor_uis_x_roles
 					WHERE
-						role_id IN (?) AND ui_id = ?", array(array_keys($va_roles), $vn_ui_id));
+						role_id IN (?) AND ui_id = ?", [$va_roles, $vn_ui_id]);
 						
 				if ($qr_roles->nextRow()) {
 					return (int)$qr_roles->get('access');
@@ -653,13 +654,13 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 			}		
 			
 			// Check for role access
-			
-			if ((is_array($va_roles = $t_user->getUserRoles())) && sizeof($va_roles)) {
+			$va_roles = array_merge(array_keys($t_user->getUserRoles()), array_keys($t_user->getGroupRoles()));
+			if (is_array($va_roles) && sizeof($va_roles)) {
 				$qr_roles = $t_user->getDb()->query("
 					SELECT screen_id, role_id, access 
 					FROM ca_editor_ui_screens_x_roles
 					WHERE
-						role_id IN (?) AND screen_id = ?", array(array_keys($va_roles), $vn_screen_id));
+						role_id IN (?) AND screen_id = ?", array($va_roles, $vn_screen_id));
 						
 				if($qr_roles->numRows() > 0) {
 					while ($qr_roles->nextRow()) {
@@ -834,6 +835,39 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 			}
 		}
 		return false;
+	}
+	# ----------------------------------------
+	/**
+	 * Find first screen in any UI for specified table that contains specified bundle
+	 *
+	 * @param mixed $table Table name or number
+	 * @param string $bundle_name
+	 * @param RequestHTTP $request
+	 * @param array $options Options include:
+	 *		user_id = User_id to apply access control for. [Default is current user]
+	 *
+	 * @return ?array
+	 */
+	static public function findScreenWithBundle($table, string $bundle_name, ?RequestHTTP $request=null, ?array $options=null) : ?array {
+		$user_id = caGetOption('user_id', $options, $request ? $request->getUserID() : null);
+		$uis = ca_editor_uis::getUIList($table, $user_id);
+		foreach($uis as $ui_id => $ui_info) {
+			$t_ui = new ca_editor_uis($ui_id);
+			foreach($t_ui->getScreens($type_id, $options) as $screen) {
+				$screen_id = $screen['screen_id'];
+	
+				$placements = $t_ui->getScreenBundlePlacements('Screen'.$screen_id, null, $options);
+				
+				foreach($placements as $placement) {
+					if ($placement['bundle_name'] === $bundle_name) {
+						return ['ui' => $t_ui, 'ui_id' => $ui_id, 'screen_id' => $screen_id, 'placement' => $placement];
+					} elseif(str_replace("ca_attribute_", "", $placement['bundle_name']) === $bundle_name) {
+						return ['ui' => $t_ui, 'ui_id' => $ui_id, 'screen_id' => $screen_id, 'placement' => $placement];
+					}
+				}
+			}
+		}
+		return null;
 	}
 	# ----------------------------------------
 	/**

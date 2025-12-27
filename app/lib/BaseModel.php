@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2024 Whirl-i-Gig
+ * Copyright 2000-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -407,7 +407,7 @@ class BaseModel extends BaseObject {
 		$this->field_conflicts = array();
 
 		$this->_CONFIG = Configuration::load();
-		$this->_TRANSLATIONS = Configuration::load(__CA_CONF_DIR__."/translations.conf");
+		$this->_TRANSLATIONS = Configuration::load('translations.conf');
 		$this->_FILES_CLEAR = array();
 		$this->_SET_FILES = array();
 		$this->_MEDIA_VOLUMES = MediaVolumes::load();
@@ -2909,6 +2909,7 @@ class BaseModel extends BaseObject {
 	 * @return bool success state
 	 */
 	public function update($pa_options=null) {
+		global $AUTH_CURRENT_USER_ID;
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		
 		// Clear any cached display template values for this record
@@ -2929,9 +2930,13 @@ class BaseModel extends BaseObject {
 		if (!caGetOption('force', $pa_options, false) && isset($_REQUEST['form_timestamp']) && ($vn_form_timestamp = $_REQUEST['form_timestamp'])) {
 			$va_possible_conflicts = $this->getChangeLog(null, array('forTable' => true, 'range' => array('start' => $vn_form_timestamp, 'end' => time()), 'excludeUnitID' => $this->getCurrentLoggingUnitID()));
 			
+			if(is_array($va_possible_conflicts)) { 
+				$va_possible_conflicts = array_filter($va_possible_conflicts, function($v) use ($AUTH_CURRENT_USER_ID) {
+					return ((int)$AUTH_CURRENT_USER_ID !== (int)$v['user_id']);
+				});
+			}
 			if (sizeof($va_possible_conflicts)) {
-				$va_conflict_users = array();
-				$va_conflict_fields = array();
+				$va_conflict_users = $va_conflict_fields = [];
 				foreach($va_possible_conflicts as $va_conflict) {
 					$vs_user_desc = trim($va_conflict['fname'].' '.$va_conflict['lname']);
 					if ($vs_user_email = trim($va_conflict['email'])) {
@@ -4349,7 +4354,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 		global $AUTH_CURRENT_USER_ID;
 		
 		$va_media_info = $this->getMediaInfo($ps_field,$ps_version);
-		if (!$va_media_info) { return true; }
+		if (!is_array($va_media_info)) { return true; }
 
 		$vs_volume = $va_media_info["VOLUME"];
 		$va_volume_info = $this->_MEDIA_VOLUMES->getVolumeInformation($vs_volume);
@@ -4590,7 +4595,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 					}
 				
 					$input_mimetype = $m->divineFileFormat($this->_SET_FILES[$ps_field]['tmp_name']);
-					if (!$input_type = $o_media_proc_settings->canAccept($input_mimetype)) {
+					if (!($input_type = $o_media_proc_settings->canAccept($input_mimetype))) {
 						# error - filetype not accepted by this field
 						$this->postError(1600, ($input_mimetype) ? _t("File type %1 not accepted by %2", $input_mimetype, $ps_field) : _t("Unknown file type not accepted by %1", $ps_field),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 						set_time_limit($vn_max_execution_time);
@@ -5138,7 +5143,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 									'startAtTime' => $this->_CONFIG->get('video_preview_start_at'),
 									'endAtTime' => $this->_CONFIG->get('video_preview_end_at'),
 									'startAtPage' => $this->_CONFIG->get('document_preview_start_page'),
-									'outputDirectory' => __CA_APP_DIR__.'/tmp'
+									'outputDirectory' => __CA_TEMP_DIR__
 								)
 							);
 							if (is_array($va_preview_frame_list)) {
@@ -5230,6 +5235,29 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 					// Just set field values in SQL (assume in-place update of media metadata) because no tmp_name is set
 					// [This generally should not happen]
 					$this->_FILES[$ps_field] = $this->_FIELD_VALUES[$ps_field];
+					$vs_sql =  "{$ps_field} = ".$this->quote(caSerializeForDatabase($this->_FILES[$ps_field], true)).",";
+				} else {
+					$media_desc = [
+						"ORIGINAL_FILENAME" => $this->_SET_FILES[$ps_field]['original_filename'],
+						"_CENTER" => [],
+						"_SCALE" => [],
+						"_SCALE_UNITS" => [],
+						"_START_AT_TIME" => null,
+						"_START_AT_PAGE" => null,
+						"INPUT" => [
+							"MIMETYPE" => $m->get("mimetype"),
+							"WIDTH" => $m->get("width"),
+							"HEIGHT" => $m->get("height"),
+							"MD5" => null,
+							"FILESIZE" => null,
+							"FETCHED_BY" => $vs_url_fetched_by,
+							"FETCHED_ORIGINAL_URL" => $vs_url_fetched_original_url,
+							"FETCHED_FROM" => $vs_url_fetched_from,
+							"FETCHED_ON" => $vn_url_fetched_on,
+							"FILE_LAST_MODIFIED" => filemtime($this->_SET_FILES[$ps_field]['tmp_name'])
+						 ]
+					];
+					$this->_FILES[$ps_field] = $this->_FIELD_VALUES[$ps_field] = $media_desc;
 					$vs_sql =  "{$ps_field} = ".$this->quote(caSerializeForDatabase($this->_FILES[$ps_field], true)).",";
 				}
 
@@ -5806,6 +5834,15 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 		return $vs_sql;
 	}
 	# --------------------------------------------------------------------------------
+	/**
+	 * Get internal file data prior to save
+	 *
+	 * @return array
+	 */
+	protected function getSetFileData() : array {
+		return $this->_SET_FILES ?? [];
+	}
+	# --------------------------------------------------------------------------------
 	# --- Utilities
 	# --------------------------------------------------------------------------------
 	/**
@@ -6258,10 +6295,11 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 		if (isset($this->FIELDS[$field])) {
 			
 			$fieldinfo = $this->FIELDS[$field];
+			$table = $this->tableName();
 			
 			$translations = $this->_TRANSLATIONS->getAssoc('fields');
-			if (isset($translations[$this->tableName()][$field]) && is_array($translations[$this->tableName()][$field])) {
-			    foreach($translations[$this->tableName()][$field] as $k => $v) {
+			if (isset($translations[$table][$field]) && is_array($translations[$table][$field])) {
+			    foreach($translations[$table][$field] as $k => $v) {
 			        $fieldinfo[$k] = $v;
 			    }
 			}
@@ -6572,6 +6610,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 	 *		row_id = Force logging for specified row_id. [Default is to use id from currently loaded row]
 	 *		snapshot = Row snapshot array to use for logging. [Default is to use snapshot from currently loaded row]
 	 * 		log_id = Force logging using a specific log_id. [Default is to use next available log_id]
+	 *		datetime = Unix timestamp of log entry. If not specified current time is used. [Default is current time]
 	 */
 	public function logChange($change_type, $user_id=null, $options=null) {
 		if (defined('__CA_DONT_LOG_CHANGES__') || !$this->logChanges()) { return null; }
@@ -6777,7 +6816,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 			$snapshot = caSerializeForDatabase($snapshot, true);
 			// Create primary log entry
 			$this->opqs_change_log->execute(
-				$log_id, time(), $user_id, $unit_id, $change_type,
+				$log_id, caGetOption('datetime', $options, time()), $user_id, $unit_id, $change_type,
 				$this->tableNum(), $row_id, ((int)$g_change_log_batch_id ? (int)$g_change_log_batch_id : null)
 			);
 			
@@ -7010,6 +7049,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 				return $qr_res->get('log_datetime');
 			} 
 			return array(
+				'log_id' => $qr_res->get('log_id'),
 				'user_id' => $qr_res->get('user_id'),
 				'fname' => $qr_res->get('fname'),
 				'lname' => $qr_res->get('lname'),
@@ -7054,6 +7094,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 		if ($qr_res->nextRow()) {
 			$vn_last_change_timestamp = $qr_res->get('log_datetime');
 			$va_last_change_info = array(
+				'log_id' => $qr_res->get('log_id'),
 				'user_id' => $qr_res->get('user_id'),
 				'fname' => $qr_res->get('fname'),
 				'lname' => $qr_res->get('lname'),
@@ -9025,7 +9066,7 @@ $pa_options["display_form_field_tips"] = true;
 								// if 'LIST' is set try to stock over choice list with the contents of the list
 								if (isset($va_attr['LIST']) && $va_attr['LIST']) {
 									// NOTE: "raw" field value (value passed into method, before the model default value is applied) is used so as to allow the list default to be used if needed
-									$vs_element = ca_lists::getListAsHTMLFormElement($va_attr['LIST'], $pa_options["name"].$vs_multiple_name_extension, array('class' => $pa_options['classname'], 'id' => $pa_options['id']), array('key' => 'item_value', 'value' => $vm_raw_field_value, 'nullOption' => $pa_options['nullOption'], 'readonly' => $pa_options['readonly'], 'checkAccess' => $pa_options['checkAccess'], 'table' => $this->tableName(), 'type' => method_exists($this, 'getTypeCode') ? $this->getTypeCode() : null));
+									$vs_element = ca_lists::getListAsHTMLFormElement($va_attr['LIST'], $pa_options["name"].$vs_multiple_name_extension, array('class' => $pa_options['classname'], 'id' => $pa_options['id']), array('nullOption' => $pa_options['nullOption'] ?? null, 'width' => $pa_options['width'] ?? null, 'key' => 'item_value', 'value' => $vm_raw_field_value, 'readonly' => $pa_options['readonly'], 'checkAccess' => $pa_options['checkAccess'], 'table' => $this->tableName(), 'type' => method_exists($this, 'getTypeCode') ? $this->getTypeCode() : null));
 								}
 								if (!$vs_element && (isset($va_attr["BOUNDS_CHOICE_LIST"]) && is_array($va_attr["BOUNDS_CHOICE_LIST"]))) {
 	
@@ -9368,6 +9409,27 @@ $pa_options["display_form_field_tips"] = true;
 					$vs_max_length = '';
 					if ($vn_max_length > 0) $vs_max_length = 'maxlength="'.$vn_max_length.'"';
 					$vs_element = '<input type="password" name="'.$pa_options["name"].'" id="'.$pa_options["id"].'" value="'.$this->escapeHTML($vm_field_value).'" size="'.$vn_display_width.'" '.$vs_max_length.' '.$vs_js.' autocomplete="off" '.$vs_css_class_attr." style='{$vs_dim_style}'".($pa_options['readonly'] ? ' readonly="readonly" ' : '')." ".($pa_options['placeholder'] ? "placeholder='".htmlentities($pa_options['placeholder'])."'" : "")."/>";
+					
+					if(caGetOption('includeVisibilityButton', $pa_options, false)) {
+						$vs_element .= "<button type='button' id='".$pa_options["id"]."View' class='formPasswordView'>".caNavIcon(__CA_NAV_ICON_WATCH__, '16px', [])."</button>";
+						$vs_element .= "<script type='text/javascript'>
+							jQuery(document).ready(function() {
+								jQuery('#".($pa_options['id'].'View')."').on('click', function(e) {
+									const t = jQuery('#".$pa_options["id"]."').attr('type');
+									
+									if(t == 'password') {
+										jQuery('#".$pa_options["id"]."').attr('type', 'text');
+										jQuery('#".$pa_options["id"]."View i').css('color', 'red');
+									} else {
+										jQuery('#".$pa_options["id"]."').attr('type', 'password');
+										jQuery('#".$pa_options["id"]."View i').css('color', 'black');
+									}
+									e.preventDefault();
+									return false;
+								});
+							});
+						</script>\n";
+					}
 					break;
 				# ----------------------------
 				case(FT_BIT):
@@ -9387,7 +9449,8 @@ $pa_options["display_form_field_tips"] = true;
 							$vs_element = '<input type="checkbox" name="'.$pa_options["name"].'" value="1" '.($vm_field_value ? 'checked="1"' : '').' '.$vs_js.($pa_options['readonly'] ? ' disabled="disabled" ' : '').' id="'.$pa_options["id"].'"/>';
 							break;
 						case (DT_RADIO_BUTTONS):
-							$vs_element = 'Radio buttons not supported for bit-type fields';
+							$vs_element = '<input type="radio" name="'.$pa_options["name"].'" value="1" '.($vm_field_value ? 'checked="1"' : '').' '.$vs_js.($pa_options['readonly'] ? ' disabled="disabled" ' : '').' id="'.$pa_options["id"].'_1"/> '._t('Yes');
+							$vs_element .= '  <input type="radio" name="'.$pa_options["name"].'" value="0" '.(!$vm_field_value ? 'checked="1"' : '').' '.$vs_js.($pa_options['readonly'] ? ' disabled="disabled" ' : '').' id="'.$pa_options["id"].'_0"/> '._t('No');
 							break;
 					}
 					break;
@@ -9438,7 +9501,7 @@ $pa_options["display_form_field_tips"] = true;
 
 
 						if (!isset($pa_options['no_tooltips']) || !$pa_options['no_tooltips']) {
-							TooltipManager::add('#'.$vs_field_id, "<div class='tooltipHead'>{$vs_field_label}</div>".((isset($pa_options["description"]) && $pa_options["description"]) ? $pa_options["description"] : $va_attr["DESCRIPTION"]), $pa_options['tooltip_namespace']);
+							TooltipManager::add('#'.$vs_field_id, "<h3>{$vs_field_label}</h3>".((isset($pa_options["description"]) && $pa_options["description"]) ? $pa_options["description"] : $va_attr["DESCRIPTION"]), $pa_options['tooltip_namespace']);
 						}
 					}
 
@@ -12387,6 +12450,10 @@ $pa_options["display_form_field_tips"] = true;
 		
 		if($this->hasField('deleted')) {
 			$va_wheres[] = '(t.deleted = 0)';
+		}
+		$hier_type = $this->getProperty('HIERARCHY_TYPE');
+		if($hier_type === __CA_HIER_TYPE_MULTI_MONO__) { 
+			$va_wheres[] = '(t.parent_id IS NOT NULL)';
 		}
 		
 		$vs_where_sql = join(" AND ", $va_wheres);

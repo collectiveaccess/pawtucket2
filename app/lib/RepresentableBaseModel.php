@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2024 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -580,11 +580,8 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 			$t_rep->set('locale_id', $pn_locale_id);
 			$t_rep->set('status', $pn_status);
 			$t_rep->set('access', $pn_access);
+			$t_rep->set('original_filename', $pa_options['original_filename'] ?? null);
 			if($ps_media_path) { $t_rep->set('media', $ps_media_path, $pa_options); }
-	
-			if ($o_idno = $t_rep->getIDNoPlugInInstance()) {
-				$t_rep->setIdnoWithTemplate($o_idno->makeTemplateFromValue(''));
-			}
 			
 			if($ps_media_path && is_array($skip_config = $this->getAppConfig()->get('skip_object_representation_versions_for_mimetype_when'))) {
 				// process values to use codes for list items
@@ -620,11 +617,19 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 					}
 				}
 			}
+			
+			$rep_idno_instance = $t_rep->getIDNoPlugInInstance();
+		
 			if (is_array($pa_values)) {
-				if (isset($pa_values['idno']) && !empty($pa_values['idno']) && empty($t_rep->get('idno')) ) {
-					$t_rep->set('idno', $pa_values['idno']);
-					unset($pa_values['idno']);
+				if($rep_idno_instance->isSerialFormat()) {
+					if(!strlen($t = $rep_idno_instance->makeTemplateFromValue($pa_values['idno'] ?? ''))) {
+						$t = '%';
+					}
+					$t_rep->setIdnoWithTemplate($t);
+				} else {
+					$t_rep->set('idno', $pa_values['idno'] ?? null);
 				}
+				unset($pa_values['idno']);
 				foreach($pa_values as $vs_element => $va_value) { 					
 					if (is_array($va_value)) {
 						// array of values (complex multi-valued attribute)
@@ -644,21 +649,39 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 						}
 					}
 				}
-			}
-			if(!isset($pa_values['idno'])) {
+			} elseif($rep_idno_instance->isSerialFormat()) {
 				$t_rep->setIdnoWithTemplate('%', ['serialOnly' => true]);
 			}
 			
-			
-			
 			try {
+				$this->opo_app_plugin_manager->hookBeforeInsertItem(
+					[
+						'id' => $t_rep->getPrimaryKey(), 
+						'table_num' => $t_rep->tableNum(), 
+						'table_name' => $t_rep->tableName(), 
+						'instance' => $t_rep, 
+						'is_insert' => true, 
+						'for_duplication' => caGetOption('forDuplication', $pa_options, false)
+					]
+				);
 				$t_rep->insert($media_proc_opts);
+				$this->opo_app_plugin_manager->hookInsertItem(
+					[
+						'id' => $t_rep->getPrimaryKey(), 
+						'table_num' => $t_rep->tableNum(), 
+						'table_name' => $t_rep->tableName(), 
+						'instance' => $t_rep, 
+						'is_insert' => true, 
+						'for_duplication' => caGetOption('forDuplication', $pa_options, false)
+					]
+				);
+				
 			} catch (MediaExistsException $e) {
 				$this->postError(2730, caGetReferenceToExistingRepresentationMedia($e->getRepresentation()), 'ca_object_representations->insert()');
 				return false;
 			}
 			if ($t_rep->numErrors()) {
-				$this->errors = array_merge($this->errors, $t_rep->errors());
+				$this->errors = array_merge($this->errors ?? [], $t_rep->errors());
 				return false;
 			}
 		
@@ -817,6 +840,16 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 		
 			try {
 				$t_rep->update();
+
+				$this->opo_app_plugin_manager->hookEditItem(
+					[
+						'id' => $t_rep->getPrimaryKey(), 
+						'table_num' => $t_rep->tableNum(), 
+						'table_name' => $t_rep->tableName(), 
+						'instance' => $t_rep, 
+						'for_duplication' => caGetOption('forDuplication', $pa_options, false)
+					]
+				);
 			} catch (MediaExistsException $e) {
 				$this->postError(2730, caGetReferenceToExistingRepresentationMedia($e->getRepresentation()), 'ca_object_representations->insert()');
 				return false;
@@ -959,14 +992,16 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 	 */
 	private function _checkRepresentationReferences(string $table, string $type_code, BaseModel $t_rep) {
 		$always_remove_config = $this->getAppConfig()->getAssoc('always_delete_representation_when_relationship_removed_to');
+		$ignore_remove = $this->getAppConfig()->getAssoc('during_delete_representation_ignore_representation_relationships_to');
+		
 		if(is_array($always_remove_config) && isset($always_remove_config[$table]) && is_array($always_remove_config[$table]) && sizeof($always_remove_config[$table])) {
 			if(in_array($type_code, $always_remove_config[$table])) {
 				return [];	// trigger delete
 			}
 		}
 		
-		$rels = $t_rep->hasRelationships();
-
+		$rels = $t_rep->hasRelationships(['manyManyRelationshipsOnly' => true, 'excludeTypes' => $ignore_remove]);
+	
 		if(is_array($rels)) {
 			foreach($rels as $k => $v) {
 				switch($k) {
@@ -1345,13 +1380,14 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 		
 		$start = caGetOption('start', $pa_options, 0);
 		$limit = caGetOption('limit', $pa_options, null);
-		unset($pa_options['start']);
-		unset($pa_options['limit']);
 		
 		$vs_bundle_template = caGetOption('display_template', $pa_bundle_settings, Configuration::load()->get('ca_object_representations_default_editor_display_template'), ['defaultOnEmptyString' => true]);
 		$bundles_to_save = caGetOption('showBundlesForEditing', $pa_bundle_settings, null);
 		
 		$va_reps = $this->getRepresentations(['thumbnail', 'original'], null, $pa_options);
+		
+		unset($pa_options['start']);
+		unset($pa_options['limit']);	
 	
 		$t_item = new ca_object_representations();
 		$va_rep_type_list = $t_item->getTypeList();
@@ -1378,7 +1414,7 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 		$vn_primary_id = 0;
 		$va_initial_values = [];
 		if (is_array($va_reps) && sizeof($va_reps)) {
-			$o_type_config = Configuration::load($t_item->getAppConfig()->get('annotation_type_config'));
+			$o_type_config = Configuration::load('annotation_types.conf');
 			$va_annotation_type_mappings = $o_type_config->getAssoc('mappings');
 
 			$va_relation_ids = caExtractValuesFromArrayList($va_reps, 'relation_id');
@@ -1391,12 +1427,6 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 			if($vs_bundle_template && ($vs_linking_table = RepresentableBaseModel::getRepresentationRelationshipTableName($this->tableName()))) {
 				$va_display_template_values = caProcessTemplateForIDs($vs_bundle_template, $vs_linking_table, $va_relation_ids, array_merge($pa_options, array('filterNonPrimaryRepresentations' => false, 'start' => null, 'limit' => null, 'returnAsArray' => true, 'returnAllLocales' => false, 'includeBlankValuesInArray' => true, 'indexWithIDs' => true)));
 				$va_relation_ids = array_keys($va_display_template_values);
-			}
-			
-			if($limit > 0) {
-				$va_relation_ids = array_slice($va_relation_ids, $start, $limit);
-			} elseif($start > 0) {
-				$va_relation_ids = array_slice($va_relation_ids, $start);
 			}
 			
 			foreach ($va_relation_ids as $relation_id) {

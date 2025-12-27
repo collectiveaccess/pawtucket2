@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018-2022 Whirl-i-Gig
+ * Copyright 2018-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,7 +29,6 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
 trait CLIUtilsMedia { 
 	# -------------------------------------------------------
 	/**
@@ -42,13 +41,12 @@ trait CLIUtilsMedia {
 		$o_db = new Db();
 
 		$t_rep = new ca_object_representations();
-		$t_rep->setMode(ACCESS_WRITE);
 
 		$quiet = $po_opts->getOption('quiet');
 		$pa_mimetypes = caGetOption('mimetypes', $po_opts, null, ['delimiter' => [',', ';']]);
 		$skip_mimetypes = caGetOption('skip-mimetypes', $po_opts, null, ['delimiter' => [',', ';']]);
 		$pa_versions = caGetOption('versions', $po_opts, null, ['delimiter' => [',', ';']]);
-		$pa_kinds = caGetOption('kinds', $po_opts, 'all', ['forceLowercase' => true, 'validValues' => ['all', 'ca_object_representations', 'ca_attributes', 'icons'], 'delimiter' => [',', ';']]);
+		$pa_kinds = caGetOption('kinds', $po_opts, 'ca_object_representations', ['forceLowercase' => true, 'validValues' => ['all', 'ca_object_representations', 'ca_attributes', 'icons'], 'delimiter' => [',', ';']]);
 		
 		$unprocessed = (bool)$po_opts->getOption('unprocessed');
 		$oriented_only = (bool)$po_opts->getOption('oriented-only');
@@ -213,7 +211,6 @@ trait CLIUtilsMedia {
 							foreach($va_vals as $vn_value_id) {
 								$t_attr_val = new ca_attribute_values($vn_value_id);
 								if ($t_attr_val->getPrimaryKey()) {
-									$t_attr_val->setMode(ACCESS_WRITE);
 									$t_attr_val->useBlobAsMediaField(true);
 
 									$va_media_info = $t_attr_val->getMediaInfo('value_blob');
@@ -255,7 +252,6 @@ trait CLIUtilsMedia {
 					$ids = $qr_vals->getAllFieldValues($pk);
 					foreach($ids as $id) {
 						if ($t_instance->load($id)) {
-							$t_instance->setMode(ACCESS_WRITE);
 
 							$media_info = $t_instance->getMediaInfo($pk);
 
@@ -433,7 +429,6 @@ trait CLIUtilsMedia {
 						foreach($va_vals as $vn_value_id) {
 							$t_attr_val = new ca_attribute_values($vn_value_id);
 							if ($t_attr_val->getPrimaryKey()) {
-								$t_attr_val->setMode(ACCESS_WRITE);
 								$t_attr_val->useBlobAsMediaField(true);
 
 								$va_media_info = $t_attr_val->getMediaInfo('value_blob');
@@ -475,7 +470,6 @@ trait CLIUtilsMedia {
 				$ids = $qr_vals->getAllFieldValues($pk);
 				foreach($ids as $id) {
 					if ($t_instance->load($id)) {
-						$t_instance->setMode(ACCESS_WRITE);
 
 						$media_info = $t_instance->getMediaInfo($pk);
 
@@ -671,7 +665,6 @@ trait CLIUtilsMedia {
 				foreach($va_vals as $vn_value_id) {
 					$t_attr_val = new ca_attribute_values($vn_value_id);
 					if ($t_attr_val->getPrimaryKey()) {
-						$t_attr_val->setMode(ACCESS_WRITE);
 						$t_attr_val->useBlobAsMediaField(true);
 
 						$va_media_info = $t_attr_val->getMediaInfo('value_blob');
@@ -747,7 +740,6 @@ trait CLIUtilsMedia {
 		$o_db = new Db();
 
 		$t_rep = new ca_object_representations();
-		$t_rep->setMode(ACCESS_WRITE);
 
 		if (!($vn_start = (int)$po_opts->getOption('start_id'))) { $vn_start = null; }
 		if (!($vn_end = (int)$po_opts->getOption('end_id'))) { $vn_end = null; }
@@ -777,7 +769,6 @@ trait CLIUtilsMedia {
 		while($qr_reps->nextRow()) {
 			$t_instance = new ca_representation_annotations($vn_id = $qr_reps->get('annotation_id'));
 			print CLIProgressBar::next(1, _t('Annotation %1', $vn_id));
-			$t_instance->setMode(ACCESS_WRITE);
 			$t_instance->update(array('forcePreviewGeneration' => true));
 
 			$vn_c++;

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2023 Whirl-i-Gig
+ * Copyright 2009-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -63,11 +63,13 @@ class BaseFindController extends ActionController {
 	 *
 	 */
 	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
-		AssetLoadManager::register("timelineJS");
-		AssetLoadManager::register('panel');
-		AssetLoadManager::register("tableview");
-		AssetLoadManager::register("bundleableEditor");
-		AssetLoadManager::register("bundleListEditorUI");
+		if(!$po_request->isAjax()) {
+			AssetLoadManager::register("timelineJS");
+			AssetLoadManager::register('panel');
+			AssetLoadManager::register("tableview");
+			AssetLoadManager::register("bundleableEditor");
+			AssetLoadManager::register("bundleListEditorUI");
+		}
 		
 		$this->opo_app_plugin_manager = new ApplicationPluginManager();
 		
@@ -187,6 +189,8 @@ class BaseFindController extends ActionController {
 			$vs_label_display_field = $t_label->getDisplayField();
 			foreach($display_list as $i => $va_display_item) {
 				$tmp = explode('.', $va_display_item['bundle_name']);
+				
+				if(!is_array($va_display_item['settings'])) { $va_display_item['settings'] = []; }
 
 				if(!isset($tmp[1])){ 
 					$tmp[1] = null;
@@ -204,6 +208,17 @@ class BaseFindController extends ActionController {
 					($va_display_item['bundle_name'] === 'nonpreferred_labels')
 				) {
 					$display_list[$i]['is_sortable'] = true;
+					
+					// Sort on presented field when overriding related bundle with single-tag template
+					// Eg. If showing entity label with template to only show first name, sort should be on first name,
+					// not default related entity field (which is displayname)
+					$template = caGetOption('format', is_array($display_list[$i]['settings'] ?? null) ? $display_list[$i]['settings'] : [], null);
+					$tags = caGetTemplateTags($template);
+					if(is_array($tags) && (sizeof($tags) === 1) && preg_match("!^{$va_display_item['bundle_name']}\.(.*)!", $tags[0], $m)) {
+						$display_list[$i]['bundle_sort'] = $vs_label_table_name.'.'.$m[1];
+						continue;
+					} 
+					
 					$display_list[$i]['bundle_sort'] = $vs_label_table_name.'.'.$t_instance->getLabelSortField();
 					continue;
 				}
@@ -494,7 +509,7 @@ class BaseFindController extends ActionController {
 				$this->Index();
 				return;
 			} else {
-				$this->postError(100, _t("Couldn't queue label export", ), "BaseFindController->export()");
+				$this->postError(100, _t("Couldn't queue label export"), "BaseFindController->export()");
 			}
 		}
 		Session::setVar($this->ops_tablename.'_search_export_in_background', false);
@@ -580,7 +595,7 @@ class BaseFindController extends ActionController {
 				
 				return;
 			} else {
-				$this->postError(100, _t("Couldn't queue export", ), "BaseFindController->export()");
+				$this->postError(100, _t("Couldn't queue export"), "BaseFindController->export()");
 			}
 		}
 		Session::setVar($this->ops_tablename.'_search_export_in_background', false);
@@ -644,6 +659,8 @@ class BaseFindController extends ActionController {
 		}
 		$this->view->setVar('num_items_added', (int)$vn_added_items_count);
 		$this->view->setVar('num_items_already_in_set', (int)$vn_dupe_item_count);
+		
+		$this->response->setContentType('application/json');
 		$this->render('Results/ajax_add_to_set_json.php');
 	}
 	# ------------------------------------------------------------------
@@ -691,7 +708,9 @@ class BaseFindController extends ActionController {
 					$this->view->setVar('error', join("; ", $t_set->getErrors()));
 				}
 		
-				$t_set->addLabel(array('name' => $vs_set_name), $g_ui_locale_id, null, true);
+				if(!$t_set->addLabel(['name' => $vs_set_name], $g_ui_locale_id, null, true)) {
+					$this->view->setVar('error', _t('Could not add label to set'));
+				}
 		
 				$vn_added_items_count = $t_set->addItems($va_row_ids, ['user_id' => $this->request->getUserID()]);
 			
@@ -709,6 +728,8 @@ class BaseFindController extends ActionController {
 		$this->view->setVar('set_name', $vs_set_name);
 		$this->view->setVar('set_code', $vs_set_code);
 		$this->view->setVar('num_items_added', $vn_added_items_count);
+		
+		$this->response->setContentType('application/json');
 		$this->render('Results/ajax_create_set_from_result_json.php');
 	}
 	# ------------------------------------------------------------------
@@ -725,10 +746,10 @@ class BaseFindController extends ActionController {
 				$va_values[$vs_fld] = $this->request->getParameter(str_replace('.', '_', $vs_fld), pString);
 			}	
 		}
-		
 		$va_values['_label'] = $this->request->getParameter('_label', pString);
+		$va_values['search'] = $this->request->getParameter('search', pString);
 		$va_values['_form_id'] = $this->request->getParameter('_form_id', pString);
-		
+
 		if ($vs_md5 = $this->request->user->addSavedSearch($this->ops_tablename, $this->ops_find_type, $va_values)) {
 			$this->view->setVar('md5', $vs_md5);
 			$this->view->setVar('label', $va_values['_label']);
@@ -736,6 +757,8 @@ class BaseFindController extends ActionController {
 		} else {
 			$this->view->setVar('error', _t('Search could not be saved'));
 		}
+		
+		$this->response->setContentType('application/json');
 		$this->render('Results/ajax_add_saved_search_json.php');
 	}
 	# ------------------------------------------------------------------
@@ -744,12 +767,12 @@ class BaseFindController extends ActionController {
 	 * 
 	 */ 
 	public function doSavedSearch() {
-		if ($va_saved_search = $this->request->user->getSavedSearchByKey($this->ops_tablename, $this->ops_find_type, $this->request->getParameter('saved_search_key', pString))) {
-			$vs_label = $va_saved_search['_label'];
-			unset($va_saved_search['_label']);
-			$vn_form_id = $va_saved_search['_form_id'];
-			unset($va_saved_search['_form_id']);
-			$this->Index(array('saved_search' => $va_saved_search, 'form_id' => $vn_form_id));
+		if ($saved_search = $this->request->user->getSavedSearchByKey($this->ops_tablename, $this->ops_find_type, $k=$this->request->getParameter('saved_search_key', pString))) {
+			$label = $saved_search['_label'] ?? null;
+			unset($saved_search['_label']);
+			$form_id = $saved_search['_form_id'] ?? null;
+			unset($saved_search['_form_id']);
+			$this->Index(['saved_search' => $saved_search, 'form_id' => $form_id]);
 			return;
 		}
 		
@@ -773,7 +796,7 @@ class BaseFindController extends ActionController {
 	 */ 
 	public function DownloadMedia() {
 		if ($t_subject = Datamodel::getInstanceByTableName($this->ops_tablename, true)) {
-			$o_md_conf = Configuration::load($t_subject->getAppConfig()->get('media_metadata'));
+			$o_md_conf = Configuration::load('media_metadata');
 
 			$id_list = null;	// list of ids to pull media for
 			if (($ids = trim($this->request->getParameter($t_subject->tableName(), pString))) || ($ids = trim($this->request->getParameter($t_subject->primaryKey(), pString)))) {
@@ -836,10 +859,7 @@ class BaseFindController extends ActionController {
 								$filename = caGetRepresentationDownloadFileName($this->ops_tablename, ['idno' => $idno, 'index' => $index, 'version' => $version, 'extension' => $ext, 'original_filename' => $original_name, 'representation_id' => $representation_id]);				
 
 								if($o_md_conf->get('do_metadata_embedding_for_search_result_media_download')) {
-									if ($path_with_embedding = caEmbedMediaMetadataIntoFile($path,
-										'ca_objects', $qr_res->get('ca_objects.object_id'), caGetListItemIdno($qr_res->get('ca_objects.type_id')),
-										$representation_id, $representation_type
-									)) {
+									if($path_with_embedding = caEmbedMediaMetadataIntoFile($qr_res, $version, ['path' => $path])) {
 										$path = $path_with_embedding;
 									}
 								}
@@ -1023,7 +1043,7 @@ class BaseFindController extends ActionController {
 				['request' => $this->getRequest(), 'restrictToDisplay' => $this->request->config->get('restrict_find_result_sort_options_to_current_display') ? $display_id : null]));
 		
 		$this->view->setVar('display_id', $display_id);
-		$this->view->setVar('columns',ca_bundle_displays::getColumnsForResultsEditor($display_list, ['request' => $this->request]));
+		$this->view->setVar('columns', ca_bundle_displays::getColumnsForResultsEditor($display_list, ['request' => $this->request]));
 		$this->view->setVar('num_rows', sizeof($ids));
 		
 		$this->render("Results/results_editable_html.php");
@@ -1072,6 +1092,8 @@ class BaseFindController extends ActionController {
 			['restrictToDisplay' => $this->request->config->get('restrict_find_result_sort_options_to_current_display') ? $display_id : null]);
 		
 		$this->view->setVar('data', $data);
+		
+		$this->response->setContentType('application/json');
 		$this->render("Results/ajax_results_editable_data_json.php");
 	}
 	# ------------------------------------------------------------------
@@ -1087,7 +1109,7 @@ class BaseFindController extends ActionController {
 			throw new ApplicationException(_t('Cannot use editor for %1', $this->ops_tablename));
 		}
 		
-		if (!caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
+		if (caValidateCSRFToken($this->request, null, ['notifications' => $this->notification]) === false) {
 			throw new ApplicationException(_t('CSRF check failed'));
 			return;
 		}
@@ -1102,6 +1124,7 @@ class BaseFindController extends ActionController {
 		
 		$this->view->setVar('response', $response);
 		
+		$this->response->setContentType('application/json');
 		$this->render("Results/ajax_save_results_editable_data_json.php");
 	}
 	# ------------------------------------------------------------------
@@ -1195,9 +1218,15 @@ class BaseFindController extends ActionController {
 	/**
 	 * Returns string representing the name of the item the search will return
 	 *
-	 * If $ps_mode is 'singular' [default] then the singular version of the name is returned, otherwise the plural is returned
+	 * If $mode is 'singular' [default] then the singular version of the name is returned, otherwise the plural is returned
+	 *
+	 * @param string $mode
+	 * 
+	 * @return string
 	 */
-	public function getResultsDisplayName($mode='singular') {
+	public function getResultsDisplayName(?string $mode='singular') : ?string {
+		global $g_ui_locale;
+		
 		$type_restriction_has_changed = false;
 		$type_id = $this->opo_result_context->getTypeRestriction($type_restriction_has_changed);
 		
@@ -1210,16 +1239,21 @@ class BaseFindController extends ActionController {
 			$t_list->load(array('list_code' => $t_instance->getTypeListCode()));
 		
 			$t_list_item = new ca_list_items();
-			$t_list_item->load(array('list_id' => $t_list->getPrimaryKey(), 'parent_id' => null));
+			$t_list_item->load(['list_id' => $t_list->getPrimaryKey(), 'parent_id' => null]);
 			$hier = caExtractValuesByUserLocale($t_list_item->getHierarchyWithLabels());
 		
 			if (!($name = ($mode == 'singular') ? $hier[$type_id]['name_singular'] ?? '' : $hier[$type_id]['name_plural'] ?? '')) {
-				$name = mb_strtolower(($mode == 'singular') ? $t_instance->getProperty('NAME_SINGULAR') : $t_instance->getProperty('NAME_PLURAL'));
+				$name = ($mode == 'singular') ? $t_instance->getProperty('NAME_SINGULAR') : $t_instance->getProperty('NAME_PLURAL');
 			}
-			return mb_strtolower($name);
 		} else {
-			return mb_strtolower(($mode == 'singular') ? $t_instance->getProperty('NAME_SINGULAR') : $t_instance->getProperty('NAME_PLURAL'));
+			$name = ($mode == 'singular') ? $t_instance->getProperty('NAME_SINGULAR') : $t_instance->getProperty('NAME_PLURAL');
 		}
+	
+		if(strlen($g_ui_locale) && (caGetLanguageForLocale($g_ui_locale) === 'de')) {	// Deutsche Hauptworten mußen groß schreiben bleiben
+			return $name;
+		}
+	
+		return mb_strtolower($name);
 	}
 	# -------------------------------------------------------
 	/**

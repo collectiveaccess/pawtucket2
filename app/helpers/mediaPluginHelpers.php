@@ -515,6 +515,7 @@ function caWhisperInstalled(array $options=null) {
  * @return mixed Path to executable if installed, false if not installed
  */
 function caPDFMinerInstalled($ps_pdfminer_path=null, $options=null) {
+	if(Configuration::load()->get('dont_extract_pdf_content_locations')) { return false; }
 	if (!caGetOption('noCache', $options, defined('__CA_DONT_CACHE_EXTERNAL_APPLICATION_PATHS__')) && CompositeCache::contains("mediahelper_pdfminer_installed", "mediaPluginInfo")) { return CompositeCache::fetch("mediahelper_pdfminer_installed", "mediaPluginInfo"); }
 	if(!$ps_pdfminer_path) { $ps_pdfminer_path = caGetExternalApplicationPath('pdfminer'); }
 
@@ -615,14 +616,11 @@ function caRemoveAllMediaMetadata(string $filepath) : bool {
  * Embed media metadata into given file. Embedding is performed on a copy of the file and placed into the
  * system tmp directory. The original file is never modified.
  *
- * @param string $file The file to embed metadata into
- * @param string $table Table name of the subject record. This is used to figure out the appropriate mapping to use from media_metadata.conf
- * @param int $pk Primary key of the subject record. This is used to run the export for the right record.
- * @param string $type_code Optional type code for the subject record
- * @param int $rep_pk Primary key of the subject representation.
- * 		If there are export mapping for object representations, we run them after the mapping for the subject table.
- * 		Fields that get exported here should overwrite fields from the subject table export.
- * @param string $rep_type_code type code for object representation
+ * @param BaseModel $t_instance An instance of the item to perform embedding. Must be an instance of ca_object_representations or a model with the RepresentableBaseModel trait.
+ * @param string $version Media version to embed into
+ * @param array $options Options include:
+ *		path = An absolute path to the media file. When set, will be used in preference to paths returned by $t_instance. [Default is null]
+ *
  * @return string File name of a temporary file with the embedded metadata, false on failure
  */
 function caEmbedMediaMetadataIntoFile($t_instance, string $version, ?array $options=null) {
@@ -643,13 +641,13 @@ function caEmbedMediaMetadataIntoFile($t_instance, string $version, ?array $opti
 	if (!preg_match("/^image\//", mime_content_type($file))) { return false; } // Don't try to embed in files other than images
 
 	// make a temporary copy (we won't touch the original)
-	$tmp_filepath = __CA_APP_DIR__."/tmp/".time().md5($file);
+	$tmp_filepath = __CA_TEMP_DIR__."/".time().md5($file);
 	if(!copy($file, $tmp_filepath)) {
 		return false;
 	}
 	$file_cleanup_list[] = $tmp_filepath;
 
-	$o_config = Configuration::load(__CA_CONF_DIR__.'/media_metadata.conf');
+	$o_config = Configuration::load('media_metadata.conf');
 	
 	$table = $t_instance->tableName();
 	$typecode = $t_instance->get("{$table}.type_id", ['convertCodesToIdno' => true]);
@@ -780,7 +778,7 @@ function caIPTCTagNameToCode(string $name) : ?int {
 function caGetDefaultMediaIconTag($ps_type, $pn_width, $pn_height, $pa_options=null) {
 	if (is_array($va_selected_size = caGetMediaIconForSize($ps_type, $pn_width, $pn_height, $pa_options))) {
 		$o_config = Configuration::load();
-		$o_icon_config = Configuration::load(__CA_CONF_DIR__.'/default_media_icons.conf');
+		$o_icon_config = Configuration::load('default_media_icons.conf');
 		$va_icons = $o_icon_config->getAssoc($ps_type);
 		$alt_text_by_type = $o_icon_config->getAssoc('alt_text');
 		$alt_text = $alt_text_by_type[$ps_type] ?? _t('Default media icon');
@@ -803,7 +801,7 @@ function caGetDefaultMediaIconTag($ps_type, $pn_width, $pn_height, $pa_options=n
 function caGetDefaultMediaIconUrl($ps_type, $pn_width, $pn_height, $pa_options=null) {
 	if (is_array($va_selected_size = caGetMediaIconForSize($ps_type, $pn_width, $pn_height, $pa_options))) {
 		$o_config = Configuration::load();
-		$o_icon_config = Configuration::load(__CA_CONF_DIR__.'/default_media_icons.conf');
+		$o_icon_config = Configuration::load('default_media_icons.conf');
 		$va_icons = $o_icon_config->getAssoc($ps_type);
 		return $o_icon_config->get('icon_folder_url').'/'.$va_icons[$va_selected_size['size']];
 	}
@@ -824,7 +822,7 @@ function caGetDefaultMediaIconUrl($ps_type, $pn_width, $pn_height, $pa_options=n
 function caGetDefaultMediaIconPath($ps_type, $pn_width, $pn_height, $pa_options=null) {
 	if (is_array($va_selected_size = caGetMediaIconForSize($ps_type, $pn_width, $pn_height, $pa_options))) {
 		$o_config = Configuration::load();
-		$o_icon_config = Configuration::load(__CA_CONF_DIR__.'/default_media_icons.conf');
+		$o_icon_config = Configuration::load('default_media_icons.conf');
 		$va_icons = $o_icon_config->getAssoc($ps_type);
 		return $o_icon_config->get('icon_folder_path').'/'.$va_icons[$va_selected_size['size']];
 	}
@@ -838,7 +836,7 @@ function caGetDefaultMediaIconPath($ps_type, $pn_width, $pn_height, $pa_options=
  */
 function caGetMediaIconForSize($ps_type, $pn_width, $pn_height, $pa_options=null) {
 	$o_config = Configuration::load();
-	$o_icon_config = Configuration::load(__CA_CONF_DIR__.'/default_media_icons.conf');
+	$o_icon_config = Configuration::load('default_media_icons.conf');
 
 	$vs_selected_size = null;
 	if (is_array($va_icons = $o_icon_config->getAssoc($ps_type))) {

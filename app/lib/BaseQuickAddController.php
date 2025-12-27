@@ -62,6 +62,11 @@ class BaseQuickAddController extends ActionController {
 		
 		$vn_subject_id = $t_subject->getPrimaryKey();
 		
+		$t_placement = ($placement_id = $this->request->getParameter('placement_id', pString)) ? ca_editor_ui_bundle_placements::findAsInstance($placement_id) : null;
+		
+		$default_type_id = $t_placement ? $t_placement->getSetting('defaultQuickaddType') : null;
+		if(is_array($default_type_id)) { $default_type_id = array_shift($default_type_id); }
+		
 		// table name and row_id from calling record (what we're quick-adding on)
 		// only set for ca_objects quick-adds
 		$vs_source = $this->request->getParameter('source', pString);
@@ -105,7 +110,7 @@ class BaseQuickAddController extends ActionController {
 		// Is record from correct source?
 		// 
 		$va_restrict_to_sources = null;
-		if ($t_subject->getAppConfig()->get('perform_source_access_checking')) {
+		if (caSourceAccessControlIsEnabled($t_subject)) {
 			$va_restrict_to_sources = caGetSourceRestrictionsForUser($this->ops_table_name, array('access' => $vn_subject_id ? __CA_BUNDLE_ACCESS_READONLY__ : __CA_BUNDLE_ACCESS_EDIT__));
 		
 			if (!$t_subject->get('source_id')) {
@@ -150,7 +155,7 @@ class BaseQuickAddController extends ActionController {
 					$vn_type_id = array_shift($va_tmp);
 				}
 				if (!$vn_type_id) {
-					$vn_type_id = $t_subject->getDefaultTypeID();
+					$vn_type_id = $default_type_id ?? $t_subject->getDefaultTypeID();
 				}
 			}
 		}
@@ -294,7 +299,7 @@ class BaseQuickAddController extends ActionController {
 			);
 			
 			$this->view->setVar('response', $va_response);
-			
+			$this->response->setContentType('application/json');
 			$this->render('quickadd_result_json.php');
 			return;
 		}
@@ -315,7 +320,7 @@ class BaseQuickAddController extends ActionController {
 		// Is record from correct source?
 		// 
 		$va_restrict_to_sources = null;
-		if ($t_subject->getAppConfig()->get('perform_source_access_checking')) {
+		if (caSourceAccessControlIsEnabled($t_subject)) {
 			if (is_array($va_restrict_to_sources = caGetSourceRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_EDIT__)))) {
 				if (
 					(!$t_subject->get('source_id'))
@@ -347,6 +352,7 @@ class BaseQuickAddController extends ActionController {
 			
 			$this->view->setVar('response', $va_response);
 			
+			$this->response->setContentType('application/json');
 			$this->render('quickadd_result_json.php');
 			return;
 		}
@@ -405,7 +411,7 @@ class BaseQuickAddController extends ActionController {
 				Session::setVar($this->ops_table_name.'_browse_last_id', $vn_subject_id);	// set last edited
 				
 				// Set ACL for newly created record
-				if ($t_subject->getAppConfig()->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($t_subject)) {
 					$t_subject->setACLUsers(array($this->request->getUserID() => __CA_ACL_EDIT_DELETE_ACCESS__));
 					$t_subject->setACLWorldAccess($t_subject->getAppConfig()->get('default_item_access_level'));
 				}
@@ -472,6 +478,7 @@ class BaseQuickAddController extends ActionController {
 		
 		$this->view->setVar('response', $va_response);
 		
+		$this->response->setContentType('application/json');
 		$this->render('quickadd_result_json.php');
 	}
 	# -------------------------------------------------------
@@ -485,7 +492,6 @@ class BaseQuickAddController extends ActionController {
 		// load required javascript
 		AssetLoadManager::register('bundleableEditor');
 		AssetLoadManager::register('imageScroller');
-		AssetLoadManager::register('ckeditor');
 		
 		$t_subject = Datamodel::getInstanceByTableName($this->ops_table_name);
 		
