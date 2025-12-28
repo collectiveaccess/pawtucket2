@@ -967,13 +967,14 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				break;
 		}
 		
+		if (!($t_instance = Datamodel::getInstance($ap['table_num'], true))) { return []; }
+		
 		// is field intrinsic? (dates, integer, numerics can be intrinsic)
 		if($ap['type'] === 'INTRINSIC') {
 			$field = explode('.', $ap['access_point']);
 			$field_name = $field[1];
 			$table = $field[0];
 			
-			if (!($t_instance = Datamodel::getInstance($table, true))) { return []; }
 			if(!$t_instance->hasField($field_name)) { return []; }
 			$fi = $t_instance->getFieldInfo($field_name);
 			
@@ -993,28 +994,28 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		$qinfo = null;
 		switch($ap['element_info']['datatype']) {
 	 		case __CA_ATTRIBUTE_VALUE_DATERANGE__:
-				$qinfo = $this->_queryForDateRangeAttribute(new DateRangeAttributeValue(), $ap, $text, $text_upper);
+				$qinfo = $this->_queryForDateRangeAttribute(new DateRangeAttributeValue(), $ap, $text, $text_upper, ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_TIMECODE__:
-				$qinfo = $this->_queryForNumericAttribute(new TimeCodeAttributeValue(), $ap, $text, $text_upper, 'value_decimal1');
+				$qinfo = $this->_queryForNumericAttribute(new TimeCodeAttributeValue(), $ap, $text, $text_upper, 'value_decimal1', ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_LENGTH__:
-				$qinfo = $this->_queryForNumericAttribute(new LengthAttributeValue(), $ap, $text, $text_upper, 'value_decimal1');
+				$qinfo = $this->_queryForNumericAttribute(new LengthAttributeValue(), $ap, $text, $text_upper, 'value_decimal1', ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_WEIGHT__:
-				$qinfo = $this->_queryForNumericAttribute(new WeightAttributeValue(), $ap, $text, $text_upper, 'value_decimal1');
+				$qinfo = $this->_queryForNumericAttribute(new WeightAttributeValue(), $ap, $text, $text_upper, 'value_decimal1', ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_INTEGER__:
-				$qinfo = $this->_queryForNumericAttribute(new NumericAttributeValue(), $ap, $text, $text_upper, 'value_integer1');
+				$qinfo = $this->_queryForNumericAttribute(new NumericAttributeValue(), $ap, $text, $text_upper, 'value_integer1', ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_NUMERIC__:
-				$qinfo = $this->_queryForNumericAttribute(new NumericAttributeValue(), $ap, $text, $text_upper, 'value_decimal1');
+				$qinfo = $this->_queryForNumericAttribute(new NumericAttributeValue(), $ap, $text, $text_upper, 'value_decimal1', ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_CURRENCY__:
-				$qinfo = $this->_queryForCurrencyAttribute(new CurrencyAttributeValue(), $ap, $text, $text_upper);
+				$qinfo = $this->_queryForCurrencyAttribute(new CurrencyAttributeValue(), $ap, $text, $text_upper, ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_GEOCODE__:
-				$qinfo = $this->_queryForGeocodeAttribute(new GeocodeAttributeValue(), $ap, $text, $text_upper);
+				$qinfo = $this->_queryForGeocodeAttribute(new GeocodeAttributeValue(), $ap, $text, $text_upper, ['t_subject' => $t_instance]);
 				break;
 		}
 		if(is_array($qinfo) && sizeof($qinfo)) {
@@ -1023,7 +1024,6 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				$qr_res = $this->db->query($qinfo['sql'], $params);
 				if($qr_res && ($qr_res->numRows() > 0)) { break; }
 			}
-			if(!$qr_res) { return null; }
 			
 			$row_ids = $this->_arrayFromDbResult($qr_res);
 			unset($ap['element_info']);
@@ -2059,7 +2059,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	/**
 	 *
 	 */
-	private function _queryForNumericAttribute($attrval, $ap, $text, $text_upper, $attr_field) {
+	private function _queryForNumericAttribute($attrval, $ap, $text, $text_upper, $attr_field, ?array $options=null) {
 		list($text, $modifier) = $this->parseModifier($text);
 		if (!is_array($parsed_value = $attrval->parseValue($text, $ap['element_info']))) {
 			return null;
@@ -2068,6 +2068,9 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if (!in_array($attr_field, ['value_integer1', 'value_decimal1'])) { 
 			throw new ApplicationException(_t('Invalid attribute field'));
 		}
+		
+		$t_subject = caGetOption('t_subject', $options, null);
+		
 		$parsed_value_end = $text_upper ? $attrval->parseValue($text_upper, $ap['element_info']) : null;
 				
 		if($ap['type'] === 'INTRINSIC') {
@@ -2121,22 +2124,34 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				break;
 		}
 		
+		$join_sql = $deleted_sql = '';
+		if($t_subject->hasField('deleted')) {
+			$t = $t_subject->tableName();
+			$t_pk = $t_subject->primaryKey();
+			$join_sql = " INNER JOIN {$t} AS t ON t.{$t_pk} = ca.row_id";
+			$deleted_sql = " AND (t.deleted = 0)";
+		}
+		
 		if($ap['type'] === 'INTRINSIC') {
+			if($delete_sql) { $deleted_sql = " AND (deleted = 0)"; }
 			$sql = "
 				SELECT {$pk} row_id, 1 boost
 				FROM {$table}
 				WHERE
 					{$sql_where}
+					{$deleted_sql}
 			";
 		} else {
 			$sql = "
 				SELECT ca.row_id, 1 boost
 				FROM ca_attribute_values cav
 				INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+				{$join_sql}
 				WHERE
 					(cav.element_id = {$ap['element_info']['element_id']}) AND (ca.table_num = ?)
 					AND
 					{$sql_where}
+					{$deleted_sql}
 			";
 		}
 		
@@ -2146,7 +2161,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	/**
 	 *
 	 */
-	private function _queryForCurrencyAttribute($attrval, $ap, $text, $text_upper) {
+	private function _queryForCurrencyAttribute($attrval, $ap, $text, $text_upper, ?array $options=null) {
 		list($text, $modifier) = $this->parseModifier($text);
 		if (!is_array($parsed_value = $attrval->parseValue($text, $ap['element_info']))) {
 			return null;
@@ -2156,6 +2171,8 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if (!$currency) { 
 			return null;	// no currency
 		}
+		
+		$t_subject = caGetOption('t_subject', $options, null);
 		
 		$parsed_value_end = $text_upper ? $attrval->parseValue($text_upper, $ap['element_info']) : null;
 		
@@ -2188,15 +2205,25 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				}
 				break;
 		}
+		
+		$join_sql = $deleted_sql = '';
+		if($t_subject->hasField('deleted')) {
+			$t = $t_subject->tableName();
+			$t_pk = $t_subject->primaryKey();
+			$join_sql = " INNER JOIN {$t} AS t ON t.{$t_pk} = ca.row_id";
+			$deleted_sql = " AND (t.deleted = 0)";
+		}
 
 		$sql = "
 			SELECT ca.row_id, 1 boost
 			FROM ca_attribute_values cav
 			INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+			{$join_sql}
 			WHERE
 				(cav.element_id = {$ap['element_info']['element_id']}) AND (ca.table_num = ?)
 				AND
 				{$sql_where}
+				{$deleted_sql}
 		";
 		
 		return ['sql' => $sql, 'params' => [$params]];
@@ -2205,18 +2232,24 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	/**
 	 *
 	 */
-	private function _queryForGeocodeAttribute($attrval, $ap, $text, $text_upper) {
+	private function _queryForGeocodeAttribute($attrval, $ap, $text, $text_upper, ?array $options) {
 		$upper_lat = $upper_long = $lower_lat = $lower_long = null;
 		if(!$text && $text_upper) {
 			$text = $text_upper;
 			$text_upper = null;
 		}
 		
+		$t_subject = caGetOption('t_subject', $options, null);
+		
 		$params = [];
 		$mode = null;
 		
 		if ($text) {
-			if(is_array($rewrites = $this->search_config->get('geocode_search_rewrites'))) {
+			if(
+				is_array($rewrites = $this->search_config->get('geocode_search_rewrites'))
+				&&
+				!preg_match("!^\[.*\]$!", $text)	// don't rewrite coordinates
+			) {
 				$rtext = $text;
 				$matched = false;
 				foreach($rewrites as $rcode => $rinfo) {
@@ -2240,6 +2273,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				$upper_lat = $parsed_values['max_latitude'];
 				$lower_long = $parsed_values['min_longitude'];
 				$upper_long = $parsed_values['max_longitude'];
+				$params[] = [$lower_lat, $upper_lat, $lower_long, $upper_long];
 			} else {
 				$parse_opts = ['returnBounds' => false];
 				switch($mode) {
@@ -2326,22 +2360,32 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			return [];
 		}
 		
-		$where_sql = '';
+		$sql_where = '';
 		
 		if (!is_null($upper_lat) && !is_null($upper_long)) {
-			$where_sql = "((cav.value_decimal1 >= ? AND cav.value_decimal1 <= ?) AND (cav.value_decimal2 >= ? AND cav.value_decimal2 <= ?))";
+			$sql_where = "((cav.value_decimal1 >= ? AND cav.value_decimal1 <= ?) AND (cav.value_decimal2 >= ? AND cav.value_decimal2 <= ?))";
 		} else {
 			throw new ApplicationException(_t('Upper lat/long coordinates must not be empty'));
+		}
+		
+		$join_sql = $deleted_sql = '';
+		if($t_subject->hasField('deleted')) {
+			$t = $t_subject->tableName();
+			$t_pk = $t_subject->primaryKey();
+			$join_sql = " INNER JOIN {$t} AS t ON t.{$t_pk} = ca.row_id";
+			$deleted_sql = " AND (t.deleted = 0)";
 		}
 		
 		$sql = "
 			SELECT ca.row_id, 1 boost
 			FROM ca_attribute_values cav
 			INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+			{$join_sql}
 			WHERE
 				(cav.element_id = {$ap['element_info']['element_id']}) AND (ca.table_num = ?)
 				AND
-				({$where_sql})
+				({$sql_where})
+				{$deleted_sql}
 		";
 		return ['sql' => $sql, 'params' => $params];
 	}
@@ -2349,13 +2393,15 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	/**
 	 *
 	 */
-	private function _queryForDateRangeAttribute($attrval, $ap, $text, $text_upper) {
+	private function _queryForDateRangeAttribute($attrval, $ap, $text, $text_upper, ?array $options=null) {
 		list($text, $modifier) = $this->parseModifier($text);
 		
 		if ($text_upper) { $text = "{$text} - {$text_upper}"; }
 		if (!is_array($parsed_value = $attrval->parseValue($text, $ap['element_info']))) {
 			return null;
 		}
+		
+		$t_subject = caGetOption('t_subject', $options, null);
 		
 		$dates = [
 			'start' => $parsed_value['value_decimal1'],
@@ -2426,22 +2472,34 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				break;
 		}
 		
+		$join_sql = $deleted_sql = '';
+		if($t_subject->hasField('deleted')) {
+			$t = $t_subject->tableName();
+			$t_pk = $t_subject->primaryKey();
+			$join_sql = " INNER JOIN {$t} AS t ON t.{$t_pk} = ca.row_id";
+			$deleted_sql = " AND (t.deleted = 0)";
+		}
+		
 		if($ap['type'] === 'INTRINSIC') {
+			if($delete_sql) { $deleted_sql = " AND (deleted = 0)"; }
 			$sql = "
 				SELECT {$pk} row_id, 1 boost
 				FROM {$table}
 				WHERE
 					{$sql_where}
+					{$deleted_sql}
 			";
 		} else {
 			$sql = "
 				SELECT ca.row_id, 1 boost
 				FROM ca_attribute_values cav
 				INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+				{$join_sql}
 				WHERE
 					(cav.element_id = {$ap['element_info']['element_id']}) AND (ca.table_num = ?)
 					AND
 					{$sql_where}
+					{$deleted_sql}
 			";
 		}
 		
