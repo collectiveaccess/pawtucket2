@@ -124,3 +124,9 @@ nav.navbar{
 		font-size:.9em;
 	}
 }
+
+/* Ensure leaflet area select selection box appears over map pins */
+div.leaflet-overlay-pane {
+	border: 1px solid red !important;
+	z-index: 1000 !important;
+}
