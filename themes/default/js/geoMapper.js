@@ -18,7 +18,7 @@ function makeMap(options) {
 	let map = L.map(options.id ?? 'map', { 
 		zoomControl: options.showZoom ?? true, 
 		attributionControl: false, 
-		selectArea: true,
+		selectArea: searchUrl ? true : false,
 		minZoom: options.minZoom ?? 1, 
 		maxZoom: options.maxZoom ?? 15 }
 	).setView([30, -74], options.zoom ?? 3);
@@ -27,10 +27,13 @@ function makeMap(options) {
 	let g = new L.featureGroup(); 
 	g.addTo(map);
 	
-	map.selectArea.setControlKey(true);
-	map.selectArea.setShiftKey(true);
+	if(searchUrl) {
+		map.selectArea.setControlKey(true);
+		map.selectArea.setShiftKey(true);
+	}
 
 	map.on("selectarea:selected", (e) => {
+		if(!searchUrl) { return; }
    		const b = e.bounds;
    		const bb =  b.getSouth() + ',' + b.getWest() + ' .. ' + b.getNorth() + ',' + b.getEast();
    		document.location = searchUrl + '?search_refine=' + encodeURIComponent('[' + bb + ']');
