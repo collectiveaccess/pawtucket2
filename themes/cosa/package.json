@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",
+    "baseline-browser-mapping": "^2.9.11",
     "css-loader": "^6.8.1",
     "file-loader": "^6.2.0",
     "postcss-loader": "^7.3.4",
