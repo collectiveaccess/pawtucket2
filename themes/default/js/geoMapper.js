@@ -1,11 +1,13 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import SelectArea from 'leaflet-area-select';
 
 const defaultTileServerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 	
 function makeMap(options) {
-	let id = options.id ?? 'map';
-	let mapElement = document.getElementById(id);
+	const id = options.id ?? 'map';
+	const searchUrl = options.searchUrl;
+	const mapElement = document.getElementById(id);
 
 	L.Icon.Default.mergeOptions({
 	  iconRetinaUrl: options.themePath + '/assets/markers/marker-icon-2x.png',
@@ -16,6 +18,7 @@ function makeMap(options) {
 	let map = L.map(options.id ?? 'map', { 
 		zoomControl: options.showZoom ?? true, 
 		attributionControl: false, 
+		selectArea: true,
 		minZoom: options.minZoom ?? 1, 
 		maxZoom: options.maxZoom ?? 15 }
 	).setView([30, -74], options.zoom ?? 3);
@@ -23,6 +26,15 @@ function makeMap(options) {
 	let b = L.tileLayer(options.tileServerUrl ?? defaultTileServerUrl , {noWrap: true}).addTo(map);	
 	let g = new L.featureGroup(); 
 	g.addTo(map);
+	
+	map.selectArea.setControlKey(true);
+	map.selectArea.setShiftKey(true);
+
+	map.on("selectarea:selected", (e) => {
+   		const b = e.bounds;
+   		const bb =  b.getSouth() + ',' + b.getWest() + ' .. ' + b.getNorth() + ',' + b.getEast();
+   		document.location = searchUrl + '?search_refine=' + encodeURIComponent('[' + bb + ']');
+	});
 	
 	let data = options.data;
 	if(data && (data.length > 0)) {
