@@ -61,7 +61,7 @@ function makeMap(options) {
 								htmx.ajax('GET', options['ajaxContentUrl'] + '?ids=' + c.ajaxContentIDs.join(';'), el);
 				
 								return el;
-							}, { minWidth: 400, maxWidth : 560, minHeight: 300 });
+							}, { minWidth: 400, maxWidth : 560, maxHeight: 300, keepInView: true, autoPan: true });
 				} else {
 					m.bindPopup(Object.values(data[index].info).join("<br>")); 
 				}
@@ -71,9 +71,36 @@ function makeMap(options) {
 	} else {
 		mapElement.style.display = 'none';
 	}
-	let bounds = g.getBounds();
+	const bounds = g.getBounds();
 	if (bounds.isValid()) { map.fitBounds(bounds); };
+	
+	// Current user location
+	map.on('locationfound', function(e) {
+		const radius = e.accuracy;
+		L.circle(e.latlng, radius, {'color': '#cc0000'}).addTo(map);
+		map.stopLocate();
+		if(bounds.intersects(e.bounds)) {
+			map.setView(e.latlng, 16);
+		}
+	});
+	
+	map.on('locationerror', function(e) {
+		console.log("Geolocation error", e.message);
+	});
+	
+	// Force popup into view
+	map.on('popupopen', function(e) {
+		const i = setInterval(function() {
+			map.fitBounds(map.getBounds());
+			clearInterval(i);
+		}, 500);
+	});
+	
+	map.locate({setView: false, maxZoom: 16, watch: true});
+	
 	if(options.zoom) { map.setZoom(options.zoom); }
+	
+	map.invalidateSize();
 }
 
 
