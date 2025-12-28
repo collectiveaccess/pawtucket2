@@ -60,11 +60,11 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 <?php
 	if($qr_res->numHits() > 1){
 ?>
-		<form role="search" id="searchWithin" class="pt-1 pt-md-0" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+		<form role="search" id="searchWithin" class="pt-1 pt-md-0" action="<?= caNavUrl($this->request, '*', 'Search', '*'); ?>">
 			<div class="input-group pt-3 px-3 <?= ($table != "ca_objects") ? "pb-3" : ""; ?>">
 				<label for="search-within" class="form-label visually-hidden">Search within results</label>
-				<input name="search_refine" id="search-within" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?php print _t("Search within results"); ?>" aria-label="<?php print _t("Search within"); ?>">
-				<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+				<input name="search_refine" id="search-within" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?= _t("Search within results"); ?>" aria-label="<?= _t("Search within"); ?>">
+				<input type="hidden" name="key" value="<?= $vs_browse_key; ?>">
 				<button type="submit" class="btn rounded-0 bg-white" aria-label="search submit"><i class="bi bi-search"></i></button>
 			</div>
 <?php
@@ -99,11 +99,11 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 	if($table == "ca_objects"){
 ?>
 		<H2 class='fs-4 px-3 py-2'><?= _t("Search by location"); ?></H2>
-			<form role="search" id="searchLocation" class="pt-1 pt-md-0" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+			<form role="search" id="searchLocation" class="pt-1 pt-md-0" action="<?= caNavUrl($this->request, '*', 'Search', '*'); ?>">
 				<div class="input-group px-3 pb-3">
 					<label for="search-location" class="form-label visually-hidden">Search by location</label>
-					<input name="search_location" id="search-location" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?php print _t("Enter address or zipcode"); ?>" aria-label="<?php print _t("Enter address or zipcode"); ?>">
-					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+					<input name="search_location" id="search-location" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?= _t("Enter address or zipcode"); ?>" aria-label="<?= _t("Enter address or zipcode"); ?>">
+					<input type="hidden" name="key" value="<?= $vs_browse_key; ?>">
 					<button type="submit" class="btn rounded-0 bg-white" aria-label="search submit"><i class="bi bi-search"></i></button>
 				</div>
 			</form>
@@ -127,8 +127,8 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 				print "<div id='".$vs_facet_name."' class='accordion-collapse collapse' aria-labelledby='heading".$vs_facet_name."' data-bs-parent='#browseRefineFacets'>
 					<div class='accordion-body'>";				
 ?>
-					<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-					<div hx-target="#bHierarchyList_<?php print $vs_facet_name; ?>" hx-trigger="load" hx-get="<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key)); ?>"  ></div>
+					<div id='bHierarchyList_<?= $vs_facet_name; ?>'><?= caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+					<div hx-target="#bHierarchyList_<?= $vs_facet_name; ?>" hx-trigger="load" hx-get="<?= caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key)); ?>"  ></div>
 				
 <?php
 				print "</div></div>";
