@@ -1018,9 +1018,12 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				break;
 		}
 		if(is_array($qinfo) && sizeof($qinfo)) {
-			$params = $qinfo['params'];
-			if($ap['type'] !== 'INTRINSIC') { array_unshift($params, $ap['table_num']); }
-			$qr_res = $this->db->query($qinfo['sql'], $params);
+			foreach($qinfo['params'] as $params) {
+				if($ap['type'] !== 'INTRINSIC') { array_unshift($params, $ap['table_num']); }
+				$qr_res = $this->db->query($qinfo['sql'], $params);
+				if($qr_res && ($qr_res->numRows() > 0)) { break; }
+			}
+			if(!$qr_res) { return null; }
 			
 			$row_ids = $this->_arrayFromDbResult($qr_res);
 			unset($ap['element_info']);
@@ -2137,7 +2140,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			";
 		}
 		
-		return ['sql' => $sql, 'params' => $params];
+		return ['sql' => $sql, 'params' => [$params]];
 	}
 	# -------------------------------------------------------
 	/**
@@ -2196,7 +2199,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				{$sql_where}
 		";
 		
-		return ['sql' => $sql, 'params' => $params];
+		return ['sql' => $sql, 'params' => [$params]];
 	}
 	# -------------------------------------------------------
 	/**
@@ -2208,14 +2211,43 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			$text = $text_upper;
 			$text_upper = null;
 		}
+		
+		$params = [];
+		$mode = null;
+		
 		if ($text) {
+			if(is_array($rewrites = $this->search_config->get('geocode_search_rewrites'))) {
+				$rtext = $text;
+				$matched = false;
+				foreach($rewrites as $rcode => $rinfo) {
+					if(!is_array($regexes = $rinfo['regexes'] ?? null)) { continue; }
+					foreach($regexes as $match => $repl) {
+						$rtext = @preg_replace("{$match}", "{$repl}", $rtext);
+						if(is_null($rtext)) { continue; }
+						if($rtext !== $text) { $matched = true; }
+					}
+					
+					if($matched) { 
+						$mode = $rinfo['mode'] ?? null;
+						break;
+					}
+				}
+				$text = $rtext;
+			}
+			
 			if(is_array($parsed_values = caParseGISSearch($text))) {
 				$lower_lat = $parsed_values['min_latitude'];
 				$upper_lat = $parsed_values['max_latitude'];
 				$lower_long = $parsed_values['min_longitude'];
 				$upper_long = $parsed_values['max_longitude'];
 			} else {
-				if (!is_array($parsed_value = $attrval->parseValue($text, $ap['element_info'], ['returnBounds' => true]))) {
+				$parse_opts = ['returnBounds' => false];
+				switch($mode) {
+					case 'postcode':
+						$parse_opts['geocoderType'] = 'postcode';
+						break;
+				}
+				if (!is_array($parsed_value = $attrval->parseValue($text, $ap['element_info'], $parse_opts))) {
 					return null;
 				}
 				
@@ -2229,20 +2261,45 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					$lower_lat = (float)$parsed_value['value_decimal1'];
 					$lower_long = (float)$parsed_value['value_decimal2'];
 				}
+				
+				$utype = $parsed_value['type'] ?? null;
+				$radius_by_type =  $this->search_config->get('geocode_search_radius_by_type');
+				if(!is_array($default_search_radius = $this->search_config->getList('geocode_search_default_radius')) || !sizeof($default_search_radius)) {
+					$default_search_radius = ["500m"];
+				}
 			
-				$default_search_radius = $this->search_config->get('geocode_search_default_radius') ?: "500m";
+				if(isset($radius_by_type[$utype])) {
+					$default_search_radius = is_array($radius_by_type[$utype]) ? $radius_by_type[$utype] : [$radius_by_type[$utype]];
+				}
 				if($text_upper) {
-					$parsed_value = $attrval->parseValue($text_upper, $ap['element_info'], ['returnBounds' => true]);
+					$parsed_value = $attrval->parseValue($text_upper, $ap['element_info'], $parse_opts);
 					$upper_lat = (float)$parsed_value['value_decimal1'];
 					$upper_long = (float)$parsed_value['value_decimal2'];
-				} elseif((!$upper_lat || !$upper_long) && ($parsed_values = caParseGISSearch("[{$lower_lat},{$lower_long} ~ {$default_search_radius}]"))) {
-					$lower_lat = $parsed_values['min_latitude'];
-					$upper_lat = $parsed_values['max_latitude'];
-					$lower_long = $parsed_values['min_longitude'];
-					$upper_long = $parsed_values['max_longitude'];
+				} elseif(!$upper_lat || !$upper_long) {
+					foreach($default_search_radius as $radius) {
+						$parsed_values = caParseGISSearch("[{$lower_lat},{$lower_long} ~ {$radius}]");
+						$lower_lat = $parsed_values['min_latitude'];
+						$upper_lat = $parsed_values['max_latitude'];
+						$lower_long = $parsed_values['min_longitude'];
+						$upper_long = $parsed_values['max_longitude'];
+						
+						// MySQL BETWEEN always wants the lower value first ... BETWEEN 5 AND 3 wouldn't match 4 ... So we swap the values if necessary
+						if($upper_lat < $lower_lat) {
+							$tmp = $upper_lat;
+							$upper_lat = $lower_lat;
+							$lower_lat = $tmp;
+						}
+						if($upper_long < $lower_long) {
+							$tmp = $upper_long;
+							$upper_long = $lower_long;
+							$lower_long = $tmp;
+						}
+						
+						$params[] = [$lower_lat, $upper_lat, $lower_long, $upper_long];
+					}
 				}
 				
-				if(!$upper_lat || !$upper_long) {
+				if(!sizeof($params)) {
 					$upper_lat = $lower_lat;
 					$upper_long = $lower_long;
 					
@@ -2250,30 +2307,29 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					$upper_long += .01;
 					$lower_lat -= .01;
 					$lower_long -= .01;
-				}
-			
-				// MySQL BETWEEN always wants the lower value first ... BETWEEN 5 AND 3 wouldn't match 4 ... So we swap the values if necessary
-				if($upper_lat < $lower_lat) {
-					$tmp = $upper_lat;
-					$upper_lat = $lower_lat;
-					$lower_lat = $tmp;
-				}
-				if($upper_long < $lower_long) {
-					$tmp = $upper_long;
-					$upper_long = $lower_long;
-					$lower_long = $tmp;
+					
+					// MySQL BETWEEN always wants the lower value first ... BETWEEN 5 AND 3 wouldn't match 4 ... So we swap the values if necessary
+					if($upper_lat < $lower_lat) {
+						$tmp = $upper_lat;
+						$upper_lat = $lower_lat;
+						$lower_lat = $tmp;
+					}
+					if($upper_long < $lower_long) {
+						$tmp = $upper_long;
+						$upper_long = $lower_long;
+						$lower_long = $tmp;
+					}
+					$params[] = [$lower_lat, $upper_lat, $lower_long, $upper_long];
 				}
 			}
 		} else {
 			return [];
 		}
 		
-		$params = [];
 		$where_sql = '';
 		
 		if (!is_null($upper_lat) && !is_null($upper_long)) {
 			$where_sql = "((cav.value_decimal1 >= ? AND cav.value_decimal1 <= ?) AND (cav.value_decimal2 >= ? AND cav.value_decimal2 <= ?))";
-			$params = [$lower_lat, $upper_lat, $lower_long, $upper_long];
 		} else {
 			throw new ApplicationException(_t('Upper lat/long coordinates must not be empty'));
 		}
@@ -2287,7 +2343,6 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				AND
 				({$where_sql})
 		";
-		print $sql; print_R($params);
 		return ['sql' => $sql, 'params' => $params];
 	}
 	# -------------------------------------------------------
@@ -2390,7 +2445,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			";
 		}
 		
-		return ['sql' => $sql, 'params' => $params];
+		return ['sql' => $sql, 'params' => [$params]];
 	}
 	# -------------------------------------------------------
 	/**

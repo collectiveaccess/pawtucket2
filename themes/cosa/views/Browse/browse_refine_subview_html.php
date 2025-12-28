@@ -102,7 +102,8 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 			<form role="search" id="searchLocation" class="pt-1 pt-md-0" action="<?= caNavUrl($this->request, '*', 'Search', '*'); ?>">
 				<div class="input-group px-3 pb-3">
 					<label for="search-location" class="form-label visually-hidden">Search by location</label>
-					<input name="search_location" id="search-location" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?= _t("Enter address or zipcode"); ?>" aria-label="<?= _t("Enter address or zipcode"); ?>">
+					<input name="search_refine" id="search-location" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?= _t("Enter address or zipcode"); ?>" aria-label="<?= _t("Enter address or zipcode"); ?>">
+					<input name="search_refine_prefix" id="search-location-prefix" type="hidden" value="Address">
 					<input type="hidden" name="key" value="<?= $vs_browse_key; ?>">
 					<button type="submit" class="btn rounded-0 bg-white" aria-label="search submit"><i class="bi bi-search"></i></button>
 				</div>
