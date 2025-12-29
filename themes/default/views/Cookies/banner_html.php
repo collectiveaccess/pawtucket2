@@ -29,7 +29,7 @@ if(CookieOptionsManager::showBanner()) {
 	$config = caGetCookiesConfig();
 	$text = $this->getVar($config->get("cookiesBannerGlobalValue")) ?? $config->get("cookiesBannerText");
 ?>
-	<div id="cookieNotice" role="dialog" aria-labelledby="Cookie Window" class="fixed-bottom w-100 bg-white p-4 shadow">
+	<div id="cookieNotice" role="dialog" aria-label="Cookie Notice" class="fixed-bottom w-100 bg-white p-4 shadow">
 		<div class="row justify-content-center">
 			<div class="col-sm-12 col-md-12 col-lg-9 col-xl-6">
 				<div class="fw-bold fs-4">

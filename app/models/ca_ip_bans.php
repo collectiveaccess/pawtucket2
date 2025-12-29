@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2019-2023 Whirl-i-Gig
+ * Copyright 2019-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -54,6 +54,13 @@ BaseModel::$s_ca_models_definitions['ca_ip_bans'] = array(
 				'DEFAULT' => '',
 				'LABEL' => _t('Reason'), 'DESCRIPTION' => _t('Reason for ban'),
 				'BOUNDS_LENGTH' => array(0,255)
+		),
+		'details' => array(
+				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
+				'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
+				'IS_NULL' => false, 
+				'DEFAULT' => '',
+				'LABEL' => _t('Details'), 'DESCRIPTION' => _t('Details for ban')
 		),
 		'created_on' => array(
 				'FIELD_TYPE' => FT_TIMESTAMP, 'DISPLAY_TYPE' => DT_FIELD, 
@@ -165,13 +172,13 @@ class ca_ip_bans extends BaseModel {
 	 *
 	 */
 	static public function init() {
-		if(!self::$config) { self::$config = Configuration::load("ban_hammer.conf"); }
+		if(!self::$config) { self::$config = Configuration::load('ban_hammer.conf'); }
 	}
 	# ------------------------------------------------------
 	/**
 	 *
 	 */
-	static public function ban(RequestHTTP $request, ?int $ttl=null, ?string $reason=null) {
+	static public function ban(RequestHTTP $request, ?int $ttl=null, ?string $reason=null, $details=null) {
 		self::init();
 		if (!($ip = RequestHTTP::ip())) { return false; }
 		if (self::isWhitelisted()) { return false; } 
@@ -180,6 +187,7 @@ class ca_ip_bans extends BaseModel {
 		$ban = new ca_ip_bans();
 		$ban->set('ip_addr', $ip);
 		$ban->set('reason', $reason);
+		$ban->set('details', json_encode($details));
 		$ban->set('expires_on', $ttl ? date('c', time() + $ttl) : null);
 		return $ban->insert();
 	}
@@ -193,10 +201,17 @@ class ca_ip_bans extends BaseModel {
 		if(!($entries = self::find(['ip_addr' => $ip, 'expires_on' => null], ['returnAs' => 'array']))) {
 			$entries = self::find(['ip_addr' => $ip, 'expires_on' => ['>', time()]], ['returnAs' => 'array']);
 		}
+		
+		$log = self::$config->get('logging') ? caGetLogger(['logName' => 'ban']) : null;
 		if(is_array($entries) && (sizeof($entries) > 0)) {
 			if($reason) {
-				return (($entries['reason'] ?? null) === $reason);
+				$ret = (bool)sizeof(array_filter($entries, function($v) use ($reason) {
+					$v['reason'] === $reason;
+				}));
+				return $ret;
 			}
+			$entry = array_shift($entries);
+			if($log && (preg_match('!auto$!i', $entry['reason']))) { $log->logInfo(_t('[BanHammer::IPAddress] Banned ip %1 because address is present in ip ban feed', $ip)); }
 			return true;
 		}
 		return false;

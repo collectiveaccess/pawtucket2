@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
-
 header('Content-type: application/json');
 
 $base_resp = $this->getVar('dontEmitOK') ? [] : ["ok" => !is_null($this->getVar('ok')) ? (bool)$this->getVar('ok') : true];

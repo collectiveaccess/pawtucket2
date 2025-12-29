@@ -45,6 +45,9 @@ $in_lightboxes = $this->getVar('inLightboxes') ?? [];
 $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
 ]);
+MetaTagManager::addMeta("og:description", $t_object->get("ca_objects.description_w_type.description"));
+MetaTagManager::addMeta("og:title", $t_object->get("ca_objects.preferred_labels.name"));
+MetaTagManager::addMeta("og:image", $t_object->getWithTemplate("^ca_object_representations.media.large.url", array("checkAccess" => $access_values)));		
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
@@ -118,10 +121,10 @@ if($show_nav){
 					</ifdef>
 					<ifcount restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer" code="ca_entities" min="1" max="1"><dt>Creator</dt></ifcount>
 					<ifcount restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer" code="ca_entities" min="2"><dt>Creators</dt></ifcount>
-					<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer"><dd>^ca_entities.preferred_labels (^relationship_typename)</dd></unit>
+					<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer"><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
 					<ifcount restrictToRelationshipTypes="actor,animator,audio_engineer,author,broadcast_engineer,camera_assistant,camera_operator,cinematographer,composer,contributing_artist,editor,engineer,filmmaker,interviewee,interviewer,musician,narrator,performer,recording_engineer,sound_mixer,subject,writer,publisher" code="ca_entities" min="1" max="1"><dt>Contributor</dt></ifcount>
 					<ifcount restrictToRelationshipTypes="actor,animator,audio_engineer,author,broadcast_engineer,camera_assistant,camera_operator,cinematographer,composer,contributing_artist,editor,engineer,filmmaker,interviewee,interviewer,musician,narrator,performer,recording_engineer,sound_mixer,subject,writer,publisher" code="ca_entities" min="2"><dt>Contributors</dt></ifcount>
-					<unit relativeTo="ca_entities.related" delimiter="" restrictToRelationshipTypes="actor,animator,audio_engineer,author,broadcast_engineer,camera_assistant,camera_operator,cinematographer,composer,contributing_artist,editor,engineer,filmmaker,interviewee,interviewer,musician,narrator,performer,recording_engineer,sound_mixer,subject,writer,publisher"><dd>^ca_entities.preferred_labels (^relationship_typename)</dd></unit>
+					<unit relativeTo="ca_entities.related" delimiter="" restrictToRelationshipTypes="actor,animator,audio_engineer,author,broadcast_engineer,camera_assistant,camera_operator,cinematographer,composer,contributing_artist,editor,engineer,filmmaker,interviewee,interviewer,musician,narrator,performer,recording_engineer,sound_mixer,subject,writer,publisher"><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
 					<ifdef code="ca_objects.duration"><dt>Duration</dt><dd>^ca_objects.duration</dd></ifdef>
 					<ifdef code="ca_objects.media_type"><dt>Media Type</dt><dd>^ca_objects.media_type</dd></ifdef>
 					<ifdef code="ca_objects.av_format_Hierachical"><dt>Physical Format</dt><dd>^ca_objects.av_format_Hierachical</dd></ifdef>
@@ -221,9 +224,12 @@ if($show_nav){
 					<ifcount code="ca_collections" unique="1"  min="1" max="1"><dt>Related Collection</dt></ifcount>
 					<ifcount code="ca_collections" unique="1"  min="2"><dt>Related Collections</dt></ifcount>
 					<unit unique="1" relativeTo="ca_collections" delimiter=""><dd><l>^ca_collections.preferred_labels.name</l></dd></unit>						
-					<ifcount code="ca_occurrences" min="1" max="1"><dt>Related Work</dt></ifcount>
-					<ifcount code="ca_occurrences" min="2"><dt>Related Works</dt></ifcount>
-					<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>		
+					<ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="work"><dt>Related Work</dt></ifcount>
+					<ifcount code="ca_occurrences" min="2" restrictToTypes="work"><dt>Related Works</dt></ifcount>
+					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="work"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>		
+					<ifcount code="ca_occurrences" min="1" max="1" restrictToTypes="project"><dt>Related Project</dt></ifcount>
+					<ifcount code="ca_occurrences" min="2" restrictToTypes="project"><dt>Related Projects</dt></ifcount>
+					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="project"><dd><l>^ca_occurrences.preferred_labels</l></dd></unit>		
 					<ifcount code="ca_places" min="1" max="1"><dt>Related Place</dt></ifcount>
 					<ifcount code="ca_places" min="2"><dt>Related Places</dt></ifcount>
 					<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l></dd></unit>

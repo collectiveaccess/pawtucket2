@@ -93,9 +93,10 @@ if($pn_id && $t_item->getPrimaryKey()){
 ?>
 			<select class="form-select<?= (($va_errors["inquiry_type"]) ? " is-invalid" : ""); ?>" id="inquiry_type" name="inquiry_type">
 				<option value="">Choose an option</option>
-				<option value="Request access"<?php print ($inquiry_type == "Request access") ? " selected" : ""; ?>>Request access</option>
-				<option value="Request media"<?php print ($inquiry_type == "Request media") ? " selected" : ""; ?>>Request media</option>
-				<option value="General inquiry"<?php print ($inquiry_type == "General inquiry") ? " selected" : ""; ?>>General inquiry</option>
+				<option value="Research request"<?php print ($inquiry_type == "Research request") ? " selected" : ""; ?>>Research request</option>
+				<option value="Rights or licensing inquiry"<?php print ($inquiry_type == "Rights or licensing inquiry") ? " selected" : ""; ?>>Rights or licensing inquiry</option>
+				<option value="Report a technical issue"<?php print ($inquiry_type == "Report a technical issue") ? " selected" : ""; ?>>Report a technical issue</option>
+				<option value="Other"<?php print ($inquiry_type == "Other") ? " selected" : ""; ?>>Other</option>
 			</select>
 		</div><!-- end col -->
 <?php

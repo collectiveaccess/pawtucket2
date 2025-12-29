@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2024 Whirl-i-Gig
+ * Copyright 2014-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -57,7 +57,13 @@ if($this->request->isLoggedIn()){
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
-	
+<?php
+if(in_array($this->request->getController(), ['Search', 'Browse'], true)) {
+?>
+	<link rel="canonical" href="<?= caNavUrl($this->request, '', '*', '*'); ?>">
+<?php
+}
+?>
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
 	<script>
@@ -82,7 +88,7 @@ if($this->request->isLoggedIn()){
 						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
-						<a href="https://archives.sva.edu/blog/?autoscroll=0" class="nav-link"><?= _t('Blog'); ?></a>
+						<a href="https://archives-blog.sva.edu/" class="nav-link"><?= _t('Blog'); ?></a>
 					</li>
 <?php
 					if($user_links){

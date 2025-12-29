@@ -25,7 +25,7 @@
 				<div class="row">
 					<div class='col-sm-12 mt-4 pt-2'><h2 class="fs-3"><?php print $qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"); ?></h2><hr>
 	<?php
-					if($this->getVar("sva_collection_message") && (strpos($qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"), "Visual") !== false)){
+					if($this->getVar("sva_collection_message") && (strpos($qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"), "SVA") !== false)){
 						print "<div class='mb-3'>".$this->getVar("sva_collection_message")."</div>";
 					}
 					if($this->getVar("glaser_collection_message") && (strpos($qr_archives->getWithTemplate("^ca_collections.preferred_labels.name"), "Glaser") !== false)){

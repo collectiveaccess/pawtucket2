@@ -38,6 +38,10 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_item->get('ca_occurrences.occurrence_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+MetaTagManager::addMeta("og:description", $t_item->get("ca_occurrences.description_w_type.description"));
+MetaTagManager::addMeta("og:title", $t_item->get("ca_occurrences.preferred_labels.name"));
+MetaTagManager::addMeta("og:image", $t_item->getWithTemplate("^ca_object_representations.media.large.url", array("checkAccess" => $access_values)));		
+
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
@@ -124,18 +128,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 			</dl>					
 		</div>}}}
 	</div>
-{{{<ifcount code="ca_collections" min="1">
-	<dl class="row">
-		<dt class="col-12 mt-3 mb-2"><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-		<unit relativeTo="ca_collections" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_collections.preferred_labels</l></dd></unit>
-	</dl>
-</ifcount>}}}
-{{{<ifcount code="ca_occurrences.related" restrictToType="work" min="1">
-	<dl class="row">
-		<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences.related" restrictToType="work" min="1" max="1"><?= _t('Related Work'); ?></ifcount><ifcount code="ca_occurrences.related" restrictToType="work" min="2"><?= _t('Related Works'); ?></ifcount></dt>
-		<unit relativeTo="ca_occurrences.related" restrictToType="work" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels</l></dd></unit>
-	</dl>
-</ifcount>}}}
 {{{<ifcount code="ca_occurrences.children" min="1">
 	<div class="row">
 		<div class="col"><h2>Projects</h2><hr></div>
@@ -183,3 +175,9 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		
 	}
 ?>
+{{{<ifcount code="ca_collections" min="1">
+	<dl class="row">
+		<dt class="col-12 mt-3 mb-2"><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
+		<unit relativeTo="ca_collections" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_collections.preferred_labels</l></dd></unit>
+	</dl>
+</ifcount>}}}

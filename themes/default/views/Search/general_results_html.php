@@ -43,5 +43,9 @@ if ($result_count > 0) {
 <?php
 	} 
 } else {
-	print "<H1>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H1>";
+	if($search = caUcFirstUTF8Safe($this->getVar('search'))){
+		print "<H1>"._t("Your search for %1 returned no results", $search)."</H1>";
+	}else{
+		print "<H1>"._t("Enter a search term")."</H1>";
+	}
 }

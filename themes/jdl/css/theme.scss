@@ -1,0 +1,168 @@
+$primary: #00a3e0;
+@font-face {
+  font-family:Gotham-Book;
+  src:url("fonts/Gotham-Book.otf") format("opentype");
+}
+@font-face {
+  font-family:Gotham-Medium;
+  src:url("fonts/Gotham-Medium.otf") format("opentype");
+}
+.Gotham-Book{
+	font-family: Gotham-Book;
+}
+.form-control{
+	padding:.5rem .75rem;
+	font-size: 1.3rem;
+	border-color:#8d8179;
+}
+H1, H2, H3, H4, H5, H6{
+	text-transform:uppercase;
+}
+.bg-darkblue, .bg-lightblue, .bg-lightgreen, .bg-darkgreen, .bg-orange, .bg-purple{
+	color:#FFF;
+	a{
+		color:#FFF;
+		text-decoration:none;
+	}
+}
+.bg-darkblue {
+	background: #00263e;
+	a:hover{
+		color: #00a3e0;
+	}
+}
+.bg-lightblue {
+  background: #00a3e0;
+  	a:hover{
+		color: #00263e;
+	}
+}
+.bg-lightgreen {
+  background: #7dcd77;
+  	a:hover{
+		color: #208776;
+	}
+}
+.bg-darkgreen {
+  background: #208776;
+  	a:hover{
+		color: #7dcd77;
+	}
+}
+.bg-orange {
+  background: #faad5c;
+  	a:hover{
+		color: #262626;
+	}
+}
+.bg-purple {
+  background: #825aa4;
+  	a:hover{
+		color: #fbf262;
+	}
+}
+/* ----------- nav -------------- */
+.navbar{
+	.navbar-brand{
+		width:150px;
+	}
+	@media(min-width:992px){
+		.navbar-brand{
+			width:253px;
+		}
+	}
+	.navbar-nav{
+		.nav-item{
+			.nav-link{
+				text-transform:uppercase;
+				letter-spacing: .5px;
+			}
+			@media(max-width:992px){
+				.nav-link{
+					padding:10px;
+				}
+			}
+			
+		}
+		.nav-item.dropdown{
+			.nav-link.show{
+				color: $primary;
+			}
+			.nav-link.show.active{
+				color: #FFFFFF;
+			}
+		}
+	}
+}
+/* ----------- btn -------------- */
+.btn-primary{
+	color:#FFF;
+}
+#searchWithin{
+	button{
+		color:#000;
+	}
+}
+/* ----------- footer -------------- */
+footer{
+	/*.container-xl{
+		background: url("../assets/graphics/bkg-footer.jpg") bottom right no-repeat scroll;
+	}*/
+	@media(max-width:991px){
+		.border-start{
+			border:none;
+		}
+	}
+}
+/* ----------- front --------------- */
+.parallax {
+    position: relative;
+    background-image: url("../assets/graphics/Large_Hero_Image.jpg");
+
+    /* Full height */
+    height: 80vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/Large_Hero_Image.jpg");
+    }
+    .divide{
+    	width:170px;
+    }
+}
+.hpHero{
+	height:500px;
+}
+.hpExplore{
+	.hpExploreBlock{
+		min-height:360px;
+		img{
+			height:250px;
+		}
+		a:hover{
+			color: $primary !important;
+		}
+	}
+}
+.hpNewsCollections{
+	@media (max-width: 768px) {
+		.border-start {
+			border: none !important;
+		}
+	}
+}
+/* ----------- Detail --------------- */
+.detail{
+	H1{
+		text-transform:none;
+		font-size:1.6rem;
+	}
+	dd{
+		font-family: Gotham-Book;
+	}
+}

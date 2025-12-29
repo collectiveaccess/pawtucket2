@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2024 Whirl-i-Gig
+ * Copyright 2008-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -484,6 +484,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		
 		$pb_omit_root = caGetOption('omitRoot', $pa_options, false);
 		$vb_enabled_only = caGetOption('enabledOnly', $pa_options, false);
+		
 		$filter_expr = caGetOption('filterExpression', $pa_options, null);
 		
 		$pa_check_access = caGetOption('checkAccess', $pa_options, null); 
@@ -1360,7 +1361,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 * Convert list code to list_id
 	 */
 	private function _getListID($pm_list_name_or_id) {
-		return ca_lists::getListID($pm_list_name_or_id, array('transaction' => $this->getTransaction()));
+		return ca_lists::getListID($pm_list_name_or_id, ['transaction' => $this->getTransaction()]);
 	}
 	# ------------------------------------------------------
 	/**
@@ -1373,7 +1374,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 * @return int list for the specified list, or null if the list does not exist
 	 */
 	static function getListID($pm_list_name_or_id, $pa_options=null) {
-	    $vs_cache_key = caMakeCacheKeyFromOptions($pa_options ?? [], $pm_list_name_or_id);
+	    $vs_cache_key = caMakeCacheKeyFromOptions($pa_options ?? [], $pm_list_name_or_id ?? '');
 		if (ca_lists::$s_list_id_cache[$vs_cache_key] ?? null) {
 			return ca_lists::$s_list_id_cache[$vs_cache_key];
 		}
@@ -1836,6 +1837,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 						jQuery(document).ready(function() {
 							jQuery('#{$ps_name}_autocomplete').autocomplete({
 									source: '{$vs_url}', minLength: 3, delay: 800, html: true,
+									position: { my: 'left top'. at: 'left bottom', collision: 'fit flip' },
 									select: function(event, ui) {
 										
 										if (parseInt(ui.item.id) > 0) {
@@ -1945,6 +1947,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 					{
 						source: '".caNavUrl($pa_options['request'], 'lookup', 'ListItem', 'Get', array('list' => ca_lists::getListCode($vn_list_id), 'noSymbols' => 1, 'noInline' => 1))."', 
 						minLength: 3, delay: 800,
+						position: { my: 'left top', at: 'left bottom', collision: 'fit flip' },
 						select: function(event, ui) {
 							{$ps_name}_hierarchyBrowser{n}.setUpHierarchy(ui.item.id);	// jump browser to selected item
 						}

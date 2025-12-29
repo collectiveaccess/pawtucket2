@@ -129,12 +129,28 @@ if($show_nav){
 								<dt><?= _t('Dimensions'); ?></dt>
 								<dd><unit delimiter="<br>">^ca_objects.dimensions.display_dimensions (^ca_objects.dimensions.Type)</unit></dd>
 							</ifdef>
+<?php
+	$credits = $t_object->get('ca_objects.credit_line', ['returnWithStructure' => true]);
+	if(is_array($credits)) { $credits = array_shift($credits); }
 
-							<ifdef code="ca_objects.credit_line.credit_text">
-								<dt><?= _t('Credit Line'); ?></dt>
-								<dd>^ca_objects.credit_line.credit_text</dd>
-							</ifdef>
-
+	$credits = array_filter($credits, function($v) {
+		return 
+			(!($v['credit_type'] ?? null) || (($v['credit_type'] == 542)))
+			&&
+			(!($v['credit_approved'] ?? null) || (($v['credit_approved'] == 752)))
+		;
+	});
+	if(sizeof($credits)) {
+?>
+		<dt><?= _t('Credit Line'); ?></dt>
+<?php
+		foreach($credits as $credit) {
+?>
+			<dd><?= $credit['credit_text']; ?></dd>
+<?php
+		}
+	}
+?>
 							<ifdef code="ca_objects.idno">
 								<dt><?= _t('Accession Number'); ?></dt>
 								<dd>^ca_objects.idno</dd>

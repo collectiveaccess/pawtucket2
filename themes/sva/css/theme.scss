@@ -145,7 +145,12 @@ button.bg-body-tertiary:hover, button.bg-body-tertiary:focus, button.bg-body-ter
 .parallax.hero6 {
 	background-image: url("../assets/graphics/Hero-JazzOdyssey-Vol-II-Chicago-1964.jpg");
 }
-
+@media (max-device-width:1024px) {
+    /* ipad and mobile disable background-attachment: fixed; fallback to no parallax so at least see image */
+    .parallax {
+        background-attachment: scroll;
+    }
+}
 .hpExplore{
 	img{
 		height: 650px;

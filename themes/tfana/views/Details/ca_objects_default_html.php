@@ -170,8 +170,8 @@ if($show_nav){
 								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 							</ifcount>
 							<ifcount code="ca_occurrences" restrictToTypes="production" min="1">
-								<dt><ifcount code="ca_occurrences" restrictToTypes="production" min="1" max="1"><?= _t('Related Production'); ?></ifcount><ifcount code="ca_occurrences" restrictToTypes="production" min="2"><?= _t('Related Productions'); ?></ifcount></dt>
-								<unit relativeTo="ca_occurrences" restrictToTypes="production" delimiter=""><dd>
+								<dt><ifcount code="ca_occurrences" restrictToTypes="production" min="1" max="1" unique="1"><?= _t('Related Production'); ?></ifcount><ifcount code="ca_occurrences" restrictToTypes="production" min="2"><?= _t('Related Productions'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences" restrictToTypes="production" delimiter="" unique="1"><dd>
 									<l>^ca_occurrences.preferred_labels</l>
 								</dd></unit>
 							</ifcount>
@@ -192,6 +192,14 @@ if($show_nav){
 								<dt><?= _t('Rights Statement'); ?></dt>
 								<dd>^ca_objects.rightsStatement.rightsStatement_text</dd>
 							</ifdef>
+<?php
+							if($rights = $this->getVar("object_rights_summary_text")){
+?>
+								<dt><?= _t('Rights Summary'); ?></dt>
+								<dd><?= $rights; ?></dd>
+<?php
+							}
+?>
 						</dl>}}}
 						
 					</div>

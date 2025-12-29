@@ -90,11 +90,11 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</div>
 	</div>
 </ifdef>}}}
-	<div class="row row-cols-1 row-cols-md-2 mb-5">
-		<div class="col">				
+	<div class="row row-cols-1 row-cols-md-2 mb-2">
+		<div class="col mb-3">				
 			<div id="map" class="map">{{{map}}}</div>
 		</div>
-		<div class="col">
+		<div class="col mb-3">
 			{{{<dl class="mb-0">
 				<ifdef code="ca_entities.bio_history.bio">
 					<dt><?= _t('History'); ?></dt>

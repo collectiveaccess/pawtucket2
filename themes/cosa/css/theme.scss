@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.roboto {
+	font-family: "Roboto", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	font-variation-settings:
+	"wdth" 100;
+}
+/* ------------------------- TopBar ------------------------- */
+.topBar{
+	.container{
+		padding-bottom: 6px;
+		padding-top: 2px;
+	}
+	a{
+		font-weight: bold;
+		color: #ffffff;
+		font-size: .79em;
+		text-decoration:none;
+	}
+}
+/* ------------------------- Navbar ------------------------- */
+nav.navbar{
+	.navbar-brand{
+		color: #404041 !important;
+		font-size: 1.1em !important;
+		text-transform: uppercase;
+		font-weight:900;
+		width:300px;
+		img{
+			width:auto;
+			height:80px;
+		}
+	}
+	@media(max-width:991px){
+		form{
+			width:100%;
+			display:block;
+			margin-top:10px;
+		}
+	}
+	.nav-link {
+		border:1px dashed transparent;
+	}
+	.nav-link span{
+		border-bottom:3px solid transparent;
+	}
+	.nav-link:hover span, .nav-link:focus span {
+  		border-bottom-color: #000;
+  	}
+  	.nav-link:focus {
+		box-shadow: none;
+		border:1px dashed #000;
+	}
+}
+/* ------------------------- scroll top ------------------------- */
+#scrollTop{
+	width:90px;
+	right:0px;
+	left:auto;
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out; /* Add a smooth transition */
+}
+#scrollTop.scrollTopVisible {
+	opacity: 1;
+}
+/* ------------------------- breadcrumb ------------------------- */
+.breadcrumb{
+	background-color:#f9f9f9;
+}
+/* ------------------------- Maps --------------------------- */
+.leaflet-popup-content{
+	min-width:250px;
+	max-width:250px;
+}
+#browseResultsContainer{
+	.leaflet-container{
+		height:500px !important;
+	}
+}
+/* ------------------------- Buttons ------------------------ */
+.btn-primary{
+	background-color: #CF4240;
+	border-color: #CF4240;
+}
+.btn-primary:hover{
+	background-color: #99302f;
+	border-color: #99302f;
+}
+.btn-teal{
+	background-color: #038391;
+	border-color: #038391;
+}
+.gallery, .listing{
+	.btn-primary{
+		background-color: #038391;
+		border-color: #038391;
+	}
+}
+/* -------------- Upcoming Exhibitions Listing --------------- */
+#listingResults{
+	.card{
+		img{
+			height: 400px;
+			width: 100%;
+		}
+	}
+}
+/* -------------- Browse --------------- */
+#browseResultsContainer{
+	@media (min-width: 992px) {
+		.card{
+			transition: all 0.3s ease-in-out;
+		}
+		.card:hover, .card:focus {
+			transform: scale(1.03);
+		}
+	}
+}
+#bRefine{
+	input{
+		font-size:.9em;
+	}
+}

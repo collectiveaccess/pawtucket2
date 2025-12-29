@@ -175,6 +175,16 @@ if(!$collection_detail){
 <div class="row pt-5">
 	<div class="col"><h2 class="fs-3">Related Objects</h2><hr/></div>
 </div>
+<?php
+if($vs_series_item_availablity = $this->getVar("series_item_availablity")){
+?>
+	<div class="pb-4 fs-4 fst-italic">
+		<?php print $vs_series_item_availablity; ?>
+	</div>
+<?php
+}
+?>
+
 <div class="row" id="browseResultsContainer">	
 	<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id"))); ?>">
 		<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>

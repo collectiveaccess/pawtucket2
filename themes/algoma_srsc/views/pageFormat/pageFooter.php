@@ -49,7 +49,7 @@
 				</div>
 			</div>
 		</footer><!-- end footer -->
-		<div id="contentWarningBanner" class="position-fixed bottom-0 w-100"><div role="alert" class="bg-gradient border-top border-2 border-primary bg-light-green m-0 p-2 text-center">{{{srsc_content_warning}}}</div></div>
+		<div id="contentWarningBanner" class="position-fixed bottom-0 w-100"><div class="bg-gradient border-top border-2 border-primary bg-light-green m-0 p-2 text-center">{{{srsc_content_warning}}}</div></div>
 <?php
 		if(CookieOptionsManager::showBanner()){
 			# --- SRSC onnly wants the manage link to be able to change cookie options and not the initial banner with need to accept

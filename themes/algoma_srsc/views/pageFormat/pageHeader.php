@@ -57,12 +57,13 @@ if($this->request->isLoggedIn()){
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
-	
+	<!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-80MECY8197"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-80MECY8197'); </script>
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
 	<script>
 		let pawtucketUIApps = {};
 	</script>
+	<meta name="format-detection" content="telephone=no">
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 <?php
