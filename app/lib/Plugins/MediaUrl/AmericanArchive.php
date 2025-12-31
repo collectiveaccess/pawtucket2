@@ -68,7 +68,7 @@ class AmericanArchive Extends BaseMediaUrlPlugin {
 	 *
 	 * @return bool|array False if url is not valid, array with information about the url if valid.
 	 */
-	public function parse(string $url, array $options=null) {
+	public function parse(string $url, ?array $options=null) {
 		if (!is_array($parsed_url = parse_url(urldecode($url)))) { return null; }
 		
 		//Ex. We have an item whose url is https://americanarchive.org/catalog/cpb-aacip-138-42n5tg3t
@@ -94,12 +94,52 @@ class AmericanArchive Extends BaseMediaUrlPlugin {
 	 * @throws UrlFetchException Thrown if fetch URL fails.
 	 * @return bool|array|string False if url is not valid, array with path to file with content and format if successful, string with content if returnAsString option is set.
 	 */
-	public function fetch(string $url, array $options=null) {
+	public function fetch(string $url, ?array $options=null) {
 		if ($p = $this->parse($url, $options)) {
 			// AmericanArchive does not allow downloads
 			return array_merge($p, ['file' => null, 'format' => 'mp3']);
 		}
 		return false;
+	}
+	# ------------------------------------------------
+	/**
+	 * Attempt to fetch preview from a URL, transforming content to specified format for source.
+	 *
+	 * @param string $url
+	 * @param array $options Options include:
+	 *		filename = File name to use for fetched file. If omitted a random name is generated. [Default is null]
+	 *		extension = Extension to use for fetched file. If omitted ".bin" is used as the extension. [Default is null]
+	 *		returnAsString = Return fetched content as string rather than in a file. [Default is false]
+	 *
+	 * @throws UrlFetchException Thrown if fetch URL fails.
+	 * @return bool|array|string False if url is not valid, array with path to file with content and format if successful, string with content if returnAsString option is set.
+	 */
+	public function fetchPreview(string $url, ?array $options=null) {
+		return false;
+	}
+	# ------------------------------------------------
+	/**
+	 * Get service-specific HTML embedding tag for media
+	 *
+	 * @param string $url
+	 * @param array $options Options include:
+	 *		width = Width to apply to embedded content. [Default is 100% width]
+	 *		height = Height to use for embedded content. [Default is 100% height]
+	 *		title = Title to apply to embedded content. [Default is null]
+	 *
+	 * @return string HTML embed tag, or null if embedding is not possible
+	 */
+	public function embedTag(string $url, ?array $options=null) : ?string {		
+		if ($p = $this->parse($url, $options)) {
+			$width = caGetOption('width', $options, '100%');
+			$height = caGetOption('height', $options, '100%');
+			$title = addslashes(caGetOption('title', $options, null));
+			
+			
+			$tag = "<div style='left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;'><iframe style='display: flex; flex-direction: column; min-height: 50vh; width: 100%;' src='{$url}'></iframe></iframe></div>";
+			return $tag;
+		}
+		return null;
 	}
 	# ------------------------------------------------
 }
