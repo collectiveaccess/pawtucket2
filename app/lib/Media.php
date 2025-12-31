@@ -702,7 +702,9 @@ class Media extends BaseObject {
 	 *
 	 */
 	public function htmlTag($mimetype, $ps_url, $pa_properties, $options=null, $pa_volume_info=null) {
-		if (!$mimetype) { return _t('No media available'); }
+		if (!$mimetype) { 
+			return Configuration::load()->get('representation_without_media_icon') ?? _t('No media available'); 
+		}
 		
 		$map = $this->getPluginsForMimetypes();
 		if(is_array($map[$mimetype]) && ($vs_plugin_name = $map[$mimetype][0])) {
