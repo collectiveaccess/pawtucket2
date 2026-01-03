@@ -2793,7 +2793,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 							return $info['INPUT']['FETCHED_ORIGINAL_URL'] ?? null;
 						case 'media_fetched_from_service':
 							$mu = new \CA\MediaUrl();
-							return $mu->service($info['INPUT']['FETCHED_FROM']);
+							return isset($info['INPUT']['FETCHED_FROM']) ? $mu->service($info['INPUT']['FETCHED_FROM']) : '';
 						case 'media_is_embedded':
 							return ($info['IS_EMBEDDED'] ?? false) ? _t('Yes') : _t('No');
 					}

@@ -272,7 +272,7 @@ class YouTubeDL Extends BaseMediaUrlPlugin {
 					$tag = "<iframe src=\"https://www.youtube.com/embed/{$code}\" width=\"{$width}\" height=\"{$height}\" title=\"{$title}\" frameborder=\"0\" allowfullscreen referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>";
 					break;
 				case 'Vimeo':
-					$tag = "<iframe width=\"{$width}\" height=\"{$height}\" title=\"{$title}\" src=\"https://player.vimeo.com/video/{$code}\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen\"  style=\"position: absolute; top: 0px; left: 0px;\"></iframe>";
+					$tag = "<iframe width=\"{$width}\" height=\"{$height}\" title=\"{$title}\" src=\"https://player.vimeo.com/video/{$code}\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen\"></iframe>";
 					break;
 				case 'Soundcloud':
 					$tag = "<iframe width='{$width}' height='{$height}' scrolling='no' frameborder='no' allow='autoplay' src='https://w.soundcloud.com/player/?url=".urlencode($url)."'></iframe>";

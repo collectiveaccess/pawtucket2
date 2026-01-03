@@ -705,7 +705,11 @@ class Media extends BaseObject {
 		if (!$mimetype) { 
 			$icon_size = caGetOption('defaultIconSize', $options, '64px');
 			$mu = new \CA\MediaUrl();
-			if((!($options['FETCHED_FROM'] ?? null) || !($icon = $mu->icon($options['FETCHED_FROM'], ['size' => $icon_size])))) {
+			if(
+				(!($options['FETCHED_FROM'] ?? null) || !($icon = $mu->icon($options['FETCHED_FROM'], ['size' => $icon_size])))
+				&&
+				(!($options['data']['INPUT']['FETCHED_FROM'] ?? null) || !($icon = $mu->icon($options['data']['INPUT']['FETCHED_FROM'], ['size' => $icon_size])))
+			) {
 				$icon = Configuration::load()->get('representation_without_media_icon') ?? _t('No media available'); 
 			}
 			return $icon;

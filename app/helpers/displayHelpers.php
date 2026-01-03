@@ -2605,12 +2605,16 @@ function caGetMediaDisplayInfoForMimetype(string $context, ?string $mimetype) : 
 
 	if (!is_array($context = $o_media_display_config->getAssoc($context))) { return null; }
 
-	if (!$mimetype) { return $context; }
 	foreach($context as $display_class => $display_class_info) {
-		if (!is_array($mimetypes = $display_class_info['mimetypes'])) { continue; }
+		$display_class_info['display_class'] = $display_class;
+		$mimetypes = $display_class_info['mimetypes'] ?? null;
+		if(!$mimetype) {
+			if (!is_array($mimetypes) || !sizeof($mimetypes)) { return $display_class_info; }
+			continue;
+		}
+		if (!is_array($mimetypes)) { continue; }
 
 		if (in_array($mimetype, $mimetypes)) {
-			$display_class_info['display_class'] = $display_class;
 			return $display_class_info;
 		}
 	}
@@ -4548,7 +4552,6 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 			}
 		}
 		$use_embedded_player = ($embedded_player && (!$mimetype || $display_info['use_embedded_when_available'] ?? false));
-		
 		
 		$rep = [
 			'representation_id' => $rep_id,
