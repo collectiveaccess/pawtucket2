@@ -80,4 +80,30 @@ abstract class BaseMediaUrlPlugin extends \WLPlug  {
 	 */
 	abstract public function embedTag(string $url, ?array $options=null);
 	# ------------------------------------------------
+	/**
+	 *
+	 */
+	abstract public function icon(string $url, ?array $options=null);
+	# ------------------------------------------------
+	/**
+	 *
+	 */
+	abstract public function service(string $url, ?array $options=null);
+	# ------------------------------------------------
+	/**
+	 *
+	 */
+	protected function getConfiguredIcon(string $plugin, string $service, ?array $options=null) : ?string {
+		$icon_config = \Configuration::load()->getAssoc('fetched_media_default_icons');
+		if(!is_array($icon_config)) { return null; }
+		if(!($icon = $icon_config[$plugin][$service] ?? null)) { return null; }
+		
+		$size = $options['size'] ?? null;
+		
+		if(!is_null($size)) {
+			$icon = str_replace('^SIZE', $size, $icon);
+		}
+		return $icon;
+	}
+	# ------------------------------------------------
 }

@@ -59,6 +59,9 @@ class YouTubeDL Extends BaseMediaUrlPlugin {
 	public function __construct() {
 		$this->description = _t('Processes audio/video URLs (YouTube, Vimeo and Soundcloud) using YouTube-dl');
 		$this->youtube_dl_path = caYouTubeDlInstalled();
+		
+		$this->valid_hosts['vimeo\.com$']['username'] = defined('__CA_VIMEO_USERNAME__') ? __CA_VIMEO_USERNAME__ : null;
+		$this->valid_hosts['vimeo\.com$']['password'] = defined('__CA_VIMEO_PASSWORD__') ? __CA_VIMEO_PASSWORD__ : null;
 	}
 	# ------------------------------------------------
 	/**
@@ -92,11 +95,14 @@ class YouTubeDL Extends BaseMediaUrlPlugin {
 		
 		// Is it a supported URL?
  		$is_valid = false;
- 		$format = null;
+ 		$format = $username = $password = null;
  		foreach($this->valid_hosts as $regex => $info) {
  			if (preg_match("!{$regex}!", $parsed_url['host'])) {
  				$format = $info['format'];
  				$service = $info['name'];
+ 				
+ 				$username = $info['username'] ?? null; 				
+ 				$password = $info['password'] ?? null;
  				
  				$is_valid = true;
  				break;
@@ -134,7 +140,15 @@ class YouTubeDL Extends BaseMediaUrlPlugin {
  				break;
  		}
  		
-		return ['url' => $url, 'originalUrl' => $url, 'code' => $code, 'format' => $format, 'plugin' => 'YouTubeDL', 'service' => $service, 'originalFilename' => pathInfo($url, PATHINFO_BASENAME)];
+		return [
+			'url' => $url, 'originalUrl' => $url, 
+			'code' => $code, 'format' => $format, 
+			'plugin' => 'YouTubeDL', 
+			'service' => $service, 
+			'originalFilename' => pathInfo($url, PATHINFO_BASENAME),
+			'username' => $username,
+			'password' => $password
+		];
 	}
 	# ------------------------------------------------
 	/**
@@ -166,8 +180,10 @@ class YouTubeDL Extends BaseMediaUrlPlugin {
 				$dest .= '.'.caGetOption('extension', $options, $format);
 			}
 			
+			$login_opts = ($p['username'] ?? null) ? "--username {$p['username']} --password {$p['password']}" : null;
+			
 			$tmp_file = $dest ? $dest : caGetTempDirPath().'/YOUTUBEDL_TMP'.uniqid(rand(), true).'.'.$format;
-			caExec($this->youtube_dl_path.' '.caEscapeShellArg($url).' -f '.$format.' -q -o '.caEscapeShellArg($tmp_file).' '.(caIsPOSIX() ? " 2> /dev/null" : ""));
+			caExec($this->youtube_dl_path.' '.caEscapeShellArg($url).' -f '.$format.' -q -o '.caEscapeShellArg($tmp_file)." {$login_opts} ".(caIsPOSIX() ? " 2> /dev/null" : ""));
 
 			if(!file_exists($tmp_file) || (filesize($tmp_file) === 0)) {
 				return false;
@@ -203,10 +219,13 @@ class YouTubeDL Extends BaseMediaUrlPlugin {
 			
 			$preview_path = null;
 			$format = null;
+			
+			$login_opts = ($p['username'] ?? null) ? "--username {$p['username']} --password {$p['password']}" : null;
+			
 			foreach($formats as $format) {
 				$tmp_file = $dest ? $dest : caGetTempDirPath().'/YOUTUBEDL_TMP'.uniqid(rand(), true);
 				$output = $ret = null;
-				caExec($this->youtube_dl_path.' '.caEscapeShellArg($url)." -q --skip-download --write-thumbnail --convert-thumbnails {$format} -o ".caEscapeShellArg($tmp_file).' '.(caIsPOSIX() ? " 2> /dev/null" : ""), $output, $ret);
+				caExec($this->youtube_dl_path.' '.caEscapeShellArg($url)." -q --skip-download --write-thumbnail --convert-thumbnails {$format} -o ".caEscapeShellArg($tmp_file)." {$login_opts} ".(caIsPOSIX() ? " 2> /dev/null" : ""), $output, $ret);
 				if($ret == 0) {
 					$preview_path = "{$tmp_file}.{$format}";
 					break;	
@@ -253,7 +272,7 @@ class YouTubeDL Extends BaseMediaUrlPlugin {
 					$tag = "<iframe src=\"https://www.youtube.com/embed/{$code}\" width=\"{$width}\" height=\"{$height}\" title=\"{$title}\" frameborder=\"0\" allowfullscreen referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>";
 					break;
 				case 'Vimeo':
-					$tag = "<div style=\"padding-bottom: 75%; position: relative;\"><iframe width=\"{$width}\" height=\"{$height}\" title=\"{$title}\" src=\"https://player.vimeo.com/video/{$code}\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen\"  style=\"position: absolute; top: 0px; left: 0px;\"></iframe></div>";
+					$tag = "<iframe width=\"{$width}\" height=\"{$height}\" title=\"{$title}\" src=\"https://player.vimeo.com/video/{$code}\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen\"  style=\"position: absolute; top: 0px; left: 0px;\"></iframe>";
 					break;
 				case 'Soundcloud':
 					$tag = "<iframe width='{$width}' height='{$height}' scrolling='no' frameborder='no' allow='autoplay' src='https://w.soundcloud.com/player/?url=".urlencode($url)."'></iframe>";
@@ -270,6 +289,69 @@ class YouTubeDL Extends BaseMediaUrlPlugin {
 					break;
 			}
 			return $tag;
+		}
+		return null;
+	}
+	# ------------------------------------------------
+	/**
+	 * Get icon for media
+	 *
+	 * @param string $url
+	 * @param array $options Options include:
+	 *		size = size of icon, including units (Eg. 64px). [Default is null]
+	 *
+	 * @return string HTML icon or null if no icon was found
+	 */
+	public function icon(string $url, ?array $options=null) : ?string {
+		if ($p = $this->parse($url, $options)) {
+			$service = $p['service'];
+			
+			if(!is_null($tag = $this->getConfiguredIcon('YouTubeDL', $service, $options))) {
+				return $tag;
+			}
+			
+			$size = caGetOption('size', $options, null);
+			$size_css = $size ? "style='font-size: {$size}'" : '';
+			
+			
+			$tag = null;
+			switch($service) {
+				case 'YouTube':
+					$tag = '<i class="fab fa-youtube" {$size_css}></i>';
+					break;
+				case 'Vimeo':
+					$tag = '<i class="fab fa-vimeo-v" {$size_css}></i>';
+					break;
+				case 'Soundcloud':
+					$tag = '<i class="fab fa-soundcloud" {$size_css}></i>';
+					break;
+				case 'Facebook':
+					$tag = '<i class="fab fa-facebook" {$size_css}></i>';
+					break;
+				case 'Instagram':
+					$tag = '<i class="fab fa-instagram" {$size_css}></i>';
+					break;
+				default:
+					// noop
+					break;
+			}
+			return $tag;
+		}
+		return null;
+	}
+	# ------------------------------------------------
+	/**
+	 * Get name of service used to fetch media
+	 *
+	 * @param string $url
+	 * @param array $options Options include:
+	 *		format = Format of name. Valid values are "full", "short". [Default is full]
+	 *
+	 * @return string Service name or null if not service name is available.
+	 */
+	public function service(string $url, ?array $options=null) : ?string {
+		if ($p = $this->parse($url, $options)) {
+			return $p['service'];
 		}
 		return null;
 	}

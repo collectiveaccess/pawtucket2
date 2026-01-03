@@ -91,7 +91,11 @@ class GoogleDrive Extends BaseMediaUrlPlugin {
 		$path = join("/", $tmp);
 		
 		$url_stub = $parsed_url['scheme']."://".$parsed_url['host'].$path; 
-		if (!isUrl($url_stub) || !preg_match('!^https://(docs|drive).google.com/(spreadsheets|file|document)/d/([^/]+)!', $url_stub, $m)) {
+		if (!isUrl($url_stub) || 
+			(!preg_match('!^https://(docs|drive).google.com/(spreadsheets|file|document)/d/([^/]+)!', $url_stub, $m)
+			 &&
+			 !preg_match('!^https://drive.google.com/uc?export=download&id=[^/]+)!', $url_stub, $m))
+		) {
 			return false;
 		}
 		if (!$format) {
@@ -101,6 +105,9 @@ class GoogleDrive Extends BaseMediaUrlPlugin {
 					break;
 				case 'document':
 					$format = 'docx';
+					break;
+				case 'uc':
+					$format = null;
 					break;
 				default:
 					$format = null;
@@ -140,7 +147,7 @@ class GoogleDrive Extends BaseMediaUrlPlugin {
 				return array_merge($p, ['file' => null]);
 			}
 			
- 			$format = $p['format']; //caGetOption('format', $options, null, ['validValues' => [null, 'pdf', 'xlsx', 'docx']]);
+ 			$format = $p['format']; 
 			if($dest = caGetOption('filename', $options, null)) {
 				$dest .= '.'.caGetOption('extension', $options, '.bin');
 			}
@@ -218,10 +225,48 @@ class GoogleDrive Extends BaseMediaUrlPlugin {
 			$height = caGetOption('height', $options, '100%');
 			$title = addslashes(caGetOption('title', $options, null));
 			
-			$tag = "<div style='left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;'><iframe src='{$url}' style='top: 0; left: 0; width: {$width}; height: {$height}; position: absolute; border: 0;' allowfullscreen scrolling='no' allow='encrypted-media *;'></iframe></div>";
+			$tag = "<iframe src='{$url}' style='top: 0; left: 0; width: {$width}; height: {$height}; position: absolute; border: 0;' allowfullscreen scrolling='no' allow='encrypted-media *;'></iframe>";
 			return $tag;
 		}
 		return null;
+	}
+	# ------------------------------------------------
+	/**
+	 * Get icon for media
+	 *
+	 * @param string $url
+	 * @param array $options Options include:
+	 *		size = size of icon, including units (Eg. 64px). [Default is null]
+	 *
+	 * @return string HTML icon or null if no icon was found
+	 */
+	public function icon(string $url,  ?array $options=null) : ?string {
+		if(!is_null($tag = $this->getConfiguredIcon('GoogleDrive', 'GoogleDrive'), $options)) {
+			return $tag;
+		}
+		$size = caGetOption('size', $options, null);
+		$size_css = $size ? "style='font-size: {$size}'" : '';
+		
+		return "<i class='fab fa-google-drive' {$size_css}></i>";
+	}
+	# ------------------------------------------------
+	/**
+	 * Get name of service used to fetch media
+	 *
+	 * @param string $url
+	 * @param array $options Options include:
+	 *		format = Format of name. Valid values are "full", "short". [Default is full]
+	 *
+	 * @return string Service name or null if not service name is available.
+	 */
+	public function service(string $url, ?array $options=null) : ?string {
+		$format = caGetOption('format', $options, 'full', ['forceToLowercase' => true]);
+		switch($format) {
+			case 'short':
+				return 'GDrive';
+			default:
+				return _t('Google Drive');
+		}
 	}
 	# ------------------------------------------------
 }

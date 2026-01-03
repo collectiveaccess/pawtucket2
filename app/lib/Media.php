@@ -703,7 +703,12 @@ class Media extends BaseObject {
 	 */
 	public function htmlTag($mimetype, $ps_url, $pa_properties, $options=null, $pa_volume_info=null) {
 		if (!$mimetype) { 
-			return Configuration::load()->get('representation_without_media_icon') ?? _t('No media available'); 
+			$icon_size = caGetOption('defaultIconSize', $options, '64px');
+			$mu = new \CA\MediaUrl();
+			if((!($options['FETCHED_FROM'] ?? null) || !($icon = $mu->icon($options['FETCHED_FROM'], ['size' => $icon_size])))) {
+				$icon = Configuration::load()->get('representation_without_media_icon') ?? _t('No media available'); 
+			}
+			return $icon;
 		}
 		
 		$map = $this->getPluginsForMimetypes();

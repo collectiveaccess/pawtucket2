@@ -40,7 +40,7 @@ class MediaUrl extends \CA\Plugins\PluginConsumer {
 	# ----------------------------------------------------------
 	# Properties
 	# ----------------------------------------------------------
-	
+	static $s_plugin_list = null;
 	
 	# ----------------------------------------------------------
 	# Methods
@@ -72,6 +72,7 @@ class MediaUrl extends \CA\Plugins\PluginConsumer {
 		foreach ($plugin_names as $plugin_name) {
 			if (!($plugin_info = $this->getPlugin($plugin_name))) { continue; }
 			if ($f = $plugin_info['INSTANCE']->parse($url, $options)) {
+				$f['INSTANCE'] = $plugin_info['INSTANCE'];
 				return $f;
 			}
 		}
@@ -148,11 +149,46 @@ class MediaUrl extends \CA\Plugins\PluginConsumer {
 		}
 		return null;
 	}
+	# ----------------------------------------------------------
+	/**
+	 * Get service-specific icon for media
+	 *
+	 * @param string $url
+	 * @param array $options None currently supported
+	 *
+	 * @return string HTML icon or null if no service-specific icon was found
+	 */
+	public function icon(string $url, ?array $options=null) : ?string {
+		if(is_array($p = $this->validate($url, $options))) {
+			if ($f = $p['INSTANCE']->icon($url, $options ?? [])) {
+				return $f;
+			}
+		}
+		return null;
+	}
+	# ----------------------------------------------------------
+	/**
+	 * Get service name for media
+	 *
+	 * @param string $url
+	 * @param array $options None currently supported
+	 *
+	 * @return string Name of service from which media was fetched
+	 */
+	public function service(string $url, ?array $options=null) : ?string {
+		if(is_array($p = $this->validate($url, $options))) {
+			if ($f = $p['INSTANCE']->service($url, $options ?? [])) {
+				return $f;
+			}
+		}
+		return null;
+	}
 	# ------------------------------------------------
 	/**
 	 *
 	 */
 	private function _getActivePlugins() : array {
+		if(self::$s_plugin_list) { return self::$s_plugin_list; }
 		$config = \Configuration::load()->getAssoc('allow_fetching_of_media_using_plugins');
 		foreach($config as $k => $v) {
 			$config[strtolower($k)] = $v;
@@ -177,6 +213,7 @@ class MediaUrl extends \CA\Plugins\PluginConsumer {
 			}
 			$active[] = ['plugin' => $plugin_info['INSTANCE'], 'config' => $pconfig];
 		}
+		self::$s_plugin_list = $active;
 		return $active;
 	}
 	# ------------------------------------------------

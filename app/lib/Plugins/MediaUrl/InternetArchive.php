@@ -176,4 +176,43 @@ class InternetArchive Extends BaseMediaUrlPlugin {
 		return null;
 	}
 	# ------------------------------------------------
+	/**
+	 * Get icon for media
+	 *
+	 * @param string $url
+	 * @param array $options Options include:
+	 *		size = size of icon, including units (Eg. 64px). [Default is null]
+	 *
+	 * @return string HTML icon or null if no icon was found
+	 */
+	public function icon(string $url,  ?array $options=null) : ?string {
+		if(!is_null($tag = $this->getConfiguredIcon('InternetArchive', 'InternetArchive', $options))) {
+			return $tag;
+		}
+		$size = caGetOption('size', $options, null);
+		$size_css = $size ? "style='font-size: {$size}'" : '';
+		
+		return '<i class="fas fa-archive" {$size_css}></i>';
+	}
+	# ------------------------------------------------
+	/**
+	 * Get name of service used to fetch media
+	 *
+	 * @param string $url
+	 * @param array $options Options include:
+	 *		format = Format of name. Valid values are "full", "short". [Default is full]
+	 *
+	 * @return string Service name or null if not service name is available.
+	 */
+	public function service(string $url, ?array $options=null) : ?string {
+		$format = caGetOption('format', $options, 'full', ['forceToLowercase' => true]);
+		switch($format) {
+			case 'short':
+				return 'IA';
+			default:
+				return _t('Internet Archive');
+		}
+	}
+	# ------------------------------------------------
+	
 }
