@@ -96,7 +96,7 @@ function makeMap(options) {
 		}, 500);
 	});
 	
-	map.locate({setView: false, maxZoom: 16, watch: true});
+	map.locate({setView: false, maxZoom: 16, watch: false});
 	
 	if(options.zoom) { map.setZoom(options.zoom); }
 	
