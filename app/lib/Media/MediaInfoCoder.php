@@ -119,13 +119,13 @@ class MediaInfoCoder {
 		
 		if ($ps_version) {
 			if (!$ps_key) {
-				return $va_media_info[$ps_version];
+				return $va_media_info[$ps_version] ?? null;
 			} else { 
-			    if ($v = $va_media_info[$ps_version][$ps_key]) { return $v; }
+			    if ($v = ($va_media_info[$ps_version][$ps_key] ?? null)) { return $v; }
 			    
 			    // Make case insensitive
-			    if ($v = $va_media_info[$ps_version][strtoupper($ps_key)]) { return $v; }
-			    if ($v = $va_media_info[$ps_version][strtolower($ps_key)]) { return $v; }
+			    if ($v = ($va_media_info[$ps_version][strtoupper($ps_key)] ?? null)) { return $v; }
+			    if ($v = ($va_media_info[$ps_version][strtolower($ps_key)] ?? null)) { return $v; }
 				return null;
 			}
 		} else {
@@ -172,7 +172,7 @@ class MediaInfoCoder {
 			return null;
 		}
 		
-		$va_volume_info = $this->opo_volume_info->getVolumeInformation($va_media_info[$ps_version]["VOLUME"]);
+		$va_volume_info = $this->opo_volume_info->getVolumeInformation($va_media_info[$ps_version]["VOLUME"] ?? null);
 		if (!is_array($va_volume_info)) {
 			return false;
 		}
@@ -237,7 +237,7 @@ class MediaInfoCoder {
 			return null;
 		}
 		
-		$va_volume_info = $this->opo_volume_info->getVolumeInformation($va_media_info[$ps_version]["VOLUME"]);
+		$va_volume_info = $this->opo_volume_info->getVolumeInformation($va_media_info[$ps_version]["VOLUME"] ?? null);
 		if (!is_array($va_volume_info)) {
 			return false;
 		}
@@ -302,14 +302,14 @@ class MediaInfoCoder {
 		$o_media = new Media();
 		
 		$o_vol = new MediaVolumes();
-		$va_volume = $o_vol->getVolumeInformation($va_media_info[$ps_version]['VOLUME']);
+		$va_volume = $o_vol->getVolumeInformation($va_media_info[$ps_version]['VOLUME'] ?? null);
 		
-		$va_properties = $va_media_info[$ps_version]["PROPERTIES"];
+		$va_properties = $va_media_info[$ps_version]["PROPERTIES"] ?? null;
 		if (isset($pa_options['width'])) { $va_properties['width'] = $pa_options['width']; }
 		if (isset($pa_options['height'])) { $va_properties['height'] = $pa_options['height']; }
 		
 		
-		return $o_media->htmlTag($va_media_info[$ps_version]["MIMETYPE"], $vs_url, $va_properties, $pa_options, $va_volume);
+		return $o_media->htmlTag($va_media_info[$ps_version]["MIMETYPE"] ?? null, $vs_url, $va_properties, $pa_options, $va_volume);
 	}
 	# ---------------------------------------------------------------------------
 	/**

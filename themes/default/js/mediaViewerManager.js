@@ -471,6 +471,9 @@ let mediaViewerManager = function(options=null) {
 				case '3d':
 					iv = require('mediaViewers/threed.js') ;
 					break;
+				case 'embed':
+					iv = require('mediaViewers/embed.js') ;
+					break;
 				default:
 					console.log('[mediaViewerManager::ERROR] Invalid media class ' + viewer_class);
 					return;

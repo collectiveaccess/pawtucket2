@@ -127,7 +127,8 @@ class MediaViewerManager {
 	/**
 	 *
 	 */
-	public static function getViewerByDisplayClass(string $context, string $display_class) {
+	public static function getViewerByDisplayClass(string $context, ?string $display_class) {
+		if(!$display_class) { return null; }
 		$config = Configuration::load(__CA_CONF_DIR__.'/media_display.conf');
 		
 		$info = caGetMediaDisplayInfoForDisplayClass($context, $display_class);
@@ -148,7 +149,8 @@ class MediaViewerManager {
 	/**
 	 *
 	 */
-	public static function viewerOptionsForDisplayClass(string $context, string $display_class) : ?array {
+	public static function viewerOptionsForDisplayClass(string $context, ?string $display_class) : ?array {
+		if(!$display_class) { return []; }
 		if(self::$s_viewer_options["{$context}/{$display_class}"] ?? null) {
 			return self::$s_viewer_options["{$context}/{$display_class}"];
 		}
