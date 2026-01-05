@@ -519,7 +519,7 @@ class FindController extends BasePawtucketController {
 		//print_R($va_view_info);
 		$vs_content_template = $va_view_info['mapItemInfoTemplate'];
 		
-		$this->view->setVar('items', $z=caProcessTemplateForIDs($vs_content_template, $va_browse_info['table'], $pa_ids, array('checkAccess' => $this->opa_access_values, 'returnAsArray' => true)));
+		$this->view->setVar('items', caProcessTemplateForIDs($vs_content_template, $va_browse_info['table'], $pa_ids, array('checkAccess' => $this->opa_access_values, 'returnAsArray' => true)));
 	
 		$this->view->setVar('heading', trim($va_view_info['display']['heading']) ? caProcessTemplateForIDs($va_view_info['display']['heading'], $va_browse_info['table'], [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");
 		$this->view->setVar('table', $va_browse_info['table']);
