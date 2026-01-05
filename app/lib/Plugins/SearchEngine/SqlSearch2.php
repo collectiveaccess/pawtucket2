@@ -2133,7 +2133,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		}
 		
 		if($ap['type'] === 'INTRINSIC') {
-			if($delete_sql) { $deleted_sql = " AND (deleted = 0)"; }
+			if($deleted_sql) { $deleted_sql = " AND (deleted = 0)"; }
 			$sql = "
 				SELECT {$pk} row_id, 1 boost
 				FROM {$table}
