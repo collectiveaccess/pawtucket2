@@ -426,6 +426,7 @@ class BrowseController extends FindController {
 					'maxZoom' => caGetOption(['mapMaxZoomLevel'], $view_info, 15),
 					'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $view_info, ''),
 					'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'mapContent', ['browse' => $function]),
+					'searchUrl' => caNavUrl($this->request, '*', 'Search', '*', ['key' => '', 'search_refine_prefix' => 'Address']),
 					'themePath' => __CA_THEME_URL__
 				];
 				$this->view->setVar('mapOptions', $map_options);

@@ -101,6 +101,9 @@ if($this->request->isLoggedIn()){
 									<li class="nav-item">
 										<?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
 									</li>
+									<li class="nav-item">
+										<?= caNavlink($this->request, _t('Features'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
+									</li>
 									<li class="nav-item dropdown">
 										<a class="text-nowrap nav-link<?=((in_array(strToLower($this->request->getController()), array("guide", "faq"))) ? " active" : ""); ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 											<?= _t("Help"); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>

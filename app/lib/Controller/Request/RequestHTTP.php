@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2024 Whirl-i-Gig
+ * Copyright 2007-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -744,7 +744,7 @@ class RequestHTTP extends Request {
 					(
 						(isset(SearchIndexer::$queued_entry_count) && (SearchIndexer::$queued_entry_count > 0))
 						||
-						(ca_search_indexing_queue::count() > 0)
+						(ca_search_indexing_queue::hasEntries())
 					)
 				) {
 					\CA\Process\Background::run('searchIndexingQueue');
@@ -956,8 +956,12 @@ class RequestHTTP extends Request {
 			}
 			return false;
 		} else {		
-			$msg = "Successful login for '".$pa_options["user_name"]."'; IP=".$_SERVER["REMOTE_ADDR"]."; user agent=".RequestHTTP::ip();
+			$user_name = ($this->user && $this->user->getUserID()) ? $this->user->get('user_name') : ($pa_options["user_name"] ?? null);
+			$msg = "Successful login for '{$user_name}'; IP=".RequestHTTP::ip()."; user agent=".($_SERVER['HTTP_USER_AGENT'] ?? null);
+			if($this->user->get("active") == 0) $msg .= "; but user is not active";
+
 			caLogEvent('LOGIN', $msg, 'Auth');	// write logins to text log
+			if($this->user->get("active") == 0) return false;
 			
 			require_once(__CA_LIB_DIR__."/Logging/Eventlog.php");
 		    Eventlog::add(['CODE' => 'LOGN', 'MESSAGE' => $msg, 'SOURCE' => 'Auth']);	// Write logins to old table-based event log
@@ -1088,7 +1092,12 @@ class RequestHTTP extends Request {
 				if (isset($_SERVER[$h]) && $_SERVER[$h]) { return $_SERVER[$h]; }
 			}
 		}
-		return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+		$ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+		
+		if(filter_var($ip, FILTER_VALIDATE_IP)) {
+			return $ip;
+		}
+		return null;
 	}
 	# ----------------------------------------
 }

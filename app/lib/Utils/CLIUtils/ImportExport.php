@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018-2023 Whirl-i-Gig
+ * Copyright 2018-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -579,10 +579,10 @@ trait CLIUtilsImportExport {
 		} else {
 			if(is_array($va_errors) && sizeof($va_errors)){
 				foreach($va_errors as $vs_error){
-					CLIUtils::addMessage(_t("Warning").":".$vs_error);
+					CLIUtils::addMessage($vs_error);
 				}
 			}
-			CLIUtils::addMessage("Created mapping %1 from %2", CLIUtils::textWithColor($t_exporter->get('exporter_code'), 'yellow'), $vs_file_path);
+			CLIUtils::addMessage(_t("Created mapping %1 from %2", CLIUtils::textWithColor($t_exporter->get('exporter_code'), 'yellow'), $vs_file_path));
 			return true;
 		}
 	}
@@ -840,9 +840,6 @@ trait CLIUtilsImportExport {
 	 * Load metadata dictionary
 	 */
 	public static function load_chenhall_nomenclature($po_opts=null) {
-		require_once(__CA_MODELS_DIR__.'/ca_lists.php');
-		require_once(__CA_MODELS_DIR__.'/ca_locales.php');
-
 		$t_list = new ca_lists();
 		$o_db = $t_list->getDb();
 
@@ -989,6 +986,10 @@ trait CLIUtilsImportExport {
 			}
 			$non_preferred_terms = array_filter($non_preferred_terms, function($v) { return strlen($v); });
 
+			if(preg_match("!blank sub-class!i", $data[$level])) { 
+				if ($level > 0) { $parent_ids[$level] = $parent_ids[$level-1]; }
+				continue; 
+			}
 			if (!$t_item) {
 				if (!($t_item = $t_list->addItem($data[$level], true, false, $parent_id, null, $id, '', 0, 1))) {
 					CLIUtils::addError(_t("Could not add term %1: %2", $data[$level], join("; ", $t_list->getErrors())));

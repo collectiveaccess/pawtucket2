@@ -53,6 +53,9 @@ class SearchController extends FindController {
 		$this->config = caGetBrowseConfig();
 		$this->view_class = 'AdvancedSearchView';
 		
+		
+		$this->opo_config = caGetSearchConfig();
+		
 		parent::__construct($request, $response, $pa_view_paths);
 
 		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
@@ -167,25 +170,25 @@ class SearchController extends FindController {
 		
 		$this->view->setVar('options', caGetOption('options', $va_browse_info, [], array('castTo' => 'array')));
 		
-		$va_views = caGetOption('views', $va_browse_info, [], array('castTo' => 'array'));
-		if(!is_array($va_views) || (sizeof($va_views) == 0)){
-			$va_views = array('list' => [], 'images' => [], 'timeline' => [], 'map' => [], 'timelineData' => [], 'pdf' => [], 'xlsx' => [], 'pptx' => []);
+		$views = caGetOption('views', $va_browse_info, [], array('castTo' => 'array'));
+		if(!is_array($views) || (sizeof($views) == 0)){
+			$views = array('list' => [], 'images' => [], 'timeline' => [], 'map' => [], 'timelineData' => [], 'pdf' => [], 'xlsx' => [], 'pptx' => []);
 		} else {
-			$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = [];
+			$views['pdf'] = $views['timelineData'] = $views['xlsx'] = $views['pptx'] = [];
 		}
 		
 		if (!$view) {
 			$view = $this->opo_result_context->getCurrentView();
 		}
-		if(!in_array($view, array_keys($va_views))) {
-			$view = array_shift(array_keys($va_views));
+		if(!in_array($view, array_keys($views))) {
+			$view = array_shift(array_keys($views));
 		}
 		# --- only set the current view if it's not an export format
 		if(!in_array($view, array("pdf", "xlsx", "pptx", "timelineData"))){
 			$this->opo_result_context->setCurrentView($view);
 		}
 		
-		$va_view_info = $va_views[$view];
+		$view_info = $views[$view];
 
 		$vs_format = ($view == 'timelineData') ? 'json' : 'html';
 		
@@ -209,8 +212,8 @@ class SearchController extends FindController {
 		//
 		// Load existing browse if key is specified
 		//
-		if ($cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
-			$o_browse->reload($cache_key);
+		if ($key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
+			$o_browse->reload($key);
 		}
 	
 		if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $va_browse_info, false))); }
@@ -273,6 +276,9 @@ class SearchController extends FindController {
 				$o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
 			}
 		} elseif ($vs_search_refine = $this->request->getParameter('search_refine', pString, ['forcePurify' => true])) {
+			if($search_refine_prefix = $this->request->getParameter('search_refine_prefix', pString, ['forcePurify' => true])) {
+				$vs_search_refine = $search_refine_prefix.':"'.addslashes($vs_search_refine).'"';
+			}
 			$o_browse->addCriteria('_search', [caMatchOnStem($vs_search_refine)], array($vs_search_refine));
 		} elseif ($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) {
 			$o_browse->addCriteria($vs_facet, explode("|", $this->request->getParameter('id', pString, ['forcePurify' => true])));
@@ -481,19 +487,37 @@ class SearchController extends FindController {
 		
 		// map
 		if ($view === 'map') {
-			$va_opts = array(
-				'renderLabelAsLink' => false, 
-				'request' => $this->request, 
-				'color' => '#cc0000', 
-				'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
-				'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
-				//'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $function,'view' => $view))
-			);
-
-			$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
-			$qr_res->seek(0);
-			$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
-			$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_view_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_view_info, 12), 'noWrap' => caGetOption("noWrap", $va_view_info, null), 'request' => $this->request)));
+			$this->view->setVar("showMap", false);
+			if (!is_array($map_attributes = caGetOption(['data', 'mapAttributes', 'map_attributes'], $view_info, array())) || !sizeof($map_attributes)) {
+				if ($map_attribute = caGetOption('data', $view_info, false)) { $map_attributes = array($map_attribute); }
+			}
+			
+			if(is_array($map_attributes) && sizeof($map_attributes)) {			
+				$map_options = [
+					'width' => caGetOption(['mapWidth', 'map_width'], $view_info, 300),
+					'width' => caGetOption(['mapHeight', 'map_height'], $view_info, 300),
+					'zoom' => caGetOption(['mapZoomLevel', 'zoom_level'], $view_info, null), 
+					'minZoom' => caGetOption(['mapMinZoomLevel'], $view_info, 1), 
+					'maxZoom' => caGetOption(['mapMaxZoomLevel'], $view_info, 15),
+					'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $view_info, ''),
+					'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'mapContent', ['browse' => $function]),
+					'searchUrl' => caNavUrl($this->request, '*', 'Search', '*', ['key' => '', 'search_refine_prefix' => 'Address']),
+					'themePath' => __CA_THEME_URL__
+				];
+				$this->view->setVar('mapOptions', $map_options);
+				
+				$map_data = [];
+				foreach($map_attributes as $map_attribute) {
+					$adata = caGetCoordinateDataFromResult($qr_res, $map_attribute, $map_options);
+					$map_data = array_merge($map_data ?? [], $adata['coordinates'] ?? []);
+				}
+				if (sizeof($map_data ?? []) > 0) {
+					$this->view->setVar("showMap", true);
+					$this->view->setVar('mapData', $map_data);
+					$map_options['data'] = $map_data;
+					$this->view->setVar('mapOptions', $map_options);
+				}
+			}
 		}
 		
 		
@@ -595,12 +619,13 @@ class SearchController extends FindController {
 		$this->view->setVar('config', $this->config);
 		$this->view->setVar('blocks', $search_targets);
 		$this->view->setVar('blockNames', $search_targets);
-		$this->view->setVar('results', $results = caGeneralSearch($this->request, $search, $search_targets, [
-			'access' => $this->opa_access_values, 
-			'contexts' => $result_contexts, 
-			'matchOnStem' => (bool)$this->config->get('matchOnStem')
-		]));
-		
+		if($search){
+			$this->view->setVar('results', $results = caGeneralSearch($this->request, $search, $search_targets, [
+				'access' => $this->opa_access_values, 
+				'contexts' => $result_contexts, 
+				'matchOnStem' => (bool)$this->config->get('matchOnStem')
+			]));
+		}		
 		$result_count = 0;
 		$redirect_to_only_result = null;
 		

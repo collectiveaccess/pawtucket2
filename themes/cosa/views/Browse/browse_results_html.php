@@ -85,11 +85,15 @@ if (!$ajax) {	// !ajax
 					break;
 					# ----------------------
 					case "artworks":
-						print _t("City of San Antonio Public Art Directory");
+						print _t("City of San Antonio Art Collection");
 					break;
 					# ----------------------
 					case "exhibitions":
-						print _t("City of San Antonio Public Art Exhibitions");
+						print _t("City of San Antonio Past Art Exhibitions");
+					break;
+					# ----------------------
+					case "all_exhibitions":
+						print _t("City of San Antonio Art Exhibitions");
 					break;
 					# ----------------------
 				}

@@ -55,6 +55,17 @@ nav.navbar{
 		border:1px dashed #000;
 	}
 }
+/* ------------------------- scroll top ------------------------- */
+#scrollTop{
+	width:90px;
+	right:0px;
+	left:auto;
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out; /* Add a smooth transition */
+}
+#scrollTop.scrollTopVisible {
+	opacity: 1;
+}
 /* ------------------------- breadcrumb ------------------------- */
 .breadcrumb{
 	background-color:#f9f9f9;
@@ -98,7 +109,7 @@ nav.navbar{
 	}
 }
 /* -------------- Browse --------------- */
-.results{
+#browseResultsContainer{
 	@media (min-width: 992px) {
 		.card{
 			transition: all 0.3s ease-in-out;
@@ -108,10 +119,14 @@ nav.navbar{
 		}
 	}
 }
-#scrollTop {
-	opacity: 0;
-	transition: opacity 0.5s ease-in-out; /* Add a smooth transition */
+#bRefine{
+	input{
+		font-size:.9em;
+	}
 }
-#scrollTop.scrollTopVisible {
-	opacity: 1;
+
+/* Ensure leaflet area select selection box appears over map pins */
+div.leaflet-overlay-pane {
+	border: 1px solid red !important;
+	z-index: 1000 !important;
 }

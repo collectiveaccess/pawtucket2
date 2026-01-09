@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2023 Whirl-i-Gig
+ * Copyright 2006-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -97,7 +97,7 @@ class WLPlugTaskQueueHandlermediaproc Extends WLPlug Implements IWLPlugTaskQueue
 			);
 		}
 		
-		if (is_array($va_parameters["RULES"]) && sizeof($va_parameters["RULES"]) > 0) {
+		if (is_array($va_parameters["RULES"] ?? null) && sizeof($va_parameters["RULES"]) > 0) {
 			$vs_rules = '';
 		
 			foreach($va_parameters["RULES"] as $vs_rule => $va_rule_info) {
@@ -226,7 +226,7 @@ class WLPlugTaskQueueHandlermediaproc Extends WLPlug Implements IWLPlugTaskQueue
 			$va_rules 			= $o_media_proc_settings->getMediaTransformationRule($vs_rule);
 			$va_volume_info 	= $o_media_volumes->getVolumeInformation($va_version_settings['VOLUME']);
 			
-			if (sizeof($va_rules) == 0) { 
+			if (!is_array($va_rules) || (sizeof($va_rules) == 0)) { 
 				$vs_output_mimetype = $vs_input_mimetype; 
 				#
 				# don't process this media, just copy the file
@@ -504,8 +504,8 @@ class WLPlugTaskQueueHandlermediaproc Extends WLPlug Implements IWLPlugTaskQueue
 			// and add them as "multifiles" assuming the current model supports that (ca_object_representations does)
 			$o_config = Configuration::load();
 			if (((bool)$o_config->get('video_preview_generate_frames') || (bool)$o_config->get('document_preview_generate_pages')) && method_exists($t_instance, 'addFile')) {
-				if (method_exists($this, 'removeAllFiles')) {
-					$this->removeAllFiles();                // get rid of any previously existing frames (they might be hanging ar
+				if (method_exists($t_instance, 'removeAllFiles')) {
+					$t_instance->removeAllFiles();                // get rid of any previously existing frames (they might be hanging ar
 				}
 				$o_media->read($vs_input_file);
 				$va_preview_frame_list = $o_media->writePreviews(
@@ -520,7 +520,7 @@ class WLPlugTaskQueueHandlermediaproc Extends WLPlug Implements IWLPlugTaskQueue
 						'startAtTime' => $o_config->get('video_preview_start_at'),
 						'endAtTime' => $o_config->get('video_preview_end_at'),
 						'startAtPage' => $o_config->get('document_preview_start_page'),
-						'outputDirectory' => __CA_APP_DIR__.'/tmp'
+						'outputDirectory' => __CA_TEMP_DIR__
 					)
 				);
 				if (is_array($va_preview_frame_list)) {

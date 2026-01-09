@@ -38,7 +38,7 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 		parent::__construct($id, $options);
 		
  		$o_config = $this->getAppConfig();
- 		$this->opo_type_config = Configuration::load(__CA_CONF_DIR__.'/annotation_types.conf');
+ 		$this->opo_type_config = Configuration::load('annotation_types.conf');
 	}
 	# ------------------------------------------------------
 	protected function initLabelDefinitions($pa_options=null) {
@@ -156,6 +156,8 @@ class BaseRepresentationAnnotationModel extends BundlableLabelableBaseModelWithA
 			$this->errors = $this->opo_annotations_properties->errors;
 			return false;
 		}
+		$vs_file = null;
+		
 		$this->set('props', $this->opo_annotations_properties->getPropertyValues());
 		
 		if (!$this->getAppConfig()->get('dont_generate_annotation_previews') && $this->getPrimaryKey() && ($this->changed('props') || (isset($pa_options['forcePreviewGeneration']) && $pa_options['forcePreviewGeneration']))) {

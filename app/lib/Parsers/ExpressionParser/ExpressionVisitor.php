@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2023 Whirl-i-Gig
+ * Copyright 2015-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -92,10 +92,13 @@ class ExpressionVisitor implements Visitor\Visit {
 			'formatgmdate'	=> xcallable('caFormatGMDate'),
 			'sizeof'		=> xcallable(function () { return count(func_get_args()); }),
 			'count'			=> xcallable(function () { return count(func_get_args()); }),
+			'valueCount'	=> xcallable('caValueCount'),
 			'age'			=> xcallable('caCalculateAgeInYears'),
 			'ageyears'		=> xcallable('caCalculateAgeInYears'),
 			'agedays'		=> xcallable('caCalculateAgeInDays'),
 			'avgdays'		=> xcallable('caCalculateDateRangeAvgInDays'),
+			'earliestDate'	=> xcallable('caGetEarliestDate'),
+			'latestDate'	=> xcallable('caGetLatestDate'),
 			'average' 		=> xcallable($average),
 			'avg'     		=> xcallable($average),
 			'sum'			=> xcallable(function () { return array_sum(func_get_args()); }),

@@ -63,6 +63,8 @@ if($this->request->isLoggedIn()){
 	<script>
 		let pawtucketUIApps = {};
 	</script>
+	
+	<!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-QT8SW0M6DG"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-QT8SW0M6DG'); </script>
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>

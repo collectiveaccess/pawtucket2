@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012-2023 Whirl-i-Gig
+ * Copyright 2012-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -303,6 +303,7 @@ final class ConfigurationExporter {
 			$vo_item->setAttribute("idno", $vs_idno);
 			$vo_item->setAttribute("enabled", $qr_items->get("is_enabled"));
 			$vo_item->setAttribute("default", $qr_items->get("is_default"));
+			$vo_item->setAttribute("access", $qr_items->get("access"));
 								
 			if ($vs_color = $qr_items->get('color')) {
 				$vo_item->setAttribute("color", $vs_color);
@@ -638,6 +639,32 @@ final class ConfigurationExporter {
 			$vo_dict->appendChild($vo_entry);
 			$vo_entry->setAttribute('bundle', $t_entry->get('bundle_name'));
 			$vo_entry->setAttribute('table', Datamodel::getTableName($t_entry->get('table_num')));
+			
+			$label_count = 0;
+			$vo_labels = $this->opo_dom->createElement("labels");
+			if(is_array($labels = $t_entry->getLabels(null, __CA_LABEL_TYPE_ANY__)) && sizeof($labels)) {
+				foreach($labels as $entry_id => $label_by_locale) {
+					foreach($label_by_locale as $locale_id => $label_list) {
+						foreach($label_list as $label) {
+							$vo_label = $this->opo_dom->createElement("label");
+							$vo_label->setAttribute('locale', $this->opt_locale->localeIDToCode($locale_id));
+							$vo_name = $this->opo_dom->createElement("name", $label['name'] ?? null);
+							$vo_label->appendChild($vo_name);
+							$vo_labels->appendChild($vo_label);
+							$label_count++;
+						}
+					}
+				}
+			}
+				
+			if($label_count === 0) {
+				$vo_label = $this->opo_dom->createElement("label");
+				$vo_label->setAttribute('locale', defined('__CA_DEFAULT_LOCALE__') ? __CA_DEFAULT_LOCALE__ : 'en_US');
+				$vo_name = $this->opo_dom->createElement("name", '['.caGetBlankLabelText('ca_metadata_dictionary_entries').']');
+				$vo_label->appendChild($vo_name);
+				$vo_labels->appendChild($vo_label);
+			} 
+			$vo_entry->appendChild($vo_labels);
 
 			if(is_array($t_entry->getSettings())) {
 				$va_settings = array();
@@ -1081,21 +1108,30 @@ final class ConfigurationExporter {
 								foreach($va_values as $vs_key => $vs_value) {
 									switch($vs_setting) {
 										case 'restrict_to_types':
+										case 'restrictToTypes':
 											$t_item = new ca_list_items($vs_value);
 											if ($t_item->getPrimaryKey()) {
 												$vs_value = $t_item->get('idno');
+											} else {
+												$vs_value = null;
 											}
 											break;
 										case 'restrict_to_lists':
+										case 'restrictToLists':
 											$t_list = new ca_lists($vs_value);
 											if ($t_list->getPrimaryKey()) {
 												$vs_value = $t_list->get('list_code');
+											} else {
+												$vs_value = null;
 											}
 											break;
 										case 'restrict_to_relationship_types':
+										case 'restrictToRelationshipTypes':
 											$t_rel_type = new ca_relationship_types($vs_value);
 											if ($t_rel_type->getPrimaryKey()) {
 												$vs_value = $t_rel_type->get('type_code');
+											} else {
+												$vs_value = null;
 											}
 											break;
 										case 'bundleTypeRestrictions':

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018-2024 Whirl-i-Gig
+ * Copyright 2018-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -35,26 +35,37 @@ require_once(__CA_LIB_DIR__ . "/Plugins/IWLPlugInformationService.php");
 require_once(__CA_LIB_DIR__ . "/Plugins/InformationService/BaseInformationServicePlugin.php");
 
 global $g_information_service_settings_viaf;
-$g_information_service_settings_viaf = [];
+$g_information_service_settings_viaf = [
+	'searchOn' => [
+		'formatType' => FT_TEXT,
+		'displayType' => DT_SELECT,
+		'options' => [
+			_t('All') => 'cql.any',
+			_t('Personal names') => 'local.personalNames',
+		],
+		'default' => 'cql.any',
+		'width' => 90, 'height' => 1,
+		'label' => _t(''),
+		'description' => _t('Search on')
+	]
+];
 
 /**
  * @file A class to interact with the VIAF API
  */
 class WLPlugInformationServiceVIAF extends BaseInformationServicePlugin implements IWLPlugInformationService
 {
-
     # ------------------------------------------------
-    static $s_settings;
-    const VIAF_SERVICES_BASE_URL = 'http://www.viaf.org/viaf';
+    const VIAF_SERVICES_BASE_URL = 'https://www.viaf.org/viaf';
     const VIAF_LOOKUP = 'search';
+    
+    static $s_settings;
     private $o_client;
     # ------------------------------------------------
-
     /**
      * WLPlugInformationServiceVIAF constructor.
      */
-    public function __construct()
-    {
+    public function __construct() {
         global $g_information_service_settings_viaf;
 
         WLPlugInformationServiceVIAF::$s_settings = $g_information_service_settings_viaf;
@@ -63,47 +74,88 @@ class WLPlugInformationServiceVIAF extends BaseInformationServicePlugin implemen
 
         $this->description = _t('Provides access to VIAF service');
     }
-
-    public function getAvailableSettings()
-    {
+	# ------------------------------------------------
+	/** 
+	 *
+	 */
+    public function getAvailableSettings() {
         return WLPlugInformationServiceVIAF::$s_settings;
     }
-
-    public function lookup($pa_settings, $ps_search, $pa_options = null)
-    {
-   		if(preg_match("!^http[s]{0,1}://www.viaf.org/viaf/([\d]+)!", $ps_search, $m)) {
-   			$ps_search = $m[1];
+	# ------------------------------------------------
+	/** 
+	 *
+	 */
+    public function lookup($settings, $search, $options = null)  {
+   		if(preg_match("!^http[s]{0,1}://www.viaf.org/viaf/([\d]+)!", $search, $m)) {
+   			$search = $m[1];
    		}
-        $vo_client = $this->getClient();
-        $vo_response = $vo_client->request("GET", self::VIAF_SERVICES_BASE_URL."/".self::VIAF_LOOKUP."?maximumRecords=100&httpAccept=application/json&query=".urlencode("cql.any all \"{$ps_search}\""), [
+   		$search = trim($search);
+   		$search_on = caGetOption('searchOn', $settings, 'cql.any');
+   		
+        $client = $this->getClient();
+        $response = $client->request("GET", self::VIAF_SERVICES_BASE_URL."/".self::VIAF_LOOKUP."?maximumRecords=500&recordSchema=BriefVIAF&Accept=json&sortKey=holdingscount&query=".urlencode("cql.any all \"{$search}\""), [
             'headers' => [
                 'Accept' => 'application/json'
             ]
         ]);
-        $va_raw_resultlist = json_decode($vo_response->getBody(), true);
-    
-        $va_return = [];
-        if (is_array($response_data = $va_raw_resultlist['searchRetrieveResponse']['records'])) {
-			foreach ($response_data as $data){
-				if (!($label = $data['record']['recordData']['mainHeadings']['data'][0]['text'])) {
-					$label = $data['record']['recordData']['mainHeadings']['data']['text'];
+
+		$raw_resultlist = json_decode($response->getBody(), true, 512, JSON_BIGINT_AS_STRING);
+		
+		$return = [];
+		$primaries = [];
+        if (is_array($response_data = $raw_resultlist['searchRetrieveResponse']['records']['record'])) {
+			foreach ($response_data as $index=>$data){
+				if(!isset($data["recordData"]["v:VIAFCluster"]["v:viafID"]['content'])) { continue; }
+				$viafID = (string)$data["recordData"]["v:VIAFCluster"]["v:viafID"]['content'];
+				
+				$label = null;
+				if(is_array($data['recordData']["v:VIAFCluster"]['v:titles']['v:work'])) {
+					foreach($data['recordData']["v:VIAFCluster"]['v:titles']['v:work'] as $k => $x) {
+						if($k === 'v:title') {
+							if($x) { $label = $x; break; }
+						} elseif($label = trim($x['v:title'] ?? null)) {
+							break;
+						}
+					}
 				}
-				$label = str_replace("|", ":", $label);
-				$va_return['results'][] = [
+				if(!$label) { 
+					if (!($label = $data['recordData']["v:VIAFCluster"]['v:mainHeadings']['v:data'][0]['v:text'])) {
+						$label = $data['recordData']["v:VIAFCluster"]['v:mainHeadings']['v:data']['v:text'];
+					}
+				}
+
+				$label = trim(str_replace("|", ":", $label));
+				
+				$entry = [
 					'label' => $label,
-					'url' => self::VIAF_SERVICES_BASE_URL."/".$data['record']['recordData']['viafID'],
-					'idno' => $data['record']['recordData']['viafID']
+					'url' => self::VIAF_SERVICES_BASE_URL."/".$viafID,
+					'idno' => $viafID
 				];
+				if(mb_strtolower($search) == mb_strtolower($label)) {
+					array_unshift($primaries, $entry);
+				} elseif(preg_match('!^'.preg_quote($search, '!').'!i', $label)) {
+					$primaries[] = $entry;
+				} else {
+				 	$return['results'][] = $entry;
+				}
 			}
 		}
-        return $va_return;
+		if(sizeof($primaries)) {
+			$return['results'] = array_merge($primaries, $return['results']);
+		}
+        return $return;
     }
-
-    public function getExtendedInformation($pa_settings, $ps_url)
-    {
-        return ['display' => "<p><a href='$ps_url' target='_blank'>$ps_url</a></p>"];
+	# ------------------------------------------------
+	/** 
+	 *
+	 */
+    public function getExtendedInformation($settings, $url) {
+        return ['display' => "<p><a href='{$url}' target='_blank' rel='noopener noreferrer'>{$url}</a></p>"];
     }
-
+	# ------------------------------------------------
+	/** 
+	 *
+	 */
     /**
      * @return Guzzle\Http\Client
      */
@@ -112,9 +164,10 @@ class WLPlugInformationServiceVIAF extends BaseInformationServicePlugin implemen
             $this->o_client = new \GuzzleHttp\Client(['base_uri' => self::VIAF_SERVICES_BASE_URL."/".self::VIAF_LOOKUP]);
 
         $o_conf = Configuration::load();
-        if($vs_proxy = $o_conf->get('web_services_proxy_url')) /* proxy server is configured */
-            $this->o_client->getConfig()->add('proxy', $vs_proxy);
+        if($proxy = $o_conf->get('web_services_proxy_url')) /* proxy server is configured */
+            $this->o_client->getConfig()->add('proxy', $proxy);
 
         return $this->o_client;
     }
+	# ------------------------------------------------
 }

@@ -500,10 +500,10 @@ class FindController extends BasePawtucketController {
 	/**
 	 * Return text for map item info bubble
 	 */
-	public function ajaxGetMapItem() {
+	public function mapContent() {
 		if($this->opb_is_login_redirect) { return; }
 		
-		$pa_ids = explode(";",$this->request->getParameter('id', pString, ['forcePurify' => true])); 
+		$pa_ids = explode(";",$this->request->getParameter('ids', pString, ['forcePurify' => true])); 
 		$ps_view = $this->request->getParameter('view', pString, ['forcePurify' => true]);
 		$ps_browse = $this->request->getParameter('browse', pString, ['forcePurify' => true]);
 		if (!($va_browse_info = caGetInfoForBrowseType($ps_browse))) {
@@ -516,11 +516,11 @@ class FindController extends BasePawtucketController {
 		if (!is_array($va_view_info = $va_browse_info['views'][$ps_view])) {
 			throw new ApplicationException("Invalid view");
 		}
+		//print_R($va_view_info);
+		$vs_content_template = $va_view_info['mapItemInfoTemplate'];
 		
-		$vs_content_template = $va_view_info['display']['icon'].$va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
-		
-		$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, $va_browse_info['table'], $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
-		
+		$this->view->setVar('items', caProcessTemplateForIDs($vs_content_template, $va_browse_info['table'], $pa_ids, array('checkAccess' => $this->opa_access_values, 'returnAsArray' => true)));
+	
 		$this->view->setVar('heading', trim($va_view_info['display']['heading']) ? caProcessTemplateForIDs($va_view_info['display']['heading'], $va_browse_info['table'], [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");
 		$this->view->setVar('table', $va_browse_info['table']);
 		$this->view->setVar('ids', $pa_ids);

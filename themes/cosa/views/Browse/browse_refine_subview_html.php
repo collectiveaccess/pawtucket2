@@ -43,7 +43,7 @@ if (sizeof($va_criteria) > 0) {
 	$i = 0;
 	$vb_start_over = false;
 	foreach($va_criteria as $va_criterion) {
-		$vs_criteria .= caNavLink($this->request, $va_criterion['value'].' <i aria-hidden="true" class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
+		$vs_criteria .= caNavLink($this->request, stripslashes($va_criterion['value']).' <i aria-hidden="true" class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
 		$vb_start_over = true;
 		$i++;
 	}
@@ -54,17 +54,17 @@ if (sizeof($va_criteria) > 0) {
 
 if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->numHits() > 1)){
 ?>		
+	<div id='bMorePanel' tabindex='-1' class='sticky-md-top w-100 z-3 bg-light vh-100 collapse'><!-- long lists of facets are loaded here --></div>
 	<div id='bRefine' class='bg-light sticky-md-top vh-100 collapse overflow-y-auto'>
-		<div id='bMorePanel' tabindex='-1' class='sticky-top w-100 z-3 bg-light h-100 collapse'><!-- long lists of facets are loaded here --></div>
-		<div class="text-end float-end d-md-none"><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
+		<div class="text-end float-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php
 	if($qr_res->numHits() > 1){
 ?>
-		<form role="search" id="searchWithin" class="pt-1 pt-md-0" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+		<form role="search" id="searchWithin" class="pt-1 pt-md-0" action="<?= caNavUrl($this->request, '*', 'Search', '*'); ?>">
 			<div class="input-group pt-3 px-3 <?= ($table != "ca_objects") ? "pb-3" : ""; ?>">
 				<label for="search-within" class="form-label visually-hidden">Search within results</label>
-				<input name="search_refine" id="search-within" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?php print _t("Search within results"); ?>" aria-label="<?php print _t("Search within"); ?>">
-				<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+				<input name="search_refine" id="search-within" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?= _t("Search within results"); ?>" aria-label="<?= _t("Search within"); ?>">
+				<input type="hidden" name="key" value="<?= $vs_browse_key; ?>">
 				<button type="submit" class="btn rounded-0 bg-white" aria-label="search submit"><i class="bi bi-search"></i></button>
 			</div>
 <?php
@@ -96,7 +96,20 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 		print "</ul>\n";
 		print "</div>\n";
 	}
-
+	if($table == "ca_objects"){
+?>
+		<H2 class='fs-4 px-3 py-2'><?= _t("Search by location"); ?></H2>
+			<form role="search" id="searchLocation" class="pt-1 pt-md-0" action="<?= caNavUrl($this->request, '*', 'Search', '*'); ?>">
+				<div class="input-group px-3 pb-3">
+					<label for="search-location" class="form-label visually-hidden">Search by location</label>
+					<input name="search_refine" id="search-location" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?= _t("Enter address or zipcode"); ?>" aria-label="<?= _t("Enter address or zipcode"); ?>">
+					<input name="search_refine_prefix" id="search-location-prefix" type="hidden" value="Address">
+					<input type="hidden" name="key" value="<?= $vs_browse_key; ?>">
+					<button type="submit" class="btn rounded-0 bg-white" aria-label="search submit"><i class="bi bi-search"></i></button>
+				</div>
+			</form>
+<?php
+	}
 	if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
 		print "<H2 class='fs-4 px-3 py-2'>"._t("Filter by")."</H2>";
 		
@@ -113,15 +126,11 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 				print "<div class='accordion-header' id='heading".$vs_facet_name."'><button class='accordion-button collapsed fw-medium text-capitalize ' type='button' data-bs-toggle='collapse' data-bs-target='#".$vs_facet_name."' aria-expanded='false' aria-controls='".$vs_facet_name."'>".$va_facet_info['label_singular']."</button></div>";
 
 				print "<div id='".$vs_facet_name."' class='accordion-collapse collapse' aria-labelledby='heading".$vs_facet_name."' data-bs-parent='#browseRefineFacets'>
-					<div class='accordion-body '>";
-				
+					<div class='accordion-body'>";				
 ?>
-					<script>
-						jQuery(document).ready(function() {
-							jQuery("#bHierarchyList_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'linkTo' => 'morePanel')); ?>");
-						});
-					</script>
-					<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+					<div id='bHierarchyList_<?= $vs_facet_name; ?>'><?= caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+					<div hx-target="#bHierarchyList_<?= $vs_facet_name; ?>" hx-trigger="load" hx-get="<?= caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key)); ?>"  ></div>
+				
 <?php
 				print "</div></div>";
 			} else {				
@@ -137,7 +146,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 							$vn_c++;
 					
 							if(($vn_c == $vn_facet_display_length_maximum) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
-								$vs_more_link = "<li class='list-group-item border-0 bg-transparent px-0 py-1'><button class='btn btn-sm btn-secondary' hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel' role='button' onClick='document.getElementById(\"bMorePanel\").focus();'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</button></li>";
+								$vs_more_link = "<li class='list-group-item border-0 bg-transparent px-0 py-1'><button class='btn btn-sm btn-secondary' hx-on:click='htmx.toggleClass(htmx.find(\"#bRefine\"), \"d-none\")' hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel' role='button' onClick='document.getElementById(\"bMorePanel\").focus();'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</button></li>";
 								break;
 							}
 						}

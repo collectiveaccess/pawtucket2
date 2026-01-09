@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,8 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
-
-define("__CA_APP_TYPE__", "PROVIDENCE");
+define("__CA_APP_TYPE__", "PAWTUCKET");
 define("__CA_IS_SERVICE_REQUEST__", true);
 if (!file_exists('./setup.php')) { print "No setup.php file found!"; exit; }
 require('./setup.php');
@@ -48,11 +47,20 @@ try {
 	$resp->addHeader("Cache-Control", "no-cache, must-revalidate");
 	$resp->addHeader("Expires", "Mon, 26 Jul 1997 05:00:00 GMT");
 
-	$vb_auth_success = $req->doAuthentication(array('noPublicUsers' => true, "dont_redirect" => true, "no_headers" => true));
+	if($g_request->getController() !== 'IIIF') {	// IIIF service handles auth itself
+		$vb_auth_success = $req->doAuthentication(array('noPublicUsers' => true, "dont_redirect" => true, "no_headers" => true));
+	}
+	
 	//
 	// Dispatch the request
 	//
-	$app->dispatch(true);
+	try {
+		$app->dispatch(true);
+	} catch (ServiceException $e) {
+		caDisplayException($e);
+	} catch (Exception $e) {
+		caDisplayException($e, ['category' => 'routing']);
+	}
 
 	//
 	// Send output to client

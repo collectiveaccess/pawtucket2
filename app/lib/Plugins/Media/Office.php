@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2023 Whirl-i-Gig
+ * Copyright 2008-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -294,6 +294,8 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 						return $vs_mimetype;
 					}
 				} catch(\PhpOffice\PhpPresentation\Reader\Exception $e) {
+					// noop
+				} catch(\PhpOffice\PhpPresentation\Exception\FileNotFoundException $e) {
 					// noop
 				}
 			}

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2023 Whirl-i-Gig
+ * Copyright 2010-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -58,6 +58,32 @@ class BaseRefineableSearchController extends BaseFindController {
 
 			if(!is_array($this->opa_sorts)) { $this->opa_sorts = []; }
 		}
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function Index($pa_options=null) {
+		$rc = parent::Index($pa_options);
+		
+		// browse criteria in an easy-to-display format
+		$va_browse_criteria = array();
+		if($this->opo_browse) {
+			foreach($this->opo_browse->getCriteriaWithLabels() as $vs_facet_code => $va_criteria) {
+				$va_facet_info = $this->opo_browse->getInfoForFacet($vs_facet_code);
+				if(!($va_facet_info['label_singular'] ?? null)) { continue; }
+				
+				$va_criteria_list = array();
+				foreach($va_criteria as $vn_criteria_id => $vs_criteria_label) {
+					$va_criteria_list[] = $vs_criteria_label;
+				}
+				
+				$va_browse_criteria[$va_facet_info['label_singular']] = join('; ', $va_criteria_list);
+			}
+		}
+		$this->view->setVar('browse_criteria', $va_browse_criteria);
+		
+		return $rc;
 	}
 	# -------------------------------------------------------
 	/**
@@ -143,7 +169,7 @@ class BaseRefineableSearchController extends BaseFindController {
 		$t_model = Datamodel::getInstanceByTableName($this->ops_tablename, true);
 		
 		$o_config = Configuration::load();
-		if (!(is_array($va_sorts = $o_config->getList($this->ops_tablename.'_hierarchy_browser_sort_values'))) || !sizeof($va_sorts)) { $va_sorts = array(); }
+		if (!(is_array($va_sorts = caGetHierarchyBrowserSortValues($this->ops_tablename))) || !sizeof($va_sorts)) { $va_sorts = array(); }
 		
 		if (!in_array($vs_sort_dir = strtolower($o_config->get($this->ops_tablename.'_hierarchy_browser_sort_direction')), array('asc', 'desc'))) {
 			$vs_sort_dir = 'asc';
@@ -296,7 +322,8 @@ class BaseRefineableSearchController extends BaseFindController {
 		}
 		
 		$this->view->setVar('facet_list', $va_level_data);
-	
+		
+		$this->response->setContentType("application/json");
 		return $this->render('Browse/facet_hierarchy_level_json.php');
 	}
 	# -------------------------------------------------------
