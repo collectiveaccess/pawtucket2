@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2020-2025 Whirl-i-Gig
+ * Copyright 2020-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -60,6 +60,8 @@ class YouTubeDL Extends BaseMediaUrlPlugin {
 		$this->description = _t('Processes audio/video URLs (YouTube, Vimeo and Soundcloud) using YouTube-dl');
 		$this->youtube_dl_path = caYouTubeDlInstalled();
 		
+		$this->valid_hosts['.youtube\.com$']['username'] = $this->valid_hosts['youtu\.be$']['username'] = defined('__CA_YOUTUBE_USERNAME__') ? __CA_YOUTUBE_USERNAME__ : null;
+		$this->valid_hosts['.youtube\.com$']['password'] = $this->valid_hosts['youtu\.be$']['password'] = defined('__CA_YOUTUBE_PASSWORD__') ? __CA_YOUTUBE_PASSWORD__ : null;
 		$this->valid_hosts['vimeo\.com$']['username'] = defined('__CA_VIMEO_USERNAME__') ? __CA_VIMEO_USERNAME__ : null;
 		$this->valid_hosts['vimeo\.com$']['password'] = defined('__CA_VIMEO_PASSWORD__') ? __CA_VIMEO_PASSWORD__ : null;
 	}
