@@ -35,6 +35,7 @@ require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
 require_once(__CA_LIB_DIR__.'/Parsers/DisplayTemplateParser.php');
 require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
+require_once(__CA_APP_DIR__.'/helpers/externalMediaHelpers.php');
 
 # ------------------------------------------------------------------------------------------------
 /**
@@ -2604,12 +2605,16 @@ function caGetMediaDisplayInfoForMimetype(string $context, ?string $mimetype) : 
 
 	if (!is_array($context = $o_media_display_config->getAssoc($context))) { return null; }
 
-	if (!$mimetype) { return $context; }
 	foreach($context as $display_class => $display_class_info) {
-		if (!is_array($mimetypes = $display_class_info['mimetypes'])) { continue; }
+		$display_class_info['display_class'] = $display_class;
+		$mimetypes = $display_class_info['mimetypes'] ?? null;
+		if(!$mimetype) {
+			if (!is_array($mimetypes) || !sizeof($mimetypes)) { return $display_class_info; }
+			continue;
+		}
+		if (!is_array($mimetypes)) { continue; }
 
 		if (in_array($mimetype, $mimetypes)) {
-			$display_class_info['display_class'] = $display_class;
 			return $display_class_info;
 		}
 	}
@@ -4539,10 +4544,19 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 				];
 			}
 		}
+		
+		$embedded_player = null;
+		if(is_array($media_data = $qr->getMediaInfo('ca_object_representations.media')) && is_array($media_data['INPUT'] ?? null)) {
+			if(($media_data['INPUT']['FETCHED_BY'] ?? null) && ($media_data['INPUT']['FETCHED_FROM'] ?? null)) {
+				$embedded_player = caGetExternalMediaEmbedCode($media_data['INPUT']['FETCHED_FROM']);
+			}
+		}
+		$use_embedded_player = ($embedded_player && (!$mimetype || $display_info['use_embedded_when_available'] ?? false));
+		
 		$rep = [
 			'representation_id' => $rep_id,
 			'mimetype' => $mimetype,
-			'media_class' => caGetMediaClass($qr->get('ca_object_representations.mimetype')),
+			'media_class' => $use_embedded_player ? 'embed' : caGetMediaClass($mimetype),
 			'original_url' => $qr->get("ca_object_representations.media.original.url"),
 			'url' => $qr->get("ca_object_representations.media.{$display_version}.url"),
 			'original_tag' => $qr->get("ca_object_representations.media.original.tag"),
@@ -4552,6 +4566,7 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 			'no_overlay' => (bool)($display_info['no_overlay'] ?? false),
 			'caption' => caProcessTemplateForIDs($caption_template, $qr->tableName(), [$rep_id]),
 			'vttCaptions' => $vtt_captions,
+			'embeddedPlayer' => $embedded_player,
 			'download_version' => $allow_download ? caGetOption('download_version', $download_info, null) : null
 		];
 		
@@ -4568,12 +4583,12 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 		}
 		
 		
-		$rep['display_class'] = $display_info['display_class'] ?? null;
+		$rep['display_class'] = $use_embedded_player ? 'embed' : ($display_info['display_class'] ?? null);
 		
-		$opts = MediaViewerManager::viewerOptionsForDisplayClass($display_type, $display_info['display_class']);
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass($display_type, $display_info['display_class'] ?? null);
 		$rep['options'] = $opts;
 		
-		$opts = MediaViewerManager::viewerOptionsForDisplayClass('overlay', $display_info['display_class']);
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass('overlay', $display_info['display_class'] ?? null);
 		$rep['overlay_options'] = $opts;
 		
 		
@@ -4634,14 +4649,15 @@ function caRepresentationViewer($request, $subject, ?array $options=null) {
 		$rep_info = $media_list[$index];
 		$t_rep = ca_object_representations::findAsInstance(['representation_id' => $rep_info['representation_id']]);
 	}
-	
 	$display_classes = array_unique(array_map(function($v) { return ($v['display_class']); }, $media_list));
 	
 	$viewer_html = $viewer_overlay_html = [];
+
 	foreach($display_classes as $display_class) {
 		$o_viewer = MediaViewerManager::getViewerByDisplayClass($display_type, $display_class);
-		$opts = MediaViewerManager::viewerOptionsForDisplayClass($display_type, $display_class);
+		if(!$o_viewer) { print "no viewer for $display_class";return ''; }
 		
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass($display_type, $display_class);	
 		$viewer_html[$display_class] = $o_viewer->getViewerHTML(
 			$request,
 			array_merge(['displayClass' => $display_class, 'id' => 'mediaviewer'], $opts)
