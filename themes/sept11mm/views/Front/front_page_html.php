@@ -48,10 +48,10 @@
 	$vs_hp_intro = $this->getVar("hp_intro");
 	if($vs_hp_intro_title || $vs_hp_intro){
 		if($vs_hp_intro_title){
-			print "<div class='display-3 lh-base border-bottom border-black pb-2 mb-2'>".$vs_hp_intro_title."</div>";
+			print "<H1 class='display-3 lh-base border-bottom border-black pb-2 mb-2'>".$vs_hp_intro_title."</H1>";
 		}
 		if($vs_hp_intro){
-			print "<div class='fs-4 playfair-display lh-base pt-2'>".$vs_hp_intro."</div>";
+			print "<div class='fs-4 pt-2'>".$vs_hp_intro."</div>";
 		}
 	}
 ?>

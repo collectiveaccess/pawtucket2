@@ -115,13 +115,41 @@ if($show_nav){
 					
 					<ifdef code="ca_objects.public_description">
 						<dt class="pt-3">Description</dt>
-						<dd>^ca_objects.public_description</dd>
+						<dd>
+<?php
+						if(mb_strlen($t_object->get("ca_objects.public_description")) > 800){
+?>
+							<div id="readMoreDiv_public_description" class="readMore">^ca_objects.public_description</div>
+							<button id="readMoreBtn" class="btn btn-white btn-sm mt-2 readMoreButton" hx-on:click="htmx.toggleClass(htmx.find('#readMoreDiv_public_description'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreBtn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button>		
+<?php
+						}else{
+?>
+							^ca_objects.public_description		
+<?php						
+						}
+?>
+						</dd>
 					</ifdef>
 					<ifdef code="ca_objects.public_historical_notes">
 						<dt class="pt-3">Historical Notes</dt>
-						<dd>^ca_objects.public_historical_notes</dd>
+						<dd>
+<?php
+						if(mb_strlen($t_object->get("ca_objects.public_historical_notes")) > 800){
+?>
+							<div id="readMoreDiv_public_historical_notes" class="readMore">^ca_objects.public_historical_notes</div>
+							<button id="readMoreBtn" class="btn btn-white btn-sm mt-2 readMoreButton" hx-on:click="htmx.toggleClass(htmx.find('#readMoreDiv_public_historical_notes'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreBtn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button>		
+<?php
+						}else{
+?>
+							^ca_objects.public_historical_notes		
+<?php						
+						}
+?>
+						</dd>
 					</ifdef>
 				</dl>}}}
+
+
 			</div>
 		</div>
 

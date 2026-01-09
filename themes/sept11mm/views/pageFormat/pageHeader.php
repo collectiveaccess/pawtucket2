@@ -57,7 +57,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
-	
+	<link rel="stylesheet" type="text/css" href="https://cloud.typography.com/7401856/6502032/css/fonts.css" />
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
 	<script>
