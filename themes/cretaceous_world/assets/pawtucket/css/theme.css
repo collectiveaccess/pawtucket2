@@ -462,18 +462,10 @@ h5.headingVernacularName {
 	margin: 0 3% 5px 0;
 }
 
-/* --- classroom --- */
-.classroom a:hover, .classroom a:active, .classroom a:focus{
-	color:#A9DEE4;
-}
 .lbSetImgPlaceholder{
 	padding:30px 5px 32px 5px;
 }
-.classroom HR, .classroom hr{
-	height:1px;
-	background-color:#dedede;
-	border:0px;
-}
+
 /* BROWSE Refine Menu */
 #bViewButtonsLeft{
 	text-align: left;
