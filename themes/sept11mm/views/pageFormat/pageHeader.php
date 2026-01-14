@@ -69,7 +69,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 	<nav class="navbar navbar-expand-xl shadow-sm">
 		<div class="container-fluid">
 			<?php #print caNavlink($this->request, caGetThemeGraphic($this->request, 'logo-full.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")), "navbar-brand  img-fluid ps-3", "", "", ""); ?>
-			<a href="https://911memorial.org" class="navbar-brand  img-fluid ps-3"><?= caGetThemeGraphic($this->request, 'logo-full.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")); ?></a>
+			<a href="https://911memorial.org" class="navbar-brand  img-fluid ps-3 py-2"><?= caGetThemeGraphic($this->request, '01_911_25th_HORIZ_POS.png', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")); ?></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>

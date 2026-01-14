@@ -64,7 +64,7 @@ if($show_nav){
 ?>
 	<div class="row">
 		<div class="col-md-12">
-			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
+			<H1>{{{^ca_objects.public_title}}}</H1>
 			<hr class="mb-0">
 		</div>
 	</div>
@@ -88,60 +88,24 @@ if($show_nav){
 ?>
 
 	<div class="row">
-		<div class="col-md-6">
-			{{{media_viewer}}}
+		<div class="col-md-6 py-3">
+			{{{<ifdef code="ca_objects.ts_storyid"><iframe width="100%" height="720" src="https://share.theirstory.io/story/^ca_objects.ts_storyid" title="Karen Sandler interview with FOSSDA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></ifdef>}}}
 		</div>
 		<div class="col-md-6 pt-3">
 			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->			
-				{{{<ifdef code="ca_objects.public_title"><H2 class="fs-3 mb-2"><i>^ca_objects.public_title</i></H2></ifdef>}}}	
 				{{{<dl class="mb-0">
-					<ifdef code="ca_objects.submission_num">
-						<dt class="pt-3">Submission Number</dt>
-						<dd>^ca_objects.submission_num</dd>
-					</ifdef>
-					<ifdef code="ca_objects.submission_name.submission_fname|ca_objects.submission_name.submission_lname">
-						<dt class="pt-3">Submitter Name</dt>
-						<dd>^ca_objects.submission_name.submission_fname<ifdef code="ca_objects.submission_name.submission_fname,ca_objects.submission_name.submission_lname"> </ifdef>^ca_objects.submission_name.submission_lname</dd>
-					</ifdef>
-					<ifdef code="ca_objects.teammates">
-						<dt class="pt-3">Teammate(s)</dt>
-						<dd>^ca_objects.teammates%delimiter=,_</dd>
-					</ifdef>
-					<ifdef code="ca_objects.submission_place.submission_city|ca_objects.submission_place.submission_state|ca_objects.submission_place.submission_country">
-						<dt class="pt-3">Submitter Location</dt>
-						<dd>^ca_objects.submission_place.submission_city<ifdef code="ca_objects.submission_place.submission_city">, </ifdef>^ca_objects.submission_place.submission_state<ifdef code="ca_objects.submission_place.submission_city|ca_objects.submission_place.submission_state">, </ifdef>^ca_objects.submission_place.submission_country</dd>
-					</ifdef>
-					
-					
 					<ifdef code="ca_objects.public_description">
-						<dt class="pt-3">Description</dt>
+						<dt>Description</dt>
 						<dd>
 <?php
 						if(mb_strlen($t_object->get("ca_objects.public_description")) > 800){
 ?>
-							<div id="readMoreDiv_public_description" class="readMore">^ca_objects.public_description</div>
+							<div id="readMoreDiv_public_description" class="readMore readMoreOralHistory">^ca_objects.public_description</div>
 							<button id="readMoreBtn" class="btn btn-white btn-sm mt-2 readMoreButton" hx-on:click="htmx.toggleClass(htmx.find('#readMoreDiv_public_description'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreBtn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button>		
 <?php
 						}else{
 ?>
 							^ca_objects.public_description		
-<?php						
-						}
-?>
-						</dd>
-					</ifdef>
-					<ifdef code="ca_objects.public_historical_notes">
-						<dt class="pt-3">Historical Notes</dt>
-						<dd>
-<?php
-						if(mb_strlen($t_object->get("ca_objects.public_historical_notes")) > 800){
-?>
-							<div id="readMoreDiv_public_historical_notes" class="readMore">^ca_objects.public_historical_notes</div>
-							<button id="readMoreBtn" class="btn btn-white btn-sm mt-2 readMoreButton" hx-on:click="htmx.toggleClass(htmx.find('#readMoreDiv_public_historical_notes'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreBtn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button>		
-<?php
-						}else{
-?>
-							^ca_objects.public_historical_notes		
 <?php						
 						}
 ?>
@@ -157,7 +121,8 @@ if($show_nav){
 	<div class="row">
 		<div class="col-md-6 offset-6 text-center">
 			<div class="pt-3">
-				{{{<ifdef code="ca_objects.curators_comment"><span id="curatorCommentsButton" class="curatorCommentsShowHide collapse show"><button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorComments curatorCommentsButton"><i class='bi bi-justify'></i> Curator's Comment</button></span></ifdef>}}}<?php
+				{{{<ifdef code="ca_objects.curators_comment"><span id="curatorCommentsButton" class="curatorCommentsShowHide collapse show"><button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorComments curatorCommentsButton"><i class='bi bi-justify'></i> Curator's Comment</button></span></ifdef>}}}
+<?php
 				if($inquire_enabled) {
 					print caNavLink($this->request, "<i class='bi bi-chat-left'></i> "._t("Feedback"), "btn btn-primary ms-4", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
 				}
@@ -240,7 +205,7 @@ if($show_nav){
 				}		
 ?>
 				</ul>
-			</div>	
+			</div>
 		</div>
 		<div class="col-md-6 mt-4">
 <?php
@@ -255,7 +220,7 @@ if($show_nav){
 						$va_popover = array();
 						if($t_list_item->get("ca_list_item_labels.description")){
 							#$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-title" => $va_subject["name_singular"], "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");
-							$va_popover = array("data-bs-toggle" => "tooltip", "data-bs-placement" => "top", "data-bs-html" => "true", "title" => $t_list_item->get("ca_list_item_labels.description"));							
+							$va_popover = array("data-container" => "body", "data-bs-toggle" => "tooltip", "data-bs-placement" => "top", "data-bs-html" => "true", "title" => $t_list_item->get("ca_list_item_labels.description"));							
 						}
 						$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "btn btn-small btn-light me-2 mb-2", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]), $va_popover);
 						$va_list_ids[] = $va_subject["item_id"];
@@ -402,11 +367,10 @@ if(sizeof($va_related_ids)){
 }
 ?>
 <script>
-	//document.addEventListener('load', (event) => {
-	//	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-	//	var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-	//	  return new bootstrap.Tooltip(tooltipTriggerEl)
-	//	});
-		
-	//});
+	document.addEventListener("load", function() {
+		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+		  return new bootstrap.Tooltip(tooltipTriggerEl)
+		});
+	});
 </script>
