@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2025 Whirl-i-Gig
+ * Copyright 2010-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -631,6 +631,12 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	private function _processQueryPhrase(int $subject_tablenum, $query) {
 	 	$terms = $query->getTerms();
 	 	$private_sql = ($this->getOption('omitPrivateIndexing') ? ' AND swi.access = 0' : '');
+	 
+	 	$force_strict = false;
+	 	if($terms[0]->text[0] === '~') {
+	 		$terms[0]->text = substr($terms[0]->text, 1);
+	 		$force_strict = true;
+	 	}
 	 	
 	 	$term = $terms[0];
 	 	$field = $term->field;
@@ -642,7 +648,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 	
 	 	$field_sql = null;
 	 	
-	 	if ($this->getOption('strictPhraseSearching')) {
+	 	if ($this->getOption('strictPhraseSearching') || $force_strict) {
 	 		$words = [];
 	 		$temp_tables = [];
 	 		$ap_spec = null;
@@ -1225,7 +1231,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if (!is_array($options)) { $options = []; }
 		
 		$fi = $this->indexing_field_index;
-		if($this->indexing_field_index < 255) { $this->indexing_field_index++; }
+		if($this->indexing_field_index < 255 && !caGetOption('dontIncrementFieldIndex', $options, false)) { $this->indexing_field_index++; }
 		
 		if (!is_array($content)) {
 			$content = [$content];
