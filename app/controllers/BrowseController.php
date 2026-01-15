@@ -426,7 +426,7 @@ class BrowseController extends FindController {
 					'maxZoom' => caGetOption(['mapMaxZoomLevel'], $view_info, 15),
 					'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $view_info, ''),
 					'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'mapContent', ['browse' => $function]),
-					'searchUrl' => caNavUrl($this->request, '*', 'Search', '*', ['key' => '', 'search_refine_prefix' => 'Address']),
+					'searchUrl' => caNavUrl($this->request, '*', 'Search', '*', ['search_refine_prefix' => 'Address']),
 					'themePath' => __CA_THEME_URL__
 				];
 				$this->view->setVar('mapOptions', $map_options);
@@ -465,15 +465,26 @@ class BrowseController extends FindController {
 	 * Generate the URL for the "back to results" link from a browse result item
 	 * as an array of path components.
 	 */
-	public static function getReturnToResultsUrl($po_request) {
-		$ret = array(
+	public static function getReturnToResultsUrl($request, $table) {
+		$browse = $request->getAction();
+		$browse_types = caGetBrowseConfig()->get('browseTypes');
+		
+		if(!is_array($browse_types[$browse])) {
+			foreach($browse_types as $bt => $bti) {
+				if($bti['table'] === $table) {
+					$browse = $bt;
+					break;
+				}
+			}
+		}
+		$ret = [
 			'module_path' => '',
 			'controller' => 'Browse',
-			'action' => $po_request->getAction(),
+			'action' => $browse,
 			'params' => array(
 				'key'
 			)
-		);
+		];
 		return $ret;
 	}
 	# -------------------------------------------------------

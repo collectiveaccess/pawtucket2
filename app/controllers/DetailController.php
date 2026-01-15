@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2025 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1520,19 +1520,30 @@ class DetailController extends FindController {
 	}
 	# -------------------------------------------------------
 	/** 
-	 * Generate the URL for the "back to results" link from a browse result item
+	 * Generate the URL for the "back to results" link from a detail result item
 	 * as an array of path components.
 	 */
-	public static function getReturnToResultsUrl($po_request) {
-		$va_ret = [
+	public static function getReturnToResultsUrl($request, $table) {
+		$detail = $request->getAction();
+		$detail_types = caGetDetailConfig()->getAssoc('detailTypes');
+		
+		if(!is_array($detail_types[$detail])) {
+			foreach($detail_types as $dt => $dti) {
+				if($dti['table'] === $table) {
+					$detail = $dt;
+					break;
+				}
+			}
+		}
+		$ret = [
 			'module_path' => '',
 			'controller' => 'Detail',
-			'action' => $po_request->getAction(),
+			'action' => $detail,
 			'params' => array(
 				'key'
 			)
 		];
-		return $va_ret;
+		return $ret;
 	}
 	# -------------------------------------------------------
 	# AJAX media display handlers

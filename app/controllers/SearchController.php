@@ -701,15 +701,15 @@ class SearchController extends FindController {
 				);
 			}
 		}
-		$va_ret = array(
+		$ret = [
 			'module_path' => '',
 			'controller' => 'Search',
 			'action' => $browse,
 			'params' => array(
 				'key'
 			)
-		);
-		return $va_ret;
+		];
+		return $ret;
 	}
 	# -------------------------------------------------------
 	/**
