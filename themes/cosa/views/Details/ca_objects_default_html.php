@@ -220,7 +220,7 @@ if($show_nav){
 <?php
 if($tags_enabled){
 ?>
-	<div class="row" id="tagList">
+	<div class="row justify-content-center" id="tagList">
 		<?= $this->render('Details/tag_list_html.php'); ?>
 	</div>
 <?php

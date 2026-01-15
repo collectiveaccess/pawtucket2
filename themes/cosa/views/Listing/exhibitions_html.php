@@ -47,7 +47,7 @@
 <?php
 				# --- for contain $image = $qr_list->get('ca_object_representations.media.large', array("checkAccess" => $access_values, "class" => "card-img-top object-fit-contain px-3 pt-3 rounded-0"));
 				$image = $qr_list->get('ca_object_representations.media.large', array("checkAccess" => $access_values, "class" => "card-img-top object-fit-cover rounded-0"));
-				print $qr_list->getWithTemplate("<l class='text-decoration-none'><div class='card h-100 width-100 rounded-0 shadow border-0'>".$image."<div class='card-body'><div class='card-title fw-medium lh-sm fs-4 text-decoration-underline'>^ca_occurrences.preferred_labels</div><ifdef code='ca_occurrences.date'><div class='card-text small text-body-secondary'>^ca_occurrences.date</div></ifdef></div><div class='card-footer text-end bg-transparent border-0'><button class='btn btn-primary'>View <i class='bi bi-arrow-right small'></i></button></div></div></div></l>")."\n";
+				print $qr_list->getWithTemplate("<l><div class='card h-100 width-100 rounded-0 shadow border-0'>".$image."<div class='card-body'><div class='card-title fw-medium lh-sm fs-4'>^ca_occurrences.preferred_labels</div><ifdef code='ca_occurrences.date'><div class='card-text small text-body-secondary'>^ca_occurrences.date</div></ifdef></div><div class='card-footer text-end bg-transparent border-0'><button class='btn btn-primary'>View <i class='bi bi-arrow-right small'></i></button></div></div></div></l>")."\n";
 ?>
 				 
 			</div>

@@ -43,7 +43,18 @@ if (sizeof($va_criteria) > 0) {
 	$i = 0;
 	$vb_start_over = false;
 	foreach($va_criteria as $va_criterion) {
-		$vs_criteria .= caNavLink($this->request, stripslashes($va_criterion['value']).' <i aria-hidden="true" class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
+		switch($va_criterion["facet_name"]) {
+			case 'place_council_district':
+				$vs_criteria .= caNavLink($this->request, "Council District ".stripslashes($va_criterion['value']).' <i aria-hidden="true" class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
+				break;
+			case '_search':
+				if(preg_match('!^Address:"\[[\d]+!', $va_criterion['value'])) {
+					$va_criterion['value'] = _t('&lt;Area Selection&gt;');
+				}
+			default:
+				$vs_criteria .= caNavLink($this->request, stripslashes($va_criterion['value']).' <i aria-hidden="true" class="bi bi-x-circle-fill ms-1"></i>', 'browseRemoveFacet btn btn-secondary btn-sm w-100 mb-2', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key), array("aria-label" => _t("Remove filter: %1", $va_criterion['value'])));
+				break;
+		}
 		$vb_start_over = true;
 		$i++;
 	}
@@ -102,7 +113,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 			<form role="search" id="searchLocation" class="pt-1 pt-md-0" action="<?= caNavUrl($this->request, '*', 'Search', '*'); ?>">
 				<div class="input-group px-3 pb-3">
 					<label for="search-location" class="form-label visually-hidden">Search by location</label>
-					<input name="search_refine" id="search-location" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?= _t("Enter address or zipcode"); ?>" aria-label="<?= _t("Enter address or zipcode"); ?>">
+					<input name="search_refine" id="search-location" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?= _t("Address or zipcode"); ?>" aria-label="<?= _t("Enter address or zipcode"); ?>">
 					<input name="search_refine_prefix" id="search-location-prefix" type="hidden" value="Address">
 					<input type="hidden" name="key" value="<?= $vs_browse_key; ?>">
 					<button type="submit" class="btn rounded-0 bg-white" aria-label="search submit"><i class="bi bi-search"></i></button>
@@ -142,7 +153,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {
 							$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-							print "<li class='list-group-item border-0 bg-transparent px-0 py-1'>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</li>";
+							print "<li class='list-group-item border-0 bg-transparent px-0 py-1'>".caNavLink($this->request, (($vs_facet_name == "place_council_district") ? "District " : "").$va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</li>";
 							$vn_c++;
 					
 							if(($vn_c == $vn_facet_display_length_maximum) && ($vn_facet_size > $vn_facet_display_length_maximum))  {

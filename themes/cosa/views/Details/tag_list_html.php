@@ -32,7 +32,7 @@ $tag_list = 		$this->getVar("tagsAvailable");
 $selected_tags = 	$this->getVar("tagsSelected");
 $tag_counts = 		$this->getVar("tagCounts");
 ?>
-<div class="col-md-4" id="tagCounts">
+<div class="col-md-4 mb-4 <?= (!is_array($tag_counts)) ? "d-none" : ""; ?>" id="tagCounts">
 	<H2 class="fs-4"><?= _t('What People Are Saying'); ?></H2>
 	<ul class="list-group list-group-flush mb-5">
 <?php
@@ -47,7 +47,7 @@ $tag_counts = 		$this->getVar("tagCounts");
 ?>
 	</ul>
 </div>
-<div class="col-md-8">
+<div class="col-md-8 mb-4">
 	<H2 class="fs-4"><?= _t('Add Your Review'); ?></H2>
 	<div role="group" class="text-center" aria-label=<?= json_encode(_t('Tag reviews')); ?> id="tagList">
 <?php
