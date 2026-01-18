@@ -367,7 +367,7 @@ if(sizeof($va_related_ids)){
 }
 ?>
 <script>
-	document.addEventListener("load", function() {
+	htmx.onLoad(function(e) {
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 		  return new bootstrap.Tooltip(tooltipTriggerEl)
