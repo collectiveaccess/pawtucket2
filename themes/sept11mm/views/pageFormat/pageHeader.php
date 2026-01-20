@@ -94,7 +94,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search all collections">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
-					<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
+					<div class="form-text pb-3 pb-lg-0"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
 				</form>
 			</div>
 		</div>

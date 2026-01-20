@@ -179,11 +179,6 @@ body{
 					transition: color 0.25s;
 					color:#FFF;
 				}
-				@media(max-width:992px){
-					.nav-link{
-						padding:10px;
-					}
-				}
 				.nav-link.active::before{
 					top: -2px;
 					height: 8px;
@@ -203,11 +198,16 @@ body{
 			}
 		}
 	}
+	
+	@media(max-width:1199px){
+		.nav-link{
+			padding:10px;
+		}
+	}
 
 }
 /* -------------------- footer --------------------- */
 footer{
-	font-family: "gotham-narrow-light";
 	color:#333;
 	font-size:.875rem;
 	a{

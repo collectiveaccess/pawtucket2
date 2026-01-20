@@ -88,7 +88,7 @@ if($show_nav){
 ?>
 
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-6 pt-3">
 			{{{media_viewer}}}
 		</div>
 		<div class="col-md-6 pt-3">
@@ -155,11 +155,11 @@ if($show_nav){
 
 	</div>
 	<div class="row">
-		<div class="col-md-6 offset-6 text-center">
-			<div class="pt-3">
-				{{{<ifdef code="ca_objects.curators_comment"><span id="curatorCommentsButton" class="curatorCommentsShowHide collapse show"><button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorComments curatorCommentsButton"><i class='bi bi-justify'></i> Curator's Comment</button></span></ifdef>}}}<?php
+		<div class="col-md-6 offset-md-6 text-center">
+			<div class="pt-4">
+				{{{<ifdef code="ca_objects.curators_comment"><span id="curatorCommentsButton" class="curatorCommentsShowHide collapse show"><button class="btn btn-primary me-4 mb-2" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorComments curatorCommentsButton"><i class='bi bi-justify'></i> Curator's Comment</button></span></ifdef>}}}<?php
 				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-chat-left'></i> "._t("Feedback"), "btn btn-primary ms-4", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
+					print caNavLink($this->request, "<i class='bi bi-chat-left'></i> "._t("Feedback"), "btn btn-primary me-4 mb-2", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
 				}
 				if($copy_link_enabled){
 					print $this->render('Details/snippets/copy_link_html.php');
