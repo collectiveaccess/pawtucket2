@@ -116,9 +116,8 @@
 						<hr>
 						<ifdef code="ca_collections.rights_container.rights"><div class="unit"><label>Rights Statement</label>^ca_collections.rights_container.rights</div></ifdef>
 						<ifdef code="ca_collections.rights_container.use_reproduction"><div class="unit"><label>Use and Reproduction Conditions</label>^ca_collections.rights_container.use_reproduction</div></ifdef>
-						<ifdef code="ca_collections.credit"><div class="unit"><label>Credit</label>^ca_collections.credit</div></ifdef>
-						<ifdef code="ca_collections.exhibition_publication"><div class="unit"><label>Exhibition and Publication History</label>^ca_collections.exhibition_publication</div></ifdef>
-
+						<ifdef code="ca_collections.credit"><div class="unit"><label>Citation</label><span id='citationText'>^ca_collections.idno, ^ca_collections.credit, <?= $this->getVar('pageUrl'); ?></span> <a href="#" id="sharelink" class="col browse-share-link text-end" onclick="Copy(jQuery('#citationText').html()); return false;"><i class="fa fa-clipboard" aria-hidden="true"></i></a></div></ifdef>
+						<ifdef code="ca_collections.exhibition_publication"><div class="unit"><label>Exhibition and Publication History</label>^ca_collections.exhibition_publication</div></ifdef> 
 					</ifdef>}}}
 					{{{<ifcount code="ca_places" min="1">
 						<div class="unit"><label>Related Place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br>"><l>^ca_places.preferred_labels.name</l></unit>

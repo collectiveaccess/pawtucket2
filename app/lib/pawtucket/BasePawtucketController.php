@@ -40,7 +40,7 @@ class BasePawtucketController extends ActionController {
 	# -------------------------------------------------------
 	public function __construct($request, $response, $view_paths=null) {
 		parent::__construct($request, $response, $view_paths);
-		if (!$this->dont_require_login && ($request->getController() !== 'LoginReg') && $request->config->get('pawtucket_requires_login') && !($request->isLoggedIn())) {
+		if (!$this->dont_require_login && ($request->getController() !== 'LoginReg') && ($request->getController() !== 'Ban') && $request->config->get('pawtucket_requires_login') && !($request->isLoggedIn())) {
 			$response->setRedirect(caNavUrl($request, "", "LoginReg", "LoginForm"));
 		}
 		

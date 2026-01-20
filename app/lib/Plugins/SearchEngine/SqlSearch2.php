@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2025 Whirl-i-Gig
+ * Copyright 2010-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -631,6 +631,12 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	private function _processQueryPhrase(int $subject_tablenum, $query) {
 	 	$terms = $query->getTerms();
 	 	$private_sql = ($this->getOption('omitPrivateIndexing') ? ' AND swi.access = 0' : '');
+	 
+	 	$force_strict = false;
+	 	if($terms[0]->text[0] === '~') {
+	 		$terms[0]->text = substr($terms[0]->text, 1);
+	 		$force_strict = true;
+	 	}
 	 	
 	 	$term = $terms[0];
 	 	$field = $term->field;
@@ -642,7 +648,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 	
 	 	$field_sql = null;
 	 	
-	 	if ($this->getOption('strictPhraseSearching')) {
+	 	if ($this->getOption('strictPhraseSearching') || $force_strict) {
 	 		$words = [];
 	 		$temp_tables = [];
 	 		$ap_spec = null;
@@ -727,7 +733,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					SELECT swi.index_id + 1, 1, swi.field_index
 					FROM ca_sql_search_words sw 
 					INNER JOIN ca_sql_search_word_index AS swi ON sw.word_id = swi.word_id 
-					".(($tc > 0) ? " INNER JOIN ".$temp_tables[$tc - 1]." AS tt ON swi.index_id = tt.row_id AND swi.field_index = tt.field_container_id" : "")."
+					".(($tc > 0) ? " INNER JOIN ".$temp_tables[$tc - 1]." AS tt ON swi.index_id = tt.row_id AND swi.field_index = tt.field_container_id + 1" : "")."
 					WHERE 
 						sw.word {$word_op} ? AND swi.table_num = ? {$fld_limit_sql}
 						{$private_sql} {$anchor_sql}
@@ -1532,18 +1538,22 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			
 			if($va_words) {
 				$wc = sizeof($va_words);
+				if($wc > 255) { $wc = 255; }
 				foreach($va_words as $i => $vs_word) {
 					if(is_null($vs_word))  { continue; }
 					if (!($vn_word_id = $this->getWordID($vs_word))) { continue; }
-					$va_row_insert_sql[] = "({$subject_tablenum}, {$vn_row_id}, {$pn_content_tablenum}, '{$ps_content_fieldnum}', ".($pn_content_container_id ? $pn_content_container_id : 'NULL').", {$pn_content_row_id}, {$vn_word_id}, {$vn_boost}, {$vn_private}, {$vn_rel_type_id}, {$i}, {$wc}, {$fi})";
+					$ii = ($i > 255) ? 255 : $i; 
+					$va_row_insert_sql[] = "({$subject_tablenum}, {$vn_row_id}, {$pn_content_tablenum}, '{$ps_content_fieldnum}', ".($pn_content_container_id ? $pn_content_container_id : 'NULL').", {$pn_content_row_id}, {$vn_word_id}, {$vn_boost}, {$vn_private}, {$vn_rel_type_id}, {$ii}, {$wc}, {$fi})";
 					$seq++;
 				}
 			
 				if (is_array($va_literal_content)) {
 					$wc = sizeof($va_literal_content);
+					if($wc > 255) { $wc = 255; }
 					foreach($va_literal_content as $i => $vs_literal) {
 						if (!($vn_word_id = $this->getWordID($vs_literal))) { continue; }
-						$va_row_insert_sql[] = "({$subject_tablenum}, {$vn_row_id}, {$pn_content_tablenum}, '{$ps_content_fieldnum}', ".($pn_content_container_id ? $pn_content_container_id : 'NULL').", {$pn_content_row_id}, {$vn_word_id}, {$vn_boost}, {$vn_private}, {$vn_rel_type_id}, {$i}, {$wc}, {$fi})";
+						$ii = ($i > 255) ? 255 : $i; 
+						$va_row_insert_sql[] = "({$subject_tablenum}, {$vn_row_id}, {$pn_content_tablenum}, '{$ps_content_fieldnum}', ".($pn_content_container_id ? $pn_content_container_id : 'NULL').", {$pn_content_row_id}, {$vn_word_id}, {$vn_boost}, {$vn_private}, {$vn_rel_type_id}, {$ii}, {$wc}, {$fi})";
 						$seq++;
 					}
 				}
@@ -1552,7 +1562,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				$seq++;
 			}
 			
-			$fi++;
+			if ($fi < 255) { $fi++; }
 		}
 		
 		// do insert
@@ -1615,6 +1625,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		}
 		
 		$words = self::filterStopWords($words);
+		$words = array_values(array_filter(array_map(function_exists('mb_trim') ? 'mb_trim' : 'trim', $words), 'strlen'));
 		return $words;
 	}
 	# --------------------------------------------------
@@ -2199,34 +2210,66 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 */
 	private function _queryForGeocodeAttribute($attrval, $ap, $text, $text_upper) {
 		$upper_lat = $upper_long = $lower_lat = $lower_long = null;
-		if ($text_upper) {
-			if (!is_array($parsed_value = $attrval->parseValue("[{$text}]", $ap['element_info']))) {
-				return null;
+		if(!$text && $text_upper) {
+			$text = $text_upper;
+			$text_upper = null;
+		}
+		if ($text) {
+			if(is_array($parsed_values = caParseGISSearch($text))) {
+				$lower_lat = $parsed_values['min_latitude'];
+				$upper_lat = $parsed_values['max_latitude'];
+				$lower_long = $parsed_values['min_longitude'];
+				$upper_long = $parsed_values['max_longitude'];
+			} else {
+				if (!is_array($parsed_value = $attrval->parseValue($text, $ap['element_info'], ['returnBounds' => true]))) {
+					return null;
+				}
+				
+				$upper_lat = $upper_long = null;
+				if(isset($parsed_value['bounds'])) {
+					$lower_lat = (float)$parsed_value['bounds']['south'];
+					$lower_long = (float)$parsed_value['bounds']['west'];
+					$upper_lat = (float)$parsed_value['bounds']['north'];
+					$upper_long = (float)$parsed_value['bounds']['east'];
+				} else {
+					$lower_lat = (float)$parsed_value['value_decimal1'];
+					$lower_long = (float)$parsed_value['value_decimal2'];
+				}
+			
+				$default_search_radius = $this->search_config->get('geocode_search_default_radius') ?: "500m";
+				if($text_upper) {
+					$parsed_value = $attrval->parseValue($text_upper, $ap['element_info'], ['returnBounds' => true]);
+					$upper_lat = (float)$parsed_value['value_decimal1'];
+					$upper_long = (float)$parsed_value['value_decimal2'];
+				} elseif((!$upper_lat || !$upper_long) && ($parsed_values = caParseGISSearch("[{$lower_lat},{$lower_long} ~ {$default_search_radius}]"))) {
+					$lower_lat = $parsed_values['min_latitude'];
+					$upper_lat = $parsed_values['max_latitude'];
+					$lower_long = $parsed_values['min_longitude'];
+					$upper_long = $parsed_values['max_longitude'];
+				}
+				
+				if(!$upper_lat || !$upper_long) {
+					$upper_lat = $lower_lat;
+					$upper_long = $lower_long;
+					
+					$upper_lat += .01;
+					$upper_long += .01;
+					$lower_lat -= .01;
+					$lower_long -= .01;
+				}
+			
+				// MySQL BETWEEN always wants the lower value first ... BETWEEN 5 AND 3 wouldn't match 4 ... So we swap the values if necessary
+				if($upper_lat < $lower_lat) {
+					$tmp = $upper_lat;
+					$upper_lat = $lower_lat;
+					$lower_lat = $tmp;
+				}
+				if($upper_long < $lower_long) {
+					$tmp = $upper_long;
+					$upper_long = $lower_long;
+					$lower_long = $tmp;
+				}
 			}
-			$lower_lat = (float)$parsed_value['value_decimal1'];
-			$lower_long = (float)$parsed_value['value_decimal2'];
-		
-		
-			$parsed_value = $attrval->parseValue("[{$text_upper}]", $ap['element_info']);
-			$upper_lat = (float)$parsed_value['value_decimal1'];
-			$upper_long = (float)$parsed_value['value_decimal2'];
-		
-			// MySQL BETWEEN always wants the lower value first ... BETWEEN 5 AND 3 wouldn't match 4 ... So we swap the values if necessary
-			if($upper_lat < $lower_lat) {
-				$tmp = $upper_lat;
-				$upper_lat = $lower_lat;
-				$lower_lat = $tmp;
-			}
-			if($upper_long < $lower_long) {
-				$tmp = $upper_long;
-				$upper_long = $lower_long;
-				$lower_long = $tmp;
-			}
-		} elseif(is_array($parsed_values = caParseGISSearch($text))) {
-			$lower_lat = $parsed_values['min_latitude'];
-			$upper_lat = $parsed_values['max_latitude'];
-			$lower_long = $parsed_values['min_longitude'];
-			$upper_long = $parsed_values['max_longitude'];
 		} else {
 			return [];
 		}
@@ -2250,7 +2293,6 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				AND
 				({$where_sql})
 		";
-		
 		return ['sql' => $sql, 'params' => $params];
 	}
 	# -------------------------------------------------------

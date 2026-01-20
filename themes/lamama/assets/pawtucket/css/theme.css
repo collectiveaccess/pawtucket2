@@ -509,3 +509,19 @@ hr{
 		margin-bottom: 5vh;
 	}
 }
+
+div.frontHead {
+	font-weight: 700;
+	font-size: 45px;
+	color: #000;
+	font-family: Lato;
+	margin-top: 2vh;
+}
+
+div.smallHead {
+	font-weight: 700;
+	font-size: 25px;
+	color: #000;
+	font-family: Lato;
+	margin-top: 0;
+}

@@ -1118,3 +1118,12 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	#lbViewButtons {
 		display:none;
 	}
+
+
+#regCaptchaSubmit .btn-default {
+	background-color: #00cfb7;
+}
+
+.banContinueButton, #banContinueButton:hover {
+	color: #fff;
+}

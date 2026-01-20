@@ -48,7 +48,14 @@
 				</div>
 			</div>
 		</footer><!-- end footer -->
-
+<?php
+	//
+	// Output HTML for debug bar
+	//
+	if(Debug::isEnabled()) {
+		print Debug::$bar->getJavascriptRenderer()->render();
+	}
+?>
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel" role="complementary"> 
@@ -92,5 +99,15 @@
 <?php
 	print $this->render("Cookies/banner_html.php");	
 ?>
+<script type='text/javascript'>
+function Copy(url) {
+	var getUrl = document.createElement('input');
+	document.body.appendChild(getUrl);
+	getUrl.value = url;
+	getUrl.select();
+	document.execCommand('copy');
+	document.body.removeChild(getUrl);
+}
+</script>
 	</body>
 </html>

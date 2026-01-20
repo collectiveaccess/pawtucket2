@@ -37,12 +37,17 @@ class BaseBanHammerPlugin {
 	 */
 	static $config;
 	
+	/**
+	 *
+	 */
+	static $details;
+	
 	# ------------------------------------------------------
 	/**
 	 *
 	 */
 	static public function init($request, $options=null) {
-		if(!self::$config) { self::$config = Configuration::load(__CA_CONF_DIR__.'/ban_hammer.conf'); }
+		if(!self::$config) { self::$config = Configuration::load('ban_hammer.conf'); }
 		return true;
 	}
 	# ------------------------------------------------------
@@ -77,7 +82,7 @@ class BaseBanHammerPlugin {
 	/**
 	 * Ban is partial or global?
 	 */
-	static protected function getTTLFromConfig(array $config) : int {
+	static protected function getTTLFromConfig(?array $config) : int {
 		$ttl = $config['ttl'] ?? 24 * 60 * 60;	// default is 24 hours
 		$ttl = (int)$ttl;
 		if($ttl <= 0) { $ttl = 24 * 60 * 60; }
@@ -89,6 +94,20 @@ class BaseBanHammerPlugin {
 	 */
 	static public function getLogger() {
 		return self::$config->get('logging') ? caGetLogger(['logName' => 'ban']) : null;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function setDetails($details) {
+		self::$details = $details;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function getDetails() {
+		return self::$details;
 	}
 	# ------------------------------------------------------
 }
