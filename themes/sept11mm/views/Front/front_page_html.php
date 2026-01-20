@@ -69,7 +69,7 @@
 				 		<?php print caNavLink($this->request, _t("World Trade Center Site Memorial Competition Collection")." <i class='fs-5 bi bi-chevron-right'></i>", "py-3 py-lg-0 fs-4 lh-sm btn btn-primary d-flex h-100 align-items-center justify-content-center", "", "Browse", "boards"); ?>
 					</div>
 				 	<div class="collectionLink">
-						<?php print caNavLink($this->request, _t("Featured Galleries")." <i class='fs-5 bi bi-chevron-right'></i>", "py-3 py-lg-0 fs-4 btn btn-primary d-flex h-100 align-items-center justify-content-center", "", "Gallery", "Index"); ?>
+						<?php print caNavLink($this->request, _t("Feature Galleries")." <i class='fs-5 bi bi-chevron-right'></i>", "py-3 py-lg-0 fs-4 btn btn-primary d-flex h-100 align-items-center justify-content-center", "", "Gallery", "Index"); ?>
 					</div>
 				</div>
 				<div class="col-1"></div>
