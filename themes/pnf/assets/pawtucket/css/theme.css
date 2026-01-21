@@ -624,12 +624,16 @@ a.facetApply, button.facetApplySlider {
 	text-align:center;
 }
 /* Ornaments Intro */
+.ornamentsGrid a{
+	text-decoration:none !important;
+}
 .ornamentsCatItem{
     padding: 35px 0px 0px 0px;
 	text-align:center;
 	box-shadow:0px 0px 5px rgba(0, 0, 0, 0.35);
 	height:85px;
 	overflow:hidden;
+	text-decoration:none !important;
 }
 a .ornamentsCatItem{	
 	color: #7f4539;
@@ -638,8 +642,7 @@ a .ornamentsCatItem{
     font-weight:bold;
     margin-bottom:20px;
 	text-align:center;
-	text-decoration:none;
-	text-transform:capitalize;
+	text-decoration:none !important;
 }
 a .ornamentsCatItem:hover{
 	box-shadow:0px 0px 5px rgba(0, 0, 0, 0.6);

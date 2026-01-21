@@ -19,7 +19,7 @@
 <?php
 			}else{
 ?>
-				<H2>Ornaments & Illustrations</H2>
+				<H2>Ornamentos e Ilustraciones</H2>
 				<hr/>
 
 				<div class='trimText'>
@@ -34,7 +34,7 @@
 <?php
 		if($qr_categories && $qr_categories->numHits()){
 ?>
-			<div>
+			<div class="row ornamentsGrid">
 <?php
 			while($qr_categories->nextHit()){
 				if(!in_array(strToLower($qr_categories->get("ca_list_item_labels.name_singular")), array("illustration", "printer's device"))){
@@ -45,7 +45,28 @@
 			</div>
 <?php
 		}
+			if ($g_ui_locale == 'en_US'){			
 ?>
+				<H2 style="margin-top:40px;">Bibliography</H2>
+				<hr/>
+
+				<div class='trimText'>
+					{{{ornamentsBibEnglish}}}
+				</div>
+<?php
+			}else{
+?>
+				<H2 style="margin-top:40px;">Bibliografia</H2>
+				<hr/>
+
+				<div class='trimText'>
+					{{{ornamentsBibSpanish}}}
+				</div>
+<?php
+			
+			}		
+?>
+
 	</div>
 </div>
 

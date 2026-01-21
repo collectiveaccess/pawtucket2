@@ -161,8 +161,8 @@
 					if($vs_tmp = $qr_res->get("ca_objects.preferred_labels.name")){
 						$va_parts[] = $vs_tmp;
 					}
-					if($vs_rel_suelta_id = $qr_res->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='book' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='book' length='1' limit='1'>^ca_objects.object_id</unit></ifcount>")){
-						$va_parts[] = $vs_rel_suelta_id;
+					if($vs_ornament_idno = $qr_res->getWithTemplate("<ifdef code='ca_objects.idno'>^ca_objects.idno</ifdef>")){
+						$va_parts[] = $vs_ornament_idno;
 					}
 					
 					$vs_expanded_info 	= "<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>".caDetailLink($this->request, join("<br/>", $va_parts), '', $vs_table, $vn_id)."</div><!-- bResultItemExpandedInfo -->";
