@@ -127,7 +127,7 @@ $( document ).ready(function() {
 <?php
 if($this->request->isLoggedIn()){
 ?>
-					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Ornaments'), '', 'Pictorials', 'ornaments', ''); ?></li>
+					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Ornaments and Illustrations'), '', 'Pictorials', 'ornaments', ''); ?></li>
 <?php
 }
 ?>
@@ -176,7 +176,7 @@ if($this->request->isLoggedIn()){
 <?php
 if($this->request->isLoggedIn()){
 ?>
-					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Ornaments'), '', 'Pictorials', 'ornaments', ''); ?></li>
+					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Ornamentos e Ilustraciones'), '', 'Pictorials', 'ornaments', ''); ?></li>
 <?php
 }
 ?>					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#">Recursos</a>
