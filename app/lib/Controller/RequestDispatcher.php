@@ -37,7 +37,6 @@ require_once(__CA_LIB_DIR__."/Controller/Response/ResponseHTTP.php");
 require_once(__CA_LIB_DIR__."/AccessRestrictions.php");
 require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
 
-
 class RequestDispatcher extends BaseObject {
 	# -------------------------------------------------------
 	private $request;
@@ -185,19 +184,20 @@ class RequestDispatcher extends BaseObject {
 			do {
 				$this->response->clearContent();
 				$vs_classname = ucfirst($this->ops_controller).'Controller';
-				
+				$ops_module_path = $this->opa_module_path ? join('/', $this->opa_module_path)."/" : '';
+
 				// first check for controller in theme...
-				if (!defined('__CA_THEME_DIR__') || !file_exists(__CA_THEME_DIR__.'/controllers/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php') || !include_once(__CA_THEME_DIR__.'/controllers/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php')) {
+				if (!defined('__CA_THEME_DIR__') || !file_exists(__CA_THEME_DIR__.'/controllers/'.$ops_module_path.$vs_classname.'.php') || !include_once(__CA_THEME_DIR__.'/controllers/'.$ops_module_path.$vs_classname.'.php')) {
 					// then check controllers directory...
-					if (!file_exists($this->ops_controller_path.'/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php') || !include_once($this->ops_controller_path.'/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php')) {
+					if (!file_exists($this->ops_controller_path.'/'.$ops_module_path.$vs_classname.'.php') || !include_once($this->ops_controller_path.'/'.$ops_module_path.$vs_classname.'.php')) {
 						// ... next check theme plugins
-						if (!file_exists($this->ops_theme_plugins_path.'/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php') || !include_once($this->ops_theme_plugins_path.'/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php')) {
+						if (!file_exists($this->ops_theme_plugins_path.'/'.$ops_module_path.$vs_classname.'.php') || !include_once($this->ops_theme_plugins_path.'/'.$ops_module_path.$vs_classname.'.php')) {
 							// ... next check application plugins
-							if (!file_exists($this->ops_application_plugins_path.'/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php') || !include_once($this->ops_application_plugins_path.'/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php')) {
+							if (!file_exists($this->ops_application_plugins_path.'/'.$ops_module_path.$vs_classname.'.php') || !include_once($this->ops_application_plugins_path.'/'.$ops_module_path.$vs_classname.'.php')) {
 						
 								// ... next check the generic "_root_" plugin directory
 								// plugins in here act as if they are in the app/controllers directory
-								if (!file_exists($this->ops_application_plugins_path.'/_root_/controllers/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php') || !include_once($this->ops_application_plugins_path.'/_root_/controllers/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php')) {					
+								if (!file_exists($this->ops_application_plugins_path.'/_root_/controllers/'.$ops_module_path.$vs_classname.'.php') || !include_once($this->ops_application_plugins_path.'/_root_/controllers/'.$ops_module_path.$vs_classname.'.php')) {
 									// ... next check for root controllers in plugins 
 									$o_app_plugin_manager = new ApplicationPluginManager();
 									$va_app_plugin_names = $o_app_plugin_manager->getPluginNames();
@@ -211,14 +211,18 @@ class RequestDispatcher extends BaseObject {
 									}
 							
 									if ($vb_is_error) {
-										
 										// Try routing table?
 										if($route = $this->router->dispatch($this->request)) {
 											$action_path = explode('/', $route['to']['action']);
-											$this->request->setModulePath($this->opa_module_path = $route['to']['module'] ? [$route['to']['module']] : []);
+											$this->opa_module_path = $route['to']['module'] ? [$route['to']['module']] : [];
+											$this->request->setModulePath($route['to']['module'] ? $route['to']['module'] : '');
 											$this->request->setController($this->ops_controller = $route['to']['controller']);
 											$this->request->setAction($this->ops_action = array_shift($action_path));
 											$this->request->setActionExtra($this->ops_action_extra = join('/', $action_path));
+											
+											foreach($route['to']['params'] ?? [] as $p => $v) {
+												$this->request->setParameter($p, $v);
+											}
 											continue;
 										}
 			

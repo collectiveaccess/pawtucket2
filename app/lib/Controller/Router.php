@@ -87,7 +87,7 @@ class Router {
 					$ri['to'][$k] = caProcessTemplate($v, $params);
 				}
 				
-				$ri['to']['params'] = $params;
+				$ri['to']['params'] = array_merge($ri['to']['params'] ?? [], $params);
 				return [
 					'to' => $ri['to'],
 					'route' => $route
