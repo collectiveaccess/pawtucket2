@@ -594,18 +594,10 @@ h5.headingVernacularName {
 	}
 }
 
-/* --- classroom --- */
-.classroom a:hover, .classroom a:active, .classroom a:focus{
-	color:#738354;
-}
 .lbSetImgPlaceholder{
 	padding:30px 5px 32px 5px;
 }
-.classroom HR, .classroom hr{
-	height:1px;
-	background-color:#dedede;
-	border:0px;
-}
+
 /* BROWSE Refine Menu */
 #bViewButtonsLeft{
 	text-align: left;

@@ -99,5 +99,15 @@
 <?php
 	print $this->render("Cookies/banner_html.php");	
 ?>
+<script type='text/javascript'>
+function Copy(url) {
+	var getUrl = document.createElement('input');
+	document.body.appendChild(getUrl);
+	getUrl.value = url;
+	getUrl.select();
+	document.execCommand('copy');
+	document.body.removeChild(getUrl);
+}
+</script>
 	</body>
 </html>

@@ -348,6 +348,10 @@
 				if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {
 					$vs_provenance.= ", ".$vs_remark;
 				}				
+				
+				if ($t_prov_rel->get('ca_objects_x_collections.gift_artist') == $yes_list_value_id) {
+					$vs_provenance.= ", gift of the artist";
+				}
 				$vs_provenance.= "<i class='fa fa-chevron-right'></i></div>";
 			} elseif ($t_prov->get('access') != 0 ){
 				$va_provenance_id = $t_prov->get('ca_collections.collection_id');

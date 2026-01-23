@@ -25,16 +25,16 @@
  *
  * ----------------------------------------------------------------------
  */
-$t_object = 			$this->getVar("item");
+$t_item = 			$this->getVar("item");
 $va_comments = 			$this->getVar("comments");
 $va_tags = 				$this->getVar("tags_array");
 $vn_comments_enabled = 	$this->getVar("commentsEnabled");
 $vn_share_enabled = 	$this->getVar("shareEnabled");
 $vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-$vn_id =				$t_object->get('ca_objects.object_id');
+$vn_id =				$t_item->get('ca_objects.object_id');
 $va_access_values = 	$this->getVar("access_values");
 
-$iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'.$t_object->getPrimaryKey(), ['pretty' => 1], ['absolute' => true, 'isServiceUrl' => true]);
+$iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'.$t_item->getPrimaryKey(), ['pretty' => 1], ['absolute' => true, 'isServiceUrl' => true]);
 
 ?>
 <div class="row">
@@ -53,7 +53,7 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 				<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 			</div>
 			<div class='col-sm-12 col-md-2 inquireCol'>
-				<?php print caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id"))); ?>
+				<?php print caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $t_item->get("ca_objects.object_id"))); ?>
 			</div>
 		</div>
 		<div class="row">
@@ -66,7 +66,7 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 				{{{representationViewer}}}
 				
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "basic", "bsColClasses" => "smallpadding col-sm-3 col-md-2 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "basic", "bsColClasses" => "smallpadding col-sm-3 col-md-2 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				
 <?php
 				# Comment and Share Tools
@@ -160,7 +160,9 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
 				{{{map}}}
 			</div>
-			<div class='col-sm-6 col-md-6 col-lg-5'>		
+			<div class='col-sm-6 col-md-6 col-lg-5'>	
+				{{{<ifdef code="ca_objects.credit"><div class="unit"><label>Citation</label><span id='citationText'>^ca_objects.idno, ^ca_objects.credit, <?= "https://".__CA_SITE_HOSTNAME__.__CA_URL_ROOT__."/".$t_item->get('idno'); ?></span> &nbsp; <a href="#" id="sharelink" class="col browse-share-link text-end" onclick="Copy(jQuery('#citationText').html()); return false;"><i class="fa fa-clipboard" aria-hidden="true"></i></a></div></ifdef>}}}
+							
 				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="work">
 					<div class="unit"><label>Work<ifcount code="ca_occurrences" min="2" restrictToTypes="work">s</ifcount></label>
 					<unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter="<br>">
@@ -175,7 +177,7 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 				</div></ifcount>}}}
 				{{{<ifdef code="ca_objects.view"><div class="unit"><label>View</label>^ca_objects.view%delimiter=,_</div></ifdef>}}}
 <?php
-				$va_subjects = $t_object->get("ca_objects.subjects", array("returnAsArray" => 1));
+				$va_subjects = $t_item->get("ca_objects.subjects", array("returnAsArray" => 1));
 				if(is_array($va_subjects) && sizeof($va_subjects)){
 					$va_subjects_formatted = array();
 					foreach($va_subjects as $vs_subject){
@@ -208,14 +210,14 @@ $iiif_manifest_url = caNavUrl($this->request, '', 'IIIF', 'manifest/ca_objects:'
 <?php
 				}
 				$vs_rights_text = $this->getVar("rights_text");
-				if($tmp = $t_object->get("ca_objects.rights_container.rights")){
+				if($tmp = $t_item->get("ca_objects.rights_container.rights")){
 					$vs_rights_text = $tmp;
 				}
 ?>
 				<div class="unit"><label>Rights Statement</label><?php print $vs_rights_text; ?></div>
 <?php
 				$vs_use_reproduction = "<div class='copyRightIcon'><a href='https://creativecommons.org/licenses/by-sa/4.0/' target='_blank' title='Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)'>".caGetThemeGraphic($this->request, 'by-sa.png', array("alt" => "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"))."</a></div>";
-				if($tmp = $t_object->get("ca_objects.rights_container.use_reproduction")){
+				if($tmp = $t_item->get("ca_objects.rights_container.use_reproduction")){
 					if($tmp != "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"){
 						$vs_use_reproduction = $tmp;
 					}

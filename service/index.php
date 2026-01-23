@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2023 Whirl-i-Gig
+ * Copyright 2008-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -47,7 +47,9 @@ try {
 	$resp->addHeader("Cache-Control", "no-cache, must-revalidate");
 	$resp->addHeader("Expires", "Mon, 26 Jul 1997 05:00:00 GMT");
 
-	$vb_auth_success = $req->doAuthentication(['noPublicUsers' => false, "dont_redirect" => true, "no_headers" => true]);
+	if($g_request->getController() !== 'IIIF') {	// IIIF service handles auth itself
+		$vb_auth_success = $req->doAuthentication(array('noPublicUsers' => true, "dont_redirect" => true, "no_headers" => true));
+	}
 	
 	//
 	// Dispatch the request

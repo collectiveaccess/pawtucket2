@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2014 Whirl-i-Gig
+ * Copyright 2011-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -41,23 +41,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>CollectiveAccess configuration error display</title>
-	<link href="<?php print $vs_path; ?>/themes/default/assets/pawtucket/css/error.css" rel="stylesheet" type="text/css" />
+	<link href="<?= $vs_path; ?>/themes/default/assets/pawtucket/css/error.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div id='box'>
-	<div id="logo"><img src="<?php print $vs_path ?>/themes/default/assets/pawtucket/graphics/logos/logo.svg"/></div><!-- end logo -->
+	<div id="logo"><img src="<?= $vs_path ?>/themes/default/assets/pawtucket/graphics/logos/logo.svg"  width="350" height="35" alt="CollectiveAccess"/></div><!-- end logo -->
 	<div id="content">
-		<?php print "<div class='error'>An error in your system configuration has been detected</div>
+		<?= "<div class='error'>An error in your system configuration has been detected</div>
 			General installation instructions can be found
-			<a href='http://wiki.collectiveaccess.org/index.php?title=Installation_(Pawtucket)' target='_blank'>here</a>.
+			<a href='https://manual.collectiveaccess.org' target='_blank'>here</a>.
 			For more specific hints on the existing issues please have a look at the messages below."; ?>
 		<br/><br/>
 <?php
 foreach ($opa_error_messages as $vs_message):
 ?>
 		<div class="permissionError">
-			<img src='<?php print $vs_path; ?>/themes/default/assets/pawtucket/graphics/glyphicons_078_warning_sign.png' class="permissionErrorIcon"/>
-			<?php print $vs_message; ?>
+			<img src='<?= $vs_path; ?>/themes/default/assets/pawtucket/graphics/glyphicons_078_warning_sign.png' class="permissionErrorIcon"/>
+			<?= $vs_message; ?>
 			<div style='clear:both; height:1px;'><!-- empty --></div>
 		</div>
 		<br/>
