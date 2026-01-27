@@ -2390,7 +2390,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 		}
 		
 		$vs_view_path = (isset($pa_options['viewPath']) && $pa_options['viewPath']) ? $pa_options['viewPath'] : $po_request->getViewsDirectoryPath();
-		$o_view = new View($po_request, "{$vs_view_path}/bundles/");
+		$o_view = new View($po_request, "{$vs_view_path}/Search/");
 		
 		$o_view->setVar('request', $po_request);
 		$o_view->setVar('elements', $va_elements_by_container);
