@@ -36,6 +36,7 @@
 	<input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>"/>
 	<div class="row">
 		<div class="col-md-12 col-lg-6">			
+			<div class="fs-5 pb-4">{{{login_page_text}}}</div>
 			<div class="bg-light px-4 pt-4 pb-2 mb-4">
 				<div class="row">
 					<div class="col mb-4">

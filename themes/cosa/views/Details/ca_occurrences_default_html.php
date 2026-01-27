@@ -158,6 +158,10 @@ if($show_nav){
 										</ifdef>
 									</ifdef>
 								</dd></unit>
+								<if rule='^ca_places.restrictions.visitation =~ /Yes/'><ifdef code="ca_places.restrictions.restriction_details">
+										<dt>Visitation Restrictions</dt>
+										<dd>^ca_places.restrictions.restriction_details</dd>
+								</if></if>
 							</ifcount>
 						</dl>}}}
 					</div>
@@ -173,13 +177,29 @@ if($show_nav){
 	<div class="row">
 		<div class="col"><hr class="pb-4"></div>
 	</div>
-	<div class="row" id="browseResultsContainer">	
+	<div class="row exhibitionsDetail" id="browseResultsContainer">	
 		<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" delimiter="">
-			<div class="col-md-6 col-lg-4 d-flex pb-4"><l>
-				<div id="row2020" class="card flex-grow-1 w-100 h-100 rounded-0 shadow border-0 mb-4"><l>^ca_object_representations.media.medium%class=card-img-top,object-fit-contain,px-3,pt-3,rounded-0
-					<div class="card-body"><div class='card-title'><div class='fw-medium lh-sm fs-5'><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='artist'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist' delimiter=', '>^ca_entities.preferred_labels</unit><br/></ifcount><i>^ca_objects.preferred_labels.name</i></div></div><ifdef code='ca_objects.date_completed|ca_objects.media'><div class='card-text small lh-sm'>^ca_objects.date_completed<ifdef code='ca_objects.date_completed,ca_objects.media'>, </ifdef><ifdef code='ca_objects.date_completed,ca_objects.media'>^ca_objects.media</ifdef></div></ifdef></div></l>
-					<div class="card-footer text-end bg-transparent">
-						<l class="btn btn-white px-2 ms-1" title="View Record" aria-label="View Record"><i class="bi bi-arrow-right-square"></i> Get Details</l>
+			<div class="col-md-6 d-flex pb-4">
+				<div class="card flex-grow-1 w-100 h-100 rounded-0 shadow border-0">
+					<l><div class="row g-0 align-items-center">
+						<div class="col-6">
+							^ca_object_representations.media.medium%class=card-img-top,object-fit-contain,p-3,rounded-0
+						</div>
+						<div class="col-6">
+							<div class="card-body px-0">
+								<div class='card-title'>
+									<div class='fw-medium lh-sm fs-5'><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='artist'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist' delimiter=', '>^ca_entities.preferred_labels</unit><br/></ifcount><i>^ca_objects.preferred_labels.name</i>
+									</div>
+								</div><ifdef code='ca_objects.date_completed|ca_objects.media'><div class='card-text small lh-sm'>^ca_objects.date_completed%format=Y<ifdef code='ca_objects.date_completed,ca_objects.media'>, </ifdef><ifdef code='ca_objects.date_completed,ca_objects.media'>^ca_objects.media</ifdef></div></ifdef>
+							</div>
+						</div>
+					</div></l>
+					<div class="row">
+						<div class="col-12">
+							<div class="card-footer text-end bg-transparent">
+								<l class="btn btn-white px-2 ms-1" title="View Record" aria-label="View Record"><i class="bi bi-arrow-right-square"></i> Get Details</l>
+							</div>
+						</div>
 					</div>
 				 </div>		
 			</div>

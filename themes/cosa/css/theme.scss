@@ -172,7 +172,15 @@ nav.navbar{
 		font-size:.9em;
 	}
 }
-
+/* -------------- Detail --------------- */
+#browseResultsContainer.exhibitionsDetail{
+	.card{
+		img{
+			height: 350px;
+			width: 100%;
+		}
+	}
+}
 /* Ensure leaflet area select selection box appears over map pins */
 div.leaflet-overlay-pane {
 	border: 1px solid red !important;

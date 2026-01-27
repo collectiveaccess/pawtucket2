@@ -48,7 +48,7 @@ $tag_counts = 		$this->getVar("tagCounts");
 	</ul>
 </div>
 <div class="col-md-8 mb-4">
-	<H2 class="fs-4"><?= _t('Add Your Review'); ?></H2>
+	<H2 class="fs-4"><?= _t('Share Your Thoughts'); ?></H2>
 	<div role="group" class="text-center" aria-label=<?= json_encode(_t('Tag reviews')); ?> id="tagList">
 <?php
 	foreach($tag_list as $tag_id => $tag){
