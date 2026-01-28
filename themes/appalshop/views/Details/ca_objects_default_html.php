@@ -117,7 +117,7 @@ if($show_nav){
 
 					<ifdef code="ca_objects.av_date.av_dates_value"><dt>Date</dt><dd>^ca_objects.av_date.av_dates_value<ifdef code="ca_objects.av_date.av_dates_value">, ^ca_objects.av_date.av_dates_value</ifdef></dd></ifdef>
 					<ifdef code="ca_objects.description_w_type">
-						<dt>Description<ifdef code="ca_objects.description_w_type.description"> (^ca_objects.description_w_type.description)</ifdef></dt><dd>^ca_objects.description_w_type.description</dd>
+						<dt>Description<ifdef code="ca_objects.description_w_type.description_type"> (^ca_objects.description_w_type.description_type)</ifdef></dt><dd>^ca_objects.description_w_type.description</dd>
 					</ifdef>
 					<ifcount restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer" code="ca_entities" min="1" max="1"><dt>Creator</dt></ifcount>
 					<ifcount restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer" code="ca_entities" min="2"><dt>Creators</dt></ifcount>
