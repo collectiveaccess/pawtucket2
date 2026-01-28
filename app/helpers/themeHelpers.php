@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/helpers/themeHelpers.php : utility functions for setting database-stored configuration values
+ * app/helpers/themeHelpers.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2024 Whirl-i-Gig
+ * Copyright 2009-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -511,12 +511,12 @@ function caObjectRepresentationThumbnails($po_request, $pn_representation_id, $p
 				break;
 			# -------------------------------
 			case "basic":
-				$va_links[$vn_rep_id] = "<a href='#' id='repThumb_{$i}' onclick='return setItem({$i});' class='repThumb'>".$vs_thumb.$vs_rep_label."</a>\n";
+				$va_links[$vn_rep_id] = "<a href='#' id='repThumb_{$i}' onclick='return setItem({$i});' class='repThumb' data-representation_id='{$vn_rep_id}'>".$vs_thumb.$vs_rep_label."</a>\n";
 				break;
 			# -------------------------------
 			default:
 			case "detail":
-				$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb.$vs_rep_label, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), array("representation_id" => $vn_rep_id));
+				$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb.$vs_rep_label, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), ["representation_id" => $vn_rep_id], ['data-representation_id' => $vn_rep_id]);
 				break;
 			# -------------------------------
 		}
@@ -1600,5 +1600,53 @@ function caCreateNavigationLinksFromText(array $text, string $module, string $co
 	}
 	ksort($links);
 	return $links;
+}
+# ---------------------------------------
+/**
+ * Return list of values supported for web analytics integation
+ *
+ * @return array
+ */
+function caGetAnalyticsIntegrationValueList() : array {
+	return [
+		'head' => [
+			'name' => _t('Analytics code'),
+			'tooltip' => _t('Content to be added to the &lt;head&gt; section on all Pawtucket pages. Your analytics provider should have provided this content.'),
+			'width' => '670px',
+			'height' => '200px'
+		],
+		'bodyStart' => [
+			'name' => _t('Analytics code (start of &lt;body&gt;)'),
+			'tooltip' => _t('Content to be added to the end of the &lt;body&gt; section on all Pawtucket pages. Your analytics provider should have provided this content.'),
+			'width' => '670px',
+			'height' => '200px'
+		],
+		'bodyEnd' => [
+			'name' => _t('Analytics code (end of &lt;body&gt;)'),
+			'tooltip' => _t('Content to be added to the start of the &lt;body&gt; section on all Pawtucket pages. Your analytics provider should have provided this content.'),
+			'width' => '670px',
+			'height' => '200px'
+		]
+	];
+}
+# ---------------------------------------
+/**
+ * Return values for web analytics integation
+ *
+ * @return array
+ */
+function caGetAnalyticsIntegrationValues() : array {
+	if(CompositeCache::contains('pawtucket_analytics')) {
+		return CompositeCache::fetch('pawtucket_analytics');
+	}
+	$o_appvars = new ApplicationVars();
+	
+	$acc = [];
+	foreach(caGetAnalyticsIntegrationValueList() as $name => $info) {
+		$v = $o_appvars->getVar("pawtucket_analytics_{$name}");
+		$acc[$name] = $v;
+	}
+	CompositeCache::save('pawtucket_analytics', $acc, 'default', 300);	// 5 minute ttl
+	return $acc;
 }
 # ---------------------------------------

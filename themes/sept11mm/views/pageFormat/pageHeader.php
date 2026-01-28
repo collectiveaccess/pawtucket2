@@ -57,7 +57,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
-	
+	<link rel="stylesheet" type="text/css" href="https://cloud.typography.com/7401856/6502032/css/fonts.css" />
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
 	<script>
@@ -69,7 +69,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 	<nav class="navbar navbar-expand-xl shadow-sm">
 		<div class="container-fluid">
 			<?php #print caNavlink($this->request, caGetThemeGraphic($this->request, 'logo-full.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")), "navbar-brand  img-fluid ps-3", "", "", ""); ?>
-			<a href="https://911memorial.org" class="navbar-brand  img-fluid ps-3"><?= caGetThemeGraphic($this->request, 'logo-full.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")); ?></a>
+			<a href="https://911memorial.org" class="navbar-brand  img-fluid ps-3 py-2"><?= caGetThemeGraphic($this->request, '01_911_25th_HORIZ_POS.png', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")); ?></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
@@ -94,7 +94,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search all collections">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
-					<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
+					<div class="form-text pb-3 pb-lg-0"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
 				</form>
 			</div>
 		</div>

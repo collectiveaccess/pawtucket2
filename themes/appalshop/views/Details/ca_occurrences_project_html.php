@@ -156,7 +156,7 @@ MetaTagManager::addMeta("og:image", $t_item->getWithTemplate("^ca_object_represe
 													<unit relativeTo='ca_objects' restrictToTypes='".$type_idno."' limit='6' delimiter=''>
 														<div class='col-md-6 col-lg-4 d-flex'>
 															<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
-															  <l><ifdef code='ca_object_representations.media'>^ca_object_representations.media.medium%class=card-img-top,test-style</ifdef><ifnotdef code='ca_object_representations.media'><div class='display-1 text-center d-flex bg-light ca-placeholder' aria-label='media placeholder' role='img'><i class='bi bi-card-image align-self-center w-100'></i></div></ifnotdef></l>
+															  <l><ifdef code='ca_object_representations.media'>xx^ca_object_representations.media.large%class=card-img-top,test-style</ifdef><ifnotdef code='ca_object_representations.media'><div class='display-1 text-center d-flex bg-light ca-placeholder' aria-label='media placeholder' role='img'><i class='bi bi-card-image align-self-center w-100'></i></div></ifnotdef></l>
 																<div class='card-body'>
 																	<div class='card-title'><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div>
 																</div>

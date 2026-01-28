@@ -16,7 +16,7 @@ Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
 version 0.6.9
 */
 
-/*! Axios v1.12.2 Copyright (c) 2025 Matt Zabriskie and contributors */
+/*! Axios v1.13.2 Copyright (c) 2025 Matt Zabriskie and contributors */
 
 /*! chevrotain - v9.0.1 */
 
@@ -24,6 +24,15 @@ version 0.6.9
  * @license
  * Copyright 2010-2023 Three.js Authors
  * SPDX-License-Identifier: MIT
+ */
+
+/**
+ * L.Map.SelectArea - Area selection tool for leaflet
+ *
+ * @author Alexander Milevski <info@w8r.name>
+ * @see https://github.com/w8r/leaflet-area-select
+ * @license MIT
+ * @preserve
  */
 
 //! Built on 2024-04-01

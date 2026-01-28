@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2023 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,10 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- /**
-  *
-  */
 require_once(__CA_LIB_DIR__.'/Controller/AppController/AppControllerPlugin.php');
 require_once(__CA_LIB_DIR__.'/View.php');
 require_once(__CA_LIB_DIR__.'/ApplicationVars.php');
@@ -60,6 +56,16 @@ class PageFormat extends AppControllerPlugin {
 	# -------------------------------------------------------
 	public function postDispatch() {
 		$o_view = new View($o_request = $this->getRequest(), $o_request->config->get('views_directory'));
+			
+		// Add analytics
+		if(is_array($analytics_values = caGetAnalyticsIntegrationValues())) {
+			if(isset($analytics_values['bodyStart'])) {
+				$this->getResponse()->prependContent($analytics_values['bodyStart'], 'analyticsBodyStart');
+			}
+			if(isset($analytics_values['bodyEnd'])) {
+				$this->getResponse()->appendContent($analytics_values['bodyEnd'], 'analyticsBodyEnd');
+			}
+		}
 		
 		$o_notification = new NotificationManager($o_request);
 		if($o_notification->numNotifications()) {

@@ -57,7 +57,7 @@ $dark: #003F69; /* used for .bg-dark style */
 	$font-size-sm:                $font-size-base * .875 !default;
 	$font-size-lg:                $font-size-base * 1.25 !default;
 	
-$font-family-sans-serif: "gotham-book";
+$font-family-sans-serif: 'Gotham A','Gotham B',Helvetica,sans-serif;
 	
 	$font-weight-lighter:         lighter !default;
 	$font-weight-light:           300 !default;
@@ -79,7 +79,7 @@ $h2-font-size:                $font-size-base * 2;
 	
 	// scss-docs-start headings-variables
 	$headings-margin-bottom:      $spacer * .5 !default;
-$headings-font-family:	"gotham-medium";
+$headings-font-family:	'Gotham A','Gotham B',Helvetica,sans-serif;
 	$headings-font-style:         null !default;
 $headings-font-weight:        700;
 	$headings-line-height:        1.2 !default;
@@ -96,9 +96,9 @@ $display-font-sizes: (
 6: 1.5rem
 );
 	
-$display-font-family: "Playfair Display", serif;
+$display-font-family: 'Gotham A','Gotham B',Helvetica,sans-serif;
 	$display-font-style:  null !default;
-$display-font-weight: 400;
+$display-font-weight: 700;
 	$display-line-height: $headings-line-height !default;
 	// scss-docs-end display-headings
 	
@@ -216,3 +216,9 @@ $form-label-font-weight:                $font-weight-bold;
 	$input-focus-border-color:              #000 !default;
 	
 	// scss-docs-end form-label-variables
+$tooltip-max-width: 400px;
+$tooltip-color: #fff;
+$tooltip-bg: #5c5c5c;
+$tooltip-opacity: 1;
+$tooltip-padding-y: 15px;
+$tooltip-padding-x: 15px;

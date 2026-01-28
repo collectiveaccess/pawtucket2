@@ -25,7 +25,7 @@
 				<div class="col-md-4">
 <?php
 			if($ps_description){
-				print "<div class='fs-5'>".$ps_description."</div>";
+				print "<div class='fs-5 pb-3'>".$ps_description."</div>";
 			}
 ?>				
 				</div>

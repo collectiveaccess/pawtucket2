@@ -995,9 +995,8 @@ function caEditorFieldList($po_request, $pt_subject, $pa_bundle_list, $pa_option
 		jQuery('#editorFieldListContentArea a').click(function() {
 			caEditorFieldList.hidePanel();
 		});
-
 		if (typeof caBundleVisibilityManager !== 'undefined') { caBundleVisibilityManager.setAll(); }
-		if (typeof caBundleUpdateManager !== 'undefined') { caBundleUpdateManager = caUI.initBundleUpdateManager({url:'".caNavUrl($po_request, '*', '*', 'reload')."', screen:'".$po_request->getActionExtra()."', key:'".$pt_subject->primaryKey()."', id: ".(int)$pt_subject->getPrimaryKey()."}); }
+		if (!caBundleUpdateManager) { caBundleUpdateManager = caUI.initBundleUpdateManager({url:'".caNavUrl($po_request, '*', '*', 'reload')."', screen:'".$po_request->getActionExtra()."', key:'".$pt_subject->primaryKey()."', id: ".(int)$pt_subject->getPrimaryKey()."}); }
 		caBundleUpdateManager.registerBundles(".json_encode($pa_bundle_list).");
 	});
 </script>
@@ -1065,6 +1064,9 @@ function caEditorInspector($view, $options=null) {
 		$priv_table_name = 'ca_lists';
 		$style = "style='padding-top:10px;'";
 	}
+	
+	// Is set inventory (when editing set records)
+	$is_inventory = caIsInventory($t_item);
 	
 	$components_tools = [];
 	$component_count = 0;
@@ -1142,23 +1144,23 @@ function caEditorInspector($view, $options=null) {
 			//
 			// Display flags; expressions for these are defined in app.conf in the <table_name>_inspector_display_flags directive
 			//
-			if (is_array($va_display_flags = $view->request->config->getAssoc("{$table_name}_inspector_display_flags"))) {
-				$display_flag_buf = array();
-				foreach($va_display_flags as $vs_exp => $vs_display_flag) {
-					$exp_vars = array();
-					foreach(ExpressionParser::getVariableList($vs_exp) as $vs_var_name) {
-						$exp_vars[$vs_var_name] = $t_item->get($vs_var_name, array('convertCodesToIdno' => true));
-					}
-
-					if (ExpressionParser::evaluate($vs_exp, $exp_vars)) {
-						$display_flag_buf[] = $t_item->getWithTemplate("{$vs_display_flag}");
+			if (is_array($display_flags = $view->request->config->getAssoc("{$table_name}_inspector_display_flags"))) {
+				$display_flag_buf = [];
+				foreach($display_flags as $exp => $display_flag) {
+					if($qr = caMakeSearchResult($t_item->tableName(), [$t_item->getPrimaryKey()])) {
+						$qr->nextHit();
+						$exp_vars = DisplayTemplateParser::getValuesForTemplate($qr, $exp);
+						if (ExpressionParser::evaluate($exp, $exp_vars)) {
+							$display_flag_buf[] = $t_item->getWithTemplate("{$display_flag}");
+						}
 					}
 				}
 
-				if(!($vs_display_flag_delim = $view->request->config->get("{$table_name}_inspector_display_flags_delimiter"))) {
-					$vs_display_flag_delim = '; ';
+				if(!($display_flag_delim = $view->request->config->get("{$table_name}_inspector_display_flags_delimiter"))) {
+					$display_flag_delim = '; ';
 				}
-				if (sizeof($display_flag_buf) > 0) { $buf .= join($vs_display_flag_delim, $display_flag_buf); }
+			
+				if (sizeof($display_flag_buf) > 0) { $buf .= join($display_flag_delim, $display_flag_buf); }
 			}
 
 			$label = '';
@@ -1358,7 +1360,7 @@ function caEditorInspector($view, $options=null) {
 				TooltipManager::add("#caWatchItemButton", _t('Watch/Unwatch this record'));
 			}
 
-			if ($view->request->user->canDoAction("can_change_type_{$table_name}") && (sizeof($t_item->getTypeList()) >= 1)) {
+			if (!$is_inventory && $view->request->user->canDoAction("can_change_type_{$table_name}") && (sizeof($t_item->getTypeList()) >= 1)) {
 				$tools[] = "<div id='inspectorChangeType' class='inspectorActionButton'><div id='inspectorChangeTypeButton'><a href='#' onclick='caTypeChangePanel.showPanel(); return false;'>".caNavIcon(__CA_NAV_ICON_CHANGE__, '20px', array('title' => _t('Change type')))."</a></div></div>\n";
 
 				$change_type_view = new View($view->request, $view->request->getViewsDirectoryPath()."/bundles/");
@@ -1399,7 +1401,15 @@ function caEditorInspector($view, $options=null) {
 			}
 		}
 
-		if($view->request->user->canDoAction("can_duplicate_{$table_name}") && $t_item->getPrimaryKey()) {
+		if(
+			$t_item->getPrimaryKey()
+			&&
+			(
+				($is_inventory && $view->request->user->canDoAction("can_duplicate_inventories"))
+				||
+				(!$is_inventory && $view->request->user->canDoAction("can_duplicate_{$table_name}"))
+			)
+		) {
 			$tools[] = "<div id='caDuplicateItemButton' class='inspectorActionButton'>".
 							caFormTag($view->request, 'Edit', 'DuplicateItemForm', $view->request->getModulePath().'/'.$view->request->getController(), 'post', 'multipart/form-data', '_top', ['noCSRFToken' => false, 'disableUnsavedChangesWarning' => true, 'noTimestamp' => true]).
 							"<div>".caFormSubmitLink($view->request, caNavIcon(__CA_NAV_ICON_DUPLICATE__, '20px'), '', 'DuplicateItemForm', null, ['aria-label' => _t('Duplicate item')])."</div>".
@@ -1428,14 +1438,14 @@ function caEditorInspector($view, $options=null) {
 		}
 		
 		// Download media in set
-		if(($table_name == 'ca_sets') && (sizeof($t_item->getItemRowIDs() ?? []) > 0)) {
+		if(($table_name == 'ca_sets') && !caIsInventory($t_item) && (sizeof($t_item->getItemRowIDs() ?? []) > 0)) {
 			$tools [] = "<div id='inspectorSetMediaDownloadButton' class='inspectorActionButton'>".caNavLink($view->request, caNavIcon(__CA_NAV_ICON_DOWNLOAD__, '20px'), "button", $view->request->getModulePath(), $view->request->getController(), 'getSetMedia', array('set_id' => $t_item->getPrimaryKey(), 'download' => 1), array())."</div>\n";
 
 			TooltipManager::add('#inspectorSetMediaDownloadButton', _t("Download all media associated with records in this set"));
 		}
 	
 		// Auto-delete set?
-		if(($table_name == 'ca_sets') && ($view->request->user->getPreference('autodelete_sets') === 'yes')) {
+		if(($table_name == 'ca_sets') && !caIsInventory($t_item) && ($view->request->user->getPreference('autodelete_sets') === 'yes')) {
 			$autodelete = "<div class='inspectorActionButton'><div><a href='#' title='"._t('Set auto-deletion of set.')."' onclick='caToggleAutoDelete(); return false;' id='inspectorSetAutoDeleteButton'>".caNavIcon($t_item->willAutoDelete() ? __CA_NAV_ICON_AUTO_DELETE__ : __CA_NAV_ICON_NO_AUTO_DELETE__, '20px')."</a></div></div>";
 
 				$tools[] = "{$autodelete}\n<script type='text/javascript'>
@@ -1460,15 +1470,26 @@ function caEditorInspector($view, $options=null) {
 
 		// list of sets in which item is a member
 		$t_set = new ca_sets();
-		if (is_array($va_sets = caExtractValuesByUserLocale($t_set->getSetsForItem($t_item->tableNum(), $t_item->getPrimaryKey(), array('user_id' => $view->request->getUserID(), 'access' => __CA_SET_READ_ACCESS__)))) && sizeof($va_sets)) {
-			$va_links = array();
+		if (is_array($va_sets = caExtractValuesByUserLocale($t_set->getSetsForItem($t_item->tableNum(), $t_item->getPrimaryKey(), ['excludeInventories' => true, 'user_id' => $view->request->getUserID(), 'access' => __CA_SET_READ_ACCESS__]))) && sizeof($va_sets)) {
+			$va_links = [];
 
 			$last_set_id = Session::getVar('last_set_id');
 			foreach($va_sets as $vn_set_id => $va_set) {
 				$class = ($last_set_id == $vn_set_id) ? "class='currentSet'" : "";
-				$va_links[] = "<a {$class} href='".caEditorUrl($view->request, 'ca_sets', $vn_set_id)."'>".$va_set['name']."</a>";
+				$va_links[] = "<a {$class} href='".caEditorUrl($view->request, 'ca_sets', $vn_set_id, null, ['bundle' => 'ca_set_items'])."'>".$va_set['name']."</a>";
 			}
 			$more_info .= "<div><strong>".((sizeof($va_links) == 1) ? _t("In set") : _t("In sets"))."</strong> ".join(", ", $va_links)."</div>\n";
+		}
+		
+		if ($view->request->getAppConfig()->get('enable_inventories') &&  is_array($va_sets = caExtractValuesByUserLocale($t_set->getSetsForItem($t_item->tableNum(), $t_item->getPrimaryKey(), ['inventoriesOnly' => true, 'user_id' => $view->request->getUserID(), 'access' => __CA_SET_READ_ACCESS__]))) && sizeof($va_sets)) {
+			$va_links = [];
+
+			$last_set_id = Session::getVar('last_set_id');
+			foreach($va_sets as $vn_set_id => $va_set) {
+				$class = ($last_set_id == $vn_set_id) ? "class='currentSet'" : "";
+				$va_links[] = "<a {$class} href='".caEditorUrl($view->request, 'ca_sets', $vn_set_id, false, ['bundle' => 'inventory_list'])."'>".$va_set['name']."</a>";
+			}
+			$more_info .= "<div><strong>".((sizeof($va_links) == 1) ? _t("In inventory") : _t("In inventories"))."</strong> ".join(", ", $va_links)."</div>\n";
 		}
 		
 		if(($table_name === 'ca_sets') && ($view->request->user->getPreference('autodelete_sets'))) {
@@ -1622,17 +1643,18 @@ function caEditorInspector($view, $options=null) {
 
 			FooterManager::add($change_type_view->render("create_component_html.php"));
 		}
-		
-		$t_set_type = $t_item->getTypeInstance();		
-		$type_settings = $t_set_type ? $t_set_type->getSettings() : [];
-		if(($table_name === 'ca_sets') && (caGetOption('random_generation_mode', $type_settings, 0) > 0)) {
-			$tools[] = "<div id='inspectorRandomButton' class='inspectorActionButton'><a href='#' onclick='caRandomSetGenerationPanel.showPanel(); return false;'>".caNavIcon(__CA_NAV_ICON_RANDOM__, '20px', ['title' => _t('Add random items')])."</a></div>\n";
-
-			$random_set_view = new View($view->request, $view->request->getViewsDirectoryPath()."/bundles/");
-			$random_set_view->setVar('t_item', $t_item);
-			$random_set_view->setVar('userCanSetExclusion', ((int)$t_set_type->getSetting('random_generation_mode') === 3));
-			FooterManager::add($random_set_view->render("random_set_generation_html.php"));
-			TooltipManager::add('#inspectorRandomButton', _t("Add random items"));
+			
+		if(method_exists($t_item, 'getTypeInstance') && ($t_set_type = $t_item->getTypeInstance())) {
+			$type_settings = $t_set_type ? $t_set_type->getSettings() : [];
+			if(($table_name === 'ca_sets') && (caGetOption('random_generation_mode', $type_settings, 0) > 0)) {
+				$tools[] = "<div id='inspectorRandomButton' class='inspectorActionButton'><a href='#' onclick='caRandomSetGenerationPanel.showPanel(); return false;'>".caNavIcon(__CA_NAV_ICON_RANDOM__, '20px', ['title' => _t('Add random items')])."</a></div>\n";
+	
+				$random_set_view = new View($view->request, $view->request->getViewsDirectoryPath()."/bundles/");
+				$random_set_view->setVar('t_item', $t_item);
+				$random_set_view->setVar('userCanSetExclusion', ((int)$t_set_type->getSetting('random_generation_mode') === 3));
+				FooterManager::add($random_set_view->render("random_set_generation_html.php"));
+				TooltipManager::add('#inspectorRandomButton', _t("Add random items"));
+			}
 		}
 
 		if(sizeof($tools) > 0) {
@@ -1829,25 +1851,22 @@ jQuery(document).ready(function() {
 		// Output extra useful info for sets
 		//
 		if ($table_name === 'ca_sets') {
+			$vn_set_item_count = $t_item->getItemCount(['user_id' => $view->request->getUserID()]);
 
-			$vn_set_item_count = $t_item->getItemCount(array('user_id' => $view->request->getUserID()));
-
-			if (($vn_set_item_count > 0) && ($view->request->user->canDoAction('can_batch_edit_'.Datamodel::getTableName($t_item->get('table_num'))))) {
+			if (!$is_inventory && ($vn_set_item_count > 0) && ($view->request->user->canDoAction('can_batch_edit_'.Datamodel::getTableName($t_item->get('table_num'))))) {
 				$buf .= caNavButton($view->request, __CA_NAV_ICON_BATCH_EDIT__, _t('Batch edit'), 'editorBatchSetEditorLink', 'batch', 'Editor', 'Edit', array('id' => 'ca_sets:'.$t_item->getPrimaryKey()), array(), array('icon_position' => __CA_NAV_ICON_ICON_POS_LEFT__, 'no_background' => true, 'dont_show_content' => true));
+				TooltipManager::add(".editorBatchSetEditorLink", _t('Batch Edit'));
 			}
-			TooltipManager::add(".editorBatchSetEditorLink", _t('Batch Edit'));
 
-			$buf .= "<div><strong>"._t("Number of items")."</strong>: {$vn_set_item_count}<br/>\n";
-
+			if($vn_set_item_count > 0) {
+				$buf .= "<div><strong>"._t("Count")."</strong>: {$vn_set_item_count}</div>\n";
+			}
 			$vn_set_table_num = $t_item->get('table_num');
 			$vs_set_table_name = Datamodel::getTableName($vn_set_table_num);
 			if ($t_item->getPrimaryKey()) {
-
-				$buf .= "<strong>"._t("Type of content")."</strong>: ".caGetTableDisplayName($vn_set_table_num)."<br/>\n";
-
-				$buf .= "</div>\n";
-
-				if(!(bool)$view->request->config->get('ca_sets_disable_duplication_of_items') && $view->request->user->canDoAction('can_duplicate_items_in_sets') && $view->request->user->canDoAction('can_duplicate_' . $vs_set_table_name)) {
+				$buf .= "<div><strong>"._t("Contents")."</strong>: ".caGetTableDisplayName($vn_set_table_num)."</div>\n";				
+				
+				if(!$is_inventory && !(bool)$view->request->config->get('ca_sets_disable_duplication_of_items') && $view->request->user->canDoAction('can_duplicate_items_in_sets') && $view->request->user->canDoAction('can_duplicate_' . $vs_set_table_name)) {
 					$buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px; text-align: right;" ></div>';
 					$buf .= caFormTag($view->request, 'DuplicateItems', 'caDupeSetItemsForm', 'manage/sets/SetEditor', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => false, 'disableUnsavedChangesWarning' => true));
 					$buf .= _t("Duplicate items in this set and add to") . " ";
@@ -1862,9 +1881,7 @@ jQuery(document).ready(function() {
 				}
 			} else {
 				if ($vn_set_table_num = $view->request->getParameter('table_num', pInteger)) {
-					$buf .= "<div><strong>"._t("Type of content")."</strong>: ".caGetTableDisplayName($vn_set_table_num)."<br/>\n";
-
-					$buf .= "</div>\n";
+					$buf .= "<div><strong>"._t("Type of content")."</strong>: ".caGetTableDisplayName($vn_set_table_num)."</div>\n";
 				}
 			}
 			$t_user = new ca_users(($vn_user_id = $t_item->get('user_id')) ? $vn_user_id : $view->request->getUserID());
@@ -1886,8 +1903,6 @@ jQuery(document).ready(function() {
 				$buf .= "</div>\n";
 				$buf .= "</form>";
 
-				$buf .= "</div>";
-
 				$buf .= "<script type='text/javascript'>";
 				$buf .= "jQuery(document).ready(function() {";
 				$buf .= "jQuery(\"#exporterFormList\").hide();";
@@ -1903,7 +1918,7 @@ jQuery(document).ready(function() {
 			AssetLoadManager::register("panel");
 			$t_set = new ca_sets();
 			if ($t_set->load($vn_set_id = $t_item->get('set_id'))) {
-				$buf .= "<div><strong>"._t("Part of set")."</strong>: ".caEditorLink($view->request, $t_set->getLabelForDisplay(), '', 'ca_sets', $vn_set_id)."<br/>\n";
+				$buf .= "<div><strong>"._t("Part of %1", $t_set->getTypeName())."</strong>: ".caEditorLink($view->request, $t_set->getLabelForDisplay(), '', 'ca_sets', $vn_set_id)."<br/>\n";
 
 				$t_content_instance = Datamodel::getInstanceByTableNum($vn_item_table_num = $t_item->get('table_num'));
 				if ($t_content_instance->load($vn_row_id = $t_item->get('row_id'))) {
@@ -2605,16 +2620,12 @@ function caGetMediaDisplayInfoForMimetype(string $context, ?string $mimetype) : 
 
 	if (!is_array($context = $o_media_display_config->getAssoc($context))) { return null; }
 
+	if (!$mimetype) { return $context; }
 	foreach($context as $display_class => $display_class_info) {
-		$display_class_info['display_class'] = $display_class;
-		$mimetypes = $display_class_info['mimetypes'] ?? null;
-		if(!$mimetype) {
-			if (!is_array($mimetypes) || !sizeof($mimetypes)) { return $display_class_info; }
-			continue;
-		}
-		if (!is_array($mimetypes)) { continue; }
+		if (!is_array($mimetypes = $display_class_info['mimetypes'])) { continue; }
 
 		if (in_array($mimetype, $mimetypes)) {
+			$display_class_info['display_class'] = $display_class;
 			return $display_class_info;
 		}
 	}
@@ -3820,7 +3831,7 @@ function caEditorBundleMetadataDictionary($po_request, $ps_id_prefix, $pa_settin
 	$vs_buf .= "<a href='#' class='caMetadataDictionaryDefinitionToggle' onclick='caBundleVisibilityManager.toggleDictionaryEntry(\"{$ps_id_prefix}\");  return false;'>".caNavIcon(__CA_NAV_ICON_INFO__, 1, array('id' => "{$ps_id_prefix}MetadataDictionaryToggleButton"))."</a>";
 
 	$vs_buf .= "<div id='{$ps_id_prefix}DictionaryEntry' class='caMetadataDictionaryDefinition'>{$vs_definition}</div>";
-	$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { caBundleVisibilityManager.registerBundle('{$ps_id_prefix}', 'closed'); }); </script>";	
+	$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { caBundleVisibilityManager.registerBundle('{$ps_id_prefix}'); }); </script>";	
 	$vs_buf .= "</span>\n";	
 
 	return $vs_buf;
@@ -5158,8 +5169,6 @@ function caRepresentationViewerHTMLBundles($po_request, $po_data, $pt_subject, $
 				['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
 				['viewerWrapper' => 'viewerInline', 'context' => caGetOption('context', $pa_options, null), 'checkAccess' => caGetOption('checkAccess', $pa_options, null)]
 			).$vs_tool_bar.$vs_caption."</div></div>";
-
-			if (sizeof($va_reps) > 10) { break(2); }
 		}
 	}
 	return $va_reps;
@@ -5450,7 +5459,7 @@ function caProcessReferenceTags($request, $text, $options=null) {
 	) {
 		if (preg_match_all("!\[{$ref_tag} ([^\]]+)\]([^\[]+)\[/{$ref_tag}\]!", $text, $matches)) {
 			foreach($matches[1] as $i => $attr_string) {
-				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version', 'mode'])) > 0) {
+				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version', 'mode', 'target'])) > 0) {
 					$vals['content'] = $matches[2][$i];
 					$idnos[$ref_type][$matches[0][$i]] = array_filter($vals, function($v) { return !is_null($v); });
 				}
@@ -5458,7 +5467,7 @@ function caProcessReferenceTags($request, $text, $options=null) {
 		}
 		if (preg_match_all("!\[{$ref_tag} ([^\]]+)/\]!", $text, $matches)) {
 			foreach($matches[1] as $i => $attr_string) {
-				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version', 'mode'])) > 0) {
+				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version', 'mode', 'target'])) > 0) {
 					$idnos[$ref_type][$matches[0][$i]] = array_filter($vals, function($v) { return !is_null($v); });
 				}
 			}
@@ -5609,8 +5618,7 @@ function caProcessReferenceTags($request, $text, $options=null) {
 							if (!($idno = trim($qr_m->get('idno')))) { $idno = null; }
 
 							$alt_text = caGetOption(['caption', 'title', 'idno'], ['caption' => $caption, 'title' => $title, 'idno' => $idno], null);
-
-							if ($template = $va_l['content']) {
+							if (($template = $va_l['content']) && ($return !== 'link')) {
 								$template = str_replace("^title", $title, $template);
 								$template = str_replace("^caption", $caption, $template);
 								$template = str_replace("^idno", $idno, $template);
@@ -5618,6 +5626,12 @@ function caProcessReferenceTags($request, $text, $options=null) {
 								$text = str_replace($tag, $template, $text);
 							} elseif($return === 'url') {
 								$text = str_replace($tag, $qr_m->getMediaUrl('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media'))), ['alt' => $alt_text]), $text);
+							} elseif($return === 'link') {
+								$url = $qr_m->getMediaUrl('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media'))), ['alt' => $alt_text]);
+								$link_text = $va_l['content'] ?? $url;
+								$target = $va_l['target'] ?? null;
+								$link = "<a href='{$url}'".($target ? " target='{$target}'" : '').">{$link_text}</a>";
+								$text = str_replace($tag, $link, $text);
 							} else {
 								$text = str_replace($tag, $qr_m->getMediaTag('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media'))), ['alt' => $alt_text]), $text);
 							}
