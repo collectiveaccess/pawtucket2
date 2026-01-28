@@ -89,7 +89,7 @@ if (!$ajax) {	// !ajax
 					break;
 					# ----------------------
 					case "exhibitions":
-						print _t("City of San Antonio Past Art Exhibitions");
+						print _t("Past Art Exhibitions");
 					break;
 					# ----------------------
 					case "all_exhibitions":

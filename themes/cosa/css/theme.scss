@@ -26,7 +26,6 @@ nav.navbar{
 	.navbar-brand{
 		color: #404041 !important;
 		font-size: 1.1em !important;
-		text-transform: uppercase;
 		font-weight:900;
 		width:300px;
 		img{
@@ -54,14 +53,40 @@ nav.navbar{
 		box-shadow: none;
 		border:1px dashed #000;
 	}
+	.nav-item.dropdown{
+		ul.dropdown-menu{
+			background-color:#f5f5f5;
+			padding-top:0px;
+			padding-bottom:0px;
+			li{
+				border-bottom:2px solid #FFFFFF;
+			}
+			li a{
+				font-weight:normal;
+			}
+			li a:hover{
+				background-color:#8B0E04;
+				color:#FFF !important;
+			}
+		}
+	}
 }
 /* ------------------------- scroll top ------------------------- */
 #scrollTop{
-	width:90px;
+	width:50px;
 	right:0px;
 	left:auto;
 	opacity: 0;
 	transition: opacity 0.5s ease-in-out; /* Add a smooth transition */
+	background-color:#FFF;
+	color:#000;
+	border:2px solid #000;
+	margin-bottom:1px;
+}
+#scrollTop:hover{
+	background-color:#038391;
+	color:#FFF;
+	border:2px solid #038391;
 }
 #scrollTop.scrollTopVisible {
 	opacity: 1;
@@ -69,6 +94,12 @@ nav.navbar{
 /* ------------------------- breadcrumb ------------------------- */
 .breadcrumb{
 	background-color:#f9f9f9;
+	a{
+		color:#333333;
+	}
+	a:hover{
+		font-weight:bold;
+	}
 }
 /* ------------------------- Maps --------------------------- */
 .leaflet-popup-content{
@@ -119,12 +150,37 @@ nav.navbar{
 		}
 	}
 }
+#browseResultsContainer, #listingResults{
+	a{
+		text-decoration:none;
+		.card-body{
+			color:#333;
+			.card-title{
+				color:#333;
+				
+			}
+		}
+	}
+}
+#browseResultsContainer, #listingResults{
+	a:hover{
+		text-decoration:underline;
+	}
+}
 #bRefine{
 	input{
 		font-size:.9em;
 	}
 }
-
+/* -------------- Detail --------------- */
+#browseResultsContainer.exhibitionsDetail{
+	.card{
+		img{
+			height: 350px;
+			width: 100%;
+		}
+	}
+}
 /* Ensure leaflet area select selection box appears over map pins */
 div.leaflet-overlay-pane {
 	border: 1px solid red !important;

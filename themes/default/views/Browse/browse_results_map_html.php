@@ -55,4 +55,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 
-<div id="map" style="width: 100%; height: 400px;" class="map">{{{map}}}</div>
+<div class="col">
+	<div id="map" style="width: 100%; height: 400px;" class="map">{{{map}}}</div>
+	<div class="py-2 fs-6"><?= _t("Shift click and drag to search by an area on the map."); ?></div>
+</div>

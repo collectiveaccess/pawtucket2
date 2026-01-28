@@ -138,6 +138,10 @@ if($show_nav){
 						</ifdef>
 						</dd>
 					</ifdef>
+					<if rule='^ca_places.restrictions.visitation =~ /Yes/'><ifdef code="ca_places.restrictions.restriction_details">
+						<dt>Visitation Restrictions</dt>
+						<dd>^ca_places.restrictions.restriction_details</dd>
+					</if></if>
 				</dl>}}}
 		</div>
 		<div class="col-md-4 pb-3">
