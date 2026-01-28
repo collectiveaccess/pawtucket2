@@ -77,7 +77,13 @@
 		</div>
 	</div>
 </div>
-
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-md-10 mt-5 pt-5 text-center fs-4">
+			{{{hp_callout}}}
+		</div>
+	</div>
+</div>
 <div class="container">
 	<div class="row justify-content-center">
 		<div class="col-md-8 mt-5 pt-5 text-left">

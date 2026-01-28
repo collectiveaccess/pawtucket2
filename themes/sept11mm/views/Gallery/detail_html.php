@@ -25,14 +25,22 @@
 				<div class="col-md-4">
 <?php
 			if($ps_description){
-				print "<div class='fs-5 pb-3'>".$ps_description."</div>";
+				print "<div class='fs-5 pb-3 mb-4 mb-md-0 galleryDesc'>".$ps_description."</div>";
 			}
 ?>				
 				</div>
 				<div class="col-md-8">
 					<div class="row g-3">		
 <?php
+						$i = 0;
+						$class = "";
+						$show_more_link = false;
 						foreach($pa_set_items as $pa_set_item){
+							$i++;
+							if($i == 19){
+								$class = " gridShowHide collapse";
+								$show_more_link = true;
+							}
 							if(!$vn_first_item_id){
 								$vn_first_item_id = $pa_set_item["item_id"];
 							}
@@ -51,12 +59,23 @@
 								}
 								
 							}
-							print "<div class='smallpadding col-3 col-sm-2 img-fluid'>";
+							print "<div class='smallpadding col-4 col-sm-2 img-fluid ".$class."'>";
 							print "<a href='#' hx-trigger='click' hx-target='#galleryDetailItemInfo' hx-get='".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."'><div class='bg-white p-1 shadow-sm'>".$vs_rep."</div></a>";
 							print "</div>\n";
 						}
 ?>
 					</div>
+<?php
+				if($show_more_link){
+?>
+					<div class="row">
+						<div class="col-12 text-center">
+							<button class="btn btn-primary mt-3 gridShowHide" type="button" data-bs-toggle="collapse" data-bs-target=".gridShowHide" aria-expanded="false" aria-controls=".gridShowHide"><span class="gridShowHide collapse show">More</span><span class="gridShowHide collapse">Less</span></button>
+						</div>
+					</div>
+<?php
+				}
+?>
 				</div>
 			</div><!-- end row -->
 		</div>

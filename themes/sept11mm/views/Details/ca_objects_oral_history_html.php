@@ -96,7 +96,7 @@ if($show_nav){
 				{{{<dl class="mb-0">
 					<ifdef code="ca_objects.public_description">
 						<dt>Description</dt>
-						<dd>
+						<dd class="externalLinks">
 <?php
 						if(mb_strlen($t_object->get("ca_objects.public_description")) > 800){
 ?>
@@ -136,7 +136,7 @@ if($show_nav){
 {{{<ifdef code="ca_objects.curators_comment">
 	<div id="curatorComments" class="row curatorCommentsShowHide collapse pt-3">
 		<div class="fw-bold">Curator's Comment</div>
-		<div class="pt-2">
+		<div class="pt-2 externalLinks">
 			^ca_objects.curators_comment
 			<div class="pt-2"><button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorCommentsLabel curatorComments curatorCommentsButton">Hide</button></div>
 		</div>
@@ -371,6 +371,14 @@ if(sizeof($va_related_ids)){
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 		  return new bootstrap.Tooltip(tooltipTriggerEl)
+		});
+				
+		// Select all links with the specified class name
+		const links = document.querySelectorAll('.externalLinks a');
+		
+		// Iterate over the selected links and set the target attribute
+		links.forEach(link => {
+			link.setAttribute('target', '_blank');
 		});
 	});
 </script>

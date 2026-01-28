@@ -69,7 +69,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 	<nav class="navbar navbar-expand-xl shadow-sm">
 		<div class="container-fluid">
 			<?php #print caNavlink($this->request, caGetThemeGraphic($this->request, 'logo-full.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")), "navbar-brand  img-fluid ps-3", "", "", ""); ?>
-			<a href="https://911memorial.org" class="navbar-brand  img-fluid ps-3 py-2"><?= caGetThemeGraphic($this->request, '01_911_25th_HORIZ_POS.png', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")); ?></a>
+			<a href="https://911memorial.org" class="navbar-brand  img-fluid ps-3 py-2"><?= caGetThemeGraphic($this->request, '01_911_25th_HORIZ_POS.png', array("alt" => "Site logo", "role" => "banner")); ?></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
@@ -94,7 +94,6 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search all collections">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
-					<div class="form-text pb-3 pb-lg-0"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
 				</form>
 			</div>
 		</div>

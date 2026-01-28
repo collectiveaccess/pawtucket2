@@ -45,6 +45,26 @@ $in_lightboxes = $this->getVar('inLightboxes') ?? [];
 $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
 ]);
+
+
+
+	if($lang = $this->request->getParameter('lang', pString)) {
+		if($lang == 'es') {
+			Session::setVar('ns11mm_locale', 'es_ES');
+		} else {
+			Session::setVar('ns11mm_locale', 'en_US');
+		}
+	}
+	
+	$pub_desc = array_filter($t_object->get('ca_objects.public_description', ['returnAsArray' => true, 'returnAllLocales' => true]),'strlen');
+	$has_spanish = ((is_array($pub_desc) && sizeof($pub_desc) > 1));
+	
+	$locale = Session::getVar('ns11mm_locale');
+
+
+
+
+
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
@@ -64,7 +84,7 @@ if($show_nav){
 ?>
 	<div class="row">
 		<div class="col-md-12">
-			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
+			<H1>{{{^ca_objects.preferred_labels.name%locale=<?= $locale; ?>}}}</H1>
 			<hr class="mb-0">
 		</div>
 	</div>
@@ -93,7 +113,7 @@ if($show_nav){
 		</div>
 		<div class="col-md-6 pt-3">
 			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->			
-				{{{<ifdef code="ca_objects.public_title"><H2 class="fs-3 mb-2"><i>^ca_objects.public_title</i></H2></ifdef>}}}	
+				{{{<ifdef code="ca_objects.public_title"><H2 class="fs-3 mb-2"><i>^ca_objects.public_title%locale=<?= $locale; ?></i></H2></ifdef>}}}	
 				{{{<dl class="mb-0">
 					<ifdef code="ca_objects.submission_num">
 						<dt class="pt-3">Submission Number</dt>
@@ -114,40 +134,51 @@ if($show_nav){
 					
 					
 					<ifdef code="ca_objects.public_description">
-						<dt class="pt-3">Description</dt>
-						<dd>
+						<dt class="pt-3"><?= ($locale == 'es_ES') ? "Descripción" : "Description"; ?></dt>
+						<dd class="externalLinks">
 <?php
 						if(mb_strlen($t_object->get("ca_objects.public_description")) > 800){
 ?>
-							<div id="readMoreDiv_public_description" class="readMore">^ca_objects.public_description</div>
+							<div id="readMoreDiv_public_description" class="readMore">^ca_objects.public_description%locale=<?= $locale; ?></div>
 							<button id="readMoreBtn" class="btn btn-white btn-sm mt-2 readMoreButton" hx-on:click="htmx.toggleClass(htmx.find('#readMoreDiv_public_description'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreBtn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button>		
 <?php
 						}else{
 ?>
-							^ca_objects.public_description		
+							^ca_objects.public_description%locale=<?= $locale; ?>	
 <?php						
 						}
 ?>
 						</dd>
 					</ifdef>
 					<ifdef code="ca_objects.public_historical_notes">
-						<dt class="pt-3">Historical Notes</dt>
-						<dd>
+						<dt class="pt-3"><?= ($locale == 'es_ES') ? "Notas históricas" : "Historical Notes"; ?></dt>
+						<dd class="externalLinks">
 <?php
 						if(mb_strlen($t_object->get("ca_objects.public_historical_notes")) > 800){
 ?>
-							<div id="readMoreDiv_public_historical_notes" class="readMore">^ca_objects.public_historical_notes</div>
+							<div id="readMoreDiv_public_historical_notes" class="readMore">^ca_objects.public_historical_notes%locale=<?= $locale; ?></div>
 							<button id="readMoreBtn" class="btn btn-white btn-sm mt-2 readMoreButton" hx-on:click="htmx.toggleClass(htmx.find('#readMoreDiv_public_historical_notes'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreBtn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button>		
 <?php
 						}else{
 ?>
-							^ca_objects.public_historical_notes		
+							^ca_objects.public_historical_notes%locale=<?= $locale; ?>	
 <?php						
 						}
 ?>
 						</dd>
 					</ifdef>
 				</dl>}}}
+				<div class="text-center pt-3">
+<?php
+	if($has_spanish) {
+		if($locale === 'es_ES') {
+			print caNavLink($this->request, 'English', 'btn btn-primary', '*', '*', '*', ['lang' => 'en']);
+		} else {
+			print caNavLink($this->request, 'En Español', 'btn btn-primary', '*', '*', '*', ['lang' => 'es']);
+		}
+	}
+?>
+				</div>
 
 
 			</div>
@@ -157,9 +188,9 @@ if($show_nav){
 	<div class="row">
 		<div class="col-md-6 offset-md-6 text-center">
 			<div class="pt-4">
-				{{{<ifdef code="ca_objects.curators_comment"><span id="curatorCommentsButton" class="curatorCommentsShowHide collapse show"><button class="btn btn-primary me-4 mb-2" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorComments curatorCommentsButton"><i class='bi bi-justify'></i> Curator's Comment</button></span></ifdef>}}}<?php
+				{{{<ifdef code="ca_objects.curators_comment"><span id="curatorCommentsButton" class="curatorCommentsShowHide collapse show"><button class="btn btn-primary me-4 mb-2" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorComments curatorCommentsButton"><i class='bi bi-justify'></i> <?= ($locale == 'es_ES') ? "Comentario del curador" :  "Curator's Comment"; ?></button></span></ifdef>}}}<?php
 				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-chat-left'></i> "._t("Feedback"), "btn btn-primary me-4 mb-2", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
+					print caNavLink($this->request, "<i class='bi bi-chat-left'></i> ".(($locale == 'es_ES') ? "Las Reacciones" : "Feedback"), "btn btn-primary me-4 mb-2", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $id));
 				}
 				if($copy_link_enabled){
 					print $this->render('Details/snippets/copy_link_html.php');
@@ -170,9 +201,9 @@ if($show_nav){
 	</div>
 {{{<ifdef code="ca_objects.curators_comment">
 	<div id="curatorComments" class="row curatorCommentsShowHide collapse pt-3">
-		<div class="fw-bold">Curator's Comment</div>
-		<div class="pt-2">
-			^ca_objects.curators_comment
+		<div class="fw-bold"><?= ($locale == 'es_ES') ? "Comentario del curador" :  "Curator's Comment"; ?></div>
+		<div class="pt-2 externalLinks">
+			^ca_objects.curators_comment%locale=<?= $locale; ?>
 			<div class="pt-2"><button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".curatorCommentsShowHide" aria-expanded="false" aria-controls="curatorCommentsLabel curatorComments curatorCommentsButton">Hide</button></div>
 		</div>
 	</div>
@@ -199,8 +230,8 @@ if($show_nav){
 								}
 							}
 							if(sizeof($va_dimensions_pieces)){
-								$va_dimensions_formatted[] = ($va_dimensions_information["dimension_text"] ? trim($va_dimensions_information["dimension_text"]).": " : "").join(" X ", $va_dimensions_pieces);
-								$va_dimensions_metric_formatted[] = ($va_dimensions_information["dimension_text"] ? trim($va_dimensions_information["dimension_text"]).": " : "").join(" X ", $va_dimensions_pieces_metric);
+								$va_dimensions_formatted[] = join(" X ", $va_dimensions_pieces);
+								$va_dimensions_metric_formatted[] = join(" X ", $va_dimensions_pieces_metric);
 							}
 							# --- break to only show first dimension
 							break;
@@ -212,7 +243,9 @@ if($show_nav){
 						if(sizeof($va_dimensions_metric_formatted)){
 							print "<li class='list-group-item p-0 border-0 bg-transparent'><span class='fw-bold'>Dimensions (Metric): </span>".join("; ", $va_dimensions_metric_formatted)."</li>";
 						}
-					}		
+					}else{
+						print "<li class='list-group-item p-0 border-0 bg-transparent'><span class='fw-bold'>Dimensions: </span>unavailable</li>";
+					}	
 				$vn_source_id = null;
 				if($t_object->get("ca_objects.credit_line")){
 					$vs_credit_line = $t_object->get("ca_objects.credit_line");
@@ -236,7 +269,7 @@ if($show_nav){
 					$vb_anon_donor = true;
 				}
 				if($vs_credit_line){
-					print "<li class='list-group-item p-0 border-0 bg-transparent'><span class='fw-bold'>Credit Line: </span><i>".$vs_credit_line."</i></li>";
+					print "<li class='list-group-item p-0 border-0 bg-transparent externalLinks'><span class='fw-bold'>Credit Line: </span><i>".$vs_credit_line."</i></li>";
 				}		
 ?>
 				</ul>
@@ -261,7 +294,7 @@ if($show_nav){
 						$va_list_ids[] = $va_subject["item_id"];
 					}
 					ksort($va_subjects_sorted);
-					print "<div class='pb-3'><div class='fw-bold mb-2'>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")." ".caNavLink($this->request, "<i class='bi bi-info-circle'></i>", "", "", "About", "keywords", null, array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => _t("Click for keyword definitions"),  "data-trigger" => "hover"))."</div>";
+					print "<div class='pb-3'><div class='fw-bold mb-2'>".(($locale === 'es_ES') ? "Las palabras claves" : "Keywords")." ".caNavLink($this->request, "<i class='bi bi-info-circle'></i>", "", "", "About", "keywords", null, array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => _t("Click for keyword definitions"),  "data-trigger" => "hover"))."</div>";
 					print join("", $va_subjects_sorted);
 					print "</div>";
 				}
@@ -406,6 +439,14 @@ if(sizeof($va_related_ids)){
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 		  return new bootstrap.Tooltip(tooltipTriggerEl)
+		});
+		
+		// Select all links with the specified class name
+		const links = document.querySelectorAll('.externalLinks a');
+		
+		// Iterate over the selected links and set the target attribute
+		links.forEach(link => {
+			link.setAttribute('target', '_blank');
 		});
 	});
 </script>
