@@ -119,7 +119,7 @@ if($co_security == 'captcha'){
 		</div>
 		
 		<input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>"/>
-		<div class="col-12 my-2"><?php print caNavLink($this->request, _t("Login in to account"), "", "", "LoginReg", "loginForm", array()); ?></div>
+		<div class="col-12 my-2"><?php print caNavLink($this->request, _t("Log in to account"), "", "", "LoginReg", "loginForm", array()); ?></div>
 
 	</div>
 </form>
