@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2023 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -243,7 +243,7 @@ class DetailController extends FindController {
 		#
 		# Enforce access control
 		#
-		if(sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
+		if(!caACLIsEnabled($t_subject, ['forPawtucket' => true]) && sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
 			$this->notification->addNotification(_t("This item is not available for view"), __NOTIFICATION_TYPE_INFO__);
 			$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
 			return;
@@ -553,6 +553,8 @@ class DetailController extends FindController {
 			}
 		}
 
+		$this->view->setVar('pageUrl', $this->request->getRequestUrl(true));
+		
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
 		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $this->opa_access_values]);
 		$this->render($path);

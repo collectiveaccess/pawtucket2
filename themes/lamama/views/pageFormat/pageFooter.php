@@ -35,23 +35,21 @@
 						<a href="https://www.lamama.org"><?php print caGetThemeGraphic($this->request, 'LaMaMaLogoWhite.png', array("alt" => $this->request->config->get("app_display_name"))); ?></a>
 					</div>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-2">
+					<ul class="list-inline">
+						<li><?php print caNavLink($this->request, "Support the Archive", "", "", "Support", "", ""); ?></a></li>
+					</ul>
+				</div>
+				<div class="col-sm-2">
 					<ul class="list-inline">
 						<li><?php print caNavLink($this->request, "Use & Takedown", "", "", "UseTakedown", "", ""); ?></a></li>
 					</ul>
-					
 				</div>
 			</div>
 			<div style="clear:both;"></div>
 		</footer><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel" role="complementary"> 

@@ -58,7 +58,7 @@
 	$vs_result_col_class = $o_config->get('result_col_class');
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
-	if ($vs_table == "ca_collections") { $vs_class = "collectionsBrowse col-sm-8";}
+	if ($vs_table == "ca_collections") { $vs_class = "collectionsBrowse col-sm-12";}
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
@@ -122,32 +122,42 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 
 		if ($vs_table != "ca_collections") {		
 
-		print "<h2 style='margin-bottom:5px;'>".$va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span></h2>";	
-
+			if(!in_array(strToLower($this->request->getAction()), array("ornaments"))){
+				print "<h2 style='margin-bottom:5px;'>".$va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span></h2>";	
+			}
 ?>
-		<H5 <?php print (($vb_show_filter_panel) ? "class='catchLinks'" : ""); ?>>
 		
 <?php
+		$tmp_criteria = "";
+		$ornament_category = "";
+		$ornament_description = "";
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				if (($va_criterion['facet_name'] != '_search') || (($va_criterion['facet_name'] == '_search') && (strpos($va_criterion['value'], "collection_id") === false))) {
 					if(!$vb_show_filter_panel || ($vb_show_filter_panel && $va_criterion['facet_name'] != 'institution_facet')){
-						print "<strong>".$va_criterion['facet'].':</strong>';
+						if ($va_criterion['facet_name'] != 'ornament_category') {
+							$tmp_criteria .= "<strong>".$va_criterion['facet'].':</strong>';
+						}
 						if ($va_criterion['facet_name'] != '_search') {
 							if ($va_criterion['facet_name'] == 'ornament_category') {
+								# --- in ornaments browse the catgory is the browse title and the the list items description is out put as a description
 								$va_parts = explode(" ➜ ", $va_criterion['value']);
-								print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.array_pop($va_parts).' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+								$ornament_category = array_pop($va_parts);
+								$this->setVar("ornament_category", $ornament_category);
+								#$tmp_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$ornament_category.' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+								$t_cat_list_item = new ca_list_items($va_criterion["id"]);
+								$ornament_description = $t_cat_list_item->get("ca_list_items.preferred_labels.description");
 							}else{
-								print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+								$tmp_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 							}
 						}else{
-							print ' '.$va_criterion['value'];
+							$tmp_criteria .= ' '.$va_criterion['value'];
 							$vs_search = $va_criterion['value'];
 						}
 						$i++;
 						if($i < sizeof($va_criteria)){
-							print " ";
+							$tmp_criteria .= " ";
 						}
 						$va_current_facet = $va_facets[$va_criterion['facet_name']];
 						if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
@@ -159,7 +169,16 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 				}
 			}
 		}
-?>		
+		# --- ornament category displayed as the name of the browse
+		if(in_array(strToLower($this->request->getAction()), array("ornaments"))){
+			if($ornament_category){
+				print "<h2 style='margin-bottom:5px;'>".$ornament_category."</h2>";	
+				print "<p>".$ornament_description."</p>";
+			}
+		}
+?>	
+		<H5 <?php print (($vb_show_filter_panel) ? "class='catchLinks'" : ""); ?>>
+			<?php print $tmp_criteria; ?>
 		</H5>
 		<hr style="clear:both;">
 <?php
@@ -225,17 +244,6 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 					print "<div class='mapInfo'>Haga clic en los nombres de colección para las direcciones y sitios web de las bibliotecas.</div>";
 				}
 			}
-			if ($this->request->getAction() == "collections") {
-				print "<div class='institutionList col-sm-4'>";
-				$qr_res->seek(0);
-				$i = 0;
-				while($qr_res->nextHit()) {
-					print "<div class='institutionUnit'>".caNavLink($this->request, "<i class='fa fa-bank'></i> ".$qr_res->get('ca_collections.preferred_labels'), 'institutionLink', '', 'Detail', 'collections/'.$qr_res->get('ca_collections.collection_id'))."</div>";
-					print "<hr>";
-				}
-				$qr_res->seek(0);
-				print "</div>";
-			}
 ?>		
 			<div id="browseResultsContainer" <?php print "class='".$vs_class."'";?> >
 <?php
@@ -243,11 +251,39 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 
 print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
 
+
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end browseResultsContainer -->
 		</div><!-- end row -->
 		</form>
+<?php
+		if ($this->request->getAction() == "collections") {
+			print "<div class='institutionList'>";
+			$qr_res->seek(0);
+			$i = 0;
+			while($qr_res->nextHit()) {
+				if($i == 0){
+					print "<div class='row'>";
+				}
+				print "<div class='col-sm-12 col-md-6 col-lg-4'>
+							<div class='institutionUnit'>".caNavLink($this->request, "<i class='fa fa-landmark'></i> ".$qr_res->get('ca_collections.preferred_labels'), 'institutionLink', '', 'Detail', 'collections/'.$qr_res->get('ca_collections.collection_id'))."
+							</div>
+							<hr>
+						</div>";
+				$i++;
+				if($i == 3){
+					print "</div>";
+					$i = 0;
+				}
+			}
+			if($i > 0){
+				print "</div>";
+			}
+			$qr_res->seek(0);
+			print "</div>";
+		}
+?>
 	</div><!-- end col-8 -->
 <?php
 	if(!in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies"))){

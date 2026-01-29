@@ -56,7 +56,7 @@
 								$vs_record_count = "<br/><small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 							}
 							if($vb_link_sublist){
-								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</a>";
+								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels')."</a>".$vs_record_count;
 							}else{
 								# --- there are no grandchildren to show in browser, so check if we should link to detail page instead
 								$vb_link_to_detail = true;

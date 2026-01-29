@@ -40,14 +40,7 @@
 		</div>
 		<!--<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>-->
 	</div><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 </div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

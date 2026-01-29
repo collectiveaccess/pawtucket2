@@ -34,14 +34,7 @@
 				The Keith Haring Foundation • 676 Broadway • New York, New York 10012 • ©1997–2022
 			</div>
 		</div><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

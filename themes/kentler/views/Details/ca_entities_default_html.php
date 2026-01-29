@@ -1,5 +1,10 @@
 <?php
 	$t_item = $this->getVar("item");
+	$vb_flatfile_artist = false;
+	$va_categories =  $t_item->get("ca_entities.entity_category", array("convertCodesToDisplayText" => true, "returnAsArray" => true));
+	if(in_array("Flatfile Artist", $va_categories)){
+		$vb_flatfile_artist = true;
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -9,10 +14,16 @@
 			<div class="row">
 				<div class='col-sm-10'>
 					<H1>
-					<?php print caNavLink($this->request, "<i class='fa fa-arrow-left'></i> View all Flatfile Artists", "", "", "Listing", "flatfileArtists"); ?>
-					<br/><span class="ltgrayText">Flatfile Artist</span>
+<?php
+					if($vb_flatfile_artist){
+						print caNavLink($this->request, "<i class='fa fa-arrow-left'></i> View all Flatfile Artists", "", "", "Listing", "flatfileArtists");
+?>
+						<br/><span class="ltgrayText">Flatfile Artist</span>
+<?php
+					}
+?>
 					<br/>{{{^ca_entities.preferred_labels.displayname}}}</H1>
-					{{{<ifdef code="ca_entities.url"><H5><a href="^ca_entities.url" target="_blank">^ca_entities.url</a> <i class="fa fa-external-link"></i></H5></ifdef>}}}
+					{{{<ifdef code="ca_entities.url"><H5><a href="^ca_entities.url" target="_blank">^ca_entities.url</a> &nbsp;<i class="fa fa-external-link-alt"></i></H5></ifdef>}}}
 				</div><!-- end col -->
 				<div class='navLeftRight col-sm-2'>
 					<div class="detailNavBgRight">

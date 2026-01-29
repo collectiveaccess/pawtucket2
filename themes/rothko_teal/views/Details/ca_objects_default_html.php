@@ -209,7 +209,7 @@
 			if ($va_photo_credit = $t_object->get('ca_objects.photography_credit_line')) {
 				print "<div class='unit row'><div class='{$vn_label_col} label'>Photography Credit</div><div class='$vn_data_col'>".$va_photo_credit."</div></div>";
 			}	
-			if ($va_keywords = $t_object->get('ca_list_items.item_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+			if ($va_keywords = $t_object->get('ca_list_items.item_id', array('sort' => 'ca_list_items.preferred_labels.name_plural', 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 				$vn_keyword = 0;
 				$va_keyword_links = array();
 				foreach ($va_keywords as $va_key => $va_keyword_id) {
@@ -348,6 +348,10 @@
 				if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {
 					$vs_provenance.= ", ".$vs_remark;
 				}				
+				
+				if ($t_prov_rel->get('ca_objects_x_collections.gift_artist') == $yes_list_value_id) {
+					$vs_provenance.= ", gift of the artist";
+				}
 				$vs_provenance.= "<i class='fa fa-chevron-right'></i></div>";
 			} elseif ($t_prov->get('access') != 0 ){
 				$va_provenance_id = $t_prov->get('ca_collections.collection_id');

@@ -30,7 +30,7 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6'>
-				<H1><span class="ltgrayText">Flatfile Artwork</span><br/>{{{ca_objects.preferred_labels.name}}}</H1>
+				<H1><span class="ltgrayText">Flatfile Artwork</span><br/><i>{{{^ca_objects.preferred_labels.name}}}</i></H1>
 				<H4>{{{<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="artist"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}</H4>
 				<HR/>
 <?php
@@ -53,16 +53,11 @@
 				}
 ?>
 				{{{<ifdef code="ca_objects.date"><H6>Date</H6>^ca_objects.date<br/></ifdev>}}}
-				{{{<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width"><H6>Dimensions</H6></ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_length"><H6>Dimensions</H6><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_width"> X ^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_length"> X ^ca_objects.dimensions.dimensions_length</ifdef><br/></ifdef>}}}
 <?php
 				if($vb_removed && !$this->getVar("representation_id")){
 					print "<br/>No longer available<br/>";
 				}
-?>	
-
-				{{{<ifdef code="ca_objects.artwork_tags"><HR/><H6>Tags</H6><unit delimiter=", ">^ca_objects.artwork_tags</unit><br/></ifdef>}}}
-
-<?php
 				$vs_collections = $t_object->get("ca_collections");
 				if(!(stripos($vs_collections, "Red Hook") === False)){
 					print "<H6>Part of the Red Hook Archives</H6>";

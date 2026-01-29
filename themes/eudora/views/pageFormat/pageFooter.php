@@ -55,14 +55,7 @@
 				<?php print caNavLink($this->request, "About", "", "", "About","AboutCollection"); ?>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<?php print caNavLink($this->request, "Contact", "", "", "Contact","form"); ?>
 			</div>
 		</footer><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

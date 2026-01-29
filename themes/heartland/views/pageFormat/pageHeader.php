@@ -27,8 +27,6 @@
  */
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
@@ -38,9 +36,7 @@
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
+
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		
 		if ($this->request->config->get('use_submission_interface')) {
@@ -79,16 +75,7 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 <!--<script type="text/javascript" src="//use.typekit.net/ik/yiHMk8xQMuSscne-b6OEaagoqcHujNqZbuk9ApkE_XMfeCtIfFHN4UJLFRbh52jhWDm8FQZRZc48jAZcFeFKwhjhjDbt526Xwy78MkG0jAFu-WsoShFGZAsude80ZkoRdhXCHKoyjamTiY8Djhy8ZYmC-Ao1Oco8if37OcBDOcu8OfG0jhy8ShB3ZABnZAy8jW4XdeB0ZfoDSWmyScmDSeBRZPoRdhXCHKoDSWmyScmDSeBRZWFR-emqiAUTdcS0jhNlOeBRiA8XpWFR-emqiAUTdcS0jhNlOeBRiA8XpWFR-emqiAUTdcS0dcmXOeBDOcu8OeFGZWFySemy-hmGZABkieUydcb0da41OeFGZWFySemy-hmGZABkieUydcb0SaBujW48Sagyjh90jhNlOeUzjhBC-eNDifUDSWmyScmDSeBRZWFR-emqiAUTdcS0jhNlOYiaikoyjamTiY8Djhy8ZYmC-Ao1OcFzdPUaiaS0jAFu-WsoShFGZAsude80Zko0ZWbCiaiaOcBDOcu8OYiaikoR-emDjWg8jAl8-emyS1sCjAoqOcNkZkUaiaS0jhy8ShB3ZABnZAy8jW4XdeB0ZfoDSWmyScmDSeBRZPoRdhXCiaiaO1FUiABkZWF3jAF8ShFGZAsude80ZkoRdhXKIA4kjAoqdhtlZa4ziemDSWm8J681ScB0ic8Cde97fbKh9gMMeMb6MKG4fOybIMMjgkMfH6qJluMbMg65JMJ7fbKo9gMMegI6MKGHf4p7MyMgeMw6MKGHf407MyMgeMS6MKGHf4-7MyMgeMX6MKGHf477MyMgegI6MTMg8_5Prb9.js"></script>
 <script type="text/javascript">try{Typekit.load();}catch(e){}</script>-->
 <style type="text/css">@font-face{font-family:brandon-grotesque;src:url(https://use.typekit.net/af/1da05b/0000000000000000000132df/27/l?subset_id=2&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/1da05b/0000000000000000000132df/27/d?subset_id=2&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/1da05b/0000000000000000000132df/27/a?subset_id=2&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;font-display:auto;}@font-face{font-family:brandon-grotesque;src:url(https://use.typekit.net/af/8f4e31/0000000000000000000132e3/27/l?subset_id=2&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/8f4e31/0000000000000000000132e3/27/d?subset_id=2&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/8f4e31/0000000000000000000132e3/27/a?subset_id=2&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;font-display:auto;}@font-face{font-family:brandon-grotesque;src:url(https://use.typekit.net/af/32d3ee/0000000000000000000132e0/27/l?subset_id=2&fvd=i4&v=3) format("woff2"),url(https://use.typekit.net/af/32d3ee/0000000000000000000132e0/27/d?subset_id=2&fvd=i4&v=3) format("woff"),url(https://use.typekit.net/af/32d3ee/0000000000000000000132e0/27/a?subset_id=2&fvd=i4&v=3) format("opentype");font-weight:400;font-style:italic;font-display:auto;}@font-face{font-family:brandon-grotesque;src:url(https://use.typekit.net/af/383ab4/0000000000000000000132e4/27/l?subset_id=2&fvd=i7&v=3) format("woff2"),url(https://use.typekit.net/af/383ab4/0000000000000000000132e4/27/d?subset_id=2&fvd=i7&v=3) format("woff"),url(https://use.typekit.net/af/383ab4/0000000000000000000132e4/27/a?subset_id=2&fvd=i7&v=3) format("opentype");font-weight:700;font-style:italic;font-display:auto;}@font-face{font-family:granville;src:url(https://use.typekit.net/af/1c377e/00000000000000003b9b19b9/27/l?subset_id=2&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/1c377e/00000000000000003b9b19b9/27/d?subset_id=2&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/1c377e/00000000000000003b9b19b9/27/a?subset_id=2&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;font-display:auto;}@font-face{font-family:granville;src:url(https://use.typekit.net/af/d81282/00000000000000003b9b19bd/27/l?subset_id=2&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/d81282/00000000000000003b9b19bd/27/d?subset_id=2&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/d81282/00000000000000003b9b19bd/27/a?subset_id=2&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;font-display:auto;}@font-face{font-family:granville;src:url(https://use.typekit.net/af/b32698/00000000000000003b9b19b8/27/l?subset_id=2&fvd=i3&v=3) format("woff2"),url(https://use.typekit.net/af/b32698/00000000000000003b9b19b8/27/d?subset_id=2&fvd=i3&v=3) format("woff"),url(https://use.typekit.net/af/b32698/00000000000000003b9b19b8/27/a?subset_id=2&fvd=i3&v=3) format("opentype");font-weight:300;font-style:italic;font-display:auto;}@font-face{font-family:granville;src:url(https://use.typekit.net/af/e4a102/00000000000000003b9b19bc/27/l?subset_id=2&fvd=i7&v=3) format("woff2"),url(https://use.typekit.net/af/e4a102/00000000000000003b9b19bc/27/d?subset_id=2&fvd=i7&v=3) format("woff"),url(https://use.typekit.net/af/e4a102/00000000000000003b9b19bc/27/a?subset_id=2&fvd=i7&v=3) format("opentype");font-weight:700;font-style:italic;font-display:auto;}</style>

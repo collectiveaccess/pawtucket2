@@ -61,14 +61,7 @@
 				<div id="footerDesigner">Site Design: <a href="http://www.bfdg.com" target="_blank">Bernhardt Fudyma Design Group</a></div>
 			</div><!-- end footerArea -->
 
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

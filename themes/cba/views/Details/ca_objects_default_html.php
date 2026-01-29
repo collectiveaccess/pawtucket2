@@ -52,7 +52,7 @@
 				
 				<div id="detailAnnotations"></div>
 <?php
-				$va_thumbs = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "array", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+				$va_thumbs = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "array", "linkTo" => "basic", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
 				if(is_array($va_thumbs) && sizeof($va_thumbs)){
 ?>				
 				<div id="detailRepresentationThumbnails"><?php print join("", $va_thumbs); ?></div>				
@@ -99,7 +99,7 @@
 			{{{<ifdef code="ca_objects.dates.dates_value"><unit relativeTo="ca_objects.dates" delimiter=" "><div class="unit"><label>^ca_objects.dates.dates_type:</label>^ca_objects.dates.dates_value</div></unit></ifdef>}}}
 <?php
 			# --- entities
-			$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => 1, 'checkAccess' => $va_access_values, 'sort' => array('surname',' forename')));
+			$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => 1, 'checkAccess' => $va_access_values, 'sort' => ['ca_entities.preferred_labels.surname','ca_entities.preferred_labels.forename']));
 			if(sizeof($va_entities) > 0){	
 				$va_entities_by_type = array();
 				foreach($va_entities as $va_entity) {
@@ -107,7 +107,7 @@
 				}
 				ksort($va_entities_by_type);
 				foreach($va_entities_by_type as $vs_type => $va_ent_links){
-					print "<div class='unit'><label>".$vs_type.": </label>".join($va_ent_links, ", ")."</div><!-- end unit -->";
+					print "<div class='unit'><label>".$vs_type.": </label>".join(", ", $va_ent_links)."</div><!-- end unit -->";
 				}
 			}
 			# --- places
@@ -119,7 +119,7 @@
 				}
 				ksort($va_places_by_type);
 				foreach($va_places_by_type as $vs_type => $va_place_links){
-					print "<div class='unit'><label>".$vs_type.": </label>".join($va_place_links, ", ")."</div><!-- end unit -->";
+					print "<div class='unit'><label>".$vs_type.": </label>".join(", ",$va_place_links)."</div><!-- end unit -->";
 				}
 			}
 			# --- collections

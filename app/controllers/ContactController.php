@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2023 Whirl-i-Gig
+ * Copyright 2013-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -73,7 +73,8 @@ class ContactController extends BasePawtucketController {
 			}
 		}
 		
-		$from = $this->request->config->get("ca_admin_email");
+		$opts = [];
+		$from = $this->config->get('from_email') ?: $this->request->config->get("ca_admin_email");
 		
 		$va_fields = $this->config->get("contact_form_elements");
 		$this->view->setVar("contact_form_elements", $va_fields);
@@ -92,7 +93,8 @@ class ContactController extends BasePawtucketController {
 					}
 				}
 				if($va_options['use_as_from_address'] ?? false) {
-					$from = $vs_element_value;
+					if(!is_array($opts['replyTo'])) { $opts['replyTo'] = []; }
+					$opts['replyTo'][] = $vs_element_value;
 				}
 				$this->view->setVar($vs_element_name, $vs_element_value);
 			}
@@ -107,7 +109,7 @@ class ContactController extends BasePawtucketController {
 				# -- generate mail text from template - get both the text and the html versions
 				$vs_mail_message_text = $o_view->render("mailTemplates/contact.tpl");
 				$vs_mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
-				if(caSendmail($this->config->get("contact_email"), $from, $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
+				if(caSendmail($this->config->get("contact_email"), $from, $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html, null, null, null, $opts)){
 					$this->render("Contact/success_html.php");
 				}else{
 					$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");

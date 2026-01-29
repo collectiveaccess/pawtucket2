@@ -114,6 +114,7 @@ a:hover{
 }
 .btn-default{
 	background-color: #7f4539;
+	color:#FFF !important;
 }
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
 	background-color:#333333;
@@ -588,6 +589,7 @@ a.facetApply, button.facetApplySlider {
 .institutionMore {
 	display:none;
 }
+/*
 .institutionUnit{
 	padding-left:10px;
 }
@@ -598,6 +600,15 @@ a.facetApply, button.facetApplySlider {
 	padding-left:11px;
     text-indent:-11px;
     display:inline-block;
+}
+*/
+.institutionUnit a.institutionLink {
+	text-decoration:none;
+	font-size:15px;
+	font-weight:bold;
+}
+.institutionList{
+	padding-top:30px;
 }
 .institutionList hr{
 	margin-top:15px;
@@ -613,12 +624,16 @@ a.facetApply, button.facetApplySlider {
 	text-align:center;
 }
 /* Ornaments Intro */
+.ornamentsGrid a{
+	text-decoration:none !important;
+}
 .ornamentsCatItem{
     padding: 35px 0px 0px 0px;
 	text-align:center;
 	box-shadow:0px 0px 5px rgba(0, 0, 0, 0.35);
 	height:85px;
 	overflow:hidden;
+	text-decoration:none !important;
 }
 a .ornamentsCatItem{	
 	color: #7f4539;
@@ -627,8 +642,7 @@ a .ornamentsCatItem{
     font-weight:bold;
     margin-bottom:20px;
 	text-align:center;
-	text-decoration:none;
-	text-transform:capitalize;
+	text-decoration:none !important;
 }
 a .ornamentsCatItem:hover{
 	box-shadow:0px 0px 5px rgba(0, 0, 0, 0.6);
@@ -639,6 +653,7 @@ a .ornamentsCatItem:hover{
 	width:100% !important;
 	margin-top:5px;
 	border: 1px solid #828282;
+	height: 22px !important;
 }
 .advancedSearch .field {
 	height:45px;
@@ -1120,6 +1135,27 @@ a.readmore-js-toggle{
 	top: 0px;
 	padding-top:10px;
 }
+/* authorship */
+.authorshipTab.btn-default{
+	margin-left:5px;
+	margin-right:5px;
+	font-family: 'Lusitana', serif;
+}
+.authorshipTab.btn-default.currentAuthorshipTab{
+	background-color:#EDEDED;
+	color:#7f4539 !important;
+}
+.authorshipTab.btn-default{
+	font-size:12px;
+	text-wrap: nowrap;
+	margin-top:5px;
+	display:inline-block;
+}
+@media (min-width:1515px){
+	.authorshipTab.btn-default{
+		font-size:15px;
+	}
+}
 #glossaryBodyIntro a.readmore-js-toggle{
 	top:0px;
 	margin-top:15px;
@@ -1144,4 +1180,11 @@ a.readmore-js-toggle{
 }
 .close a{
 	color: red !important;
-{
+}
+
+.banDescription{
+	line-height:1.3em;
+}
+#banContinueButton{
+	color:#FFF !important;
+}

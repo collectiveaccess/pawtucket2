@@ -27,8 +27,6 @@
  */
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
@@ -38,9 +36,7 @@
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
+
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
@@ -72,14 +68,7 @@
     	});
 	</script>
 <?php
-	//
-	// Pull in JS and CSS for debug bar
-	// 
-	if(Debug::isEnabled()) {
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
+
 	if ($this->request->getController() == "Front") {
 		$vs_style = "frontPage";
 	}

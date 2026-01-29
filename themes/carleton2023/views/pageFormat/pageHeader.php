@@ -27,8 +27,6 @@
  */
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
 ?><!DOCTYPE html>
 <html lang="en">
@@ -45,16 +43,7 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 </head>
 <body>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>

@@ -27,8 +27,6 @@
  */
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
@@ -38,9 +36,7 @@
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
+
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		
 		if ($this->request->config->get('use_submission_interface')) {
@@ -68,16 +64,7 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 <script>
 window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.1.0\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.1.0\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/oldfilm.whirl-i-gig.com:8085\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.9.2"}};
 /*! This file is auto-generated */

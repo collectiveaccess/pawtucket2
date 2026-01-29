@@ -28,8 +28,6 @@
 	require_once(__CA_MODELS_DIR__.'/ca_site_pages.php');
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
 	# --- collect the user links - they are output twice - once for toggle menu and once for nav
 	$va_user_links = array();
@@ -39,9 +37,7 @@
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
+
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	    $va_responsive_login_form = null;
@@ -84,16 +80,7 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
-<?php
-	//
-	// Pull in JS and CSS for debug bar
-	// 
-	if(Debug::isEnabled()) {
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 </head>
 <body>
 	<div class="container-fluid" role="navigation">

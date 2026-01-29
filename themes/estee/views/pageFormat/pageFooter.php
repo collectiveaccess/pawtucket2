@@ -43,14 +43,7 @@ $vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]
 				<li>Copyright &copy; <?php print date("Y"); ?></li>
 			</ul>
 		</footer><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
+
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

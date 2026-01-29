@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2024 Whirl-i-Gig
+ * Copyright 2008-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -410,10 +410,8 @@ class SearchIndexer extends SearchBase {
 
 		if(isset($va_cache_data[$ps_subject_table]) && is_array($va_cache_data[$ps_subject_table])) { /* cache hit */
 			/* return data from cache */
-			//Debug::msg("Got table dependency array for table {$ps_subject_table} from external cache");
 			return $va_cache_data[$ps_subject_table];
 		} else { /* cache miss */
-			//Debug::msg("Cache miss for {$ps_subject_table}");
 			/* build dependency graph, store it in cache and return it */
 			$va_deps = $this->_getDependencies($ps_subject_table);
 			$va_cache_data[$ps_subject_table] = $va_deps;
@@ -1018,7 +1016,7 @@ if (!$for_current_value_reindex) {
 							}
 						}
 				
-						if(!$qr_res->seek(0)) {
+						if(($qr_res->numRows() > 0) && !$qr_res->seek(0)) {
 							$qr_res = $this->opo_db->query($vs_sql, $va_params);
 						}
 						
