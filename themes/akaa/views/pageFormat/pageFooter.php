@@ -49,13 +49,11 @@
 			<div class="row">
 				<div class="col-sm-12 text-center">
 					<ul class="list-inline ">
-						<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 						<li><?php print caNavLink($this->request, _t("Terms & Conditions"), "", "", "Terms", ""); ?></li>
-						<li><a href="https://ahlfoundation.us13.list-manage.com/subscribe?u=9c1109adcfbd92fe96635dc7d&id=4624843a48" target="_blank">Join Our Newsletter</a></li>
 					</ul>
 					<ul class="list-inline social">
-						<li><a href="https://www.instagram.com/ahlfoundation/" target="_blank"><i class="fa fa-instagram"></i></a></li>
-						<li><a href="https://www.facebook.com/ahlfoundation/" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+						<li><a href="https://www.instagram.com/ahlfoundation/" target="_blank"><i class="fab fa-instagram"></i></a></li>
+						<li><a href="https://www.facebook.com/ahlfoundation/" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
 					</ul>
 					<div class="copyright">{{{copyright}}}</div>
 				</div>
