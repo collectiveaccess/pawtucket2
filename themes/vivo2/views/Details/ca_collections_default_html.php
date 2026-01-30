@@ -43,33 +43,45 @@
 
 	$vs_placeholder = "<div class='placeholderImage'>".caGetThemeGraphic($this->request, 'placeholder.jpg', array("alt" => "Placeholder"))."</div>";
 
+	$vb_2_col = false;
+	if($t_item->get("ca_collections.RAD_scopecontent") || $t_item->get("ca_collections.RAD_admin_hist") || $t_item->get("ca_collections.RAD_arrangement") || $t_item->get("ca_collections.RAD_custodial")){
+		$vb_2_col = true;
+	}
 ?>
 <div class="container"><div class="row">
 	<div class='col-xs-12'>
 		<div class="bgLightGrayDetail">
-					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
-					<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
-					
-					
+			<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
+			<div class="typeInfo">{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</div>
+			
+			
 <?php
-					if($t_item->get("ca_collections.idno") == "SVES"){
-						print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media.page"><div class="unit fullWidth">^ca_object_representations.media.page</div></ifdef>');
-					}
+			if($t_item->get("ca_collections.idno") == "SVES"){
+				print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media.page"><div class="unit fullWidth">^ca_object_representations.media.page</div></ifdef>', array("checkAccess" => $va_access_values));
+			}
+			if($vb_2_col){
 ?>
-					{{{<ifdef code="ca_collections.title_note"><div class="unit"><label>Title Note</label>^ca_collections.title_note</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_custodial"><div class="unit"><label>Custodial History</label>^ca_collections.RAD_custodial</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.internal_notes"><div class="unit"><label>Archivist Note</label>^ca_collections.internal_notes</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_scopecontent"><div class="unit"><label>Scope and Content</label><span class="trimText">^ca_collections.RAD_scopecontent</span></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_admin_hist"><div class="unit"><label>Administrative/Biographical History</label><span class="trimText">^ca_collections.RAD_admin_hist</span></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.date_container.date"><div class="unit"><label>Date</label><unit relativeTo="ca_collections.date_container" delimiter="<br>">^ca_collections.date_container.date<ifdef code="ca_collections.date_container.date_note">, ^ca_collections.date_container.date_note</ifdef></unit></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_langMaterial"><div class="unit"><label>Language</label>^ca_collections.RAD_langMaterial</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_material"><div class="unit"><label>Related Materials</label>^ca_collections.RAD_material</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_arrangement"><div class="unit"><label>System of Arrangement</label>^ca_collections.RAD_arrangement</div></ifdef>}}}
+				<div class="row">
+					<div class="col-sm-12 col-md-6">
+						{{{<ifdef code="ca_collections.RAD_scopecontent"><div class="unit"><H2>Scope and Content</H2><span class="trimTextShort"><div>^ca_collections.RAD_scopecontent</div></span></div></ifdef>}}}
+						{{{<ifdef code="ca_collections.RAD_admin_hist"><div class="unit"><H2>Administrative/Biographical History</H2><span class="trimTextShort"><div>^ca_collections.RAD_admin_hist</div></span></div></ifdef>}}}
+						{{{<ifdef code="ca_collections.RAD_arrangement"><div class="unit"><H2>System of Arrangement</H2><span class="trimTextShort"><div>^ca_collections.RAD_arrangement</div></span></div></ifdef>}}}
+						{{{<ifdef code="ca_collections.RAD_custodial"><div class="unit"><H2>Custodial History</H2><span class="trimTextShort"><div>^ca_collections.RAD_custodial</div></span></div></ifdef>}}}
+					
+					</div>
+					<div class="col-sm-12 col-md-6">
+<?php
+			}
+?>
+					{{{<ifdef code="ca_collections.title_note"><div class="unit"><H2>Title Note</H2>^ca_collections.title_note</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.date_container.date"><div class="unit"><H2>Date</H2><unit relativeTo="ca_collections.date_container" delimiter="<br>">^ca_collections.date_container.date<ifdef code="ca_collections.date_container.date_note">, ^ca_collections.date_container.date_note</ifdef></unit></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.RAD_langMaterial"><div class="unit"><H2>Language</H2>^ca_collections.RAD_langMaterial%delimiter=;_</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.RAD_material"><div class="unit"><H2>Related Materials</H2>^ca_collections.RAD_material</div></ifdef>}}}
 <?php
 		if($this->request->isLoggedIn()){
 ?>
-					{{{<ifdef code="ca_collections.catalogue_control.catalogued_by|ca_collections.catalogue_control.catalogued_date"><div class="unit"><label>Descriptive Control</label>^ca_collections.catalogue_control.catalogued_by<ifdef cde="ca_collections.catalogue_control.catalogued_date"> (^ca_collections.catalogue_control.catalogued_date)</ifdef></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.acquisition_date"><div class="unit"><label>Date of Acquisition</label>^ca_collections.acquisition_date</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.catalogue_control.catalogued_by|ca_collections.catalogue_control.catalogued_date"><div class="unit"><H2>Descriptive Control</H2>^ca_collections.catalogue_control.catalogued_by<ifdef cde="ca_collections.catalogue_control.catalogued_date"> (^ca_collections.catalogue_control.catalogued_date)</ifdef></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.acquisition_date"><div class="unit"><H2>Date of Acquisition</H2>^ca_collections.acquisition_date</div></ifdef>}}}
 <?php
 		}
 ?>
@@ -82,17 +94,27 @@
 							$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
 						}
 						foreach($va_entities_by_type as $vs_type => $va_entity_links){
-							print "<div class='unit'><label>".$vs_type."</label>".join(", ", $va_entity_links)."</div>";
+							print "<div class='unit'><H2>".$vs_type."</H2>".join(", ", $va_entity_links)."</div>";
 						}
 					}
 ?>					
 					
 					
-					{{{<ifcount code="ca_collections.related" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="event"><div class="unit"><label>Related programs & events</label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><label>Related Subject Guides</label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
-					{{{<ifdef code="ca_collections.places"><div class="unit"><label>Related Places</label><unit relativeTo="ca_collections.places" delimiter=", ">^ca_collections.places</unit></div></ifdef>}}}
-
+					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><H2>Related Subject Guide<ifcount code="ca_occurrences" min="2" restrictToTypes="subject_guide">s</ifcount></H2><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l></unit></div></div></ifcount>}}}
+					{{{<ifdef code="ca_collections.places"><div class="unit"><H2>Related Places</H2><unit relativeTo="ca_collections.places" delimiter=", ">^ca_collections.places</unit></div></ifdef>}}}
+<?php
+		if($this->request->isLoggedIn() && $this->request->user->hasRole("frontendRestricted")){
+?>					
+					{{{<ifdef code="ca_collections.internal_notes"><div class="unit"><H2>Archivist Note</H2>^ca_collections.internal_notes</div></ifdef>}}}
+<?php
+		}
+		if($vb_2_col){
+?>
+			</div>
+		</div>
+<?php
+		}
+?>
 		</div>	
 		<div class="row">
 			<div class="col-sm-4 text-center">
@@ -137,7 +159,7 @@
 							}
 							$vs_lang = "";
 							if($vs_tmp = $q_child_collections->get("ca_collections.RAD_langMaterial", array("delimiter" => "; "))){
-								$vs_lang = "<div><label>Language</label>".$vs_tmp."</div>";
+								$vs_lang = "<div><H2>Language</H2>".$vs_tmp."</div>";
 							}
 			
 							if ( $vn_i == 0) { print "<div class='row'>"; } 
@@ -167,7 +189,104 @@
 <?php				
 				}
 			}									
-?>				
+
+	$va_events = $t_item->get("ca_occurrences", array("restrictToTypes" => array("event"), "returnWithStructure" => 1, "checkAccess" => $va_access_values));
+	if(is_array($va_events) && sizeof($va_events)){
+		$va_rel_events = array();
+		$i = 0;
+		foreach($va_events as $va_event_info){
+			$va_rel_events[$va_event_info["occurrence_id"]] = array("name" => $va_event_info["name"], "relationship_type" => $va_event_info["relationship_typename"]);
+			$i++;
+			if($i == 24){
+				break;
+			}
+		}
+		$qr_events = caMakeSearchResult("ca_occurrences", array_keys($va_rel_events));
+?>
+		<div class="row">
+			<div class="col-sm-12">
+				<H3>Related Programs & Events</H3>
+<?php
+
+				$i = 0;
+				$col = 0;
+				while($qr_events->nextHit()){
+					if($col == 0){
+						print "<div class='row'>";
+					}
+					print "<div class='col-sm-3'>".caDetailLink($this->request, "<div class='bgDarkGray text-center'>".$va_rel_events[$qr_events->get("ca_occurrences.occurrence_id")]["name"]."<br/><small>".$qr_events->getWithTemplate("^ca_occurrences.occurrence_date")."</small></div>", "", "ca_occurrences", $qr_events->get("ca_occurrences.occurrence_id"))."</div>";
+					$col++;
+					if($col == 4){
+						$col = 0;
+						print "</div>";
+					}
+					$i++;
+					if($i == 24){
+						if(sizeof($va_events) > 24){
+							print "<div class='row'><div class='col-sm-12 text-center'>".caNavLink($this->request, "View All →", "btn btn-default", "", "Browse", "Events", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id")))."</div></div>";
+						}
+						break;
+					}
+				}
+				if($col > 0){
+					print "</div>";
+				}
+						
+?>			
+			
+			</div>
+		</div>
+<?php
+	}
+	$va_collections = $t_item->get("ca_collections.related", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
+	if(is_array($va_collections) && sizeof($va_collections)){
+		$va_rel_collections = array();
+		$i = 0;
+		foreach($va_collections as $va_collection_info){
+			$va_rel_collections[$va_collection_info["collection_id"]] = array("name" => $va_collection_info["name"], "relationship_type" => $va_collection_info["relationship_typename"]);
+			$i++;
+			if($i == 24){
+				break;
+			}
+		}
+		$qr_collections = caMakeSearchResult("ca_collections", array_keys($va_rel_collections));
+?>
+		<div class="row">
+			<div class="col-sm-12">
+				<H3>Related Collections, Series & Files</H3>
+<?php
+
+				$i = 0;
+				$col = 0;
+				while($qr_collections->nextHit()){
+					if($col == 0){
+						print "<div class='row'>";
+					}
+					print "<div class='col-sm-3'>".caDetailLink($this->request, "<div class='bgDarkGray text-center'>".$qr_collections->getWithTemplate("<ifdef code='ca_collections.parent_id'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '><if rule='^ca_collections.type_id =~ /Fond/'>^ca_collections.preferred_labels.name &gt; </if></unit></ifdef>").$va_rel_collections[$qr_collections->get("ca_collections.collection_id")]["name"]."<br/><small>(".$qr_collections->getWithTemplate("^ca_collections.type_id").") (".$va_rel_collections[$qr_collections->get("ca_collections.collection_id")]["relationship_type"].")</small></div>", "", "ca_collections", $qr_collections->get("ca_collections.collection_id"))."</div>";
+					$col++;
+					if($col == 4){
+						$col = 0;
+						print "</div>";
+					}
+					$i++;
+					if($i == 24){
+						if(sizeof($va_collections) > 24){
+							print "<div class='row'><div class='col-sm-12 text-center'>".caNavLink($this->request, "View All →", "btn btn-default", "", "Browse", "Collections", array("facet" => "rel_collection_facet", "id" => $t_item->get("ca_collections.collection_id")))."</div></div>";
+						}
+						break;
+					}
+				}
+				if($col > 0){
+					print "</div>";
+				}
+?>			
+			
+			</div>
+		</div>
+<?php
+	}
+
+?>			
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class="col-sm-12"><H3>Related Objects</H3></div>
@@ -205,7 +324,7 @@
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 112,
+		  maxHeight: 118,
 		  moreLink: '<a href="#">More &#8964;</a>'
 		});
 	});

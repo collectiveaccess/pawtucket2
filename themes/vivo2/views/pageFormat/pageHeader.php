@@ -27,8 +27,6 @@
  */
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
@@ -38,9 +36,7 @@
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
+
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		
 		if ($this->request->config->get('use_submission_interface')) {
@@ -89,16 +85,7 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 	<style>
 	@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
 	</style>
@@ -151,14 +138,32 @@
 	}
 ?>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
+<?php
+				if($vb_video_out){
+?>
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'videoout'); ?>" aria-label="<?php print _t("Search Video Out"); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
-						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><span class="material-symbols-outlined">search</span></button>
+							<label for="headerSearchInput" class="sr-only">Search Video Out:</label>
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search Video Out"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+						</div><button type="submit" class="btn-search" id="headerSearchButton"><span class="material-symbols-outlined">search</span></button>
 					</div>
 				</form>
+
+<?php
+				}else{
+?>
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search the Archive"); ?>">
+					<div class="formOutline">
+						<div class="form-group">
+							<label for="headerSearchInput" class="sr-only">Search the Archive:</label>
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search the Archive"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+						</div><button type="submit" class="btn-search" id="headerSearchButton"><span class="material-symbols-outlined">search</span></button>
+					</div>
+				</form>
+<?php
+				}
+?>
 				<script type="text/javascript">
 					$(document).ready(function(){
 						$('#headerSearchButton').prop('disabled',true);
@@ -195,11 +200,11 @@
 			if($vb_video_out){
 ?>
 				<ul class="nav navbar-nav menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print (strToLower($this->request->getController()) == "videoout") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Video Out"), "", "", "VideoOut", "Index"); ?></li>
 					<li <?php print (strToLower($this->request->getAction()) == "videoout") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "videoout"); ?></li>
 					<li <?php print (strToLower($this->request->getAction()) == "videooutartists") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "videooutartists"); ?></li>
 					<li <?php print ($vs_contact_type == "RentalPurchase") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Rental & Sales"), "", "", "Contact", "form", array("contactType" => "RentalPurchase")); ?></li>
 					<li <?php print (strToLower($this->request->getController()) == "VideoOutSubmit") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Submit for Distribution"), "", "", "VideoOutSubmit", ""); ?></li>
+					<li class="vidOutArchiveMobileSwitch"><?php print caNavLink($this->request, _t("Archive")." <span class='material-symbols-outlined'>arrow_outward</span>", "", "", "", ""); ?></li>
 				</ul>
 <?php
 			}else{
@@ -209,15 +214,16 @@
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Projects"), "", "", "Gallery", "Index"); ?></li>
-					<li class="dropdown <?php print ($this->request->getController() == "About") ? ' active' : ''; ?>">
+					<li class="dropdown <?php print (($this->request->getController() == "About") && in_array($this->request->getAction(), array("Index", "ResearchReproduction", "Policies"))) ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("About"); ?></a>
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, _t("The Archive"), "", "", "About", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("How to Use this Site"), "", "", "About", "Guide"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Research & Reproduction"), "", "", "About", "ResearchReproduction"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Policies"), "", "", "About", "Policies"); ?></li>
 						</ul>
-					</li>					
+					</li>
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Guide")) ? ' class="active"' : ''; ?>><?php print caNavLink($this->request, _t("User Guide"), "", "", "About", "Guide"); ?></li>				
+					<li class="vidOutArchiveMobileSwitch"><?php print caNavLink($this->request, _t("Video Out")." <span class='material-symbols-outlined'>arrow_outward</span>", "", "", "VideoOut", "Index"); ?></li>
 				</ul>
 <?php
 			}
@@ -226,5 +232,5 @@
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
-	<div class="container <?php print (((strToLower($this->request->getController()) == "collections") && (strToLower($this->request->getAction()) == "index")) || in_array(strToLower($this->request->getController()), array("front", "videoout"))) ? "wideContainer" : ""; ?>"><div class="row"><div class="col-xs-12">
+	<div class="container <?php print (((strToLower($this->request->getController()) == "collections") && (strToLower($this->request->getAction()) == "index")) || (in_array(strToLower($this->request->getController()), array("front", "videoout"))) || ((strToLower($this->request->getController()) == "gallery") && (strToLower($this->request->getAction()) == "index"))) ? "wideContainer" : ""; ?>"><div class="row"><div class="col-xs-12">
 		<div role="main" id="main"><div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
