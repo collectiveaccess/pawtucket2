@@ -100,7 +100,7 @@ li.navDivide{
 	padding:0px 10px 0px 10px;
 }
 #footer ul li, #footer ul.social li {
-	padding: 0px 20px 0px 0px;
+	padding: 0px 5px 0px 0px;
 }
 #footer ul.social {
 	padding-top: 0px;
@@ -145,6 +145,9 @@ li.navDivide{
 	color:#000;
 	font-family:Lato;
 	text-align:center;
+}
+.front H2 a {
+	text-decoration:underline;
 }
 .interviewThumb {
 	padding-bottom:10px;

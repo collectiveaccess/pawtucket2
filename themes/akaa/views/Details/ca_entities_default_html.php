@@ -105,6 +105,33 @@
 				});
 			</script>
 </ifcount>}}}
+{{{<ifcount code="ca_objects" min="1" restrictToTypes="publication">
+			<br/><br/><br/>
+			<div class="row">
+				<div class="col-sm-12">
+					<H2>Publications</H2><HR/>
+				</div>
+			</div>
+			<div class="row">
+				<div id="browseResultsContainer2">
+					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+				</div><!-- end browseResultsContainer -->
+			</div><!-- end row -->
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery("#browseResultsContainer2").load("<?php print caNavUrl($this->request, '', 'Browse', 'publications', array('facet' => 'entity_facet', 'id' => '^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainer2').jscroll({
+							autoTrigger: true,
+							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+							padding: 20,
+							nextSelector: 'a.jscroll-next'
+						});
+					});
+					
+					
+				});
+			</script>
+</ifcount>}}}
 {{{<ifcount code="ca_objects" min="1" restrictToTypes="physical_object">
 			<br/><br/><br/>
 			<div class="row">
@@ -113,14 +140,14 @@
 				</div>
 			</div>
 			<div class="row">
-				<div id="browseResultsContainer">
+				<div id="browseResultsContainer3">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'akaa_collection', array('facet' => 'entity_facet', 'id' => '^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
+					jQuery("#browseResultsContainer3").load("<?php print caNavUrl($this->request, '', 'Browse', 'akaa_collection', array('facet' => 'entity_facet', 'id' => '^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainer3').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
 							padding: 20,

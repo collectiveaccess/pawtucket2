@@ -55,24 +55,24 @@
 				<div class="row vertAlignRow">
 					<div class="col-sm-12 col-md-6">
 						<div class="frontContentBlockText">
-							<H2>Lorem ipsum</H2>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+							<H2><?php print caNavLink($this->request, $this->getVar("hp_block1_title"), "", "", "About", ""); ?></H2>
+							{{{hp_block1_text}}}
 						</div>
 					</div>
 					<div class="col-sm-12 col-md-6 fullWidth">
-						<?php print caGetThemeGraphic($this->request, 'hero_1.jpg'); ?>
+						<?php print caGetThemeGraphic($this->request, '1Intro.jpg'); ?>
 					</div>
 				</div>
 			</div>
 			<div class="bgLightGray frontContentBlock">
 				<div class="row vertAlignRow">
 					<div class="col-sm-12 col-md-6 fullWidth">
-						<?php print caGetThemeGraphic($this->request, 'hero_2.jpg'); ?>
+						<?php print caGetThemeGraphic($this->request, '2BrowseOur-Collection.jpg'); ?>
 					</div>
 					<div class="col-sm-12 col-md-6">
 						<div class="frontContentBlockText">
-							<H2>Lorem ipsum</H2>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+							<H2><?php print caNavLink($this->request, $this->getVar("hp_block2_title"), "", "", "Browse", "akaa_collection"); ?></H2>
+							{{{hp_block2_text}}}
 						</div>
 					</div>
 				</div>
@@ -81,12 +81,12 @@
 				<div class="row vertAlignRow">
 					<div class="col-sm-12 col-md-6">
 						<div class="frontContentBlockText">
-							<H2>Lorem ipsum</H2>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+							<H2><?php print caNavLink($this->request, $this->getVar("hp_block3_title"), "", "", "Listing", "interviews"); ?></H2>
+							{{{hp_block3_text}}}
 						</div>
 					</div>
 					<div class="col-sm-12 col-md-6 fullWidth">
-						<?php print caGetThemeGraphic($this->request, 'hero_3.jpg'); ?>
+						<?php print caGetThemeGraphic($this->request, '3Interview.jpg'); ?>
 					</div>
 				</div>
 			</div>		
