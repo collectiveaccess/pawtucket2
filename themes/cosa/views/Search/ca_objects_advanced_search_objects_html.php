@@ -68,7 +68,7 @@
 			<h3 class="fs-4">Use quotation marks for exact matches</h3>
 			<p>Put quotes around phrases if you need a specific title or name.</p>
 			<p class="pt-3"><b>Example:</b></p>
-			<code class="bg-white p-2">"La Veladora"</code>
+			<code class="bg-white p-2">"Bloom"</code>
 			<p class="pt-3">> find artworks with that exact title</p>
 			
 			<hr/>
