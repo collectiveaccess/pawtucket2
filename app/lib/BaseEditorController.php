@@ -81,7 +81,7 @@ class BaseEditorController extends ActionController {
 		//
 		// Are we duplicating?
 		//
-		if (($vs_mode == 'dupe') && $this->request->user->canDoAction('can_duplicate_'.$t_subject->tableName())) {
+		if (($vs_mode == 'dupe') && $this->request->user->canDoAction('can_duplicate_'.$t_subject->tableName()) && $t_subject->isLoaded()) {
 			if (!caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
 				throw new ApplicationException(_t('CSRF check failed'));
 				return;
@@ -170,8 +170,29 @@ class BaseEditorController extends ActionController {
 		// get default screen
 		//
 		if (!($type_id = $t_subject->getTypeID())) {
-			$type_id = $this->request->getParameter($t_subject->getTypeFieldName(), pInteger);
+			$type = $this->request->getParameter($t_subject->getTypeFieldName() ?? 'type_id', pString);
+			switch($this->ops_table_name) {
+				case 'ca_relationship_types':
+					$t_rel = new ca_relationship_types($type);
+					$type_ids = $t_rel->isLoaded() ? [$t_rel->get('type_id')] : null; 
+					break;
+				default:
+					$type_ids = caMakeTypeIDList($this->ops_table_name, [$type]);
+					break;
+			}
+			if (!$type_ids) {
+				$type_id = null;
+			} else {
+				$type_id = array_shift($type_ids);
+			}
+			if(!$type_id && $t_subject->hasField('type_id') && !$t_subject->getFieldInfo('type_id', 'IS_NULL')) {
+				$this->notification->addNotification(_t('Invalid type: %1', $type), __NOTIFICATION_TYPE_ERROR__);
+
+				$this->postError(1270, _t('Invalid type: %1', $type),"BaseEditorController->Edit()");
+				return;
+			}
 		}
+		$this->request->setParameter('type_id', $type_id, 'POST');
 
 		if (!$t_ui || !$t_ui->getPrimaryKey()) {
 			$this->notification->addNotification(_t('There is no configuration available for this editor. Check your system configuration and ensure there is at least one valid configuration for this type of editor.'), __NOTIFICATION_TYPE_ERROR__);
@@ -1220,7 +1241,7 @@ class BaseEditorController extends ActionController {
 		if (!$vn_subject_id || !$t_subject->load($vn_subject_id)) {
 			// empty (ie. new) rows don't have a type_id set, which means we'll have no idea which attributes to display
 			// so we get the type_id off of the request
-			if (!($type_ids = caMakeTypeIDList($this->ops_table_name, [$this->request->getParameter($t_subject->getTypeFieldName(), pString)]))) {
+			if (!($type_ids = caMakeTypeIDList($this->ops_table_name, [$this->request->getParameter($t_subject->getTypeFieldName(), pString)], ['includeSubtypes' => false]))) {
 				$type_id = null;
 			} else {
 				$type_id = array_shift($type_ids);
@@ -2075,10 +2096,10 @@ class BaseEditorController extends ActionController {
 			//
 			// View object representation
 			//
-			require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
 			$t_instance = new ca_object_representations($pn_representation_id);
 			
-			if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("media_overlay", $vs_mimetype = $t_instance->getMediaInfo('media', 'INPUT', 'MIMETYPE')))) {
+			$vs_mimetype = $t_instance->getMediaInfo('media', 'INPUT', 'MIMETYPE');
+			if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("media_overlay", $vs_mimetype))) {
 				throw new ApplicationException(_t('Invalid viewer for '.$vs_mimetype));
 			}
 			

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2024 Whirl-i-Gig
+ * Copyright 2006-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -308,6 +308,10 @@ class MediaInfoCoder {
 		if (isset($pa_options['width'])) { $va_properties['width'] = $pa_options['width']; }
 		if (isset($pa_options['height'])) { $va_properties['height'] = $pa_options['height']; }
 		
+		$pa_options['FETCHED_ORIGINAL_URL'] = $va_media_info['INPUT']['FETCHED_ORIGINAL_URL'] ?? null;
+		$pa_options['FETCHED_FROM'] = $va_media_info['INPUT']['FETCHED_FROM'] ?? null;
+		$pa_options['FETCHED_BY'] = $va_media_info['INPUT']['FETCHED_BY'] ?? null;
+		$pa_options['FETCHED_ON'] = $va_media_info['INPUT']['FETCHED_ON'] ?? null;
 		
 		return $o_media->htmlTag($va_media_info[$ps_version]["MIMETYPE"] ?? null, $vs_url, $va_properties, $pa_options, $va_volume);
 	}
