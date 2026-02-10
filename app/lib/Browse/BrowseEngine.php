@@ -3473,6 +3473,16 @@ class BrowseEngine extends BaseFindEngine {
 			$va_results = $this->opo_ca_browse_cache->getResults();
 			if (!is_array($va_container_ids = $this->opo_ca_browse_cache->getParameter('container_ids'))) { $va_container_ids = []; }
 		}
+						
+		if(isset($va_facet_info['filter']) && is_array($va_facet_info['filter']) && sizeof($va_facet_info['filter'])){
+			$qr = $vs_browse_table_name::findAsSearchResult($va_facet_info['filter']);
+			$filtered_ids = $qr->getAllFieldValues($t_subject->primaryKey());
+			if(is_array($va_results) && sizeof($va_results)) {
+				$va_results = array_intersect($filtered_ids, $va_results);
+			} else {
+				$va_results = $filtered_ids;
+			}	
+		}
 
 		$vb_single_value_is_present = false;
 		$vs_single_value = isset($va_facet_info['single_value']) ? $va_facet_info['single_value'] : null;
@@ -8335,7 +8345,17 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 				}
 			}
 		}
-			
+		return true;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 * @oaram array $browse_info 
+	 * 
+	 * @return bool 
+	 */
+	public function setSelectiveBaseCriteria(array $browse_info, array $settings, ?array $options=null) : ?bool {
+		$context = caGetOption('context', $options, 'browse', ['validValues' => ['search', 'browse'], 'forceLowercase' => true]);
 		if(is_array($sbase_criteria = caGetOption('selectiveBaseCriteria', $browse_info, null))) {
 			foreach($sbase_criteria as $n => $info) {
 				$bool = strtoupper($info['boolean'] ?? 'AND');
@@ -8387,8 +8407,7 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 							case 'facets':
 								$mode = strtoupper($value['mode'] ?? 'ALL');	// ALL or ANY
 								$facets = array_keys($this->getCriteria() ?? []);
-								
-								$apply = true;
+								$apply = false;
 								foreach($facets as $f) {
 									if(in_array($f, $value['facets'] ?? [])) {
 										$apply = true;	
@@ -8417,8 +8436,10 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 						if(is_array($criteria)) {
 							foreach($criteria as $facet => $values) {
 								if(sizeof($values ?? []) == 0) {
+									//print "[$n] REMOVE $facet<br>\n";
 									$this->removeAllCriteria($facet);
 								} else {
+									//print "[$n] ADD $facet<br>\n";
 									$this->addCriteria($facet, $values);
 								}
 							}
