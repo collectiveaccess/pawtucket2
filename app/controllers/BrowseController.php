@@ -230,6 +230,9 @@ class BrowseController extends FindController {
 				$o_browse->addCriteria("_search", array("*"));
 			}
 		}
+		$o_browse->setSelectiveBaseCriteria($browse_info, [
+			'view' => $view
+		]);
 		
 		//
 		// Sorting

@@ -298,6 +298,9 @@ class SearchController extends FindController {
 		if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
 			$o_browse->addCriteria("_search", [caMatchOnStem($vs_search_expression)], array($vs_search_expression_for_display));
 		}
+		$o_browse->setSelectiveBaseCriteria($browse_info, [
+			'view' => $view
+		], ['context' => 'search']);
 		
 		//
 		// Sorting
