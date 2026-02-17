@@ -203,7 +203,7 @@ if (!$ajax) {	// !ajax
 			print "</ul>";
 		}
 ?>
-			<div id="browseResultsContainer">
+			<div id="browseResultsContainer" class="mb-5">
 				<div class="row"><a name="results"></a>
 <?php
 } // !ajax
@@ -224,6 +224,25 @@ if (!$ajax) {	// !ajax
 			
 			</div><!-- end row -->
 		</div><!-- end browseResultsContainer -->
+<?php	
+	if($table == "ca_objects"){
+		switch($current_view){
+			case "map":
+?>
+				<iframe title="ehq-embed-survey" frameborder="0" marginwidth="0" scrolling="auto" width="100%" height="600px" src="https://sanantonio.us.engagementhq.com/embeds/projects/14550/survey-tools/28836"></iframe>
+<?php
+			break;
+			# ---------------------
+			case "images":
+?>
+				<iframe title="ehq-embed-survey" frameborder="0" marginwidth="0" scrolling="auto" width="100%" height="600px" src="https://sanantonio.us.engagementhq.com/embeds/projects/14550/survey-tools/28838"></iframe>
+<?php
+			break;
+			# ---------------------
+		}		
+}
+?>
+	
 	</div><!-- end col-8 -->	
 </div><!-- end row -->
 
