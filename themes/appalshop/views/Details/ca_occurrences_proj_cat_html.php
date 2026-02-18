@@ -96,13 +96,6 @@ MetaTagManager::addMeta("og:image", $t_item->getWithTemplate("^ca_object_represe
 <?php
 	}
 ?>
-{{{<ifdef code="ca_object_representations.media.large">
-	<div class="row justify-content-center mb-3">
-		<div class="col">
-			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
-		</div>
-	</div>
-</ifdef>}}}
 	<div class="row row-cols-1 {{{<ifdef code="ca_occurrences.embed_code|ca_occurrences.externalLink.url_entry">row-cols-md-2</ifdef>}}}">
 		<div class="col">				
 			{{{<dl class="mb-0">
