@@ -85,12 +85,12 @@
 				}
 				$va_mediums = $t_object->get("ca_objects.medium", array("returnAsArray" => true));
 				if(is_array($va_mediums) && sizeof($va_mediums)){
-					$t_list_item = new ca_list_items();
+					$t_list = new ca_lists();
 					print "<div class='unit'><label>Type".((sizeof($va_mediums) > 1) ? "s" : "")."</label>";
 					$va_tmp = array();
-					foreach($va_mediums as $vn_medium_id){
-						$t_list_item->load($vn_medium_id);
-						$va_tmp[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), '', '', 'Browse', 'artworks', array("facet" => "medium_facet", "id" => $vn_medium_id));
+					foreach($va_mediums as $vs_medium){
+						$vn_medium_id = $t_list->getItemIDFromListByItemValue("medium", $vs_medium);
+						$va_tmp[] = caNavLink($this->request, $vs_medium, '', '', 'Browse', 'artworks', array("facet" => "medium_facet", "id" => $vn_medium_id));
 					}
 					print join(", ", $va_tmp);
 					print "</div>";
