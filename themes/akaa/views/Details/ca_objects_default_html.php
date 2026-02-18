@@ -158,41 +158,6 @@
 			</script>
 </unit></ifcount>}}}		
 
-<?php
-					$va_medium = $t_object->get('ca_objects.medium', array('returnAsArray' => 1));
-					if(is_array($va_medium) && sizeof($va_medium)) {
-						$vn_medium = $va_medium[0];
-
-?>					
-						{{{<br/><br/><br/>
-							<div class="row">
-								<div class="col-sm-12">
-									<H2>Similar Artists</H2><HR/>
-								</div>
-							</div>
-							<div class="row">
-								<div id="browseResultsContainerEntities">
-									<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-								</div><!-- end browseResultsContainer -->
-							</div><!-- end row -->
-							<script type="text/javascript">
-								jQuery(document).ready(function() {
-									jQuery("#browseResultsContainerEntities").load("<?php print caNavUrl($this->request, '', 'Browse', 'artists', array('facet' => 'medium_facet', 'id' => $vn_medium), array('dontURLEncodeParameters' => true)); ?>", function() {
-										jQuery('#browseResultsContainerEntities').jscroll({
-											autoTrigger: true,
-											loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-											padding: 20,
-											nextSelector: 'a.jscroll-next'
-										});
-									});
-					
-					
-								});
-							</script>}}}
-<?php
-					}
-?>
-
 </div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
