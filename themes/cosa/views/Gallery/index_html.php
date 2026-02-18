@@ -68,12 +68,16 @@
 				</div>
 			</div>
 		</div>		
+<?php
+			if(sizeof($va_sets) > 1){
+?>
 		<div class="row">
 			<div class='col-12'>
 				<h2 class="text-capitalize"><?php print _t("More ").$o_gallery_config->get("gallery_section_item_name_plural"); ?></h3>
 			</div>
 		</div>
 <?php
+			}
 		}
 ?>
 		<div class="row">
