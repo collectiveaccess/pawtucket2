@@ -229,13 +229,13 @@ if (!$ajax) {	// !ajax
 		switch($current_view){
 			case "map":
 ?>
-				<iframe title="ehq-embed-survey" frameborder="0" marginwidth="0" scrolling="auto" width="100%" height="600px" src="https://sanantonio.us.engagementhq.com/embeds/projects/14550/survey-tools/28836"></iframe>
+				<iframe title="ehq-embed-survey" frameborder="0" marginwidth="0" scrolling="auto" width="100%" height="600px" src="https://sanantonio.us.engagementhq.com/embeds/projects/14550/survey-tools/28838"></iframe>
 <?php
 			break;
 			# ---------------------
 			case "images":
 ?>
-				<iframe title="ehq-embed-survey" frameborder="0" marginwidth="0" scrolling="auto" width="100%" height="600px" src="https://sanantonio.us.engagementhq.com/embeds/projects/14550/survey-tools/28838"></iframe>
+				<iframe title="ehq-embed-survey" frameborder="0" marginwidth="0" scrolling="auto" width="100%" height="600px" src="https://sanantonio.us.engagementhq.com/embeds/projects/14550/survey-tools/28836"></iframe>
 <?php
 			break;
 			# ---------------------
