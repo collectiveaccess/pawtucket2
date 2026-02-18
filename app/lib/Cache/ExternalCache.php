@@ -237,7 +237,7 @@ class ExternalCache {
 	}
 	# ------------------------------------------------
 	private static function getCacheDirectory() {
-		$vs_cache_base_dir = (defined('__CA_CACHE_FILEPATH__') ? __CA_CACHE_FILEPATH__ : __CA_APP_DIR__.DIRECTORY_SEPARATOR.'tmp');
+		$vs_cache_base_dir = (defined('__CA_CACHE_FILEPATH__') ? __CA_CACHE_FILEPATH__ : __CA_TEMP_DIR__);
 		$vs_cache_dir = $vs_cache_base_dir.DIRECTORY_SEPARATOR.__CA_APP_NAME__.'Cache';
 		if(!file_exists($vs_cache_dir)) { @mkdir($vs_cache_dir); }
 		return $vs_cache_dir;

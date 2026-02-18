@@ -60,7 +60,7 @@ class BaseMediaViewer {
 		$display_version = caGetOption('display_version', $data['display'], null);
 		$display_type = caGetOption('display_type', $data, null);
 		$subject_table = $t_subject ? $t_subject->tableName() : null;
-				
+		
 		// Controls
 		$controls = '';
 		if ($t_subject) {

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2025 Whirl-i-Gig
+ * Copyright 2007-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -522,7 +522,7 @@ class RequestHTTP extends Request {
 		if ($vs_tmp = $this->getBaseUrlPath()) {
 			$va_url[] = trim($vs_tmp, '/');
 		}
-		if ($vs_tmp = $this->getScriptName()) {
+		if (!caUseCleanUrls() && ($vs_tmp = $this->getScriptName())) {
 			$va_url[] = trim($vs_tmp, '/');
 		}
 		if ($vs_tmp = $this->getModulePath()) {
