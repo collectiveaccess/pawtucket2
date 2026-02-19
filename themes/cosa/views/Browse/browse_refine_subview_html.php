@@ -34,6 +34,9 @@ $vs_browse_type		= $this->getVar('browse_type');
 $o_browse			= $this->getVar('browse');
 $vs_browse_key 		= $this->getVar('key');					// cache key for current browse
 $vs_current_view	= $this->getVar('view');
+$current_sort		= $this->getVar('sort');
+$sort_dir			= $this->getVar('sort_direction');
+
 $qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 
 $vn_facet_display_length_maximum = 12;
@@ -96,7 +99,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 		foreach($va_sorts as $sort => $sort_flds) {
 			$i++;
 			if ($current_sort === $sort) {
-				print "<li class='list-inline-item me-1'>{$sort}</li>\n";
+				print "<li class='list-inline-item me-1 fw-bold'>{$sort}</li>\n";
 			} else {
 				print "<li class='list-inline-item me-1'>".caNavLink($this->request, $sort, 'text-black text-decoration-none', '*', '*', '*', array('view' => $current_view, 'key' => $browse_key, 'sort' => $sort, '_advanced' => $is_advanced ? 1 : 0))."</li>\n";
 			}

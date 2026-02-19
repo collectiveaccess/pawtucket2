@@ -190,7 +190,7 @@ if($show_nav){
 								<div class='card-title'>
 									<div class='fw-medium lh-sm fs-5'><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='artist'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist' delimiter=', '>^ca_entities.preferred_labels</unit><br/></ifcount><i>^ca_objects.preferred_labels.name</i>
 									</div>
-								</div><ifdef code='ca_objects.date_completed|ca_objects.media'><div class='card-text small lh-sm'>^ca_objects.date_completed%format=Y<ifdef code='ca_objects.date_completed,ca_objects.media'>, </ifdef><ifdef code='ca_objects.date_completed,ca_objects.media'>^ca_objects.media</ifdef></div></ifdef>
+								</div><ifdef code='ca_objects.date_completed|ca_objects.media'><div class='card-text small lh-sm'>^ca_objects.date_completed%format=Y<ifdef code='ca_objects.date_completed,ca_objects.media'>, </ifdef><ifdef code='ca_objects.date_completed,ca_objects.media'>^ca_objects.media%delimiter=,_</ifdef></div></ifdef>
 							</div>
 						</div>
 					</div></l>
