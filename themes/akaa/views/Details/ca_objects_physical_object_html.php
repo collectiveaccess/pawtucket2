@@ -59,7 +59,7 @@
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H1>{{{<i>^ca_objects.preferred_labels.name</i>}}}</H1>
 				<HR>
-				{{{<ifdef code="ca_objects.type_id"><div class='unit'><label>Type</label>^ca_objects.type_id</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.artwork_medium"><div class='unit'><label>Type</label>^ca_objects.artwork_medium</div></ifdef>}}}
 				
 <?php
 				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
@@ -71,7 +71,7 @@
 
 			</div><!-- end col -->
 		</div><!-- end row -->
-{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator">
+{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator"><ifcount code="ca_objects" min="1" restrictToRelationshipTypes="creator" restrictToTypes="image">
 			<br/><br/><br/>
 			<div class="row">
 				<div class="col-sm-12">
@@ -97,7 +97,7 @@
 					
 				});
 			</script>
-</unit></ifcount>}}}		
+</ifcount></unit></ifcount>}}}		
 
 
 
