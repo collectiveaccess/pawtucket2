@@ -59,8 +59,9 @@ $media_options = array_merge($media_options, [
 	$pub_desc = array_filter($t_object->get('ca_objects.public_description', ['returnAsArray' => true, 'returnAllLocales' => true]),'strlen');
 	$has_spanish = ((is_array($pub_desc) && sizeof($pub_desc) > 1));
 	
-	$locale = Session::getVar('ns11mm_locale');
-
+	if($has_spanish){
+		$locale = Session::getVar('ns11mm_locale');
+	}
 
 
 
@@ -121,15 +122,27 @@ if($show_nav){
 					</ifdef>
 					<ifdef code="ca_objects.submission_name.submission_fname|ca_objects.submission_name.submission_lname">
 						<dt class="pt-3">Submitter Name</dt>
-						<dd>^ca_objects.submission_name.submission_fname<ifdef code="ca_objects.submission_name.submission_fname,ca_objects.submission_name.submission_lname"> </ifdef>^ca_objects.submission_name.submission_lname</dd>
+						<dd><unit relativeTo="ca_objects.submission_name" delimiter=", "><ifdef code="ca_objects.submission_name.submission_fname">^ca_objects.submission_name.submission_fname </ifdef>^ca_objects.submission_name.submission_lname</unit></dd>
 					</ifdef>
 					<ifdef code="ca_objects.teammates">
 						<dt class="pt-3">Teammate(s)</dt>
-						<dd>^ca_objects.teammates%delimiter=,_</dd>
+						<dd><?php 
+									$tmp = $t_object->get("ca_objects.teammates", array("returnAsArray" => 1));
+									$i = 0;
+									foreach($tmp as $teammate){
+										# --- not this is removing a unicode character not a space
+										$tmp_clean = str_replace(" ", " ", $teammate);
+										print trim($tmp_clean);
+										$i++;
+										if($i < sizeof($tmp)){
+											print ", ";
+										}
+									}
+						?></dd>
 					</ifdef>
 					<ifdef code="ca_objects.submission_place.submission_city|ca_objects.submission_place.submission_state|ca_objects.submission_place.submission_country">
 						<dt class="pt-3">Submitter Location</dt>
-						<dd>^ca_objects.submission_place.submission_city<ifdef code="ca_objects.submission_place.submission_city">, </ifdef>^ca_objects.submission_place.submission_state<ifdef code="ca_objects.submission_place.submission_city|ca_objects.submission_place.submission_state">, </ifdef>^ca_objects.submission_place.submission_country</dd>
+						<dd>^ca_objects.submission_place.submission_city<ifdef code="ca_objects.submission_place.submission_state"><ifdef code="ca_objects.submission_place.submission_city">, </ifdef>^ca_objects.submission_place.submission_state</ifdef><ifdef code="ca_objects.submission_place.submission_country"><ifdef code="ca_objects.submission_place.submission_city|ca_objects.submission_place.submission_state">, </ifdef>^ca_objects.submission_place.submission_country</ifdef></dd>
 					</ifdef>
 					
 					
@@ -294,7 +307,7 @@ if($show_nav){
 						$va_list_ids[] = $va_subject["item_id"];
 					}
 					ksort($va_subjects_sorted);
-					print "<div class='pb-3'><div class='fw-bold mb-2'>".(($locale === 'es_ES') ? "Las palabras claves" : "Keywords")." ".caNavLink($this->request, "<i class='bi bi-info-circle'></i>", "", "", "About", "keywords", null, array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => _t("Click for keyword definitions"),  "data-trigger" => "hover"))."</div>";
+					print "<div class='pb-3'><div class='fw-bold mb-2'>".(($locale === 'es_ES') ? "Las palabras claves" : "Keywords")." ".caNavLink($this->request, "<i class='bi bi-info-circle'></i>", "", "", "About", "keywords", null, array("target" => "_blank", "data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => _t("Click for keyword definitions"),  "data-trigger" => "hover"))."</div>";
 					print join("", $va_subjects_sorted);
 					print "</div>";
 				}
