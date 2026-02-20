@@ -107,7 +107,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				</ifdef>
 				<ifdef code="ca_collections.formats">
 					<dt><?= _t('Formats'); ?></dt>
-					<dd>^ca_collections.formats&delimiter=,_</dd>
+					<dd>^ca_collections.formats%delimiter=,_</dd>
 				</ifdef>
 				<ifdef code="ca_collections.extent_medium">
 					<dt><?= _t('Extent and Medium'); ?></dt>
