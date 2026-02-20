@@ -3,13 +3,22 @@
 	$pn_set_id = $this->getVar("set_id");
 	$t_set = $this->getVar("set");
 	$ps_label = $this->getVar("label");
-	$ps_description = $this->getVar("description");
+	#$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
 	$ps_table = $this->getVar("table");
 	$t_instance = $this->getVar("instance");
 	$pn_set_item_id = $this->getVar("set_item_id");
 	$va_access_values = $this->getVar("access_values");
 	$vn_first_item_id = null;
+	if($lang = $this->request->getParameter('lang', pString)) {
+		if($lang == 'es') {
+			Session::setVar('ns11mm_locale', 'es_ES');
+		} else {
+			Session::setVar('ns11mm_locale', 'en_US');
+		}
+	}
+	$locale = Session::getVar('ns11mm_locale');
+
 ?>
 	<div class="row">
 		<div class='col-12'>
@@ -24,7 +33,7 @@
 			<div class="row">
 				<div class="col-md-4">
 <?php
-			if($ps_description){
+			if($ps_description = $t_set->getWithTemplate("^ca_sets.public_description%locale=".$locale)){
 				print "<div class='fs-5 pb-3 mb-4 mb-md-0 galleryDesc'>".$ps_description."</div>";
 			}
 ?>				

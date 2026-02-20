@@ -244,13 +244,21 @@ if($show_nav){
 	# --- then same title
 
 # --- build the search terms
+$vb_search_again = false;
 $va_search = array();
+$va_related_ids = array();
+
+$va_related_objects = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => caGetUserAccessValues($this->request)));
+if(is_array($va_related_objects) && sizeof($va_related_objects)){
+	$va_related_ids = $va_related_objects;
+}
+# --- not sure how to add related objects to the more link
+
 if($vn_source_id){
 	$va_search[] = "entity_id:".$vn_source_id;
 }
 # --- do the search and see if there are decent results....otherwise broaden it
 $vn_hits = 0;
-$va_related_ids = array();
 if($vn_source_id){
 	$vs_search_term = "entity_id:".$vn_source_id;
 	$t_entity = new ca_entities($vn_source_id);
@@ -261,26 +269,11 @@ if($vn_source_id){
 			unset($donor_related_ids[$key]);
 		}
 		shuffle($donor_related_ids);
-		$va_related_ids = array_slice($donor_related_ids, 0, 6);
+		$donor_related_ids = array_slice($donor_related_ids, 0, 6);
+		$donor_related_ids = array_slice($donor_related_ids, 0, 6);
+		array_unique(array_merge($va_related_ids, $donor_related_ids));
 	}
 }
-$vb_search_again = false;
-
-if(sizeof($va_related_ids) < 6){
-	$vb_search_again = true;
-}
-# add more search terms for broadening and more link
-$va_related_objects = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => caGetUserAccessValues($this->request)));
-if(is_array($va_related_objects) && sizeof($va_related_objects)){
-	if(is_array($va_related_ids) && sizeof($va_related_ids)){
-		$va_related_ids = array_unique(array_merge($va_related_ids, $va_related_objects));
-	}else{
-		$va_related_ids = $va_related_objects;
-	}
-}
-
-# --- not sure how to add related objects to the more link
-
 
 if(sizeof($va_related_ids) < 6){
 	$vb_search_again = true;
@@ -311,21 +304,21 @@ if($vb_search_again){
 }
 
 if(sizeof($va_related_ids)){
-	$browse_target = "objects";
-	switch(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)))){
-		case "lmdc boards":
-			$browse_target = "boards";
-		break;
+	#$browse_target = "objects";
+	#switch(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)))){
+	#	case "lmdc boards":
+	#		$browse_target = "boards";
+	#	break;
 		# -----------------------
-		case "oral history":
-			$browse_target = "oral_histories";
-		break;
+	#	case "oral history":
+	#		$browse_target = "oral_histories";
+	#	break;
 		# -----------------------
-		default:
-			$browse_target = "objects";
-		break;
+	#	default:
+	#		$browse_target = "objects";
+	#	break;
 		# -----------------------
-	}
+	#}
 	$vb_show_more_link = false;
 	if(sizeof($va_related_ids) > 6){
 		$vb_show_more_link = true;
@@ -350,16 +343,16 @@ if(sizeof($va_related_ids)){
 		</div><!-- end col -->
 		<div class='col-6 text-end'>
 		<?php
-		if($vb_show_more_link){
-			$vs_search_term = join(" OR ", array_merge($va_search, $va_search3));
+		#if($vb_show_more_link){
+			#$vs_search_term = join(" OR ", array_merge($va_search, $va_search3));
 			#print caNavLink($this->request, _t("More"), "btn btn-primary", "", "Search", $browse_target, array("search" => $vs_search_term));
-		}
+		#}
 ?>
 		</div>
 	</div>
 
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', $browse_target, array('search' => $search_term, '_advanced' => 0)); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'all_objects', array('search' => $search_term, '_advanced' => 0)); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
 	</div>

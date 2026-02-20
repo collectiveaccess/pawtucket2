@@ -106,12 +106,13 @@
 			$output = "";
 			$output = "<div class='col-sm-6 col-lg-4 d-flex'>".caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id)."</div>";
 			if(in_array($vn_set_id, $va_display_first_set_ids)){
-				$va_first_sets[] = $output;
+				$va_first_sets[$va_set["set_code"]] = $output;
 			}else{
 				$va_other_sets[] = $output;
 			}
 		}
 		# --- output sets flagged to display first
+		ksort($va_first_sets);
 		foreach($va_first_sets as $tmp){
 			print $tmp;
 		}
