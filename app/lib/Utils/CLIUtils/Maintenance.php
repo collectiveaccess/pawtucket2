@@ -488,13 +488,8 @@ trait CLIUtilsMaintenance {
 			return false;
 		}
 
-<<<<<<< customisable-temp-path-pwt
-		if (!$po_opts->getOption("quiet")) { CLIUtils::addMessage(_t("Fixing permissions for the temporary directory (\"%2\") for ownership by \"%1\"...", $vs_user, __CA_TEMP_DIR__)); }
-		$va_files = caGetDirectoryContentsAsList(__CA_TEMP_DIR__, true, true, false, true, ['includeRoot' => true]);
-=======
 		if (!$opts->getOption("quiet")) { CLIUtils::addMessage(_t("Fixing permissions for the temporary directory (\"%2\") for ownership by \"%1\"...", $user, __CA_TEMP_DIR__)); }
 		$files = caGetDirectoryContentsAsList(__CA_TEMP_DIR__, true, true, false, true, ['includeRoot' => true]);
->>>>>>> dev/2.0
 
 		foreach($files as $path) {
 			chown($path, $user);

@@ -120,11 +120,7 @@ class WLPlugTaskQueueHandlermediaTranscription Extends WLPlug Implements IWLPlug
 			
 			$locale = __CA_DEFAULT_LOCALE__;
 			if($detect_path = caWhisperInstalled(['returnPathToDetect' => true])) {
-<<<<<<< customisable-temp-path-pwt
-				caExec("{$detect_path} --input={$media_input} --tmpdir=".__CA_TEMP_DIR__", $output, $return);
-=======
 				caExec("{$detect_path} --input={$media_input} --tmpdir=".__CA_TEMP_DIR__, $output, $return);
->>>>>>> dev/2.0
 				$lang = preg_quote(join('', $output ?? []), '/');
 				if(($return == 0) && strlen($lang) && !preg_match("/^{$lang}_/", $locale) && ($locales = ca_locales::localesForLanguage($lang, ['codesOnly' => true])) && is_array($locales) && sizeof($locales)) {
 					$locale = array_shift($locales);
@@ -132,11 +128,7 @@ class WLPlugTaskQueueHandlermediaTranscription Extends WLPlug Implements IWLPlug
 					$logger->logNotice(_t('[TaskQueue::mediaTranscription::process] Could not detect language of media. Using default locale %1.', $locale));
 				}
 			}
-<<<<<<< customisable-temp-path-pwt
-			caExec("{$app_path} --input={$media_input} --output={$vtt_output} --tmpdir=".__CA_TEMP_DIR__", $output, $return);
-=======
 			caExec("{$app_path} --input={$media_input} --output={$vtt_output} --tmpdir=".__CA_TEMP_DIR__, $output, $return);
->>>>>>> dev/2.0
 			if($return == 0) {
 				if(!$t->addCaptionFile($vtt_output, $locale)) {
 					$logger->logError(_t('[TaskQueue::mediaTranscription::process] Could not add VTT transcription file to %1::%2: %3', $table, $id, join('; ', $t->getErrors())));

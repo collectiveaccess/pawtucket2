@@ -137,15 +137,8 @@ class BaseVersionUpdater {
 				$vs_query = ''; 
 			} 
 			
-<<<<<<< customisable-temp-path-pwt
-			if (isset($pa_options['cleanCache']) && $pa_options['cleanCache']) {
-				// Clean cache
-				caRemoveDirectory(__CA_TEMP_DIR__, false);
-			}
-=======
 			$t->commit();
 		}
->>>>>>> dev/2.0
 		
 		if (isset($pa_options['cleanCache']) && $pa_options['cleanCache']) {
 			// Clean cache
