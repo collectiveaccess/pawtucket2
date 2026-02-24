@@ -133,7 +133,7 @@ a:hover{
 }
 @media (min-width:768px){
 	.navbar-brand{
-		width: 270px;
+		width: 320px;
 		padding-top: 35px;
 		padding-bottom: 37px;
 	}
