@@ -269,7 +269,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		
 		$table_name = Datamodel::getTableName($table_num = $this->getTableNum());
 		if (!($t_instance = Datamodel::getInstance($table_name, true))) { 
-			$this->postError(1100, _t("Could not created user interface placement: user interface table '%1' is not valid", $table_name), "ca_editor_ui_screens::addPlacement");
+			$this->postError(1100, _t("Could not create user interface placement: user interface table '%1' is not valid", $table_name), "ca_editor_ui_screens::addPlacement");
 			return false;
 		}
 		
@@ -290,7 +290,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		
 		$t_placement = new ca_editor_ui_bundle_placements(null, null, is_array($pa_options['additional_settings']) ? $pa_options['additional_settings'] : null);
 		if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
-		$t_placement->setMode(ACCESS_WRITE);
 		$t_placement->set('screen_id', $vn_screen_id);
 		$t_placement->set('bundle_name', $ps_bundle_name);
 		$t_placement->set('placement_code', $ps_placement_code);
@@ -475,7 +474,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	/**
 	 * Returns list of placements for the currently loaded screen.
 	 *
-	 * @param array $pa_options Optional array of options. Supports the following options:
+	 * @param array $options Optional array of options. Supports the following options:
 	 * 		noCache = if set to true then the returned list if always generated directly from the database, otherwise it is returned from the cache if possible. Set this to true if you expect the cache may be stale. Default is false.
 	 *		returnAllAvailableIfEmpty = if set to true then the list of all available bundles will be returned if the currently loaded screen has no placements, or if there is no display loaded
 	 *		table = if using the returnAllAvailableIfEmpty option and you expect a list of available bundles to be returned if no display is loaded, you must specify the table the bundles are intended for use with with this option. Either the table name or number may be used.
@@ -488,46 +487,50 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	 *		settings = array of placement settings. Keys are setting names.
 	 *		display = display string for bundle
 	 */
-	public function getPlacements($pa_options=null) {
-		$pb_no_cache = (isset($pa_options['noCache'])) ? (bool)$pa_options['noCache'] : false;
-		$pb_settings_only = (isset($pa_options['settingsOnly'])) ? (bool)$pa_options['settingsOnly'] : false;
-		$pb_return_all_available_if_empty = (isset($pa_options['returnAllAvailableIfEmpty']) && !$pb_settings_only) ? (bool)$pa_options['returnAllAvailableIfEmpty'] : false;
-		$ps_table = (isset($pa_options['table'])) ? $pa_options['table'] : $this->getTableNum();
-		$pn_user_id = isset($pa_options['user_id']) ? $pa_options['user_id'] : null;
+	public function getPlacements(?array $options=null) {
+		$no_cache = (isset($options['noCache'])) ? (bool)$options['noCache'] : false;
+		$settings_only = (isset($options['settingsOnly'])) ? (bool)$options['settingsOnly'] : false;
+		$return_all_available_if_empty = (isset($options['returnAllAvailableIfEmpty']) && !$settings_only) ? (bool)$options['returnAllAvailableIfEmpty'] : false;
+		$table = (isset($options['table'])) ? $options['table'] : $this->getTableNum();
+		$pn_user_id = isset($options['user_id']) ? $options['user_id'] : null;
+		$screen_id = preg_replace("!^screen!i", "", caGetOption('screen_id', $options, null));
+		$placement_id = preg_replace("!^P!i", "", caGetOption('placement_id', $options, null));
 		
-		$table_name = Datamodel::getTableName($ps_table);
+		if(
+			!$table && $screen_id &&
+			($t_screen = ca_editor_ui_screens::find($screen_id, ['returnAs' => 'firstModelInstance'])) &&
+			($t_ui = ca_editor_uis::find($t_screen->get('ui_id'), ['returnAs' => 'firstModelInstance']))
+		) {
+			$table = $t_ui->get('editor_type');
+		}
 		
-		//if ($pn_user_id && !$this->haveAccessToDisplay($pn_user_id, __CA_BUNDLE_DISPLAY_READ_ACCESS__)) {
-		//	return array();
-		//}
+		$table_name = Datamodel::getTableName($table);
 		
-		$vn_screen_id = caGetOption('screen_id', $pa_options, null);
-		$vn_placement_id = caGetOption('placement_id', $pa_options, null);
+		$deleted_elements = ca_metadata_elements::getElementsAsList(true, $table_name, null, !$no_cache, false, true, null, ['deletedOnly' => true]);
 		
-		if (!$vn_screen_id && !$vn_placement_id && !($vn_screen_id = $this->getPrimaryKey())) {
-			if ($pb_return_all_available_if_empty && $ps_table) {
-				return ca_editor_ui_screens::$s_placement_list_cache[$vn_screen_id] = $this->getAvailableBundles($ps_table, ['table' => $ps_table]);
+		
+		if (!$screen_id && !$placement_id && !($screen_id = $this->getPrimaryKey())) {
+			if ($return_all_available_if_empty && $table) {
+				return ca_editor_ui_screens::$s_placement_list_cache[$screen_id] = $this->getAvailableBundles($table, ['table' => $table]);
 			}
 			return []; 
 		}
-		$vn_screen_id = preg_replace("!^screen!i", "", $vn_screen_id);
-		$vn_placement_id = preg_replace("!^P!i", "", $vn_placement_id);
 		
 		
-		if (!$pb_no_cache && $vn_screen_id && isset(ca_editor_ui_screens::$s_placement_list_cache[$vn_screen_id]) && ca_editor_ui_screens::$s_placement_list_cache[$vn_screen_id]) {
-			return ca_editor_ui_screens::$s_placement_list_cache[$vn_screen_id];
+		if (!$no_cache && $screen_id && isset(ca_editor_ui_screens::$s_placement_list_cache[$screen_id]) && ca_editor_ui_screens::$s_placement_list_cache[$screen_id]) {
+			return ca_editor_ui_screens::$s_placement_list_cache[$screen_id];
 		}
 		
 		$o_db = $this->getDb();
 		
-		if ($vn_placement_id) {
+		if ($placement_id) {
 			$qr_res = $o_db->query("
 				SELECT placement_id, bundle_name, placement_code, settings, `rank`
 				FROM ca_editor_ui_bundle_placements
 				WHERE
 					placement_id = ?
 				ORDER BY `rank`
-			", [(int)$vn_placement_id]);
+			", [(int)$placement_id]);
 		} else {
 			$qr_res = $o_db->query("
 				SELECT placement_id, bundle_name, placement_code, settings, `rank`
@@ -535,37 +538,51 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 				WHERE
 					screen_id = ?
 				ORDER BY `rank`
-			", [(int)$vn_screen_id]);
+			", [(int)$screen_id]);
 
 		}
 		
-		$va_available_bundles = ($pb_settings_only) ? array() : $this->getAvailableBundles();
-		$va_placements = array();
+		$available_bundles = ($settings_only) ? array() : $this->getAvailableBundles();
+		$placements = array();
 	
 		if ($qr_res->numRows() > 0) {
 			$t_placement = new ca_editor_ui_bundle_placements();
 			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 			while($qr_res->nextRow()) {
-				$vs_bundle_name = $qr_res->get('bundle_name');
-				$va_placements[$vn_placement_id = (int)$qr_res->get('placement_id')] = $qr_res->getRow();
-				$va_placements[$vn_placement_id]['settings'] = $va_settings = caUnserializeForDatabase($qr_res->get('settings'));
-				if (!$pb_settings_only) {
-					$t_placement->setSettingDefinitionsForPlacement($va_available_bundles[$vs_bundle_name]['settings'] ?? null);
-					$va_placements[$vn_placement_id]['display'] = $va_available_bundles[$vs_bundle_name]['display'] ?? null;
-					$va_placements[$vn_placement_id]['settingsForm'] = $t_placement->getHTMLSettingForm(array('id' => $vs_bundle_name.'_'.$vn_placement_id, 'settings' => $va_settings, 'table' => $table_name, 'relatedTable' => Datamodel::getTableNum($vs_bundle_name) ? $vs_bundle_name : null));
+				$bundle_name = $qr_res->get('bundle_name');
+				
+				// $bundle_proc will be straight element code if bundle is an attribute
+				if(
+					preg_match("!^{$table_name}\.(.+)$!", $bundle_name, $m)
+					||
+					preg_match("!^ca_attribute_(.+)$!", $bundle_name, $m)
+				) {
+					$bundle_proc = $m[1];
+					$bundle_name = "{$table_name}.{$bundle_proc}";	// normalize $bundle_name to <table>.<element_code> format
 				} else {
-					$va_tmp = explode('.', $vs_bundle_name);
-					$t_instance = Datamodel::getInstanceByTableName($va_tmp[0], true);
-					$va_placements[$vn_placement_id]['display'] = ($t_instance ? $t_instance->getDisplayLabel($vs_bundle_name) : "???");
+					$bundle_proc = $bundle_name;
+				}
+				if(isset($deleted_elements[$bundle_proc])) { continue; }	// skip deleted elements
+				
+				$placements[$placement_id = (int)$qr_res->get('placement_id')] = $qr_res->getRow();
+				$placements[$placement_id]['settings'] = $settings = caUnserializeForDatabase($qr_res->get('settings'));
+				if (!$settings_only) {
+					$t_placement->setSettingDefinitionsForPlacement($available_bundles[$bundle_name]['settings'] ?? null);
+					$placements[$placement_id]['display'] = $available_bundles[$bundle_name]['display'] ?? null;
+					$placements[$placement_id]['settingsForm'] = $t_placement->getHTMLSettingForm(array('id' => $bundle_name.'_'.$placement_id, 'settings' => $settings, 'table' => $table_name, 'relatedTable' => Datamodel::getTableNum($bundle_name) ? $bundle_name : null));
+				} else {
+					$tmp = explode('.', $bundle_name);
+					$t_instance = Datamodel::getInstanceByTableName($tmp[0], true);
+					$placements[$placement_id]['display'] = ($t_instance ? $t_instance->getDisplayLabel($bundle_name) : "???");
 				}
 			}
 		} else {
-			if ($pb_return_all_available_if_empty) {
-				$va_placements = $this->getAvailableBundles($this->getTableNum());
+			if ($return_all_available_if_empty) {
+				$placements = $this->getAvailableBundles($this->getTableNum());
 			}
 		}
-		ca_editor_ui_screens::$s_placement_list_cache[$vn_screen_id] = $va_placements;
-		return $va_placements;
+		ca_editor_ui_screens::$s_placement_list_cache[$screen_id] = $placements;
+		return $placements;
 	}
 	# ------------------------------------------------------
 	# Support methods for display setup UI
@@ -591,7 +608,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		if (!$pm_table_name_or_num) { $pm_table_name_or_num = $this->getTableNum(); }
 		$vs_cache_key = md5($pm_table_name_or_num . serialize($pa_options));
 
-		if(MemoryCache::contains($vs_cache_key, 'UiScreensAvailableBundles')) {
+		if(!$pb_dont_cache && MemoryCache::contains($vs_cache_key, 'UiScreensAvailableBundles')) {
 			return MemoryCache::fetch($vs_cache_key, 'UiScreensAvailableBundles');
 		}
 		
@@ -728,6 +745,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 					}
 					break;
 				case 'attribute':
+					if(!isset($va_elements[$bundle_proc])) { continue(2); } // skip deleted elements
 					$va_additional_settings = array(
 						'sort' => array(
 							'formatType' => FT_TEXT,
@@ -897,7 +915,26 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								'description' => _t('If checked an option to batch edit related records will be displayed.')
 							)
 						);	
-						
+						if(preg_match("/^([a-z_]+)_related_list$/", $bundle, $va_matches)) {
+							$va_additional_settings['dontShowRelationshipType'] = [
+								'formatType' => FT_TEXT,
+								'displayType' => DT_CHECKBOXES,
+								'width' => 10, 'height' => 1,
+								'takesLocale' => false,
+								'default' => '0',
+								'label' => _t('Do not show relationship type'),
+								'description' => _t('If checked the relationship type will not automatically be shown in the results list.')
+							];
+							$va_additional_settings['dontShowInterstitialEditor'] = [
+								'formatType' => FT_TEXT,
+								'displayType' => DT_CHECKBOXES,
+								'width' => 10, 'height' => 1,
+								'takesLocale' => false,
+								'default' => '0',
+								'label' => _t('Do not show interstitial editor'),
+								'description' => _t('If checked the interstitial editing control will not be shown.')
+							];
+						}
 						if(
 							!($policies = array_merge(
 								ca_objects::getHistoryTrackingCurrentValuePolicies($vs_rel_table, ['uses' => [$t_instance->tableName()]]),
@@ -1072,7 +1109,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								'showOnSelect' => 'policy',
 								'default' => '0',
 								'label' => _t('Show current only?'),
-								'description' => _t('If checked only the most recently dated relationship displayed.')
+								'description' => _t('If checked only the most recently dated relationship will be displayed.')
 							),
 							'policy' => array(
 								'formatType' => FT_TEXT,
@@ -1101,6 +1138,18 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								'options' => [_t('Preferred label') => 'preferred_labels', _t('Identifier') => $t_rel->getProperty('ID_NUMBERING_ID_FIELD')],
 								'label' => _t('Prepopulate quick add fields with search text'),
 								'description' => _t('Select quickadd form fields to be pre-filled with the user-entered search value. If no fields are selected then the preferred label will be prepopulated by default.')
+							),
+							'defaultQuickaddType' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_SELECT,
+								'useList' => $t_rel->getTypeListCode(),
+								'width' => "475px", 'height' => 1,
+								'takesLocale' => false,
+								'default' => '',
+								'allowNull' => true,
+								'multiple' => false,
+								'label' => _t('Default type for quickadd'),
+								'description' => _t('Set default type for quickadds, overriding type list default.')
 							),
 							'sort' => array(
 								'formatType' => FT_TEXT,
@@ -1928,7 +1977,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'width' => 10, 'height' => 1,
 										'takesLocale' => false,
 										'default' => '0',
-										'label' => _t('Hide "Add to" occurrence controls'),
+										'label' => _t('Hide "Add to occurrence" controls'),
 										'description' => _t('Check this option if you want to hide the "Add to occurrence" controls in this bundle placement.'),
 										'hideOnSelect' => ['add_to_occurrence_types', 'always_create_new_occurrence', 'occurrence_control_label']
 									),
@@ -2017,6 +2066,24 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'width' => "275px", 'height' => 1,
 										'label' => _t('"Add to entity" control label text'),
 										'description' => _t('Text to label "Add to entity" control with. If omitted a default label will be used.')
+									),
+									'hide_update_place_controls' => array(
+										'formatType' => FT_NUMBER,
+										'displayType' => DT_CHECKBOXES,
+										'width' => 10, 'height' => 1,
+										'takesLocale' => false,
+										'default' => '0',
+										'label' => _t('Hide "Update Place" controls'),
+										'hideOnSelect' => ['update_place_control_label'],
+										'description' => _t('Check this option if you want to hide the "Update Place" controls in this bundle placement.')
+									),
+									'update_place_control_label' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '',
+										'width' => "275px", 'height' => 1,
+										'label' => _t('"Update place" control label text'),
+										'description' => _t('Text to label "Update place" control with. If omitted a default label will be used.')
 									),
 									'hide_add_to_object_controls' => array(
 										'formatType' => FT_NUMBER,
@@ -2356,7 +2423,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 				$va_sorted_bundles[$vs_real_key] = $va_info;
 			}
 		}
-
 		MemoryCache::save($vs_cache_key, $va_sorted_bundles, 'UiScreensAvailableBundles');
 
 		return $va_sorted_bundles;
@@ -2687,8 +2753,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			
 			$va_available_bundles = $t_screen->getAvailableBundles();
 			foreach($va_bundles as $vn_i => $vs_bundle) {
-				// get settings
-				
 				if (preg_match('!^(.*)_([\d]+)$!', $vs_bundle, $va_matches)) {
 					$vn_placement_id = (int)$va_matches[2];
 					$vs_bundle = $va_matches[1];
@@ -2723,7 +2787,12 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 				}
 				
 				if($vn_placement_id === 0) {
-					$t_screen->addPlacement($vs_bundle, $vs_bundle.($vn_i + 1), $va_settings[$vn_placement_id] ?? null, $vn_i + 1, array('user_id' => $po_request->getUserID(), 'additional_settings' => $va_available_bundles[$vs_bundle]['settings'] ?? null));
+					$c = 0;
+					do {
+						$vn_i++;
+						$ret = $t_screen->addPlacement($vs_bundle, $vs_bundle.$vn_i, $va_settings[$vn_placement_id] ?? null, $vn_i + 1, array('user_id' => $po_request->getUserID(), 'additional_settings' => $va_available_bundles[$vs_bundle]['settings'] ?? null));
+						$c++;
+					} while(!$ret || ($c > 50));
 					if ($t_screen->numErrors()) {
 						$this->errors = $t_screen->errors;
 						return false;

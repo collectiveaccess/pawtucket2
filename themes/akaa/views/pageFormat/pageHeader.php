@@ -132,6 +132,10 @@
 					<li><?php print caNavLink($this->request, 'Artists', '', '', 'Browse', 'artists');?></li>
 					<li><?php print caNavLink($this->request, 'Artworks', '', '', 'Browse', 'artworks');?></li>
 					<li <?php print ($this->request->getController() == "Listing") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artist Interviews"), "", "", "Listing", "interviews"); ?></li>
+					<li><?php print caNavLink($this->request, 'AKAA Collection', '', '', 'Browse', 'akaa_collection');?></li>
+					<li class='browseby navDivide'>|</li>
+					<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+					
 				</ul>
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">

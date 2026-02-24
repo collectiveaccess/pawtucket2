@@ -915,7 +915,6 @@ function caACLIsEnabled($t_item=null, ?array $options=null) : bool {
 }
 # ---------------------------------------------------------------------------------------------
 /**
-<<<<<<< HEAD
  * 
  *
  * @param BaseModel|string $t_item A model instance or model name to test. If null system-wide ACL status is returned. [Default is null]

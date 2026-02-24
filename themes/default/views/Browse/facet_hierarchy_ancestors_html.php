@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2015 Whirl-i-Gig
+ * Copyright 2014-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,26 +25,26 @@
  *
  * ----------------------------------------------------------------------
  */
+$ancestors = 		$this->getVar('ancestors');
+$facet_name = 		$this->getVar("facet_name");
+$display_field = 	$this->getVar("display_field");
+$primary_key = 		$this->getVar("primary_key");
+$key = 				$this->getVar("key");
+$browse_type = 		$this->getVar("browse_type");
+$is_nav = 			(bool)$this->getVar('isNav');
 
-	$va_ancestors = 		$this->getVar('ancestors');
-	$vs_facet_name = 		$this->getVar("facet_name");
-	$vs_display_field = 	$this->getVar("display_field");
-	$vs_primary_key = 		$this->getVar("primary_key");
-	$vs_key = 				$this->getVar("key");
-	$vs_browse_type = 		$this->getVar("browse_type");
-	$vb_is_nav = 			(bool)$this->getVar('isNav');
-
-	if(is_array($va_ancestors) && sizeof($va_ancestors)){
-		#if (sizeof($va_ancestors) > 1) {
-			$va_ancestor = $va_ancestors[0];
-			print '<div style="float:right;"><a href="#" onClick=\'jQuery("#bHierarchyListMorePanel_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => (int)$va_ancestor['parent_id'])).'"); jQuery(".bAncestorList_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0)).'"); return false;\'><span class="glyphicon glyphicon-arrow-up"></span></a> '._t('Top').'</div>';
-		#}	
-		$vn_c = 0;
-		foreach($va_ancestors as $va_ancestor){
-			$va_ancestor = $va_ancestor['NODE'];
-			
-			print '<a href="#" onClick=\'jQuery("#bHierarchyListMorePanel_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => (int)$va_ancestor[$vs_primary_key])).'"); jQuery(".bAncestorList_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $va_ancestor[$vs_primary_key], 'isNav' => $vb_is_nav ? 1 : 0)).'"); return false;\'>'.caTruncateStringWithEllipsis($va_ancestor[$vs_display_field], 40).'</a>';
-			if ($vn_c < sizeof($va_ancestors) - 1) { print " <span class='glyphicon glyphicon-chevron-right'></span> "; }
-			$vn_c++;
-		}
+if(is_array($ancestors) && sizeof($ancestors)){
+	if (sizeof($ancestors) > 1) {
+		$ancestor = $ancestors[0];
+		print '<div style="float:right;"><a href="#" onClick=\'jQuery("#bHierarchyListMorePanel_'.$facet_name.(($is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $facet_name, 'key' => $key, 'browseType' => $browse_type, 'isNav' => $is_nav ? 1 : 0, 'id' => (int)$ancestor['parent_id'])).'"); jQuery(".bAncestorList_'.$facet_name.(($is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $facet_name, 'browseType' => $browse_type, 'key' => $key, 'isNav' => $is_nav ? 1 : 0)).'"); return false;\'><span class="glyphicon glyphicon-arrow-up"></span></a> '._t('Top').'</div>';
+	}	
+	$vn_c = 0;
+	foreach($ancestors as $ancestor){
+		$ancestor = $ancestor['NODE'];
+		
+		print caNavLink($this->request, caTruncateStringWithEllipsis($ancestor[$display_field], 40), '', '*', '*', $browse_type, array('key' => $key, 'facet' => $facet_name, 'id' => $ancestor[$primary_key], 'isNav' => $is_nav ? 1 : 0));
+		print '<a href="#" onClick=\'jQuery("#bHierarchyListMorePanel_'.$facet_name.(($is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $facet_name, 'key' => $key, 'browseType' => $browse_type, 'isNav' => $is_nav ? 1 : 0, 'id' => (int)$ancestor[$primary_key])).'"); jQuery(".bAncestorList_'.$facet_name.(($is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $facet_name, 'browseType' => $browse_type, 'key' => $key, 'id' => $ancestor[$primary_key], 'isNav' => $is_nav ? 1 : 0)).'"); return false;\'><span class="glyphicon glyphicon-chevron-down"></span></a>';
+		if ($vn_c < sizeof($ancestors) - 1) { print " <span class='glyphicon glyphicon-chevron-right'></span> "; }
+		$vn_c++;
 	}
+}

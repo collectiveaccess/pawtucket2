@@ -50,7 +50,7 @@
  		# -------------------------------------------------------
  		public function Ornaments(){
 			$t_list = new ca_lists();
-			$va_categories = $t_list->getItemsForList("type_category", array("directChildrenOnly" => true, "extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => "ca_list_item_labels.name_sort"));
+			$va_categories = $t_list->getItemsForList("type_category", array("dontCache" => 1, "directChildrenOnly" => true, "extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => "ca_list_item_labels.name_sort"));
 			$qr_categories = caMakeSearchResult('ca_list_items', array_keys($va_categories));
 			$this->view->setVar("categories", $va_categories);
 			$this->view->setVar("categories_search", $qr_categories);

@@ -746,10 +746,10 @@ class BaseFindController extends ActionController {
 				$va_values[$vs_fld] = $this->request->getParameter(str_replace('.', '_', $vs_fld), pString);
 			}	
 		}
-		
 		$va_values['_label'] = $this->request->getParameter('_label', pString);
+		$va_values['search'] = $this->request->getParameter('search', pString);
 		$va_values['_form_id'] = $this->request->getParameter('_form_id', pString);
-		
+
 		if ($vs_md5 = $this->request->user->addSavedSearch($this->ops_tablename, $this->ops_find_type, $va_values)) {
 			$this->view->setVar('md5', $vs_md5);
 			$this->view->setVar('label', $va_values['_label']);
@@ -767,12 +767,12 @@ class BaseFindController extends ActionController {
 	 * 
 	 */ 
 	public function doSavedSearch() {
-		if ($va_saved_search = $this->request->user->getSavedSearchByKey($this->ops_tablename, $this->ops_find_type, $this->request->getParameter('saved_search_key', pString))) {
-			$vs_label = $va_saved_search['_label'];
-			unset($va_saved_search['_label']);
-			$vn_form_id = $va_saved_search['_form_id'];
-			unset($va_saved_search['_form_id']);
-			$this->Index(array('saved_search' => $va_saved_search, 'form_id' => $vn_form_id));
+		if ($saved_search = $this->request->user->getSavedSearchByKey($this->ops_tablename, $this->ops_find_type, $k=$this->request->getParameter('saved_search_key', pString))) {
+			$label = $saved_search['_label'] ?? null;
+			unset($saved_search['_label']);
+			$form_id = $saved_search['_form_id'] ?? null;
+			unset($saved_search['_form_id']);
+			$this->Index(['saved_search' => $saved_search, 'form_id' => $form_id]);
 			return;
 		}
 		
@@ -796,7 +796,7 @@ class BaseFindController extends ActionController {
 	 */ 
 	public function DownloadMedia() {
 		if ($t_subject = Datamodel::getInstanceByTableName($this->ops_tablename, true)) {
-			$o_md_conf = Configuration::load($t_subject->getAppConfig()->get('media_metadata'));
+			$o_md_conf = Configuration::load('media_metadata');
 
 			$id_list = null;	// list of ids to pull media for
 			if (($ids = trim($this->request->getParameter($t_subject->tableName(), pString))) || ($ids = trim($this->request->getParameter($t_subject->primaryKey(), pString)))) {
@@ -1005,9 +1005,15 @@ class BaseFindController extends ActionController {
 		
 		$this->view->setVar('t_item', Datamodel::getInstanceByTableName($this->ops_tablename, true));
 		$this->view->setVar('num_items_rendered', (int)$o_viz->numItemsRendered());
-		
+
 		if ($pb_render_data) {
-			$this->response->addContent($o_viz->getDataForVisualization($ps_viz, array('request' => $this->request)));
+			$this->response->setContentType('application/json');
+			$this->response->addContent(
+				$o_viz->getDataForVisualization(
+					$ps_viz,
+					array('request' => $this->request)
+				)
+			);
 			return;
 		}
 		$this->render('Results/viz_html.php');
@@ -1109,7 +1115,7 @@ class BaseFindController extends ActionController {
 			throw new ApplicationException(_t('Cannot use editor for %1', $this->ops_tablename));
 		}
 		
-		if (!caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
+		if (caValidateCSRFToken($this->request, null, ['notifications' => $this->notification]) === false) {
 			throw new ApplicationException(_t('CSRF check failed'));
 			return;
 		}
@@ -1218,9 +1224,15 @@ class BaseFindController extends ActionController {
 	/**
 	 * Returns string representing the name of the item the search will return
 	 *
-	 * If $ps_mode is 'singular' [default] then the singular version of the name is returned, otherwise the plural is returned
+	 * If $mode is 'singular' [default] then the singular version of the name is returned, otherwise the plural is returned
+	 *
+	 * @param string $mode
+	 * 
+	 * @return string
 	 */
-	public function getResultsDisplayName($mode='singular') {
+	public function getResultsDisplayName(?string $mode='singular') : ?string {
+		global $g_ui_locale;
+		
 		$type_restriction_has_changed = false;
 		$type_id = $this->opo_result_context->getTypeRestriction($type_restriction_has_changed);
 		
@@ -1233,16 +1245,21 @@ class BaseFindController extends ActionController {
 			$t_list->load(array('list_code' => $t_instance->getTypeListCode()));
 		
 			$t_list_item = new ca_list_items();
-			$t_list_item->load(array('list_id' => $t_list->getPrimaryKey(), 'parent_id' => null));
+			$t_list_item->load(['list_id' => $t_list->getPrimaryKey(), 'parent_id' => null]);
 			$hier = caExtractValuesByUserLocale($t_list_item->getHierarchyWithLabels());
 		
 			if (!($name = ($mode == 'singular') ? $hier[$type_id]['name_singular'] ?? '' : $hier[$type_id]['name_plural'] ?? '')) {
-				$name = mb_strtolower(($mode == 'singular') ? $t_instance->getProperty('NAME_SINGULAR') : $t_instance->getProperty('NAME_PLURAL'));
+				$name = ($mode == 'singular') ? $t_instance->getProperty('NAME_SINGULAR') : $t_instance->getProperty('NAME_PLURAL');
 			}
-			return mb_strtolower($name);
 		} else {
-			return mb_strtolower(($mode == 'singular') ? $t_instance->getProperty('NAME_SINGULAR') : $t_instance->getProperty('NAME_PLURAL'));
+			$name = ($mode == 'singular') ? $t_instance->getProperty('NAME_SINGULAR') : $t_instance->getProperty('NAME_PLURAL');
 		}
+	
+		if(strlen($g_ui_locale) && (caGetLanguageForLocale($g_ui_locale) === 'de')) {	// Deutsche Hauptworten mußen groß schreiben bleiben
+			return $name;
+		}
+	
+		return mb_strtolower($name);
 	}
 	# -------------------------------------------------------
 	/**
