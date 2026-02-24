@@ -68,7 +68,7 @@
 				$tmp_artist = $t_object->getWithTemplate("<ifdef code='ca_objects.pub_subjects'>^ca_objects.pub_subjects</ifdef>");
 
 				if($tmp_rel_artist || $tmp_artist){
-					print '<div class="unit"><label>Artist</label>'.$tmp_rel_artist.(($tmp_rel_artist && $tmp_artist) ? ", " : "").$tmp_artist.'</div>';
+					print '<div class="unit"><label>Subject</label>'.$tmp_rel_artist.(($tmp_rel_artist && $tmp_artist) ? ", " : "").$tmp_artist.'</div>';
 				}
 ?>				
 				{{{<ifdef code="ca_objects.pub_location"><div class='unit'><label>Location</label>^ca_objects.pub_location</div></ifdef>}}}	

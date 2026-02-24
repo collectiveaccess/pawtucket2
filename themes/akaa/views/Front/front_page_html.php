@@ -34,11 +34,10 @@
 	if(!$hero){
  		$hero = rand(1, 3);
 	}
+	# --- display galleries as a grid?
+	print $this->render("Front/featured_set_slideshow_html.php");
 
 ?>
-<div class="frontHero">
-	<?php print caGetThemeGraphic($this->request, 'hero_'.$hero.'.jpg'); ?>
-</div>
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
