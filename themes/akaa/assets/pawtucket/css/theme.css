@@ -57,6 +57,15 @@ a, a:hover {
 		padding-top:10px;
 	}
 }
+li.navDivide{
+	padding-left: 20px;
+	padding-right: 20px;
+}
+@media(max-width:768px){
+	li.navDivide{
+		display:none;
+	}
+}
 .btn{
 	text-decoration:none;
 }
@@ -91,7 +100,7 @@ a, a:hover {
 	padding:0px 10px 0px 10px;
 }
 #footer ul li, #footer ul.social li {
-	padding: 0px 20px 0px 0px;
+	padding: 0px 5px 0px 0px;
 }
 #footer ul.social {
 	padding-top: 0px;
@@ -130,12 +139,15 @@ a, a:hover {
 	}
 }
 .front H1 {
-	font-size:20px;
-	margin-bottom:25px;
+	font-size: 30px;
+	margin-bottom: 60px;
 	margin-top:40px;
 	color:#000;
 	font-family:Lato;
 	text-align:center;
+}
+.front H2 a {
+	text-decoration:underline;
 }
 .interviewThumb {
 	padding-bottom:10px;
@@ -250,4 +262,56 @@ a, a:hover {
 }
 a.readmore-js-toggle{
 	color:#000;
+}
+/* Front */
+.frontHero{
+	margin:-20px -15px 0px -15px;
+}
+.frontHero img {
+	width: 100%;
+	height: 400px;
+	object-fit: cover;
+}
+img.fullWidth, .fullWidth img{
+	width:100%;
+	height:auto;
+}
+.frontContentBlock{
+	margin-bottom:40px;
+}
+.frontContentBlockText{
+	font-size:16px;
+	color: #000;
+	padding-left:30px;
+	padding-right:30px;
+}
+.bgLightGray{
+	background-color: #EBEBEB;
+}
+@media(min-width:769px){
+	.vertAlignRow{
+		display: flex;
+		align-items: center;
+	}
+}
+@media(min-width:992px){
+	.frontContentBlockText{
+		font-size:18px;
+	}
+}
+
+@media(min-width:1365px){
+	.frontContentBlockText{
+		font-size:20px;
+	}
+}
+@media(min-width:1500px){
+	.frontContentBlockText{
+		font-size:23px;
+	}
+}
+@media(max-width:768px){
+	.frontContentBlockText{
+		margin-bottom:30px;
+	}
 }

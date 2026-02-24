@@ -29,7 +29,7 @@
 			
 			}		
 ?>
-		<br/><h3 class="text-center">Browse</h3>
+		<br/>
 		<hr/>
 <?php
 		if($qr_categories && $qr_categories->numHits()){

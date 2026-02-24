@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2025 Whirl-i-Gig
+ * Copyright 2008-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -462,7 +462,7 @@ class ca_acl extends BaseModel {
 	/**
 	 *
 	 */
-	public static function getStatisticsForRow($subject, int $row_id) : ?array {
+	public static function getStatisticsForRow($subject, ?int $row_id) : ?array {
 		$db = is_object($subject) ? $subject->getDb() : new Db();
 		if(!($subject_table_num = is_object($subject) ? $subject->tableNum() : Datamodel::getTableNum($subject))) { return null; }
 		
@@ -1157,6 +1157,14 @@ class ca_acl extends BaseModel {
 				// noop - is unrecoverable
 			}
 		}
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function clearAccessValueCache() {
+		ca_acl::$s_acl_access_value_cache = [];
+		return true;
 	}
 	# ------------------------------------------------------
 }

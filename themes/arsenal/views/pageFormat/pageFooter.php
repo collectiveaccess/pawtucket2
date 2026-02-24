@@ -47,11 +47,11 @@
 				</ul>
 				<div class="row">
 					<div class="col-sm-7 text-left">
-						<a href="https://www.arsenal-berlin.de" class="orgLink">Arsenal – Institut für Film und Videokunst e.V.</a>
+						<a href="https://www.arsenal-berlin.de" class="orgLink">Arsenal Filminstitut e.V.</a>
 						<div class="row">
 							<div class="col-sm-5">
-								Potsdamer Straße 2<br/>
-								10785 Berlin<br/>
+								Gerichtstr. 53<br>
+								13347 Berlin<br>
 								<?php print _t("Phone"); ?> +49-30-26955-100<br/>
 								<a href="mailto:mail@arsenal-berlin.de">mail@arsenal-berlin.de</a>
 							</div>
@@ -94,7 +94,14 @@
 				</div>
 			</div>
 		</footer><!-- end footer -->
-
+<?php
+	//
+	// Output HTML for debug bar
+	//
+	if(Debug::isEnabled()) {
+		print Debug::$bar->getJavascriptRenderer()->render();
+	}
+?>
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel" role="complementary"> 
