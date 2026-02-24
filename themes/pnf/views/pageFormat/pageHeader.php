@@ -124,13 +124,7 @@ $( document ).ready(function() {
 	if ($g_ui_locale == 'en_US'){
 ?>
 					<li id="menu-item-453" class="menu-item menu-item-type-post_type  current-menu-item  menu-item-object-page menu-item-453"><?php print caNavLink($this->request, _t('Database'), '', '', '', '');?></li>
-<?php
-if($this->request->isLoggedIn()){
-?>
-					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Ornaments and Illustrations'), '', 'Pictorials', 'ornaments', ''); ?></li>
-<?php
-}
-?>
+					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Ornaments & Illustrations'), '', 'Pictorials', 'ornaments', ''); ?></li>
 					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#"><?php print _t('Resources');?></a>
 						<ul class="sub-menu">
 							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-410"><a href="/lists/about-these-lists/"><?php print _t('About these resources');?></a></li>
@@ -173,13 +167,8 @@ if($this->request->isLoggedIn()){
 	}else{
 ?>
 					<li id="menu-item-453" class="menu-item menu-item-type-post_type  current-menu-item  menu-item-object-page menu-item-453"><?php print caNavLink($this->request, _t('Database'), '', '', '', '');?></li>
-<?php
-if($this->request->isLoggedIn()){
-?>
-					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Ornamentos e Ilustraciones'), '', 'Pictorials', 'ornaments', ''); ?></li>
-<?php
-}
-?>					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#">Recursos</a>
+					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Ornamentos & Ilustraciones'), '', 'Pictorials', 'ornaments', ''); ?></li>
+					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#">Recursos</a>
 						<ul class="sub-menu">
 							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-410"><a href="/lists/about-these-lists/">ACERCA DE ESTOS RECURSOS</a></li>
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, 'Bibliografia', '', '', 'Listing', 'bibliography');?></li>

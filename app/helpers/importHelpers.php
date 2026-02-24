@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2024 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -519,7 +519,7 @@ function caProcessRefineryAttributes($pa_attributes, $pa_source_data, $pa_item, 
 				}
 				$va_attr_vals[$vs_element_code] = BaseRefinery::parsePlaceholder($va_attrs, $pa_source_data, $pa_item, $pn_c, ['delimiter' => $delimiter, 'returnAsString' => true, 'ignoreIndexForNonRepeatingValues' => true, 'reader' => $o_reader, 'applyImportItemSettings' => $apply_import_item_settings]);
 			} else {
-				 if ($o_log) { $o_log->logDebug(_t('[importHelpers:caProcessRefineryAttributes] Unhandled refinery %1 attribute %1: value was %2', $ps_refinery_name, $vs_element_code, print_r($va_attrs, true))); }
+				 if ($o_log) { $o_log->logDebug(_t('[importHelpers:caProcessRefineryAttributes] Unhandled refinery %1 attribute %2: value was %3', $ps_refinery_name, $vs_element_code, print_r($va_attrs, true))); }
 			}
 		}
 		
@@ -1662,7 +1662,7 @@ function caPhpExcelGetCellContentAsString($po_sheet, $pn_row_num, $pm_col) {
 	if(MemoryCache::contains($vs_cache_key, 'PHPExcelCellContents')) {
 		return MemoryCache::fetch($vs_cache_key, 'PHPExcelCellContents');
 	} else {
-		$vs_return = trim((string)$po_sheet->getCellByColumnAndRow($pm_col, $pn_row_num));
+		$vs_return = trim((string)$po_sheet->getCell([$pm_col, $pn_row_num]));
 		MemoryCache::save($vs_cache_key, $vs_return, 'PHPExcelCellContents');
 		return $vs_return;
 	}
@@ -1683,7 +1683,7 @@ function caPhpExcelGetDateCellContent($po_sheet, $pn_row_num, $pm_col, $pn_offse
 		$pm_col = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($pm_col);
 	}
 
-	$o_val = $po_sheet->getCellByColumnAndRow($pm_col, $pn_row_num);
+	$o_val = $po_sheet->getCell([$pm_col, $pn_row_num]);
 	$vs_val = trim((string)$o_val);
 
 	if(strlen($vs_val)>0) {
@@ -1710,7 +1710,7 @@ function caPhpExcelGetRawCell($po_sheet, $pn_row_num, $pm_col) {
 		$pm_col = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($pm_col);
 	}
 
-	return $po_sheet->getCellByColumnAndRow($pm_col, $pn_row_num);
+	return $po_sheet->getCell([$pm_col, $pn_row_num]);
 }
 # ---------------------------------------------------------------------
 /**

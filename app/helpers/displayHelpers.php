@@ -35,6 +35,7 @@ require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
 require_once(__CA_LIB_DIR__.'/Parsers/DisplayTemplateParser.php');
 require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
+require_once(__CA_APP_DIR__.'/helpers/externalMediaHelpers.php');
 
 # ------------------------------------------------------------------------------------------------
 /**
@@ -1141,23 +1142,23 @@ function caEditorInspector($view, $options=null) {
 			//
 			// Display flags; expressions for these are defined in app.conf in the <table_name>_inspector_display_flags directive
 			//
-			if (is_array($va_display_flags = $view->request->config->getAssoc("{$table_name}_inspector_display_flags"))) {
-				$display_flag_buf = array();
-				foreach($va_display_flags as $vs_exp => $vs_display_flag) {
-					$exp_vars = array();
-					foreach(ExpressionParser::getVariableList($vs_exp) as $vs_var_name) {
-						$exp_vars[$vs_var_name] = $t_item->get($vs_var_name, array('convertCodesToIdno' => true));
-					}
-
-					if (ExpressionParser::evaluate($vs_exp, $exp_vars)) {
-						$display_flag_buf[] = $t_item->getWithTemplate("{$vs_display_flag}");
+			if (is_array($display_flags = $view->request->config->getAssoc("{$table_name}_inspector_display_flags"))) {
+				$display_flag_buf = [];
+				foreach($display_flags as $exp => $display_flag) {
+					if($qr = caMakeSearchResult($t_item->tableName(), [$t_item->getPrimaryKey()])) {
+						$qr->nextHit();
+						$exp_vars = DisplayTemplateParser::getValuesForTemplate($qr, $exp);
+						if (ExpressionParser::evaluate($exp, $exp_vars)) {
+							$display_flag_buf[] = $t_item->getWithTemplate("{$display_flag}");
+						}
 					}
 				}
 
-				if(!($vs_display_flag_delim = $view->request->config->get("{$table_name}_inspector_display_flags_delimiter"))) {
-					$vs_display_flag_delim = '; ';
+				if(!($display_flag_delim = $view->request->config->get("{$table_name}_inspector_display_flags_delimiter"))) {
+					$display_flag_delim = '; ';
 				}
-				if (sizeof($display_flag_buf) > 0) { $buf .= join($vs_display_flag_delim, $display_flag_buf); }
+			
+				if (sizeof($display_flag_buf) > 0) { $buf .= join($display_flag_delim, $display_flag_buf); }
 			}
 
 			$label = '';
@@ -1474,6 +1475,19 @@ function caEditorInspector($view, $options=null) {
 			$autodelete_info = ca_sets::getAutoDeleteInfo($t_item, $view->request->user);
 			$msg = $autodelete_info['message'] ?? null;
 			$more_info .= "<div id='inspectorAutoDeleteMessage' class='inspectorAutodeleteSet'>{$msg}</div>\n";
+		}
+				
+		$set_access_for_related_tables = $view->request->config->getAssoc('set_access_for_related_tables');
+		if($view->request->user->canDoAction("can_set_access_for_related_{$table_name}") && is_array($set_access_for_related_tables) && is_array($set_access_for_related_tables[$table_name]) && sizeof($set_access_for_related_tables[$table_name])) {
+			$set_access_for_related_tables = $set_access_for_related_tables[$table_name];
+			$tools[] = "<div id='inspectorSetAccessForRelated' class='inspectorActionButton'><div id='inspectorSetAccessForRelatedButon'><a href='#' onclick='caSetAccessForRelatedPanel.showPanel(); return false;'>".caNavIcon(__CA_NAV_ICON_SET_ACCESS__, '20px', array('title' => _t('Set access for related')))."</a></div></div>\n";
+
+			$set_access_for_related_tables_view = new View($view->request, $view->request->getViewsDirectoryPath()."/bundles/");
+			$set_access_for_related_tables_view->setVar('t_item', $t_item);
+			$set_access_for_related_tables_view->setVar('targets', $set_access_for_related_tables);
+
+			FooterManager::add($set_access_for_related_tables_view->render("set_access_for_related_html.php"));
+			TooltipManager::add("#inspectorSetAccessForRelated", _t('Set Access For Related'));
 		}
 		
 		$creation = $t_item->getCreationTimestamp();
@@ -2551,7 +2565,7 @@ function caGetTableDisplayName($pm_table_name_or_num, $pb_use_plural=true) {
  */
 function caGetMediaDisplayConfig() {
 	$o_config = Configuration::load();
-	return Configuration::load(__CA_APP_DIR__.'/conf/media_display.conf');
+	return Configuration::load('media_display.conf');
 }
 # ------------------------------------------------------------------------------------------------
 /**
@@ -2740,7 +2754,7 @@ function caProcessTemplateTagDirectives($ps_value, $pa_directives, $pa_options=n
 	$force_english_units = caGetOption('forceEnglishUnits', $pa_options, null, ['validValues' => ['ft', 'in']]);
 	$force_metric_units = caGetOption('forceMetricUnits', $pa_options, null, ['validValues' => ['m', 'cm', 'mm']]);
 
-	$o_dimensions_config = Configuration::load(__CA_APP_DIR__."/conf/dimensions.conf");
+	$o_dimensions_config = Configuration::load('dimensions.conf');
 	$va_add_periods_list = $o_dimensions_config->get('add_period_after_units');
 
 	$vn_precision = ini_get('precision');
@@ -2885,7 +2899,9 @@ function caProcessTemplateTagDirectives($ps_value, $pa_directives, $pa_options=n
 					$ps_value = mb_substr($ps_value, 0, (int)$va_tmp[1]); 
 					if($ellipsis) { $ps_value .= '...'; }
 				}
-				
+				break;
+			case 'STRIPEXTENSION':
+				$ps_value = preg_replace("!\.[A-Z0-9]+$!i", "", $ps_value);
 				break;
 		}
 	}
@@ -3295,7 +3311,13 @@ function caProcessRelationshipLookupLabel($qr_rel_items, $pt_rel, $pa_options=nu
 
 	if($self_id) { $va_exclude[] = $self_id; }
 
-	if (!is_array($va_display_format = $o_config->getList("{$vs_rel_table}_lookup_settings"))) { $va_display_format = ['^label']; }
+	if (!is_array($va_display_format = $o_config->get("{$vs_rel_table}_lookup_settings"))) { 
+		if($va_display_format) {
+			$va_display_format = [$va_display_format];
+		} else {
+			$va_display_format = ['^label']; 
+		}
+	}
 	if (!($vs_display_delimiter = $o_config->get("{$vs_rel_table}_lookup_delimiter"))) { $vs_display_delimiter = ''; }
 	if (!$vs_template) { $vs_template = join($vs_display_delimiter, $va_display_format); }
 
@@ -3708,7 +3730,11 @@ function caGetBundleDisplayTemplate($pt_subject, $ps_related_table, $pa_bundle_s
 	// If no display_template set try to get a default out of the app.conf file
 	if (!$vs_template) {
 		if(!trim($vs_template = $pt_subject->getAppConfig()->get("{$ps_related_table}_default_editor_display_template"))) {	// use explicit setting
-			if (is_array($va_lookup_settings = $pt_subject->getAppConfig()->getList("{$ps_related_table}_lookup_settings"))) {	// fall back to derive from lookup setting
+			$va_lookup_settings = $pt_subject->getAppConfig()->get("{$ps_related_table}_lookup_settings");
+			if($va_lookup_settings && !is_array($va_lookup_settings)) { 
+				$va_lookup_settings = [$va_lookup_settings];
+			}
+			if (is_array($va_lookup_settings)) {	// fall back to derive from lookup setting
 				if (!($vs_lookup_delimiter = $pt_subject->getAppConfig()->get("{$ps_related_table}_lookup_delimiter"))) { $vs_lookup_delimiter = ''; }
 				$vs_template = join($vs_lookup_delimiter, $va_lookup_settings);
 			}
@@ -5414,32 +5440,95 @@ function caDoTemplateTagSubstitution($po_view, $pm_subject, $ps_template_path, $
 /**
  * Check if hierarchy browser drag-and-drop sorting is enabled for the current user in the current table for a given item.
  *
- * @param RequestHTTP $pt_request The current request
- * @param string $ps_table The table being browsed
- * @param int $pn_id The primary key for the parent of the hierarchy level being browsed. Some tables (notably ca_list_items) can have different enabled statuses for different items. If null then status is determined at the table level. [Default is null]
+ * @param RequestHTTP $request The current request
+ * @param string $table The table being browsed
+ * @param int $id The primary key for the parent of the hierarchy level being browsed. Some tables (notably ca_list_items) can have different enabled statuses for different items. If null then status is determined at the table level. [Default is null]
  *
  * @return bool
  */
-function caDragAndDropSortingForHierarchyEnabled($pt_request, $ps_table, $pn_id=null) {
+function caDragAndDropSortingForHierarchyEnabled(RequestHTTP $request, string $table, ?int $id=null) : ?bool {
 	$o_config = Configuration::load();
 
-	if (!($t_instance = Datamodel::getInstanceByTableName($ps_table, true))) { return null; }
+	if (!($t_instance = Datamodel::getInstanceByTableName($table, true))) { return null; }
 
-	if(!$pt_request->isLoggedIn() || (!$pt_request->user->canDoAction("can_edit_{$ps_table}") && (($vs_hier_table = $t_instance->getProperty('HIERARCHY_DEFINITION_TABLE')) ? !$pt_request->user->canDoAction("can_edit_{$vs_hier_table}") : false))) { return false; }
+	if(!$request->isLoggedIn() || (!$request->user->canDoAction("can_edit_{$table}") && (($hier_table = $t_instance->getProperty('HIERARCHY_DEFINITION_TABLE')) ? !$request->user->canDoAction("can_edit_{$hier_table}") : false))) { return false; }
 	if (!$t_instance->isHierarchical()) { return false; }
-	if (!($vs_rank_fld = $t_instance->getProperty('RANK'))) { return false; }
-	if (!is_null($pn_id) && !$t_instance->load($pn_id)) { return false; }
+	if (!($rank_fld = $t_instance->getProperty('RANK'))) { return false; }
+	if (!is_null($id) && !$t_instance->load($id)) { return false; }
 
-	$vs_def_table_name = $t_instance->getProperty('HIERARCHY_DEFINITION_TABLE');
-	$vs_def_id_fld = $t_instance->getProperty('HIERARCHY_ID_FLD');
+	$def_table_name = $t_instance->getProperty('HIERARCHY_DEFINITION_TABLE');
+	$def_id_fld = $t_instance->getProperty('HIERARCHY_ID_FLD');
 
-	if ($vs_def_table_name && ($t_def = Datamodel::getInstanceByTableName($vs_def_table_name, true)) && ($t_def->load($t_instance->get($vs_def_id_fld))) && ($t_def->hasField('default_sort')) && ((int)$t_def->get('default_sort') === __CA_LISTS_SORT_BY_RANK__)) {
+	if ($def_table_name && ($t_def = Datamodel::getInstanceByTableName($def_table_name, true)) && ($t_def->load($t_instance->get($def_id_fld))) && ($t_def->hasField('default_sort')) && ((int)$t_def->get('default_sort') === __CA_LISTS_SORT_BY_RANK__)) {
 		return true;
 	} else {
-		$va_sort_values = $o_config->getList("{$ps_table}_hierarchy_browser_sort_values");
-		if ((sizeof($va_sort_values) >= 1) && ($va_sort_values[0] === "{$ps_table}.{$vs_rank_fld}")) { return true; }
+		//$sort_values = $o_config->getList("{$table}_hierarchy_browser_sort_values");
+		$sort_values = caGetHierarchyBrowserSortValues($table, $t_instance);
+		if ((sizeof($sort_values) >= 1) && ($sort_values[0] === "{$table}.{$rank_fld}")) { return true; }
 	}
 	return false;
+}
+# ------------------------------------------------------------------
+/**
+ *
+ */
+function caGetHierarchyBrowserSortValues(string $table, ?BaseModel $t_instance=null) : ?array {
+	$o_config = Configuration::load();
+	$sort_value = null;
+	if($t_instance && $t_instance->isLoaded() && ($sort_element = $o_config->get("{$table}_hierarchy_browser_use_for_sort"))){
+		$itable = $t_instance->tableName();
+		if(is_array($ancestor_ids = $t_instance->getHierarchyAncestors(null, ['idsOnly' => true, 'includeSelf' => true])) && sizeof($ancestor_ids)) {
+			// Try to find metadata-specified sort in parent record of passed instance
+			if($qr = caMakeSearchResult($t_instance->tableName(), $ancestor_ids)) {
+				while($qr->nextHit()) {
+					if(($sort_value = $qr->get("{$itable}.{$sort_element}", ['convertCodesToValue' => true]))) {
+						return [$sort_value];
+						break;
+					}
+				}
+			}
+			
+			if($o_config->get('ca_objects_x_collections_hierarchy_enabled')) {
+				// If sorting objects and:
+				//		1. instance is object
+				//		2. object has no parents
+				//		3. object-collection hierarchy is enabled
+				//		4. A metadata element for metadata-specified sort is configured
+				// then try to pull related collections and see if they define a sort for the objects list
+				if(
+					($table === 'ca_objects') && (($itable === 'ca_objects') && sizeof($ancestor_ids) === 1) && 
+					($sort_element = $o_config->get("ca_objects_hierarchy_browser_use_for_sort"))
+				) {
+					$types = caGetObjectCollectionHierarchyRelationshipTypes();
+					$coll_ids = $t_instance->getRelatedItems('ca_collections', ['idsOnly' => true, 'restrictToTypes' => $types]);
+					if(is_array($coll_ids) && sizeof($coll_ids)) {
+						if($qr = caMakeSearchResult('ca_collections', $coll_ids)) {
+							while($qr->nextHit()) {
+								if(($sort_value = $qr->get("ca_collections.{$sort_element}", ['convertCodesToValue' => true]))) {
+									return [$sort_value];
+									break;
+								}
+								$t_coll = $qr->getInstance();
+								if(is_array($ancestor_ids = $t_coll->getHierarchyAncestors(null, ['idsOnly' => true, 'includeSelf' => false])) && sizeof($ancestor_ids)) {
+									if($qr = caMakeSearchResult('ca_collections', $ancestor_ids)) {
+										while($qr->nextHit()) {
+											if(($sort_value = $qr->get($sort_element, ['convertCodesToValue' => true]))) {
+												return [$sort_value];
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	$sort_values = $o_config->getList("{$table}_hierarchy_browser_sort_values");
+	return $sort_values;
 }
 # ------------------------------------------------------------------
 /**
@@ -5530,7 +5619,7 @@ function caProcessReferenceTags($request, $text, $options=null) {
 	) {
 		if (preg_match_all("!\[{$ref_tag} ([^\]]+)\]([^\[]+)\[/{$ref_tag}\]!", $text, $matches)) {
 			foreach($matches[1] as $i => $attr_string) {
-				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version', 'mode'])) > 0) {
+				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version', 'mode', 'target'])) > 0) {
 					$vals['content'] = $matches[2][$i];
 					$idnos[$ref_type][$matches[0][$i]] = array_filter($vals, function($v) { return !is_null($v); });
 				}
@@ -5538,7 +5627,7 @@ function caProcessReferenceTags($request, $text, $options=null) {
 		}
 		if (preg_match_all("!\[{$ref_tag} ([^\]]+)/\]!", $text, $matches)) {
 			foreach($matches[1] as $i => $attr_string) {
-				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version', 'mode'])) > 0) {
+				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version', 'mode', 'target'])) > 0) {
 					$idnos[$ref_type][$matches[0][$i]] = array_filter($vals, function($v) { return !is_null($v); });
 				}
 			}
@@ -5689,8 +5778,7 @@ function caProcessReferenceTags($request, $text, $options=null) {
 							if (!($idno = trim($qr_m->get('idno')))) { $idno = null; }
 
 							$alt_text = caGetOption(['caption', 'title', 'idno'], ['caption' => $caption, 'title' => $title, 'idno' => $idno], null);
-
-							if ($template = $va_l['content']) {
+							if (($template = $va_l['content']) && ($return !== 'link')) {
 								$template = str_replace("^title", $title, $template);
 								$template = str_replace("^caption", $caption, $template);
 								$template = str_replace("^idno", $idno, $template);
@@ -5698,6 +5786,12 @@ function caProcessReferenceTags($request, $text, $options=null) {
 								$text = str_replace($tag, $template, $text);
 							} elseif($return === 'url') {
 								$text = str_replace($tag, $qr_m->getMediaUrl('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media'))), ['alt' => $alt_text]), $text);
+							} elseif($return === 'link') {
+								$url = $qr_m->getMediaUrl('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media'))), ['alt' => $alt_text]);
+								$link_text = $va_l['content'] ?? $url;
+								$target = $va_l['target'] ?? null;
+								$link = "<a href='{$url}'".($target ? " target='{$target}'" : '').">{$link_text}</a>";
+								$text = str_replace($tag, $link, $text);
 							} else {
 								$text = str_replace($tag, $qr_m->getMediaTag('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media'))), ['alt' => $alt_text]), $text);
 							}
@@ -5871,7 +5965,7 @@ function caFormatPersonName($fname, $lname, $default=null){
  * @throws ApplicationException
  */
 function caEscapeFilenameForDownload(string $filename, ?array $options=null) : string {
-	$v = preg_replace("![\|;\<\>\(\)\$\`\~&\\\\]+!", "_", html_entity_decode($filename));
+	$v = preg_replace("![\|;\<\>\(\)\$\`\~&\\\\,]+!", "_", html_entity_decode($filename));
 	if(preg_match('^\.+$', $filename)) {
 		throw new ApplicationError(_t('Invalid filename'));
 	}
@@ -6107,11 +6201,11 @@ function caGetReferenceToExistingRepresentationMedia(ca_object_representations $
 		}
 	} else {
 		$rec_label = $rec_label ? 
-			_t('Media aleady exists in %1', ($g_request ? 
+			_t('Media already exists in %1', ($g_request ? 
 				caEditorLink($g_request, $rec_label, '', $parent_table, $rel[Datamodel::primaryKey($parent_table)])
 				: $rec_label))
 			:
-			($g_request ? _t('Media aleady %1', caEditorLink($g_request, _t('exists'), '', 'ca_object_representations', $t_rep->getPrimaryKey())) : _t('Media already exists'))
+			($g_request ? _t('Media already %1', caEditorLink($g_request, _t('exists'), '', 'ca_object_representations', $t_rep->getPrimaryKey())) : _t('Media already exists'))
 		;
 		return $rec_label;
 	}
@@ -6384,6 +6478,74 @@ function caGetCK5Toolbar(array $options=null) : ?array {
 		$groups = array_merge($groups, $group);
 	}
 	return $groups;
+}
+# ------------------------------------------------------------------
+/**
+ *
+ */
+function caAllowEditingForFirstLevelOfHierarchyBrowser(BaseModel $t_subject) : bool {
+	if($t_subject->getHierarchyType() === __CA_HIER_TYPE_MULTI_MONO__) { return false; }
+	if(
+		($t_subject->getHierarchyType() === __CA_HIER_TYPE_SIMPLE_MONO__)
+		&&
+		!$t_subject->getAppConfig()->get($t_subject->tableName().'_hierarchy_browser_hide_root')
+	) { return false; }
+	
+	return true;
+}
+# ------------------------------------------------------------------
+/**
+ * Normalize capitalization of bundle labels according to bundle_label_normalization setting in app.conf
+ *
+ * @param string $label 
+ * @param array $options Options include:
+ *		normalize = Override app.conf bundle_label_normalization setting. Default is null - use app.conf setting. Valid values are:
+ *			uc (force to upper case)
+ *			lc (force to lower case)
+ *			ucinitial (force to lower case with capitalization of initial letter)
+ *			ucfirst (force to lower case with capitalization of each word)
+ *			none (return label as-is)
+ *
+ */
+function caNormalizeBundleLabel(?string $label, ?array $options=null) : ?string {
+	$config = Configuration::load();
+	$n = strtolower(caGetOption('normalize', $options, $config->getScalar('bundle_label_normalization')));
+	switch($n) {
+		case 'uc':
+			$label  = mb_strtoupper($label);
+			break;
+		case 'lc':
+			$label  = mb_strtolower($label);
+			break;
+		case 'ucinitial':
+			$label  = caUcFirstUTF8Safe(mb_strtolower($label));
+			break;
+		case 'ucfirst':
+			$label  = mb_convert_case(mb_strtolower($label), MB_CASE_TITLE, 'UTF-8');
+			
+			$skip_words = (MemoryCache::contains('normalizeBundleSkipWords')) ? 
+				MemoryCache::fetch('normalizeBundleSkipWords')
+				:
+				array_map(function($v) { return caUcFirstUTF8Safe($v); }, $config->getList('bundle_label_normalization_skip_words') ?: []);
+			
+			// Clean up conjunctions and parentheticals that are now incorrectly capitalized
+			foreach($skip_words as $p) {
+				$label = str_replace($p, mb_strtolower($p), $label);
+			}
+			if(preg_match_all("!\(([\w]+)\)!", $label, $m)) {
+				 foreach($m as $p) {
+ 					$label = str_replace($p[0], mb_strtolower($p[0]), $label);
+ 				}
+			}
+			$label = caUcFirstUTF8Safe($label);
+			break;
+		case 'none':
+		default:
+			// noop
+			break;
+	}
+	
+	return $label;
 }
 # ------------------------------------------------------------------
 
