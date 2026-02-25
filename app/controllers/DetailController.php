@@ -303,16 +303,19 @@ class DetailController extends FindController {
 		$result_desc = $o_context->getResultDesc();
 		$this->view->setVar('resultDesc', $result_desc[$t_subject->getPrimaryKey()] ?? null);
 		
-		if($o_context->findType() === 'multisearch') {
+		if($o_context->findType() === 'generalsearch') {
 			if(!in_array($t_subject->getPrimaryKey(), $o_context->getResultList())) {
 				// try to find context that contains item
-				$search_config = caGetSearchConfig();
-				$blocks = array_filter($search_config->getAssoc('multisearchTypes') ?? [], function($v) use ($table) {
-					return ($v['table'] === $table);
-				});
+				$browse_config = caGetBrowseConfig();
+				$browse_types = $browse_config->get('browseTypes');
+				$blocks = [];
+				foreach($browse_config->getList('generalSearchTargets') ?? [] as $t) {
+					if(!isset($browse_types[$t])) { continue; }
+					$blocks[$t] = $browse_types[$t];
+				}
 				foreach($blocks as $block => $block_info) {
 					if($block === $o_context->findSubType()) { continue; }
-					if($o_new_context = new ResultContext($this->request, $table, 'multisearch', $block)) {
+					if($o_new_context = new ResultContext($this->request, $table, 'generalsearch', $block)) {
 						if(in_array($t_subject->getPrimaryKey(), $o_new_context->getResultList())) {
 							$o_context = $o_new_context;
 							break;
