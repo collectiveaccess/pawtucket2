@@ -121,7 +121,7 @@ if($show_nav){
 					<ifdef code="ca_places.URL.link">
 						<dt>More Information</dt>
 						<unit relativeTo="ca_places.URL" delimiter="">
-							<dd><a href="ca_places.URL.link" target="_blank"><ifdef code="ca_places.URL.text">^ca_places.URL.text</ifdef><ifnotdef code="ca_places.URL.text">More Information</ifnotdef>  <i class='bi bi-box-arrow-up-right ms-1'></a></dd>
+							<dd><a href="^ca_places.URL.link" target="_blank"><ifdef code="ca_places.URL.text">^ca_places.URL.text</ifdef><ifnotdef code="ca_places.URL.text">More Information</ifnotdef>  <i class='bi bi-box-arrow-up-right ms-1'></a></dd>
 						</unit>
 					</ifdef>
 					<ifdef code="ca_places.address">
