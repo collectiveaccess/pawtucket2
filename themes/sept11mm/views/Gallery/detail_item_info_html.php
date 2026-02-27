@@ -42,11 +42,26 @@
 	$t_item = $this->getVar("instance");
 	$t_set_item = $this->getVar("set_item");
 	$config = $this->getVar("config");
+
+	if($lang = $this->request->getParameter('lang', pString)) {
+		if($lang == 'es') {
+			Session::setVar('ns11mm_locale', 'es_ES');
+		} else {
+			Session::setVar('ns11mm_locale', 'en_US');
+		}
+	}
+	
+	$pub_desc = array_filter($t_item->get('ca_objects.public_description', ['returnAsArray' => true, 'returnAllLocales' => true]),'strlen');
+	$has_spanish = ((is_array($pub_desc) && sizeof($pub_desc) > 1));
+	
+	if($has_spanish){
+		$locale = Session::getVar('ns11mm_locale');
+	}
 	
 	$views = $config->get('views');
 	$views_info = $views['slideshow'][$this->getVar("table")];
 	
-	$vs_label = $t_item->getWithTemplate($views_info["labelTemplate"]);
+	$vs_label = $t_item->getWithTemplate($views_info["labelTemplate"], array("locale" => $locale));
 	$vs_content = $t_item->getWithTemplate($views_info["contentTemplate"]);
 	$vs_set_item_content = $t_set_item->getWithTemplate($views_info["setItemContentTemplate"]);
 	
@@ -69,7 +84,8 @@
 				$va_popover = array();
 				if($t_list_item->get("ca_list_item_labels.description")){
 					#$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-title" => $va_subject["name_singular"], "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");
-					$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");							
+					#$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");							
+					$va_popover = array("data-bs-toggle" => "tooltip", "data-bs-placement" => "top", "data-bs-html" => "true", "title" => $t_list_item->get("ca_list_item_labels.description"));													
 				}
 				$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]), $va_popover);
 				$va_list_ids[] = $va_subject["item_id"];
@@ -80,7 +96,8 @@
 			print "<dd>".join(", ", $va_subjects_sorted)."</dd>";
 		}
 	}
-	print $t_item->getWithTemplate('<ifdef code="ca_objects.public_description"><dt class="pt-3">Description</dt><dd>^ca_objects.public_description</dd></ifdef>');
+	print $t_item->getWithTemplate('<ifdef code="ca_objects.public_description"><dt class="pt-3">'.(($locale == "es_ES") ? "Descripción" : "Description").'</dt><dd>^ca_objects.public_description%locale='.$locale.'</dd></ifdef>');
+	
 	if($va_sources = $t_item->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("donor"), "checkAccess" => caGetUserAccessValues($this->request)))){
 		if(is_array($va_sources) && sizeof($va_sources)){
 			print "<dt class='pt-3 d-inline'>Source".((sizeof($va_sources) > 1) ? "s" : "").": </dt>";
@@ -104,8 +121,25 @@
 
 	print $t_item->getWithTemplate('<ifdef code="ca_objects.idno"><dt class="pt-3 d-inline"><br/>Accession Number: </dt><dd class="d-inline">^ca_objects.idno</dd></ifdef>');
 
-	print "<div class='text-center py-2 text-capitalize'>".caDetailLink($this->request, _t("View Full Record")." <i class='bi bi-arrow-right'></i>", 'btn btn-primary', $this->getVar("table"), $this->getVar("row_id"))."</div>";
+	print "<div class='text-center py-2 text-capitalize'>";
+	if($has_spanish) {
+		if($locale === 'es_ES') {
+			print caNavLink($this->request, 'English', 'btn btn-primary me-4', '', 'gallery', $pn_set_id, ['lang' => 'en']);
+		} else {
+			print caNavLink($this->request, 'En Español', 'btn btn-primary me-4', '', 'gallery', $pn_set_id, ['lang' => 'es']);
+		}
+	}
+	print caDetailLink($this->request, _t("View Full Record")." <i class='bi bi-arrow-right'></i>", 'btn btn-primary', $this->getVar("table"), $this->getVar("row_id"));
+	print "</div>";
 	
 ?>	
 	</div>
 </div><!-- end row -->
+<script>
+	htmx.onLoad(function(e) {
+		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+		  return new bootstrap.Tooltip(tooltipTriggerEl)
+		});
+	});
+</script>

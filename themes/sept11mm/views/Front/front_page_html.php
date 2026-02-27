@@ -77,10 +77,16 @@
 		</div>
 	</div>
 </div>
-
 <div class="container">
 	<div class="row justify-content-center">
-		<div class="col-md-8 mt-5 pt-5 text-left">
+		<div class="col-md-10 pt-4 text-center fs-4">
+			{{{hp_callout}}}
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-md-8 pt-2 text-left">
 			<div class="px-lg-4">
 				<div class="img-fluid pb-2">
 					<?php print caGetThemeGraphic($this->request, "hp_conservation.jpg", array("alt" => "Image of evidence tag, hat and badge")); ?>

@@ -88,31 +88,15 @@ function caGetLightboxesForUser(?int $user_id, ?array $check_access, ?array $opt
 		'tables' => $configured_tables, 
 		"user_id" => $user_id, 
 		"checkAccess" => $check_access, 
-		"parents_only" => true, 
-		'sort' => $sort, 
-		'sortDirection' => $sort_direction
+		"parents_only" => true
 	]);
-	
-// 	$read_sets = $t_sets->getSetsForUser([
-// 		'tables' => $configured_tables, 
-// 		"user_id" => $user_id, 
-// 		"checkAccess" => $check_access,
-// 		"access" => $access, 
-// 		"parents_only" => true, 
-// 		'sort' => $sort, 
-// 		'sortDirection' => $sort_direction]);
-// 	foreach($write_sets as $id => $info) {
-// 		unset($read_sets[$id]);
-// 	}
-	// $read_sets = array_map(function($v) { $v['writeable'] = false; return $v; }, $read_sets);		
-// 	$write_sets = array_map(function($v) { $v['writeable'] = true; return $v; }, $write_sets);	
+
 	if(caGetOption('idsOnly', $options, false)) {
 		return array_keys($sets);
 	}
 	
 	$lightboxes = caMakeSearchResult('ca_sets', array_keys($sets), ['sort' => 'ca_sets.preferred_labels', 'sortDirection' => 'ASC']);
 	return $lightboxes;
-	//return caSortArrayByKeyInValue(array_merge($read_sets, $write_sets), ['label'], 'ASC', ['caseInsensitive' => true]);
 }
 # ---------------------------------------
 /**
@@ -132,7 +116,6 @@ function caGetLightboxesForItem(BaseModel $t_subject) {
 function caItemIsInUserLightbox(BaseModel|SearchResult $t_subject, ?int $user_id, ?array $options=null) {
 	$t_set = new ca_sets();
 	$item_set_ids = $t_set->getSetIDsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), []);
-	
 	$user_set_ids = caGetLightboxesForUser($user_id, null, ['idsOnly' => true]);
 	if(!is_array($user_set_ids))  { return false; }
 	if(sizeof(array_intersect($item_set_ids, $user_set_ids)) > 0) {
