@@ -66,6 +66,9 @@ li.navDivide{
 		display:none;
 	}
 }
+.navbar-collapse{
+	max-height:450px;
+}
 .btn{
 	text-decoration:none;
 }
