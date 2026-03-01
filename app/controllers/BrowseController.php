@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2025 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -44,7 +44,7 @@ class BrowseController extends FindController {
 	/**
 	 *
 	 */
-	protected $opa_access_values = array();
+	protected $opa_access_values = [];
 	
 	/**
 	 *
@@ -91,7 +91,7 @@ class BrowseController extends FindController {
 		// Now that table name is known we can set standard view vars
 		parent::setTableSpecificViewVars($browse_info);
 		
-		$types = caGetOption('restrictToTypes', $browse_info, array(), array('castTo' => 'array'));
+		$types = caGetOption('restrictToTypes', $browse_info, [], array('castTo' => 'array'));
 		$omit_child_records = caGetOption('omitChildRecords', $browse_info, [], array('castTo' => 'bool'));
 		
 		
@@ -123,13 +123,13 @@ class BrowseController extends FindController {
 		$this->view->setVar('paging', in_array(strtolower($browse_info['paging']), array('continous', 'nextprevious', 'letter')) ? strtolower($browse_info['paging']) : 'continous');
 		
 		$this->view->setVar('name', $browse_info['displayName']);
-		$this->view->setVar('options', caGetOption('options', $browse_info, array(), array('castTo' => 'array')));
+		$this->view->setVar('options', caGetOption('options', $browse_info, [], array('castTo' => 'array')));
 		
-		$views = caGetOption('views', $browse_info, array(), array('castTo' => 'array'));
+		$views = caGetOption('views', $browse_info, [], array('castTo' => 'array'));
 		if(!is_array($views) || (sizeof($views) == 0)){
-			$views = array('list' => array(), 'images' => array(), 'chronology' => array(), 'chronology_images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
+			$views = ['list' => [], 'images' => [], 'chronology' => [], 'chronology_images' => [], 'timeline' => [], 'map' => [], 'timelineData' => [], 'pdf' => [], 'xlsx' => [], 'pptx' => []];
 		} else {
-			$views['pdf'] = $views['timelineData'] = $views['xlsx'] = $views['pptx'] = $views['chronology_images'] = array();
+			$views['pdf'] = $views['timelineData'] = $views['xlsx'] = $views['pptx'] = $views['chronology_images'] = [];
 		}
 		
 		if (!($view = $this->request->getParameter("view", pString, ['forcePurify' => true]))) {
@@ -139,8 +139,15 @@ class BrowseController extends FindController {
 			$view = array_shift(array_keys($views));
 		}
 		# --- only set the current view if it's not an export format
-		if(!in_array($view, array("pdf", "xlsx", "pptx", "timelineData", "chronology_images"))){
+		if(!$this->request->isAjax() && !in_array($view, ["pdf", "xlsx", "pptx", "timelineData", "chronology_images"])){
 			$this->opo_result_context->setCurrentView($view);
+			
+			$search_result_context = new ResultContext($this->request, $browse_info['table'], 'search', $function);
+			$search_adv_result_context = new ResultContext($this->request, $browse_info['table'], 'search_advanced', $function);
+			$search_result_context->setCurrentView($view);
+			$search_result_context->saveContext();
+			$search_adv_result_context->setCurrentView($view);
+			$search_adv_result_context->saveContext();
 		}
 		
 		$view_info = $views[$view];
@@ -156,7 +163,7 @@ class BrowseController extends FindController {
 		$this->view->setVar('primaryKey', $t_instance->primaryKey());
 	
 		$this->view->setVar('browse', $o_browse = caGetBrowseInstance($class));
-		$this->view->setVar('views', caGetOption('views', $browse_info, array(), array('castTo' => 'array')));
+		$this->view->setVar('views', caGetOption('views', $browse_info, [], array('castTo' => 'array')));
 		$this->view->setVar('view', $view);
 		$this->view->setVar('viewIcons', $this->opo_config->getAssoc("views"));
 	
@@ -196,12 +203,10 @@ class BrowseController extends FindController {
 		$base_criteria = caGetOption('baseCriteria', $browse_info, null);
 		$show_base_criteria = caGetOption('showBaseCriteria', $browse_info, false);
 		
-		if (($o_browse->numCriteria() == 0)) {
-			if (is_array($base_criteria) && !$remove_criterion) {
-				foreach($base_criteria as $facet => $value) {
-					$o_browse->addCriteria($facet, $value);
-				}
-			}
+		if(!$remove_criterion) {
+			$o_browse->setBaseCriteria($browse_info, [
+				'view' => $view
+			]);
 		}
 		if (($facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($facets = explode(';', $facets)) && sizeof($facets)) {
 			foreach ($facets as $facet_spec) {
@@ -211,7 +216,12 @@ class BrowseController extends FindController {
 					return urldecode($v);
 				}, $tmp)))); 
 			}
-	
+		} elseif ($search_refine = $this->request->getParameter('search_refine', pString, ['forcePurify' => true])) {
+			if($search_refine_prefix = $this->request->getParameter('search_refine_prefix', pString, ['forcePurify' => true])) {
+				$search_refine = $search_refine_prefix.':"'.addslashes($search_refine).'"';
+			}
+			$o_browse->removeAllCriteria('_search');
+			$o_browse->addCriteria('_search', [caMatchOnStem($search_refine)], array($search_refine));
 		} elseif (($facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
 			$p = array_map('urldecode', $p);
 			$o_browse->addCriteria($facet, $p);
@@ -220,6 +230,9 @@ class BrowseController extends FindController {
 				$o_browse->addCriteria("_search", array("*"));
 			}
 		}
+		$o_browse->setSelectiveBaseCriteria($browse_info, [
+			'view' => $view
+		]);
 		
 		//
 		// Sorting
@@ -279,7 +292,7 @@ class BrowseController extends FindController {
 		
 		$this->view->setVar('share_url', caNavUrl($this->request, '*', '*', '*', ['facets' => join(";", $x)], ['absolute' => true]));
 
-		$expand_results_hierarchically = caGetOption('expandResultsHierarchically', $browse_info, array(), array('castTo' => 'bool'));
+		$expand_results_hierarchically = caGetOption('expandResultsHierarchically', $browse_info, [], array('castTo' => 'bool'));
 		
 		$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $expand_results_hierarchically, 'omitChildRecords' => $omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $browse_info, null)));
 		
@@ -319,11 +332,11 @@ class BrowseController extends FindController {
 			}
 		}
 		
-		$criteria_for_display = array();
+		$criteria_for_display = [];
 		foreach($criteria as $facet_name => $criterion) {
 			$facet_info = $o_browse->getInfoForFacet($facet_name);
 			foreach($criterion as $criterion_id => $criterion) {
-				$criteria_for_display[] = array('facet' => $facet_info['label_singular'], 'facet_name' => $facet_name, 'value' => $criterion, 'id' => $criterion_id);
+				$criteria_for_display[] = ['facet' => $facet_info['label_singular'], 'facet_name' => $facet_name, 'value' => $criterion, 'id' => $criterion_id, 'hide' => $facet_info['hide'] ?? false];
 			}
 		}
 		$this->view->setVar('criteria', $criteria_for_display);
@@ -342,7 +355,7 @@ class BrowseController extends FindController {
 		$show_letter_bar_sorts = caGetOption('showLetterBarSorts', $browse_info, null);
 		if(is_array($show_letter_bar_sorts) && in_array($sort_fld, $show_letter_bar_sorts)){
 			if ($letter_bar_field = caGetOption('showLetterBarFrom', $browse_info, null)) { // generate letter bar
-				$letters = array();
+				$letters = [];
 				while($qr_res->nextHit()) {
 					$letters[caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($letter_bar_field), "0")), 0, 1)))]++;
 				}
@@ -365,7 +378,7 @@ class BrowseController extends FindController {
 		$this->view->setVar('letter', $l);			
 		
 		if ($letter_bar_field && ($l)) {
-			$filtered_ids = array();
+			$filtered_ids = [];
 			while($qr_res->nextHit()) {
 				if (caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($letter_bar_field), "0")), 0, 1))) == $l) {
 					$filtered_ids[] = $qr_res->getPrimaryKey();
@@ -413,7 +426,7 @@ class BrowseController extends FindController {
 		//
 		if ($view === 'map') {
 			$this->view->setVar("showMap", false);
-			if (!is_array($map_attributes = caGetOption(['data', 'mapAttributes', 'map_attributes'], $view_info, array())) || !sizeof($map_attributes)) {
+			if (!is_array($map_attributes = caGetOption(['data', 'mapAttributes', 'map_attributes'], $view_info, [])) || !sizeof($map_attributes)) {
 				if ($map_attribute = caGetOption('data', $view_info, false)) { $map_attributes = array($map_attribute); }
 			}
 			
@@ -426,7 +439,7 @@ class BrowseController extends FindController {
 					'maxZoom' => caGetOption(['mapMaxZoomLevel'], $view_info, 15),
 					'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $view_info, ''),
 					'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'mapContent', ['browse' => $function]),
-					'searchUrl' => caNavUrl($this->request, '*', 'Search', '*', ['key' => '', 'search_refine_prefix' => 'Address']),
+					'searchUrl' => caNavUrl($this->request, '*', 'Search', '*', ['search_refine_prefix' => 'Address']),
 					'themePath' => __CA_THEME_URL__
 				];
 				$this->view->setVar('mapOptions', $map_options);
@@ -465,15 +478,26 @@ class BrowseController extends FindController {
 	 * Generate the URL for the "back to results" link from a browse result item
 	 * as an array of path components.
 	 */
-	public static function getReturnToResultsUrl($po_request) {
-		$ret = array(
+	public static function getReturnToResultsUrl($request, $table) {
+		$browse = $request->getAction();
+		$browse_types = caGetBrowseConfig()->get('browseTypes');
+		
+		if(!is_array($browse_types[$browse])) {
+			foreach($browse_types as $bt => $bti) {
+				if($bti['table'] === $table) {
+					$browse = $bt;
+					break;
+				}
+			}
+		}
+		$ret = [
 			'module_path' => '',
 			'controller' => 'Browse',
-			'action' => $po_request->getAction(),
+			'action' => $browse,
 			'params' => array(
 				'key'
 			)
-		);
+		];
 		return $ret;
 	}
 	# -------------------------------------------------------
@@ -524,7 +548,7 @@ class BrowseController extends FindController {
 		if (!sizeof($criteria)) { return ''; }
 		$criteria_info = $po_browse->getInfoForFacets();
 		
-		$buf = array();
+		$buf = [];
 		foreach($criteria as $facet => $vals) {
 			$buf[] = caUcFirstUTF8Safe($criteria_info[$facet]['label_singular']).': '.join(", ", $vals);
 		}

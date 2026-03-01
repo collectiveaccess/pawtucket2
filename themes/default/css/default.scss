@@ -371,7 +371,11 @@ div.banContinue {
 	max-height: 300px;
 	overflow-y: auto;
 }
-/* ------------------------advacned search form -------------------------- */
+/* ------------------------advanced search form -------------------------- */
 .attributeListItem{
 	width:100%;
+}
+/* -------------- Alerts --------------- */
+.alert{
+	z-index:1000;
 }
