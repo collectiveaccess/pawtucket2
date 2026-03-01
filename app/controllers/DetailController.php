@@ -316,7 +316,7 @@ class DetailController extends FindController {
 				foreach($blocks as $block => $block_info) {
 					if($block === $o_context->findSubType()) { continue; }
 					if($o_new_context = new ResultContext($this->request, $table, 'generalsearch', $block)) {
-						if(in_array($t_subject->getPrimaryKey(), $o_new_context->getResultList())) {
+						if(in_array($t_subject->getPrimaryKey(), $o_new_context->getResultList() ?? [])) {
 							$o_context = $o_new_context;
 							break;
 						}
