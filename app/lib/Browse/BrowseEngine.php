@@ -8454,3 +8454,4 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 	}
 	# ------------------------------------------------------
 
+}
