@@ -157,7 +157,7 @@ final class ConfigurationCheck {
 		// Check app/log
 		//
 		if (!is_writeable(__CA_LOG_DIR__)) {
-			self::addError(_t('The CollectiveAccess log directory (default <i>app/log</i>) is NOT writeable by the installer. This may result in installation errors. It is recommended that you change permissions on this directory (<i>%1</i>) to allow write access prior to installation. You can reload the installer to verify that the changed permissions are correct.', __CA_LOG_DIR__));
+			self::addError(_t('The CollectiveAccess log directory is NOT writeable by the installer. This may result in installation errors. It is recommended that you change permissions on this directory (<i>%1</i>) to allow write access prior to installation. You can reload the installer to verify that the changed permissions are correct.', __CA_LOG_DIR__));
 		}
 
 		//

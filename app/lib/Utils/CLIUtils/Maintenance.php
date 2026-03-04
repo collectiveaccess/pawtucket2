@@ -515,7 +515,7 @@ trait CLIUtilsMaintenance {
 			chmod($path, 0770);
 		}
 		
-		if (!$opts->getOption("quiet")) { CLIUtils::addMessage(_t("Fixing permissions for the log directory for ownership by \"%1\"...", $user)); }
+		if (!$opts->getOption("quiet")) { CLIUtils::addMessage(_t("Fixing permissions for the log directory (%2) for ownership by \"%1\"...", $user, __CA_LOG_DIR__)); }
 		$files = caGetDirectoryContentsAsList(__CA_LOG_DIR__, true, true, false, true, ['includeRoot' => true]);
 
 		foreach($files as $path) {
