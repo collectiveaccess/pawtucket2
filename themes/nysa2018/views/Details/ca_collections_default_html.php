@@ -93,7 +93,7 @@
 						}
 						if(sizeof($va_tmp)){
 							print "<div class='unit trimText'><b>Related Archival Materials</b><br/>";
-							print join($va_tmp, "<br/><br/>");
+							print join("<br/><br/>", $va_tmp);
 							print "</div>";
 						}
 					}													
