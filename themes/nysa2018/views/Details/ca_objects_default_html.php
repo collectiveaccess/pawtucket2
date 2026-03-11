@@ -119,11 +119,8 @@ $t_list = new ca_lists();
 			if($vs_collection_idno = $t_object->get('ca_collections.idno')){
 				#print_r(@get_headers("http://iarchives.nysed.gov/xtf/view?docId=tei/".$vs_collection_idno."/".$t_object->get('idno').".xml"));
 				# get transcript y/n
-				$t_list = new ca_lists();
-				$vn_yes_value = $t_list->getItemIDFromList("transcript", "transcript_yes");
-					
-				if($t_object->get('ca_objects.transcript') == $vn_yes_value) {
-					print "<div class='unit'><a href='http://iarchives.nysed.gov/xtf/view?docId=tei/".$vs_collection_idno."/".$t_object->get('idno').".xml' target='_blank' class='btn btn-default'>"._t("Transcript / Translation")."</a></div>";
+				if($t_object->get('ca_objects.transcript', ['convertCodesToIdno' => true]) == 'transcript_yes') {
+					print "<div class='unit'><a href='https://iarchives.nysed.gov/xtf/view?docId=tei/".$vs_collection_idno."/".$t_object->get('idno').".xml' target='_blank' class='btn btn-default'>"._t("Transcript / Translation")."</a></div>";
 				}
 						
 			}
