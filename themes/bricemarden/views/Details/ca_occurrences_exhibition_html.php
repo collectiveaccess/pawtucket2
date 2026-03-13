@@ -91,19 +91,20 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					</ifdef>
 					<ifcount code="ca_occurrences.related" min="1" restrictToTypes="literature" restrictToRelationshipTypes="related">
 						<dt><?= _t('Literature'); ?></dt>
-						<unit relativeTo="ca_occurrences.related" delimiter="" restrictToTypes="literature" restrictToRelationshipTypes="related"><dd><l>^ca_occurrences.citation_abbreviated</l></dd></unit>
+						<unit relativeTo="ca_occurrences.related" delimiter="" restrictToTypes="literature" restrictToRelationshipTypes="related"><dd><l>^ca_occurrences.lit_citation</l></dd></unit>
 					</ifcount>
 				</dl>}}}
 		</div>
 	</div>
-{{{<ifcount code="ca_objects" min="1">
+{{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="includes">
 	<if rule="^ca_objects.classification =~ /painting/i">
 	<div class="row">
 		<div class="col"><h2>Exhibited Artworks</h2></div>
-	</div></if>
+	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'artworks', array('search' => 'ca_occurrences.occurrence_id:'.$t_item->get("ca_occurrences.occurrence_id"), '_advanced' => 0)); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'artworks', array('facet' => 'exhibition_facet', 'id' => $t_item->get("ca_occurrences.occurrence_id"))); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
 	</div>
+	</if>
 </ifcount>}}}

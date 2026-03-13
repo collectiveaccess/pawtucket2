@@ -88,15 +88,15 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</dl>}}}
 		</div>
 	</div>
-{{{<ifcount code="ca_objects" min="1">
-	<if rule="^ca_objects.classification =~ /painting/i">
+{{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="references">
 	<if rule="^ca_objects.classification =~ /painting/i">
 	<div class="row">
 		<div class="col"><h2>Artworks</h2></div>
-	</div></if>
+	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'artworks', array('search' => 'ca_occurrences.occurrence_id:'.$t_item->get("ca_occurrences.occurrence_id"), '_advanced' => 0)); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'artworks', array('facet' => 'literature_facet', 'id' => $t_item->get("ca_occurrences.occurrence_id"))); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
 	</div>
+	</if>
 </ifcount>}}}

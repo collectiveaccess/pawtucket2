@@ -84,53 +84,66 @@ if($show_nav){
 	}
 ?>
 
-	<div class="row">
+	<div class="row align-items-center">
 		<div class="col-md-6">
 			{{{media_viewer}}}
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-6 pb-5">
 			{{{<ifdef code='ca_objects.sort_number'><div class="fs-4 pb-3">^ca_objects.sort_number</div></ifdef>
 				<H1 class="pb-3">^ca_objects.preferred_labels.name</H1>
 				<div class="pb-3">
 					<ifdef code='ca_objects.print_date'>^ca_objects.print_date<br/></ifdef>
 					<ifdef code='ca_objects.medium.medium_notes_text'>^ca_objects.medium.medium_notes_text<br/></ifdef>
-					<ifdef code='ca_objects.dimensions.display_dimensions'>^ca_objects.dimensions.display_dimensions%delimiter=;_<br/></ifdef>
+					<ifdef code='ca_objects.master_dimensions'>^ca_objects.master_dimensions%delimiter=;_<br/></ifdef>
 				</div>
-				
-				<dl class="mb-0">
-					<ifdef code="ca_objects.inscription_text">
-						<dt><?= _t('Inscriptions'); ?></dt>
-						<dd>^ca_objects.inscription_text</dd>
-					</ifdef>
-					<ifcount code="ca_entities" min="1">
-						<dt><?= _t('Provenance'); ?></dt>
-						<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="provenance"><dd>^ca_entities.preferred_labels</dd></unit>
-					</ifcount>
-					<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
-						<if rule="^ca_occurrences.solo_group =~ /solo/i"><dt><?= _t('Solo Exhibitions'); ?></dt></if>
-						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /group/i"><dd><l><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=" / ">^ca_entities.preferred_labels<if rule="^ca_entities.location_display.city_display =~ /yes/"><ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef></if><if rule="^ca_entities.location_display.state_display =~ /yes/"><ifdef code="ca_entities.address.stateprovence">, ^ca_entities.address.stateprovence</ifdef></if><if rule="^ca_entities.location_display.country_display =~ /yes/"><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></if></unit><ifdef code="ca_occurrences.exhibition_year">, ^ca_occurrences.exhibition_year</ifdef></l></dd></unit>
-					</ifcount>
-					<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
-						<if rule="^ca_occurrences.solo_group =~ /group/i"><dt><?= _t('Group Exhibitions'); ?></dt></if>
-						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /solo/i"><dd><l><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=" / ">^ca_entities.preferred_labels<if rule="^ca_entities.location_display.city_display =~ /yes/"><ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef></if><if rule="^ca_entities.location_display.state_display =~ /yes/"><ifdef code="ca_entities.address.stateprovence">, ^ca_entities.address.stateprovence</ifdef></if><if rule="^ca_entities.location_display.country_display =~ /yes/"><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></if></unit><ifdef code="ca_occurrences.exhibition_year">, ^ca_occurrences.exhibition_year</ifdef></l></dd></unit>
-					</ifcount>
-					<ifcount code="ca_occurrences" min="1" restrictToTypes="literature" restrictToRelationshipTypes="references">
-						<dt><?= _t('Literature'); ?></dt>
-						<unit relativeTo="ca_objects_x_occurrences" delimiter="" restrictToTypes="literature" restrictToRelationshipTypes="references"><dd><l>^ca_occurrences.citation_abbreviated<ifdef code="ca_objects_x_occurrences.citation">, ^ca_objects_x_occurrences.citation</ifdef><if rule="^ca_objects_x_occurrences.illustrated =~ /yes/"> (Illustrated)</if></l></dd></unit>
-					</ifcount>
-					<ifdef code='ca_objects.nonpreferred_labels'>
-						<dt>Alternate Title</dt>
-						<unit relativeTo="ca_objects.nonpreferred_labels"><dd>^ca_objects.nonpreferred_labels</dd></unit>
-					</ifdef>
-					<ifdef code='ca_objects.creation_location'>
-						<dt>Studio</dt>
-						<unit relativeTo="ca_objects.creation_location"><dd>^ca_objects.creation_location</dd></unit>
-					</ifdef>
-					<ifdef code="ca_objects.notes">
-						<dt><?= _t('Notes'); ?></dt>
-						<dd>^ca_objects.notes</dd>
-					</ifdef>
-				</dl>}}}
-			
+			}}}
 		</div>
 	</div>
+	<div class="row mt-5">
+		<div class="col-md-4">
+			{{{<dl>
+				<ifdef code="ca_objects.inscription_text">
+					<dt><?= _t('Inscriptions'); ?></dt>
+					<dd>^ca_objects.inscription_text</dd>
+				</ifdef>
+				<ifcount code="ca_entities" min="1">
+					<dt><?= _t('Provenance'); ?></dt>
+					<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="provenance"><dd>^ca_entities.preferred_labels</dd></unit>
+				</ifcount>
+				<ifdef code='ca_objects.nonpreferred_labels'>
+					<dt>Alternate Title</dt>
+					<unit relativeTo="ca_objects.nonpreferred_labels"><dd>^ca_objects.nonpreferred_labels</dd></unit>
+				</ifdef>
+				<ifdef code='ca_objects.creation_location'>
+					<dt>Studio</dt>
+					<unit relativeTo="ca_objects.creation_location"><dd>^ca_objects.creation_location</dd></unit>
+				</ifdef>
+				<ifdef code="ca_objects.notes">
+					<dt><?= _t('Notes'); ?></dt>
+					<dd>^ca_objects.notes</dd>
+				</ifdef>
+			</dl>}}}
+		</div>
+	{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
+		<div class="col-md-4">
+			<dl>
+				<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
+					<if rule="^ca_occurrences.solo_group =~ /solo/i"><dt><?= _t('Solo Exhibitions'); ?></dt></if>
+					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /group/i"><dd><l><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=" / ">^ca_entities.preferred_labels<if rule="^ca_entities.location_display.city_display =~ /yes/"><ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef></if><if rule="^ca_entities.location_display.state_display =~ /yes/"><ifdef code="ca_entities.address.stateprovence">, ^ca_entities.address.stateprovence</ifdef></if><if rule="^ca_entities.location_display.country_display =~ /yes/"><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></if></unit><ifdef code="ca_occurrences.exhibition_year">, ^ca_occurrences.exhibition_year</ifdef></l></dd></unit>
+				</ifcount>
+				<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
+					<if rule="^ca_occurrences.solo_group =~ /group/i"><dt><?= _t('Group Exhibitions'); ?></dt></if>
+					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /solo/i"><dd><l><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=" / ">^ca_entities.preferred_labels<if rule="^ca_entities.location_display.city_display =~ /yes/"><ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef></if><if rule="^ca_entities.location_display.state_display =~ /yes/"><ifdef code="ca_entities.address.stateprovence">, ^ca_entities.address.stateprovence</ifdef></if><if rule="^ca_entities.location_display.country_display =~ /yes/"><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></if></unit><ifdef code="ca_occurrences.exhibition_year">, ^ca_occurrences.exhibition_year</ifdef></l></dd></unit>
+				</ifcount>
+			</dl>
+		</div>
+	</ifount>}}}
+	{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="literature" restrictToRelationshipTypes="references">
+		<div class="col-md-4">
+			<dl>
+				<dt><?= _t('Literature'); ?></dt>
+				<?php print str_replace(array("<p>", "</p>"), array("", ""), $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_occurrences" delimiter="" restrictToTypes="literature" restrictToRelationshipTypes="references"><dd><l>^ca_occurrences.lit_citation<ifdef code="ca_objects_x_occurrences.citation">, ^ca_objects_x_occurrences.citation</ifdef><if rule="^ca_objects_x_occurrences.illustrated =~ /yes/"> (Illustrated)</if></l></dd></unit>')); ?>
+			</dl>
+		</div>
+	</ifcount>}}}			
+</div>
