@@ -280,7 +280,7 @@ class SearchEngine extends SearchBase {
 				}
 			}
 			
-			if (isset($options['checkAccess']) && (is_array($options['checkAccess']) && sizeof($options['checkAccess'])) && $t_table->hasField('access')) {
+			if (!caACLIsEnabled($t_table, ['forPawtucket' => true]) && isset($options['checkAccess']) && (is_array($options['checkAccess']) && sizeof($options['checkAccess'])) && $t_table->hasField('access')) {
 				$va_access_values = $options['checkAccess'];
 				$this->addResultFilter($this->ops_tablename.'.access', 'IN', join(",",$va_access_values));
 			} 
@@ -317,7 +317,7 @@ class SearchEngine extends SearchBase {
 				}
 				$excluded_fields_config = $this->opo_search_config->get('exclude_fields_froms_search') ?? [];
 				if (is_array($va_exclude_fields_from_search = caGetOption('excludeFieldsFromSearch', $options, $excluded_fields_config[$this->ops_tablename] ?? null)) && $this->opo_engine->can('restrict_to_fields')) {
-					$this->opo_engine->setOption('excludeFieldsFromSearch', $va_exclude_fields_from_search);
+					$this->opo_engine->setOption('excludeFieldsFromSearch', array_merge($va_exclude_fields_from_search, $excluded_fields_config[$this->ops_tablename] ?? []));
 				}
 				
 				$vb_do_acl = caACLIsEnabled($t_table);

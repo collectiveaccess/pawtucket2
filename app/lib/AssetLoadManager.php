@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2024 Whirl-i-Gig
+ * Copyright 2009-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -73,7 +73,7 @@ class AssetLoadManager {
 	static function init() {
 		global $g_asset_config, $g_asset_load_list, $g_asset_import_map;
 		$o_config = Configuration::load();
-		$g_asset_config = Configuration::load(__CA_CONF_DIR__.'/assets.conf');
+		$g_asset_config = Configuration::load('assets.conf');
 		$g_asset_load_list = $g_asset_import_map = [];
 		
 		$vb_used_minified = !$o_config->get('debug') && $o_config->get('minification') && $g_asset_config->get('minification');
@@ -262,7 +262,7 @@ class AssetLoadManager {
 		$vs_theme_directory_path = $po_request->getThemeDirectoryPath();
 		$vs_default_theme_directory_path = $po_request->getDefaultThemeDirectoryPath();
 		
-		if($suffix = Configuration::load(__CA_CONF_DIR__.'/assets.conf')->get('asset_suffix')) {
+		if($suffix = Configuration::load('assets.conf')->get('asset_suffix')) {
 			$suffix = "?rev=".urlencode($suffix);
 		}
 		
@@ -335,6 +335,11 @@ class AssetLoadManager {
 			$map = array_map(function($d) use ($vs_base_url_path) { return "{$vs_base_url_path}/assets/{$d}"; }, $g_asset_import_map);
 			$vs_buf .= "<script type='importmap'>\n".json_encode(['imports' => $map], JSON_UNESCAPED_SLASHES)."</script>\n";
 		}
+		
+		if(($output_target === 'header') && caAppIsPawtucket() && is_array($analytics_values = caGetAnalyticsIntegrationValues())) {
+			$vs_buf .= $analytics_values['head'] ?? null;
+		}
+		
 		return $vs_buf;
 	}
 	# --------------------------------------------------------------------------------
