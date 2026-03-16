@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2025 Whirl-i-Gig
+ * Copyright 2007-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -178,6 +178,8 @@ function caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_
 				if (is_array($vs_value)) { // is the value is array we need to serialize is... just treat it as a list of values which *should* be what it is.
 					$vs_value = join(";", $vs_value);
 				}
+				
+				if((strlen($vs_value) === 0) && ($vn_i < (sizeof($pa_other_params) - 1))) { continue; }	// Don't output null params - will break url
 				
 				if ($use_query_string) { 
 					$query_params[$vs_name] = $vs_value;
