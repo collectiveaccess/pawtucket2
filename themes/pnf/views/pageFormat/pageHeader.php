@@ -138,9 +138,23 @@ $( document ).ready(function() {
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Miscellany'), '', '', 'Listing', 'miscellanies');?></li>							
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Modernized editions of plays'), '', '', 'Listing', 'modern_editions');?></li>
 							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/"><?php print _t('Printed catalogs of Spanish drama & comedias sueltas');?></a></li>						
+<?php
+if($this->request->isLoggedIn()){
+?>					
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Printed Outside of Spain"), '', '', 'Listing', 'printed_outside_spain');?></li>
+<?php
+}
+?>							
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Titles modernized'), '', '', 'Listing', 'ccssusa');?></li>						
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Translations and Adaptations from Foreign Literatures"), '', '', 'Listing', 'translations_foreign_literatures');?></li>
 							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/"><?php print _t('Websites of Interest');?></a></li>
+<?php
+if($this->request->isLoggedIn()){
+?>					
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Women Printers & Booksellers"), '', '', 'Listing', 'women_printers_booksellers');?></li>
+<?php
+}
+?>							
 						</ul>
 					</li>
 					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
@@ -180,10 +194,24 @@ $( document ).ready(function() {
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'GLOSARIO', '', '', 'Listing', 'glossary');?></li>		
 							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, 'INSTITUCIONES', '', '', 'Browse', 'collections');?></li>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'MISCELÁNEA', '', '', 'Listing', 'miscellanies');?></li>							
+<?php
+if($this->request->isLoggedIn()){
+?>					
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Printed Outside of Spain"), '', '', 'Listing', 'printed_outside_spain');?></li>
+<?php
+}
+?>							
 							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/">PAGINAS WEB DE INTERES</a></li>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('PROBLEMAS DE AUTORIA'), '', '', 'Listing', 'authorship');?></a></li>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'TITULOS MODERNIZADOS', '', '', 'Listing', 'ccssusa');?></li>						
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('TRADUCCIONES Y ADAPTACIONES DE LITERATURAS EXTRANJERAS'), '', '', 'Listing', 'translations_foreign_literatures');?></li>
+<?php
+if($this->request->isLoggedIn()){
+?>					
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Women Printers & Booksellers"), '', '', 'Listing', 'women_printers_booksellers');?></li>
+<?php
+}
+?>							
 						</ul>
 					</li>
 					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
