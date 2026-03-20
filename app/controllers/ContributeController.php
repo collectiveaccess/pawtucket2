@@ -52,6 +52,7 @@ class ContributeController extends BasePawtucketController {
 		parent::__construct($po_request, $po_response, $view_paths);
 		
 		$this->config = caGetContributeFormConfig();
+		$this->view->setVar('config', $this->config);
 		if (!$this->config->get('enabled')) { 
 			$this->notification->addNotification(_t('Contribute form is not enabled'), __NOTIFICATION_TYPE_ERROR__);
 			$this->response->setRedirect(caNavUrl($this->request, "", "Front", "Index"));
