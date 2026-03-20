@@ -95,8 +95,8 @@
 			<div class='col-sm-12'>
 				<div style='padding:20px 10px 0px 10px;'>
 					<div class='row'>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "NamePrinted") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Name as Printed on the Title Page or Colophon" : "Name as Printed on the Title Page or Colophon"), "", "*", "*", "*", array("sort" => "NamePrinted")); ?></div>
-						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "NameAuthority") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Name from Authority File" : "Name from Authority File"), "", "*", "*", "*", array("sort" => "NameAuthority")); ?></div>
+						<div class='col-sm-3 col-md-3 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "NamePrinted") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Name as Printed on the Title Page or Colophon" : "Name as Printed on the Title Page or Colophon"), "", "*", "*", "*", array("sort" => "NamePrinted")); ?></div>
+						<div class='col-sm-3 col-md-3 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "NameAuthority") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Name from Authority File" : "Name from Authority File"), "", "*", "*", "*", array("sort" => "NameAuthority")); ?></div>
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Place") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Place of Activity" : "Place of Activity"), "", "*", "*", "*", array("sort" => "Place")); ?></div>
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Date") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Dates of Activity" : "Dates of Activity"), "", "*", "*", "*", array("sort" => "Date")); ?></div>
 						<div class='col-sm-2 col-md-2 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Associations") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Family or Business Associations" : "Family or Business Associations"), "", "*", "*", "*", array("sort" => "Associations")); ?></div>
@@ -110,35 +110,31 @@
 <?php
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		
-		
 		if(!$qr_list) { continue; }
-		$va_output = array();
 			while($qr_list->nextHit()) {
 				$i = 0;
-				foreach ($va_output as $vs_tmp) {
-					if($i == 1){
-						$bg = "#eeeded";
-					}else{
-						$bg = "#ffffff";
-					}
-					$i++;
-					if($i == 2){
-						$i = 0;
-					}
-					print "<div class='row'>
-								<div class='col-sm-12'>
-									<div style='margin-bottom:3px; padding:10px; background-color:".$bg."; line-height: 1.3em'>
-										<div class='row'>
-											<div class='col-sm-4 col-md-3'>".$qr_list->get('ca_occurrences.preferred_labels.name')."</div>
-											<div class='col-sm-4 col-md-2'>".$qr_list->get('ca_occurrences.name_authority_file')."</div>
-											<div class='col-sm-4 col-md-3'>".$qr_list->get('ca_occurrences.place_activity')."</div>
-											<div class='col-sm-4 col-md-4'>".$qr_list->get('ca_occurrences.printer_book_date')."</div>
-											<div class='col-sm-4 col-md-4'>".$qr_list->get('ca_occurrences.family_business_associations')."</div>
-										</div>
+				if($i == 1){
+					$bg = "#eeeded";
+				}else{
+					$bg = "#ffffff";
+				}
+				$i++;
+				if($i == 2){
+					$i = 0;
+				}
+				print "<div class='row'>
+							<div class='col-sm-12'>
+								<div style='margin-bottom:3px; padding:10px; background-color:".$bg."; line-height: 1.3em'>
+									<div class='row'>
+										<div class='col-sm-3 col-md-3'>".$qr_list->get('ca_occurrences.preferred_labels.name')."</div>
+										<div class='col-sm-3 col-md-3'>".$qr_list->get('ca_occurrences.name_authority_file')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.place_activity')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.printer_book_date')."</div>
+										<div class='col-sm-2 col-md-2'>".$qr_list->get('ca_occurrences.family_business_associations')."</div>
 									</div>
 								</div>
-							</div>";
-			}
+							</div>
+						</div>";
 		}
 	}
 ?>
