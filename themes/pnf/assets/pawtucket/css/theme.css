@@ -1128,10 +1128,10 @@ a.readmore-js-toggle{
 	display: block;
 	position: relative;
 }
-.listing-content.printersBooksellersList, .listing-content.womenPrintersBooksellersList{
+.listing-content.printersBooksellersList, .listing-content.womenPrintersBooksellersList, .listing-content.outsideSpainList{
 	padding-right:0px;
 }
-.listing-content.printersBooksellersList a.readmore-js-toggle, .listing-content.womenPrintersBooksellersList a.readmore-js-toggle{
+.listing-content.printersBooksellersList a.readmore-js-toggle, .listing-content.womenPrintersBooksellersList a.readmore-js-toggle, .listing-content.outsideSpainList a.readmore-js-toggle{
 	top: 0px;
 	padding-top:10px;
 }
