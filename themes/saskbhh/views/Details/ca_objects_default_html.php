@@ -25,6 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
+global $g_ui_locale;
+
 $t_object = 		$this->getVar("item");
 $access_values = 	$this->getVar("access_values");
 $options = 			$this->getVar("config_options");
@@ -58,9 +60,9 @@ if($show_nav){
 <?php
 }
 if($t_object->get("ca_objects.culture_yn", array("convertCodesToDisplayText" => true)) == "Yes"){
-	$generic_detail_cultaral_sensitivity_warning = $this->getVar("detail_cultural_sensitivity_warning");
+	$generic_detail_cultural_sensitivity_warning = $this->getVar("detail_cultural_sensitivity_warning".((mb_strpos($g_ui_locale, "fr") !== false) ? "_fr" : ""));
 	print '<div class="row">
-				<div class="col"><div class="alert alert-danger text-center" role="alert">'.$generic_detail_cultaral_sensitivity_warning.'</div>
+				<div class="col"><div class="alert alert-danger text-center" role="alert">'.$generic_detail_cultural_sensitivity_warning.'</div>
 			</div></div>';
 }
 
@@ -186,7 +188,7 @@ if($t_object->get("ca_objects.culture_yn", array("convertCodesToDisplayText" => 
 		</div>
 	</div>
 <?php
-	if($disclaimer = $this->getVar("detail_disclaimer")){
+	if($disclaimer = $this->getVar("detail_disclaimer".((mb_strpos($g_ui_locale, "fr") !== false) ? "_fr" : ""))){
 ?>
 	<div class="row">
 		<div class="col-md-6 offset-md-6">	

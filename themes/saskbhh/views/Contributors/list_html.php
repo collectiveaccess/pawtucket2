@@ -1,4 +1,6 @@
 <?php
+global $g_ui_locale;
+
 $map_options = $this->getVar('mapOptions') ?? [];
 $config = $this->getVar('config');
 ?>
@@ -10,7 +12,7 @@ $config = $this->getVar('config');
 	<div class='col-12'>
 		<h1><?php print _t("Contributors"); ?></h1>
 <?php
-	if($vs_intro_global_value = $config->get("intro_text_global_value")){
+	if($vs_intro_global_value = $config->get("intro_text_global_value".((mb_strpos($g_ui_locale, "fr") !== false) ? "_fr" : ""))){
 		if($vs_tmp = $this->getVar($vs_intro_global_value)){
 			print "<div class='mb-4 mt-3 fs-4'>".$vs_tmp."</div>";
 		}
@@ -23,6 +25,6 @@ $config = $this->getVar('config');
 </div></div>
 <div class="row" id="browseResultsContainer">	
 	<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'Contributors', array('view' => 'list', 'dontSetFind' => 1)); ?>">
-		<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+		<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden"><?= _t("Loading.."); ?>.</span></div>
 	</div>
 </div>
