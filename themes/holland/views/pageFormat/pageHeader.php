@@ -80,7 +80,7 @@
                 </div>
                 <div class="col-md-6 col-sm-6">
                 	<ul class="pull-right social-icons-colored">
-                    	<li class="facebook"><a href="https://www.facebook.com/hollandmuseum" target="_blank"><i class="fa fa-facebook"></i></a></li><li class="twitter"><a href="https://twitter.com/HollandMuseum" target="_blank"><i class="fa fa-twitter"></i></a></li><li class="pinterest"><a href="https://www.pinterest.com/holland_museum/" target="_blank"><i class="fa fa-pinterest"></i></a></li><li class="instagram"><a href="https://www.instagram.com/hollandmuseum/" target="_blank"><i class="fa fa-instagram"></i></a></li>                    </ul>
+                    	<li class="facebook"><a href="https://www.facebook.com/hollandmuseum" target="_blank"><i class="fab fa-facebook"></i></a></li><li class="twitter"><a href="https://twitter.com/HollandMuseum" target="_blank"><i class="fab fa-twitter"></i></a></li><li class="pinterest"><a href="https://www.pinterest.com/holland_museum/" target="_blank"><i class="fab fa-pinterest"></i></a></li><li class="instagram"><a href="https://www.instagram.com/hollandmuseum/" target="_blank"><i class="fab fa-instagram"></i></a></li>                    </ul>
                 </div>
             </div>
         </div>
