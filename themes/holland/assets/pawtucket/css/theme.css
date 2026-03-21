@@ -320,6 +320,16 @@ body.initial .navbar-brand img{
 	border: 4px solid #16a0da;
 	padding: 10px;
 	font-family: 'Playfair Display', serif;
+	min-height:105px;
+}
+.headerMessage p{
+	margin-top:15px;
+}
+.headerMessage img{
+	float:left;
+	width:auto;
+	height:75px;
+	margin-right:15px;
 }
 @media (max-width: 1334px) {
 	.headerMessage{
@@ -328,6 +338,10 @@ body.initial .navbar-brand img{
 		clear: both;
 		top: 10px;
 		position: relative;
+		min-height:75px;
+	}
+	.headerMessage img{
+		height:55px;
 	}	
 }
 @media (min-width: 1335px) {

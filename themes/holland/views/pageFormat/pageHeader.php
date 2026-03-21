@@ -156,7 +156,7 @@
 <?php
 			if($vs_message = $this->getVar("header_message")){
 ?>
-				<div class="headerMessage"><?= $vs_message; ?></div>
+				<div class="headerMessage"><?= caGetThemeGraphic($this->request, 'WindmillLogo.jpg'); ?><?= $vs_message; ?></div>
 <?php
 			}
 ?>
