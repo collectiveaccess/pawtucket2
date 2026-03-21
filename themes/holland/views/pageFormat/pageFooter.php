@@ -84,8 +84,8 @@
 				</div>
                 <div class="col-md-6 col-sm-6 copyrights-right">
                 	<ul class="pull-right social-icons-colored">
-                    	<li class="facebook"><a href="http://www.facebook.com/hollandmuseum" target="_blank"><i class="fa fa-facebook"></i></a></li>
-                    	<li class="twitter"><a href="http://www.twitter.com/hollandmuseum" target="_blank"><i class="fa fa-twitter"></i></a></li>                   	</ul>
+                    	<li class="facebook"><a href="http://www.facebook.com/hollandmuseum" target="_blank"><i class="fab fa-facebook"></i></a></li>
+                    	<li class="twitter"><a href="http://www.twitter.com/hollandmuseum" target="_blank"><i class="fab fa-twitter"></i></a></li>                   	</ul>
                 </div>
            	</div>
         </div>
