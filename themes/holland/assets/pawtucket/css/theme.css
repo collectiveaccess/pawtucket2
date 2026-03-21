@@ -346,7 +346,7 @@ body.initial .navbar-brand img{
 }
 @media (min-width: 1335px) {
 	.headerMessage{
-		margin: 10px 0px 0px 0px;
+		margin: 20px 0px 0px 0px;
 		display: inline-block;
 		width: 550px;
 		float: right;
