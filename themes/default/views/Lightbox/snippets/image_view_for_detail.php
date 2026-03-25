@@ -47,7 +47,7 @@ while($qr_items->nexthit()) {
 			$image = $default_placeholder_tag;
 		}
 	}
-	$rep_detail_link = caDetailLink($this->request, $image, '', $table, $id);			
+	$rep_detail_link = $this->request->isLoggedIn() ? caDetailLink($this->request, $image, '', $table, $id) : $image;			
 ?>
 		<div class='col-sm-6 col-lg-3 d-flex'>
 			<div id='lb-item-<?= $id; ?>' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
