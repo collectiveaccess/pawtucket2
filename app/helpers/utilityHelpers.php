@@ -4579,6 +4579,7 @@ function caFileIsIncludable($ps_file) {
 
 			$va_tags[$vn_i] = rtrim($vs_tag, ")/.,%");	// remove trailing slashes, periods and percent signs as they're potentially valid tag characters that are never meant to be at the end
 		}
+		
 		return array_filter($va_tags, "strlen");
 	}
 	# ----------------------------------------

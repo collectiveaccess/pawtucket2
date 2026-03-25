@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/helpers/externalMediaHelpers.php : 
+ * app/helpers/informationServiceHelpers.php : miscellaneous system functions
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2022-2025 Whirl-i-Gig
+ * Copyright 2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,41 +23,30 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
- * @package CollectiveAccess
+ * @package    CollectiveAccess
  * @subpackage utils
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
  */
 # ---------------------------------------
-/**
+/** 
  * 
- *
- * @param string $url
- * @param array $options Options include:
- *		title = 
- *		width = 
- *		height = 
- * 
- * @return string Embed HTML code or null if URL is invalid or unsupported
  */
-function caGetExternalMediaEmbedCode(string $url, ?array $options=null) {
-	$media_url = new CA\MediaUrl();
-	return $media_url->embedTag($url, $options);
-}
-# ---------------------------------------
-/**
- * Return list of supported formats. By default a list of format codes is returned.
- * The 'full' and 'names' options allow return of additional information.
- *
- * @param array $options Options include:
- *		full = return array will all available information on formats
- *		names = return list of format names for display
- *
- * @return array
- */
-function caGetExternalMediaUrlSupportedFormats(?array $options=null) : array {
-	$media_url = new CA\MediaUrl();
-	return  $media_url->supportedFormats($options);
+function caGetInformationServiceMirrorListInformation(ca_metadata_elements $t_element) : ?array {
+	$element_type = $t_element->get('datatype');
+	if($element_type !== __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__) { return null; }
+	
+	if($use_mirror_list = (bool)$t_element->getSetting('useMirrorList')) {
+		$mirror_list = $t_element->getSetting('mirrorToList');
+		$mirror_access = $t_element->getSetting('mirrorToListAccess');
+		
+		return [
+			'list' => $mirror_list,
+			'access' => $mirror_access
+		];
+	}
+	
+	return null;
 }
 # ---------------------------------------
