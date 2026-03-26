@@ -228,7 +228,7 @@ if (!defined('__CA_CACHE_BACKEND__')) {
 # __CA_DB_USE_SSL__ = Use SSL encryption for database connections
 #
 if (!defined("__CA_DB_USE_SSL__")) {
-	define("__CA_DB_USE_SSL__", true);
+	define("__CA_DB_USE_SSL__", false);
 }
 
 # __CA_DB_SSL_VERIFY_CERT__ = Verify SSL certificate before use?

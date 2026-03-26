@@ -1,0 +1,9 @@
+.text-indent{
+	padding-left: 25px; /* Indents the entire block to the right */
+	text-indent: -25px;
+}
+#browseResultsContainer{
+	.card-footer{
+		display:none;
+	}
+}

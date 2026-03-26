@@ -59,7 +59,7 @@
 	</div>
 {{{				<ifdef code="ca_collections.formats">
 					<div class="unit"><H6><?= _t('Formats'); ?></H6>
-					^ca_collections.formats&delimiter=,_</div>
+					^ca_collections.formats%delimiter=,_</div>
 				</ifdef>
 				<ifdef code="ca_collections.extent_medium">
 					<div class="unit"><H6><?= _t('Extent and Medium'); ?></H6>

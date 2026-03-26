@@ -47,7 +47,7 @@ if($image_format == "contain"){
 				$image = $default_placeholder_tag;
 			}
 		}
-		$rep_detail_link = caDetailLink($this->request, $image, 'lb-detail-img-link', $table, $id);			
+		$rep_detail_link = $this->request->isLoggedIn() ? caDetailLink($this->request, $image, 'lb-detail-img-link', $table, $id) : $image;			
 ?>
 			<div class='col-12'>
 				<div id='lb-item-<?= $id; ?>' class='card width-100 rounded-0 shadow border-0 mb-4'>

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2023 Whirl-i-Gig
+ * Copyright 2008-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -65,8 +65,9 @@
 		$resp = $app->getResponse();
 		
 		if (($g_request->getController() !== 'Ban') && !BanHammer::verdict($g_request)) {
-			if(!$g_request->isAjax()) { 
-				Session::setVar('pawtucket2_page_at_ban', $g_request->getFullUrlPath());
+			$path = $g_request->getFullUrlPath();
+			if(!$g_request->isAjax() && ($resp->getHTTPResponseCode() == 200) && !preg_match('!/themes/!', $path)) {
+				Session::setVar('pawtucket2_page_at_ban', $path);
 			}
 			$g_request->setInternalRedirect(['module' => '', 'controller' => 'Ban', 'action' => 'verify']);
 		}
