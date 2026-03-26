@@ -61,10 +61,10 @@ print $this->render("Front/featured_set_grid_html.php");
 			<H2 class="mb-3"><?= _t("Browse by Discipline"); ?></H2>
 			<div class="row">
 				<div class="col-md-6">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Humanities</div></div>", "", "", "Browse", "objects", array("facet" => "discipline_facet", "id" => "277")); ?>
+					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "humanities.jpg", array("alt" => "black and white photograph", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Humanities</div></div>", "", "", "Browse", "objects", array("facet" => "discipline_facet", "id" => "277")); ?>
 				</div>
 				<div class="col-md-6">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Natural Sciences</div></div>", "", "", "Browse", "objects", array("facet" => "discipline_facet", "id" => "278")); ?>
+					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "natural_sciences.jpg", array("alt" => "taxonomic identification card", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Natural Sciences</div></div>", "", "", "Browse", "objects", array("facet" => "discipline_facet", "id" => "278")); ?>
 				</div>
 			</div>
 		</div>

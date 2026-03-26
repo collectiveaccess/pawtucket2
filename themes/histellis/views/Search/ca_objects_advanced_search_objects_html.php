@@ -15,7 +15,7 @@
 		<div class="col-sm-6 mb-3">
 <?php		
 		print $this->formElement('ca_objects.preferred_labels', ['label' => _t('Title'), 'description' => _t("Limit your search to the objects' Titles only.")]);			
-		print $this->formElement('ca_objects.source_id', ['label' => _t('Contributor'), 'description' => _t("Search records by the contributing institution.")]);
+		print $this->formElement('ca_objects.source_id', ['class' => 'form-select',  'label' => _t('Contributor'), 'description' => _t("Search records by the contributing institution.")]);
 
 ?>		
 		</div>

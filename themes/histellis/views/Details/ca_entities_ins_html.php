@@ -38,6 +38,8 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_item->get('ca_entities.entity_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+$t_lists = new ca_lists();
+$source_id = $t_lists->getItemIDFromList("object_sources", $t_item->get("ca_entities.idno"));
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
@@ -58,7 +60,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-3">{{{^ca_entities.preferred_labels.displayname}}}</H1>
-			{{{<ifdef code="ca_entities.type_id|ca_entities.contributor_type"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_entities.type_id">^ca_entities.type_id</ifdef><ifdef code="ca_entities.contributor_type">, ^ca_entities.contributor_type</ifdef></div></ifdef>}}}
+			{{{<ifdef code="ca_entities.contributor_type"><div class="fw-medium mb-3 text-capitalize">^ca_entities.contributor_type%useSingular=1&delimiter=,_</div></ifdef>}}}
 			<hr class="mb-0">
 		</div>
 	</div>
@@ -88,7 +90,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row row-cols-1 row-cols-md-2">
 		<div class="col">				
 			{{{<ifdef code="ca_object_representations.media.large">
-				<div class='img-fluid mb-4'>^ca_object_representations.media.large</div>
+				<div class='img-fluid mb-4'>^ca_object_representations.media.large<ifdef code='ca_object_representations.rights_holder|ca_object_representations.license'><div class='small text-center'>^ca_object_representations.rights_holder<ifdef code='ca_object_representations.rights_holder,ca_object_representations.license'><br/></ifdef><a href='^ca_object_representations.license' target='_blank'>^ca_object_representations.license</a></div></ifdef></div>
 			</ifdef>}}}
 			{{{<dl class="mb-3">
 				<ifdef code="ca_entities.biography">
@@ -104,9 +106,22 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</ifdef>
 				<ifdef code="ca_entities.wikipedia_en">
 					<dt><?= _t('Wikipedia'); ?></dt>
-					<dd>
-						^ca_entities.wikipedia_en
-					</dd>
+<?php
+						if($va_tmp = $t_item->get("ca_entities.wikipedia_en", array("returnAsArray" => true))){
+							foreach($va_tmp as $tmp){
+								preg_match_all("/\\[(.*?)\\]/", $tmp, $matches);
+								$url = $matches[1][0];
+								print "<dd><a href='".$url."' target='_blank'>".$tmp."</a></dd>";
+							}
+						}
+						if($va_tmp = $t_item->get("ca_entities.wikipedia_fr", array("returnAsArray" => true))){
+							foreach($va_tmp as $tmp){
+								preg_match_all("/\\[(.*?)\\]/", $tmp, $matches);
+								$url = $matches[1][0];
+								print "<dd><a href='".$url."' target='_blank'>".$tmp."</a></dd>";
+							}
+						}
+?>
 				</ifdef>
 			</dl>}}}
 		</div>
@@ -123,7 +138,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				<ifdef code="ca_entities.telephone|ca_entities.email">
 					<dt><?= _t('Contact'); ?></dt>
 					<ifdef code="ca_entities.telephone"><dd>^ca_entities.telephone</dd></ifdef>
-					<ifdef code="ca_entities.email"><dd>^ca_entities.email</dd></ifdef>
+					<ifdef code="ca_entities.email"><dd><a href="mailto:^ca_entities.email">^ca_entities.email</a></dd></ifdef>
 				</ifdef>
 				<ifdef code="ca_entities.external_link">
 					<dt><?= _t('Website'); ?></dt>
@@ -139,36 +154,16 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				</ifdef>
 				<ifdef code="ca_entities.accessibility_features">
 					<dt><?= _t('Accessibility'); ?></dt>
-					<dd>^accessibility_features%delimiter=,_</dd>
+					<unit relativeTo="ca_entities.accessibility_features" delimiter=""><dd>^ca_entities.accessibility_features</dd></unit>
 				</ifdef>
 			</dl>}}}					
 		</div>
 	</div>
-	{{{<ifcount code="ca_entities.related" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities.related" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities.related" min="2"><?= _t('Related People'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities.related" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
-	{{{<ifcount code="ca_occurrences" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
-	{{{<ifcount code="ca_places" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-			<unit relativeTo="ca_places" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
-{{{<ifcount code="ca_objects" min="1">
-	<div class="row">
-		<div class="col"><h2>Related Records</h2><hr></div>
+{{{<div class="row">
+		<div class="col"><h2>Related Objects</h2><hr></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"), '_advanced' => 0)); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('view' => 'images', 'facet' => 'source_facet', 'id' => $source_id)); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
-	</div>
-</ifcount>}}}
+	</div>}}}
