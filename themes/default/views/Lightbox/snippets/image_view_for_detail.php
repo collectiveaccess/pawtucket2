@@ -30,7 +30,7 @@ if($image_format == "contain"){
 while($qr_items->nexthit()) {
 	$id = $qr_items->getPrimaryKey();
 	
-	$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2', $table, $id, null, array("title" => _t("View record"), "aria-label" => _t("View record")));
+	$detail_button_link = $this->request->isLoggedIn() ? caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2', $table, $id, null, array("title" => _t("View record"), "aria-label" => _t("View record"))) : '';
 	$caption 	= $qr_items->getWithTemplate($result_caption_template, array("checkAccess" => $item_is_in_user_lightbox ? null : $access_values));
 	$image = $qr_items->get('ca_object_representations.media.large', ["checkAccess" => $access_values, "class" => $image_class]);
 		
