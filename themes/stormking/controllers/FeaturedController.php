@@ -221,7 +221,7 @@
 					while($qr_sets->nextHit()) {
 						$va_tmp_large = array_shift($va_set_first_items_media_large[$qr_sets->get('ca_sets.set_id')]);
 						$va_tmp_widepreview = array_shift($va_set_first_items_media[$qr_sets->get('ca_sets.set_id')]);
-						$va_all_sets_first_items[$qr_sets->get('ca_sets.set_code')] = array("set_id" => $qr_sets->get('ca_sets.set_id'), "imageLarge" => $va_tmp_large['representation_tag'], "imageWidePreview" => $va_tmp_widepreview['representation_tag'], "title" => $qr_sets->get('ca_sets.preferred_labels.name'), "description" => $qr_sets->get('ca_sets.'.$vs_set_desc_code));
+						$va_all_sets_first_items[$qr_sets->get('ca_sets.collection_rank').(($qr_sets->get('ca_sets.collection_rank')) ? "." : "").$qr_sets->get('ca_sets.set_id')] = array("set_id" => $qr_sets->get('ca_sets.set_id'), "imageLarge" => $va_tmp_large['representation_tag'], "imageWidePreview" => $va_tmp_widepreview['representation_tag'], "title" => $qr_sets->get('ca_sets.preferred_labels.name'), "description" => $qr_sets->get('ca_sets.'.$vs_set_desc_code));
 					}
 				}
 				ksort($va_all_sets_first_items);
