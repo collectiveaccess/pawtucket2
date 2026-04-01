@@ -205,6 +205,7 @@
 			# --- which type of set is configured for display in featured archives section
  			$vn_featured_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('featured_archives_set_type')); 			
  			$va_set_media_for_theme = array();
+			$vs_set_desc_code = $this->config->get('featured_set_description_element_code');
 				
  			$t_set = new ca_sets();
  			if($vn_featured_set_type_id){
@@ -213,11 +214,15 @@
 				$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
 				$va_set_first_items_media = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "widepreview", "checkAccess" => $this->opa_access_values));
 				$va_set_first_items_media_large = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "large", "checkAccess" => $this->opa_access_values));
-
-				foreach($va_sets as $va_set){
-					$va_tmp_large = array_shift($va_set_first_items_media_large[$va_set['set_id']]);
-					$va_tmp_widepreview = array_shift($va_set_first_items_media[$va_set['set_id']]);
-					$va_all_sets_first_items[$va_set['set_code']] = array("set_id" => $va_set['set_id'], "imageLarge" => $va_tmp_large['representation_tag'], "imageWidePreview" => $va_tmp_widepreview['representation_tag'], "title" => $va_set['name']);
+				$qr_sets = caMakeSearchResult("ca_sets", array_keys($va_sets));
+			
+				$vs_set_desc_code = $this->config->get('featured_set_description_element_code');
+				if($qr_sets && $qr_sets->numHits()){
+					while($qr_sets->nextHit()) {
+						$va_tmp_large = array_shift($va_set_first_items_media_large[$qr_sets->get('ca_sets.set_id')]);
+						$va_tmp_widepreview = array_shift($va_set_first_items_media[$qr_sets->get('ca_sets.set_id')]);
+						$va_all_sets_first_items[$qr_sets->get('ca_sets.set_code')] = array("set_id" => $qr_sets->get('ca_sets.set_id'), "imageLarge" => $va_tmp_large['representation_tag'], "imageWidePreview" => $va_tmp_widepreview['representation_tag'], "title" => $qr_sets->get('ca_sets.preferred_labels.name'), "description" => $qr_sets->get('ca_sets.'.$vs_set_desc_code));
+					}
 				}
 				ksort($va_all_sets_first_items);
 			}
