@@ -153,185 +153,190 @@ class FindController extends BasePawtucketController {
 	 * Returned data is JSON format
 	 */
 	public function getFacetHierarchyLevel() {
-		$va_access_values = caGetUserAccessValues($this->request);
-		$ps_facet_name = $this->request->getParameter('facet', pString, ['forcePurify' => true]);
-		$ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true]);
-		$ps_browse_type = $this->request->getParameter('browseType', pString, ['forcePurify' => true]);
-		$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
+		$access_values = caGetUserAccessValues($this->request);
+		$facet_name = $this->request->getParameter('facet', pString, ['forcePurify' => true]);
+		$cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true]);
+		$browse_type = $this->request->getParameter('browseType', pString, ['forcePurify' => true]);
+		$this->view->setVar('isNav', $is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
 		
-		if($ps_browse_type == "caLightbox"){
-			$va_browse_info['table'] = 'ca_objects';
+		if($browse_type == "caLightbox"){
+			$browse_info['table'] = 'ca_objects';
 		}else{
-			if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
+			if (!($browse_info = caGetInfoForBrowseType($browse_type))) {
 				// invalid browse type – throw error
 				throw new ApplicationException("Invalid browse type");
 			} 			
 		} 			
-		$this->view->setVar("facet_name", $ps_facet_name);
-		$this->view->setVar("key", $ps_cache_key);
-		$this->view->setVar("browse_type", $ps_browse_type);
+		$this->view->setVar("facet_name", $facet_name);
+		$this->view->setVar("key", $cache_key);
+		$this->view->setVar("browse_type", $browse_type);
 		
-		$vs_class = $va_browse_info['table'];
+		$vs_class = $browse_info['table'];
 		$o_browse = caGetBrowseInstance($vs_class);
 		
-		if(!is_array($va_facet_info = $o_browse->getInfoForFacet($ps_facet_name))) { return null; }
-		$this->view->setVar("facet_info", $va_facet_info);
- 		if ($ps_cache_key) {
-			$o_browse->reload($ps_cache_key);
+		if(!is_array($facet_info = $o_browse->getInfoForFacet($facet_name))) { return null; }
+		$this->view->setVar("facet_info", $facet_info);
+ 		if ($cache_key) {
+			$o_browse->reload($cache_key);
 		}
 		
-		$va_facet = $o_browse->getFacet($ps_facet_name, array('checkAccess' => $va_access_values));
+		$facet = $o_browse->getFacet($facet_name, array('checkAccess' => $access_values));
 		
-		$pa_ids = explode(";", $ps_ids = $this->request->getParameter('id', pString, ['forcePurify' => true]));
+		$pa_ids = explode(";", $ids = $this->request->getParameter('id', pString, ['forcePurify' => true]));
 		if (!sizeof($pa_ids)) { $pa_ids = array(null); }
 		
-		$va_level_data = array();
+		$level_data = array();
 
-		if ((($vn_max_items_per_page = $this->request->getParameter('max', pInteger)) < 1) || ($vn_max_items_per_page > 1000)) {
-			$vn_max_items_per_page = null;
+		if ((($max_items_per_page = $this->request->getParameter('max', pInteger)) < 1) || ($max_items_per_page > 1000)) {
+			$max_items_per_page = null;
 		}
 					
 		foreach($pa_ids as $pn_id) {
-			$va_json_data = array('_primaryKey' => 'item_id');
+			$json_data = array('_primaryKey' => 'item_id');
 			
-			$va_tmp = explode(":", $pn_id);
-			$vn_id = $va_tmp[0];
-			$vn_start = (int)$va_tmp[1];
-			if($vn_start < 0) { $vn_start = 0; }
-			switch($va_facet_info['type']) {
+			$tmp = explode(":", $pn_id);
+			$id = $tmp[0];
+			$start = (int)$tmp[1];
+			if($start < 0) { $start = 0; }
+			switch($facet_info['type']) {
 				case 'attribute':
 					// is it a list attribute?
 					$t_element = new ca_metadata_elements();
-					if ($t_element->load(array('element_code' => $va_facet_info['element_code']))) {
-						if ($t_element->get('datatype') == __CA_ATTRIBUTE_VALUE_LIST__) {
-							if (!$vn_id) {
+					if ($t_element->load(array('element_code' => $facet_info['element_code']))) {
+						$element_type = $t_element->get('datatype');
+						if($element_type === __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__) {
+							$element_type = __CA_ATTRIBUTE_VALUE_LIST__;
+							$is_information_service_mirror_list = caGetInformationServiceMirrorListInformation($t_element);
+						}
+						$list_id = $is_information_service_mirror_list ? $is_information_service_mirror_list['list'] : $t_element->get('list_id');
+						if ($element_type == __CA_ATTRIBUTE_VALUE_LIST__) {
+							if (!$id) {
 								$t_list = new ca_lists();
-								$vn_id = $t_list->getRootListItemID($t_element->get('list_id'));
+								$id = $t_list->getRootListItemID($list_id);
 							}
 							
-							foreach($va_facet as $vn_i => $va_item) {
-								if ($va_item['parent_id'] == $vn_id) {
-									$va_item['item_id'] = $va_item['id'];
-									$va_item['name'] = $va_item['label'];
-									$va_item['children'] = $va_item['child_count'];
-									unset($va_item['label']);
-									unset($va_item['child_count']);
-									unset($va_item['id']);
-									$va_json_data[$va_item['item_id']] = $va_item;
+							foreach($facet as $i => $item) {
+								if ($item['parent_id'] == $id) {
+									$item['item_id'] = $item['id'];
+									$item['name'] = $item['label'];
+									$item['children'] = $item['child_count'];
+									unset($item['label']);
+									unset($item['child_count']);
+									unset($item['id']);
+									$json_data[$item['item_id']] = $item;
 								}
 							}
 						}
 					}
 					break;
 				case 'fieldList':
-					if (!$vn_id) {
+					if (!$id) {
 						$t_item = Datamodel::getInstance($vs_class);
-						$vs_list_code = $t_item->getFieldInfo($va_facet_info['field'], 'LIST_CODE');
+						$vs_list_code = $t_item->getFieldInfo($facet_info['field'], 'LIST_CODE');
 						$t_list = new ca_lists(['list_code' => $vs_list_code]);
-						$vn_id = $t_list->getRootItemIDForList();
+						$id = $t_list->getRootItemIDForList();
 					}
-					foreach($va_facet as $vn_i => $va_item) {
-						if ($va_item['parent_id'] == $vn_id) {
-							$va_item['item_id'] = $va_item['id'];
-							$va_item['name'] = $va_item['label'];
-							$va_item['children'] = $va_item['child_count'];
-							unset($va_item['label']);
-							unset($va_item['child_count']);
-							unset($va_item['id']);
-							$va_json_data[$va_item['item_id']] = $va_item;
+					foreach($facet as $i => $item) {
+						if ($item['parent_id'] == $id) {
+							$item['item_id'] = $item['id'];
+							$item['name'] = $item['label'];
+							$item['children'] = $item['child_count'];
+							unset($item['label']);
+							unset($item['child_count']);
+							unset($item['id']);
+							$json_data[$item['item_id']] = $item;
 						}
 					}
 					break;
 				case 'label':
 					// label facet
-					$va_facet_info['table'] = $this->ops_tablename;
+					$facet_info['table'] = $this->ops_tablename;
 					// fall through to default case
 				default:
-					if(!$vn_id) {
-						$va_hier_ids = $o_browse->getHierarchyIDsForFacet($ps_facet_name, array('checkAccess' => $va_access_values));
-						$t_item = Datamodel::getInstance($va_facet_info['table']);
+					if(!$id) {
+						$hier_ids = $o_browse->getHierarchyIDsForFacet($facet_name, array('checkAccess' => $access_values));
+						$t_item = Datamodel::getInstance($facet_info['table']);
 						if($t_item->getHierarchyType() == __CA_HIER_TYPE_ADHOC_MONO__){
 							# --- there are no roots in adhoc hierarchies
 							# --- get all the top level records available in the facet
 							$o_db = new Db();
-							$qr_top_level = $o_db->query("SELECT ".$t_item->primaryKey()." FROM ".$va_facet_info['table']." WHERE parent_id IS NULL");
+							$qr_top_level = $o_db->query("SELECT ".$t_item->primaryKey()." FROM ".$facet_info['table']." WHERE parent_id IS NULL");
 							if($qr_top_level->numRows()){
-								$va_parent_ids = array();
+								$parent_ids = array();
 								while($qr_top_level->nextRow()){
-									$va_parent_ids[] = $qr_top_level->get($t_item->primaryKey());
+									$parent_ids[] = $qr_top_level->get($t_item->primaryKey());
 								}
-								$r_top_level = caMakeSearchResult($va_facet_info['table'], $va_parent_ids);
-								$va_item = array();
+								$r_top_level = caMakeSearchResult($facet_info['table'], $parent_ids);
+								$item = array();
 								if($r_top_level->numHits()){
 									while($r_top_level->nextHit()){
-										if (!in_array($r_top_level->get($t_item->primaryKey()), $va_hier_ids)) { continue; }
-										$va_item["name"] = $r_top_level->get($va_facet_info['table'].".preferred_labels");
-										$va_item["item_id"] = $r_top_level->get($t_item->primaryKey());
-										$va_item["parent_id"] = null;
-										$va_item["children"] = sizeof($t_item->getHierarchyChildren($va_item["item_id"], array("idsOnly")));
-										$va_json_data[$va_item["item_id"]] = $va_item;
+										if (!in_array($r_top_level->get($t_item->primaryKey()), $hier_ids)) { continue; }
+										$item["name"] = $r_top_level->get($facet_info['table'].".preferred_labels");
+										$item["item_id"] = $r_top_level->get($t_item->primaryKey());
+										$item["parent_id"] = null;
+										$item["children"] = sizeof($t_item->getHierarchyChildren($item["item_id"], array("idsOnly")));
+										$json_data[$item["item_id"]] = $item;
 									}
 								}
 							}
 						}else{
-							$vn_id = $vn_root = $t_item->getHierarchyRootID();
-							$t_item->load($vn_id);
-							$va_hierarchy_list = $t_item->getHierarchyList(true);
+							$id = $root = $t_item->getHierarchyRootID();
+							$t_item->load($id);
+							$hierarchy_list = $t_item->getHierarchyList(true);
 						
-							$vn_last_id = null;
-							$vn_c = 0;
-							foreach($va_hierarchy_list as $vn_i => $va_item) {
-								if (!in_array($vn_i, $va_hier_ids)) { continue; }	// only show hierarchies that have items in browse result
-								if ($vn_start <= $vn_c) {
-									$va_item['item_id'] = $va_item[$t_item->primaryKey()];
-									if (!isset($va_facet[$va_item['item_id']]) && ($vn_root == $va_item['item_id'])) { continue; }
-									$va_item['name'] = $va_item['label'];
-									unset($va_item['parent_id']);
-									unset($va_item['label']);
-									if(!$va_item["name"]){
-										$va_item["name"] = $va_item["list_code"];
+							$last_id = null;
+							$c = 0;
+							foreach($hierarchy_list as $i => $item) {
+								if (!in_array($i, $hier_ids)) { continue; }	// only show hierarchies that have items in browse result
+								if ($start <= $c) {
+									$item['item_id'] = $item[$t_item->primaryKey()];
+									if (!isset($facet[$item['item_id']]) && ($root == $item['item_id'])) { continue; }
+									$item['name'] = $item['label'];
+									unset($item['parent_id']);
+									unset($item['label']);
+									if(!$item["name"]){
+										$item["name"] = $item["list_code"];
 									}
-									$va_json_data[$va_item['item_id']] = $va_item;
-									$vn_last_id = $va_item['item_id'];
+									$json_data[$item['item_id']] = $item;
+									$last_id = $item['item_id'];
 								}
-								$vn_c++;
-								if (!is_null($vn_max_items_per_page) && ($vn_c >= ($vn_max_items_per_page + $vn_start))) { break; }
+								$c++;
+								if (!is_null($max_items_per_page) && ($c >= ($max_items_per_page + $start))) { break; }
 							}
-							if (sizeof($va_json_data) == 2) {	// if only one hierarchy root (root +  _primaryKey in array) then don't bother showing it
-								$vn_id = $vn_last_id;
-								unset($va_json_data[$vn_last_id]);
+							if (sizeof($json_data) == 2) {	// if only one hierarchy root (root +  _primaryKey in array) then don't bother showing it
+								$id = $last_id;
+								unset($json_data[$last_id]);
 							}
 						}
 					}
-					if ($vn_id) {
-						$vn_c = 0;
-						foreach($va_facet as $vn_i => $va_item) {
-							if ($va_item['parent_id'] == $vn_id) {
-								if ($vn_start <= $vn_c) {
-									$va_item['item_id'] = $va_item['id'];
-									$va_item['name'] = $va_item['label'];
-									$va_item['children'] = $va_item['child_count'];
-									unset($va_item['label']);
-									unset($va_item['child_count']);
-									unset($va_item['id']);
-									$va_json_data[$va_item['item_id']] = $va_item;
+					if ($id) {
+						$c = 0;
+						foreach($facet as $i => $item) {
+							if ($item['parent_id'] == $id) {
+								if ($start <= $c) {
+									$item['item_id'] = $item['id'];
+									$item['name'] = $item['label'];
+									$item['children'] = $item['child_count'];
+									unset($item['label']);
+									unset($item['child_count']);
+									unset($item['id']);
+									$json_data[$item['item_id']] = $item;
 								}									
-								$vn_c++;
-								if (!is_null($vn_max_items_per_page) && ($vn_c >= ($vn_max_items_per_page + $vn_start))) { break; }
+								$c++;
+								if (!is_null($max_items_per_page) && ($c >= ($max_items_per_page + $start))) { break; }
 							}
 						}
 					}
 					break;
 			}
-			$va_level_data[$pn_id] = $va_json_data;
+			$level_data[$pn_id] = $json_data;
 		}
 		if (!trim($this->request->getParameter('init', pString, ['forcePurify' => true]))) {
-			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
-			$this->opo_result_context->setParameter($ps_facet_name.'_browse_last_id', $pn_id);
+			$this->opo_result_context = new ResultContext($this->request, $browse_info['table'], $this->ops_find_type);
+			$this->opo_result_context->setParameter($facet_name.'_browse_last_id', $pn_id);
 			$this->opo_result_context->saveContext();
 		}
-		
-		$this->view->setVar('facet_list', $va_level_data);
+		$this->view->setVar('facet_list', $level_data);
 		
 		switch($this->request->getParameter('returnAs', pString, ['forcePurify' => true])){
 			case "json":

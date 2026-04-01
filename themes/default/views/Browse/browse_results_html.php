@@ -208,9 +208,7 @@ if (!$ajax) {	// !ajax
 	</div><!-- end col-8 -->
 	
 	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 offset-xl-1"><a name="filters"></a>
-<?php
-		print $this->render("Browse/browse_refine_subview_html.php");
-?>			
+		<?= $this->render("Browse/browse_refine_subview_html.php"); ?>			
 	</div><!-- end col-2 -->
 	
 	
@@ -222,7 +220,6 @@ if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
 ?>
 <script>
 if (typeof selectionListInput === 'undefined') {
-
 	const selectionListInput = document.getElementById('selection');
 	const omitSelectionListInput = document.getElementById('omitSelection');
 	const allSelectedInput = document.getElementById('allSelected');
@@ -233,8 +230,7 @@ if (typeof selectionListInput === 'undefined') {
 	let selectionList = selectionListInput.value.split(/;/).filter(Boolean);
 	let omitSelectionList = omitSelectionListInput.value.split(/;/).filter(Boolean);
 	
-
-		// Helper to update the selection list and UI
+	// Helper to update the selection list and UI
 	function updateSelectionList() {
 		selectionListInput.value = selectionList.join(';');
 		omitSelectionListInput.value = omitSelectionList.join(';');
@@ -283,22 +279,7 @@ if (typeof selectionListInput === 'undefined') {
 			: '<i class="bi bi-check-circle-fill"></i> <?= _t("Select All"); ?>';
 	}
 	
-// 	function downloadSelected(dtype, dversion, url) {
-// 		const allAreSelected = selectAllBtn.getAttribute('data-state') === 'deselect'; 
-// 		const item_ids = document.getElementById('selection').value;
-// 		const omit_item_ids = document.getElementById('omitSelection').value;
-// 		switch(dtype) {
-// 			case 'media':
-// 				window.location = url + '/item_id/' + item_ids + ((allAreSelected === true) ? '/selectAll/1/omit_item_id/' + omit_item_ids : '');
-// 				break;
-// 			default:
-// 				window.location = url + '/item_id/' + item_ids + ((allAreSelected === true) ? '/selectAll/1/omit_item_id/' + omit_item_ids : '');
-// 				break;
-// 		}
-// 	}
-
 	document.body.addEventListener('htmx:load', function (event) {
-		// console.log('HTMX Load Event:', event);
 		const parentElement = event.target || null;
 
 		if (!parentElement) {
@@ -310,7 +291,6 @@ if (typeof selectionListInput === 'undefined') {
 		const newSelectButtons = parentElement.parentNode.querySelectorAll('.btn-select');
 
 		if (newSelectButtons.length) {
-			// console.log('Applying selection mode to new cards');
 			const isSelectMode = selectAllBtn?.getAttribute('data-state') === 'deselect';
 
 			if (isSelectMode) {
