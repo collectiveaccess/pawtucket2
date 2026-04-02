@@ -1,0 +1,30 @@
+<?php
+	$vn_num_media = 0;
+	if ($t_page = $this->getVar("page")) {
+		$va_media = $t_page->getPageMedia(array("original"));
+		if(is_array($va_media) && sizeof($va_media)){
+			$vn_num_media = sizeof($va_media);
+		}
+	}
+?>
+<div class="row">
+	<div class="col-sm-12">
+		<h1>{{{title}}}</h1><br>
+	</div>
+	<div class="row">
+		<div class="col">
+			<p>{{{bodytext}}}</p>
+		</div>
+<?php
+	if($vn_num_media > 0){
+?>
+		<div class="col">
+			<div class="img-fluid mb-5">
+				{{{media:1:original}}}
+			</div>
+		</div>
+<?php
+	}
+?>
+	</div>
+</div>

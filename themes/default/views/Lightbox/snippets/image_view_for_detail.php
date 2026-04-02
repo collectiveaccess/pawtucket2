@@ -30,7 +30,7 @@ if($image_format == "contain"){
 while($qr_items->nexthit()) {
 	$id = $qr_items->getPrimaryKey();
 	
-	$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2', $table, $id, null, array("title" => _t("View record"), "aria-label" => _t("View record")));
+	$detail_button_link = $this->request->isLoggedIn() ? caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2', $table, $id, null, array("title" => _t("View record"), "aria-label" => _t("View record"))) : '';
 	$caption 	= $qr_items->getWithTemplate($result_caption_template, array("checkAccess" => $item_is_in_user_lightbox ? null : $access_values));
 	$image = $qr_items->get('ca_object_representations.media.large', ["checkAccess" => $access_values, "class" => $image_class]);
 		
@@ -47,7 +47,7 @@ while($qr_items->nexthit()) {
 			$image = $default_placeholder_tag;
 		}
 	}
-	$rep_detail_link = caDetailLink($this->request, $image, '', $table, $id);			
+	$rep_detail_link = $this->request->isLoggedIn() ? caDetailLink($this->request, $image, '', $table, $id) : $image;			
 ?>
 		<div class='col-sm-6 col-lg-3 d-flex'>
 			<div id='lb-item-<?= $id; ?>' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
