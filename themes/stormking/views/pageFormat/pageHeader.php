@@ -198,7 +198,7 @@
 ?>							
 										<ul class='subMenu'>
 											<li style="padding-top:6px;" <?php print ($this->request->getController() == "Featured") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features"), "", "", "Featured", "archives"); ?></li>					
-											<li<?php print (($this->request->getController() == "Listing")| ($this->request->getAction() == "oralhistory") ) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Oral History"), "", "", "Listing", "oralhistory"); ?></li>					
+											<li<?php print (($this->request->getController() == "Listing") && ($this->request->getAction() == "oralhistory") ) ? ' class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Oral History"), "", "", "Listing", "oralhistory"); ?></li>					
 											<li <?php print ( (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival")) | ($this->request->getController() == "Collections") | ($this->request->getAction() == "collections")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Special Collections"), "", "", "Collections", "index"); ?></li>					
 										</ul>
 <?php
