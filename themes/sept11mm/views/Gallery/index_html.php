@@ -16,22 +16,11 @@
 		# --------------------
 	}
 	$vs_description_element_code = $o_gallery_config->get("gallery_set_description_element_code");
- 	$vb_landing_page_show_featured_gallery = ($o_gallery_config->get("landing_page_dont_show_featured_gallery") > 0) ? ($vb_landing_page_show_featured_gallery = false) : ($vb_landing_page_show_featured_gallery = true);
  	$va_sets = $this->getVar("sets");
  	$va_first_items_from_set = $this->getVar("first_items_from_sets");
- 	$o_res = caMakeSearchResult(
-							"ca_sets",
-							array_keys($va_sets),
-							['checkAccess' => $va_access_values]
-						);
-	$va_display_first_set_ids = array();
-	if($o_res->numHits()){
-		while($o_res->nextHit()){
-			if($o_res->get("ca_sets.featured", array("convertCodesToDisplayText" => true)) == "Yes"){
-				$va_display_first_set_ids[] = $o_res->get("ca_sets.set_id");
-			}
-		}
-	}
+	$va_first_items_from_set = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "widepreview", "checkAccess" => $va_access_values));
+			
+	$set_ids_next_previous = array();
 ?>
 
 <div class="row">
@@ -44,45 +33,6 @@
 		}
 	}
 	if(is_array($va_sets) && sizeof($va_sets)){
-		if($vb_landing_page_show_featured_gallery){
-?>
-		<div id="galleryLandingFeatured" class="bg-body-tertiary mb-5 py-3">
-			<div class="row justify-content-center pt-3 pb-4 px-5">
-				<div class="col">
-					
-					<H2><?php print $o_gallery_config->get("landing_page_featured_heading"); ?></H2>
-					<div class="row">
-<?php
-						$vn_featured_set_id = array_rand($va_sets);
-						$va_set = $va_sets[$vn_featured_set_id];
-						$t_set = new ca_sets();
-						$va_first_item = array_shift($va_first_items_from_set[$vn_featured_set_id]);
-						$t_set->load($vn_featured_set_id);
-						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-cover w-100'>", "", "", "Gallery", $vn_featured_set_id)."</div>";
-						
-						print "<div class='col-sm-6'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", $vn_featured_set_id);
-						if($vs_desc = strip_tags($t_set->get("ca_sets.".$vs_description_element_code))){
-							if(mb_strlen($vs_desc) > 400){
-								$vs_desc = mb_substr($vs_desc, 0, 400)."...";						
-							}
-							print "<div class='py-2 fs-4'>".$vs_desc."</div>";
-						}
-						print "<div class='text-center py-2 text-capitalize'>".caNavLink($this->request, _t("View ").$o_gallery_config->get("gallery_section_item_name")." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Gallery", $vn_featured_set_id)."</div>";
-						print "</div>";
-						
-?>
-					</div>
-						
-				</div>
-			</div>
-		</div>		
-		<div class="row">
-			<div class='col-12'>
-				<h3 class="text-capitalize"><?php print _t("More ").$o_gallery_config->get("gallery_section_item_name_plural"); ?></h3>
-			</div>
-		</div>
-<?php
-		}
 ?>
 		<div class="row">
 <?php
@@ -90,9 +40,6 @@
 		$va_other_sets = array();
 		# --- loop through all sets and pull out the ones flagged to display first
 		foreach($va_sets as $vn_set_id => $va_set){
-			if($vn_set_id == $vn_featured_set_id){
-				continue;
-			}
 			$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
 			$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'><img src='".$va_first_item["representation_url"]."' class='".$vs_image_class."' alt=''>
 							<div class='card-body'>
@@ -105,21 +52,19 @@
 						</div>";
 			$output = "";
 			$output = "<div class='col-sm-6 col-lg-4 d-flex'>".caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id)."</div>";
-			if(in_array($vn_set_id, $va_display_first_set_ids)){
-				$va_first_sets[$va_set["set_code"]] = $output;
-			}else{
-				$va_other_sets[] = $output;
-			}
+			$va_sets[$va_set["set_code"]] = array("id" => $vn_set_id, "output" => $output);
 		}
 		# --- output sets flagged to display first
-		ksort($va_first_sets);
-		foreach($va_first_sets as $tmp){
-			print $tmp;
-		}
+		#ksort($va_first_sets);
+		#foreach($va_first_sets as $set_id => $tmp){
+		#	print $tmp;
+		#	$set_ids_next_previous[] = $set_id;			
+		#}
 		# --- output remaining sets
-		shuffle($va_other_sets);
-		foreach($va_other_sets as $tmp){
-			print $tmp;
+		ksort($va_sets);
+		foreach($va_sets as $tmp){
+			print $tmp["output"];
+			$set_ids_next_previous[] = $tmp["id"];
 		}
 ?>
 		</div>
@@ -133,3 +78,10 @@
 ?>
 	</div><!-- end col -->
 </div><!-- end row -->
+<?php
+		$o_context = new ResultContext($this->request, 'ca_sets', 'gallery');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($set_ids_next_previous);
+		$o_context->saveContext();
+
+?>

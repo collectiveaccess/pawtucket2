@@ -333,14 +333,9 @@ $va_related_objects = $t_object->get("ca_objects.related.object_id", array("retu
 if(is_array($va_related_objects) && sizeof($va_related_objects)){
 	$va_related_ids = $va_related_objects;
 }
-# --- not sure how to add related objects to the more link
-if($vn_source_id){
-	$va_search[] = "entity_id:".$vn_source_id;
-}
 # --- do the search and see if there are decent results....otherwise broaden it
 $vn_hits = 0;
 if($vn_source_id){
-	$vs_search_term = "entity_id:".$vn_source_id;
 	$t_entity = new ca_entities($vn_source_id);
 	$donor_related_ids = $t_entity->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => caGetUserAccessValues($this->request), "restrictToRelationshipTypes" => array("donor")));
 	if(is_array($donor_related_ids) && sizeof($donor_related_ids)){
@@ -350,22 +345,15 @@ if($vn_source_id){
 		}
 		shuffle($donor_related_ids);
 		$donor_related_ids = array_slice($donor_related_ids, 0, 6);
-		array_unique(array_merge($va_related_ids, $donor_related_ids));
+		$va_related_ids = array_unique(array_merge($va_related_ids, $donor_related_ids));
 	}
 }
-
 if(sizeof($va_related_ids) < 6){
 	$vb_search_again = true;
 }
-# add more search terms for broadening and more link
-$va_search3 = array();
-if($t_object->get("ca_objects.preferred_labels.name")){
-	$va_search3[] = "ca_objects.preferred_labels.name:'".$t_object->get("ca_objects.preferred_labels.name")."'";
-}
-if($vb_search_again){
-	$vs_search_term = join(" OR ", $va_search3);
+if($vb_search_again && $t_object->get("ca_objects.preferred_labels.name")){
 	$o_search = caGetSearchInstance("ca_objects");
-	$qr_res = $o_search->search($vs_search_term, array("checkAccess" => caGetUserAccessValues($this->request), "sort" => "_rand"));
+	$qr_res = $o_search->search("ca_objects.preferred_labels.name:'".$t_object->get("ca_objects.preferred_labels.name")."'", array("checkAccess" => caGetUserAccessValues($this->request), "sort" => "_rand"));
 	$va_related_more = array();
 	if($qr_res->numHits()){
 		while($qr_res->nextHit()){
@@ -374,6 +362,7 @@ if($vb_search_again){
 			}
 		}
 		shuffle($va_related_more);
+		$va_related_more = array_slice($va_related_more, 0, 6);
 		if(is_array($va_related_ids) && sizeof($va_related_ids)){
 			$va_related_ids = array_unique(array_merge($va_related_ids, $va_related_more));
 		}else{
@@ -383,57 +372,38 @@ if($vb_search_again){
 }
 
 if(sizeof($va_related_ids)){
-	#$browse_target = "objects";
-	#switch(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)))){
-	#	case "lmdc boards":
-	#		$browse_target = "boards";
-	#	break;
-	#	# -----------------------
-	#	case "oral history":
-	#		$browse_target = "oral_histories";
-	#	break;
-	#	# -----------------------
-	#	default:
-	#		$browse_target = "objects";
-	#	break;
-	#	# -----------------------
+	#$i = 0;
+	#$tmp = "";
+	#$va_tmp = array();
+	#foreach($va_related_ids as $rel_object_id){
+	#	$tmp = "ca_objects.object_id:".$rel_object_id;
+	#	$va_tmp[] = $tmp;
+	#	$i++;
+	#	if($i == 6){
+	#		break;
+	#	}
 	#}
-	$vb_show_more_link = false;
-	if(sizeof($va_related_ids) > 6){
-		$vb_show_more_link = true;
-	}
-	$i = 0;
-	$tmp = "";
-	$va_tmp = array();
-	foreach($va_related_ids as $rel_object_id){
-		$tmp = "ca_objects.object_id:".$rel_object_id;
-		$va_tmp[] = $tmp;
-		$i++;
-		if($i == 6){
-			break;
-		}
-	}
-	$search_term = join(" OR ", $va_tmp);
-	#$qr_res = caMakeSearchResult("ca_objects", $va_related_ids);
+	#$search_term = join(" OR ", $va_tmp);
+	$va_related_ids = array_slice($va_related_ids, 0, 6);
+	$qr_res = caMakeSearchResult("ca_objects", $va_related_ids);
 ?>
 	<div class="row">
-		<div class='col-6'>
+		<div class='col-12'>
 			<H2>Related Item<?php print (sizeof($va_related_ids) > 2) ? "s" : ""; ?></H2>
 		</div><!-- end col -->
-		<div class='col-6 text-end'>
-		<?php
-		if($vb_show_more_link){
-			$vs_search_term = join(" OR ", array_merge($va_search, $va_search3));
-			#print caNavLink($this->request, _t("More"), "btn btn-primary", "", "Search", $browse_target, array("search" => $vs_search_term));
-		}
-?>
-		</div>
 	</div>
 
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'all_objects', array('search' => $search_term, '_advanced' => 0)); ?>">
-			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
-		</div>
+<?php
+		if($qr_res->numHits()){
+			while($qr_res->nextHit()){
+				print '<div class="col-md-6 col-lg-4 d-flex">
+							<div class="card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4">'.$qr_res->getWithTemplate("<l>^ca_object_representations.media.medium%class=card-img-top,object-fit-contain,px-3,pt-3,rounded-0</l>").'<div class="card-body"><div class="card-title"><div class="fw-medium lh-sm fs-5">'.$qr_res->getWithTemplate("<l><if rule='^ca_objects.type_id !~ /Oral/'>^ca_objects.preferred_labels</if><if rule='^ca_objects.type_id =~ /Oral/'>^ca_objects.public_title</if></l>").'</div></div></div>
+							</div>
+						</div>';
+			}
+		}
+?>
 	</div>
 <?php
 }

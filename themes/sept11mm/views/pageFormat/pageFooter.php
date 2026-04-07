@@ -32,7 +32,7 @@
 		print "</div> <!-- end container -->";
 	}
 ?>
-		<footer id="footer" class="py-4 mb-1 px-3 mt-auto border-black border-top border-1">
+		<footer id="footer" class="py-4 mb-1 px-3 mt-auto <?php print (strToLower($this->request->getController()) != "front") ? "border-black border-top border-1" : ""; ?>">
 			<div class="container-fluid pb-3">
 				<div class="row">
 					<div class="col">

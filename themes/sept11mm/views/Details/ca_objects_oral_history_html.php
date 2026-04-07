@@ -89,7 +89,7 @@ if($show_nav){
 
 	<div class="row">
 		<div class="col-md-6 py-3">
-			{{{<ifdef code="ca_objects.ts_storyid"><iframe width="100%" height="720" src="https://share.theirstory.io/story/^ca_objects.ts_storyid" title="Karen Sandler interview with FOSSDA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></ifdef>}}}
+			{{{<ifdef code="ca_objects.ts_storyid"><iframe width="100%" height="720" src="https://share.theirstory.io/story/^ca_objects.ts_storyid?autoscroll=true" title="Karen Sandler interview with FOSSDA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></ifdef>}}}
 		</div>
 		<div class="col-md-6 pt-3">
 			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->			
@@ -98,7 +98,7 @@ if($show_nav){
 						<dt>Description</dt>
 						<dd class="externalLinks">
 <?php
-						if(mb_strlen($t_object->get("ca_objects.public_description")) > 800){
+						if(mb_strlen($t_object->get("ca_objects.public_description")) > 1250){
 ?>
 							<div id="readMoreDiv_public_description" class="readMore readMoreOralHistory">^ca_objects.public_description</div>
 							<button id="readMoreBtn" class="btn btn-white btn-sm mt-2 readMoreButton" hx-on:click="htmx.toggleClass(htmx.find('#readMoreDiv_public_description'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreBtn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button>		
