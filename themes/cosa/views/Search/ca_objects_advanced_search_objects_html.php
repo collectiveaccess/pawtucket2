@@ -1,6 +1,6 @@
 <div class="row mb-5">
 	<div class="col-md-8">
-		<h1><?= _t("Artwork Advanced Search"); ?></h1>
+		<h1><?= _t("Advanced Search"); ?></h1>
         <div class="my-3 fs-4"><?= _t("Enter your search terms in the fields below."); ?></div>
 
 			<?= $this->formTag(['class' => 'row g-4']); ?>
@@ -68,7 +68,7 @@
 			<h3 class="fs-4">Use quotation marks for exact matches</h3>
 			<p>Put quotes around phrases if you need a specific title or name.</p>
 			<p class="pt-3"><b>Example:</b></p>
-			<code class="bg-white p-2">"La Veladora"</code>
+			<code class="bg-white p-2">"Bloom"</code>
 			<p class="pt-3">> find artworks with that exact title</p>
 			
 			<hr/>

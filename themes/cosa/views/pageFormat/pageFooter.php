@@ -45,7 +45,7 @@
 				</ul>
 			</div>
 		</footer><!-- end footer -->
-		<div id="scrollTop" class="fixed-bottom text-end"><a href="#pageTop" class="btn btn-primary"><i class="bi bi-chevron-up"></i> TOP</a></div>
+		<div id="scrollTop" class="fixed-bottom text-end"><a href="#pageTop" class="btn"><i class="bi bi-chevron-up" aria-label="Scroll to top"></i> </a></div>
 		
 		<?= $this->render("Cookies/banner_html.php"); ?>
 		
@@ -74,3 +74,4 @@ document.addEventListener('DOMContentLoaded', function() {
   checkScroll();
 });
 </script>
+<script async src=https://siteimproveanalytics.com/js/siteanalyze_15203350.js></script>

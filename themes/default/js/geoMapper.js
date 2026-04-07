@@ -8,6 +8,7 @@ function makeMap(options) {
 	const id = options.id ?? 'map';
 	const searchUrl = options.searchUrl;
 	const mapElement = document.getElementById(id);
+	const liveUpdateConf = options.liveUpdate;
 
 	L.Icon.Default.mergeOptions({
 	  iconRetinaUrl: options.themePath + '/assets/markers/marker-icon-2x.png',
@@ -95,6 +96,20 @@ function makeMap(options) {
 			clearInterval(i);
 		}, 500);
 	});
+	
+	const updateHandler = function(e) {
+		if(liveUpdateConf) {
+			const b = map.getBounds();
+   			const bb =  b.getSouth() + ',' + b.getWest() + ' .. ' + b.getNorth() + ',' + b.getEast();
+			const u = liveUpdateConf['url'] + '?search_refine_prefix=' + liveUpdateConf['searchPrefix'] + '&search_refine=' + encodeURIComponent('[' + bb + ']');
+		
+   			htmx.ajax('GET', u, {target:'#' + liveUpdateConf['id'], swap:'innerHTML'});
+
+		}
+	};
+	
+	map.on('zoomend', updateHandler);
+	map.on('dragend', updateHandler);
 	
 	map.locate({setView: false, maxZoom: 16, watch: false});
 	

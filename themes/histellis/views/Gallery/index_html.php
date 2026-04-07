@@ -15,7 +15,7 @@
 		break;
 		# --------------------
 	}
-	$vs_description_element_code = $o_gallery_config->get("gallery_set_description_element_code");
+	$vs_description_element_code = $o_gallery_config->get("gallery_set_description_element_code_landing_page");
  	$vb_landing_page_show_featured_gallery = ($o_gallery_config->get("landing_page_dont_show_featured_gallery") > 0) ? ($vb_landing_page_show_featured_gallery = false) : ($vb_landing_page_show_featured_gallery = true);
  	$va_sets = $this->getVar("sets");
  	$va_first_items_from_set = $this->getVar("first_items_from_sets");
@@ -31,50 +31,16 @@
 		}
 	}
 	if(is_array($va_sets) && sizeof($va_sets)){
-		if($vb_landing_page_show_featured_gallery){
-?>
-		<div id="galleryLandingFeatured" class="bg-body-tertiary mb-5 py-3">
-			<div class="row justify-content-center pt-3 pb-4 px-5">
-				<div class="col">
-					
-					<H2><?php print $o_gallery_config->get("landing_page_featured_heading"); ?></H2>
-					<div class="row">
-<?php
-						$vn_featured_set_id = array_rand($va_sets);
-						$va_set = $va_sets[$vn_featured_set_id];
-						$t_set = new ca_sets();
-						$va_first_item = array_shift($va_first_items_from_set[$vn_featured_set_id]);
-						$t_set->load($vn_featured_set_id);
-						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-cover w-100'>", "", "", "Gallery", $vn_featured_set_id)."</div>";
-						
-						print "<div class='col-sm-6'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", $vn_featured_set_id);
-						if($vs_desc = strip_tags($t_set->get("ca_sets.".$vs_description_element_code))){
-							if(mb_strlen($vs_desc) > 400){
-								$vs_desc = mb_substr($vs_desc, 0, 400)."...";						
-							}
-							print "<div class='py-2 fs-4'>".$vs_desc."</div>";
-						}
-						print "<div class='text-center py-2 text-capitalize'>".caNavLink($this->request, _t("View ").$o_gallery_config->get("gallery_section_item_name")." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Gallery", $vn_featured_set_id)."</div>";
-						print "</div>";
-						
-?>
-					</div>
-						
-				</div>
-			</div>
-		</div>		
-		<div class="row">
-			<div class='col-12'>
-				<h3 class="text-capitalize"><?php print _t("More ").$o_gallery_config->get("gallery_section_item_name_plural"); ?></h3>
-			</div>
-		</div>
-<?php
-		}
 ?>
 		<div class="row">
 <?php
 		foreach($va_sets as $vn_set_id => $va_set){
 			$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
+			$caption = "";
+			if($va_first_item["representation_id"]){
+				$t_rep = new ca_object_representations($va_first_item["representation_id"]);
+				$caption = $t_rep->getWithTemplate("<ifdef code='ca_object_representations.rights_holder|ca_object_representations.license'><div class='small text-center mt-1'>^ca_object_representations.rights_holder<ifdef code='ca_object_representations.rights_holder,ca_object_representations.license'><br/></ifdef><a href='^ca_object_representations.license' target='_blank'>^ca_object_representations.license</a></div></ifdef>");				
+			}
 ?>
 			<div class="bg-body-tertiary mb-5 py-3 galleryLandingBlock">
 			<div class="row justify-content-center pt-3 pb-4 px-5">
@@ -84,7 +50,7 @@
 <?php
 						$t_set = new ca_sets();
 						$t_set->load($vn_set_id);
-						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-cover w-100'>", "", "", "Gallery", $vn_set_id)."</div>";
+						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-cover w-100'>", "", "", "Gallery", $vn_set_id).$caption."</div>";
 						
 						print "<div class='col-sm-6'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", $vn_set_id);
 						print "<div class='py-2 fs-5'>"._t("%1 Items", array($va_set["item_count"]))."</div>";
@@ -99,7 +65,6 @@
 						
 ?>
 					</div>
-						
 				</div>
 			</div>
 			</div>

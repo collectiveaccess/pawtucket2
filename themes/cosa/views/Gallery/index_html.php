@@ -34,10 +34,9 @@
 		if($vb_landing_page_show_featured_gallery){
 ?>
 		<div id="galleryLandingFeatured" class="bg-body-tertiary mb-5 py-3">
-			<div class="row justify-content-center pt-3 pb-4 px-5">
+			<div class="row justify-content-center py-4 px-5">
 				<div class="col">
 					
-					<H2><?php print $o_gallery_config->get("landing_page_featured_heading"); ?></H2>
 					<div class="row">
 <?php
 						$vn_featured_set_id = array_rand($va_sets);
@@ -69,12 +68,16 @@
 				</div>
 			</div>
 		</div>		
+<?php
+			if(sizeof($va_sets) > 1){
+?>
 		<div class="row">
 			<div class='col-12'>
-				<h3 class="text-capitalize"><?php print _t("More ").$o_gallery_config->get("gallery_section_item_name_plural"); ?></h3>
+				<h2 class="text-capitalize"><?php print _t("More ").$o_gallery_config->get("gallery_section_item_name_plural"); ?></h3>
 			</div>
 		</div>
 <?php
+			}
 		}
 ?>
 		<div class="row">

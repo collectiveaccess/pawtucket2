@@ -104,8 +104,8 @@ if($show_nav){
 		</div>
 		<div class="col-md-6 mb-4">
 			<H1 class="fs-2 mb-1">{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="artist"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", ">^ca_entities.preferred_labels</unit><br/></ifcount><i>^ca_objects.preferred_labels.name</i>}}}</H1>
-			{{{<ifdef code="ca_objects.date_completed"><div class="fs-4">^ca_objects.date_completed</div></ifdef>}}}
-			{{{<ifdef code="ca_objects.media"><div class="fs-4">^ca_objects.media</div></ifdef>}}}
+			{{{<ifdef code="ca_objects.date_completed"><div class="fs-4">^ca_objects.date_completed%format=Y</div></ifdef>}}}
+			{{{<ifdef code="ca_objects.media"><div class="fs-4">^ca_objects.media%delimiter=,_</div></ifdef>}}}
 			{{{<ifdef code="ca_objects.narrative"><hr><div>^ca_objects.narrative</div></ifdef>}}}
 		</div>
 	</div>
@@ -220,7 +220,7 @@ if($show_nav){
 <?php
 if($tags_enabled){
 ?>
-	<div class="row" id="tagList">
+	<div class="row justify-content-center" id="tagList">
 		<?= $this->render('Details/tag_list_html.php'); ?>
 	</div>
 <?php

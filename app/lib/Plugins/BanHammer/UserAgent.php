@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2019-2025 Whirl-i-Gig
+ * Copyright 2019-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -56,7 +56,7 @@ class WLPlugBanHammerUserAgent Extends BaseBanHammerPlugin  {
 		if(!is_array($ip_to_ua)) { $ip_to_ua = []; }
 		
 		$log = self::getLogger();
-		if(isset($ip_to_ua[$ip]) && ($ip_to_ua[$ip] !== $request_useragent)) {
+		if(isset($ip_to_ua[$ip]) && ($ip_to_ua[$ip] !== $request_useragent) && !($config['disableUAChangeBan'] ?? false)) {
 			if($log) { $log->logInfo(_t('[BanHammer::UserAgent] Banned ip %1 because user agent changed from %2 to %3', $ip, $ip_to_ua[$ip], $request_useragent)); }
 			self::setDetails(['details' => _t('User agent changed from %1 to %2', $ip_to_ua[$ip], $request_useragent)]);
 			return 1.0;

@@ -11,6 +11,12 @@
 	$pn_row_id = $this->getVar("row_id");
 	$ps_table = $this->getVar("table");
 	$pn_rep_id = $this->getVar("representation_id");
+	
+	$caption = "";
+	if($pn_rep_id){
+		$t_rep = new ca_object_representations($pn_rep_id);
+		$caption = $t_rep->getWithTemplate("<ifdef code='ca_object_representations.rights_holder|ca_object_representations.license'><div class='small text-center'>^ca_object_representations.rights_holder<ifdef code='ca_object_representations.rights_holder,ca_object_representations.license'><br/></ifdef><a href='^ca_object_representations.license' target='_blank'>^ca_object_representations.license</a></div></ifdef>");
+	}
 ?>
 <div class="row mb-2 align-items-center">
 	<div class="col-2 col-sm-1 text-center">
@@ -24,7 +30,7 @@
 	</div>
 	<div class="col-8 col-sm-6">
 <?php
-	print "<div id='galleryDetailImageWrapper' class='object-fit-contain'>".caDetailLink($this->request, $this->getVar("rep"), 'text-center w-100 h-100 d-block', $ps_table,  $this->getVar("row_id"))."</div>";	
+	print "<div id='galleryDetailImageWrapper' class='object-fit-contain'>".caDetailLink($this->request, $this->getVar("rep"), 'text-center w-100 h-100 d-block', $ps_table,  $this->getVar("row_id")).$caption."</div>";	
 ?>
 	</div>
 	<div class="col-2 col-sm-1 text-center">

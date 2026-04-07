@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,28 +25,24 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	if (sizeof($this->getVar('notifications'))) {
-		foreach($this->getVar('notifications') as $va_notification) {
-			switch($va_notification['type']) {
-				case __NOTIFICATION_TYPE_ERROR__:
-					$class = "alert alert-danger";
-					break;
-				case __NOTIFICATION_TYPE_WARNING__:
-					$class = "alert alert-warning";
-					break;
-				default:
-					$class = "alert alert-primary";
-					break;
-			}
-?>
-				<div role="alert" class="<?php print $class; ?>  alert-dismissible fade show text-center fs-4 rounded-0 position-absolute z-1 w-50 start-50 mt-5 translate-middle">
-<?php
-					print $va_notification['message'];
-?>
-					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-				</div>
-<?php
+if (sizeof($this->getVar('notifications') ?? [])) {
+	foreach($this->getVar('notifications') as $notification) {
+		switch($notification['type']) {
+			case __NOTIFICATION_TYPE_ERROR__:
+				$class = "alert alert-danger";
+				break;
+			case __NOTIFICATION_TYPE_WARNING__:
+				$class = "alert alert-warning";
+				break;
+			default:
+				$class = "alert alert-primary";
+				break;
 		}
-	}
 ?>
+		<div role="alert" class="<?= $class; ?>  alert-dismissible fade show text-center fs-4 rounded-0 position-absolute w-50 start-50 mt-5 translate-middle">
+		<?= $notification['message']; ?>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+<?php
+	}
+}

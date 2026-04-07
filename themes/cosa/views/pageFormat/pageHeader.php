@@ -47,7 +47,7 @@ if($this->request->isLoggedIn()){
 	$user_links .= "<li>".caNavLink($this->request, _t('Logout'), 'dropdown-item', '', 'LoginReg', 'Logout', array())."</li>";
 	$user_links .= "</ul></li>";
 } else {	
-	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $user_links = "<li class='nav-item'>".caNavlink($this->request, _t('Login'), "nav-link".((strToLower($this->request->getController()) == "loginreg") ? " active" : ""), "", "LoginReg", "LoginForm", "", ((strToLower($this->request->getController()) == "loginreg") ? array("aria-current" => "page") : null))."</li>"; }
+	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $user_links = "<li class='nav-item'>".caNavlink($this->request, "<span>"._t('Login')."</span>", "nav-link".((strToLower($this->request->getController()) == "loginreg") ? " active" : ""), "", "LoginReg", "LoginForm", "", ((strToLower($this->request->getController()) == "loginreg") ? array("aria-current" => "page") : null))."</li>"; }
 }
 
 ?><!DOCTYPE html>
@@ -129,23 +129,28 @@ if($this->request->isLoggedIn()){
 				case "browse":
 					switch(strToLower($this->request->getAction())){
 						case "artworks":
-							print " / ".caNavLink($this->request, _t("Artworks"), '', '', 'Browse', 'artworks', '');			
+							#print " / ".caNavLink($this->request, _t("Artworks"), '', '', 'Browse', 'artworks', '');			
+							print " / "._t("Artworks");			
 						break;
 						# ----------------
 						case "exhibitions":
-							print " / ".caNavLink($this->request, _t("Past Exhibitions"), '', '', 'Browse', 'exhibitions', '');			
+							#print " / ".caNavLink($this->request, _t("Past Exhibitions"), '', '', 'Browse', 'exhibitions', '');
+							print " / "._t("Past Exhibitions");		
 						break;
 						# ----------------
 						case "artists":
-							print " / ".caNavLink($this->request, _t("Artists"), '', '', 'Browse', 'artists', '');			
+							#print " / ".caNavLink($this->request, _t("Artists"), '', '', 'Browse', 'artists', '');			
+							print " / "._t("Artists");			
 						break;
 						# ----------------
 						case "exhibitions":
-							print " / ".caNavLink($this->request, _t("Past Exhibitions"), '', '', 'Browse', 'exhibitions', '');				
+							#print " / ".caNavLink($this->request, _t("Past Exhibitions"), '', '', 'Browse', 'exhibitions', '');				
+							print " / "._t("Past Exhibitions");				
 						break;
 						# ----------------
 						case "advanced":
-							print " / ".caNavLink($this->request, _t("Advanced Search"), '', 'Search', 'advanced', 'objects', '');			
+							#print " / ".caNavLink($this->request, _t("Advanced Search"), '', 'Search', 'advanced', 'objects', '');			
+							print " / "._t("Advanced Search");			
 						break;
 						# ----------------
 					}
@@ -154,15 +159,47 @@ if($this->request->isLoggedIn()){
 				case "listing":
 					switch(strToLower($this->request->getAction())){
 						case "current_exhibitions":
-							print " / ".caNavLink($this->request, _t("Current Exhibitions"), '', '', 'Listing', 'current_exhibitions', '');			
+							#print " / ".caNavLink($this->request, _t("Current Exhibitions"), '', '', 'Listing', 'current_exhibitions', '');		
+							print " / "._t("Current Exhibitions");
 						break;
 					}
 				break;
 				# ------------------------------
 				case "gallery":
-					print " / ".caNavLink($this->request, _t("Collection Highlights"), '', '', 'Gallery', 'index', '');	
+					#print " / ".caNavLink($this->request, _t("Collection Highlights"), '', '', 'Gallery', 'index', '');	
+					print " / "._t("Collection Highlights");	
 				break;		
 				# ------------------------------
+				case "loginreg":
+					switch(strToLower($this->request->getAction())){
+						case "loginform":
+						case "login":
+							print " / "._t("Login");
+						break;
+						# ----------------
+						case "registerform":
+						case "register":
+							print " / "._t("Register");			
+						break;
+						# ----------------
+						case "resetform":
+						case "resetsend":
+							print " / "._t("Reset Your Password");			
+						break;
+						# ----------------
+						case "profileform":
+						case "profilesave":
+							print " / "._t("Profile");
+						break;
+						# ----------------
+					}
+				break;		
+				# ------------------------------
+				case "lightbox":
+					print " / ".$lightbox_sectionHeading;	
+				break;		
+				# ------------------------------
+				
 			}
 ?>
 		</div></div></div>

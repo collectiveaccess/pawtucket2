@@ -1,8 +1,11 @@
 <?php
+global $g_ui_locale;
+
 $submissions_by_form = $this->getVar('submissions_by_form');	
 $completed_status_codes = $this->getVar('completed_status_list');
 $available_forms = $this->getVar('available_forms');
-$introduction_global_value = $this->getVar('introduction_global_value');
+$config = $this->getVar('config');
+$introduction_global_value = $config->get('introduction_global_value'.((mb_strpos($g_ui_locale, "fr") !== false) ? "_fr" : ""));
 $access_values = caGetUserAccessValues($this->request);
 ?>
 		<div class="row">
@@ -109,9 +112,12 @@ if (!$this->request->isLoggedIn()) {
 							}
 						}else{
 							$t->load($qr->get("{$table}.".$pk));
-							#if($tmp = $t->getWithTemplate("^ca_occurrences.submitted_data")){
-							#	$label .= ": ".$tmp;
-							#}
+							if($tmp = $t->getWithTemplate("^ca_occurrences.submitted_data.original_filename")){
+								$label .= "<div class='fs-6'>".$tmp."</div>";
+							}
+							if($tmp = $t->getWithTemplate("^ca_occurrences.submitted_media.original_filename")){
+								$label .= "<div class='fs-6'>".$tmp."</div>";
+							}
 						}
 						if (!$is_editable) {
 							print '<td>'.$label."</td>";

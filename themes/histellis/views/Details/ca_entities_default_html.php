@@ -86,7 +86,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>{{{<ifdef code="ca_object_representations.media.large">
 	<div class="row justify-content-center mb-3">
 		<div class="col">
-			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
+			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large<ifdef code='ca_object_representations.rights_holder|ca_object_representations.license'><div class='small text-center'>^ca_object_representations.rights_holder<ifdef code='ca_object_representations.rights_holder,ca_object_representations.license'><br/></ifdef><a href='^ca_object_representations.license' target='_blank'>^ca_object_representations.license</a></div></ifdef></div>
 		</div>
 	</div>
 </ifdef>}}}
@@ -153,7 +153,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<div class="col"><h2>Related Objects</h2><hr></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"), '_advanced' => 0)); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('view' => 'images', 'search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"), '_advanced' => 0)); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
 	</div>
