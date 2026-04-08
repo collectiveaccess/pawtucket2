@@ -80,7 +80,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 					</li>
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Ask A Question'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Research Requests'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 					</li>
 <?php
 					if($user_links){
@@ -98,8 +98,11 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 			</div>
 		</div>
 	</nav>
-	<div class="bg-primary py-3 text-white fw-bold fs-4 px-4"><div class="container-fluid">
-		<?= caNavLink($this->request, _t("Inside the Collection"), "text-decoration-none text-white", "", "", ""); ?>
+	<div class="bg-primary py-3 text-white fs-4 px-4"><div class="container-fluid">
+		<div class="row">
+			<div class="col-6 fw-bold"><?= caNavLink($this->request, _t("Inside the Collection"), "text-decoration-none text-white", "", "", ""); ?></div>
+			<div class="col-6 text-md-end"><a href="https://911memorial.org/support/give-collection" target="_blank" class="text-decoration-none text-white">Give to the Collection</a></div>
+		</div>
 	</div></div>
 
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
