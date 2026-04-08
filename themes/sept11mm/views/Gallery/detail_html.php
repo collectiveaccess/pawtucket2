@@ -19,10 +19,16 @@
 	}
 	$locale = Session::getVar('ns11mm_locale');
 
+	$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_sets");
+	$previous_id = $o_context->getPreviousID($pn_set_id);
+	$next_id = $o_context->getNextID($pn_set_id);
 ?>
 	<div class="row">
-		<div class='col-12'>
+		<div class='col-12 col-md-8'>
 			<h1><?php print $this->getVar("label")."</h1>"; ?>	
+		</div>
+		<div class='col-12 col-md-4 text-md-end'>
+			<nav aria-label="result"><?php print (($previous_id > 0) ? caNavLink($this->request, "<i class='bi bi-chevron-left'></i> Previous", "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "gallery", $previous_id) : "").caNavLink($this->request, "<i class='bi-chevron-double-up'></i> Back", "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "gallery", "Index").(($next_id > 0) ? caNavLink($this->request, "Next <i class='bi bi-chevron-right'></i>", "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "gallery", $next_id) : ""); ?></nav>
 		</div>
 	</div>
 	<div class="row">

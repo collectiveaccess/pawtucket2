@@ -32,21 +32,12 @@
 		print "</div> <!-- end container -->";
 	}
 ?>
-		<footer id="footer" class="py-4 mb-1 px-3 mt-auto <?php print (strToLower($this->request->getController()) != "front") ? "border-black border-top border-1" : ""; ?>">
-			<div class="container-fluid pb-3">
-				<div class="row">
-					<div class="col">
-						<ul class="ps-1 list-inline pt-3 fw-medium">
-							<?= ((CookieOptionsManager::cookieManagerEnabled()) ? '<li class="list-inline-item">'.caNavLink($this->request, _t("Manage Cookies"), "text-bg-dark small", "", "Cookies", "manage")."</li>" : ""); ?>
-							<li class="list-inline-item"><a href="https://911memorial.org/financial-legal-information">Financial &amp; Legal Information</a></li>
-							<li class="list-inline-item"><a href="https://911memorial.org/terms-useprivacy-policy">Terms of Use/Privacy Policy</a></li>
-							<li class="list-inline-item"><a href="https://911memorial.org/accessibility-details">Accessibility Details</a></li>
-						</ul>
-						<div class="ps-1 mt-4 fs-6">
-							&copy; <?= date('Y'); ?> National September 11 Memorial & Museum 9/11 MEMORIAL is a registered trademark of the National September 11 Memorial & Museum
-						</div>
-					</div>
-				</div>
+		<footer id="footer" class="p-3 text-center mt-auto bg-light">
+			<div class="container-xl">
+				<ul class="list-inline py-0 my-0 fw-medium">
+  					<li class="list-inline-item small">&copy; Keith Haring Foundation <?= date('Y'); ?></li>
+  					<?= ((CookieOptionsManager::cookieManagerEnabled()) ? '<li class="list-inline-item">'.caNavLink($this->request, _t("Manage Cookies"), "text-bg-dark small", "", "Cookies", "manage")."</li>" : ""); ?></li>
+				</ul>
 			</div>
 		</footer><!-- end footer -->
 		

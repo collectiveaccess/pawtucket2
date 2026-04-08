@@ -131,24 +131,6 @@ if (!$ajax) {	// !ajax
 					print "</ul>\n";
 					print "</li>\n";
 				}
-				if(is_array($va_export_formats) && sizeof($va_export_formats)){
-?>
-					<li class='list-group-item border-0 px-0 pt-0'>
-						<div class="dropdown inline w-auto">
-							<button class="btn btn-light btn-sm dropdown-toggle small" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="<?php print _t("Export Results"); ?>">
-								<i class="bi bi-download"></i>
-							</button>
-							<ul class="dropdown-menu" role='menu'>
-<?php
-							foreach($va_export_formats as $va_export_format){
-								print "<li class='dropdown-item' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $browse_key))."</li>";
-							}
-?>
-							</ul>
-						</div>
-					</li>
-<?php
-				}
 
 				if(is_array($va_all_facets) && sizeof($va_all_facets)){
 ?>

@@ -30,15 +30,15 @@ $lightbox_sectionHeading = ucFirst($lightboxDisplayName["section_heading"]);
 
 # Collect the user links
 $user_links = "";
-if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']))){
+if($this->request->isLoggedIn()){
+	if(caDisplayLightbox($this->request)){
+		$user_links .= "<li class='nav-item'>".caNavLink($this->request, $lightbox_sectionHeading, 'nav-link'.((strToLower($this->request->getController()) == "lightbox") ? " active" : ""), '', 'Lightbox', 'Index', array(), ((strToLower($this->request->getController()) == "lightbox") ? array("aria-current" => "page") : null))."</li>";
+	}
 	$user_links .= "<li class='nav-item dropdown'><a class='nav-link".(($this->request->getController() == 'LoginReg') ? ' active' : '')."' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'><i class='bi bi-person-circle' aria-label='"._t('User Options')."'></i></a>
 						<ul class='dropdown-menu'>";
 	
 	$user_links .= '<li><div class="dropdown-header fw-medium">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).'<br>'.$this->request->user->get("email").'</div></li>';
 	$user_links .= "<li><hr class='dropdown-divider'></li>";
-	if(caDisplayLightbox($this->request)){
-		$user_links .= "<li>".caNavLink($this->request, $lightbox_sectionHeading, 'dropdown-item', '', 'Lightbox', 'Index', array())."</li>";
-	}
 	$user_links .= "<li>".caNavLink($this->request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array())."</li>";
 	
 	if ($this->request->config->get('use_submission_interface')) {
@@ -57,7 +57,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
-	<link rel="stylesheet" type="text/css" href="https://cloud.typography.com/7401856/6502032/css/fonts.css" />
+	
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
 	<script>
@@ -66,44 +66,39 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
-	<nav class="navbar navbar-expand-xl shadow-sm">
-		<div class="container-fluid">
-			<?php #print caNavlink($this->request, caGetThemeGraphic($this->request, 'logo-full.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-none d-xl-inline-block")).caGetThemeGraphic($this->request, 'logo-sm.svg', array("alt" => "Site logo", "role" => "banner", "class" => "d-xl-none")), "navbar-brand  img-fluid ps-3", "", "", ""); ?>
-			<a href="https://911memorial.org" class="navbar-brand  img-fluid ps-3 py-2"><?= caGetThemeGraphic($this->request, '01_911_25th_HORIZ_POS.png', array("alt" => "Site logo", "role" => "banner")); ?></a>
+	<nav class="navbar navbar-expand-lg shadow-sm py-1">
+		<div class="container-xl">
+			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'KHF_logo.jpg', array("alt" => "Keight Haring Foundation", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">				
-					<li class="nav-item">
-						<a href="https://911memorial.org" class="nav-link">Museum Home</a>
-					</li>
-					<?= $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Research Requests'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
-					</li>
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">	
 <?php
+					if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
+						print $this->render("pageFormat/browseMenu.php");
+					}
 					if($user_links){
 						print $user_links;
 					}
 ?>
 				</ul>
-				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
+<?php
+				if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
+?>
+				<form action="<?= caNavUrl($this->request, '', 'Search', 'Objects'); ?>" role="search">
 					<div class="input-group">
-						<label for="nav-search-input" class="form-label visually-hidden">Search all collections</label>
-						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search all collections">
+						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
+						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
 				</form>
+<?php
+				}
+?>
 			</div>
 		</div>
-	</nav>
-	<div class="bg-primary py-3 text-white fs-4 px-4"><div class="container-fluid">
-		<div class="row">
-			<div class="col-6 fw-bold"><?= caNavLink($this->request, _t("Inside the Collection"), "text-decoration-none text-white", "", "", ""); ?></div>
-			<div class="col-6 text-md-end"><a href="https://911memorial.org/support/give-collection" target="_blank" class="text-decoration-none text-white">Give to the Collection</a></div>
-		</div>
-	</div></div>
+	</nav>	
 
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php
