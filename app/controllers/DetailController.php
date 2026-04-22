@@ -114,7 +114,7 @@ class DetailController extends FindController {
 		
 		if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($load_params, ['returnAs' => 'firstModelInstance'])))) {
 			// invalid id - throw error
-			throw new ApplicationException("Invalid id");
+			throw new ApplicationException("Invalid id {$id}");
 		} 
 		$t_subject->autoConvertLineBreaks(true);
 		
@@ -164,7 +164,6 @@ class DetailController extends FindController {
 	
 		$this->ops_tablename = $table;
 		
-	
 		$log = caGetLogger();
 		// $context = $this->request->getParameter('context', pString);
 		// $detail_id = $this->request->getParameter('id', pInteger);		
@@ -1644,6 +1643,53 @@ class DetailController extends FindController {
 	# -------------------------------------------------------
 	/**
 	 * 
+	 */
+	public function RemoveRepresentation() {
+		$log = caGetLogger();
+		
+		$context = $this->request->getParameter('context', pString);
+		$id = $this->request->getParameter('id', pInteger);
+		
+		$detail_config = $this->opa_detail_types[$context] ?? [];
+		
+		$table = $detail_config['table'];
+		
+		if(!($t_rec = $table::findAsInstance($id))) {
+			throw new ApplicationException(_('Invalid id'));
+		}
+		
+		$representation_id = $this->request->getParameter('representation_id', pInteger);
+		
+		if(!$this->request->isLoggedIn() || !$this->request->user->canDoAction('is_administrator')) {
+			throw new ApplicationException(_('Access denied'));
+		}
+		
+		if(!($t_rep = ca_object_representations::findAsInstance($representation_id))) {
+			throw new ApplicationException(_('Invalid representation_id'));
+		}
+		if($deleted_media_dir = ($detail_config['options']['deleted_media_directory'] ?? null)) {
+			$path = $t_rep->get('ca_object_representations.media.original.path');
+			$filename = $t_rep->get('ca_object_representations.original_filename');
+			if(!$filename) {
+				$filename = pathinfo($path, PATHINFO_BASENAME);
+			}
+			copy($path, __CA_BASE_DIR__.$deleted_media_dir."/".$filename);
+		}
+		
+		$ret = $t_rec->removeRepresentation($representation_id);
+		$resp = ['ok' => $ret ? 1 : 0];
+		
+		if($ret) {
+			$log->logInfo("Deleted representation {$representation_id} for {$context}::{$id}");
+		} else {
+			$log->logError("Could not delete representation {$representation_id} for {$context}::{$id}");
+		}
+		
+		print json_encode($resp);
+	}
+	# -------------------------------------------------------
+	/**
+	 * Provide in-viewer search for those that support it (Eg. UniversalViewer)
 	 */
 	public function RemoveRepresentation() {
 		$log = caGetLogger();

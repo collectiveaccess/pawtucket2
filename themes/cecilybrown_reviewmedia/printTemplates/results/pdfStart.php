@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/lib/pawtucket/BasePawtucketController.php : 
+ * app/templates/pdfStart.php : top-matter prepended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2025 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,29 +23,19 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name PDF start
+ * @type pageStart
+ *
  * ----------------------------------------------------------------------
  */
- 	
-class BasePawtucketController extends ActionController {
-	# ------------------------------------------------------- 	
-	/**
-	 * @var array
-	 */
-	protected $opa_access_values;
-	
-	/**
-	 *
-	 */
-	protected $dont_require_login = false;
-	# -------------------------------------------------------
-	public function __construct($request, $response, $view_paths=null) {
-		parent::__construct($request, $response, $view_paths);
-		if (!$this->dont_require_login && ($request->getController() !== 'LoginReg') && $request->config->get('pawtucket_requires_login') && !($request->isLoggedIn())) {
-			$response->setRedirect(caNavUrl($request, "", "LoginReg", "LoginForm"));
-		}
-		
-		$this->opa_access_values = caGetUserAccessValues($request);
-		$this->view->setVar("access_values", $this->opa_access_values);
-	}
-	# -------------------------------------------------------
-}
+?>
+<html>
+	<head>
+		<title><?php print $this->getVar('criteria_summary_truncated'); ?></title>
+		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+		<meta charset="utf-8" />
+	</head>
+	<body>

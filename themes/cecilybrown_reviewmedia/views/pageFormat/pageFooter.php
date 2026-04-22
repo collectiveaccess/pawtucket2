@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/lib/pawtucket/BasePawtucketController.php : 
+ * views/pageFormat/pageFooter.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2025 Whirl-i-Gig
+ * Copyright 2015-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,27 +25,26 @@
  *
  * ----------------------------------------------------------------------
  */
- 	
-class BasePawtucketController extends ActionController {
-	# ------------------------------------------------------- 	
-	/**
-	 * @var array
-	 */
-	protected $opa_access_values;
-	
-	/**
-	 *
-	 */
-	protected $dont_require_login = false;
-	# -------------------------------------------------------
-	public function __construct($request, $response, $view_paths=null) {
-		parent::__construct($request, $response, $view_paths);
-		if (!$this->dont_require_login && ($request->getController() !== 'LoginReg') && $request->config->get('pawtucket_requires_login') && !($request->isLoggedIn())) {
-			$response->setRedirect(caNavUrl($request, "", "LoginReg", "LoginForm"));
-		}
-		
-		$this->opa_access_values = caGetUserAccessValues($request);
-		$this->view->setVar("access_values", $this->opa_access_values);
+?>
+	</main>
+<?php
+	if(strToLower($this->request->getController()) != "front"){
+		print "</div> <!-- end container -->";
 	}
-	# -------------------------------------------------------
-}
+?>
+		<footer id="footer" class="p-3 text-center mt-auto bg-light">
+			<div class="container-xl">
+				<ul class="list-inline py-0 my-0 fw-medium">
+  					<li class="list-inline-item small">&copy; Cecily Brown Studio <?= date('Y'); ?></li>
+  					<?= ((CookieOptionsManager::cookieManagerEnabled()) ? '<li class="list-inline-item">'.caNavLink($this->request, _t("Manage Cookies"), "text-bg-dark small", "", "Cookies", "manage")."</li>" : ""); ?></li>
+				</ul>
+			</div>
+		</footer><!-- end footer -->
+		
+		<?= $this->render("Cookies/banner_html.php"); ?>
+		
+		<script>
+			window.initApp();
+		</script>
+	</body>
+</html>
