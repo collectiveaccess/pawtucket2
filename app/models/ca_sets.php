@@ -3593,11 +3593,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$qr_res->seek(0);
 		while($qr_res->nextRow()) {
 			$row = [];
-<<<<<<< HEAD
 			foreach(['relation_id', 'name', 'guid', 'sdatetime', 'edatetime', 'access'] as $f) {
-=======
-			foreach(['name', 'guid', 'sdatetime', 'edatetime', 'access'] as $f) {
->>>>>>> dev/lightbox-sharing
 				$row[$f] = $qr_res->get($f);
 			}
 			$o_tep->init();
@@ -3656,13 +3652,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$t_rel->load(['name' => $data['name'], 'set_id' => $id]);		// try to load existing record
 			$t_rel->set('set_id', $id);
 			$t_rel->set('name', $data['name']);
-<<<<<<< HEAD
 			$t_rel->set('access', $data['access'] ?? 0);
 			$t_rel->set('effective_date', $data['effective_date'] ?? null);
-=======
-			$t_rel->set('access', $data['access']);
-			$t_rel->set('effective_date', $data['effective_date']);
->>>>>>> dev/lightbox-sharing
 			
 			if(is_array($data['downloads'] ?? null)) {
 				$t_rel->setSetting('download_versions', $data['downloads']);
@@ -3721,21 +3712,13 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	public function removeAnonymousAccessTokens(array $guids) : ?bool {
 		if (!($id = (int)$this->getPrimaryKey())) { return null; }
 		
-<<<<<<< HEAD
-=======
-		if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
-		
->>>>>>> dev/lightbox-sharing
 		$existing_tokens = $this->getAnonymousAccessTokens();
 		
 		foreach($guids as $guid) {
 			if (!isset($existing_tokens[$guid])) { continue; }
 			
 			if ($t_rel = ca_sets_x_anonymous_access::findAsInstance(['set_id' => $id, 'guid' => $guid])) {
-<<<<<<< HEAD
 				if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
-=======
->>>>>>> dev/lightbox-sharing
 				$t_rel->delete(true);
 				
 				if ($t_rel->numErrors()) {
@@ -3796,11 +3779,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *
 	 * @return string
 	 */
-<<<<<<< HEAD
-	public function getAnonymousAccessHTMLFormBundle($request, $form_name, $placement_code, $table_num, $item_id, $user_id=null, $options=null) : string {
-=======
 	public function getAnonymousAccessTokenHTMLFormBundle($request, $form_name, $placement_code, $table_num, $item_id, $user_id=null, $options=null) : string {
->>>>>>> dev/lightbox-sharing
 		$view_path = (isset($options['viewPath']) && $options['viewPath']) ? $options['viewPath'] : $request->getViewsDirectoryPath();
 		$o_view = new View($request, "{$view_path}/bundles/");
 		$t_rel = new ca_sets_x_anonymous_access();
@@ -3811,7 +3790,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$o_view->setVar('id_prefix', $form_name);	
 		$o_view->setVar('placement_code', $placement_code);		
 		$o_view->setVar('request', $request);	
-<<<<<<< HEAD
 		
 		$downloads = caGetPawtucketLightboxDownloadVersions(Datamodel::getTableName($this->get('table_num')));
 		$o_view->setVar('downloads', $downloads);
@@ -3937,11 +3915,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	public function setLastUse() {
 		$this->set('last_used', _t('now'));
 		return $this->update();
-=======
-		$o_view->setVar('initialValues', $this->getAnonymousAccessTokens());
-		
-		return $o_view->render('ca_sets_x_anonymous_access.php');
->>>>>>> dev/lightbox-sharing
 	}
 	# ---------------------------------------------------------------
 	/**
