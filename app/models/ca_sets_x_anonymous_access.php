@@ -79,13 +79,6 @@ BaseModel::$s_ca_models_definitions['ca_sets_x_anonymous_access'] = array(
 			'BOUNDS_LENGTH' => [0, 255],
 			'LABEL' => _t('Name of link'), 'DESCRIPTION' => _t('Descriptive name for token.')
 		),
-		'settings' => array(
-			'FIELD_TYPE' => FT_VARS, 'DISPLAY_TYPE' => DT_OMIT, 
-			'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
-			'IS_NULL' => false, 
-			'DEFAULT' => '',
-			'LABEL' => _t('Settings'), 'DESCRIPTION' => _t('Display settings')
-		),
 		'effective_date' => array(
 			'FIELD_TYPE' => FT_DATERANGE, 'DISPLAY_TYPE' => DT_FIELD, 
 			'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
@@ -100,7 +93,7 @@ BaseModel::$s_ca_models_definitions['ca_sets_x_anonymous_access'] = array(
 			'IS_NULL' => false, 
 			'DEFAULT' => '',
 			'LABEL' => _t('Settings'), 'DESCRIPTION' => _t('Share settings')
-		),
+		)
  	)
 );
 

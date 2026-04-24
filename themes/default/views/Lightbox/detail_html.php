@@ -50,8 +50,15 @@ $current_sort = $this->getVar('current_sort');
 $current_sort_direction = $this->getVar('current_sort_direction');
 
 $t_list_item = new ca_list_items();
-$user_id = $this->request->getUserID();
-$can_delete = $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__);
+
+// $user_id = $this->request->getUserID();
+// $can_delete = $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__);
+
+$user_id = $is_anonymous ? null : $this->request->getUserID();
+$can_edit = !$is_anonymous;
+$can_delete = $is_anonymous ? false : $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__);
+
+$show_actions =  !$is_anonymous && $can_delete;
 
 $search = $this->getVar('search');
 $total = $this->getVar('total');
@@ -71,8 +78,6 @@ if(!$incremental) {
 		<!-- Confirm lightbox item(s) delete modal -->
 		<?= $this->render("Lightbox/confirm_delete_lightbox_item_form_html.php"); ?>
 	<!-- END Modals -->
-
-	
 		<div class="row">
 			<div class="col-md-12 col-lg-4">
 				<div class="float-start me-3"><?= caNavLink($this->request, '<i class="bi bi-chevron-left"></i>', 'btn btn-secondary btn-sm', '*', 'Lightbox', 'Index', null, array("aria-label" => _t("Back"), "title" => _t("Back"))); ?></div>
@@ -132,6 +137,12 @@ if(!$incremental) {
 <?php
 					}
 ?>		
+
+<?php if($can_edit) { ?>
+						<button type="button" class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#lightboxAccessModal">
+							<i class="bi bi-share"></i> <?= _t("Share"); ?>
+						</button>
+<?php } ?>
 </div><!-- end btn group -->
 			</div>
 		</div>
