@@ -159,6 +159,8 @@ if($this->request->isLoggedIn() && $this->request->user->canDoAction('can_do_lib
 				{{{<ifdef code="ca_objects.isbn"><div class='unit'><H6>ISBN:</H6><unit delimiter='<br/>'>^ca_objects.isbn</unit></div></ifdef>}}}				
 				{{{<ifdef code="ca_objects.book_format"><div class='unit'><H6>Format:</H6><unit delimiter=', '>^ca_objects.book_format</unit></div></ifdef>}}}				
 
+				{{{<ifdef code="ca_objects.photographer"><div class='unit'><H6>Photographer:</H6><unit delimiter='<br/>'>^ca_objects.photographer</unit></div></ifdef>}}}				
+				
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><H6>Description:</H6>
 						<span class="trimText">^ca_objects.description</span>
