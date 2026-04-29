@@ -3779,7 +3779,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *
 	 * @return string
 	 */
-	public function getAnonymousAccessHTMLFormBundle($request, $form_name, $placement_code, $table_num, $item_id, $user_id=null, $options=null) : string {
+	public function getAnonymousAccessTokenHTMLFormBundle($request, $form_name, $placement_code, $table_num, $item_id, $user_id=null, $options=null) : string {
 		$view_path = (isset($options['viewPath']) && $options['viewPath']) ? $options['viewPath'] : $request->getViewsDirectoryPath();
 		$o_view = new View($request, "{$view_path}/bundles/");
 		$t_rel = new ca_sets_x_anonymous_access();

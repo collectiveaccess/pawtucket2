@@ -74,7 +74,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				$vs_output .= "</span>";
 			}
 			if($vn_rel_object_count){
-				$vs_output .= " <small class='fw-normal'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+				$vs_output .= "<div class='fw-normal fs-5'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</div>";
 			}
 			$vs_output .= "</div>";
 			
