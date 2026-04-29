@@ -43,26 +43,38 @@
 		<div class="hpHeroSlideshow h-100 w-100 z-1">
 			<div id="carouselExampleSlidesOnly" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
 				<div class="carousel-inner h-100">
-					<div class="carousel-item active h-100">
+					<div class="carousel-item h-100">
 						<div class="h-100 hpHero hpHero1 py-5"></div>
-						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">PHOTO CREDIT: Name Here</div>					
+						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">
+							<?php print caDetailLink($this->request, "<i>C.2019.104.2</i> Requiem", "", "ca_objects", "120019"); ?>
+						</div>					
 					</div>
 					<div class="carousel-item h-100">
 						<div class="h-100 hpHero hpHero2 py-5"></div>
-						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">PHOTO CREDIT: Name Here</div>					
+						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">
+							<?php print caDetailLink($this->request, "<i>C.2011.179.31</i> Tridents", "", "ca_objects", "6370"); ?>
+						</div>					
 					</div>
-					<div class="carousel-item h-100">
+					<div class="carousel-item active h-100">
 						<div class="h-100 hpHero hpHero3 py-5"></div>
-						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">PHOTO CREDIT: Name Here</div>					
+						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">
+							<?php print caDetailLink($this->request, "<i>C.2007.33.1</i> Mural", "", "ca_objects", "4362"); ?>
+						</div>					
 					</div>
 					<div class="carousel-item h-100">
 						<div class="h-100 hpHero hpHero4 py-5"></div>
-						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">PHOTO CREDIT: Name Here</div>					
+						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">
+							<?php print caDetailLink($this->request, "<i>C.2019.129.1</i> Stars of the Forest: Elegy for 9/11", "", "ca_objects", "124565"); ?>
+						</div>					
 					</div>
 					<div class="carousel-item h-100">
 						<div class="h-100 hpHero hpHero5 py-5"></div>
-						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">PHOTO CREDIT: Name Here</div>					
+						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">
+							<?php print caDetailLink($this->request, "<i>C.2009.310.9</i> Last Column", "", "ca_objects", "6760"); ?>
+						</div>					
 					</div>
+					
+					
 				</div>
 			</div>
 		</div>
@@ -89,7 +101,7 @@
 					
 				</div></div>
 				<div class="col-lg-1"></div>
-				<div class="col-sm-12 col-lg-4">
+				<div class="col-sm-12 col-lg-5">
 				 	<div class="pb-3 collectionLink">
 				 		<?php print caNavLink($this->request, _t("Object and Art Collection")." <i class='fs-5 bi bi-chevron-right'></i>", "py-3 py-lg-0 fs-4 btn btn-primary d-flex h-100 align-items-center justify-content-center", "", "Browse", "objects"); ?>
 				 	</div>
