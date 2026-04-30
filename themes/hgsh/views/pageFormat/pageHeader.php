@@ -69,7 +69,7 @@
 			<div class="row">
 				<div class="col-xs-12 col-sm-10">
 <?php
-					print "<div class='headerTitle'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'hgsh_title2.png', array('title' => _t('Hampstead Garden Suburb Heritage'))), "", "", "","")."</div>";
+					print "<div class='headerTitle'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'hgsh_title3.png', array('title' => _t('Hampstead Garden Suburb Heritage'))), "", "", "","")."</div>";
 ?>		
 				</div><!-- end col -->
 				<div class="col-sm-2">
@@ -115,7 +115,7 @@
 <?php
 						print $this->render("pageFormat/browseMenu.php");
 ?>
-					<li><?php print caNavLink($this->request, _t("About HGS Heritage"), '', '', 'About', 'HGSH'); ?></li>
+					<li><?php print caNavLink($this->request, _t("About HGS Virtual Museum"), '', '', 'About', 'HGSH'); ?></li>
 					<li><?php print caNavLink($this->request, _t("Contact Details"), '', '', 'About', 'contact_details'); ?></li>
 					<li><?php print caNavLink($this->request, _t("Donate"), '', '', 'About', 'donate'); ?></li>
 				</ul>

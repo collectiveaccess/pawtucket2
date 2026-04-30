@@ -32,7 +32,7 @@
 		<footer id="footer">
 			<div class="row">
 				<div class="col-sm-6">
-					&copy; Hampstead Garden Suburb Heritage 2015  |  All Rights Reserved
+					&copy; HGS Virtual Museum 2026  |  All Rights Reserved
 				</div>
 				<div class="col-sm-6 text-right">
 					Website design by 1st Impression Creative Ltd  |  Powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a>
