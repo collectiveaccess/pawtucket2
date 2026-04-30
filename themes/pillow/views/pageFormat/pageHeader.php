@@ -49,6 +49,7 @@
 			if($can_do_library_checkin) { $va_user_links[] = "<li>".caNavLink($this->request, _t("Return"), "", "Library", "CheckIn", "Index"); }
 		}
 
+		$va_user_links[] = "<li>".caNavLink($this->request, _t('Available wall art'), '', '', 'Browse', 'wallart', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
