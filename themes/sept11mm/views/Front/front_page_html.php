@@ -39,9 +39,52 @@
 	}
 ?>
 <div class="container-flex">
-	<div class="h-100 hpHero hpHero<?php print $vs_hero; ?> py-5">
-		<div class="container py-5">
-			<div class="row">
+	<div class="hpHeroWrapper position-relative h-100 ">
+		<div class="hpHeroSlideshow h-100 w-100 z-1">
+			<div id="carouselExampleSlidesOnly" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
+				<div class="carousel-inner h-100">
+					<div class="carousel-item h-100">
+						<div class="h-100 hpHero hpHero1 py-5"></div>
+						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">
+							<?php print caDetailLink($this->request, "<i>C.2019.104.2</i> Requiem", "", "ca_objects", "120019"); ?>
+						</div>					
+					</div>
+					<div class="carousel-item h-100">
+						<div class="h-100 hpHero hpHero2 py-5"></div>
+						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">
+							<?php print caDetailLink($this->request, "<i>C.2011.179.31</i> Tridents", "", "ca_objects", "6370"); ?>
+						</div>					
+					</div>
+					<div class="carousel-item active h-100">
+						<div class="h-100 hpHero hpHero3 py-5"></div>
+						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">
+							<?php print caDetailLink($this->request, "<i>C.2007.33.1</i> Mural", "", "ca_objects", "4362"); ?>
+						</div>					
+					</div>
+					<div class="carousel-item h-100">
+						<div class="h-100 hpHero hpHero4 py-5"></div>
+						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">
+							<?php print caDetailLink($this->request, "<i>C.2019.129.1</i> Stars of the Forest: Elegy for 9/11", "", "ca_objects", "124565"); ?>
+						</div>					
+					</div>
+					<div class="carousel-item h-100">
+						<div class="h-100 hpHero hpHero5 py-5"></div>
+						<div class="hpHeroCaption bg-white fs-6 border-black border-top border-1">
+							<?php print caDetailLink($this->request, "<i>C.2009.310.9</i> Last Column", "", "ca_objects", "6760"); ?>
+						</div>					
+					</div>
+					
+					
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<div class="container py-5 position-relative z-3">
+			<div class="row py-5 py-5">
 				<div class="col-sm-12 col-lg-6"><div class="bg-white pt-4 pb-5 px-3 px-md-5 mb-5 mb-lg-0">
 <?php
 	$vs_hp_intro_title = $this->getVar("hp_intro_title");
@@ -58,9 +101,9 @@
 					
 				</div></div>
 				<div class="col-lg-1"></div>
-				<div class="col-sm-12 col-lg-4">
+				<div class="col-sm-12 col-lg-5">
 				 	<div class="pb-3 collectionLink">
-				 		<?php print caNavLink($this->request, _t("Object Collection")." <i class='fs-5 bi bi-chevron-right'></i>", "py-3 py-lg-0 fs-4 btn btn-primary d-flex h-100 align-items-center justify-content-center", "", "Browse", "objects"); ?>
+				 		<?php print caNavLink($this->request, _t("Object and Art Collection")." <i class='fs-5 bi bi-chevron-right'></i>", "py-3 py-lg-0 fs-4 btn btn-primary d-flex h-100 align-items-center justify-content-center", "", "Browse", "objects"); ?>
 				 	</div>
 				 	<div class="pb-3 collectionLink">
 				 		<?php print caNavLink($this->request, _t("Oral History Collection")." <i class='fs-5 bi bi-chevron-right'></i>", "py-3 py-lg-0 fs-4 btn btn-primary d-flex h-100 align-items-center justify-content-center", "", "Browse", "oral_histories"); ?>
@@ -76,70 +119,4 @@
 			</div>
 		</div>
 	</div>
-</div>
-<div class="container">
-	<div class="row justify-content-center">
-		<div class="col-md-10 pt-4 text-center fs-4">
-			{{{hp_callout}}}
-		</div>
-	</div>
-</div>
-<div class="container">
-	<div class="row justify-content-center">
-		<div class="col-md-8 pt-2 text-left">
-			<div class="px-lg-4">
-				<div class="img-fluid pb-2">
-					<?php print caGetThemeGraphic($this->request, "hp_conservation.jpg", array("alt" => "Image of evidence tag, hat and badge")); ?>
-				</div>
-				<H2 class="pt-4">Conservation</H2>
-				<div class="fs-5 pb-2">
-					{{{hp_conservation}}}
-				</div>
-				<div class="mb-5 mt-2">
-					<a href="https://911memorial.org/visit/museum/collection/conservation" class="btn btn-primary">Learn more</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="row justify-content-center">
-		<div class="col-md-8 mt-lg-5 pt-5 text-left">
-			<div class="px-lg-4">
-				<div class="img-fluid pb-2">
-					<?php print caGetThemeGraphic($this->request, "hp_donate.jpg", array("alt" => "Image of oral history being recorded")); ?>
-				</div>
-				<div class="row">
-					<div class="col-sm-8 small"><div class="small pb-4 fw-bold fs-6">Collection 9/11 Memorial Museum, Gift of Anthony and Maryann Gambale, in Memory of Giovanna Gambale. <?php print caDetailLink($this->request, "Learn more about this item", "", "ca_objects", 8618); ?>.</div></div>
-					<div class="col-sm-4"><div class="small pb-4 fw-bold fs-6 text-end text-uppercase">Photo by Michael Hnatov</div></div>
-				</div>
-				<H2 class="pt-lg-4">Give to the Collection</H2>
-				<div class="fs-5 pb-2">
-					{{{hp_donate}}}
-				</div>
-				<div class="mb-5 mt-2">
-					<a href="https://911memorial.org/support/donate/contribute-collection" class="btn btn-primary">Learn more</a>
-				</div>
-			</div>
-		</div>
-	</div>	
-	<div class="row justify-content-center">
-		<div class="col-md-8 mt-lg-5 pt-5 text-left">
-			<div class="px-lg-4">
-				<div class="img-fluid pb-2">
-					<?php print caGetThemeGraphic($this->request, "hp_loans.jpg", array("alt" => "Image of LMDC Board")); ?>
-				</div>
-				<div class="small pb-4 fw-bold fs-6">Quilts from the collection on view at the National Quilt Museum in Paducah, KY.</div>
-				<H2 class="pt-lg-4">Outgoing Loans</H2>
-				<div class="fs-5 pb-2">
-					{{{hp_loans}}}
-				</div>
-				<div class="mb-5 mt-2">
-					<a href="https://911memorial.org/visit/museum/outgoing-loans" class="btn btn-primary">Learn more</a>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="container-flex">
-	<div class="fade-out bg-black bg-opacity-25 text-bg-dark p-3 text-center shadow w-100 fixed-bottom display-4"><i class="bi bi-chevron-down"></i></div>
 </div>

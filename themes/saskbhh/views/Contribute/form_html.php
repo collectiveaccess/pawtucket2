@@ -35,29 +35,28 @@ $t_subject = $this->getVar('t_subject');
 		<div class="contributeForm">
 			<div class='container'>
 			<div class="pull-right">
-				<div class='contributeSubmit'><?= caNavLink($this->request, 'Back to list', '', '*', '*', 'Index');?></div>
+				<div class='contributeSubmit'><?= caNavLink($this->request, _t('Back to list'), '', '*', '*', 'Index');?></div>
 			</div><!-- end detailTool -->
-			<h1>Contribute</h1>
+			<h1><?= _t("Contribute"); ?></h1>
 			
 			<p>
-				Submit metadata for your artifact using the form below. 
-				It will be made visible on the site once it's been reviewed and edited.
+				<?php print _t("Submit metadata for your artifact using the form below. It will be made visible on the site once it's been reviewed and edited."); ?>
 			</p>
 			
 			{{{<ifdef code="errors"><div class="notificationMessage">^errors</div></ifdef>}}}
 			
 			{{{form}}}
 				<div class='row''>
-					<div class='col-sm-12'><h4>Submission Information</h4></div>
+					<div class='col-sm-12'><h4><?= _t("Submission Information"); ?></h4></div>
 					
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.type_id:error}}}
-						<span class='title'>Artifact type</span><br/>
+						<span class='title'><?= _t("Artifact type"); ?></span><br/>
 						{{{ca_objects.type_id%width=350px}}}  
 					</div>										
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.preferred_labels:error}}}
-						<span class='title'>Name of artifact</span><br/>
+						<span class='title'><?= _t("Name of artifact"); ?></span><br/>
 						{{{ca_objects.preferred_labels.name%width=350px}}}
 					</div>	
 				</div>
@@ -66,12 +65,12 @@ $t_subject = $this->getVar('t_subject');
 				<div class='row'>
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.description:error}}}
-						<span class='title' data-toggle="tooltip" title="Please provide how the following submission contributes to the archive, is related to current artifacts within the archive, or is related to the research focus of the archive along with a general description of the artifact.">Description</span><br/>
+						<span class='title' data-toggle="tooltip" title="<?= _t("Please provide how the following submission contributes to the archive, is related to current artifacts within the archive, or is related to the research focus of the archive along with a general description of the artifact."); ?>"><?= _t("Description"); ?></span><br/>
 						{{{ca_objects.description%width=350px&height=120px&default=desc+goes+here}}}  
 					</div>
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.accession_num:eror}}}
-						<span class='title' data-toggle="tooltip" title="Accession number of item.">Accession number</span><br/>
+						<span class='title' data-toggle="tooltip" title="<?= _t("Accession number of item."); ?>"><?= _t("Accession number"); ?></span><br/>
 						{{{ca_objects.accession_num%width=350px&height=120px&default=}}}  
 					</div>
 				</div>
@@ -79,7 +78,7 @@ $t_subject = $this->getVar('t_subject');
 				<div class='row'>
 					<div class="contributeField col-sm-6">
 						{{{ca_entities:error}}}
-						<span class='title' data-toggle="tooltip" title="Creator of item">Creator</span><br/>
+						<span class='title' data-toggle="tooltip" title="Creator of item"><?= _t("Creator"); ?></span><br/>
 						
 						<p>{{{ca_entities%autocomplete=1&width=350px&relationshipType=creator&type=ind&index=0&placeholder=creator+goes+here}}}</p>
                         
@@ -100,7 +99,7 @@ $t_subject = $this->getVar('t_subject');
 						{{{ca_object_representations.media:error}}}
 						
 						{{{<ifcount code='ca_object_representations.media' min='1'><div>^ca_object_representations.media%previewExistingValues=1&delimiter=-</div></ifcount>}}}
-						<span class='title'>Media</span>{{{ca_object_representations.media%autocomplete=0}}} 
+						<span class='title'><?= _t("Media"); ?></span>{{{ca_object_representations.media%autocomplete=0}}} 
 					</div>
 				</div><!-- end row -->
 				

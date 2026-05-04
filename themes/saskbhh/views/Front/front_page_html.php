@@ -31,6 +31,7 @@
  */
 
 	// print $this->render("Front/featured_set_slideshow_html.php");
+	global $g_ui_locale;
 
 	$va_access_values = $this->getVar("access_values");
 	$vs_hero = $this->request->getParameter("hero", pString);
@@ -49,7 +50,7 @@
 							<div class="fs-3 fw-light ">Welcome to the</div>
 							<div class="pt-2 display-5 fw-medium">MAS Repatriation Portal</div>
 						</div>
-						<div class="fs-4 pt-1">{{{hp_search_text}}}</div>
+						<div class="fs-4 pt-1">{{{hp_search_text<?php print (mb_strpos($g_ui_locale, "fr") !== false) ? "_fr" : ""; ?>}}}</div>
 						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'Objects'); ?>">
 							<div class="input-group pb-3">
 								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
@@ -67,8 +68,8 @@
 	</div>
 </div>
 <?php
-	$vs_hp_intro_title = $this->getVar("hp_intro_title");
-	$vs_hp_intro = $this->getVar("hp_intro");
+	$vs_hp_intro_title = $this->getVar("hp_intro_title".((mb_strpos($g_ui_locale, "fr") !== false) ? "_fr" : ""));
+	$vs_hp_intro = $this->getVar("hp_intro".((mb_strpos($g_ui_locale, "fr") !== false) ? "_fr" : ""));
 	if($vs_hp_intro_title || $vs_hp_intro){
 ?>
 		<div class="container">

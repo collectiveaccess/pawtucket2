@@ -25,6 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
+global $g_ui_locale;
 $lightboxDisplayName = caGetLightboxDisplayName();
 $lightbox_sectionHeading = ucFirst($lightboxDisplayName["section_heading"]);
 
@@ -83,7 +84,7 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 						<h1 class="modal-title fs-2 text-center w-100" id="contentWarningLabel">{{{content_warning_title}}}</h1>
 					</div>
 					<div class="modal-body text-center fs-4 pb-2">
-						{{{content_warning_text}}}
+						{{{content_warning_text<?php print (mb_strpos($g_ui_locale, "fr") !== false) ? "_fr" : ""; ?>}}}
 					</div>
 					<div class="modal-footer justify-content-center border-0">
 							<form method="POST" action="<?php print caNavUrl($this->request, '*', '*', '*'); ?>">
@@ -111,7 +112,18 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 ?>
 	<a href="#page-content" id="skip" class="visually-hidden"><?= _t("Skip to main content"); ?></a>
 	<header>
-		<div class="container-xl my-3">
+		<div class="container-xl">
+			<div class="row"><div class="col-sm-12 text-end mt-1">
+<?php
+					if($g_ui_locale == "en_US"){
+						print caChangeLocaleLink($this->request, 'fr_FR', "French", 'btn bg-light btn-sm py-0 fs-6');
+					}else{
+						print caChangeLocaleLink($this->request, 'en_US', "English", 'btn bg-light btn-sm py-0 fs-6');
+					}
+?>
+			</div></div>
+		</div>
+		<div class="container-xl mb-4">
 			<div class="row align-items-center">
 				<div class="col-9">
 					<?= caNavlink($this->request, _t("MAS Repatriation Portal"), "text-secondary display-4 fw-medium text-decoration-none", "", "", ""); ?>
@@ -140,6 +152,9 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 							</li>
 							<li>
 								<?= caNavlink($this->request, _t('How to Contribute'), "dropdown-item".((strToLower($this->request->getController()) == "contribute") ? " active" : ""), "", "Contribute", "Index", "", ((strToLower($this->request->getController()) == "contribute") ? array("aria-current" => "page") : null)); ?>
+							</li>
+							<li>
+								<?= caNavlink($this->request, _t('Resources'), "dropdown-item".((strToLower($this->request->getController()) == "resources") ? " active" : ""), "", "Resources", "", "", ((strToLower($this->request->getController()) == "resources") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							<li>
 								<?= caNavlink($this->request, _t('Contact Us'), "dropdown-item".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
@@ -184,13 +199,13 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 								<button type="submit" class="px-3 py-2 btn btn-primary rounded-end-1" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 							</div>
 						</form>
+						
 					</li>
 				</ul>
 
 			</div>
 		</div>
 	</nav>	
-
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
 <?php
 	if(strToLower($this->request->getController()) != "front"){

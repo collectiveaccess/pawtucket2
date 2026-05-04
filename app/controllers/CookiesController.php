@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2021-2025 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -74,7 +74,14 @@ class CookiesController extends BasePawtucketController {
 				CookieOptionsManager::set($category_code, $accept_all ? 1 : $allow);
 			}
 		}
-		return $this->manage();
+		if(
+			(!($url = Session::getVar('pawtucket2_last_page')) && !($url = Session::getVar('pawtucket2_page_at_ban')))
+			||
+			(preg_match("!/Cookies/!i", $url))
+		) {
+			$url = caNavUrl($this->request, '', 'Front', 'Index');
+		}
+		$this->response->setRedirect($url);
 	}
 	# ------------------------------------------------------
 }

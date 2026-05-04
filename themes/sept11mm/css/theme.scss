@@ -85,6 +85,9 @@ body{
 b, strong {
   font-weight: bold;
 }
+.text-small{
+	font-size: 0.875em;
+}
 .btn-primary{
 	font-weight: 700;
 	padding: 0.5625rem 1rem;
@@ -218,10 +221,23 @@ footer{
 	}
 }
 /* ------------------------- Front ------------------------- */
+.hpHeroWrapper {
+    position: relative;
+    
+    @media(min-width:992px){
+		.collectionLink{
+			height:25%;
+		}
+	}
+	.hpHeroSlideshow{
+		position:absolute;
+		top:0px;
+		left:0px;
+	}
+}
 .hpHero {
     position: relative;
-    background-image: url("../assets/graphics/hero_2.jpg");
-
+    
     background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
@@ -231,6 +247,15 @@ footer{
 			height:25%;
 		}
 	}
+}
+.hpHeroCaption{
+	position:absolute;
+	background-color:#FFF;
+	bottom:-1px;
+	right:0px;
+	padding:5px 8px 0px 0px;
+	text-align:right;
+	width:100%;
 }
 
 .hpHero1 {
@@ -256,7 +281,6 @@ footer{
 }
 .parallax {
     position: relative;
-    background-image: url("../assets/graphics/hero_2.jpg");
 
     /* Full height */
     height: 100vh;
@@ -291,4 +315,8 @@ footer{
 .galleryDesc{
 	max-height:412px;
 	overflow-y: scroll;
+}
+.gallery .card img {
+  height: auto;
+  width: 100%;
 }

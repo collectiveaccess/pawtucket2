@@ -77,6 +77,18 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 <?php
 	}
 	if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
+		$submission_usa = "";
+		if(is_array($va_facets["submission_country_facet"]) && sizeof($va_facets["submission_country_facet"])){
+			$submission_facet = $va_facets["submission_country_facet"];
+			# --- display USA at top so look through until get that first
+			foreach($submission_facet['content'] as $va_item) {
+				if($va_item['label'] == "USA"){
+					$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+					$submission_usa = "<li class='list-group-item border-0 bg-transparent px-0 py-1'>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => 'submission_country_facet', 'id' => $va_item['id'], 'view' => $vs_view))."</li>";
+				}
+			}
+		}
+		
 		print "<H2 class='fs-4 px-3 py-2'>"._t("Filter by")."</H2>";
 		
 		if($vs_criteria){
@@ -104,6 +116,10 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 
 				print "<div id='".$vs_facet_name."' class='accordion-collapse collapse' aria-labelledby='heading".$vs_facet_name."' data-bs-parent='#browseRefineFacets'>
 					<div class='accordion-body small'><ul class='list-group'>";
+						if(($vs_facet_name == "submission_country_facet")){
+							# --- display USA at top so look through until get that first
+							print $submission_usa;
+						}
 						$vn_facet_size = sizeof($va_facet_info['content']);
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {

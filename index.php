@@ -52,6 +52,7 @@
 		require_once(__CA_APP_DIR__.'/lib/pawtucket/ConfigurationCheck.php');
 		ConfigurationCheck::performQuick();
 		if(ConfigurationCheck::foundErrors()){
+			http_response_code(500); // send as Internal Server Error
 			ConfigurationCheck::renderErrorsAsHTMLOutput();
 			exit();
 		}
@@ -141,7 +142,7 @@
 		$resp->sendResponse();
 	
 		// Note url of this page as "last page"
-		if ((!in_array($g_request->getController(), ['LoginReg', 'Ban']) && (!$g_request->isAjax()) && (!$g_request->getParameter('dont_set_pawtucket2_last_page', pInteger)))) {	// the 'dont_set_pawtucket2_last_page' is a lame-but-effective way of suppressing recording of something we don't want to be a "last page" (and potentially redirected to)
+		if ((!in_array($g_request->getController(), ['LoginReg', 'Ban', 'Cookies']) && (!$g_request->isAjax()) && (!$g_request->getParameter('dont_set_pawtucket2_last_page', pInteger)))) {	// the 'dont_set_pawtucket2_last_page' is a lame-but-effective way of suppressing recording of something we don't want to be a "last page" (and potentially redirected to)
 			Session::setVar('pawtucket2_last_page', $g_request->getFullUrlPath());
 		}
 		$g_request->close();
