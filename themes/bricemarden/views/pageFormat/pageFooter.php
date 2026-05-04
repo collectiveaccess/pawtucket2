@@ -33,7 +33,6 @@
 				<div class="row">
 					<div class="col-12 text-end">
 						<ul class="list-inline">
-							<li class="list-inline-item"><?= caNavlink($this->request, _t('Contact'), "", "", "Contact", "Form", ""); ?></li>
 							<li class="list-inline-item">&copy; <?= date('Y'); ?></li>
 							<?= ((CookieOptionsManager::cookieManagerEnabled()) ? '<li class="list-inline-item">'.caNavLink($this->request, _t("Manage Cookies"), "text-bg-dark small", "", "Cookies", "manage")."</li>" : ""); ?>
 						</ul>

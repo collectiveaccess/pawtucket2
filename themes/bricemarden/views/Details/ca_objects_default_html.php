@@ -95,6 +95,8 @@ if($show_nav){
 					<ifdef code='ca_objects.print_date'>^ca_objects.print_date<br/></ifdef>
 					<ifdef code='ca_objects.medium.medium_notes_text'>^ca_objects.medium.medium_notes_text<br/></ifdef>
 					<ifdef code='ca_objects.master_dimensions'>^ca_objects.master_dimensions%delimiter=;_<br/></ifdef>
+					<ifdef code="ca_objects.inscription_text"><br/>^ca_objects.inscription_text</ifdef>
+				</ifdef>
 				</div>
 			}}}
 		</div>
@@ -102,17 +104,15 @@ if($show_nav){
 	<div class="row mt-5">
 		<div class="col-md-4">
 			{{{<dl>
-				<ifdef code="ca_objects.inscription_text">
-					<dt><?= _t('Inscriptions'); ?></dt>
-					<dd>^ca_objects.inscription_text</dd>
-				</ifdef>
-				<ifcount code="ca_entities" min="1">
+				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="provenance">
 					<dt><?= _t('Provenance'); ?></dt>
-					<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="provenance"><dd>^ca_entities.preferred_labels</dd></unit>
+					<dd>
+					<unit relativeTo="ca_objects_x_entities" delimiter="<br/>" restrictToRelationshipTypes="provenance">^ca_objects_x_entities.interstitial_notes</unit>
+					</dd>
 				</ifcount>
 				<ifdef code='ca_objects.nonpreferred_labels'>
 					<dt>Alternate Title</dt>
-					<unit relativeTo="ca_objects.nonpreferred_labels"><dd>^ca_objects.nonpreferred_labels</dd></unit>
+					<dd>^ca_objects.nonpreferred_labels%delimiter=<br/></dd>
 				</ifdef>
 				<ifdef code='ca_objects.creation_location'>
 					<dt>Studio</dt>
@@ -129,11 +129,11 @@ if($show_nav){
 			<dl>
 				<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
 					<if rule="^ca_occurrences.solo_group =~ /solo/i"><dt><?= _t('Solo Exhibitions'); ?></dt></if>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /group/i"><dd><l><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=" / ">^ca_entities.preferred_labels<if rule="^ca_entities.location_display.city_display =~ /yes/"><ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef></if><if rule="^ca_entities.location_display.state_display =~ /yes/"><ifdef code="ca_entities.address.stateprovence">, ^ca_entities.address.stateprovence</ifdef></if><if rule="^ca_entities.location_display.country_display =~ /yes/"><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></if></unit><ifdef code="ca_occurrences.exhibition_year">, ^ca_occurrences.exhibition_year</ifdef></l></dd></unit>
+					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /group/i"><dd><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
 				</ifcount>
 				<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
 					<if rule="^ca_occurrences.solo_group =~ /group/i"><dt><?= _t('Group Exhibitions'); ?></dt></if>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /solo/i"><dd><l><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=" / ">^ca_entities.preferred_labels<if rule="^ca_entities.location_display.city_display =~ /yes/"><ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef></if><if rule="^ca_entities.location_display.state_display =~ /yes/"><ifdef code="ca_entities.address.stateprovence">, ^ca_entities.address.stateprovence</ifdef></if><if rule="^ca_entities.location_display.country_display =~ /yes/"><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></if></unit><ifdef code="ca_occurrences.exhibition_year">, ^ca_occurrences.exhibition_year</ifdef></l></dd></unit>
+					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /solo/i"><dd><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
 				</ifcount>
 			</dl>
 		</div>
@@ -146,4 +146,19 @@ if($show_nav){
 			</dl>
 		</div>
 	</ifcount>}}}			
-</div>
+	</div>
+{{{<ifcount code="ca_objects.related" min="1">
+	<div class="row mt-5"><div class="col"><h2>Related Artwork<ifcount code="ca_objects.related" min="s">s</ifcount></h2></div></div>
+	<div class="row">
+		<unit relativeTo="ca_objects.related" delimiter="">
+			<div class="col-md-6 col-lg-4 d-flex">
+				<div class="card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4">
+					<l>^ca_object_representations.media.medium%class=card-img-top,object-fit-contain,px-3,pt-3,rounded-0</l>
+					<div class="card-body">
+						<div class='card-title mb-1'><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div><p class='card-text small lh-sm'><ifdef code='ca_objects.print_date'>^ca_objects.print_date</ifdef></p>
+					</div>
+				 </div>	
+			</div>
+		</unit>
+	</div>	
+</ifcount>}}}
