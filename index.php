@@ -52,6 +52,7 @@
 		require_once(__CA_APP_DIR__.'/lib/pawtucket/ConfigurationCheck.php');
 		ConfigurationCheck::performQuick();
 		if(ConfigurationCheck::foundErrors()){
+			http_response_code(500); // send as Internal Server Error
 			ConfigurationCheck::renderErrorsAsHTMLOutput();
 			exit();
 		}

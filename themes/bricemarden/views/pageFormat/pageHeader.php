@@ -85,15 +85,11 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('Artworks'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "artworks")) ? " active" : ""), "", "Browse", "artworks", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "artworks")) ? array("aria-current" => "page") : null)); ?>
 					</li>
-					<li class="nav-item dropdown">
-						<a class="text-nowrap nav-link<?php print ((strToLower($this->request->getController()) == "browse") && (in_array(strToLower($this->request->getAction()), array("solo_exhibitions", "group_exhibitions")))) ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('Exhibitions'); ?><i class="bi bi-chevron-down ms-2 fs-6"></i></a>
-						<ul class="dropdown-menu">
-							<li><?= caNavlink($this->request, _t('Solo Exhibitions'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "solo_exhibitions")) ? " active" : ""), "", "Browse", "solo_exhibitions", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "solo_exhibitions")) ? array("aria-current" => "page") : null)); ?></li>
-							<li><?= caNavlink($this->request, _t('Group Exhibitions'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "group_exhibitions")) ? " active" : ""), "", "Browse", "group_exhibitions", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "group_exhibitions")) ? array("aria-current" => "page") : null)); ?></li>
-						</ul>
+					<li class="nav-item">
+						<?= caNavlink($this->request, _t('Exhibitions'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "exhibitions")) ? " active" : ""), "", "Browse", "exhibitions", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "exhibitions")) ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Bibliography'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "bibliography")) ? " active" : ""), "", "Browse", "bibliography", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "bibliography")) ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Literature'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "literature")) ? " active" : ""), "", "Browse", "literature", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "literature")) ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item">
 						<a href="#" class="nav-link"><?php print _t('Chronology'); ?></a>

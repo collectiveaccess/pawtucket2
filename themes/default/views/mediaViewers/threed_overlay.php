@@ -25,6 +25,10 @@ $options = $this->getVar('options');
 		width: 100%;
 		height: 100%;
 	}
+	div.mediaviewer-threed-overlay-container div canvas {
+		width: 100% !important;
+		height: 100% !important;
+	}
 </style>
 <?php
 	if($options['zoom'] ?? false) {

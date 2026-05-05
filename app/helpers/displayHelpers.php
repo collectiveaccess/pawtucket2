@@ -4542,6 +4542,20 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 				];
 			}
 		}
+		$sidecars = null;
+		if(is_array($sidecar_list = $t_rep->getSidecarFileList($rep_id))) {
+			$sidecars = [];
+			foreach($sidecar_list as $sid => $sf) {
+				$sidecars[] = [
+					'url' => $sf['url'],
+					'mimetype' => $sf['mimetype'],
+					'typename' => $sf['typename'],
+					'filesize' => $sf['filesize'],
+					'original_filename' => $sf['original_filename'],
+					'sidecarUrl' => caNavUrl($request, '*', '*', 'getMediaSidecarData', ['sidecar_id' => $sid], ['absolute' => true]).'/filename/'.$sf['original_filename']
+				];
+			}
+		}
 		
 		$embedded_player = null;
 		if(is_array($media_data = $qr->getMediaInfo('ca_object_representations.media')) && is_array($media_data['INPUT'] ?? null)) {
@@ -4564,6 +4578,7 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 			'no_overlay' => (bool)($display_info['no_overlay'] ?? false),
 			'caption' => caProcessTemplateForIDs($caption_template, $qr->tableName(), [$rep_id]),
 			'vttCaptions' => $vtt_captions,
+			'sidecars' => $sidecars,
 			'embeddedPlayer' => $embedded_player,
 			'download_version' => $allow_download ? caGetOption('download_version', $download_info, null) : null
 		];
