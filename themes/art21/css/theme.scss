@@ -1,0 +1,50 @@
+.btn-primary{
+	border-radius: 30px;
+}
+/* ------------------------- Navbar ------------------------- */
+.navbar-brand{
+	width:auto;
+	border: 3px solid #000;
+	border-right:0px;
+	padding:0px;
+	svg{
+		fill: #000;
+	}
+}
+.footer-brand{
+	display: inline-block;
+	border: 3px solid #fff;
+	border-right:0px;
+	padding:0px;
+	svg{
+		fill: #FFF;
+	}
+}
+/* home */
+.parallax {
+    position: relative;
+    background-image: url("../assets/graphics/Art21_S12_EpTwo_Realms_of_the_Real.jpeg");
+
+    /* Full height */
+    /*height: 100vh;*/
+    height:auto;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/Art21_S12_EpTwo_Realms_of_the_Real.jpeg");
+    }
+    .divide{
+    	width:170px;
+    }
+}
+/* general search */
+.search.results{
+	.btn.btn-dark{
+		border-radius: 0px;
+	}
+}
