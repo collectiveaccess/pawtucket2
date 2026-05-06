@@ -178,7 +178,7 @@
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "Over Erfgoedcel Waasland", "", "", "About", "About"); ?></li>
+							<li><?php print caNavLink($this->request, "Over Interwaas", "", "", "About", "About"); ?></li>
 							<li><?php print caNavLink($this->request, "Over Erfgoedbank Waasland", "", "", "About", "Guide"); ?></li>
 						</ul>
 					</li>
