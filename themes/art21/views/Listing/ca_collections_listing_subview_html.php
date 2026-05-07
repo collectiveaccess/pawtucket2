@@ -1,13 +1,13 @@
 <?php
-/* ----------------------------------------------------------------------
- * views/pageFormat/pageFooter.php : 
+/** ---------------------------------------------------------------------
+ * themes/default/Listings/listing_html : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2024 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,28 +23,24 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * @package CollectiveAccess
+ * @subpackage Core
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
+ *
  * ----------------------------------------------------------------------
  */
+ 
+ 	$va_lists = $this->getVar('lists');
+ 	$va_type_info = $this->getVar('typeInfo');
+ 	$va_listing_info = $this->getVar('listingInfo');
+ 
+	foreach($va_lists as $vn_type_id => $qr_list) {
+		if(!$qr_list) { continue; }
+		
+		print "<h2>{$va_listing_info['displayName']}</h2>\n";
+		
+		while($qr_list->nextHit()) {
+			print $qr_list->getWithTemplate('<l>^ca_collections.preferred_labels.name</l>')."<br>\n";	
+		}
+	}
 ?>
-		</main>
-	</div> <!-- end container -->
-		<footer id="footer" class="pt-5 pb-3 text-start mt-auto">
-			<div class="container-xl">
-				<div class="row">
-					<div class="col-12 text-end">
-						<ul class="list-inline">
-							<li class="list-inline-item">&copy; <?= date('Y'); ?></li>
-							<?= ((CookieOptionsManager::cookieManagerEnabled()) ? '<li class="list-inline-item">'.caNavLink($this->request, _t("Manage Cookies"), "text-bg-dark small", "", "Cookies", "manage")."</li>" : ""); ?>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</footer><!-- end footer -->
-		
-		<?= $this->render("Cookies/banner_html.php"); ?>
-		
-		<script>
-			window.initApp();
-		</script>
-	</body>
-</html>
