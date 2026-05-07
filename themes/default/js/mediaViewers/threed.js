@@ -41,7 +41,7 @@ let threedViewer = function(id, options=null) {
 					}
 				}
 				modelUrls.push(source.original_url);
-				e.innerHTML = "<div class='online_3d_viewer threedViewer-viz' model='" + modelUrls.join(', ') + "' backgroundcolor='255,255,255,255' defaultcolor='200,200,200'></div>";
+				e.innerHTML = "<div class='online_3d_viewer threedViewer-viz' model='" + modelUrls.join(', ') + "' backgroundcolor='204,204,204,0' defaultcolor='204,0,0'></div>";
 				OV.Init3DViewerElements();
 			} else {
 				that[k] = null;
