@@ -1,3 +1,2 @@
-<H1>About HGS Heritage</H1>
+<H1>About HGS Virtual Museum</H1>
 {{{suburb_history}}}
-<?php print caGetGlobalValuesCount(); ?>
