@@ -57,7 +57,6 @@
 				<div class='trimText'>
 					{{{womenPrintersBooksellersIntroEnglish}}}
 				</div>
-				<br/>
 <?php
 				if($this->getVar("womenPrintersBooksellersBibEnglish")){
 ?>
@@ -77,7 +76,6 @@
 				<div class='trimText'>
 					{{{womenPrintersBooksellersIntroSpanish}}}
 				</div>
-				<br/>
 <?php
 				if($this->getVar("womenPrintersBooksellersBibSpanish")){
 ?>

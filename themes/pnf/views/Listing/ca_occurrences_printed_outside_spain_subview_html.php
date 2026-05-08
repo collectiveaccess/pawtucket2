@@ -105,9 +105,9 @@
 		}
 	}
 	if($g_ui_locale == 'en_US'){
-		$lang_titles = array("printed_americas" => "Printed in the Americas", "printed_europe" => "Printed in Europe (Excluding Spain)");
+		$lang_titles = array("550" => "Printed in the Americas", "549" => "Printed in Europe (Excluding Spain)");
 	}else{
-		$lang_titles = array("printed_americas" => "Impresas en las Américas", "printed_europe" => "Impresas en Europa (fuera de España)");
+		$lang_titles = array("550" => "Impresas en las Américas", "549" => "Impresas en Europa (fuera de España)");
 	}
 	$langs = array_keys($rows_by_language);
 	print "<div class='listingSubHeading' style='padding-top:30px; color:#000;'>Show: ";
