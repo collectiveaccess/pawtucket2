@@ -107,12 +107,20 @@ if($show_nav){
 				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="provenance">
 					<dt><?= _t('Provenance'); ?></dt>
 					<dd>
-					<unit relativeTo="ca_objects_x_entities" delimiter="<br/>" restrictToRelationshipTypes="provenance">^ca_objects_x_entities.interstitial_notes</unit>
+					<unit relativeTo="ca_objects_x_entities" delimiter="<br/>" restrictToRelationshipTypes="provenance" sort="ca_objects_x_entities.rank">^ca_objects_x_entities.interstitial_notes</unit>
 					</dd>
 				</ifcount>
 				<ifdef code='ca_objects.nonpreferred_labels'>
 					<dt>Alternate Title</dt>
 					<dd>^ca_objects.nonpreferred_labels%delimiter=<br/></dd>
+				</ifdef>
+				<ifdef code="ca_objects.group">
+					<dt><?= _t('Group'); ?></dt>
+<?php
+					if($group = caGetBrowseLinks($t_object, 'ca_objects.group', ['template' => '<dd><l>^ca_objects.group</l></dd>', 'linkTemplate' => '^LINK'])) {
+						print join("", $group);
+					}
+?>	
 				</ifdef>
 				<ifdef code='ca_objects.creation_location'>
 					<dt>Studio</dt>

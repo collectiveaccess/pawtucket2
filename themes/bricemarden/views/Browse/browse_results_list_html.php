@@ -174,11 +174,11 @@
 						#$result_output = "<div class='col-md-6 col-lg-4 d-flex'>".caDetailLink($this->request, "
 						$result_output = "<div class='col-12 d-flex'>".caDetailLink($this->request, "
 							
-								<div id='row{$id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
-									<div class='card-body'>
+								<div id='row{$id}' class='card flex-grow-1 width-100 rounded-0 border-0 mb-4'>
+									<div class='card-body px-0 pt-0'>
 										{$caption}
 									</div>
-								 </div>", "w-100 d-flex", $table, $id)."</div><!-- end col -->";
+								 </div>", "w-100 d-flex text-decoration-none", $table, $id)."</div><!-- end col -->";
 					}
 					
 					ExternalCache::save($cache_key, $result_output, 'browse_result', $o_config->get("cache_timeout"));
