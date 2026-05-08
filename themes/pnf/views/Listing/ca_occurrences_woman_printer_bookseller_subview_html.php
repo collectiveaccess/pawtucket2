@@ -46,7 +46,7 @@
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
 			}else{
-				print "<H2>Mujeres Impresoras & Libreras</H2>\n";	
+				print "<H2>Mujeres impresoras & libreras</H2>\n";	
 			
 			}		
 			if ($g_ui_locale == 'en_US'){			
@@ -57,7 +57,7 @@
 				<div class='trimText'>
 					{{{womenPrintersBooksellersIntroEnglish}}}
 				</div>
-				<br/><br/>
+				<br/>
 <?php
 				if($this->getVar("womenPrintersBooksellersBibEnglish")){
 ?>
@@ -77,7 +77,7 @@
 				<div class='trimText'>
 					{{{womenPrintersBooksellersIntroSpanish}}}
 				</div>
-				<br/><br/>
+				<br/>
 <?php
 				if($this->getVar("womenPrintersBooksellersBibSpanish")){
 ?>
