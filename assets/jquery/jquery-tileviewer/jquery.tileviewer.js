@@ -59,16 +59,16 @@ var methods = {
             debug: false,
             maximumPixelsize: 4,//set this to >1 if you want to let user to zoom image after reaching its original resolution 
             
-            toolbar: ['zoomIn', 'zoomOut', 'pan', 'toggleAnnotations', 'rect', 'point', 'polygon', 'measure', 'lock', 'separator',  'overview', 'rotation', 'expand', 'separator', 'list', 'download', 'help', 'key'],
+            toolbar: ['zoomIn', 'zoomOut', 'pan', 'toggleAnnotations', 'rect', 'point', 'polygon', 'measure', 'lock', 'separator', 'overview', 'rotation', 'expand', 'separator', 'list', 'download', 'help', 'key'],
             toolbarIcons: {
-            	'pan': '<i class="fa fa-arrows">',
-            	'toggleAnnotations': '<i class="fa fa-eye"></i>', 
-            	'rect': '<i class="fa fa-square-o"></i>', 
-            	'point': '<i class="fa fa-circle-thin"></i>', 
+            	'pan': '<i class="fas fa-arrows-alt">',
+            	'toggleAnnotations': '<i class="far fa-eye"></i>', 
+            	'rect': '<i class="far fa-square"></i>', 
+            	'point': '<i class="far fa-circle"></i>', 
             	'polygon': '<i class="fa fa-share-alt"></i>', 
             	'measure': '<i class="fa fa-text-width"></i>', 
             	'lock': '<i class="fa fa-lock"></i>', 
-            	'overview': '<i class="fa fa-picture-o"></i>', 
+            	'overview': '<i class="fa fa-image"></i>', 
             	'rotation': '<i class="fa fa-undo"></i>', 
             	'expand': '<i class="fa fa-expand"></i>', 
             	'list': '<i class="fa fa-bars"></i>', 
@@ -88,8 +88,8 @@ var methods = {
             tooltipClass: 'tileviewerTooltipFormat',
             
             uiIcons: {
-            	'zoomIn': '<i class="fa fa-plus-square-o fa-2x"><i>',
-            	'zoomOut': '<i class="fa fa-minus-square-o fa-2x"><i>',
+            	'zoomIn': '<i class="fa fa-plus-square fa-2x fa-inverse"><i>',
+            	'zoomOut': '<i class="fa fa-minus-square fa-2x fa-inverse"><i>',
             	'lock': '<i class="fa fa-lock"></i>',
             	'delete': '<i class="fa fa-trash-o"></i>',
             	'close': '<i class="fa fa-times"></i>'
