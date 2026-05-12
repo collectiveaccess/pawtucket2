@@ -50,8 +50,9 @@
 			</div><!-- end row -->
 <?php
 		#Related Artworks	
-		if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_object_labels.name'))) {
+		if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_objects.object_date'))) {
 			$vs_art_count = 0;
+			krsort($va_related_artworks);
 			print '<div class="row objInfo">';
 			print '	<div class="col-sm-12"><hr><h6 class="header">Artworks</h6></div>';
 			foreach ($va_related_artworks as $va_id => $va_related_artwork_id) {
@@ -78,7 +79,7 @@
 
 			}
 			if ($vs_art_count == 4) {
-				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'allworks', array('facet' => 'entity_facet', 'id' => $vn_item_id))."</div>";
+				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'allworks', array('facet' => 'entity_facet', 'id' => $vn_item_id, 'sort' => 'Date', 'direction' => 'desc'))."</div>";
 			}
 			print "</div><!-- end row -->";			
 		}		
