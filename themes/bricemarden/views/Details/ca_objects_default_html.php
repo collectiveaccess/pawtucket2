@@ -89,20 +89,29 @@ if($show_nav){
 			{{{media_viewer}}}
 		</div>
 		<div class="col-md-6 pb-5">
-			{{{<ifdef code='ca_objects.sort_number'><div class="fs-4 pb-3">^ca_objects.sort_number</div></ifdef>
-				<H1 class="pb-3">^ca_objects.preferred_labels.name</H1>
-				<div class="pb-3">
+			{{{<ifdef code='ca_objects.sort_number'><div class="pb-4">^ca_objects.sort_number</div></ifdef>
+				<H1 class="pb-4 mb-0">^ca_objects.preferred_labels.name</H1>
+				<div class="pb-4">
 					<ifdef code='ca_objects.print_date'>^ca_objects.print_date<br/></ifdef>
 					<ifdef code='ca_objects.medium.medium_notes_text'>^ca_objects.medium.medium_notes_text<br/></ifdef>
 					<ifdef code='ca_objects.master_dimensions'>^ca_objects.master_dimensions%delimiter=;_<br/></ifdef>
 					<ifdef code="ca_objects.inscription_text"><br/>^ca_objects.inscription_text</ifdef>
-				</ifdef>
 				</div>
+				<ifdef code="ca_objects.creation_location">
+					<div class='pb-4'><div class='fst-italic'>Studio</div>
+<?php
+					if($creation_location = caGetBrowseLinks($t_object, 'ca_objects.creation_location', ['template' => '<div><l>^ca_objects.creation_location</l></div>', 'linkTemplate' => '^LINK'])) {
+						print join("", $creation_location);
+					}
+?>
+					</div>
+				</ifdef>
 			}}}
 		</div>
 	</div>
 	<div class="row mt-5">
 		<div class="col-md-4">
+			<div id="col1">
 			{{{<dl>
 				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="provenance">
 					<dt><?= _t('Provenance'); ?></dt>
@@ -122,39 +131,65 @@ if($show_nav){
 					}
 ?>	
 				</ifdef>
-				<ifdef code='ca_objects.creation_location'>
-					<dt>Studio</dt>
-					<unit relativeTo="ca_objects.creation_location"><dd>^ca_objects.creation_location</dd></unit>
-				</ifdef>
 				<ifdef code="ca_objects.notes">
 					<dt><?= _t('Notes'); ?></dt>
 					<dd>^ca_objects.notes</dd>
 				</ifdef>
 			</dl>}}}
+			</div>
 		</div>
 	{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
 		<div class="col-md-4">
-			<dl>
-				<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
-					<if rule="^ca_occurrences.solo_group =~ /solo/i"><dt><?= _t('Solo Exhibitions'); ?></dt></if>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /group/i"><dd><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
-				</ifcount>
-				<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
-					<if rule="^ca_occurrences.solo_group =~ /group/i"><dt><?= _t('Group Exhibitions'); ?></dt></if>
-					<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /solo/i"><dd><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
-				</ifcount>
-			</dl>
+			<div id="readMoreCol2" class="readMore">
+				<dl>
+					<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
+						<if rule="^ca_occurrences.solo_group =~ /solo/i"><dt><?= _t('Solo Exhibitions'); ?></dt></if>
+						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /group/i"><dd><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
+					</ifcount>
+					<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
+						<if rule="^ca_occurrences.solo_group =~ /group/i"><dt><?= _t('Group Exhibitions'); ?></dt></if>
+						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /solo/i"><dd><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
+					</ifcount>
+				</dl>
+			</div>
+			<div><button id="readMoreCol2Btn" class="btn btn-white btn-sm px-0 mt-2 readMoreButton d-none" hx-on:click="htmx.toggleClass(htmx.find('#readMoreCol2'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreCol2Btn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button></div>				
 		</div>
-	</ifount>}}}
+	</ifcount>}}}
 	{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="literature" restrictToRelationshipTypes="references">
 		<div class="col-md-4">
-			<dl>
-				<dt><?= _t('Literature'); ?></dt>
-				<?php print str_replace(array("<p>", "</p>"), array("", ""), $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_occurrences" delimiter="" restrictToTypes="literature" restrictToRelationshipTypes="references"><dd><l>^ca_occurrences.lit_citation<ifdef code="ca_objects_x_occurrences.citation">, ^ca_objects_x_occurrences.citation</ifdef><if rule="^ca_objects_x_occurrences.illustrated =~ /yes/"> (Illustrated)</if></l></dd></unit>')); ?>
-			</dl>
+			<div id="readMoreCol3" class="readMore">
+				<dl>
+					<dt><?= _t('Literature'); ?></dt>
+					<?php print str_replace(array("<p>", "</p>"), array("", ""), $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_occurrences" delimiter="" restrictToTypes="literature" restrictToRelationshipTypes="references"><dd><l>^ca_occurrences.lit_citation<ifdef code="ca_objects_x_occurrences.citation">, ^ca_objects_x_occurrences.citation</ifdef><if rule="^ca_objects_x_occurrences.illustrated =~ /yes/"> (Illustrated)</if></l></dd></unit>')); ?>
+				</dl>
+			</div>			
+			<div><button id="readMoreCol3Btn" class="btn btn-white btn-sm px-0 mt-2 readMoreButton d-none" hx-on:click="htmx.toggleClass(htmx.find('#readMoreCol3'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreCol3Btn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button></div>	
 		</div>
 	</ifcount>}}}			
 	</div>
+<script>
+window.addEventListener('load', function(evt) {
+     // Select elements by class name
+	const col1 = document.querySelector('#col1');
+	const readMoreColDivs = document.querySelectorAll('.readMore');
+	const readMoreButtons = document.querySelectorAll('.readMoreButton');
+	const height = col1.offsetHeight;
+	if(height && readMoreColDivs){
+		readMoreColDivs.forEach((readMoreCol) => {
+			const colBtn = document.querySelector('#' + readMoreCol.id + 'Btn');
+			if(height < readMoreCol.offsetHeight){
+				readMoreCol.style.maxHeight = height + 'px';
+				colBtn.classList.remove('d-none');
+				colBtn.classList.add('d-block');
+			}else{
+				colBtn.classList.remove('d-block');
+				colBtn.classList.add('d-none');
+				readMoreCol.style.maxHeight = none;
+			}
+		});
+    }   
+});
+</script>
 {{{<ifcount code="ca_objects.related" min="1">
 	<div class="row mt-5"><div class="col"><h2>Related Artwork<ifcount code="ca_objects.related" min="s">s</ifcount></h2></div></div>
 	<div class="row">

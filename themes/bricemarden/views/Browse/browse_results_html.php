@@ -58,6 +58,7 @@ $extended_info_template = caGetOption('extendedInformationTemplate', $va_options
 $ajax			= (bool)$this->request->isAjax();
 $va_browse_info = $this->getVar("browseInfo");
 $o_config = $this->getVar("config");
+$disable_result_export = $o_config->get("disable_result_export");
 $va_export_formats = $this->getVar('export_formats');
 $va_browse_type_info = $o_config->get($va_browse_info["table"]);
 $va_all_facets = $va_browse_type_info["facets"];	
@@ -86,11 +87,11 @@ if (!$ajax) {	// !ajax
 			</div>
 			<div class="col-md-12 col-lg-7 text-lg-end">
 
-				<ul class="list-group list-group-horizontal justify-content-lg-end small">
+				<ul class="list-group list-group-horizontal justify-content-lg-end">
 <?php
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<li class='list-group-item border-0 px-0 pt-1'>\n";
-					print "<ul class='list-inline p-0 me-2'><li class='list-inline-item fw-medium text-uppercase me-1'>"._t("Sort by:")."</li>\n";
+					print "<ul class='list-inline p-0 me-2'><li class='list-inline-item fw-medium me-1'>"._t("Sort by:")."</li>\n";
 					$i = 0;
 					foreach($va_sorts as $sort => $sort_flds) {
 						$i++;
@@ -123,7 +124,7 @@ if (!$ajax) {	// !ajax
 					print "</ul>\n";
 					print "</li>\n";
 				}
-				if(is_array($va_export_formats) && sizeof($va_export_formats)){
+				if(!$disable_result_export && (is_array($va_export_formats) && sizeof($va_export_formats))){
 ?>
 					<li class='list-group-item border-0 px-0 pt-0'>
 						<div class="dropdown inline w-auto">
@@ -194,7 +195,7 @@ if (!$ajax) {	// !ajax
 		}
 ?>
 			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
-			<div id="browseResultsContainer">
+			<div id="browseResultsContainer" class="mt-4">
 				<div class="row">
 <?php
 } // !ajax

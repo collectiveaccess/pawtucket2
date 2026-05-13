@@ -52,37 +52,38 @@ $primary:       #000;
 	/* font */
 	// $font-size-root affects the value of `rem`, which is used for as well font sizes, paddings, and margins
 	// $font-size-base affects the font size of the body text
-	$font-size-root:              16px !default;
-	$font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
-	$font-size-sm:                $font-size-base * .875 !default;
-	$font-size-lg:                $font-size-base * 1.25 !default;
+$font-size-root:              18px;
+$font-size-base:              1; // Assumes the browser default, typically `16px`
+$font-size-sm:                $font-size-base * .875;
+$font-size-lg:                $font-size-base * 1.25;
 	
 $font-family-sans-serif: "Practice";
-	
-	$font-weight-lighter:         lighter !default;
-	$font-weight-light:           300 !default;
-	$font-weight-normal:          300 !default;
-	$font-weight-medium:          400 !default;
-	$font-weight-semibold:        600 !default; /* lato doesn't have 600 */
-	$font-weight-bold:            700 !default;
-	$font-weight-bolder:          bolder !default;
+$line-height-base: 1.2;
+ /*  Designer speced only using Practice 400 and 600 */	
+$font-weight-lighter:         lighter !default;
+$font-weight-light:           400;
+$font-weight-normal:          400;
+$font-weight-medium:          400;
+$font-weight-semibold:        600;
+$font-weight-bold:            600;
+$font-weight-bolder:          600;
 	
 	$font-weight-base:            $font-weight-normal !default;
 	
-	$h1-font-size:                $font-size-base * 2 !default;
-	$h2-font-size:                $font-size-base * 1.75 !default;
-	$h3-font-size:                $font-size-base * 1.5 !default;
-	$h4-font-size:                $font-size-base * 1.25 !default;
-	$h5-font-size:                $font-size-base * 1 !default;
-	$h6-font-size:                $font-size-base * .75 !default;
+	$h1-font-size:                $font-size-base * 1.5;
+	$h2-font-size:                $font-size-base * 1.25;
+	$h3-font-size:                $font-size-base * 1.25;
+	$h4-font-size:                $font-size-base * 1.15;
+	$h5-font-size:                $font-size-base * 1;
+	$h6-font-size:                $font-size-base * .75;
 	// scss-docs-end font-sizes
 	
 	// scss-docs-start headings-variables
 	$headings-margin-bottom:      $spacer * .5 !default;
 	$headings-font-family:        null !default;
 	$headings-font-style:         null !default;
-	$headings-font-weight:        400 !default;
-	$headings-line-height:        1.2 !default;
+$headings-font-weight:        400;
+$headings-line-height:        1.2;
 	$headings-color:              inherit !default;
 	// scss-docs-end headings-variables
 	
@@ -122,22 +123,23 @@ $font-family-sans-serif: "Practice";
 	$light-bg-subtle:         mix($gray-100, #FFF) !default;
 	$dark-bg-subtle:          $gray-400 !default;
 	
-	$box-shadow:                  0 1px 8px rgba(#000, .15) !default;
+$box-shadow:                  0 1px 8px rgba(#000, .1);
 	
 	// scss-docs-start border-radius-variables
 	$border-radius:	0 !default;
 	
 	/* links */
 $link-color: $primary;
-	$link-decoration: underline solid .5px  !default;
+$link-decoration: none;
+	/*$link-decoration: underline solid .5px  !default;*/
 	$link-shade-percentage: 20% !default;
 	/*$link-hover-color: #000 !default;*/
-	$link-hover-decoration: null !default;
+$link-hover-decoration: underline solid .5px;
 	
 	
 	/* nav bar */
 	
-	$nav-link-padding-y:                .5rem !default;
+$nav-link-padding-y:                0rem;
 	$nav-link-padding-x:                1rem !default;
 	$line-height-base:            		1.5 !default;
 	
@@ -168,7 +170,7 @@ $navbar-light-active-color: 		$primary;
 	
 	/* add class .nav-underline to ul in nav to underline .active nav item */
 	$nav-underline-gap:                 1rem !default;
-	$nav-underline-border-width:        .125rem !default;
+	$nav-underline-border-width:        .25px !default;
 	
 	/* add nav-pills to navbar to have background color added to .active nav items */
 	$nav-pills-link-active-bg: $light;
@@ -194,11 +196,14 @@ $navbar-light-active-color: 		$primary;
 	$focus-ring-box-shadow: 0 0 $focus-ring-blur $focus-ring-width $focus-ring-color !default;
 	// scss-docs-end focus-ring-variables
 	
-	$accordion-bg: $light-bg-subtle !default;
-	$accordion-button-bg: $light !default;
-	$accordion-button-active-bg: $light-bg-subtle !default;
-	$accordion-border-color: $light-bg-subtle !default;
-	
+$accordion-bg: #FFF;
+$accordion-button-bg: #FFFFFF;
+$accordion-button-active-bg: #FFFFFF;
+$accordion-border-color: #FFFFFF;
+$accordion-button-padding-x:1rem;
+$accordion-border-width:0px;
+$accordion-button-focus-box-shadow:none;
+$accordion-body-padding-x:1rem;
 	/* dropdowns */
 	/*$dropdown-border-width:             0px !default;
 	$dropdown-box-shadow:               0 .25rem .25rem rgba(#000, .075) !default; // --- this is only used when shadows are enabled so shadow is set in main.scss

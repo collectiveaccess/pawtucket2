@@ -78,8 +78,8 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 	<div class="row row-cols-1 my-3">
 		<div class="col">				
-			{{{<H1 class="pb-3">^ca_occurrences.lit_citation</H1>
-				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="venue"><unit relativeTo="ca_entities_x_occurrences" restrictToRelationshipTypes="venue" delimiter=""><div class="pb-3">^ca_entities.preferred_labels<if rule="^ca_entities.location_display.city_display =~ /yes/"><ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef></if><if rule="^ca_entities.location_display.state_display =~ /yes/"><ifdef code="ca_entities.address.stateprovence">, ^ca_entities.address.stateprovence</ifdef></if><if rule="^ca_entities.location_display.country_display =~ /yes/"><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></if><ifdef code="ca_entities_x_occurrences.common_date">, ^ca_entities_x_occurrences.common_date</ifdef></div></unit></ifcount>
+			{{{<H1 class="pb-4 mb-0">^ca_occurrences.lit_citation</H1>
+				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="venue"><unit relativeTo="ca_entities_x_occurrences" restrictToRelationshipTypes="venue" delimiter=""><div class="pb-4">^ca_entities.preferred_labels<if rule="^ca_entities.location_display.city_display =~ /yes/"><ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef></if><if rule="^ca_entities.location_display.state_display =~ /yes/"><ifdef code="ca_entities.address.stateprovence">, ^ca_entities.address.stateprovence</ifdef></if><if rule="^ca_entities.location_display.country_display =~ /yes/"><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></if><ifdef code="ca_entities_x_occurrences.common_date">, ^ca_entities_x_occurrences.common_date</ifdef></div></unit></ifcount>
 				<dl class="mb-0">
 					<ifcount code="ca_occurrences.related" min="1" restrictToTypes="exhibition">
 						<dt><?= _t('Related Exhibitions'); ?></dt>
