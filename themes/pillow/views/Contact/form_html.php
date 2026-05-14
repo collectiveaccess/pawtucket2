@@ -109,6 +109,14 @@
 		</div><!-- end row -->
 		<div class="row">
 			<div class="col-md-9">
+				<div class="form-group<?= (($va_errors["subject"]) ? " has-error" : ""); ?>">
+					<label for="message"><?= _t("Subject"); ?></label>
+					<input type="text" class="form-control input-sm" id="subject" name="subject">{{{subject}}}</textarea>
+				</div>
+			</div><!-- end col -->
+		</div><!-- end row -->
+		<div class="row">
+			<div class="col-md-9">
 				<div class="form-group<?= (($va_errors["message"]) ? " has-error" : ""); ?>">
 					<label for="message"><?= _t("Message"); ?></label>
 					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
