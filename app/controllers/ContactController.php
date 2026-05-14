@@ -48,6 +48,8 @@ class ContactController extends BasePawtucketController {
 	}
 	# ------------------------------------------------------
 	public function Send() {
+		global $g_last_email_error;
+					
 		caValidateCSRFToken($this->request);
 		$o_purifier = caGetHTMLPurifier();
 		# --- check for errors
@@ -114,8 +116,8 @@ class ContactController extends BasePawtucketController {
 				$mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
 				if(caSendmail($this->config->get("contact_email"), $from, $subject_line, $mail_message_text, $mail_message_html, null, null, null, $opts)){
 					$this->render("Contact/success_html.php");
-				}else{
-					$errors["display_errors"]["send_error"] = _t("Your email could not be sent");
+				} else {
+					$errors["display_errors"]["send_error"] = _t("Your email could not be sent: %1", $g_last_email_error);
 					$this->view->setVar("errors", $errors);
 					$this->form();
 				}

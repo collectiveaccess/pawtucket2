@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,13 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 print "<p>"._t("You have been sent a contact email from \"%1\", %2.", $this->request->config->get("app_display_name"), $this->request->config->get("site_host"))."</p>";
-$va_fields = $this->getVar("contact_form_elements");
-foreach($va_fields as $vs_element => $va_options){
-	if($this->request->getParameter($vs_element, pString)){
-		print "<p><b>".$va_options["label"].":</b> ".$this->request->getParameter($vs_element, pString)."</p>";
+$fields = $this->getVar("contact_form_elements");
+foreach($fields as $element => $options){
+	if($options['omit_from_email'] ?? false) { continue; }
+	if($this->request->getParameter($element, pString)){
+		print "<p><b>".$options["label"].":</b> ".$this->request->getParameter($element, pString)."</p>";
 	}
 }
-
-?>

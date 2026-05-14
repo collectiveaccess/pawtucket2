@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/contact.tpl
+ * default/views/mailTemplates/contact_subject.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2026 Whirl-i-Gig
+ * Copyright 2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,11 +25,5 @@
  *
  * ----------------------------------------------------------------------
  */
-print _t("You have been sent a contact email from \"%1\", %2.", $this->request->config->get("app_display_name"), $this->request->config->get("site_host"));
-$fields = $this->getVar("contact_form_elements");
-foreach($fields as $element => $options){
-	if($options['omit_from_email'] ?? false) { continue; }
-	if($this->request->getParameter($element, pString)){
-		print $options["label"].": ".$this->request->getParameter($element, pString)."\n\n";
-	}
-}
+$values = $this->getVar('contact_form_values');
+print "[".$this->request->config->get("app_display_name")."] ".($values['subject'] ?? '????');

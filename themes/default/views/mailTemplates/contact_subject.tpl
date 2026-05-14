@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,6 +25,4 @@
  *
  * ----------------------------------------------------------------------
  */
-
-	print $this->request->config->get("app_display_name").": "._t("Contact form email");
-?>
+print $this->request->config->get("app_display_name").": "._t("Contact form email");
