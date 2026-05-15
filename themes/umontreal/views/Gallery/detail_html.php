@@ -8,7 +8,7 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12">
-			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
+			<H1><?php print $this->getVar("label")."</H1>"; ?>
 		</div>
 	</div>
 	<div class="row">
@@ -60,7 +60,7 @@
 				
 				if($vn_i == 12){
 					print "<div class='col-sm-3' id='moreLink'>
-								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 12)." "._t("more")."</a>
+								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 12)." "._t("autres objets")."</a>
 							</div>";
 				}
 			}
