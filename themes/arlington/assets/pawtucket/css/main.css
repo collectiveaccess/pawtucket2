@@ -83,7 +83,7 @@ H6, h6{
 	color:#757575;
 	padding-top:5px;
 }	
-label {
+.flabel {
     display: inline-block;
     margin-bottom: 5px;
     font-size:15px;
@@ -1565,7 +1565,7 @@ a.browseRemoveFacet img {
 	padding-bottom:0px;
 	margin:10px 0px 5px 0px;
 }
-.detail label{
+.detail .flabel{
 	display:block;
 	font-size: 15px;
 	color:#454545;
@@ -2567,16 +2567,16 @@ a.browseRemoveFacet .glyphicon {
 	width:auto;
 	height:auto;
 }
-#collectionLoad .label a{
+#collectionLoad .flabel a{
 	font-size: 19px;
 }
-.collectionsContainer .label, #collectionLoad .label{
+.collectionsContainer .flabel, #collectionLoad .flabel{
 	font-size: 19px;
 	color:#000;
 	padding-left:5px;
 	white-space: normal !important;
 }
-#collectionLoad .label{
+#collectionLoad .flabel{
 	padding-left:0px;
 }
 .collectionsContainer a, .collectionsContainer .listItem{
@@ -2646,7 +2646,7 @@ a.browseRemoveFacet .glyphicon {
 	font-size:12px;
 	margin-top:10px;
 }
-.gallery label {
+.gallery .flabel {
 	text-transform:uppercase;
 	color:#000;
 	font-size:15px;
@@ -3649,7 +3649,7 @@ input[type='text'].ui-autocomplete-loading {
 		margin-top:20px;
 	}
 }
-.cookies label{
+.cookies .flabel{
 	font-size:15px;
 }
 .cookieByCategory{

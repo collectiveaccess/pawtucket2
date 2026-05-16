@@ -144,7 +144,7 @@
 					$vs_result_output = "
 		<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultItem' id='row{$vn_id}'>
-				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
+				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}' aria-label='Select item'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
 						{$vs_caption}

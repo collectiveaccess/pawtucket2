@@ -89,20 +89,20 @@
 				
 				<HR>
 				
-				{{{<ifdef code="ca_objects.idno"><label>Identifier</label>^ca_objects.idno<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.idno"><div class="flabel">Identifier</div>^ca_objects.idno<br/></ifdef>}}}
 
-				{{{<ifdef code="ca_objects.date_created"><label>Date</label>^ca_objects.date_created<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.date_created"><div class="flabel">Date</div>^ca_objects.date_created<br/></ifdef>}}}
 
 				{{{<ifcount code="ca_entities" min="1">
 					<div class="unit">
-						<label>Related People/Organizations</label>
+						<div class="flabel">Related People/Organizations</div>
 							<ul><unit relativeTo="ca_entities" delimiter=" ">
 							<li><l>^ca_entities.preferred_labels.displayname</l></li>
 							</unit></ul>
 						</div>
 				</ifcount>}}}
 				{{{<ifdef code="ca_objects.description">
-					<div class='unit'><label>Description</label>
+					<div class='unit'><div class="flabel">Description</div>
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
@@ -110,7 +110,7 @@
 				
 				{{{<ifcount code="ca_objects.format_text" min="1">
 					<div class='unit'>
-						<label>Format</label>
+						<div class="flabel">Format</div>
 						<unit delimiter=", ">^ca_objects.format_text</unit>
 					</div>
 				</ifcount>}}}
@@ -125,7 +125,7 @@
 					
 					if(sizeof($links))  {
 				?>
-						<div class='unit'><label>Subject(s)</label>
+						<div class='unit'><div class="flabel">Subject(s)</div>
 						<ul class="subjects-data"><?= join("\n", $links); ?></ul></div>
 				<?php
 					}
@@ -136,14 +136,14 @@
 					
 					if(sizeof($spatial_coverage_links))  {
 				?>
-						<div class='unit'><label>Location</label>
+						<div class='unit'><div class="flabel">Location</div>
 						<ul class="subjects-data"><?= join("\n", $spatial_coverage_links); ?></ul></div>
 				<?php
 					}
 				?>
 
 				{{{<ifdef code="ca_objects.rights">
-					<label>Rights</label><span class="trimText">^ca_objects.rights</span>
+					<div class="flabel">Rights</div><span class="trimText">^ca_objects.rights</span>
 				</ifdef>}}}
 				
 				<hr></hr>
@@ -170,18 +170,5 @@
 	});
 </script>
 
-<!-- <div class="col-sm-6">		
-	{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-	{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-	{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-	
-	{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-	{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-	{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-	
-	{{{<ifcount code="ca_list_items" min="1" max="1"><label>Related Term</label></ifcount>}}}
-	{{{<ifcount code="ca_list_items" min="2"><label>Related Terms</label></ifcount>}}}
-	{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items"><l>^ca_list_items.preferred_labels.name_plural</l></unit> (^relationship_typename)</unit>}}}
-</div> -->
 <!-- end col -->	
 <!-- colBorderLeft -->

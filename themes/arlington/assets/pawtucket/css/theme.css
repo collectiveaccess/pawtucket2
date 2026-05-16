@@ -98,16 +98,14 @@ a:hover{
 	color:#000000;
 	letter-spacing:1px;
 }
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
+
+.navbar-default .navbar-nav > li > a:hover{
 	background-color:transparent;
-	color:#787878; /* highlight color */
-	/* underline on hover or active */
-	/*text-decoration: underline;
-  	text-decoration-color: #dedede;
-  	text-decoration-thickness: 2px;
-  	text-underline-position: under;*/
-  	/* change background color on hover or active */
-  	/*background-color: #f3f3f3;*/
+	color:#787878;
+}
+.navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
+	background-color:transparent;
+	color:#000; /* highlight color */
 }
 .navbar-nav > li > .dropdown-menu{
 	background-color:#ffffff;
@@ -587,7 +585,7 @@ body.frontContainer #footer{
 	height:auto;
 	max-width:250px;
 }
-.galleryList label {
+.galleryList .flabel {
     display: block;
     font-size: 15px;
     text-transform: none;
@@ -597,7 +595,7 @@ body.frontContainer #footer{
     margin-top: 5px;
     /* font-weight: bold; */
 }
-.galleryList label a{
+.galleryList .flabel a{
 	color: #000;
 }
 .gallery .setDescription {
@@ -631,7 +629,7 @@ body.frontContainer #footer{
   background-color: #fff;
 }
 .frontGallerySectionName {
-	color: #b5bd00;
+	color: #000;
 	font-size: 30px !important;
 }
 .frontGridCaption a{
@@ -647,7 +645,7 @@ body.frontContainer #footer{
 	background-color: rgb(36, 36, 36, .85);
 }
 .galleryIndexSectionName{
-	color: #b5bd00;
+	color: #000;
 	font-size: 30px !important;
 	margin-bottom: 20px;
 }
