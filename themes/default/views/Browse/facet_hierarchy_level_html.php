@@ -54,7 +54,7 @@
 			
 			if(isset($vs_name)){
 				$vs_buf = "<dd>";
-				if((int)$va_children["children"] > 0){
+				if(!$va_facet_info["restrict_to_top_level"] && ((int)$va_children["children"] > 0)){
 					$vs_buf .= caNavLink($this->request, $vs_name.$vs_content_count, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id));
 					if($vb_morePanel){
 						$vs_buf .= "<a href='#' class='btn btn-light py-0 px-1 ms-2 fs-6' title='"._t('View sub-items')."' hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('getFacet' => 1, 'facet' => $vs_facet_name, 'key' => $vs_key, 'id' => $vn_id, "browseType" => $vs_browse_type, "morePanel" => 1))."' type='button' aria-controls='bMorePanel' role='button' onClick='document.getElementById(\"bMorePanel\").focus();'><i class='bi bi-chevron-down'></i></a>";

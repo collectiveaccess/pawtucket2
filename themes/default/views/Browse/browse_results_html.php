@@ -58,6 +58,7 @@ $extended_info_template = caGetOption('extendedInformationTemplate', $va_options
 $ajax			= (bool)$this->request->isAjax();
 $va_browse_info = $this->getVar("browseInfo");
 $o_config = $this->getVar("config");
+$disable_result_export = $o_config->get("disable_result_export");
 $va_export_formats = $this->getVar('export_formats');
 $va_browse_type_info = $o_config->get($va_browse_info["table"]);
 $va_all_facets = $va_browse_type_info["facets"];	
@@ -117,7 +118,7 @@ if (!$ajax) {	// !ajax
 					print "</ul>\n";
 					print "</li>\n";
 				}
-				if(is_array($va_export_formats) && sizeof($va_export_formats)){
+				if(!$disable_result_export && (is_array($va_export_formats) && sizeof($va_export_formats))){
 ?>
 					<li class='list-group-item border-0 px-0 pt-0'>
 						<div class="dropdown inline w-auto">

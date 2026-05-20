@@ -1,9 +1,143 @@
+/* LEGAL DISCLAIMER
+ *
+ * These Fonts are licensed only for use on these domains and their subdomains:
+ * marden.whirl-i-gig.com:8086
+ *
+ * It is illegal to download or use them on other websites.
+ *
+ * While the @font-face statements below may be modified by the client, this
+ * disclaimer may not be removed.
+ *
+ * Optimo webfonts are protected by copyright law and provided under license. To modify, alter, translate, convert, decode or reverse engineer in any manner whatsoever, including converting the Font Software into a different format is strictly prohibited. The webfont files are not to be used for anything other than web font use.
+ *
+ * optimo.ch
+ */
+
+@font-face {
+	font-family: 'Practice';
+	src: url('fonts/Practice-Italic.woff2') format('woff2'),
+	   url('fonts/Practice-Italic.woff') format('woff');
+	font-weight: 400;
+	font-style: italic;
+}
+@font-face {
+	font-family: 'Practice';
+	src: url('fonts/Practice-Regular.woff2') format('woff2'),
+	   url('fonts/Practice-Regular.woff') format('woff');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Practice';
+	src: url('fonts/Practice-Semibold.woff2') format('woff2'),
+	   url('fonts/Practice-Semibold.woff') format('woff');
+	font-weight: 600;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Practice';
+	src: url('fonts/Practice-Semibold-Italic.woff2') format('woff2'),
+		url('fonts/Practice-Semibold-Italic.woff') format('woff');
+	font-weight: 600;
+	font-style: italic;
+}
+
+
+
+body{
+	font-variant-numeric: proportional-nums;
+	font-variant-numeric: oldstyle-nums;
+}
 .text-indent{
 	padding-left: 25px; /* Indents the entire block to the right */
 	text-indent: -25px;
 }
+.text-col-2{
+	column-count: 2;
+	column-gap: 4rem;
+}
 #browseResultsContainer{
 	.card-footer{
 		display:none;
+	}
+}
+dt{
+	font-weight:400;
+	font-style:italic;
+}
+dd {
+	margin-bottom: 1.5rem;
+}
+
+nav{
+	.bi{
+		font-size:.75rem;
+	}
+}
+/* ------------------------- detail -------------------------- */
+.readMore {
+	max-height: none;
+}
+/* navbar */
+.navbar{
+	.form-control.border-bottom{
+		border-bottom-width:.25px !important;
+	}
+}
+@media(min-width:992px){
+	.navbar-expand-lg .dropdown-menu{
+		top:100%;
+	}
+}
+@media(min-width:1200px){
+	.navbar-expand-xl .dropdown-menu{
+		top:100%;
+	}
+}
+/* about pages */
+.staticPage{
+	H1{
+		margin-top: 1rem;
+		margin-bottom: 4.5rem;
+	}
+}
+/* Details */
+.detail{
+	H1{
+		font-size:1.25rem;
+		font-weight:600;
+		p{
+			margin-bottom:0px;
+		}
+	}
+}
+/* browse */
+#bRefine{
+	#search-within{
+		border-bottom-width:.25px !important;
+	}
+	.bi{
+		font-size:.75rem;
+	}
+	.accordion-button::after{
+		background-size: .8rem;
+	}
+	.accordion-body{
+		padding-top:0px;
+	}
+}
+#browseResultsContainer .card img, #browseResultsContainer .card .ca-placeholder, .resultBlock .card img, .resultBlock .card .ca-placeholder{
+	object-position: left;
+}
+#browseResultsContainer .card.shadow, .resultBlock .card.shadow{
+	box-shadow: none !important;
+}
+
+/* search */
+.search.results{
+	.card-body{
+		p{
+			margin-bottom:0px;
+		}
 	}
 }
