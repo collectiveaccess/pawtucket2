@@ -40,7 +40,7 @@ $tag_counts = 		$this->getVar("tagCounts");
 		foreach($tag_counts as $tag_id => $tag_info) {
 			$l = $tag_info['name_singular'];
 			$c = $tag_info['count'];
-?><li class="list-group-item"><?= ($c != 1) ? _t('%1 people says <strong>%2</strong>', $c, $l) : _t('%1 person say <strong>%2</strong>', $c, $l); ?></li>
+?><li class="list-group-item"><?= ($c != 1) ? _t('%1 people say <strong>%2</strong>', $c, $l) : _t('%1 person says <strong>%2</strong>', $c, $l); ?></li>
 <?php
 		}
 	}
