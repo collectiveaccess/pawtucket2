@@ -273,6 +273,8 @@ class SearchController extends FindController {
 			'view' => $view
 		], ['context' => 'search']);
 		
+		$num_base_criteria = sizeof($o_browse->getCriteria() ?? []);
+		
 		//
 		// Add criteria and execute
 		//
@@ -295,7 +297,7 @@ class SearchController extends FindController {
 			$o_browse->addCriteria($vs_facet, explode("|", $this->request->getParameter('id', pString, ['forcePurify' => true])));
 		}
 				
-		if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
+		if (($o_browse->numCriteria() <= $num_base_criteria) && $vs_search_expression) {
 			$o_browse->addCriteria("_search", [caMatchOnStem($vs_search_expression)], array($vs_search_expression_for_display));
 		}
 		$o_browse->setSelectiveBaseCriteria($browse_info, [
