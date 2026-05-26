@@ -88,7 +88,7 @@ if($show_nav){
 		<div class="col-md-6">
 			{{{media_viewer}}}
 		</div>
-		<div class="col-md-6 pb-5">
+		<div class="col-md-6 pb-lg-5">
 			{{{<ifdef code='ca_objects.sort_number'><div class="pb-4">^ca_objects.sort_number</div></ifdef>
 				<H1 class="pb-4 mb-0">^ca_objects.preferred_labels.name</H1>
 				<div class="pb-4">
@@ -109,7 +109,7 @@ if($show_nav){
 			}}}
 		</div>
 	</div>
-	<div class="row mt-5">
+	<div class="row mt-lg-5">
 		<div class="col-md-4">
 			<div id="col1">
 			{{{<dl>
@@ -192,12 +192,12 @@ window.addEventListener('load', function(evt) {
 </script>
 {{{<ifcount code="ca_objects.related" min="1">
 	<div class="row mt-5"><div class="col"><h2>Related Artwork<ifcount code="ca_objects.related" min="s">s</ifcount></h2></div></div>
-	<div class="row">
+	<div class="row" id="browseResultsContainer">
 		<unit relativeTo="ca_objects.related" delimiter="">
 			<div class="col-md-6 col-lg-4 d-flex">
-				<div class="card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4">
-					<l>^ca_object_representations.media.medium%class=card-img-top,object-fit-contain,px-3,pt-3,rounded-0</l>
-					<div class="card-body">
+				<div class="card flex-grow-1 width-100 rounded-0 border-0 mb-4 px-0">
+					<l>^ca_object_representations.media.large%class=card-img-top,object-fit-contain,pt-3,rounded-0</l>
+					<div class="card-body px-0">
 						<div class='card-title mb-1'><div class='fw-medium lh-sm fs-5'><l>^ca_objects.preferred_labels</l></div></div><p class='card-text small lh-sm'><ifdef code='ca_objects.print_date'>^ca_objects.print_date</ifdef></p>
 					</div>
 				 </div>	

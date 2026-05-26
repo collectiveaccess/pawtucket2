@@ -40,18 +40,16 @@
 	
 	if ($qr_results->numHits() > 0) {
 		$vn_i = 0;
-		print "<dl class='row'><dt class='col-12 mt-4 text-capitalize fst-normal'><H2>".$qr_results->numHits()." ".(($qr_results->numHits() == 1) ? $va_block_info["labelSingular"] : $va_block_info["labelPlural"])."</H2></dt>";
+		print "<dl class='row'><dt class='col-12 col-md-6 my-4 text-capitalize fst-normal'><H2 class='mb-0'>".$qr_results->numHits()." ".(($qr_results->numHits() == 1) ? $va_block_info["labelSingular"] : $va_block_info["labelPlural"])."</H2></dt>";
+		if($qr_results->numHits() > $vn_num_items_to_show){
+			print "<dd class='col-12 col-md-6 mt-0 mt-md-4 text-md-end'>".caNavLink($this->request, _t("Full Results")."  &rsaquo;", "fs-3", "", "Search", $vs_block, array("search" => $vs_search))."</dd>";
+		}
 		while($qr_results->nextHit()) {
 			print "<dd>";
 			print $qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values));
 			
 			$vn_i++;
 			if($vn_i == $vn_num_items_to_show){
-				if($qr_results->numHits() > $vn_num_items_to_show){
-					print "<dd class='col-12'>".caNavLink($this->request, _t("Full Results")."  &rsaquo;", "fs-4", "", "Search", $vs_block, array("search" => $vs_search))."</dd>";
-				
-					
-				}
 				break;
 			}
 		}

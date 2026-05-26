@@ -37,28 +37,6 @@
 				<?php print caGetThemeGraphic($this->request, 'temp-cropped-Mapplethorpe-Marden.jpg', array("alt" => "Brice Marden in Studio")); ?>
 			</div>
 			<div class="col-md-4 offset-md-1 img-fluid">
-				<?php print caGetThemeGraphic($this->request, 'temp-hp-title.png', array("alt" => "Catalogue")); ?>
+				<div class="mt-5 mt-lg-0 mx-3 mx-lg-0"><?php print caGetThemeGraphic($this->request, 'temp-hp-title.png', array("alt" => "Catalogue")); ?>
 			</div>
 		</div>
-
-<?php
-	$vs_hp_intro_title = $this->getVar("hp_intro_title");
-	$vs_hp_intro = $this->getVar("hp_intro");
-	if($vs_hp_intro_title || $vs_hp_intro){
-?>
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-md-10 my-5 py-5 text-center">
-<?php
-					if($vs_hp_intro_title){
-						print "<div class='display-3 lh-base'>".$vs_hp_intro_title."</div>";
-					}
-					if($vs_hp_intro){
-						print "<div class='display-5 lh-base'>".$vs_hp_intro."</div>";
-					}
-?>		
-				</div>
-			</div>
-		</div>
-<?php
-	}

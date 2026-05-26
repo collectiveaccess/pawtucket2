@@ -49,7 +49,7 @@ $vb_has_more 		= (bool)$this->getVar('hasMore');
 	$image_format = $this->getVar('imageFormat');
 	$image_class = "";
 	if($image_format == "contain"){
-		$image_class = "card-img-top object-fit-contain px-3 pt-3 rounded-0";
+		$image_class = "card-img-top object-fit-contain pt-3 rounded-0";
 	}else{
 		$image_class = "card-img-top object-fit-cover rounded-0";
 	}
@@ -57,7 +57,11 @@ $vb_has_more 		= (bool)$this->getVar('hasMore');
 
 	if ($qr_results->numHits() > 0) {
 		$c = 0;
-		print "<div class='row'><div class='col-12 mt-4 text-capitalize'><H2>".$qr_results->numHits()." ".(($qr_results->numHits() == 1) ? $block_info["labelSingular"] : $block_info["labelPlural"])."</H2></div></div>";
+		print "<div class='row'><div class='col-12 col-md-6 my-4 text-capitalize fst-normal'><H2 class='mb-0'>".$qr_results->numHits()." ".(($qr_results->numHits() == 1) ? $block_info["labelSingular"] : $block_info["labelPlural"])."</H2></div>";
+		if($qr_results->numHits() > $vn_num_items_to_show){
+			print "<div class='col-12 col-md-6 mt-0 mt-md-4 mb-4 text-md-end'>".caNavLink($this->request, _t("Full Results")." &rsaquo;", "fs-3", "", "Search", $block, array("search" => $search))."</div>";
+		}
+		print "</div>";
 		print "<div class='row'>";
 		if ($table != 'ca_objects') {
 			$ids = array();
@@ -100,19 +104,15 @@ $vb_has_more 		= (bool)$this->getVar('hasMore');
 			$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'link-dark mx-1', $table, $id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 			print "
 		<div class='col-md-4 col-lg-3 d-flex'>
-			<div id='row{$id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
+			<div id='row{$id}' class='card flex-grow-1 width-100 rounded-0 border-0 mb-4'>
 			  {$rep_detail_link}
-				<div class='card-body'>
+				<div class='card-body px-0'>
 					{$caption}
 				</div>
 			 </div>	
 		</div><!-- end col -->";				
 			$c++;
 			if($c == $num_items_to_show){
-				if($qr_results->numHits() > $num_items_to_show){
-					print "<div class='row mt-3 mb-4'><div class='col-12 col-sm-6 col-md-4 col-lg-3 text-start'>".caNavLink($this->request, _t("Full Results")." &rsaquo;", "fs-4", "", "Search", $block, array("search" => $search))."</div></div>";
-				}
-				
 				break;
 			}
 		}

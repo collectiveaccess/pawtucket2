@@ -35,6 +35,7 @@ $o_browse			= $this->getVar('browse');
 $vs_browse_key 		= $this->getVar('key');					// cache key for current browse
 $vs_current_view	= $this->getVar('view');
 $qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
+$table 			= $this->getVar('table');
 
 $vn_facet_display_length_maximum = 12;
 $vs_criteria = "";
@@ -53,8 +54,8 @@ if (sizeof($va_criteria) > 0) {
 
 if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->numHits() > 1)){
 ?>		
-	<div id='bMorePanel' tabindex='-1' class='sticky-md-top w-100 z-3 bg-light vh-100 collapse'><!-- long lists of facets are loaded here --></div>
-	<div id='bRefine' class='sticky-md-top vh-100 collapse overflow-y-auto pt-2'>
+	<div id='bMorePanel' tabindex='-1' class='sticky-md-top w-100 z-3 bg-white vh-100 collapse'><!-- long lists of facets are loaded here --></div>
+	<div id='bRefine' class='sticky-md-top vh-100 collapse overflow-y-auto pt-2 bg-white'>
 		<div class="text-end float-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" aria-label="Close" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php
 	if($qr_res->numHits() > 1){
@@ -115,6 +116,9 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 			print "</div><!-- end accordion-item -->";
 		}
 		print "</div><!-- end accordian browseRefineFacets -->";
+	}
+	if($table == "ca_objects"){
+		print '<div class="p-3">'.caNavLink($this->request, _t("Advanced search")." &rsaquo;", "fs-4", "", "Search", "advanced/objects").'</div>';
 	}
 	print "</div><!-- end bRefine -->\n";	
 }

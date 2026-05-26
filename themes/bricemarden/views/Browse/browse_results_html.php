@@ -67,7 +67,7 @@ $facet_description = $facet_description_title = "";
 foreach($va_criteria as $va_selected_facets){
 	if($va_selected_facets["facet_name"] == "group_facet"){
 		$t_list_item = new ca_list_items($va_selected_facets["id"]);
-		$facet_description = $t_list_item->get("ca_list_item_labels.description");
+		$facet_description = $t_list_item->get("ca_list_items.description");
 		$facet_description_title = $va_selected_facets["value"];
 	}
 }
@@ -96,7 +96,7 @@ if (!$ajax) {	// !ajax
 					foreach($va_sorts as $sort => $sort_flds) {
 						$i++;
 						if ($current_sort === $sort) {
-							print "<li class='list-inline-item me-1'>{$sort}</li>\n";
+							print "<li class='list-inline-item me-1 text-decoration-underline'>{$sort}</li>\n";
 						} else {
 							print "<li class='list-inline-item me-1'>".caNavLink($this->request, $sort, '', '*', '*', '*', array('view' => $current_view, 'key' => $browse_key, 'sort' => $sort, '_advanced' => $is_advanced ? 1 : 0))."</li>\n";
 						}

@@ -52,9 +52,11 @@ body{
 	padding-left: 25px; /* Indents the entire block to the right */
 	text-indent: -25px;
 }
-.text-col-2{
-	column-count: 2;
-	column-gap: 4rem;
+@media(min-width: 992px){
+	.text-col-2{
+		column-count: 2;
+		column-gap: 4rem;
+	}
 }
 #browseResultsContainer{
 	.card-footer{
@@ -68,17 +70,12 @@ dt{
 dd {
 	margin-bottom: 1.5rem;
 }
-
+/* ------------------------- navbar -------------------------- */
 nav{
 	.bi{
 		font-size:.75rem;
 	}
 }
-/* ------------------------- detail -------------------------- */
-.readMore {
-	max-height: none;
-}
-/* navbar */
 .navbar{
 	.form-control.border-bottom{
 		border-bottom-width:.25px !important;
@@ -94,24 +91,14 @@ nav{
 		top:100%;
 	}
 }
-/* about pages */
+/* ------------------------- about pages -------------------------- */
 .staticPage{
 	H1{
 		margin-top: 1rem;
 		margin-bottom: 4.5rem;
 	}
 }
-/* Details */
-.detail{
-	H1{
-		font-size:1.25rem;
-		font-weight:600;
-		p{
-			margin-bottom:0px;
-		}
-	}
-}
-/* browse */
+/* ------------------------- browse -------------------------- */
 #bRefine{
 	#search-within{
 		border-bottom-width:.25px !important;
@@ -129,15 +116,81 @@ nav{
 #browseResultsContainer .card img, #browseResultsContainer .card .ca-placeholder, .resultBlock .card img, .resultBlock .card .ca-placeholder{
 	object-position: left;
 }
-#browseResultsContainer .card.shadow, .resultBlock .card.shadow{
-	box-shadow: none !important;
+.results{
+	ol{
+		margin-top:1rem;
+	}
 }
 
-/* search */
+/* ------------------------- Details -------------------------- */
+.readMore {
+	max-height: none;
+}
+.detail{
+	H1{
+		font-size:1.25rem;
+		font-weight:600;
+		p{
+			margin-bottom:0px;
+		}
+	}
+	#browseResultsContainer{
+		.card{
+			img{
+				height:300px;
+			}
+		}
+	}
+	.readMoreButton::after {
+		content:"Read More \203A"
+	}
+	.readMoreButton.readMoreButtonExpanded::after {
+		content:"Read Less \203A"
+	}
+	#mediaviewer-container:hover{
+		cursor: zoom-in;
+	}
+	#detailViewerCaption{
+		min-height:2rem;
+	}
+	#overlayViewerCaption{
+		display:none;
+	}
+	#mediaviewer-overlay{
+		#overlayViewerCaption{
+			display:block;
+		}	
+		#detailViewerCaption{
+			display:none;
+		}	
+	}
+}
+/* ------------------------- search -------------------------- */
 .search.results{
 	.card-body{
 		p{
 			margin-bottom:0px;
+		}
+	}
+}
+.advancedSearch{
+	.form-label{
+		font-style:italic;
+	}
+}
+
+/* ------------------------- results -------------------------- */
+#browseResultsContainer, .resultBlock{
+	.card{
+		img, .ca-placeholder{
+			height:250px;
+			width:100%
+		}
+		@media(max-width: 991px){
+			img, .ca-placeholder{
+				height:300px;
+				width:100%
+			}
 		}
 	}
 }
