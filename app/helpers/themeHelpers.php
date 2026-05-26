@@ -1487,7 +1487,7 @@ function caGetSearchLinks($t_instance, string $bundle, ?array $options=null) : ?
 		return preg_replace("!\[[^\]]*\]!", "", $v);
 	}, $text);
 	$values = array_map(function($v) {
-		return preg_replace("![\"\']+!", "", preg_replace("!\[[^\]]*\]$!", "", $v));
+		return preg_replace("![\"\']+!", "", preg_replace("!\[[^\]]*\]!", "", trim($v, " \n\r\t")));
 	}, $values);
 	if(!sizeof(array_filter($text, 'strlen'))) { return null; }
 	
