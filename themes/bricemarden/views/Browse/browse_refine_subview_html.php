@@ -118,7 +118,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 		print "</div><!-- end accordian browseRefineFacets -->";
 	}
 	if($table == "ca_objects"){
-		print '<div class="p-3">'.caNavLink($this->request, _t("Advanced search")." &rsaquo;", "fs-4", "", "Search", "advanced/objects").'</div>';
+		print '<div class="p-3">'.caNavLink($this->request, _t("Advanced search")." &rsaquo;", "fs-4", "", "Search", "advanced/artworks").'</div>';
 	}
 	print "</div><!-- end bRefine -->\n";	
 }
