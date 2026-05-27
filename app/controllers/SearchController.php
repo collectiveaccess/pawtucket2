@@ -421,13 +421,18 @@ class SearchController extends FindController {
 		if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
 			unset($va_criteria['_search']['*']);
 		}
-		// remove base criteria from display list
 		
-		if (is_array($va_table_criteria)) {
-			foreach($va_table_criteria as $vs_base_facet => $vs_criteria_value) {
-				unset($va_criteria[$vs_base_facet]);
+		// Get any preset-criteria
+		$show_base_criteria = caGetOption('showBaseCriteria', $browse_info, false);
+		$base_criteria = caGetOption('baseCriteria', $browse_info, null);
+
+		// remove base criteria from display list
+		if (!$show_base_criteria && is_array($base_criteria)) {
+			foreach($base_criteria as $base_facet => $criteria_value) {
+				unset($va_criteria[$base_facet]);
 			}
 		}
+		
 		$va_criteria_for_display = [];
 		foreach($va_criteria as $vs_facet_name => $va_criterion) {
 			$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
