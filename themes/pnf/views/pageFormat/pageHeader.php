@@ -133,7 +133,7 @@ $( document ).ready(function() {
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Authorship Issues'), '', '', 'Listing', 'authorship');?></a></li>
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Bibliography'), '', '', 'Listing', 'bibliography');?></li>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Comedias Printed Outside of Spain"), '', '', 'Listing', 'printed_outside_spain');?></li>
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Comedias Printed with Ancillary Works"), '', '', 'Listing', 'ancillary');?></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Comedias Printed with Short Theatrical Works"), '', '', 'Listing', 'ancillary');?></li>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Dates of Printers & Booksellers'), '', '', 'Listing', 'printers_booksellers_dates');?></li>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Glossary'), '', '', 'Listing', 'glossary');?></li>		
 							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Browse', 'collections');?></li>													
@@ -178,7 +178,7 @@ $( document ).ready(function() {
 							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><?php print caNavLink($this->request, 'CATALOGO DE AUTORIDADES: AUTORES, TRADUCTORES, ADAPTADORES', '', '', 'Listing', 'playwrights'); ?></a></li>
 							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, 'CATALOGO DE AUTORIDADES: IMPRESORES, LIBREROS, LIBRERIAS', '', '', 'Listing', 'printers');?></a></li>
 							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/">CATALOGOS IMPRESOS DE COLECCIONES DE COMEDIAS Y DE SUELTAS</a></li>						
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Comedias impresas con piezas menores"), '', '', 'Listing', 'ancillary');?></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Comedias impresas con piezas teatrales breves"), '', '', 'Listing', 'ancillary');?></li>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("COMEDIAS IMPRESAS FUERA DE ESPAÑA"), '', '', 'Listing', 'printed_outside_spain');?></li>
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, 'EDICIONES MODERNIZDAS DE COMEDIAS', '', '', 'Listing', 'modern_editions');?></li>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('FECHAS DE IMPRESORES Y LIBREROS'), '', '', 'Listing', 'printers_booksellers_dates');?></li>

@@ -46,7 +46,7 @@
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
 			}else{
-				print "<H2>Comedias impresas con piezas menores</H2>\n";	
+				print "<H2>Comedias impresas con piezas teatrales breves</H2>\n";	
 			
 			}		
 			if ($g_ui_locale == 'en_US'){			
@@ -93,8 +93,8 @@
 			<div class='col-sm-12'>
 				<div style='padding:20px 10px 0px 10px;'>
 					<div class='row'>
-						<div class='col-sm-4 col-md-4 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Title") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Title / Publisher" : "Título / Impresor"), "", "*", "*", "*", array("sort" => "Title")); ?></div>
-						<div class='col-sm-8 col-md-8 listingSubHeading' style='font-size: 17px;<?php print (($vs_current_sort == "Contents") ? " text-decoration:underline;" : ""); ?>'><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-chevron-down' style='font-size:12px'></span> ".(($g_ui_locale == 'en_US') ? "Contents" : "Contenido"), "", "*", "*", "*", array("sort" => "Contents")); ?></div>
+						<div class='col-sm-4 col-md-4 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Title / Publisher" : "Título / Impresor"; ?></div>
+						<div class='col-sm-8 col-md-8 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Contents" : "Contenido"); ?></div>
 					</div>
 				</div>
 			</div>
