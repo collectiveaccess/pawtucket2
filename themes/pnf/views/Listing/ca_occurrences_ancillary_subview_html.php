@@ -94,7 +94,7 @@
 				<div style='padding:20px 10px 0px 10px;'>
 					<div class='row'>
 						<div class='col-sm-4 col-md-4 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Title / Publisher" : "Título / Impresor"; ?></div>
-						<div class='col-sm-8 col-md-8 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Contents" : "Contenido"); ?></div>
+						<div class='col-sm-8 col-md-8 listingSubHeading' style='font-size: 17px;'><?php print ($g_ui_locale == 'en_US') ? "Contents" : "Contenido"; ?></div>
 					</div>
 				</div>
 			</div>
