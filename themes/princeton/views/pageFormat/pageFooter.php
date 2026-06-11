@@ -36,9 +36,8 @@
 ?>
 					<div class="address">
 						<a href='https://visualresources.princeton.edu/' target='_blank'><b>Visual Resources</b></a><br>
-						2-N-7/8 Green Hall<br>
-						609-258-3776<br>
-						<a href="mailto:visres@princeton.edu">visres@princeton.edu</a>
+						{{{footer_address}}}
+						<a href="mailto:{{{footer_email}}}">{{{footer_email}}}</a>
 					</div>
 				</div>
 				<div class="col-sm-12 col-md-6 col-lg-5 text-center">
