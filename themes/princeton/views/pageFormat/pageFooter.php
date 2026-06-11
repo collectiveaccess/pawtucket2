@@ -37,6 +37,7 @@
 					<div class="address">
 						<a href='https://visualresources.princeton.edu/' target='_blank'><b>Visual Resources</b></a><br>
 						{{{footer_address}}}
+						<br>
 						<a href="mailto:{{{footer_email}}}">{{{footer_email}}}</a>
 					</div>
 				</div>
