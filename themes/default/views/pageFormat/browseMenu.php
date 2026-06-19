@@ -31,22 +31,31 @@
 	
 	if(sizeof($va_browse_types)){
 		if(sizeof($va_browse_types) > 1){
-?>
-			<li class="nav-item dropdown">
-				<a class="text-nowrap nav-link<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-					<?= ($o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse")); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
-				</a>
-				<ul class="dropdown-menu">
-<?php
-					foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-						if(!$va_browse_type["dontShowInBrowseMenu"]){
-							print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), 'dropdown-item', '', 'Browse', $vs_browse_name, '')."</li>";
-						}
+			if($o_config->get("render_browse_menu_as_links")){
+				foreach($va_browse_types as $vs_browse_name => $va_browse_type){
+					if(!$va_browse_type["dontShowInBrowseMenu"]){
+						print "<li class='nav-item'>".caNavlink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == $vs_browse_name)) ? " active" : ""), "", "Browse", $vs_browse_name, "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == $vs_browse_name)) ? array("aria-current" => "page") : null))."</li>";
+					
 					}
+				}
+			}else{
 ?>
-				</ul>	
-			</li>
+				<li class="nav-item dropdown">
+					<a class="text-nowrap nav-link<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<?= ($o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse")); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
+					</a>
+					<ul class="dropdown-menu">
+<?php
+						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
+							if(!$va_browse_type["dontShowInBrowseMenu"]){
+								print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), 'dropdown-item', '', 'Browse', $vs_browse_name, '')."</li>";
+							}
+						}
+?>
+					</ul>	
+				</li>
 <?php				
+			}
 		}else{
 ?>
 				<li class="nav-item"><?php print caNavLink($this->request, ($o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse")), "nav-link".(($this->request->getController() == "Browse") ? " active" : ""), "", "Browse", key($va_browse_types)); ?></li>
