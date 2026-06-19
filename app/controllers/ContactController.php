@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2025 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -98,7 +98,7 @@ class ContactController extends BasePawtucketController {
 		}
 		
 		$opts = [];
-		$from = $this->request->config->get("ca_admin_email");
+		$from = $this->config->get("from_email_address") ?? $this->request->config->get("ca_admin_email");
 		
 		$fields = $this->config->get("contact_form_elements");
 		$this->view->setVar("contact_form_elements", $fields);
