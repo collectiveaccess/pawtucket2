@@ -51,6 +51,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
+	<meta name="google-site-verification" content="U1vTldKi54nO0Q9wS_v-tXPF72hflcS5wrbYK5d694c" />
 	
 	<meta property="og:url" content="<?php print $this->request->config->get("site_host").$_SERVER['REQUEST_URI']; ?>" />
 	<meta property="og:type" content="website" />
