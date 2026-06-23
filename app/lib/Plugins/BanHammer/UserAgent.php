@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2019-2025 Whirl-i-Gig
+ * Copyright 2019-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -52,6 +52,14 @@ class WLPlugBanHammerUserAgent Extends BaseBanHammerPlugin  {
 		$request_useragent = $_SERVER["HTTP_USER_AGENT"];
 		$ip = RequestHTTP::ip();
 		
+		if(is_array($exclude_list = $config['exclude_useragents'] ?? []) && sizeof($exclude_list)) {
+			foreach($exclude_list as $u) {
+				if (preg_match("!{$u}!i", $request_useragent)) {
+					return 0;
+				}
+			}
+		}
+		
 		$ip_to_ua = ExternalCache::fetch('ip_to_ua');
 		if(!is_array($ip_to_ua)) { $ip_to_ua = []; }
 		
@@ -70,13 +78,6 @@ class WLPlugBanHammerUserAgent Extends BaseBanHammerPlugin  {
 		if($config['use_useragent_list'] ?? false) {
 			if(is_array($banned_useragents_list = self::getBannedUserAgentList())) {
 				$banned_useragents = array_merge($banned_useragents, $banned_useragents_list);
-			}
-		}
-		if(is_array($exclude_list = $config['exclude_useragents'] ?? []) && sizeof($exclude_list)) {
-			foreach($exclude_list as $u) {
-				if (preg_match("!{$u}!i", $request_useragent)) {
-					return 0;
-				}
 			}
 		}
 		
