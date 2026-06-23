@@ -1284,18 +1284,7 @@ a.browseRemoveFacet img {
 
 
 
-/* --------------------------------- */
-/* classroom */
-/* --------------------------------- */
-.classroom h1{
-	margin-bottom:15px;
-}
-.classroom h5{
-	text-transform:uppercase;
-}
-.classroom small{
-	line-height:1.1em;
-}
+/
 .crSet{
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);

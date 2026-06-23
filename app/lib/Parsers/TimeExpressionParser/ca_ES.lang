@@ -1,46 +1,55 @@
 # *** use ONLY lowercase letters in lists: input will be forced to lowercase for comparison ***
 
 # List month names; used whenever name of month needs to be displayed
-monthList = [gener, febrer, març, abril, maig, juny, juliol, agost, setembre, octubre, novembre, desembre]
+monthList = [enero, febrero, Marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre]
 
 # *** the following list of months is for display and *SHOULD* be capitalized where appropriate
-monthListDisplay = [Gener, Febrer, Març, Abril, Maig, Juny, Juliol, Agost, Setembre, Octubre, Novembre, Desembre]
+monthListDisplay = [Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre]
 
 # Hash table mapping acceptable month names to the display names defined in 'monthList'
 monthTable = {
-	gen = gener, gen. = gener,
-	febr = febrer, febr. = febrer,
-	abr = abril, abr. = abril,
-	jul = juliol, jul. = juliol,
-	ag = agost, ag. = agost,
-	set = setembre, set. = setembre,
+	jan = enero, jan. = enero,
+	feb = febrero, feb. = febrero,
+	mar = marzo, mar. = marzo,
+	apr = abril, apr. = abril,
+	ma = mayo,
+	jun = junio, jun. = junio,
+	jul = julio, jul. = julio,
+	aug = agosto, aug. = agosto,
+	sep = septiembre, sep. = septiembre,
 	oct = octubre, oct. = octubre,
-	nov = novembre, nov. = novembre,
-	des = desembre, des. = desembre
+	nov = noviembre, nov. = noviembre,
+	dec = diciembre, dec. = diciembre
 }
 
-
 # List of day names, starting with Sunday
-dayListDisplay = [diumenge, dilluns, dimarts, dimecres, dijous, divendres, dissabte]
+dayListDisplay = [Domingo, Lunes, Martes, Miércoles, Jueves, Viernes, Sabado]
 
-rangePreConjunctions = [entre]
-rangeConjunctions = [–, -, i, ..]
+rangePreConjunctions = [de, entre]
+rangeConjunctions = [–, -, y, ..]
 
-dateTimeConjunctions = [a les, @]
+dateTimeConjunctions = [at, @, a]
 
 dateDelimiters = [/,-,.]
 timeDelimiters = [:,.]
 
-timeAMMeridian = a. m.
-timePMMeridian = p. m.
+timeAMMeridian = am
+timePMMeridian = pm
 
 meridianTable = {
-	a.m. = a. m.,
-	p.m. = p. m.
+	a.m. = am,
+	p.m. = pm
 }
 
+intervalPastIndicator = [past]
+intervalFutureIndicator = [future, next]
+intervalDaysIndicator = [day, days, d]
+intervalWeeksIndicator = [week, weeks, w]
+intervalMonthsIndicator = [month, months, m]
+intervalYearsIndicator = [year, years, yr, y]
+
 dateCircaIndicator = [circa, hacia, c, c., ca, ca.]
-dateProbablyIndicator = [probablement]
+dateProbablyIndicator = [probablemente]
 dateUncertaintyIndicator = [~]
 dateUncertaintyYearIndicator = [a,y]
 dateUncertaintyDayIndicator = [d]
@@ -58,31 +67,31 @@ ADBCTable = {
 	b.c. = bc
 }
 
-nowDate = [ara]
-todayDate = [avui]
-yesterdayDate = [ahir]
-tomorrowDate = [demà]
+nowDate = [ahora, now]
+todayDate = [hoy]
+yesterdayDate = [ayer]
+tomorrowDate = [mañana]
 undatedDate = [undated, unknown]
 
-presentDate = [aquí, ?, ??, ???, ????]
-beforeQualifier = [abans]
-earlyQualifier = [d'hora]
-midQualifier = [mig]
-lateQualifier = [tard]
-diedQualifier = [mort]
-afterQualifier = [després]
-bornQualifier = [né]
+presentDate = [presente, ?, ??, ???, ????]
+beforeQualifier = [antes]
+earlyQualifier = [early]
+midQualifier = [mid, middle]
+lateQualifier = [late]
+diedQualifier = [morir, d, d.]
+afterQualifier = [después]
+bornQualifier = [nació, b, b.]
 
 # Text to indicate century (as in "20th century")
-centuryIndicator = [segle]
+centuryIndicator = [Centuria, cent]
 
 # Text to indicate decdae (as in "1920s")
 decadeIndicator = [s]
 
 # list of numeric suffixes, starting with the one for zero
 # (eg. 0th, 1st, 2nd, 3rd would be a list like so: [th, st, nd, rd])
-ordinalSuffixes = [è, r, n, r, t]
-ordinalSuffixDefault = è
+ordinalSuffixes = []
+ordinalSuffixDefault = 
 
 # in delimited dates (ex. 12/10/2009) is the first number a month or a day?
 # set to "0" for European style dates (day comes first); "1" for American-style dates (month comes first)
@@ -94,13 +103,13 @@ monthComesFirstInDelimitedDate = 0
 daySuffix = 
 
 # Definite articles
-definiteArticles = [el, la, les, els]
+definiteArticles = [el, la, los, las]
 
 # Indefinite articles
 indefiniteArticles = [un, una]
 
 # Seasons
-winterSeason = [hivern]
-springSeason = [primavera]
-summerSeason = [estiu]
-autumnSeason = [tardor]
+winterSeason = [winter]
+springSeason = [spring]
+summerSeason = [summer]
+autumnSeason = [autumn, fall]

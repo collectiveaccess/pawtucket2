@@ -27,8 +27,6 @@
  */
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
@@ -38,9 +36,7 @@
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
+
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
@@ -84,7 +80,7 @@
                 </div>
                 <div class="col-md-6 col-sm-6">
                 	<ul class="pull-right social-icons-colored">
-                    	<li class="facebook"><a href="https://www.facebook.com/hollandmuseum" target="_blank"><i class="fa fa-facebook"></i></a></li><li class="twitter"><a href="https://twitter.com/HollandMuseum" target="_blank"><i class="fa fa-twitter"></i></a></li><li class="pinterest"><a href="https://www.pinterest.com/holland_museum/" target="_blank"><i class="fa fa-pinterest"></i></a></li><li class="instagram"><a href="https://www.instagram.com/hollandmuseum/" target="_blank"><i class="fa fa-instagram"></i></a></li>                    </ul>
+                    	<li class="facebook"><a href="https://www.facebook.com/hollandmuseum" target="_blank"><i class="fab fa-facebook"></i></a></li><li class="twitter"><a href="https://twitter.com/HollandMuseum" target="_blank"><i class="fab fa-twitter"></i></a></li><li class="pinterest"><a href="https://www.pinterest.com/holland_museum/" target="_blank"><i class="fab fa-pinterest"></i></a></li><li class="instagram"><a href="https://www.instagram.com/hollandmuseum/" target="_blank"><i class="fab fa-instagram"></i></a></li>                    </ul>
                 </div>
             </div>
         </div>
@@ -160,7 +156,7 @@
 <?php
 			if($vs_message = $this->getVar("header_message")){
 ?>
-				<div class="headerMessage"><?= $vs_message; ?></div>
+				<div class="headerMessage"><div class="headerMessageAddress">Windmill Restaurant<br/>28 W 8th<br/>downtown<br/>Holland</div><?= caGetThemeGraphic($this->request, 'WindmillLogo2.jpg'); ?><?= $vs_message; ?></div>
 <?php
 			}
 ?>

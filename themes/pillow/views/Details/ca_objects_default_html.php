@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2015 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -118,6 +118,27 @@
                 if(in_array($type_code, ['moving_image', 'photograph', 'costume', 'set_piece'])) {
 					print "<div class='unit'><h6>Identifier</h6>".$t_object->get('ca_objects.idno')."</div>";
 				}
+
+if($this->request->isLoggedIn() && $this->request->user->canDoAction('can_do_library_checkout') && $t_object->canBeCheckedOut()) { 
+				print "<div class='unit'><h6>Lending status:</h6>".$t_object->getCheckoutStatus(['returnAsText' => true]);
+				$checkout_info = $t_object->getCheckoutStatus(['returnAsArray' => true]);
+				
+				switch($checkout_status = $t_object->getCheckoutStatus()) {
+					case __CA_OBJECTS_CHECKOUT_STATUS_OUT__:
+					case __CA_OBJECTS_CHECKOUT_STATUS_OUT_WITH_RESERVATIONS__:
+						//print " with ".$checkout_info['user_name']."; due on ".$checkout_info['due_date'];
+						break;
+					case __CA_OBJECTS_CHECKOUT_STATUS_RESERVED__:
+						break;
+					case __CA_OBJECTS_CHECKOUT_STATUS_AVAILABLE__:
+						print ' ('.caNavLink($this->request, _t('Borrow'), '', '', 'Library/CheckOut', 'Index', ['id' => $t_object->getPrimaryKey()]).")";
+						break;
+					default:
+						break;
+				}
+				print "</div>\n";
+}
+			
 				if ($va_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Author</h6>".$va_author."</div>";
 				}
@@ -138,6 +159,8 @@
 				{{{<ifdef code="ca_objects.isbn"><div class='unit'><H6>ISBN:</H6><unit delimiter='<br/>'>^ca_objects.isbn</unit></div></ifdef>}}}				
 				{{{<ifdef code="ca_objects.book_format"><div class='unit'><H6>Format:</H6><unit delimiter=', '>^ca_objects.book_format</unit></div></ifdef>}}}				
 
+				{{{<ifdef code="ca_objects.photographer"><div class='unit'><H6>Photographer:</H6><unit delimiter='<br/>'>^ca_objects.photographer</unit></div></ifdef>}}}				
+				
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><H6>Description:</H6>
 						<span class="trimText">^ca_objects.description</span>

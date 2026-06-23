@@ -26,5 +26,5 @@
  * ----------------------------------------------------------------------
  */
 
-	print "Kentler International Drawing Space: 2020 Virtual Benefit Selection Confirmation";
+	print "Kentler International Drawing Space: 2022 Benefit Selection Confirmation";
 ?>

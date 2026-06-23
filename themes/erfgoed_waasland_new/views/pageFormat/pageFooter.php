@@ -35,7 +35,7 @@
 					<div class="row">
 						<div class="col-sm-4 footerContact">
 							<b>Contact</b><br/>
-							Erfgoedcel Waasland<br/>
+							Interwaas<br/>
 							Lamstraat 113<br/>
 							9100 Sint-Niklaas<br/><br/>
 							T - +32 (0)3 500 47 55<br/>
@@ -47,7 +47,7 @@
 								<li><a href="https://www.facebook.com/erfgoedcelwaasland" target="_blank"><i class="fa fa-facebook-square" aria-label="Facebook"></i></a></li>
 								<li><a href="https://www.instagram.com/erfgoedcel_waasland/" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
 							</ul>
-							<div class="homeLogo"><a href="http://www.erfgoedcelwaasland.be" target="_blank"><?php print caGetThemeGraphic($this->request, 'erfgoedCelLogoTransparent.png'); ?></a></div>
+							<div class="homeLogo"><a href="http://www.erfgoedcelwaasland.be" target="_blank"><?= caGetThemeGraphic($this->request, 'Interwaas_logo_RGB_wit.png'); ?></a></div>
 							
 						</div>
 						<div class="col-sm-4">

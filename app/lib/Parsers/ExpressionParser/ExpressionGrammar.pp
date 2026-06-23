@@ -6,7 +6,7 @@
 // ----------------------------------------------------------------------
 //
 // Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
-// Copyright 2015-2023 Whirl-i-Gig
+// Copyright 2015-2025 Whirl-i-Gig
 //
 // For more information visit http://www.CollectiveAccess.org
 //
@@ -55,7 +55,7 @@
 
 // Literals
 %token  number    (0|[1-9]\d*)(\.\d+)?([eE][\+\-]?\d+)?
-%token  string    \"[^"]*\"
+%token  string    (?<!\\)\"((?<=\\)\"|[^"])+(?<!\\)\"
 %token  string_single_quote    \'[^']*\'
 
 // Math
@@ -88,7 +88,7 @@
 %token false false|FALSE
 
 // Variables
-%token  variable  \^(ca_[A-Za-z]+[A-Za-z0-9_\-\.]+[A-Za-z0-9]{1}[\&\%]{1}[^ <]+|[0-9]+(?=[.,;])|[A-Za-z0-9_\.:\/]+[%]{1}[^\w\^\t\r\n\"\'<>\(\)\{\}\/]*|[A-Za-z0-9_\.\/]+[:]{1}[A-Za-z0-9_\.\/\[\]\@\'\"=:]+\]|[A-Za-z0-9_\.\/]+[:]{1}[A-Za-z0-9_\.\/\[\]\@\'\"=:]+|[A-Za-z0-9_\.\/]+[~]{1}[A-Za-z0-9]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/]+)
+%token  variable  \^(ca_[A-Za-z]+[A-Za-z0-9_\-\.]+[A-Za-z0-9]{1}[\&\%]{1}[^ <\)]+|[0-9]+(?=[.,;])|[A-Za-z0-9_\.:\/]+[%]{1}[^\w\^\t\r\n\"\'<>\(\)\{\}\/]*|[A-Za-z0-9_\.\/]+[:]{1}[A-Za-z0-9_\.\/\[\]\@\'\"=:]+\]|[A-Za-z0-9_\.\/]+[:]{1}[A-Za-z0-9_\.\/\[\]\@\'\"=:]+|[A-Za-z0-9_\.\/]+[~]{1}[A-Za-z0-9]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/]+)
 
 %token  id        \w+
 

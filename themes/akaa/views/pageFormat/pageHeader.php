@@ -27,8 +27,6 @@
  */
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
@@ -38,9 +36,7 @@
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
+
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
@@ -136,6 +132,10 @@
 					<li><?php print caNavLink($this->request, 'Artists', '', '', 'Browse', 'artists');?></li>
 					<li><?php print caNavLink($this->request, 'Artworks', '', '', 'Browse', 'artworks');?></li>
 					<li <?php print ($this->request->getController() == "Listing") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artist Interviews"), "", "", "Listing", "interviews"); ?></li>
+					<li><?php print caNavLink($this->request, 'AKAA Collection', '', '', 'Browse', 'akaa_collection');?></li>
+					<li class='browseby navDivide'>|</li>
+					<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+					
 				</ul>
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">

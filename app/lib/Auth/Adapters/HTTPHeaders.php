@@ -39,12 +39,12 @@ class HTTPHeaderAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 			return false;
 		}
 		
-		$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
+		$o_auth_config = Configuration::load('authentication.conf');
 		$vs_httpheader_username  = $o_auth_config->get("httpheader_username");
 		
 		// if the HTTP header is missing or blank = bad authentication
 		if (!isset($_SERVER[$vs_httpheader_username]) || $_SERVER[$vs_httpheader_username] == "" ) {
-			caLogEvent('LOGF', _t('Could not login user %1 using http headers are missing failed %2 [%3]', $ps_username, $vs_httpheader_username, $_SERVER['REMOTE_ADDR']), 'HTTPHeaderAuthAdapter');
+			caLogEvent('LOGF', _t('Could not login user %1 using http headers: missing %2 [%3]', $ps_username, $vs_httpheader_username, $_SERVER['REMOTE_ADDR']), 'HTTPHeaderAuthAdapter');
 			return false;
 		}
 		
@@ -69,7 +69,7 @@ class HTTPHeaderAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	# --------------------------------------------------------------------------------
 	public function getUserInfo($ps_username, $ps_password, $options=null) {
 		
-		$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
+		$o_auth_config = Configuration::load('authentication.conf');
 		
 		// learn which HTTP headers to inspect
 		$vs_httpheader_username  = $o_auth_config->get("httpheader_username");

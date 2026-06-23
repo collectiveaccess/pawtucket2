@@ -29,7 +29,7 @@
 ?>
 Dear Ticket Holder,
 
-Thank you for participating in Kentler's 2021 100 Works on Paper VIRTUAL Benefit! We so appreciate your support!
+Thank you for participating in Kentler's 2022 100 Works on Paper Benefit! We so appreciate your support!
 
 You have selected the following artwork:
 
@@ -39,11 +39,11 @@ print $this->request->getParameter("artist", pString).", ".$this->request->getPa
 
 <?php print $this->request->getParameter("itemURL", pString)."</p>"; ?>
 
-Artworks will be available for pickup in the gallery on Saturday, Oct. 23 and Sunday, Oct. 24 from 12 - 5pm. If you pre-paid for shipping when you purchased your ticket, we will contact you when the package is on its way.
+Artworks will be available for pickup in the gallery on Friday, Oct. 21 and Saturday, Oct. 22 from 12 - 5pm. If you pre-paid for shipping when you purchased your ticket, we will contact you when the package is on its way.
 
-To arrange for shipping, visit https://bit.ly/KentlerBenefit21 and select “SHIPPING FEE.”
+To arrange for shipping, visit https://bit.ly/3VkFkUa and select “SHIPPING FEE.”
 
-Please contact benefit@kentlergallery.org with any questions.
+Please contact sallie@kentlergallery.org with any questions.
 
 Best,
 Florence Neal

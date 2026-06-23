@@ -62,7 +62,6 @@
 			<div class="row">
 				<div class="col-sm-12 footerPartnerLogos">
 					<a href="https://www.aartselaar.be/" target="_blank"><?php print caGetThemeGraphic($this->request, 'logos/Aartselaar.png'); ?></a> 
-					<a href="https://www.borsbeek.be/" target="_blank"><?php print caGetThemeGraphic($this->request, 'logos/Borsbeek.png'); ?></a>
 					<a href="https://www.edegem.be/" target="_blank"><?php print caGetThemeGraphic($this->request, 'logos/Edegembaseline.png'); ?></a>
 					<a href="https://www.hove.be/" target="_blank"><?php print caGetThemeGraphic($this->request, 'logos/hove_logo-cymk.jpg'); ?></a> 
 					<a href="https://www.kontich.be/" target="_blank"><?php print caGetThemeGraphic($this->request, 'logos/Kontich.png'); ?></a>

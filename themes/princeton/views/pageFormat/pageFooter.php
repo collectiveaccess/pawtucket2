@@ -36,9 +36,9 @@
 ?>
 					<div class="address">
 						<a href='https://visualresources.princeton.edu/' target='_blank'><b>Visual Resources</b></a><br>
-						2-N-7/8 Green Hall<br>
-						609-258-3776<br>
-						<a href="mailto:visres@princeton.edu">visres@princeton.edu</a>
+						{{{footer_address}}}
+						<br>
+						<a href="mailto:{{{footer_email}}}">{{{footer_email}}}</a>
 					</div>
 				</div>
 				<div class="col-sm-12 col-md-6 col-lg-5 text-center">
@@ -99,5 +99,15 @@
 <?php
 	print $this->render("Cookies/banner_html.php");	
 ?>
+<script type='text/javascript'>
+function Copy(url) {
+	var getUrl = document.createElement('input');
+	document.body.appendChild(getUrl);
+	getUrl.value = url;
+	getUrl.select();
+	document.execCommand('copy');
+	document.body.removeChild(getUrl);
+}
+</script>
 	</body>
 </html>

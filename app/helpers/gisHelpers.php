@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2024 Whirl-i-Gig
+ * Copyright 2009-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,6 +29,7 @@
  * 
  * ----------------------------------------------------------------------
  */
+use AnthonyMartin\GeoLocation\GeoPoint;
 require_once(__CA_LIB_DIR__.'/Attributes/Values/LengthAttributeValue.php');
 require_once(__CA_LIB_DIR__.'/Parsers/gPoint.php');
 
@@ -491,88 +492,77 @@ function caParseGISSearch($value) {
 	$value = str_replace(" to ", " .. ", $value);
 	$value = preg_replace('![^A-Za-z0-9,\.\-~ ]+!', '', $value);
 	
-	$va_tokens = preg_split('![ ]+!', $value);
+	$tokens = preg_split('![ ]+!', $value);
 	
-	$vn_lat1 = $vn_long1 = $vn_lat2 = $vn_long2 = null;
-	$vn_dist = null;
-	$vn_state = 0;
-	while(sizeof($va_tokens)) {
-		$vs_token = trim(array_shift($va_tokens));
+	$lat1 = $long1 = $lat2 = $long2 = null;
+	$dist = null;
+	$state = 0;
+	while(sizeof($tokens)) {
+		$vs_token = trim(array_shift($tokens));
 		if(!$vs_token) { continue; }
-		switch($vn_state) {
+		switch($state) {
 			case 0:		// start
-				$va_tmp = explode(',', $vs_token);
-				if (sizeof($va_tmp) != 2) { return false; }
-				$vn_lat1 = (float)$va_tmp[0];
-				$vn_long1 = (float)$va_tmp[1];
+				$tmp = explode(',', $vs_token);
+				if (sizeof($tmp) != 2) { return false; }
+				$lat1 = (float)$tmp[0];
+				$long1 = (float)$tmp[1];
 				
-				if (!sizeof($va_tokens)) {
+				if (!sizeof($tokens)) {
 					return array(
-						'min_latitude' => $vn_lat1,
-						'max_latitude' => $vn_lat1,
-						'min_longitude' => $vn_long1,
-						'max_longitude' => $vn_long1
+						'min_latitude' => $lat1,
+						'max_latitude' => $lat1,
+						'min_longitude' => $long1,
+						'max_longitude' => $long1
 					);
 				}
 				
-				$vn_state = 1;
+				$state = 1;
 				break;
 			case 1:		// conjunction
 				switch($vs_token) {
 					case '~':
-						$vn_state = 3;
+						$state = 3;
 						break(2);
 					case '..' :
-						$vn_state = 2;
+						$state = 2;
 						break(2);
 					default:
-						$vn_state = 2;
+						$state = 2;
 						break;
 				}
 				// fall through
 			case 2:	// second lat/long
-				$va_tmp = explode(',', $vs_token);
-				if (sizeof($va_tmp) != 2) { return false; }
-				$vn_lat2 = (float)$va_tmp[0];
-				$vn_long2 = (float)$va_tmp[1];
+				$tmp = explode(',', $vs_token);
+				if (sizeof($tmp) != 2) { return false; }
+				$lat2 = (float)$tmp[0];
+				$long2 = (float)$tmp[1];
 				
-				if (($vn_lat1 == 0) || ($vn_lat2 == 0) || ($vn_long1 == 0) || ($vn_long2 == 0)) { return null; }
+				if (($lat1 == 0) || ($lat2 == 0) || ($long1 == 0) || ($long2 == 0)) { return null; }
 				
 				return array(
-					'min_latitude' => ($vn_lat1 > $vn_lat2) ? $vn_lat2 : $vn_lat1,
-					'max_latitude' => ($vn_lat1 < $vn_lat2) ? $vn_lat2 : $vn_lat1,
-					'min_longitude' => ($vn_long1 > $vn_long2) ? $vn_long2 : $vn_long1,
-					'max_longitude' => ($vn_long1 < $vn_long2) ? $vn_long2 : $vn_long1,
+					'min_latitude' => ($lat1 > $lat2) ? $lat2 : $lat1,
+					'max_latitude' => ($lat1 < $lat2) ? $lat2 : $lat1,
+					'min_longitude' => ($long1 > $long2) ? $long2 : $long1,
+					'max_longitude' => ($long1 < $long2) ? $long2 : $long1,
 				);
 				break;
 			case 3:	// distance
-				//
-				// TODO: The lat/long delta calculations below are very rough. We should replace with more accurate formulas.
-				//
 				$t_length = new LengthAttributeValue();
-				$va_length_val = $t_length->parseValue($vs_token, array('displayLabel' => 'distance'));
-				$vn_length = ((float)array_shift(explode(' ', preg_replace('![^\d\.]+!', '', $va_length_val['value_decimal1'])))) / 1000;		// kilometers
-				$vn_lat1_km = (10000/90) * $vn_lat1;
-				$vn_long1_km = (10000/90) * $vn_long1;
+				$length_val = $t_length->parseValue($vs_token, array('displayLabel' => 'distance'));
+				$length = ((float)array_shift(explode(' ', preg_replace('![^\d\.]+!', '', $length_val['value_decimal1'])))) / 1000;		// kilometers
 				
-				$vn_lat1 = (($vn_lat1_km + ($vn_length/2)))/(10000/90);
-				$vn_long1 = (($vn_long1_km + ($vn_length/2)))/(10000/90);
-				
-				$vn_lat2 = (($vn_lat1_km - ($vn_length/2)))/(10000/90);
-				$vn_long2 = (($vn_long1_km - ($vn_length/2)))/(10000/90);
-				
-				if (($vn_lat1 == 0) || ($vn_lat2 == 0) || ($vn_long1 == 0) || ($vn_long2 == 0)) { return null; }
+				$pt = new GeoPoint($lat1, $long1);
+				$bb = $pt->boundingBox($length, 'km');
 				
 				return array(
-					'min_latitude' => ($vn_lat1 > $vn_lat2) ? $vn_lat2 : $vn_lat1,
-					'max_latitude' =>  ($vn_lat1 < $vn_lat2) ? $vn_lat2 : $vn_lat1,
-					'min_longitude' =>  ($vn_long1 > $vn_long2) ? $vn_long2 : $vn_long1,
-					'max_longitude' =>  ($vn_long1 < $vn_long2) ? $vn_long2 : $vn_long1,
-					'distance' => $vn_length
+					'min_latitude' => $bb->getMinLatitude(),
+					'max_latitude' =>  $bb->getMaxLatitude(),
+					'min_longitude' => $bb->getMinLongitude(),
+					'max_longitude' =>  $bb->getMaxLongitude(),
+					'distance' => $length
 				);
 				
 				break;
-			
 		}
 	}
 	
@@ -668,5 +658,129 @@ function caGetStateList($country=null) {
 	}
 	
 	return array();
+}
+# --------------------------------------------------------------------------------------------
+/**
+ *
+ */
+function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=null) : ?array {
+	$tmp = explode('.', $bundle);
+	$t_georef_instance = Datamodel::getInstance($tmp[0], true);
+	$field_name = array_pop($tmp);
+	$container_field_name = array_pop($tmp);
+	
+	$chk_related_for_access = null;
+	if ($is_related = ($t_georef_instance && ($t_georef_instance->tableName() !== $data->tableName()))) {
+		if($t_georef_instance->hasField('access')) { $chk_related_for_access = $t_georef_instance->tableName().".access"; }
+	}
+	
+	if (is_subclass_of($data, 'BaseModel')) {
+		// Convert instance to search result
+		$data = caMakeSearchResult($data->tableName(), [$data->getPrimaryKey()]);
+	} else {
+		$data->seek(0);
+	}
+	
+	if (is_subclass_of($data, 'SearchResult')) {
+		// If pulling coordinates from a related record (Eg. pulling coordinates from ca_places record related to ca_objects records)
+		// then then attempt here to shift the context from the subject to the relationship. If we leave context on subject
+		// then we're get labels for all places attached to a given object tagged on each coordinate, rather than having
+		// each label linked to its specific coordinate.
+					
+		$t_instance = $data->getResultTableInstance();
+		$table = $t_instance->tableName();
+		$pk = $t_instance->primaryKey();
+	   
+		if($is_related && is_array($path = Datamodel::getPath($t_georef_instance->tableName(), $data->tableName())) && (sizeof($path) === 3)) {
+			$path = array_keys($path);
+			
+			$rel_ids = [];
+			while($data->nextHit()) {
+				if(is_array($rel_ids_for_row = $data->get($path[1].".relation_id", ['returnAsArray' => true]))) {
+				   $rel_ids = array_merge($rel_ids, $rel_ids_for_row);
+				}
+			}
+			if (sizeof($rel_ids)) {
+				$data = caMakeSearchResult($path[1], $rel_ids);
+			}
+		}
+		
+		$access_values = null;
+		if (isset($options['checkAccess']) && is_array($options['checkAccess']) && sizeof($options['checkAccess'])) {
+			$access_values = $options['checkAccess'];
+		}
+		
+		$info_template = caGetOption('infoTemplate', $options, null);
+		$ajax_content_url = caGetOption('ajaxContentUrl', $options, null);
+		
+		$georef_list = [];
+		while($data->nextHit()) {
+			if (is_array($access_values) && !in_array($data->get($chk_related_for_access ? $chk_related_for_access : "{$table}.access"), $access_values)) {
+				continue;
+			}
+			if ($coordinates = $data->get($bundle, ['coordinates' => true, 'returnWithStructure' => true, 'returnAllLocales' => false])) {
+				$id = $data->get("{$table}.{$pk}");
+				
+				foreach($coordinates as $element_id => $coord_list) {
+					foreach($coord_list as $attribute_id => $geoname) {
+						if(isset($geoname[$field_name])) {
+							$coordinate = $geoname[$field_name];
+						} elseif(isset($geoname[$container_field_name])) {
+							$coordinate =  $geoname[$container_field_name];
+						} else {
+							$coordinate = $geoname;
+						}
+					
+						$label = $content = $ajax_content = null;
+						
+						if (!strlen($ajax_content_url) && strlen($info_template)) {
+							$info = caProcessTemplateForIDs($info_template, $table, [$id], []);
+						} else {
+							$info = '';
+						}
+						
+						$ajax_content = null; // @TODO
+									
+						$path_items = preg_split("/[:]/", $coordinate['path']);
+					
+						foreach($path_items as $path_item) {
+							$radius = $angle = null;
+							
+							$path = preg_split("/[;]/", $path_item);
+							if (sizeof($path) > 1) {
+								$coordinate_pairs = [];
+								foreach($path as $pair) {
+									$pair = explode(',', $pair);
+									$coordinate_pairs[] = ['latitude' => $pair[0], 'longitude' => $pair[1]];
+								}
+							   
+								$georef_list[] = ['coordinates' => $coordinate_pairs, 'info' => $info, 'ajaxContentUrl' => $ajax_content, 'ajaxContentIDs' => [$id],  'group' => $group];
+							} else {
+								$coord = explode(',', $path[0]);
+								list($lng, $radius) = explode('~', $coord[1]);
+								if (!$radius) { list($lng, $angle) = explode('*', $coord[1]); }
+								
+								if($fuzz > 0) { $coord[0] = ''.round($coord[0], $fuzz); $lng = ''.round($lng, $fuzz); }
+						 
+						 		if(!isset($georef_list[$coord[0].'/'.$lng])) {
+									$d = ['latitude' => $coord[0], 'longitude' => $lng, 'info' => [$id => $info], 'ajaxContentUrl' => $ajax_content, 'ajaxContentIDs' => [$id], 'group' => $group];
+								} else {
+									$d = $georef_list[$coord[0].'/'.$lng];
+									$d['info'][$id] = $info;
+									$d['ajaxContentIDs'][] = $id;
+								}
+								if ($radius) { $d['radius'] = $radius; }
+								if ($angle) { $d['angle'] = $angle; }
+								$georef_list[$coord[0].'/'.$lng] = $d;
+							}
+						}
+					}
+					$item_count++;
+				}
+			}
+		}	
+		return ['coordinates' => array_values($georef_list)];
+	}
+	return null;
 }
 # --------------------------------------------------------------------------------------------

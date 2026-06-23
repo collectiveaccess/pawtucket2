@@ -93,8 +93,8 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
 
             // Catch disabled lightbox
-            if ($this->request->config->get('disable_lightbox') && $this->request->config->get('disable_classroom')) {
- 				throw new ApplicationException('Lightbox/classroom is not enabled');
+            if ($this->request->config->get('disable_lightbox')) {
+ 				throw new ApplicationException('Lightbox is not enabled');
  			}
  			if (!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));

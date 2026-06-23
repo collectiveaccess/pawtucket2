@@ -624,12 +624,16 @@ a.facetApply, button.facetApplySlider {
 	text-align:center;
 }
 /* Ornaments Intro */
+.ornamentsGrid a{
+	text-decoration:none !important;
+}
 .ornamentsCatItem{
     padding: 35px 0px 0px 0px;
 	text-align:center;
 	box-shadow:0px 0px 5px rgba(0, 0, 0, 0.35);
 	height:85px;
 	overflow:hidden;
+	text-decoration:none !important;
 }
 a .ornamentsCatItem{	
 	color: #7f4539;
@@ -638,8 +642,7 @@ a .ornamentsCatItem{
     font-weight:bold;
     margin-bottom:20px;
 	text-align:center;
-	text-decoration:none;
-	text-transform:capitalize;
+	text-decoration:none !important;
 }
 a .ornamentsCatItem:hover{
 	box-shadow:0px 0px 5px rgba(0, 0, 0, 0.6);
@@ -1125,10 +1128,10 @@ a.readmore-js-toggle{
 	display: block;
 	position: relative;
 }
-.listing-content.printersBooksellersList{
+.listing-content.printersBooksellersList, .listing-content.womenPrintersBooksellersList, .listing-content.outsideSpainList{
 	padding-right:0px;
 }
-.listing-content.printersBooksellersList a.readmore-js-toggle{
+.listing-content.printersBooksellersList a.readmore-js-toggle, .listing-content.womenPrintersBooksellersList a.readmore-js-toggle, .listing-content.outsideSpainList a.readmore-js-toggle{
 	top: 0px;
 	padding-top:10px;
 }

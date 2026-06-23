@@ -28,16 +28,16 @@
 ?> 
 <p>Dear Ticket Holder,</p>
 
-<p>Thank you for participating in Kentler's 2021 <i>100 Works on Paper</i> VIRTUAL Benefit! We so appreciate your support!</p>
+<p>Thank you for participating in Kentler's 2022 <i>100 Works on Paper</i> Benefit! We so appreciate your support!</p>
 <p>You have selected the following artwork:</p>
 
 <?php
 print "<p>".$this->request->getParameter("artist", pString).", ".$this->request->getParameter("itemTitle", pString)."<br/>".$this->request->getParameter("itemURL", pString)."</p>";
 ?>
 
-<p>Artworks will be available for pickup in the gallery on Saturday, Oct. 23 and Sunday, Oct. 24 from 12 - 5pm. If you pre-paid for shipping when you purchased your ticket, we will contact you when the package is on its way.</p>
-<p>To arrange for shipping, visit https://bit.ly/KentlerBenefit21 and select “SHIPPING FEE.”</p>
-<p>Please contact benefit@kentlergallery.org with any questions.</p>
+<p>Artworks will be available for pickup in the gallery on Friday, Oct. 21 and Saturday, Oct. 22 from 12 - 5pm. If you pre-paid for shipping when you purchased your ticket, we will contact you when the package is on its way.</p>
+<p>To arrange for shipping, visit https://bit.ly/3VkFkUa and select “SHIPPING FEE.”</p>
+<p>Please contact sallie@kentlergallery.org with any questions.</p>
 
 <p>Best,
 Florence Neal<br/>

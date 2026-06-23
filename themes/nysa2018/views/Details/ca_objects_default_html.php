@@ -119,11 +119,8 @@ $t_list = new ca_lists();
 			if($vs_collection_idno = $t_object->get('ca_collections.idno')){
 				#print_r(@get_headers("http://iarchives.nysed.gov/xtf/view?docId=tei/".$vs_collection_idno."/".$t_object->get('idno').".xml"));
 				# get transcript y/n
-				$t_list = new ca_lists();
-				$vn_yes_value = $t_list->getItemIDFromList("transcript", "transcript_yes");
-					
-				if($t_object->get('ca_objects.transcript') == $vn_yes_value) {
-					print "<div class='unit'><a href='http://iarchives.nysed.gov/xtf/view?docId=tei/".$vs_collection_idno."/".$t_object->get('idno').".xml' target='_blank' class='btn btn-default'>"._t("Transcript / Translation")."</a></div>";
+				if($t_object->get('ca_objects.transcript', ['convertCodesToIdno' => true]) == 'transcript_yes') {
+					print "<div class='unit'><a href='https://iarchives.nysed.gov/xtf/view?docId=tei/".$vs_collection_idno."/".$t_object->get('idno').".xml' target='_blank' class='btn btn-default'>"._t("Transcript / Translation")."</a></div>";
 				}
 						
 			}
@@ -146,7 +143,7 @@ $t_list = new ca_lists();
 			// if($vs_tmp = $t_object->get('date_original')){
 				// print "<div class='unit'><b>"._t("Date")."</b><br/>".$vs_tmp."</div><!-- end unit -->";
 			// }
-			if ($va_date_array = $t_object->get('ca_objects.object_date', array('returnWithStructure' => true))) {
+			if ($va_date_array = $t_object->get('ca_objects.object_date', array('output' => 'idno', 'returnWithStructure' => true))) {
 				$t_list = new ca_lists();
 				/* Get all list items for date types, in sort order */
 				$va_date_type_array = $t_list->getItemsForList("date_types");
@@ -157,7 +154,7 @@ $t_list = new ca_lists();
 					foreach ($va_date_array as $va_key => $va_date_array_t) {
 						$vs_date_string = null;
 						foreach ($va_date_array_t as $va_key => $va_date_array_v) {
-							if ($va_date_array_v['date_type'] == $vn_date_type_id) {
+							if ($va_date_array_v['date_type'] == $vs_date_type_idno) {
 								$vs_date_string .= $va_date_array_v['date_expression']."<br/>";
 								// print "<div class='unit'><b>".$vs_date_type_label."</b><br/>".$va_date_array_v['date_expression']."</div>";
 							}

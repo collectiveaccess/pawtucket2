@@ -375,7 +375,7 @@ a.navbar-brand .line3{
 }
 #footer h5{
 	font-size:12px;
-	margin-top:25px;
+	margin-top:5px;
 }
 @media (min-width: 768px) {
 	#footer h5{
@@ -551,6 +551,15 @@ a.navbar-brand .line3{
 	margin-top:0px;
 	position:relative;
 	text-align:center;
+}
+@media(min-width:768px){
+	.frontSlide img {
+		height: 475px;
+		width: auto;
+	}
+	.hpContentBoxContainer{
+		max-width: 1325px;
+	}
 }
 /* artistList */
 .artistListLetterBar a{

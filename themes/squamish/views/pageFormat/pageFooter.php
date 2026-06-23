@@ -37,10 +37,10 @@
 						</div>
 						<div class="col-sm-4">
 							<div class="orgLink">Sxwimála-aw̓txw<br/>(Archives & Cultural Collections)</div>
-							Located at the Main Office at<br/>
-							320 Seymour Blvd<br/>
-							North Vancouver, BC, V7L 4J5<br/>
-							604-980-4553
+							Located at Mosquito Creek Marina<br/>
+							415 West Esplanade<br/>
+							North Vancouver, BC, V7M 1A6<br/>
+							604-982-0510
 						</div>
 						<div class="col-sm-4">
 							<ul class="list-inline social">

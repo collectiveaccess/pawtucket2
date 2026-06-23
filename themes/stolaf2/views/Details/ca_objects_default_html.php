@@ -121,6 +121,9 @@
 				{{{<ifdef code="ca_objects.history_tracking_current_value%policy=current_location"><div class="unit"><label>Location</label>
 					^ca_objects.history_tracking_current_value%policy=current_location
 				</div></ifdef>}}}
+				
+				{{{<ifdef code="ca_objects.scopecontent"><div class="unit"><label>Scope and Content</label>^ca_objects.scopecontent%delimiter=<br/></div></ifdef>}}}
+				
 				{{{<ifdef code="ca_objects.general_notes"><div class="unit"><label>Notes</label>^ca_objects.general_notes%delimiter=<br/></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.accessrestrict"><div class="unit"><label>Conditions Governing Access</label>^ca_objects.accessrestrict%delimiter=<br/></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.physaccessrestrict"><div class="unit"><label>Physical Access</label>^ca_objects.physaccessrestrict%delimiter=<br/></div></ifdef>}}}

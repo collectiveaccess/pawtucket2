@@ -24,21 +24,19 @@
  * http://www.CollectiveAccess.org
  *
  * ----------------------------------------------------------------------
- */
- 
-	$t_object = 			$this->getVar("item");
-	$va_comments = 			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$vn_id = 				$t_object->get('ca_objects.object_id');
-	$va_access_values = caGetUserAccessValues($this->request);
-	$vn_object_id	=		$t_object->get('ca_objects.object_id');
-	
-	$t_list = new ca_lists();
-	$yes_list_value_id =  $t_list->getItemIDFromList('yes_no', 'yes');
-	$current_list_value_id =  $t_list->getItemIDFromList('current_previous', 'current');
+ */ 
+$t_object = 			$this->getVar("item");
+$va_comments = 			$this->getVar("comments");
+$va_tags = 				$this->getVar("tags_array");
+$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+$vn_share_enabled = 	$this->getVar("shareEnabled");
+$vn_id = 				$t_object->get('ca_objects.object_id');
+$va_access_values = caGetUserAccessValues($this->request);
+$vn_object_id	=		$t_object->get('ca_objects.object_id');
 
+$t_list = new ca_lists();
+$yes_list_value_id =  $t_list->getItemIDFromList('yes_no', 'yes');
+$current_list_value_id =  $t_list->getItemIDFromList('current_previous', 'current');
 ?>
 <div class="container">
 	<div class="row">
@@ -81,7 +79,7 @@
 			$t_parent = new ca_objects($t_object->get('ca_objects.parent_id'));		
 			if ($vs_date = $t_object->get('ca_objects.display_date')) {
 				$vs_creation_date = $t_object->get('ca_objects.creation_date');
-				print "<div class='unit row'><div class='{$vn_label_col} label'>Date</div><div class='$vn_data_col'>".caNavLink($this->request, $vs_date, '', 'Search', 'artworks', "search/dates", ["values" => json_encode([preg_replace("![ ]*[\-–—][ ]*!u", "-", $vs_creation_date)])])."</div></div>";
+				print "<div class='unit row'><div class='{$vn_label_col} label'>Date</div><div class='$vn_data_col'>".caNavLink($this->request, $vs_date, '', 'Search', 'artworks', "search/dates", ["values" => json_encode([preg_replace("![ ]*[\-–—]+[ ]*!", "-", $vs_creation_date)])])."</div></div>";
 			}
 			$vn_med = 0;
 			if ($va_medium = $t_object->get('ca_objects.medium', array('returnWithStructure' => true))) {
@@ -136,7 +134,7 @@
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Mount</div><div class='{$vn_data_col} mount'>".join(', ', $va_mount_links)."</div></div>";
 				}
 			}						
-			if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /yes/"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="sight dimensions"><i class="fa fa-question-circle" ></i></span></if></unit></ifcount>')) {
+			if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /yes/i"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="sight dimensions"><i class="fa fa-question-circle" ></i></span></if></unit></ifcount>')) {
 				print "<div class='unit row'><div class='{$vn_label_col} label'>Dimensions</div><div class='$vn_data_col'>".$vs_dimensions."</div></div>";
 			}		
 
@@ -348,6 +346,10 @@
 				if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {
 					$vs_provenance.= ", ".$vs_remark;
 				}				
+				
+				if ($t_prov_rel->get('ca_objects_x_collections.gift_artist') == $yes_list_value_id) {
+					$vs_provenance.= ", gift of the artist";
+				}
 				$vs_provenance.= "<i class='fa fa-chevron-right'></i></div>";
 			} elseif ($t_prov->get('access') != 0 ){
 				$va_provenance_id = $t_prov->get('ca_collections.collection_id');
@@ -402,7 +404,7 @@
 	<div class='row'>
 		<div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'>
 <?php
-			if ($vs_exhibition = $t_object->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" sort="ca_occurrences.occurrence_dates"><l><i>^ca_occurrences.preferred_labels</i><unit relativeTo="ca_occurrences"><ifcount min="1" code="ca_entities.preferred_labels">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit></ifcount></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if><ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /Yes/"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="uncertain"><i class="fa fa-question-circle" ></i></span></if><i class="fa fa-chevron-right"></i></l></unit>')) {
+			if ($vs_exhibition = $t_object->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" sort="ca_occurrences.occurrence_dates"><l><i>^ca_occurrences.preferred_labels</i><unit relativeTo="ca_occurrences"><ifcount min="1" code="ca_entities.preferred_labels">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit></ifcount></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if><ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /Yes/i"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="uncertain"><i class="fa fa-question-circle" ></i></span></if><i class="fa fa-chevron-right"></i></l></unit>')) {
 				print "<div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
 				print "<h6><a href='#' data-toggleDiv='exhibitionDiv' class='togglertronic'>Exhibitions <i class='fa fa-minus drawerToggle'></i></a></h6>";
 				print "<div id='exhibitionDiv'>".$vs_exhibition."</div>";
@@ -415,7 +417,7 @@
 	<div class='row'>
 		<div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'>
 <?php
-			if ($vs_reference = $t_object->getWithTemplate('<unit restrictToTypes="reference" sort="ca_occurrences.occurrence_dates" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" skipWhen=\'^ca_occurrences.preferred_labels.name = ""\'><l>^ca_occurrences.preferred_labels<ifdef code="ca_objects_x_occurrences.reference_remarks">: ^ca_objects_x_occurrences.reference_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /Yes/"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="uncertain"><i class="fa fa-question-circle" ></i></span></if><i class="fa fa-chevron-right"></i></l></unit>')) { 
+			if ($vs_reference = $t_object->getWithTemplate('<unit restrictToTypes="reference" sort="ca_occurrences.occurrence_dates" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" skipWhen=\'^ca_occurrences.preferred_labels.name = ""\'><l>^ca_occurrences.preferred_labels<ifdef code="ca_objects_x_occurrences.reference_remarks">: ^ca_objects_x_occurrences.reference_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /Yes/i"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="uncertain"><i class="fa fa-question-circle" ></i></span></if><i class="fa fa-chevron-right"></i></l></unit>')) { 
 				print "<div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
 				print "<h6><a href='#' data-toggleDiv='referenceDiv' class='togglertronic'>References <i class='fa fa-minus drawerToggle'></i></a></h6>";
 				print "<div id='referenceDiv'>".$vs_reference."</div>";

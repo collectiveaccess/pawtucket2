@@ -109,10 +109,10 @@
 					}					
 					print "</div>";
 				}				
-				if ($va_media_types = $t_object->get('ca_objects.media_type', array('returnAsArray' => true))) {
+				if ($va_media_types = $t_object->get('ca_objects.media_type', array('returnAsArray' => true, 'output' => 'text'))) {
 					print "<div class='unit'><h6>Media Type</h6>";
 					foreach ($va_media_types as $va_p => $va_media_type) {
-						print caNavLink($this->request, ucwords(caGetListItemByIDForDisplay($va_media_type)), '', '', 'Browse', 'objects/facet/media_type/id/'.$va_media_type);
+						print caNavLink($this->request, ucwords($va_media_type), '', '', 'Browse', 'objects/facet/media_type/id/'.$va_media_type);
 					}
 					print "</div>";
 				}

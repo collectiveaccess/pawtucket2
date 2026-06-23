@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2025 Whirl-i-Gig
+ * Copyright 2008-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -438,9 +438,11 @@ class SearchIndexer extends SearchBase {
 
 		// Automagically generate hierarchical paths for preferred labels passed as label table + label field
 		$is_label = false;
+		$label_id = null;
 		if (is_subclass_of($t_subject, "BaseLabel")) {
 			if (!($t_subject->getPrimaryKey() == $pn_subject_row_id)) { $t_subject->load($pn_subject_row_id); }
 			$pn_subject_row_id = $t_subject->get($t_subject->getSubjectKey());
+			$label_id = $t_subject->getPrimaryKey();
 			$t_subject = $t_subject->getSubjectTableInstance(['dontLoadInstance' => true]);
 			$ps_field = "preferred_labels.{$ps_field}";
 			$is_label = true;
@@ -450,7 +452,7 @@ class SearchIndexer extends SearchBase {
 		if(is_array($va_ids) && (sizeof($va_ids) == 1)) {
 			$fld = array_pop(explode('.', $ps_field));
 			if(isset($field_data[$fld])) {
-				$return = array('values' => [$pn_subject_row_id => $field_data[$fld]], 'path' => $field_data[$fld]);
+				$return = array('values' => [$is_label ? $label_id : $pn_subject_row_id => $field_data[$fld]], 'path' => $field_data[$fld]);
 				MemoryCache::save($vs_key, $return, "SearchIndexerHierPaths_{$t}");
 				return $return;
 			}
@@ -796,8 +798,10 @@ if (!$for_current_value_reindex) {
 						}
 						$vn_fld_num = $t_subject->fieldNum($vs_field);
 						
+						$c = 0;
 						foreach($values as $v) {
-							$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$v], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));
+							$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$v], array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init, 'dontIncrementFieldIndex' => ($c > 0)]));
+							$c++;
 						}
 						$fld_init = true;
 						$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, $values, array_merge($va_data, ['dontRemoveExistingIndexing' => $fld_init]));

@@ -46,7 +46,7 @@
 							<span class="trimText"><unit relativeTo="ca_occurrences" delimiter=", " restrictToTypes="work"><l>^ca_occurrences.preferred_labels</l></unit></span>
 						</ifcount>}}}
 						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="production"><div class="unit"><label>Related production<ifcount code="ca_occurrences" min="2" restrictToTypes="production">s</ifcount></label>
-							<span class="trimText"><unit relativeTo="ca_occurrences" delimiter=", " restrictToTypes="production"><l>^ca_occurrences.preferred_labels</l></unit></span>
+							<span class="trimText"><unit relativeTo="ca_occurrences" delimiter=", " unique="1"  restrictToTypes="production"><l>^ca_occurrences.preferred_labels</l></unit></span>
 						</div></ifcount>}}}
 						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="special_event"><div class="unit"><label>Related special event<ifcount code="ca_occurrences" min="2" restrictToTypes="special_event">s</ifcount></label>
 							<span class="trimText"><unit relativeTo="ca_occurrences" delimiter=", " restrictToTypes="special_event"><l>^ca_occurrences.preferred_labels</l></unit></span>

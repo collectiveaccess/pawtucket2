@@ -31,6 +31,7 @@
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);
 
 ?>
 <div class="row">
@@ -60,7 +61,7 @@
 				<HR>
 				{{{<ifdef code="ca_objects.nonpreferred_labels.name"><div class='unit'><unit relativeTo="ca_objects.nonpreferred_labels" delimiter="<br/>"><i>^ca_objects.nonpreferred_labels.name</i></unit></div></ifdef>}}}
 <?php
-				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ', 'returnAsLink' => true))) {
+				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 					print "<div class='unit'><label>Artist</label>".$va_artist."</div>";
 				}
 				$va_years = $t_object->get("ca_objects.date.dates_value", array("returnAsArray" => true));
@@ -84,12 +85,12 @@
 				}
 				$va_mediums = $t_object->get("ca_objects.medium", array("returnAsArray" => true));
 				if(is_array($va_mediums) && sizeof($va_mediums)){
-					$t_list_item = new ca_list_items();
+					$t_list = new ca_lists();
 					print "<div class='unit'><label>Type".((sizeof($va_mediums) > 1) ? "s" : "")."</label>";
 					$va_tmp = array();
-					foreach($va_mediums as $vn_medium_id){
-						$t_list_item->load($vn_medium_id);
-						$va_tmp[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), '', '', 'Browse', 'artworks', array("facet" => "medium_facet", "id" => $vn_medium_id));
+					foreach($va_mediums as $vs_medium){
+						$vn_medium_id = $t_list->getItemIDFromListByItemValue("medium", $vs_medium);
+						$va_tmp[] = caNavLink($this->request, $vs_medium, '', '', 'Browse', 'artworks', array("facet" => "medium_facet", "id" => $vn_medium_id));
 					}
 					print join(", ", $va_tmp);
 					print "</div>";
@@ -117,10 +118,13 @@
 				#	}
 				#}
 				if ($va_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><label>Medium</label>".$va_description."</div>";
+					print "<div class='unit'><label>Medium/Material</label>".$va_description."</div>";
 				}
 				if ($vs_dimensions = $t_object->get('ca_objects.dimensions.measurement_notes', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><label>Dimensions</label>".$vs_dimensions."</div>";
+				}
+				if ($vs_credit = $t_object->get('ca_objects.credit_line', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><label>Credit</label>".$vs_credit."</div>";
 				}
 
 ?>
@@ -153,41 +157,6 @@
 				});
 			</script>
 </unit></ifcount>}}}		
-
-<?php
-					$va_medium = $t_object->get('ca_objects.medium', array('returnAsArray' => 1));
-					if(is_array($va_medium) && sizeof($va_medium)) {
-						$vn_medium = $va_medium[0];
-
-?>					
-						{{{<br/><br/><br/>
-							<div class="row">
-								<div class="col-sm-12">
-									<H2>Similar Artists</H2><HR/>
-								</div>
-							</div>
-							<div class="row">
-								<div id="browseResultsContainerEntities">
-									<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-								</div><!-- end browseResultsContainer -->
-							</div><!-- end row -->
-							<script type="text/javascript">
-								jQuery(document).ready(function() {
-									jQuery("#browseResultsContainerEntities").load("<?php print caNavUrl($this->request, '', 'Browse', 'artists', array('facet' => 'medium_facet', 'id' => $vn_medium), array('dontURLEncodeParameters' => true)); ?>", function() {
-										jQuery('#browseResultsContainerEntities').jscroll({
-											autoTrigger: true,
-											loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-											padding: 20,
-											nextSelector: 'a.jscroll-next'
-										});
-									});
-					
-					
-								});
-							</script>}}}
-<?php
-					}
-?>
 
 </div><!-- end container -->
 	</div><!-- end col -->

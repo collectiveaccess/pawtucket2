@@ -89,9 +89,9 @@ class CLITools extends CLIBaseUtils {
 			$vn_col = 0;
 			foreach ($o_cells as $c => $o_cell) {
 				if($label = trim((string)$o_cell->getValue())) {
-					$item_value = (strlen($item_value_col)) ? $o_sheet->getCellByColumnAndRow($item_value_col, $vn_c)->getValue() : null;
-					$item_description = (strlen($item_desc_col)) ? $o_sheet->getCellByColumnAndRow($item_desc_col, $vn_c)->getValue() : null;
-					$np_labels = (strlen($np_label_col)) ? $o_sheet->getCellByColumnAndRow($np_label_col, $vn_c)->getValue() : null;
+					$item_value = (strlen($item_value_col)) ? $o_sheet->getCell([$item_value_col, $vn_c])->getValue() : null;
+					$item_description = (strlen($item_desc_col)) ? $o_sheet->getCell([$item_desc_col, $vn_c])->getValue() : null;
+					$np_labels = (strlen($np_label_col)) ? $o_sheet->getCell([$np_label_col, $vn_c])->getValue() : null;
 						
 					if ($vn_col > $vn_last_level) {
 						$va_stack[] = &$va_stack[sizeof($va_stack)-1][sizeof($va_stack[sizeof($va_stack)-1]) - 1]['subitems'];
@@ -181,7 +181,7 @@ class CLITools extends CLIBaseUtils {
 			"itemValueColumn|x=s" => _t('Column number to use for item values. Omit to not set item values.'),
 			"itemDescriptionColumn|y=s" => _t('Column number to use for item descriptions. Omit to not set item descriptions.'),
 			"nonPreferredLabelsColumn|z=s" => _t('Column number to use for item nonpreferred labels. Omit to not set nonpreferred labels.'),
-			"worksheet|w-s" => _t('Zeroobased index of worksheet to use. If omitted first worksheet (0) is used.')
+			"worksheet|w-s" => _t('Zero-based index of worksheet to use. If omitted first worksheet (0) is used.')
 		);
 	}
 	# -------------------------------------------------------

@@ -32,7 +32,6 @@
 require_once(__CA_LIB_DIR__.'/Search/Common/Parsers/LuceneSyntaxParser.php');
 require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 
-
 # ---------------------------------------
 /**
  * Get search instance for given table name
@@ -220,6 +219,7 @@ function caFindControllerNameInfo($controller) {
 		$type_map = [
 			'Search' => caMakeTypeIDList($table, $config->get("{$table}_no_search_for_types")),
 			'SearchAdvanced' => caMakeTypeIDList($table, $config->get("{$table}_no_advanced_search_for_types")),
+			'SearchBuilder' => caMakeTypeIDList($table, $config->get("{$table}_no_search_builder_for_types")),
 			'Browse' => caMakeTypeIDList($table, $config->get("{$table}_no_browse_for_types")),
 		];
 	
@@ -232,6 +232,7 @@ function caFindControllerNameInfo($controller) {
 			'controller_names' => [
 				'Search' => "Search{$table_desc}",
 				'SearchAdvanced' => "Search{$table_desc}Advanced",
+				'SearchBuilder' => "Search{$table_desc}Builder",
 				'Browse' => "Browse{$table_desc}",
 				
 			]
@@ -257,72 +258,73 @@ function caSearchUrl($po_request, $ps_table, $ps_search=null, $pb_return_url_as_
 	}
 	
 	$vb_return_advanced = isset($pa_options['returnAdvanced']) && $pa_options['returnAdvanced'];
+	$vb_return_builder = isset($pa_options['returnBuilder']) && $pa_options['returnBuilder'];
 	
 	switch($ps_table) {
 		case 'ca_objects':
 		case 57:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchObjectsAdvanced' : 'SearchObjects';
+			$vs_controller = ($vb_return_advanced) ? 'SearchObjectsAdvanced' : ($vb_return_builder ? 'SearchObjectsBuilder' : 'SearchObjects');
 			$vs_action = 'Index';
 			break;
 		case 'ca_object_lots':
 		case 51:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchObjectLotsAdvanced' : 'SearchObjectLots';
+			$vs_controller = ($vb_return_advanced) ? 'SearchObjectLotsAdvanced' : ($vb_return_builder ? 'SearchObjectLotsBuilder' : 'SearchObjectLots');
 			$vs_action = 'Index';
 			break;
 		case 'ca_entities':
 		case 20:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchEntitiesAdvanced' : 'SearchEntities';
+			$vs_controller = ($vb_return_advanced) ? 'SearchEntitiesAdvanced' : ($vb_return_builder ? 'SearchEntitiesBuilder' : 'SearchEntities');
 			$vs_action = 'Index';
 			break;
 		case 'ca_places':
 		case 72:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchPlacesAdvanced' : 'SearchPlaces';
+			$vs_controller = ($vb_return_advanced) ? 'SearchPlacesAdvanced' : ($vb_return_builder ? 'SearchPlacesBuilder' : 'SearchPlaces');
 			$vs_action = 'Index';
 			break;
 		case 'ca_occurrences':
 		case 67:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchOccurrencesAdvanced' : 'SearchOccurrences';
+			$vs_controller = ($vb_return_advanced) ? 'SearchOccurrencesAdvanced' : ($vb_return_builder ? 'SearchOccurrencesBuilder' : 'SearchOccurrences');
 			$vs_action = 'Index';
 			break;
 		case 'ca_collections':
 		case 13:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchCollectionsAdvanced' : 'SearchCollections';
+			$vs_controller = ($vb_return_advanced) ? 'SearchCollectionsAdvanced' : ($vb_return_builder ? 'SearchCollectionsBuilder' : 'SearchCollections');
 			$vs_action = 'Index';
 			break;
 		case 'ca_storage_locations':
 		case 89:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchStorageLocationsAdvanced' : 'SearchStorageLocations';
+			$vs_controller = ($vb_return_advanced) ? 'SearchStorageLocationsAdvanced' : ($vb_return_builder ? 'SearchStorageLocationsBuilder' : 'SearchStorageLocations');
 			$vs_action = 'Index';
 			break;
 		case 'ca_list_items':
 		case 33:
 			$vs_module = 'administrate/setup';
-			$vs_controller = ($vb_return_advanced) ? '' : 'Lists';
+			$vs_controller = ($vb_return_advanced) ? '' : ($vb_return_builder ? 'SearchListsBuilder' : 'Lists');
 			$vs_action = 'Index';
 			break;
 		case 'ca_object_representations':
 		case 56:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchObjectRepresentationsAdvanced' : 'SearchObjectRepresentations';
+			$vs_controller = ($vb_return_advanced) ? 'SearchObjectRepresentationsAdvanced' : ($vb_return_builder ? 'SearchObjectRepresentationsBuilder' : 'SearchObjectRepresentations');
 			$vs_action = 'Index';
 			break;
 		case 'ca_representation_annotations':
 		case 82:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchRepresentationAnnotationsAdvanced' : 'SearchRepresentationAnnotations';
+			$vs_controller = ($vb_return_advanced) ? 'SearchRepresentationAnnotationsAdvanced' : ($vb_return_builder ? 'SearchRepresentationAnnotationsBuilder' : 'SearchRepresentationAnnotations');
 			$vs_action = 'Index';
 			break;
 		case 'ca_user_representation_annotations':
 		case 219:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchUserRepresentationAnnotationsAdvanced' : 'SearchUserRepresentationAnnotations';
+			$vs_controller = ($vb_return_advanced) ? 'SearchUserRepresentationAnnotationsAdvanced' : ($vb_return_builder ? 'SearchUserRepresentationAnnotationsBuilder' : 'SearchUserRepresentationAnnotations');
 			$vs_action = 'Index';
 			break;
 		case 'ca_relationship_types':
@@ -334,25 +336,25 @@ function caSearchUrl($po_request, $ps_table, $ps_search=null, $pb_return_url_as_
 		case 'ca_loans':
 		case 133:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchLoansAdvanced' : 'SearchLoans';
+			$vs_controller = ($vb_return_advanced) ? 'SearchLoansAdvanced' : ($vb_return_builder ? 'SearchLoansBuilder' : 'SearchLoans');
 			$vs_action = 'Index';
 			break;
 		case 'ca_movements':
 		case 137:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchMovementsAdvanced' : 'SearchMovements';
+			$vs_controller = ($vb_return_advanced) ? 'SearchMovementsAdvanced' : ($vb_return_builder ? 'SearchMovementsBuilder' : 'SearchMovements');
 			$vs_action = 'Index';
 			break;
 		case 'ca_tours':
 		case 153:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchToursAdvanced' : 'SearchTours';
+			$vs_controller = ($vb_return_advanced) ? 'SearchToursAdvanced' : ($vb_return_builder ? 'SearchToursBuilder' :'SearchTours');
 			$vs_action = 'Index';
 			break;
 		case 'ca_tour_stops':
 		case 155:
 			$vs_module = 'find';
-			$vs_controller = ($vb_return_advanced) ? 'SearchTourStopsAdvanced' : 'SearchTourStops';
+			$vs_controller = ($vb_return_advanced) ? 'SearchTourStopsAdvanced' : ($vb_return_builder ? 'SearchTourStopsBuilder' :'SearchTourStops');
 			$vs_action = 'Index';
 			break;
 		default:
@@ -396,8 +398,8 @@ function caSearchGetAccessPoints($ps_search_expression) {
  */
 function caSearchGetTablesForAccessPoints($pa_access_points) {
 	$o_config = Configuration::load();
-	$o_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
-	$o_search_indexing_config = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');	
+	$o_search_config = Configuration::load('search.conf');
+	$o_search_indexing_config = Configuration::load('search_indexing.conf');	
 		
 	$va_tables = $o_search_indexing_config->getAssocKeys();
 	
@@ -659,7 +661,7 @@ function caPuppySearch($po_request, $ps_search_expression, $pa_blocks, $pa_optio
 function caSplitSearchResultByType($pr_res, $pa_options=null) {
 	if (!($t_instance = Datamodel::getInstanceByTableName($pr_res->tableName(), true))) { return null; }
 	
-	$o_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+	$o_search_config = Configuration::load('search.conf');
 	
 	if (!($vs_type_fld = $t_instance->getTypeFieldName())) { return null; }
 	$vs_table = $t_instance->tableName();
@@ -691,7 +693,7 @@ function caSplitSearchResultByType($pr_res, $pa_options=null) {
  * @return Configuration 
  */
 function caGetSearchConfig() : ?Configuration {
-	return Configuration::load(__CA_CONF_DIR__.'/search.conf');
+	return Configuration::load('search.conf');
 }
 # ---------------------------------------
 /**
@@ -700,7 +702,7 @@ function caGetSearchConfig() : ?Configuration {
  * @return Configuration 
  */
 function caGetSearchIndexingConfig() : ?Configuration {
-	return Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');
+	return Configuration::load('search_indexing.conf');
 }
 # ---------------------------------------
 /**
@@ -710,9 +712,9 @@ function caGetSearchIndexingConfig() : ?Configuration {
  */
 function caGetSearchBuilderConfig() : ?Configuration {
 	if(file_exists(__CA_CONF_DIR__.'/search_builder.conf')) {
-		return Configuration::load(__CA_CONF_DIR__.'/search_builder.conf');
+		return Configuration::load('search_builder.conf');
 	}
-	return Configuration::load(__CA_CONF_DIR__.'/search_query_builder.conf');
+	return Configuration::load('search_query_builder.conf');
 }
 # ---------------------------------------
 /**
@@ -764,6 +766,30 @@ function caGetInfoForSearchBuilderType($ps_search_type) {
 		return $va_search_types[$ps_search_type];
 	}
 	return null;
+}
+# ---------------------------------------
+/**
+ * 
+ *
+ * @return array 
+ */
+function caLoadSearchBuilderLocale(?string $locale=null) {
+	global $g_ui_locale;
+	if(!$locale) { $locale = $g_ui_locale; }
+	$config = caGetSearchBuilderConfig();
+	
+	$locale_map = $config->getAssoc('locale_map');
+	list($language, $country) = explode('_', $locale);
+	
+	if(isset($locale_map[$locale])) {
+		AssetLoadManager::register('jquery', 'querybuilderLocale_'.$locale);
+	} elseif(isset($locale_map[$language])) {
+		AssetLoadManager::register('jquery', 'querybuilderLocale_'.$language);
+	} else {
+		AssetLoadManager::register('jquery', 'querybuilderLocale_en');
+	}
+
+	return true;
 }
 # ---------------------------------------
 /**
@@ -836,8 +862,11 @@ function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) 
 		foreach($va_values as $vs_element => $va_value_list) {
 			foreach($va_value_list as $vn_i => $vs_value) {
 				if (!strlen(trim($vs_value))) { continue; }
-				if ((strpos($vs_value, ' ') !== false) && ($vs_value[0] != '[')) {
+				$quoted = preg_match('!^".*"$!', $vs_value);
+				if ((strpos($vs_value, ' ') !== false) && ($vs_value[0] != '[') && !$quoted) {
 					$vs_query_element = '"'.str_replace('"', '', $vs_value).'"';
+				} elseif($quoted) {
+					$vs_query_element = '"~'.str_replace('"', '', $vs_value).'"';
 				} else {
 					$vs_query_element = $vs_value;
 				}
@@ -1140,7 +1169,7 @@ function caGetLabelForBundle($ps_bundle) {
 	}
 	
 	// Maybe it's an access point?
-	if($indexing_config = Configuration::load(__CA_CONF_DIR__."/search_indexing.conf")) {
+	if($indexing_config = Configuration::load('search_indexing.conf')) {
 		$keys = $indexing_config->getAssocKeys();
 		
 		foreach($keys as $k) {
@@ -1766,7 +1795,12 @@ function caGetAvailableSortFields($ps_table, $pn_type_id = null, $options=null) 
 					$va_base_fields[$k] = $ui_bundle_label_map[$kp];
 				} elseif(sizeof($tmp = explode('.', $kp)) > 2) {
 					array_pop($tmp);
-					if (isset($ui_bundle_label_map[join('.', $tmp)])) { $va_base_fields[$k] = $ui_bundle_label_map[join('.', $tmp)]; }
+					if ($l = ($ui_bundle_label_map[join('.', $tmp)] ?? null)) { 
+						$vals = array_values($va_base_fields);
+						if(!in_array($l, $vals, true)) {	// don't rename two fields to the same label
+							$va_base_fields[$k] = $l; 
+						}
+					}
 				}
 			}
 		}
@@ -2359,7 +2393,7 @@ function caMapBundleToSearchBuilderFilterDefinition(BaseModel $t_subject, $pa_bu
 		
 		$va_result['input'] = is_array($va_select_options) ? $render_in_builder : 'text';
 		$va_result['values'] = is_array($va_select_options) ? (object)$va_select_options : null;
-		$va_result['operators'] = $va_operators_by_type[$va_result['input']];
+		$va_result['operators'] = $va_operators_by_type[$va_result['input']] ?? null;
 	} elseif($vs_name === "{$table}.".$t_subject->getProperty('ID_NUMBERING_ID_FIELD')) {
 		$va_result['operators'] = array_merge($va_operators_by_type['string'], ['between']);
 	} else {

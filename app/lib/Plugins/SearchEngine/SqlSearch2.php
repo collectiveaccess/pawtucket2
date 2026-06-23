@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2025 Whirl-i-Gig
+ * Copyright 2010-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -98,6 +98,9 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	private $reindex_db = null;
 	private $last_indexing_result = null;
 	
+	static private $dict = [];
+	static private $element_dicts = [];
+	
 	# -------------------------------------------------------
 	/**
 	 *
@@ -163,6 +166,10 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		$this->debug = false;
 		
 		$this->get_result_desc_data = $this->search_config->get('return_search_result_description_data');
+		
+		if($lists = $this->search_config->getList('expand_search_using_lists')) {
+			self::$dict = self::getListsAsDict($lists);
+		}
 	}
 	# -------------------------------------------------------
 	# Initialization and capabilities
@@ -467,160 +474,178 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			$words[0] = mb_substr($words[0], 1);
 		}
 		
+		if(is_array($ap) && ($ap['expand_search_using_list'] ?? null)) {
+			$dict = self::getListsAsDict($ap['expand_search_using_list']);
+		} else {
+			$dict = self::$dict;
+		}
+		if(is_array($syns = ($dict[mb_strtolower($words[0])] ?? null))) {
+			$syns = array_map(function($v) { return self::tokenize($v); }, $syns);
+			$words[0] = [$words[0]];
+			$words = array_merge($words, $syns);
+		}
 	 	$results = [];
-	 	$wc = sizeof($words);
-	 	foreach($words as $w => $text) {
-			// Don't stem if:
-			//	1. Stemming is disabled
-			//	2. Search for is blank values
-			//	3. Search is not non-blank values
-			//	4. Search includes non-letter characters
-			//  5. Search is flagged with trailing "|" as "do-not-stem"
-			$do_not_stem = preg_match("!\|$!", $text);
-			$text = preg_replace("!\|$!", '', $text);
-			if ($this->do_stemming && !$do_not_stem && !$is_blank && !$is_not_blank && !preg_match("![^A-Za-z]+!u", $text)) {
-				$text_stem = $this->stemmer->stem($text);
-				if ((($text !== $text_stem) || $this->search_config->get('always_stem')) && ($text_stem[strlen($text_stem)-1] !== '*')) { 
-					$text = $text_stem; //.'*';
-					$word_field = 'sw.stem';
-				}
-			}
-			
-			$this->searched_terms[] = $text;
-			
-			$params = [$subject_tablenum];
-			$word_op = '=';
-		
-			$use_boost = true;
-			$is_bare_wildcard = false;
-			if (is_array($ap) && $is_blank) {
-				$params[] = 0;
-				$word_field = 'swi.word_id';
-			} elseif (!is_array($ap) && $is_blank) {
-				return [];
-			} elseif(is_array($ap) && $is_not_blank) {
-				$word_op = '>';
-				$params[] = 0;
-				$word_field = 'swi.word_id';
-			} elseif ($text === '*') {
-				$is_bare_wildcard = true;
-			} elseif ($has_wildcard = ((strpos($text, '*') !== false) || (strpos($text, '?') !== false))) {
-				$word_op = 'LIKE';
-				$text = str_replace('*', '%', $text);
-				$text = str_replace('?', '_', $text);
-				$params[] = $text;
-				$use_boost = false;
-			} else{
-				$params[] = $text;
-			}
-			
-			$anchor_sql = '';
-			switch($anchor_mode) {
-				case 'EXACT':
-					$anchor_sql = " AND (swi.word_index = {$w} AND swi.word_count = {$wc})";
-					break;
-				case 'START':
-					$anchor_sql = " AND swi.word_index = {$w}";
-					if(!$has_wildcard && (bool)$this->search_config->get('add_wildcard_on_begins_searches')) { 
-						$word_op = 'LIKE';
-						$text .= '%';
-						array_pop($params); array_push($params, $text);
-					}
-					break;
-				case 'END':
-					$anchor_sql = " AND ((swi.word_count >= {$wc}) AND (swi.word_index = (swi.word_count - {$wc} + {$w})))";
-					break;
-			}
-			
-	 		if($is_blank || $is_not_blank) { $use_boost = false; }
-	 
-			$field_sql = null;
-			if (is_array($ap)) {
-				if($ap['datatype'] === __CA_ATTRIBUTE_VALUE_CONTAINER__) {
-					$element_ids = ca_metadata_elements::getElementsForSet($ap['element_id'], ['idsOnly' => true]);
-					if(!is_array($element_ids) || !sizeof($element_ids)) {
-						$element_ids = [$ap['element_id']];
+	 	foreach($words as $i => $wl) {
+	 		if(!is_array($wl)) { $wl = [$wl]; }
+	 		if((sizeof($wl) > 1) && ($i > 0)){	// treat expansion terms as quoted phrases
+	 			$q = new Zend_Search_Lucene_Search_Query_Phrase($wl, null, $field);
+	 			$results[] = $this->_processQueryPhrase($subject_tablenum, $q);
+	 		} else {
+	 			$wc = sizeof($wl);
+				foreach($wl as $w => $text) {
+					// Don't stem if:
+					//	1. Stemming is disabled
+					//	2. Search for is blank values
+					//	3. Search is not non-blank values
+					//	4. Search includes non-letter characters
+					//  5. Search is flagged with trailing "|" as "do-not-stem"
+					$do_not_stem = preg_match("!\|$!", $text);
+					$text = preg_replace("!\|$!", '', $text);
+					if ($this->do_stemming && !$do_not_stem && !$is_blank && !$is_not_blank && !preg_match("![^A-Za-z]+!u", $text)) {
+						$text_stem = $this->stemmer->stem($text);
+						if ((($text !== $text_stem) || $this->search_config->get('always_stem')) && ($text_stem[strlen($text_stem)-1] !== '*')) { 
+							$text = $text_stem; //.'*';
+							$word_field = 'sw.stem';
+						}
 					}
 					
-					$field_sql = " AND swi.field_table_num = ? AND swi.field_num IN (?)";
-					$params[] = $ap['table_num'];
-					$params[] = array_map(function($v) { return "A{$v}"; }, $element_ids);
-				} else {
-					$field_sql = " AND swi.field_table_num = ? AND swi.field_num = ?";
-					$params[] = $ap['table_num'];
-					$params[] = $ap['field_num'];
-				}
-			
-				if (is_array($ap['relationship_type_ids']) && sizeof($ap['relationship_type_ids'])) {
-					$field_sql .= " AND swi.rel_type_id IN (?)";
-					$params[] = $ap['relationship_type_ids'];
+					$this->searched_terms[] = $text;
+					
+					$params = [$subject_tablenum];
+					$word_op = '=';
+				
+					$use_boost = true;
+					$is_bare_wildcard = false;
+					if (is_array($ap) && $is_blank) {
+						$params[] = 0;
+						$word_field = 'swi.word_id';
+					} elseif (!is_array($ap) && $is_blank) {
+						return [];
+					} elseif(is_array($ap) && $is_not_blank) {
+						$word_op = '>';
+						$params[] = 0;
+						$word_field = 'swi.word_id';
+					} elseif ($text === '*') {
+						$is_bare_wildcard = true;
+					} elseif ($has_wildcard = ((strpos($text, '*') !== false) || (strpos($text, '?') !== false))) {
+						$word_op = 'LIKE';
+						$text = str_replace('*', '%', $text);
+						$text = str_replace('?', '_', $text);
+						$params[] = $text;
+						$use_boost = false;
+					} else{
+						$params[] = $text;
+					}
+					
+					$anchor_sql = '';
+					switch($anchor_mode) {
+						case 'EXACT':
+							$anchor_sql = " AND (swi.word_index = {$w} AND swi.word_count = {$wc})";
+							break;
+						case 'START':
+							$anchor_sql = " AND swi.word_index = {$w}";
+							if(!$has_wildcard && (bool)$this->search_config->get('add_wildcard_on_begins_searches')) { 
+								$word_op = 'LIKE';
+								$text .= '%';
+								array_pop($params); array_push($params, $text);
+							}
+							break;
+						case 'END':
+							$anchor_sql = " AND ((swi.word_count >= {$wc}) AND (swi.word_index = (swi.word_count - {$wc} + {$w})))";
+							break;
+					}
+					
+					if($is_blank || $is_not_blank) { $use_boost = false; }
+			 
+					$field_sql = null;
+					if (is_array($ap)) {
+						if($ap['datatype'] === __CA_ATTRIBUTE_VALUE_CONTAINER__) {
+							$element_ids = ca_metadata_elements::getElementsForSet($ap['element_id'], ['idsOnly' => true]);
+							if(!is_array($element_ids) || !sizeof($element_ids)) {
+								$element_ids = [$ap['element_id']];
+							}
+							
+							$field_sql = " AND swi.field_table_num = ? AND swi.field_num IN (?)";
+							$params[] = $ap['table_num'];
+							$params[] = array_map(function($v) { return "A{$v}"; }, $element_ids);
+						} else {
+							$field_sql = " AND swi.field_table_num = ? AND swi.field_num = ?";
+							$params[] = $ap['table_num'];
+							$params[] = $ap['field_num'];
+						}
+					
+						if (is_array($ap['relationship_type_ids']) && sizeof($ap['relationship_type_ids'])) {
+							$field_sql .= " AND swi.rel_type_id IN (?)";
+							$params[] = $ap['relationship_type_ids'];
+						}
+					}
+				
+					if($restrictions = $this->_getFieldRestrictions($subject_tablenum)) {
+						$res = [];
+					
+						$res_by_table = [];
+						foreach($restrictions['restrict'] as $r) {
+							$res_by_table[$r['table_num']][] = $r['field_num'];
+						}
+						foreach($res_by_table as $rtable_num => $rfield_nums) {
+							$res[] = "(swi.field_table_num = ? AND swi.field_num IN (?))";
+							$params[] = $rtable_num;
+							$params[] = $rfield_nums;
+						}
+					
+						$flds = [];
+						foreach($restrictions['exclude'] as $r) {
+							$flds[] = $r['table_num'].'/'.$r['field_num'];
+						}
+						if(sizeof($flds)) {
+							$res[] = "(CONCAT(swi.field_table_num, '/', swi.field_num) NOT IN (?))";
+							$params[] = $flds;
+						}
+						if(sizeof($res)) {
+							$field_sql .= " AND (".join(' OR ', $res).")";
+						}
+					}
+				
+					$private_sql = ($this->getOption('omitPrivateIndexing') ? ' AND swi.access = 0' : '');		
+					if ($is_bare_wildcard) {
+						$t = Datamodel::getInstance($subject_tablenum, true);
+						$pk = $t->primaryKey();
+						$table = $t->tableName();
+					
+						$qr_res = $this->db->query("
+							SELECT 0 index_id, {$pk} row_id, 100 boost
+							FROM {$table}".($t->hasField('deleted') ? " WHERE deleted = 0" : "")."
+						", []);
+					} elseif($use_boost) {
+						$qr_res = $this->db->query("
+							SELECT swi.index_id, swi.row_id, swi.boost, swi.field_index
+							FROM ca_sql_search_word_index swi
+							".(!$is_blank ? 'INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id' : '')."
+							WHERE
+								swi.table_num = ? AND {$word_field} {$word_op} ?
+								{$field_sql}
+								{$private_sql} {$anchor_sql}
+						", $params);
+					} else {
+						$qr_res = $this->db->query("
+							SELECT swi.index_id, swi.row_id, 100 boost, swi.field_index
+							FROM ca_sql_search_word_index swi
+							".(!$is_blank ? 'INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id' : '')."
+							WHERE
+								swi.table_num = ? AND {$word_field} {$word_op} ?
+								{$field_sql}
+								{$private_sql} {$anchor_sql}
+						", $params);
+					}
+					$results[] = $this->_arrayFromDbResult($qr_res);
 				}
 			}
-		
-			if($restrictions = $this->_getFieldRestrictions($subject_tablenum)) {
-				$res = [];
-			
-				$res_by_table = [];
-				foreach($restrictions['restrict'] as $r) {
-					$res_by_table[$r['table_num']][] = $r['field_num'];
-				}
-				foreach($res_by_table as $rtable_num => $rfield_nums) {
-					$res[] = "(swi.field_table_num = ? AND swi.field_num IN (?))";
-					$params[] = $rtable_num;
-					$params[] = $rfield_nums;
-				}
-			
-				$flds = [];
-				foreach($restrictions['exclude'] as $r) {
-					$flds[] = $r['table_num'].'/'.$r['field_num'];
-				}
-				if(sizeof($flds)) {
-					$res[] = "(CONCAT(swi.field_table_num, '/', swi.field_num) NOT IN (?))";
-					$params[] = $flds;
-				}
-				if(sizeof($res)) {
-					$field_sql .= " AND (".join(' OR ', $res).")";
-				}
-			}
-		
-			$private_sql = ($this->getOption('omitPrivateIndexing') ? ' AND swi.access = 0' : '');		
-			if ($is_bare_wildcard) {
-				$t = Datamodel::getInstance($subject_tablenum, true);
-				$pk = $t->primaryKey();
-				$table = $t->tableName();
-			
-				$qr_res = $this->db->query("
-					SELECT 0 index_id, {$pk} row_id, 100 boost
-					FROM {$table}".($t->hasField('deleted') ? " WHERE deleted = 0" : "")."
-				", []);
-			} elseif($use_boost) {
-				$qr_res = $this->db->query("
-					SELECT swi.index_id, swi.row_id, swi.boost, swi.field_index
-					FROM ca_sql_search_word_index swi
-					".(!$is_blank ? 'INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id' : '')."
-					WHERE
-						swi.table_num = ? AND {$word_field} {$word_op} ?
-						{$field_sql}
-						{$private_sql} {$anchor_sql}
-				", $params);
-			} else {
-				$qr_res = $this->db->query("
-					SELECT swi.index_id, swi.row_id, 100 boost, swi.field_index
-					FROM ca_sql_search_word_index swi
-					".(!$is_blank ? 'INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id' : '')."
-					WHERE
-						swi.table_num = ? AND {$word_field} {$word_op} ?
-						{$field_sql}
-						{$private_sql} {$anchor_sql}
-				", $params);
-			}
-			$results[] = $this->_arrayFromDbResult($qr_res);
 		}
 		
 		$ret = array_shift($results);
 		foreach($results as $r) {
 			if(!is_array($r)) { continue; }
-			$ret = array_intersect_key($ret, $r);
+			$ret = ($ret + $r);
 		}
 		return $ret;
 	}
@@ -631,6 +656,12 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	private function _processQueryPhrase(int $subject_tablenum, $query) {
 	 	$terms = $query->getTerms();
 	 	$private_sql = ($this->getOption('omitPrivateIndexing') ? ' AND swi.access = 0' : '');
+	 
+	 	$force_strict = false;
+	 	if($terms[0]->text[0] === '~') {
+	 		$terms[0]->text = substr($terms[0]->text, 1);
+	 		$force_strict = true;
+	 	}
 	 	
 	 	$term = $terms[0];
 	 	$field = $term->field;
@@ -641,11 +672,10 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 	}
 	 	
 	 	$field_sql = null;
-	 	
-	 	if ($this->getOption('strictPhraseSearching')) {
+	 	if ($this->getOption('strictPhraseSearching') || $force_strict) {
 	 		$words = [];
-	 		$temp_tables = [];
 	 		$ap_spec = null;
+	 		
 			foreach($terms as $term) {
 				if (!$ap_spec && ($field = $term->field)) { $ap_spec = $field; }
 				
@@ -654,130 +684,149 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					$this->searched_terms[] = $escaped_text;
 				}
 			}
-		
-			if (!sizeof($words)) { return []; }
-						
-			if(!is_null($anchor_mode = $this->_getAnchorMode($words[0]))) {
-				$words[0] = mb_substr($words[0], 1);
-			}
-		
-			$ap_tmp = explode(".", $ap_spec);
-			$fld_table = $fld_num = null;
 			
-			$fld_limit_sql = null;
-			if(is_array($ap_tmp) && (sizeof($ap_tmp) >= 2)) {
-				$ap = $this->_getElementIDForAccessPoint($subject_tablenum, $ap_spec);
-				if (is_array($ap)) {
-					// Handle datatype-specific queries
-					$ret = $this->_processMetadataDataType($subject_tablenum, $ap, $query);
-					if(is_array($ret)) { return $ret; }
+			if (!sizeof($words)) { return []; }
+			
+			$phrases = [$words];
+			$phr = trim(mb_strtolower(join(' ', $words)));
+			
+			$ap = $this->_getElementIDForAccessPoint($subject_tablenum, $ap_spec);
+			if(is_array($ap) && ($ap['expand_search_using_list'] ?? null)) {
+				$dict = self::getListsAsDict($ap['expand_search_using_list']);
+			} else {
+				$dict = self::$dict;
+			}
+			if(is_array($syns = $dict[$phr] ?? null)) {
+				$syns = array_map(function($v) { return self::tokenize($v); }, $syns);
+				$phrases = array_merge($phrases, $syns);	
+			}
+				
+			$acc = [];	
+			foreach($phrases as $words) {	
+				$temp_tables = [];
+				if(!is_null($anchor_mode = $this->_getAnchorMode($words[0]))) {
+					$words[0] = mb_substr($words[0], 1);
 				}
-				if (isset($ap['field_num'], $ap['table_num'])) {
-					$fld_num = $ap['field_num'];
-					$fld_table_num = $ap['table_num'];
-					$fld_limit_sql = " AND (swi.field_table_num = {$fld_table_num} AND swi.field_num = '{$fld_num}')";
-					
-					if (is_array($ap['relationship_type_ids']) && sizeof($ap['relationship_type_ids'])) {
-						$fld_limit_sql .= " AND (swi.rel_type_id IN (".join(",", $ap['relationship_type_ids'])."))";
+			
+				$ap_tmp = explode(".", $ap_spec);
+				$fld_table = $fld_num = null;
+				
+				$fld_limit_sql = null;
+				if(is_array($ap_tmp) && (sizeof($ap_tmp) >= 2)) {
+					if (is_array($ap)) {
+						// Handle datatype-specific queries
+						$ret = $this->_processMetadataDataType($subject_tablenum, $ap, $query);
+						if(is_array($ret)) { return $ret; }
+					}
+					if (isset($ap['field_num'], $ap['table_num'])) {
+						$fld_num = $ap['field_num'];
+						$fld_table_num = $ap['table_num'];
+						$fld_limit_sql = " AND (swi.field_table_num = {$fld_table_num} AND swi.field_num = '{$fld_num}')";
+						
+						if (is_array($ap['relationship_type_ids']) && sizeof($ap['relationship_type_ids'])) {
+							$fld_limit_sql .= " AND (swi.rel_type_id IN (".join(",", $ap['relationship_type_ids'])."))";
+						}
 					}
 				}
-			}
-			
-			$w = 0;
-			
-			// Remove empty words and bare wildcards - have no meaning in phrase search
-			$words = array_filter($words, function($v) {
-				$v = preg_replace("![\*\? ]+!", "", $v);
-				return strlen($v);
-			});
-			if(!sizeof($words)) { return []; }
-			$wc = sizeof($words);
-	 		foreach($words as $w => $word) {
-	 			$word_op = '=';
-	 			if($has_wildcard = ((strpos($word, '*') !== false) || (strpos($word, '?') !== false))) {
-	 				$word_op = 'LIKE';
-					$word = str_replace('*', '%', $word);
-					$word = str_replace('?', '_', $word);
-	 			}
-	 		
-				$temp_table = 'ca_sql_search_phrase_'.md5("{$subject_tablenum}/{$word}/{$w}");
-				$this->_createTempTable($temp_table);
-			
-				$anchor_sql = '';
-				switch($anchor_mode) {
-					case 'EXACT':
-						$anchor_sql = " AND (swi.word_index = {$w} AND swi.word_count = {$wc})";
-						break;
-					case 'START':
-						$anchor_sql = " AND swi.word_index = {$w}";
-						if(!$has_wildcard && (bool)$this->search_config->get('add_wildcard_on_begins_searches')) { 
-							$word_op = 'LIKE';
-							$word .= '%';
-						}
-						break;
-					case 'END':
-						$anchor_sql = " AND ((swi.word_count >= {$wc}) AND (swi.word_index = (swi.word_count - {$wc} + {$w})))";
-						break;
-				}
 				
-				$tc = sizeof($temp_tables);
+				$w = 0;
+				
+				// Remove empty words and bare wildcards - have no meaning in phrase search
+				$words = array_filter($words, function($v) {
+					$v = preg_replace("![\*\? ]+!", "", $v);
+					return strlen($v);
+				});
+				if(!sizeof($words)) { return []; }
+				$wc = sizeof($words);
+				foreach($words as $w => $word) {
+					$word_op = '=';
+					if($has_wildcard = ((strpos($word, '*') !== false) || (strpos($word, '?') !== false))) {
+						$word_op = 'LIKE';
+						$word = str_replace('*', '%', $word);
+						$word = str_replace('?', '_', $word);
+					}
+				
+					$temp_table = 'ca_sql_search_phrase_'.md5("{$subject_tablenum}/{$word}/{$w}");
+					$this->_createTempTable($temp_table);
+				
+					$anchor_sql = '';
+					switch($anchor_mode) {
+						case 'EXACT':
+							$anchor_sql = " AND (swi.word_index = {$w} AND swi.word_count = {$wc})";
+							break;
+						case 'START':
+							$anchor_sql = " AND swi.word_index = {$w}";
+							if(!$has_wildcard && (bool)$this->search_config->get('add_wildcard_on_begins_searches')) { 
+								$word_op = 'LIKE';
+								$word .= '%';
+							}
+							break;
+						case 'END':
+							$anchor_sql = " AND ((swi.word_count >= {$wc}) AND (swi.word_index = (swi.word_count - {$wc} + {$w})))";
+							break;
+					}
+					
+					$tc = sizeof($temp_tables);
+					
+					$qr_res = $this->db->query("
+						INSERT INTO {$temp_table}
+						SELECT swi.index_id + 1, 1, swi.field_index
+						FROM ca_sql_search_words sw 
+						INNER JOIN ca_sql_search_word_index AS swi ON sw.word_id = swi.word_id 
+						".(($tc > 0) ? " INNER JOIN ".$temp_tables[$tc - 1]." AS tt ON swi.index_id = tt.row_id AND swi.field_index = tt.field_container_id" : "")."
+						WHERE 
+							sw.word {$word_op} ? AND swi.table_num = ? {$fld_limit_sql}
+							{$private_sql} {$anchor_sql}
+					", (string)$word, (int)$subject_tablenum);
+				
+					$temp_tables[] = $temp_table;	
+					while(sizeof($temp_tables) > 2) {
+						$t = array_shift($temp_tables);
+						$this->_dropTempTable($t);	
+					}
+				}
+				$results_temp_table = array_pop($temp_tables);
+								
+				$this->db->query("UPDATE IGNORE {$results_temp_table} SET row_id = row_id - 1");
+				
+				$params = [];
+				if($restrictions = $this->_getFieldRestrictions($subject_tablenum)) {
+					$res = [];
+					foreach($restrictions['restrict'] as $r) {
+						$res[] = "(swi.field_table_num = ? AND swi.field_num = ?)";
+						$params[] = $r['table_num'];
+						$params[] = $r['field_num'];
+					}
+				
+					$flds = [];
+					foreach($restrictions['exclude'] as $r) {
+						$flds[] = $r['table_num'].'/'.$r['field_num'];
+					}
+					if(sizeof($flds)) {
+						$res[] = "(CONCAT(swi.field_table_num, '/', swi.field_num) NOT IN (?))";
+						$params[] = join(',', $flds);
+					}
+					if(sizeof($res)) {
+						$field_sql .= " AND (".join(' AND ', $res).")";
+					}
+				}
 				
 				$qr_res = $this->db->query("
-					INSERT INTO {$temp_table}
-					SELECT swi.index_id + 1, 1, swi.field_index
-					FROM ca_sql_search_words sw 
-					INNER JOIN ca_sql_search_word_index AS swi ON sw.word_id = swi.word_id 
-					".(($tc > 0) ? " INNER JOIN ".$temp_tables[$tc - 1]." AS tt ON swi.index_id = tt.row_id AND swi.field_index = tt.field_container_id" : "")."
-					WHERE 
-						sw.word {$word_op} ? AND swi.table_num = ? {$fld_limit_sql}
-						{$private_sql} {$anchor_sql}
-				", (string)$word, (int)$subject_tablenum);
-			
-				$temp_tables[] = $temp_table;	
-				while(sizeof($temp_tables) > 2) {
-					$t = array_shift($temp_tables);
-					$this->_dropTempTable($t);	
+					SELECT swi.index_id, swi.row_id, ca.boost, ca.field_container_id
+					FROM {$results_temp_table} ca
+					INNER JOIN ca_sql_search_word_index AS swi ON swi.index_id = ca.row_id {$field_sql}
+				", $params);
+				
+				$hits = $this->_arrayFromDbResult($qr_res);
+				
+				// Clean up temp tables
+				foreach($temp_tables as $temp_table) {
+					$this->_dropTempTable($temp_table);
 				}
+				
+				$acc += $hits;
 			}
-			$results_temp_table = array_pop($temp_tables);
-							
-			$this->db->query("UPDATE IGNORE {$results_temp_table} SET row_id = row_id - 1");
-			
-			$params = [];
-			if($restrictions = $this->_getFieldRestrictions($subject_tablenum)) {
-				$res = [];
-				foreach($restrictions['restrict'] as $r) {
-					$res[] = "(swi.field_table_num = ? AND swi.field_num = ?)";
-					$params[] = $r['table_num'];
-					$params[] = $r['field_num'];
-				}
-			
-				$flds = [];
-				foreach($restrictions['exclude'] as $r) {
-					$flds[] = $r['table_num'].'/'.$r['field_num'];
-				}
-				if(sizeof($flds)) {
-					$res[] = "(CONCAT(swi.field_table_num, '/', swi.field_num) NOT IN (?))";
-					$params[] = join(',', $flds);
-				}
-				if(sizeof($res)) {
-					$field_sql .= " AND (".join(' AND ', $res).")";
-				}
-			}
-			
-			$qr_res = $this->db->query("
-				SELECT swi.index_id, swi.row_id, ca.boost, ca.field_container_id
-				FROM {$results_temp_table} ca
-				INNER JOIN ca_sql_search_word_index AS swi ON swi.index_id = ca.row_id {$field_sql}
-			", $params);
-			
-	 		$hits = $this->_arrayFromDbResult($qr_res);
-	 		
-			// Clean up temp tables
-			foreach($temp_tables as $temp_table) {
-				$this->_dropTempTable($temp_table);
-			}
-			return $hits;
+			return $acc;
 	 	} else {
 	 		$acc = [];
 	 		$i = 0;
@@ -967,13 +1016,14 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				break;
 		}
 		
+		if (!($t_instance = Datamodel::getInstance($ap['table_num'], true))) { return []; }
+		
 		// is field intrinsic? (dates, integer, numerics can be intrinsic)
 		if($ap['type'] === 'INTRINSIC') {
 			$field = explode('.', $ap['access_point']);
 			$field_name = $field[1];
 			$table = $field[0];
 			
-			if (!($t_instance = Datamodel::getInstance($table, true))) { return []; }
 			if(!$t_instance->hasField($field_name)) { return []; }
 			$fi = $t_instance->getFieldInfo($field_name);
 			
@@ -993,34 +1043,37 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		$qinfo = null;
 		switch($ap['element_info']['datatype']) {
 	 		case __CA_ATTRIBUTE_VALUE_DATERANGE__:
-				$qinfo = $this->_queryForDateRangeAttribute(new DateRangeAttributeValue(), $ap, $text, $text_upper);
+				$qinfo = $this->_queryForDateRangeAttribute(new DateRangeAttributeValue(), $ap, $text, $text_upper, ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_TIMECODE__:
-				$qinfo = $this->_queryForNumericAttribute(new TimeCodeAttributeValue(), $ap, $text, $text_upper, 'value_decimal1');
+				$qinfo = $this->_queryForNumericAttribute(new TimeCodeAttributeValue(), $ap, $text, $text_upper, 'value_decimal1', ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_LENGTH__:
-				$qinfo = $this->_queryForNumericAttribute(new LengthAttributeValue(), $ap, $text, $text_upper, 'value_decimal1');
+				$qinfo = $this->_queryForNumericAttribute(new LengthAttributeValue(), $ap, $text, $text_upper, 'value_decimal1', ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_WEIGHT__:
-				$qinfo = $this->_queryForNumericAttribute(new WeightAttributeValue(), $ap, $text, $text_upper, 'value_decimal1');
+				$qinfo = $this->_queryForNumericAttribute(new WeightAttributeValue(), $ap, $text, $text_upper, 'value_decimal1', ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_INTEGER__:
-				$qinfo = $this->_queryForNumericAttribute(new NumericAttributeValue(), $ap, $text, $text_upper, 'value_integer1');
+				$qinfo = $this->_queryForNumericAttribute(new NumericAttributeValue(), $ap, $text, $text_upper, 'value_integer1', ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_NUMERIC__:
-				$qinfo = $this->_queryForNumericAttribute(new NumericAttributeValue(), $ap, $text, $text_upper, 'value_decimal1');
+				$qinfo = $this->_queryForNumericAttribute(new NumericAttributeValue(), $ap, $text, $text_upper, 'value_decimal1', ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_CURRENCY__:
-				$qinfo = $this->_queryForCurrencyAttribute(new CurrencyAttributeValue(), $ap, $text, $text_upper);
+				$qinfo = $this->_queryForCurrencyAttribute(new CurrencyAttributeValue(), $ap, $text, $text_upper, ['t_subject' => $t_instance]);
 				break;
 			case __CA_ATTRIBUTE_VALUE_GEOCODE__:
-				$qinfo = $this->_queryForGeocodeAttribute(new GeocodeAttributeValue(), $ap, $text, $text_upper);
+			case __CA_ATTRIBUTE_VALUE_GEONAMES__:
+				$qinfo = $this->_queryForGeocodeAttribute(new GeocodeAttributeValue(), $ap, $text, $text_upper, ['t_subject' => $t_instance]);
 				break;
 		}
 		if(is_array($qinfo) && sizeof($qinfo)) {
-			$params = $qinfo['params'];
-			if($ap['type'] !== 'INTRINSIC') { array_unshift($params, $ap['table_num']); }
-			$qr_res = $this->db->query($qinfo['sql'], $params);
+			foreach($qinfo['params'] as $params) {
+				if($ap['type'] !== 'INTRINSIC') { array_unshift($params, $ap['table_num']); }
+				$qr_res = $this->db->query($qinfo['sql'], $params);
+				if($qr_res && ($qr_res->numRows() > 0)) { break; }
+			}
 			
 			$row_ids = $this->_arrayFromDbResult($qr_res);
 			unset($ap['element_info']);
@@ -1222,7 +1275,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if (!is_array($options)) { $options = []; }
 		
 		$fi = $this->indexing_field_index;
-		if($this->indexing_field_index < 255) { $this->indexing_field_index++; }
+		if($this->indexing_field_index < 255 && !caGetOption('dontIncrementFieldIndex', $options, false)) { $this->indexing_field_index++; }
 		
 		if (!is_array($content)) {
 			$content = [$content];
@@ -1262,6 +1315,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				switch(WLPlugSearchEngineSqlSearch2::$metadata_elements[$field_num_proc]['datatype']) {
 					case __CA_ATTRIBUTE_VALUE_CONTAINER__:	
 					case __CA_ATTRIBUTE_VALUE_GEOCODE__:	
+					case __CA_ATTRIBUTE_VALUE_GEONAMES__:	
 					case __CA_ATTRIBUTE_VALUE_CURRENCY__:
 					case __CA_ATTRIBUTE_VALUE_LENGTH__:
 					case __CA_ATTRIBUTE_VALUE_WEIGHT__:
@@ -1532,18 +1586,22 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			
 			if($va_words) {
 				$wc = sizeof($va_words);
+				if($wc > 255) { $wc = 255; }
 				foreach($va_words as $i => $vs_word) {
 					if(is_null($vs_word))  { continue; }
 					if (!($vn_word_id = $this->getWordID($vs_word))) { continue; }
-					$va_row_insert_sql[] = "({$subject_tablenum}, {$vn_row_id}, {$pn_content_tablenum}, '{$ps_content_fieldnum}', ".($pn_content_container_id ? $pn_content_container_id : 'NULL').", {$pn_content_row_id}, {$vn_word_id}, {$vn_boost}, {$vn_private}, {$vn_rel_type_id}, {$i}, {$wc}, {$fi})";
+					$ii = ($i > 255) ? 255 : $i; 
+					$va_row_insert_sql[] = "({$subject_tablenum}, {$vn_row_id}, {$pn_content_tablenum}, '{$ps_content_fieldnum}', ".($pn_content_container_id ? $pn_content_container_id : 'NULL').", {$pn_content_row_id}, {$vn_word_id}, {$vn_boost}, {$vn_private}, {$vn_rel_type_id}, {$ii}, {$wc}, {$fi})";
 					$seq++;
 				}
 			
 				if (is_array($va_literal_content)) {
 					$wc = sizeof($va_literal_content);
+					if($wc > 255) { $wc = 255; }
 					foreach($va_literal_content as $i => $vs_literal) {
 						if (!($vn_word_id = $this->getWordID($vs_literal))) { continue; }
-						$va_row_insert_sql[] = "({$subject_tablenum}, {$vn_row_id}, {$pn_content_tablenum}, '{$ps_content_fieldnum}', ".($pn_content_container_id ? $pn_content_container_id : 'NULL').", {$pn_content_row_id}, {$vn_word_id}, {$vn_boost}, {$vn_private}, {$vn_rel_type_id}, {$i}, {$wc}, {$fi})";
+						$ii = ($i > 255) ? 255 : $i; 
+						$va_row_insert_sql[] = "({$subject_tablenum}, {$vn_row_id}, {$pn_content_tablenum}, '{$ps_content_fieldnum}', ".($pn_content_container_id ? $pn_content_container_id : 'NULL').", {$pn_content_row_id}, {$vn_word_id}, {$vn_boost}, {$vn_private}, {$vn_rel_type_id}, {$ii}, {$wc}, {$fi})";
 						$seq++;
 					}
 				}
@@ -1552,7 +1610,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				$seq++;
 			}
 			
-			$fi++;
+			if ($fi < 255) { $fi++; }
 		}
 		
 		// do insert
@@ -1615,6 +1673,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		}
 		
 		$words = self::filterStopWords($words);
+		$words = array_values(array_filter(array_map(function_exists('mb_trim') ? 'mb_trim' : 'trim', $words), 'strlen'));
 		return $words;
 	}
 	# --------------------------------------------------
@@ -1930,6 +1989,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 						'element_info' => $t_element->getFieldValuesArray(),
 						'relationship_type_ids' => $rel_type_ids,
 						'type' => 'METADATA',
+						'expand_search_using_list' => $t_element->getSetting('expandSearchUsingList'),
 						'indexing_options' => $indexing_info
 					);
 				}
@@ -2051,7 +2111,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	/**
 	 *
 	 */
-	private function _queryForNumericAttribute($attrval, $ap, $text, $text_upper, $attr_field) {
+	private function _queryForNumericAttribute($attrval, $ap, $text, $text_upper, $attr_field, ?array $options=null) {
 		list($text, $modifier) = $this->parseModifier($text);
 		if (!is_array($parsed_value = $attrval->parseValue($text, $ap['element_info']))) {
 			return null;
@@ -2060,6 +2120,9 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if (!in_array($attr_field, ['value_integer1', 'value_decimal1'])) { 
 			throw new ApplicationException(_t('Invalid attribute field'));
 		}
+		
+		$t_subject = caGetOption('t_subject', $options, null);
+		
 		$parsed_value_end = $text_upper ? $attrval->parseValue($text_upper, $ap['element_info']) : null;
 				
 		if($ap['type'] === 'INTRINSIC') {
@@ -2113,32 +2176,44 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				break;
 		}
 		
+		$join_sql = $deleted_sql = '';
+		if($t_subject->hasField('deleted')) {
+			$t = $t_subject->tableName();
+			$t_pk = $t_subject->primaryKey();
+			$join_sql = " INNER JOIN {$t} AS t ON t.{$t_pk} = ca.row_id";
+			$deleted_sql = " AND (t.deleted = 0)";
+		}
+		
 		if($ap['type'] === 'INTRINSIC') {
+			if($deleted_sql) { $deleted_sql = " AND (deleted = 0)"; }
 			$sql = "
 				SELECT {$pk} row_id, 1 boost
 				FROM {$table}
 				WHERE
 					{$sql_where}
+					{$deleted_sql}
 			";
 		} else {
 			$sql = "
 				SELECT ca.row_id, 1 boost
 				FROM ca_attribute_values cav
 				INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+				{$join_sql}
 				WHERE
 					(cav.element_id = {$ap['element_info']['element_id']}) AND (ca.table_num = ?)
 					AND
 					{$sql_where}
+					{$deleted_sql}
 			";
 		}
 		
-		return ['sql' => $sql, 'params' => $params];
+		return ['sql' => $sql, 'params' => [$params]];
 	}
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
-	private function _queryForCurrencyAttribute($attrval, $ap, $text, $text_upper) {
+	private function _queryForCurrencyAttribute($attrval, $ap, $text, $text_upper, ?array $options=null) {
 		list($text, $modifier) = $this->parseModifier($text);
 		if (!is_array($parsed_value = $attrval->parseValue($text, $ap['element_info']))) {
 			return null;
@@ -2148,6 +2223,8 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if (!$currency) { 
 			return null;	// no currency
 		}
+		
+		$t_subject = caGetOption('t_subject', $options, null);
 		
 		$parsed_value_end = $text_upper ? $attrval->parseValue($text_upper, $ap['element_info']) : null;
 		
@@ -2180,90 +2257,203 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				}
 				break;
 		}
+		
+		$join_sql = $deleted_sql = '';
+		if($t_subject->hasField('deleted')) {
+			$t = $t_subject->tableName();
+			$t_pk = $t_subject->primaryKey();
+			$join_sql = " INNER JOIN {$t} AS t ON t.{$t_pk} = ca.row_id";
+			$deleted_sql = " AND (t.deleted = 0)";
+		}
 
 		$sql = "
 			SELECT ca.row_id, 1 boost
 			FROM ca_attribute_values cav
 			INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+			{$join_sql}
 			WHERE
 				(cav.element_id = {$ap['element_info']['element_id']}) AND (ca.table_num = ?)
 				AND
 				{$sql_where}
+				{$deleted_sql}
 		";
 		
-		return ['sql' => $sql, 'params' => $params];
+		return ['sql' => $sql, 'params' => [$params]];
 	}
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
-	private function _queryForGeocodeAttribute($attrval, $ap, $text, $text_upper) {
+	private function _queryForGeocodeAttribute($attrval, $ap, $text, $text_upper, ?array $options) {
 		$upper_lat = $upper_long = $lower_lat = $lower_long = null;
-		if ($text_upper) {
-			if (!is_array($parsed_value = $attrval->parseValue("[{$text}]", $ap['element_info']))) {
-				return null;
-			}
-			$lower_lat = (float)$parsed_value['value_decimal1'];
-			$lower_long = (float)$parsed_value['value_decimal2'];
+		if(!$text && $text_upper) {
+			$text = $text_upper;
+			$text_upper = null;
+		}
 		
+		$t_subject = caGetOption('t_subject', $options, null);
 		
-			$parsed_value = $attrval->parseValue("[{$text_upper}]", $ap['element_info']);
-			$upper_lat = (float)$parsed_value['value_decimal1'];
-			$upper_long = (float)$parsed_value['value_decimal2'];
+		$params = [];
+		$mode = null;
 		
-			// MySQL BETWEEN always wants the lower value first ... BETWEEN 5 AND 3 wouldn't match 4 ... So we swap the values if necessary
-			if($upper_lat < $lower_lat) {
-				$tmp = $upper_lat;
-				$upper_lat = $lower_lat;
-				$lower_lat = $tmp;
+		if ($text) {
+			if(
+				is_array($rewrites = $this->search_config->get('geocode_search_rewrites'))
+				&&
+				!preg_match("!^\[.*\]$!", $text)	// don't rewrite coordinates
+			) {
+				$rtext = $text;
+				$matched = false;
+				foreach($rewrites as $rcode => $rinfo) {
+					if(!is_array($regexes = $rinfo['regexes'] ?? null)) { continue; }
+					foreach($regexes as $match => $repl) {
+						$rtext = @preg_replace("{$match}", "{$repl}", $rtext);
+						if(is_null($rtext)) { continue; }
+						if($rtext !== $text) { $matched = true; }
+					}
+					
+					if($matched) { 
+						$mode = $rinfo['mode'] ?? null;
+						break;
+					}
+				}
+				$text = $rtext;
 			}
-			if($upper_long < $lower_long) {
-				$tmp = $upper_long;
-				$upper_long = $lower_long;
-				$lower_long = $tmp;
+			
+			if(is_array($parsed_values = caParseGISSearch($text))) {
+				$lower_lat = $parsed_values['min_latitude'];
+				$upper_lat = $parsed_values['max_latitude'];
+				$lower_long = $parsed_values['min_longitude'];
+				$upper_long = $parsed_values['max_longitude'];
+				$params[] = [$lower_lat, $upper_lat, $lower_long, $upper_long];
+			} else {
+				$parse_opts = ['returnBounds' => false];
+				switch($mode) {
+					case 'postcode':
+						$parse_opts['geocoderType'] = 'postcode';
+						break;
+				}
+				if (!is_array($parsed_value = $attrval->parseValue($text, $ap['element_info'], $parse_opts))) {
+					return null;
+				}
+				
+				$upper_lat = $upper_long = null;
+				if(isset($parsed_value['bounds'])) {
+					$lower_lat = (float)$parsed_value['bounds']['south'];
+					$lower_long = (float)$parsed_value['bounds']['west'];
+					$upper_lat = (float)$parsed_value['bounds']['north'];
+					$upper_long = (float)$parsed_value['bounds']['east'];
+				} else {
+					$lower_lat = (float)$parsed_value['value_decimal1'];
+					$lower_long = (float)$parsed_value['value_decimal2'];
+				}
+				
+				$utype = $parsed_value['type'] ?? null;
+				$radius_by_type =  $this->search_config->get('geocode_search_radius_by_type');
+				if(!is_array($default_search_radius = $this->search_config->getList('geocode_search_default_radius')) || !sizeof($default_search_radius)) {
+					$default_search_radius = ["500m"];
+				}
+			
+				if(isset($radius_by_type[$utype])) {
+					$default_search_radius = is_array($radius_by_type[$utype]) ? $radius_by_type[$utype] : [$radius_by_type[$utype]];
+				}
+				if($text_upper) {
+					$parsed_value = $attrval->parseValue($text_upper, $ap['element_info'], $parse_opts);
+					$upper_lat = (float)$parsed_value['value_decimal1'];
+					$upper_long = (float)$parsed_value['value_decimal2'];
+				} elseif(!$upper_lat || !$upper_long) {
+					foreach($default_search_radius as $radius) {
+						$parsed_values = caParseGISSearch("[{$lower_lat},{$lower_long} ~ {$radius}]");
+						$lower_lat = $parsed_values['min_latitude'];
+						$upper_lat = $parsed_values['max_latitude'];
+						$lower_long = $parsed_values['min_longitude'];
+						$upper_long = $parsed_values['max_longitude'];
+						
+						// MySQL BETWEEN always wants the lower value first ... BETWEEN 5 AND 3 wouldn't match 4 ... So we swap the values if necessary
+						if($upper_lat < $lower_lat) {
+							$tmp = $upper_lat;
+							$upper_lat = $lower_lat;
+							$lower_lat = $tmp;
+						}
+						if($upper_long < $lower_long) {
+							$tmp = $upper_long;
+							$upper_long = $lower_long;
+							$lower_long = $tmp;
+						}
+						
+						$params[] = [$lower_lat, $upper_lat, $lower_long, $upper_long];
+					}
+				}
+				
+				if(!sizeof($params)) {
+					$upper_lat = $lower_lat;
+					$upper_long = $lower_long;
+					
+					$upper_lat += .01;
+					$upper_long += .01;
+					$lower_lat -= .01;
+					$lower_long -= .01;
+					
+					// MySQL BETWEEN always wants the lower value first ... BETWEEN 5 AND 3 wouldn't match 4 ... So we swap the values if necessary
+					if($upper_lat < $lower_lat) {
+						$tmp = $upper_lat;
+						$upper_lat = $lower_lat;
+						$lower_lat = $tmp;
+					}
+					if($upper_long < $lower_long) {
+						$tmp = $upper_long;
+						$upper_long = $lower_long;
+						$lower_long = $tmp;
+					}
+					$params[] = [$lower_lat, $upper_lat, $lower_long, $upper_long];
+				}
 			}
-		} elseif(is_array($parsed_values = caParseGISSearch($text))) {
-			$lower_lat = $parsed_values['min_latitude'];
-			$upper_lat = $parsed_values['max_latitude'];
-			$lower_long = $parsed_values['min_longitude'];
-			$upper_long = $parsed_values['max_longitude'];
 		} else {
 			return [];
 		}
 		
-		$params = [];
-		$where_sql = '';
+		$sql_where = '';
 		
 		if (!is_null($upper_lat) && !is_null($upper_long)) {
-			$where_sql = "((cav.value_decimal1 >= ? AND cav.value_decimal1 <= ?) AND (cav.value_decimal2 >= ? AND cav.value_decimal2 <= ?))";
-			$params = [$lower_lat, $upper_lat, $lower_long, $upper_long];
+			$sql_where = "((cav.value_decimal1 >= ? AND cav.value_decimal1 <= ?) AND (cav.value_decimal2 >= ? AND cav.value_decimal2 <= ?))";
 		} else {
 			throw new ApplicationException(_t('Upper lat/long coordinates must not be empty'));
+		}
+		
+		$join_sql = $deleted_sql = '';
+		if($t_subject->hasField('deleted')) {
+			$t = $t_subject->tableName();
+			$t_pk = $t_subject->primaryKey();
+			$join_sql = " INNER JOIN {$t} AS t ON t.{$t_pk} = ca.row_id";
+			$deleted_sql = " AND (t.deleted = 0)";
 		}
 		
 		$sql = "
 			SELECT ca.row_id, 1 boost
 			FROM ca_attribute_values cav
 			INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+			{$join_sql}
 			WHERE
 				(cav.element_id = {$ap['element_info']['element_id']}) AND (ca.table_num = ?)
 				AND
-				({$where_sql})
+				({$sql_where})
+				{$deleted_sql}
 		";
-		
 		return ['sql' => $sql, 'params' => $params];
 	}
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
-	private function _queryForDateRangeAttribute($attrval, $ap, $text, $text_upper) {
+	private function _queryForDateRangeAttribute($attrval, $ap, $text, $text_upper, ?array $options=null) {
 		list($text, $modifier) = $this->parseModifier($text);
 		
 		if ($text_upper) { $text = "{$text} - {$text_upper}"; }
 		if (!is_array($parsed_value = $attrval->parseValue($text, $ap['element_info']))) {
 			return null;
 		}
+		
+		$t_subject = caGetOption('t_subject', $options, null);
 		
 		$dates = [
 			'start' => $parsed_value['value_decimal1'],
@@ -2334,26 +2524,38 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				break;
 		}
 		
+		$join_sql = $deleted_sql = '';
+		if($t_subject->hasField('deleted')) {
+			$t = $t_subject->tableName();
+			$t_pk = $t_subject->primaryKey();
+			$join_sql = " INNER JOIN {$t} AS t ON t.{$t_pk} = ca.row_id";
+			$deleted_sql = " AND (t.deleted = 0)";
+		}
+		
 		if($ap['type'] === 'INTRINSIC') {
+			if($delete_sql) { $deleted_sql = " AND (deleted = 0)"; }
 			$sql = "
 				SELECT {$pk} row_id, 1 boost
 				FROM {$table}
 				WHERE
 					{$sql_where}
+					{$deleted_sql}
 			";
 		} else {
 			$sql = "
 				SELECT ca.row_id, 1 boost
 				FROM ca_attribute_values cav
 				INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+				{$join_sql}
 				WHERE
 					(cav.element_id = {$ap['element_info']['element_id']}) AND (ca.table_num = ?)
 					AND
 					{$sql_where}
+					{$deleted_sql}
 			";
 		}
 		
-		return ['sql' => $sql, 'params' => $params];
+		return ['sql' => $sql, 'params' => [$params]];
 	}
 	# -------------------------------------------------------
 	/**
@@ -2388,6 +2590,64 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			$this->reindex_db = new Db(null, ['uniqueConnection' => true]);
 		}
 		return $this->reindex_db;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	private static function getListsAsDict(mixed $lists) : ?array {
+		if(!$lists) { return null; }
+		if(!is_array($lists)) { $lists = [$lists]; }
+		$key = join('-', $lists);
+		if(CompositeCache::contains($key, 'SqlSearch2SearchExpansionDict')) {
+			return CompositeCache::fetch($key, 'SqlSearch2SearchExpansionDict');
+		} else {
+			$t_list = new ca_lists();
+			$dict = [];
+			foreach($lists as $l) {
+				$item_ids = $t_list->getItemsForList($l, ['idsOnly' => true]);
+				if(sizeof($item_ids) > 0) {
+					if($qr = caMakeSearchResult('ca_list_items', $item_ids)) {
+						while($qr->nextHit()) {
+							$pl = $qr->get('ca_list_items.preferred_labels', ['returnWithStructure' => true, 'returnAllLocales' => true]);
+							$pl = array_shift($pl);
+							$npl = $qr->get('ca_list_items.nonpreferred_labels', ['returnWithStructure' => true, 'returnAllLocales' => true]);
+							$npl = array_shift($npl);
+							
+							foreach($pl as $locale_id => $by_id) {
+								foreach($by_id as $id => $info) {
+									$names = array_unique([mb_strtolower($info['name_singular']), mb_strtolower($info['name_plural'])]);
+									
+									foreach($npl as $nlocale_id => $nby_id) {
+										foreach($nby_id as $nid => $ninfo) {
+											foreach($names as $n) {
+												$nnames = array_unique([mb_strtolower($ninfo['name_singular']), mb_strtolower($ninfo['name_plural'])]);
+												foreach($nnames as $nn) {
+													$dict[$nn][] = $n;
+													$dict[$n][] = $nn;
+												}
+												foreach($nby_id as $nxinfo) {
+													$nxnames = array_unique([mb_strtolower($nxinfo['name_singular']), mb_strtolower($nxinfo['name_plural'])]);
+													foreach($nxnames as $nx) {
+														$dict[$nx][] = $n;
+														$dict[$nx][] = $nn;
+													}
+												}	
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				foreach($dict as $n => $list) {
+					$dict[$n] = array_unique($dict[$n]);
+				}
+				CompositeCache::save($key, $dict, 'SqlSearch2SearchExpansionDict');
+				return $dict;
+			}
+		}
 	}
 	# -------------------------------------------------------
 }

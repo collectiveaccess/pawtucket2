@@ -1,5 +1,4 @@
 <?php
-
 /** ---------------------------------------------------------------------
  * app/helpers/systemHelpers.php : miscellaneous system functions
  * ----------------------------------------------------------------------
@@ -42,7 +41,7 @@ function getLogger(){
 	global $system_helpers_debug_logger;
 
 	if (!isset($system_helpers_debug_logger) || $system_helpers_debug_logger === null){
-		$system_helpers_debug_logger = caGetLogger( array( 'logDirectory' => __CA_APP_DIR__ . "/log", 'logLevel' => 'DEBUG' ) );
+		$system_helpers_debug_logger = caGetLogger( array( 'logDirectory' => __CA_LOG_DIR__, 'logLevel' => 'DEBUG' ) );
 	}
 	return $system_helpers_debug_logger;
 }

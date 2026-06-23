@@ -368,7 +368,9 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 					if(in_array((int)$o_attr->getAttributeID(), $removed_attr_ids)) { continue; }
 					if(in_array((int)$o_attr->getAttributeID(), $edited_attr_ids)) { continue; }
 					
-					if(isset($pa_values['locale_id']) && ((int)$o_attr->getLocaleID() != (int)$pa_values['locale_id'])) { $is_changed = true; }
+					if(isset($pa_values['locale_id']) && (strlen($pa_values['locale_id']) > 0) && ((int)$o_attr->getLocaleID() != (int)$pa_values['locale_id'])) { 
+						$is_changed = true; 
+					}
 					if ($o_attr->getAttributeID() == $pn_attribute_id) { continue; }
 					foreach($o_attr->getValues() as $o_value) {
 						$vn_element_id = $o_value->getElementID();
@@ -940,6 +942,19 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 		if(($vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list)) && (!$this->hasField('deleted') || caGetOption('hard', $pa_options, false))) {
 			// Delete any associated attributes and attribute_values
 			if (!($qr_res = $this->getDb()->query("
+				DELETE FROM ca_attribute_value_multifiles
+				USING ca_attributes 
+				INNER JOIN ca_attribute_values ON ca_attribute_values.attribute_id = ca_attributes.attribute_id 
+				INNER JOIN ca_attribute_value_multifiles ON ca_attribute_values.value_id = ca_attribute_value_multifiles.value_id 
+				WHERE ca_attributes.table_num = ? AND ca_attributes.row_id = ?
+			", array((int)$this->tableNum(), (int)$vn_id)))) { 
+				$this->errors = $this->getDb()->errors();
+				if ($o_trans) { $o_trans->rollback(); }
+				
+				if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+				return false; 
+			}
+			if (!($qr_res = $this->getDb()->query("
 				DELETE FROM ca_attribute_values 
 				USING ca_attributes 
 				INNER JOIN ca_attribute_values ON ca_attribute_values.attribute_id = ca_attributes.attribute_id 
@@ -1436,7 +1451,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 		}
 		
 		$pa_options['limitToItemsWithID'] = caGetSourceRestrictionsForUser($this->tableName(), $pa_options);
-		
+		if(!is_array($pa_options['restrictToSources'] )) { $pa_options['restrictToSources']  = []; }
 		if (isset($pa_options['restrictToTypes']) && is_array($pa_options['restrictToTypes'])) {
 			if (!$pa_options['limitToItemsWithID'] || !is_array($pa_options['limitToItemsWithID'])) {
 				$pa_options['limitToItemsWithID'] = $pa_options['restrictToSources'];
@@ -2312,7 +2327,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 				'class' => $pa_options['class'] ?? null,
 				'nullOption' => '-',
 				'value' => $vm_values,
-				'forSearch' => true,
+				'forSearch' => caGetOption('forSearch', $pa_options, true),
 				'textAreaTagName' => caGetOption('textAreaTagName', $pa_options, null),
 				'render' => $pa_options['render'] ?? $va_element['settings']['render'] ?? null,
 				'attributes' => $attributes
@@ -2362,6 +2377,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 					$vs_form_element = str_replace('{n}', '', $vs_form_element);
 				}
 				$vs_form_element = str_replace('{'. $va_element['element_id'].'}', '', $vs_form_element);
+				$vs_form_element = str_replace('{fieldNamePrefix}', str_replace('.', '_',$f), $vs_form_element);
 			}
 			
 			$va_elements_by_container[$va_element['parent_id'] ? $va_element['parent_id'] : $va_element['element_id']][] = $vs_form_element;
@@ -2923,6 +2939,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 			foreach($va_vals as $vn_id => $va_vals_by_locale) {
 				foreach($va_vals_by_locale as $vn_locale_id => $va_vals_by_attr_id) {
 					foreach($va_vals_by_attr_id as $vn_attribute_id => $va_val) {
+						if(!is_array($va_val)) { continue; }
 						$va_val['locale_id'] = ($vn_locale_id) ? $vn_locale_id : $g_ui_locale_id;
 
 						$t_dupe->addAttribute($va_val, $vs_element_code);

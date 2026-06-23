@@ -168,7 +168,7 @@
 					{{{<ifdef code="ca_objects.rightsStatement2"><div class="unit"><label>Rights statement</label>^ca_objects.rightsStatement2</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.rights_statement"><div class="unit"><label>Additional rights statement</label>^ca_objects.rights_statement</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.rights_types"><div class="unit"><label>Rights Type</label>^ca_objects.rights_types</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.use_restrictions"><div class="unit"><label>Use restrictions</label>^ca_objects.use_restrictions</div></ifdef>}}}
+					{{{<if rule="^ca_objects.show_use_restrictions =~ /yes/i"><ifdef code="ca_objects.use_restrictions"><div class="unit"><label>Use restrictions</label>^ca_objects.use_restrictions</div></ifdef></if>}}}
 					{{{<ifdef code="ca_objects.rights_notes"><div class="unit"><label>Rights Notes</label>^ca_objects.rights_notes</div></ifdef>}}}
 				</div>
 		</div><!-- end row --></div><!-- end container -->

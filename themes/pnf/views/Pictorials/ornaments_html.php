@@ -7,17 +7,21 @@
 ?>
 <div class="row">
 	<div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
-		<H2>Ornaments</H2>
-		<hr/>
 <?php
 			if ($g_ui_locale == 'en_US'){			
 ?>
+				<H2>Ornaments & Illustrations</H2>
+				<hr/>
+
 				<div class='trimText'>
 					{{{ornamentsIntroEnglish}}}
 				</div>
 <?php
 			}else{
 ?>
+				<H2>Ornamentos e Ilustraciones</H2>
+				<hr/>
+
 				<div class='trimText'>
 					{{{ornamentsIntroSpanish}}}
 				</div>
@@ -25,12 +29,12 @@
 			
 			}		
 ?>
-		<br/><h3 class="text-center">Browse</h3>
+		<br/>
 		<hr/>
 <?php
 		if($qr_categories && $qr_categories->numHits()){
 ?>
-			<div>
+			<div class="row ornamentsGrid">
 <?php
 			while($qr_categories->nextHit()){
 				if(!in_array(strToLower($qr_categories->get("ca_list_item_labels.name_singular")), array("illustration", "printer's device"))){
@@ -41,7 +45,28 @@
 			</div>
 <?php
 		}
+			if ($g_ui_locale == 'en_US'){			
 ?>
+				<H2 style="margin-top:40px;">Bibliography</H2>
+				<hr/>
+
+				<div class='trimText'>
+					{{{ornamentsBibEnglish}}}
+				</div>
+<?php
+			}else{
+?>
+				<H2 style="margin-top:40px;">Bibliografia</H2>
+				<hr/>
+
+				<div class='trimText'>
+					{{{ornamentsBibSpanish}}}
+				</div>
+<?php
+			
+			}		
+?>
+
 	</div>
 </div>
 

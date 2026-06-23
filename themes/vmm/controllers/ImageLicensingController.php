@@ -155,7 +155,7 @@
  				$va_template_info = caGetPrintTemplateDetails('summary', 'image_licensing_form_export');
 				
 				$vs_file_content = caExportViewAsPDF($o_view, $va_template_info, "image_licensing_form.pdf", array("returnFile" => true));
-				$vs_temp_file_path = tempnam ( __CA_APP_DIR__."/tmp/", "ca_image_licensing_form_export_");
+				$vs_temp_file_path = tempnam ( __CA_TEMP_DIR__, "ca_image_licensing_form_export_");
 				file_put_contents($vs_temp_file_path, $vs_file_content);
 				#caExportViewAsPDF($o_view, $va_template_info, "image_licensing_form.pdf");
 				#$o_controller = AppController::getInstance();

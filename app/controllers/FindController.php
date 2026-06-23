@@ -266,9 +266,9 @@
 										while($r_top_level->nextHit()){
 											if (!in_array($r_top_level->get($t_item->primaryKey()), $va_hier_ids)) { continue; }
 											$va_item["name"] = $r_top_level->get($va_facet_info['table'].".preferred_labels");
-											$va_item["item_id"] = $r_top_level->get($t_item->primaryKey());
+											$va_item["item_id"] = $item_id = $r_top_level->get($t_item->primaryKey());
 											$va_item["parent_id"] = null;
-											$va_item["children"] = sizeof($t_item->getHierarchyChildren($va_item["item_id"], array("idsOnly")));
+											$va_item["children"] = $va_facet[$item_id]['child_count'] ?? sizeof($t_item->getHierarchyChildren($va_item["item_id"], array("idsOnly")));
 											$va_json_data[$va_item["item_id"]] = $va_item;
 										}
 									}

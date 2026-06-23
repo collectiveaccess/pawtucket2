@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2025 Whirl-i-Gig
+ * Copyright 2008-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -339,6 +339,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 	 * 			list_id = if set then the numeric item_id value is translated into label text in the current locale. If not set then the numeric item_id is returned.
 	 *			useSingular = If list_id is set then by default the returned text is the plural label. Setting this option to true will force use of the singular label. [Default is false]
 	 *			returnIdno = If true list item idno is returned rather than preferred label [Default is false]
+	 *			returnItemValue = If true list item value is returned rather than preferred label [Default is false]
 	 *			idsOnly = Return numeric item_id only [Default is false]
 	 *			alwaysReturnItemID = Synonym for idsOnly [Default is false]
 	 *			output = List item value return. Valid values are text [display text], idno [identifier; same as returnIdno option], value [numeric item_id; same as idsOnly option]. [Default is "value"]
@@ -359,7 +360,6 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 	 */
 	public function getDisplayValue($pa_options=null) {
 		$use_singular = caGetOption('useSingular', $pa_options, false);
-		
 		if (isset($pa_options['output'])) {
 			switch(strtolower($pa_options['output'])) {
 				case 'idno':
@@ -369,6 +369,9 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 					$pa_options['returnIdno'] = false;
 					$pa_options['idsOnly'] = false;
 					$pa_options['returnDisplayText'] = true;
+					break;
+				case 'itemvalue':
+					$pa_options['returnItemValue'] = true;
 					break;
 				default:
 					$pa_options['idsOnly'] = true;
@@ -388,6 +391,9 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
         if(!($pa_options['showHierarchy'] ?? false)) {
             if($vb_return_idno = ((isset($pa_options['returnIdno']) && (bool)$pa_options['returnIdno']))) {
                 return caGetListItemIdno($this->opn_item_id, $pa_options);
+            }
+            if($return_value= ((isset($pa_options['returnItemValue']) && (bool)$pa_options['returnItemValue']))) {
+                return caGetListItemValueForID($this->opn_item_id, $pa_options);
             }
             if($vb_return_idno = ((isset($pa_options['returnDisplayText']) && (bool)$pa_options['returnDisplayText']))) {
                 return caGetListItemByIDForDisplay($this->opn_item_id, array_merge($pa_options, ['return' => $use_singular ? 'singular' : 'plural']));
@@ -478,6 +484,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 		$t_item = new ca_list_items();
 		if($o_trans) { $t_item->setTransaction($o_trans); }
 
+		$ps_value = trim($ps_value);
 		foreach($va_match_on as $vs_match_on) {
 			switch($vs_match_on) {
 				case 'idno':
@@ -486,7 +493,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 						break(2);
 					}
 					if($serialize_comma_separated_values && strpos($ps_value, ',')) {
-						if ($vn_id = caGetListItemID($pa_element_info['list_id'], caSerializeCommaSeparatedName($ps_value), $pa_options)) {
+						if ($vn_id = caGetListItemID($pa_element_info['list_id'], trim(caSerializeCommaSeparatedName($ps_value)), $pa_options)) {
 							break(2);
 						}
 					}
@@ -498,7 +505,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 						break(2);
 					}
 					if($serialize_comma_separated_values && strpos($ps_value, ',')) {
-						if ($vn_id = caGetListItemIDForLabel($pa_element_info['list_id'], caSerializeCommaSeparatedName($ps_value), $pa_options)) {
+						if ($vn_id = caGetListItemIDForLabel($pa_element_info['list_id'], trim(caSerializeCommaSeparatedName($ps_value)), $pa_options)) {
 							break(2);
 						}
 					}
@@ -991,6 +998,15 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 
 		CompositeCache::save($ps_key, $va_ret, 'ListAttrHideIfSelected');
 		return $va_ret;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Check if value is empty. 
+	 *
+	 * @return bool
+	 */
+	public function isEmpty() : bool {
+		return !($this->opn_item_id > 0);
 	}
 	# ------------------------------------------------------------------
 }

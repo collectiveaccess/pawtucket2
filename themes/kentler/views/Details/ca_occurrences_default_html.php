@@ -66,6 +66,9 @@
 						$vs_caption = $vs_artist.", ";
 					}
 					$vs_caption .= "<i>".$q_artworks->get("ca_objects.preferred_labels.name")."</i>, ";
+					if($q_artworks->get("ca_objects.date")){
+						$vs_caption .= $q_artworks->get("ca_objects.date").", ";
+					}
 					$vs_medium = "";
 					if($q_artworks->get("medium_text")){
 						$vs_medium = $q_artworks->get("medium_text");
@@ -78,10 +81,7 @@
 						$vs_caption .= $vs_medium.", ";
 					}					
 					if($q_artworks->get("ca_objects.dimensions")){
-						$vs_caption .= $q_artworks->get("ca_objects.dimensions.dimensions_height")." X ".$q_artworks->get("ca_objects.dimensions.dimensions_width").", ";
-					}
-					if($q_artworks->get("ca_objects.date")){
-						$vs_caption .= $q_artworks->get("ca_objects.date").".";
+						$vs_caption .= $q_artworks->get("ca_objects.dimensions.dimensions_height")." X ".$q_artworks->get("ca_objects.dimensions.dimensions_width").(($q_artworks->get("ca_objects.dimensions.dimensions_length") ? " X ".$q_artworks->get("ca_objects.dimensions.dimensions_length") : "")).".";
 					}
 					#print '<div class="col-sm-3"><div class="fullWidthImg">'.(($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
 					print '<div class="col-sm-3"><div class="fullWidthImg">'.$vs_image;
@@ -176,13 +176,18 @@
 					if(is_array($va_reps) && sizeof($va_reps)){
 						foreach($va_reps as $va_rep){
 							$vs_image = "";
+							$vb_download = true;
 							if($va_rep["type_id"] == $vn_promo_type_id){
 								$vs_image = $va_rep["tags"]["large"];
+								# --- load the rep and see if download is blocked
+								$t_rep = new ca_object_representations($va_rep["representation_id"]);
+								if(strToLower($t_rep->get("ca_object_representations.no_download", array("convertCodesToDisplayText" => true))) == "no"){
+									$vb_download = false;
+								}
 							}else{
 								$vs_image = $va_rep["tags"][$vs_version];
 							}
-							$va_tmp = array("image" => $vs_image, "label" => $va_rep["label"], "image_link" => "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'exhibitions', 'id' => $t_item->getPrimaryKey(), 'representation_id' => $va_rep["representation_id"], 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
-							
+							$va_tmp = array("image" => $vs_image, "label" => $va_rep["label"], "image_link" => "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'exhibitions', 'id' => $t_item->getPrimaryKey(), 'representation_id' => $va_rep["representation_id"], 'overlay' => 1))."\"); return false;' >".$vs_image."</a>", "download_link" => (($vb_download) ? caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download", "pull-right btn-small", "", "Detail", "DownloadRepresentation", array("context" => "exhibitions", "representation_id" => $va_rep["representation_id"], "id" => $t_item->getPrimaryKey(), "download" => "1",  "version" => "original")) : ""));
 							$vs_sort_key = "";
 							if(trim($va_rep["idno_sort"])){
 								$vs_sort_key = $va_rep["idno_sort"];
@@ -233,6 +238,10 @@
 								$vs_caption = $vs_artist.", ";
 							}
 							$vs_caption .= "<i>".$q_artworks->get("ca_objects.preferred_labels.name")."</i>, ";
+							
+							if($q_artworks->get("ca_objects.date")){
+								$vs_caption .= $q_artworks->get("ca_objects.date").", ";
+							}
 							$vs_medium = "";
 							if($q_artworks->get("medium_text")){
 								$vs_medium = $q_artworks->get("medium_text");
@@ -245,10 +254,21 @@
 								$vs_caption .= $vs_medium.", ";
 							}					
 							if($q_artworks->get("ca_objects.dimensions")){
-								$vs_caption .= $q_artworks->get("ca_objects.dimensions.dimensions_height")." X ".$q_artworks->get("ca_objects.dimensions.dimensions_width").", ";
+								$vs_caption .= $q_artworks->get("ca_objects.dimensions.dimensions_height")." X ".$q_artworks->get("ca_objects.dimensions.dimensions_width").(($q_artworks->get("ca_objects.dimensions.dimensions_length") ? " X ".$q_artworks->get("ca_objects.dimensions.dimensions_length") : "")).".";
 							}
-							if($q_artworks->get("ca_objects.date")){
-								$vs_caption .= $q_artworks->get("ca_objects.date").".";
+							$vb_removed = false;
+							if(strtolower($q_artworks->get("ca_objects.removed.removal_text", array("convertCodesToDisplayText" => true))) == "yes"){
+								$vb_removed = true;
+							}
+							if($q_artworks->get("ca_objects.is_deaccessioned")){
+								$vb_removed = true;
+							}
+							if($q_artworks->get("ca_entities.entity_id", array("restrictToRelationshipTypes" => array("sold")))){
+								$vb_removed = true;
+							}
+					
+							if($vb_removed){
+								$vs_caption .= "<br/>No longer available";
 							}
 							$vs_label_detail_link 	= caDetailLink($this->request, $vs_caption, '', 'ca_objects', $q_artworks->get("ca_objects.object_id"));
 							# --- audio/video related to the work? - yes no values switched so no means yes :|
@@ -291,7 +311,7 @@
 					ksort($va_artworks_no_media, SORT_NATURAL);
 					$va_all_images = array_merge($va_art_installations, $va_artworks, $va_artworks_no_media);
 					if(sizeof($va_all_images)){
-						print "<H6>"._t("%1 Images", $t_item->get("type_id", array("convertCodesToDisplayText" => true)))."</H6><br/>";
+						print "<H6>"._t("%1 Images", $t_item->get("type_id", array("convertCodesToDisplayText" => true)))."</H6><div>Click to Enlarge.</div><br/>";
 						if($vn_total_images > $vn_cap_for_grid){
 							# --- grid
 							print "<div class='exhibitGrid'>";
@@ -339,6 +359,8 @@
 						print "<H6>"._t("Press and Promotion")."</H6><br/>";
 						foreach($va_promos as $va_promo){
 							print "<div class='fullWidthImg'>".$va_promo["image_link"];
+							# --- download link
+							print $va_promo["download_link"];
 							if($va_promo["label"]){
 								print "<br/><small>".$va_promo["label"]."</small>";
 							}

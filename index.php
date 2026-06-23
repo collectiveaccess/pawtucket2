@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2025 Whirl-i-Gig
+ * Copyright 2008-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -65,8 +65,9 @@ try {
 	$resp = $app->getResponse();
 	
 	if (($g_request->getController() !== 'Ban') && !BanHammer::verdict($g_request)) {
-		if(!$g_request->isAjax()) {
-			Session::setVar('pawtucket2_page_at_ban', $g_request->getFullUrlPath());
+		$path = $g_request->getFullUrlPath();
+		if(!$g_request->isAjax() && ($resp->getHTTPResponseCode() == 200) && !preg_match('!/themes/!', $path)) {
+			Session::setVar('pawtucket2_page_at_ban', $path);
 		}
 		$g_request->setInternalRedirect(['module' => '', 'controller' => 'Ban', 'action' => 'verify']);
 	}
@@ -141,7 +142,7 @@ try {
 
 	// Note url of this page as "last page"
 	// the 'dont_set_pawtucket2_last_page' is a lame-but-effective way of suppressing recording of something we don't want to be a "last page" (and potentially redirected to)
-	if (($resp->getHTTPResponseCode() == 200) && (!in_array($g_request->getController(), ['LoginReg', 'Ban']) && (!$g_request->isAjax()) && (!$g_request->getParameter('dont_set_pawtucket2_last_page', pInteger)))) {	
+	if (($resp->getHTTPResponseCode() == 200) && (!in_array($g_request->getController(), ['LoginReg', 'Ban', 'Cookies']) && (!$g_request->isAjax()) && (!$g_request->getParameter('dont_set_pawtucket2_last_page', pInteger)))) {	
 		Session::setVar('pawtucket2_last_page', $g_request->getFullUrlPath());
 	}
 	$g_request->close();

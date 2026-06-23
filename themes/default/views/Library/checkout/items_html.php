@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2023 Whirl-i-Gig
+ * Copyright 2014-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -85,7 +85,7 @@ if (!is_array($types = $this->getVar('checkout_types'))) { $types = []; }
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		var checkoutManager = caUI.initObjectCheckoutManager({
-			user_id: <?= $user_id; ?>,
+			user_id: <?= $user_id ?? 0; ?>,
 			
 			perTransactionNotesAndDueDate: <?= $per_transaction_checkout_notes_and_due_date; ?>,
 

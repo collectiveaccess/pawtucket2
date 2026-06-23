@@ -56,31 +56,42 @@
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-<?php
-				if ($vs_object_id = $t_object->get('ca_objects.object_id')) {
-					print "<div class='unit'><h6>Database ID#</h6>".$vs_object_id."</div>";
-				}
-?>
+
 				<div style='margin-top:10px;'>{{{map}}}</div>
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
 				
+				if ($vs_name = $t_object->get("ca_objects.preferred_labels.name")) {
+					print "<H4>".$vs_name."</H4>";
+				}
+?>
+				<HR>
+<?php
+				if ($vs_tmp = $t_object->getWithTemplate("^ca_objects.idno")) {
+					print "<div class='unit'><h6>Identifier</h6>".$vs_tmp."</div>";
+				}
+				if ($vs_tmp = $t_object->getWithTemplate("^ca_objects.category%delimiter=,_")) {
+					print "<div class='unit'><h6>Ornament Type</h6>".$vs_tmp."</div>";
+				}
+				if ($vs_tmp = $t_object->getWithTemplate("^ca_objects.use%delimiter=,_")) {
+					print "<div class='unit'><h6>Ornament Style</h6>".$vs_tmp."</div>";
+				}
 				if ($vs_description = $t_object->get("ca_objects.description")) {
 					print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
 				}
 				if ($vs_notes = $t_object->get('ca_objects.500_notes', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>General Notes</h6>".$vs_notes."</div>";
 				}
+				if ($vs_author = $t_object->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='printer'><ifdef code='ca_entities.variant_names.display_name'><span class='authorPopover' data-toggle='popover' data-trigger='hover' data-content='^ca_entities.variant_names.display_name%delimiter=;_'><l>^ca_entities.preferred_labels</l></span></ifdef><ifnotdef code='ca_entities.variant_names.display_name'><l>^ca_entities.preferred_labels</l></ifdef></unit>")) {
+					print "<div class='unit'><h6>Printer</h6>".$vs_author."</div>";
+				}
 				
 				if ($vs_year = $t_object->get('ca_objects.type_date', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Years</h6>".$vs_year."</div>";
 				}
-				if ($vs_author = $t_object->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='author'><ifdef code='ca_entities.variant_names.display_name'><span class='authorPopover' data-toggle='popover' data-trigger='hover' data-content='^ca_entities.variant_names.display_name%delimiter=;_'><l>^ca_entities.preferred_labels</l></span></ifdef><ifnotdef code='ca_entities.variant_names.display_name'><l>^ca_entities.preferred_labels</l></ifdef></unit>")) {
-					print "<div class='unit'><h6>Author</h6>".$vs_author."</div>";
-				}
-				if ($vs_added_entries = $t_object->getWithTemplate("<unit relativeTo='ca_entities' excludeRelationshipTypes='author' delimiter='<br/>'><ifdef code='ca_entities.variant_names.display_name'><span class='authorPopover' data-toggle='popover' data-trigger='hover' data-content='^ca_entities.variant_names.display_name%delimiter=;_'><l>^ca_entities.preferred_labels</l>  (^relationship_typename)</span></ifdef><ifnotdef code='ca_entities.variant_names.display_name'><l>^ca_entities.preferred_labels</l>  (^relationship_typename)</ifdef></unit>")) {
+				if ($vs_added_entries = $t_object->getWithTemplate("<unit relativeTo='ca_entities' excludeRelationshipTypes='printer' delimiter='<br/>'><ifdef code='ca_entities.variant_names.display_name'><span class='authorPopover' data-toggle='popover' data-trigger='hover' data-content='^ca_entities.variant_names.display_name%delimiter=;_'><l>^ca_entities.preferred_labels</l>  (^relationship_typename)</span></ifdef><ifnotdef code='ca_entities.variant_names.display_name'><l>^ca_entities.preferred_labels</l>  (^relationship_typename)</ifdef></unit>")) {
 					print "<div class='unit'><h6>Added Entries</h6>".$vs_added_entries."</div>";
 				}
 
