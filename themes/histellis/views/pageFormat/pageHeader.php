@@ -68,7 +68,7 @@ if($this->request->isLoggedIn()){
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<nav class="navbar navbar-expand-lg shadow-sm">
 		<div class="container-xl">
-			<?php print caNavlink($this->request, caGetThemeGraphic($this->request, 'histellis-logo.jpg', array("alt" => "Histellis", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
+			<?php print caNavlink($this->request, caGetThemeGraphic($this->request, 'histellis-logo.jpg', array("alt" => "Histellis", "role" => "banner"))."<div class='fw-bold fs-4'>Collections Portal</div>", "navbar-brand  img-fluid", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
