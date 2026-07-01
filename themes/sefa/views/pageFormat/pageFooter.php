@@ -30,7 +30,7 @@
 			</div><!-- end main -->
 			<!--begin footer-->
 			<div class="row footer" role="contentinfo">
-				<div class="col-sm-12 col-md-3 offset-md-9 socialright footernav">
+				<div class="col-sm-12 col-md-3 col-md-offset-9 socialright footernav">
 					<?php print caNavLink($this->request, _t("Newsletter Signup"), "footerButton", "", "About", "MailingList"); ?>
 					<a href="https://artsy.net/susan-eley-fine-art?utm_source=follow_badge" class="socialicon"><?php print caGetThemeGraphic($this->request, 'artsy.png', array("alt" => "Artsy")); ?></a>
 					<a href="https://www.1stdibs.com/dealers/susan-eley-fine-art/?utm_source=susaneleyfineart.com&utm_medium=referral&utm_campaign=dealer&utm_content=dealer_badge_1stdibs_gray" target="_blank" class="socialiconDibs"><?php print caGetThemeGraphic($this->request, '1stdibs_dark.jpg', array("title" => "Shop Susan Eley Fine Art's fine art on 1stdibs", "alt"=> "Shop Susan Eley Fine Art's fone art on 1stdibs")); ?></a>
