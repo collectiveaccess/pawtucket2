@@ -70,7 +70,8 @@ if($this->request->isLoggedIn()){
 		<div class="container-fluid">
 			<!--<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP_Text_SingleLine.png', array("alt" => "Site logo", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>-->
 			<!--<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP_Text_Stacked.png', array("alt" => "Site logo", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>-->
-			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP_Logo_H-cropped.png', array("alt" => "White House Workers History Project", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>
+			<!--<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP_Logo_H-cropped.png', array("alt" => "White House Workers History Project", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>-->
+			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP-TextLogo-Stacked-Lines.png', array("alt" => "White House Workers History Project", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
