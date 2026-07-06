@@ -66,11 +66,12 @@ if($this->request->isLoggedIn()){
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
-	<nav class="navbar navbar-expand-lg shadow-sm bg-white px-md-4">
+	<div class="titleBar bg-dark-blue px-2 pb-2 pt-2 text-center"><a href="https://www.whitehousehistory.org"><?= caGetThemeGraphic($this->request, 'WHHA_Logo_Alt-white.png', array("class" => "pb-1 pt-1", "alt" => "White House Historical Association")); ?></a></div>
+	<nav class="navbar navbar-expand-lg shadow-sm bg-white px-md-4 z-1">
 		<div class="container-fluid">
 			<!--<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP_Text_SingleLine.png', array("alt" => "Site logo", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>-->
 			<!--<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP_Text_Stacked.png', array("alt" => "Site logo", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>-->
-			<!--<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP_Logo_H-cropped.png', array("alt" => "White House Workers History Project", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>-->
+			<!---->
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP-TextLogo-Stacked-Lines.png', array("alt" => "White House Workers History Project", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
@@ -78,26 +79,32 @@ if($this->request->isLoggedIn()){
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav nav-underline ms-auto mb-2 mb-lg-0 me-4">				
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Partners'), "nav-link".((strToLower($this->request->getController()) == "partners") ? " active" : ""), "", "Partners", "Index", "", ((strToLower($this->request->getController()) == "partners") ? array("aria-current" => "page") : null)); ?>
-					</li>
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Stories'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
-					</li>
 <?php
 					if($user_links){
 						print $user_links;
 					}
 ?>
 					<li class="nav-item dropdown py-3 py-lg-0">
+						<a class="text-nowrap nav-link<?php print (in_array(strToLower($this->request->getController()), array("gallery"))) ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('Resources'); ?><i class="bi bi-chevron-down ms-1 fs-6"></i></a>
+						<ul class="dropdown-menu text-nowrap lh-lg ps-2 ps-lg-0 border-0">
+							<li><?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?></li>
+							<li><a href="https://www.whitehousehistory.org/rubenstein-center/k-12-education-resources-and-programs" class="nav-link"><?= _t('Educational Resources'); ?></a></li>
+							<li><a href="https://www.whitehousehistory.org/spn/introduction" class="nav-link"><?= _t("Slavery in the President's Neighborhood"); ?></a></li>
+							<li><a href="https://www.whitehousehistory.org/digital-archives" class="nav-link"><?= _t("Digital Archives"); ?></a></li>
+							<li><a href="#" class="nav-link"><?= _t("Guide to Research"); ?></a></li>
+							
+						</ul>
+					</li>
+					<li class="nav-item dropdown py-3 py-lg-0">
 						<a class="text-nowrap nav-link<?php print (in_array(strToLower($this->request->getController()), array("about", "contact"))) ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('About'); ?><i class="bi bi-chevron-down ms-1 fs-6"></i></a>
 						<ul class="dropdown-menu text-nowrap lh-lg ps-2 ps-lg-0 border-0">
 							<li><?= caNavlink($this->request, _t('About the Project'), "nav-link".(((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "project")) ? " active" : ""), "", "About", "index", "", (((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "project")) ? array("aria-current" => "page") : null)); ?></li>
-							<li><a href="https://www.whitehousehistory.org/rubenstein-center/k-12-education-resources-and-programs" class="nav-link"><?= _t('Teacher Resources'); ?></a></li>
-							<li><?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?></li>
+							<li><?= caNavlink($this->request, _t('Project Credits'), "nav-link".(((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "projectCredits")) ? " active" : ""), "", "About", "index", "", (((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "projectCredits")) ? array("aria-current" => "page") : null)); ?></li>
+							<li><?= caNavlink($this->request, _t('Contact Us'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?></li>
+							<li><a href="https://www.whitehousehistory.org/rights-reproductions" class="nav-link"><?= _t("Usage Rights/Reproductions"); ?></a></li>
 						</ul>
 					</li>
-					<li class="nav-item dropdown">
+					<!--<li class="nav-item dropdown">
 						  <button class="btn btn-white px-1 pt-2" type="button" id="searchDropdown" data-bs-toggle="dropdown" aria-expanded="false">
 							<i class="bi bi-search"></i>
 						  </button>
@@ -112,12 +119,15 @@ if($this->request->isLoggedIn()){
 								</form>
 							</li>
 						  </ul>
-					</li>
-					<li class="nav-item">
-						<a href="https://www.whitehousehistory.org" class="btn btn-white px-1 pt-2"><i class="bi bi-house-fill"></i></a>
-						<!--<a href="https://www.whitehousehistory.org"><?= caGetThemeGraphic($this->request, 'WHHA-logo.svg', array("alt" => "White House Historical Association", "class" => "whhaLogo")); ?></a>-->
-					</li>
+					</li>-->
 				</ul>
+				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
+					<div class="input-group ps-4 pe-4">
+						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
+						<input type="text" name="search" class="form-control rounded-0 border-black me-2" id="nav-search-input" placeholder="Search">
+						<button type="submit" class="btn btn-primary rounded-0" id="nav-search-btn" aria-label="Submit Search">Search</button>
+					</div>
+				</form>
 				
 			</div>
 		</div>

@@ -1,8 +1,10 @@
-$body: #252525;
+$body: #000000;
 $primary: #235ba0;
 $light: #eeedeb;
-$dark: #2b3e56;
+$dark: #000000;
+$dk-gray: #807F83;
 $gray: #d9d9d6;
+$yellow: #FFF4CC;
 
 @font-face {
     font-family: 'calendas_plus';
@@ -41,9 +43,10 @@ $gray: #d9d9d6;
 
 }
 body{
-	background-color: $light;
 	-webkit-font-smoothing: antialiased;
-	
+	background-image: url("../assets/graphics/bg-tile.jpg");
+	background-repeat: repeat; 
+	background-size: 200px 200px;	
 }
 /*main.detail{
 	background-color:#FFF;
@@ -110,25 +113,24 @@ H4{
 	transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 .btn-primary {
-	background-color: $primary;
-	border: 1px solid #205290;
-	box-shadow: inset 0 0 0 3px $primary, inset 0 0 0 4px #205290;
-	color: #fff;
+	background-color: #000;
+	box-shadow: inset 0 0 0 3px #000, inset 0 0 0 4px $yellow;
+	color: $yellow;
 	font-size: 1.125rem;
 	line-height: 1.3125rem;
 	padding: 1.0625rem 1.5rem;
 	text-align: center;
 }
 .btn-primary:hover {
-	background-color: #205290;
-	border-color: #205290;
-	box-shadow: inset 0 0 0 3px #205290, inset 0 0 0 4px $light;
+	background-color: $yellow;
+	box-shadow: inset 0 0 0 3px $yellow, inset 0 0 0 4px #000;
+	color:#000;
 }
 .btn-lt {
 	background-color: #fff;
 	border: 1px solid $gray;
 	box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 4px $gray;
-	color: $primary;
+	color: $body;
 	font-size: 1.125rem;
 	line-height: 1.3125rem;
 	padding: 1.0625rem 1.5rem;
@@ -189,7 +191,18 @@ H4{
 	background-color: #2b3e56 !important;
 	padding: 100px 0;
 }
-/* ------------------------ Navbar ------------------------- */
+.bg-dark-blue{
+	background-color: #2b3e56 !important;
+}
+/* ------------------------ Navbar and Logo title bar ------------------------- */
+.titleBar{
+	border-bottom: 1px solid #87847e;
+	/*-webkit-box-shadow: inset 0px 50px 32px -20px rgb(255, 255, 255); 
+	box-shadow: inset 0px 50px 32px -20px rgb(255, 255, 255);*/
+	img{
+		max-width: 180px;
+	}
+}
 .navbar-brand {
   /*width: 470px;*/
   width: 225px;
@@ -333,7 +346,7 @@ footer {
 				z-index: 1;
 			}
 			.exploreItemLabel{
-				background: #454e59;
+				background: #000;
 				text-align: center;
 				padding: 25px 20px 60px 20px;
 				position: relative;
@@ -342,7 +355,7 @@ footer {
 				font-weight: bold;
 				letter-spacing: 2px;
 				line-height: 1;
-				color:#FFF !important;
+				color:$yellow !important;
 			}
 			.exploreItemLabel::before{
 				content: "";
@@ -350,7 +363,7 @@ footer {
 				border-left: 20px solid rgba(0,0,0,0);
 				border-right: 20px solid rgba(0,0,0,0);
 				border-bottom: 20px solid #fff;
-				border-bottom-color: #454e59;
+				border-bottom-color: #000;
 				width: 0;
 				position: absolute;
 				top: 0;
@@ -483,8 +496,8 @@ footer {
 }
 
 /* ------------------------- Browse -------------------------- */
-#bLetterBar .btn-white{
-	background-color:$light;
+#bLetterBar{
+	background-color:transparent !important;
 }
 
 #browseResultsContainer{
@@ -513,13 +526,16 @@ footer {
 	}
 }
 #bRefine{
+	background-color:#FFF !important;
 	/* override in default view */
+/*
 	.input-group.p-3, div.p-3{
 		padding:1rem 0 1rem 0 !important;
 	}
 	h2.py-2{
 		padding:.5rem 0 .5rem 0 !important;
 	}
+*/
 }
 /* ------------------------- Gallery ------------------------- */
 #galleryDetailItemInfo, .gallery .bg-body-tertiary{
