@@ -36,9 +36,10 @@
 ?>
 
 
-<div class="container-lg mt-5">
+<!--<div class="container-lg mt-5">
 	<div class="img-fluid shadow border border-white p-2"><?php print caGetThemeGraphic($this->request, "WHWHP_LandingPage_H.png", array("class" => "border border-white shadow", "alt" => "White House Workers History Project and collage of workers' silhouettes in window frame")); ?></div>
-</div>
+</div>-->
+<div class="img-fluid"><?php print caGetThemeGraphic($this->request, "WHWHP_LandingPage_H.png", array("alt" => "White House Workers History Project and collage of workers' silhouettes in window frame")); ?></div>
 
 <?php
 	$vs_hp_intro_title = $this->getVar("hp_intro_title");
