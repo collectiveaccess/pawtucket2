@@ -81,6 +81,23 @@ class DetailController extends FindController {
 			}
 		}
 		
+		$this->lightbox_config = caGetLightboxConfig();
+		$this->view->setVar('lightbox_config', $this->lightbox_config);
+		
+		$this->allowed_content = $this->lightbox_config->getAssoc('lightbox_options') ?? [];
+ 		unset($this->allowed_content['ca_sets']);
+ 		
+ 		foreach($this->allowed_content as $t => $ti) {
+ 			if(!strlen($ti['content_name_singular'] ?? '')) {
+ 				$this->allowed_content[$t]['content_name_singular'] = Datamodel::getTableProperty($t, 'NAME_SINGULAR');
+ 			}
+ 			if(!strlen($ti['content_name_plural'] ?? '')) {
+ 				$this->allowed_content[$t]['content_name_plural'] = Datamodel::getTableProperty($t, 'NAME_PLURAL');
+ 			}
+ 		}
+		$this->view->setVar('lightbox_allowed_content', $this->allowed_content);
+		
+		
 		caSetPageCSSClasses(["detail"]);
 	}
 	# -------------------------------------------------------
