@@ -483,11 +483,13 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 					$display_id = (int)$template_file; 
 					$template_file = null;
 				} elseif($template_file) { 
-					if($t_display) {
+					$t_display = new ca_bundle_displays(['display_code'=> $template_file]);
+					if($t_display->isLoaded()) {
 						$view->setVar('display', $t_display);
 						$placements = $t_display->getPlacements(['settingsOnly' => true]);
 						$view->setVar('display_list', $placements);
 						$display_id = $t_display->getPrimaryKey();
+						$template_file = null;
 					} else {
 						$display_id = null; 
 					}
@@ -536,7 +538,6 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 			throw new ApplicationException(_t("Invalid format %1", $template));
 		}
 	}
-	
 	$t_display = new ca_bundle_displays();
 	if (!$template_file && $display_id && ($t_display->load($display_id)) && ($t_display->haveAccessToDisplay($request->getUserID(), __CA_BUNDLE_DISPLAY_READ_ACCESS__))) {
 		$placements = $t_display->getPlacements(['settingsOnly' => true]);

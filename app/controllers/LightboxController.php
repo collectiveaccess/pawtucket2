@@ -180,6 +180,8 @@ class LightboxController extends FindController {
 			$contexts[$t] = new ResultContext($this->request, $t, 'lightbox');
 			$contexts[$t]->setAsLastFind();
 		}
+		
+		// @TODO: fix
 		$o_context = $contexts['ca_objects'];
 		
 		// Sort list
@@ -307,6 +309,7 @@ class LightboxController extends FindController {
 		$this->view->setVar('table_num', $table_num = $t_set->get('ca_sets.table_num'));
 		$this->view->setVar('table', Datamodel::getTableName($table_num));
 		
+		// @TODO: generalize to all tables
 		// Set configuration options in view
 		$this->view->setVar('caption_template', caGetOption(["caption_template_{$mode}", 'caption_template'], $tconfig, '^ca_objects.preferred_labels'));
 				
@@ -379,9 +382,10 @@ class LightboxController extends FindController {
 		$exports = [];
 		foreach($tconfig['exports'] ?? [] as $dcode => $dinfo) {
 			$exports[] = array_merge($dinfo, [
-				'url' => caNavUrl($this->request, '*', '*', "Export/{$set_id}", ['dcode' => $dinfo['code'], 'type' => $dinfo['type'], 'display' => $dinfo['display']]),
+				'url' => caNavUrl($this->request, '*', '*', "Export/{$set_id}", ['dcode' => $dcode ?? " ", 'type' => $dinfo['type'], 'display' => $dinfo['display']]),
 			]);
 		}
+		
 		$pdf_exports = caGetAvailablePrintTemplates('results', ['table' => $set_content_table_name]);
 		if(is_array($pdf_exports) && sizeof($pdf_exports)) {
 			foreach($pdf_exports as $dcode => $dinfo) {
@@ -599,21 +603,22 @@ class LightboxController extends FindController {
 	 */
 	function Download(?array $options=null) {
 		$set_id = $this->request->getActionExtra(); // set_id or guid
+		$t_set = ca_sets::findAsInstance($set_id);
+		$content_table = Datamodel::getTableName($t_set->get('table_num'));
+		
 		$type = $this->request->getParameter('type', pString);
 		$item_ids = $this->_getItemIDs($this->request->getParameter('item_id', pString));
-		//$version = $this->request->getParameter('version', pString);
+		
 		$dcode = $this->request->getParameter('dcode', pString);
 		$select_all = (bool)$this->request->getParameter('selectAll', pString);
 		$omit_item_ids = $select_all ? $this->_getItemIDs($this->request->getParameter('omit_item_id', pString)) : null;
 		
-		
 		$loptions = $this->config->getAssoc('lightbox_options');
 		
-		// @TODO support different types of lightboxes
-		$tconfig = $loptions['ca_objects'] ?? [];
+		$tconfig = $loptions[$content_table] ?? [];
 		
 		if(!isset($tconfig['downloads'][$dcode])) {
-			throw new ApplicationException(_t('Invalid dcode'));
+			throw new ApplicationException(_t('Invalid dcode %1', $dcode));
 		}
 		
 		// Verify user can download specified version
@@ -694,6 +699,8 @@ class LightboxController extends FindController {
 	 */
 	function Export(?array $options=null) {
 		$set_id = $this->request->getActionExtra(); // set_id or guid
+		$t_set = ca_sets::findAsInstance(['set_id' => $set_id]);
+		$content_table = Datamodel::getTableName($t_set->get('table_num'));
 		$type = $this->request->getParameter('type', pString);
 		$item_ids = $this->_getItemIDs($this->request->getParameter('item_id', pString));
 		$select_all = (bool)$this->request->getParameter('selectAll', pString);
@@ -703,7 +710,7 @@ class LightboxController extends FindController {
 		
 		// Lightbox options
 		$loptions = $this->config->getAssoc('lightbox_options');
-		$tconfig = $loptions['ca_objects'] ?? []; // @TODO support different types of lightboxes
+		$tconfig = $loptions[$content_table] ?? []; 
 		
 		$errors = [];
 		
@@ -749,8 +756,7 @@ class LightboxController extends FindController {
 					break;
 				default:
 					$row_ids = array_values(array_map(function($v) { return $v['row_id']; }, $set_items));
-					$qr = caMakeSearchResult('ca_objects', $row_ids);
-					
+					$qr = caMakeSearchResult($content_table, $row_ids);
 					if($export_config = $tconfig['exports'][$format] ?? null) {
 						$t = "_{$export_config['type']}_{$export_config['display']}";
 						$ext = $export_config['type'];
@@ -758,7 +764,7 @@ class LightboxController extends FindController {
 						$t = $format;
 						$ext = 'pdf';
 					}
-					caExportResult($this->request, $qr, $t, "report.{$ext}", []);
+					caExportResult($this->request, $qr, $t ?: $ext, "report.{$ext}", []);
 					break;
 			}
 		}	
