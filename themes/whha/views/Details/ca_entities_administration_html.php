@@ -60,10 +60,12 @@ $media_options = array_merge($media_options, [
 	}
 ?>
 	<div class="row">
-		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_entities.preferred_labels.displayname}}}</H1>
-			{{{<ifdef code="ca_entities.type_id|ca_entities.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_entities.type_id">^ca_entities.type_id</ifdef><ifdef code="ca_entities.idno">, ^ca_entities.idno</ifdef></div></ifdef>}}}
-			<hr class="mb-0">
+		<div class="col-md-12 text-center">
+			<H1 class="text-center">{{{^ca_entities.preferred_labels.displayname}}}</H1>
+			{{{<ifdef code="ca_entities.dates">
+				<div class="fs-3 mb-2">^ca_entities.dates%delimiter=,_</dd>
+			</ifdef>}}}
+			<hr class="mb-4 opacity-100">
 		</div>
 	</div>
 <?php
@@ -89,21 +91,16 @@ $media_options = array_merge($media_options, [
 <?php
 	}
 ?>
-<div class="row">
+<div class="row justify-content-center">
 	<div class="col-md-6 col-lg-4 mb-4">
 		{{{media_viewer}}}
 	</div>
-	<div class="col-md-6 col-lg-8 mb-4">		
-		<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->			
-			{{{<ifdef code="ca_entities.dates">
-					<div class="mb-3">^ca_entities.dates%delimiter=,_</dd>
-				</ifdef>
-				<ifdef code="ca_entities.description">
-					<div class="mb-3">^ca_entities.description</dd>
-				</ifdef>
-			</dl>}}}
+	{{{<ifdef code="ca_entities.description">
+		<div class="col-md-6 col-lg-8 mb-4">		
+			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->			
+			<div class="mb-3">^ca_entities.description</div>
 		</div>
-	</div>
+	</div></ifdef>}}}
 </div>
 {{{<ifcount code="ca_entities.related" restrictToTypes="staff" min="1">
 	<div class="row">

@@ -84,7 +84,7 @@
 					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_administrations.jpg", array("alt" => "explore administrations", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel'>Administrations</div></div>", "text-decoration-none h-100", "", "Browse", "administrations"); ?>
 				</div>
 				<div class="col-md-6 col-lg-3 pb-5 pb-lg-0">
-					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_birthplace.jpg", array("alt" => "explore birthplace map", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel'>Birthplace Map</div></div>", "text-decoration-none h-100", "", "Browse", "birthplace"); ?>
+					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_birthplace.jpg", array("alt" => "explore birth and burial map", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel'>Birth & Burial Map</div></div>", "text-decoration-none h-100", "", "Browse", "birth_burial_map"); ?>
 				</div>
 				<div class="col-md-6 col-lg-3 pb-5 pb-lg-0">
 					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_stories.jpg", array("alt" => "explore stories", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel'>Stories</div></div>", "text-decoration-none h-100", "", "Gallery", "index"); ?>

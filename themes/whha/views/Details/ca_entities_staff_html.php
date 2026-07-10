@@ -64,8 +64,7 @@ $media_options = array_merge($media_options, [
 ?>
 	<div class="row">
 		<div class="col-md-12">
-			<H1 class="fs-3">{{{^ca_entities.preferred_labels.displayname}}}</H1>
-			{{{<ifdef code="ca_entities.type_id|ca_entities.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_entities.type_id">^ca_entities.type_id</ifdef><ifdef code="ca_entities.idno">, ^ca_entities.idno</ifdef></div></ifdef>}}}
+			<H1 class="text-center">{{{^ca_entities.preferred_labels.displayname}}}</H1>
 			<hr class="mb-0">
 		</div>
 	</div>
@@ -73,7 +72,7 @@ $media_options = array_merge($media_options, [
 	if(caDisplayLightbox($this->request) || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
 	<div class="row">
-		<div class="col text-center text-md-end">
+		<div class="col text-center">
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
 				if($inquire_enabled) {
@@ -85,149 +84,196 @@ $media_options = array_merge($media_options, [
 				if($copy_link_enabled){
 					print $this->render('Details/snippets/copy_link_html.php');
 				}
+				if($t_item->get("ca_entities.page_citation")){
+					$citation = $t_item->get("ca_entities.page_citation").", ".$this->request->config->get("site_host").caDetailUrl($this->request, "ca_entities", $id).".";
 ?>
-				<?= $this->render('Details/snippets/lightbox_list_html.php'); ?>
+				<button class="btn btn-sm btn-white ps-3 pe-0 fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCitation" aria-expanded="false" aria-controls="collapseCitation"><i class="bi bi-copy"></i> <?= _t("Citation"); ?></button>
+				<script>
+					function copyCitation() {
+						var inputc = document.body.appendChild(document.createElement("input"));
+						inputc.value = '<?php print strip_tags($citation); ?>';
+						inputc.select();
+						document.execCommand('copy');
+						inputc.parentNode.removeChild(inputc);
+					}
+				</script>
+<?php
+				} 
+				print $this->render('Details/snippets/lightbox_list_html.php');
+?>
 			</div>
 		</div>
 	</div>
+	{{{<ifdef code="ca_entities.page_citation">
+		<div id="collapseCitation" class="row justify-content-center collapse">
+			<div class="col-12 col-md-6 text-center">
+				<div class="bg-light py-3 px-4 my-4">
+					<div class="fw-bold"><?= _t("Cite this Page"); ?></div>
+					<div class="pt-1"><?php print $citation ?></div>
+					<div class="pt-1"><button type="button" class="btn btn-lt btn-sm" onClick="copyCitation();" data-bs-toggle="modal" data-bs-target="#copyCitationModal"><i class="bi bi-copy"></i> <?= _t('Copy'); ?></button></div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="copyCitationModal" tabindex="-1" aria-labelledby="copyCitationModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content text-start">
+					<div class="modal-body">
+						<div id="copyCitationModalLabel"><?= _t("Citation Copied to Clipboard."); ?></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= _t('Close'); ?></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ifdef>}}}
 <?php
 	}
 ?>
-<div class="row">
-	<div class="col-md-6 col-lg-4 mb-4">
-		{{{media_viewer}}}
-	</div>
+<div class="row mt-3 mb-4 justify-content-center">
+<?php
+	if(trim($this->getVar("media_viewer"))){
+?>
+		<div class="col-md-6 col-lg-4 mb-4">
+			{{{media_viewer}}}
+		</div>
+<?php
+	}
+?>
 	<div class="col-md-6 col-lg-8 mb-4">		
+		<div class="bg-light py-3 px-4 mb-4 h-100">
 			{{{<dl class="mb-0">
-				<ifcount code="ca_entities.related" restrictToTypes="administration" min="1">
-					<dt><ifcount code="ca_entities.related" restrictToTypes="administration" min="1" max="1"><?= _t('Administration Worked'); ?></ifcount><ifcount code="ca_entities.related" restrictToTypes="administration" min="2"><?= _t('Administrations Worked'); ?></ifcount></dt>
-					<unit relativeTo="ca_entities.related" restrictToTypes="administration" delimiter=""><dd><l>^ca_entities.preferred_labels</l></dd></unit>
-				</ifcount>
-				<ifdef code="ca_entities.service_years">
-					<dt><?= _t("Years in President's House"); ?></dt>
-					<unit relativeTo="ca_entities.service_years" delimiter="">
-						<dd>^ca_entities.service_years</dd>
-					</unit>
-				</ifdef>
 				<ifdef code="ca_entities.positions">
 					<dt><ifcount code="ca_entities.positions" max="1"><?= _t("Position"); ?></ifcount><ifcount code="ca_entities.positions" min="2"><?= _t("Positions"); ?></ifcount></dt>
 					<unit relativeTo="ca_entities.positions" delimiter="">
 						<dd><ifdef code="ca_entities.positions.position">^ca_entities.positions.position </ifdef><if rule="^ca_entities.positions.unclear !~ /No/">Unclear from Context</if></dd>
 					</unit>
 				</ifdef>
+				<div class="row">
+					<div class="col-6">
+						<ifdef code="ca_entities.service_years">
+							<dt><?= _t("Years in President's House"); ?></dt>
+							<unit relativeTo="ca_entities.service_years" delimiter="">
+								<dd>^ca_entities.service_years</dd>
+							</unit>
+						</ifdef>
+					</div>
+					<div class="col-6">
+						<ifcount code="ca_entities.related" restrictToTypes="administration" min="1">
+							<dt><ifcount code="ca_entities.related" restrictToTypes="administration" min="1" max="1"><?= _t('Presidency'); ?></ifcount><ifcount code="ca_entities.related" restrictToTypes="administration" min="2"><?= _t('Presidencies'); ?></ifcount></dt>
+							<ifcount code="ca_entities.related" restrictToTypes="administration" min="1">
+								<div id="readMoreDiv" class="readMore">
+									<unit relativeTo="ca_entities.related" restrictToTypes="administration" delimiter="<br>"><l>^ca_entities.preferred_labels</l></unit>
+								</div>
+								<button id="readMoreBtn" class="btn btn-white btn-sm fs-5 fw-bold p-0 bg-transparent text-decoration-underline readMoreButton" hx-on:click="htmx.toggleClass(htmx.find('#readMoreDiv'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreBtn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button>
+							</ifcount>
+						</ifcount>
+					</div>
+				</div>
+				<ifdef code="ca_entities.legal_status">
+					<dt><ifcount code="ca_entities.legal_status" max="1"><?= _t("Legal Status"); ?></ifcount><ifcount code="ca_entities.legal_status" min="2"><?= _t("Legal Statuses"); ?></ifcount></dt>
+						<unit relativeTo="ca_entities.legal_status" delimiter="">
+							<dd>^ca_entities.legal_status</dd>
+						</unit>
+				</ifdef>
+				<ifdef code="ca_entities.gender|ca_entities.race_ethnicity">
+					<div class="row">
+						<div class="col-sm-6">
+							<ifdef code="ca_entities.gender">
+								<dt><?= _t("Gender"); ?></dt>
+								<unit relativeTo="ca_entities.gender" delimiter="">
+									<dd>^ca_entities.gender</dd>
+								</unit>
+							</ifdef>
+						</div>
+						<div class="col-sm-6">
+							<ifdef code="ca_entities.race_ethnicity">
+								<dt><ifcount code="ca_entities.race_ethnicity" max="1"><?= _t("Race/Ethnicity"); ?></ifcount><ifcount code="ca_entities.race_ethnicity" min="2"><?= _t("Races/Ethnicities"); ?></ifcount></dt>
+									<unit relativeTo="ca_entities.race_ethnicity" delimiter="">
+										<dd>^ca_entities.race_ethnicity</dd>
+									</unit>
+							</ifdef>
+						</div>
+					</div>
+				</ifdef>				
 				<ifdef code="ca_entities.biography">
 					<dt>Biography</dt>
 					<dd>^ca_entities.biography</dd>
 				</ifdef>
 				<ifdef code="ca_entities.sources">
 					<dt><button class="btn btn-lt btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFootnotes" aria-expanded="false" aria-controls="collapseFootnotes"><?= _t("Footnotes"); ?></button></dt>
-					<dd id="collapseFootnotes" class="collapse">
-					<unit relativeTo="ca_entities.sources" delimiter="">
-						<div>^ca_entities.sources</div>
-					</unit>
+					<dd>
+						<div id="collapseFootnotes" class="collapse">
+							<unit relativeTo="ca_entities.sources" delimiter="">
+								<div>^ca_entities.sources</div>
+							</unit>
+						</div>
 					</dd>
 				</ifdef>
-			</dl>}}}
-	</div>
-</div>
-<div class="bg-light py-3 px-4 mb-5 h-100">
-	<div class="row row-cols-1 row-cols-md-3">
-		<div class="col">
-			{{{<dl>
-				<ifdef code="ca_entities.nonpreferred_labels">
-					<dt>Alternate Name<ifcount code="ca_entities.nonpreferred_labels" min="2">s</ifcount></dt>
-					<unit relativeTo="ca_entities.nonpreferred_labels" delimiter="">
-						<dd>^ca_entities.preferred_labels.displayname</dd>
-					</unit>
+				<ifdef code="ca_entities.birthplace|ca_entities.birthplace_geonames|ca_entities.burial_geoname">
+					<dt><?= _t("Birthplace"); ?></dt>
+					<ifdef code="ca_entities.birthplace"><unit relativeTo="ca_entities.birthplace" delimiter="">
+						<dd>^ca_entities.birthplace</dd>
+					</unit></ifdef>
+					<ifdef code="ca_entities.birthplace_geonames|ca_entities.burial_geoname">
+						<dd><div id="map" class="map"><?php print $this->getVar("map"); ?></div></dd>
+					</div>
 				</ifdef>
-				<ifdef code="ca_entities.gender">
-					<dt><?= _t("Gender"); ?></dt>
-					<unit relativeTo="ca_entities.gender" delimiter="">
-						<dd>^ca_entities.gender</dd>
-					</unit>
-				</ifdef>
-				<ifdef code="ca_entities.legal_status">
-					<dt><ifcount code="ca_entities.legal_status" max="1"><?= _t("Legal Status"); ?></ifcount><ifcount code="ca_entities.legal_status" min="2"><?= _t("Legal Statuses"); ?></ifcount></dt>
-		<?php
-					if($link = caGetBrowseLinks($t_item, 'ca_entities.legal_status', ['template' => '<dd><l>^ca_entities.legal_status</l></dd>', 'linkTemplate' => '^LINK'])) {
-						print join("", $link);
-					}
-		?>		
-				</ifdef>
-				<ifdef code="ca_entities.race_ethnicity">
-					<dt><ifcount code="ca_entities.race_ethnicity" max="1"><?= _t("Race/Ethnicity"); ?></ifcount><ifcount code="ca_entities.race_ethnicity" min="2"><?= _t("Races/Ethnicities"); ?></ifcount></dt>
-		<?php
-					if($link = caGetBrowseLinks($t_item, 'ca_entities.race_ethnicity', ['template' => '<dd><l>^ca_entities.race_ethnicity</l></dd>', 'linkTemplate' => '^LINK'])) {
-						print join("", $link);
-					}
-		?>		
-				</ifdef>
-				<ifdef code="ca_entities.historical_periods">
-					<dt><?= _t('Periods in U.S. History'); ?></dt>					
-	<?php
-				if($period = caGetBrowseLinks($t_item, 'ca_entities.historical_periods', ['template' => '<dd><l>^ca_entities.historical_periods</l></dd>', 'linkTemplate' => '^LINK'])) {
-					print join("", $period);
-				}
-	?>					
-				</ifdef>
+			</dl>
+			
+			
+			<dl>
 				<ifdef code="ca_entities.page_citation">
 					<dt><?= _t("Cite this Page"); ?></dt>
-					<dd>^ca_entities.page_citation</dd>
+					<dd>^ca_entities.page_citation, <?php print $this->request->config->get("site_host").caDetailUrl($this->request, "ca_entities", $id); ?>.</dd>
 				</ifdef>
 			</dl>}}}
 		</div>
-		<div class="col">
-			{{{<dl>
-				<ifcount code="ca_entities.related" restrictToTypes="staff" min="1">
-					<dt><ifcount code="ca_entities.related" restrictToTypes="staff" min="1" max="1"><?= _t('Related Staff'); ?></ifcount><ifcount code="ca_entities.related" restrictToTypes="staff" min="2"><?= _t('Related Staff'); ?></ifcount></dt>
-					<unit relativeTo="ca_entities.related" restrictToTypes="staff" delimiter=""><dd><l>^ca_entities.preferred_labels</l></dd></unit>
-				</ifcount>
-				<ifdef code="ca_entities.website">
-					<dt><?= _t("Related Association Content"); ?></dt>
-					<unit relativeTo="ca_entities.website" delimiter="">
-						<dd><a href="^ca_entities.website" target="_blank">^ca_entities.website <i class="bi bi-box-arrow-up-right"></i></a></dd>
-					</unit>
-				</ifdef>
-				<ifdef code="ca_entities.public_documentation">
-					<dt><?= _t("External Content"); ?></dt>
-					<unit relativeTo="ca_entities.public_documentation" delimiter="">
-						<dd><ifdef code="ca_entities.public_documentation.public_doc.original.url"><a href="^ca_entities.public_documentation.public_doc.original.url"><i class='bi bi-download me-1'></i> ^ca_entities.public_documentation.public_description</a></ifdef><ifnotdef code="ca_entities.public_documentation.public_doc.original.url">^ca_entities.public_documentation.public_description</ifnotdef></dd>
-					</unit>
-				</ifdef>
-				<ifdef code="ca_entities.resource|ca_entities.resource_url">
-					<dt><?= _t("Educational Resources"); ?></dt>
-					<unit relativeTo="ca_entities.resource" delimiter="">
-						<dd><ifdef code="ca_entities.resource.resource_description.original.url"><a href="^ca_entities.resource.resource_description.original.url"><i class='bi bi-download me-1'></i> ^ca_entities.resource.resource_description</a></ifdef><ifnotdef code="ca_entities.resource.resource_description.original.url">^ca_entities.resource.resource_description</ifnotdef></dd>
-					</unit>
-					<unit relativeTo="ca_entities.resource_url" delimiter="">
-						<dd><a href="^ca_entities.resource_url.url" target="_blank">^ca_entities.resource_url.site_name <i class="bi bi-box-arrow-up-right"></i></a>
-							<ifdef code="ca_entities.resource_url.site_description"><br/>^ca_entities.resource_url.site_description</ifdef>
-						</dd>
-					</unit>
-				</ifdef>
-			</dl>}}}
-		</div>
-		<div class="col">
-			{{{<dl>
-				<ifdef code="ca_entities.birthplace">
-					<dt><?= _t("Birthplace"); ?></dt>
-					<unit relativeTo="ca_entities.birthplace" delimiter="">
-						<dd>^ca_entities.birthplace</dd>
-					</unit>
-				</ifdef>
-			</dl>}}}
-			<div><div id="map" class="map">{{{map}}}</div></div>
-		</div>
-	</div>			
+	</div>
 </div>
-
-{{{<ifcount code="ca_objects" min="1">
-	<div class="row">
-		<div class="col"><h2>Related Objects</h2><hr></div>
-	</div>
-	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"), '_advanced' => 0)); ?>">
-			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
-		</div>
-	</div>
+{{{<ifcount code="ca_entities.related" restrictToTypes="staff" min="1">
+	<dl class="row">
+		<dt><ifcount code="ca_entities.related" restrictToTypes="staff" min="1" max="1"><?= _t('Related Worker'); ?></ifcount><ifcount code="ca_entities.related" restrictToTypes="staff" min="2"><?= _t('Related Workers'); ?></ifcount></dt>
+		<unit relativeTo="ca_entities.related" restrictToTypes="staff" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center">
+			<l class="w-100 h-100 d-flex flex-grow-1">
+				<div class="card w-100 h-100 rounded-0 border-0 mb-4">
+					<div class="card-body">
+						<div class='card-title text-center'><div class='fw-bold lh-sm fs-3'>^ca_entities.preferred_labels</div></div><ifdef code='ca_entities.service_years|ca_entities.occupation'><div class='fw-medium lh-sm fs-5'><ifdef code='ca_entities.occupation'>^ca_entities.occupation%delimiter=,_</ifdef><ifdef code='ca_entities.service_years,ca_entities.occupation'>, </ifdef><ifdef code='ca_entities.service_years'>^ca_entities.service_years%delimiter=,_</ifdef></div></ifdef>
+					</div>
+				</div>
+			</l>
+		</dd></unit>
+	</dl>
 </ifcount>}}}
+
+{{{<dl class="row row-cols-1 row-cols-md-3">
+	<ifdef code="ca_entities.website">
+		<div class="col">
+			<dt><?= _t("Related Association Content"); ?></dt>
+			<unit relativeTo="ca_entities.website" delimiter="">
+				<dd><a href="^ca_entities.website" target="_blank" class="double-border text-black p-3 d-block">^ca_entities.website <i class="bi bi-box-arrow-up-right"></i></a></dd>
+			</unit>
+		</div>
+	</ifdef>
+	<ifdef code="ca_entities.public_documentation">
+		<div class="col">
+			<dt><?= _t("External Content"); ?></dt>
+			<unit relativeTo="ca_entities.public_documentation" delimiter="">
+				<dd><ifdef code="ca_entities.public_documentation.public_doc.original.url"><a href="^ca_entities.public_documentation.public_doc.original.url" class="double-border text-black p-3 d-block"><i class='bi bi-download me-1'></i> ^ca_entities.public_documentation.public_description</a></ifdef><ifnotdef code="ca_entities.public_documentation.public_doc.original.url"><div class="double-border text-black p-3 d-block">^ca_entities.public_documentation.public_description</div></ifnotdef></dd>
+			</unit>
+		</div>
+	</ifdef>
+	<ifdef code="ca_entities.resource|ca_entities.resource_url">
+		<div class="col">
+			<dt><?= _t("Educational Resources"); ?></dt>
+			<unit relativeTo="ca_entities.resource" delimiter="">
+				<dd><ifdef code="ca_entities.resource.resource_description.original.url"><a href="^ca_entities.resource.resource_description.original.url" class="double-border text-black p-3 d-block"><i class='bi bi-download me-1'></i> ^ca_entities.resource.resource_description</a></ifdef><ifnotdef code="ca_entities.resource.resource_description.original.url">^ca_entities.resource.resource_description</ifnotdef></dd>
+			</unit>
+			<unit relativeTo="ca_entities.resource_url" delimiter="">
+				<dd><a href="^ca_entities.resource_url.url" target="_blank" class="double-border text-black p-3 d-block">^ca_entities.resource_url.site_name <i class="bi bi-box-arrow-up-right"></i>
+					<ifdef code="ca_entities.resource_url.site_description"><br/>^ca_entities.resource_url.site_description</ifdef></a>
+				</dd>
+			</unit>
+		</div>
+	</ifdef>
+</dl>}}}

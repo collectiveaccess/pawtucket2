@@ -216,6 +216,9 @@ H4{
 	.input-group{
 		min-width: 350px;
 	}
+	.dropdown-menu{
+		border:0px !important;
+	}
 }
 .navbar-nav .nav-link.active, .navbar-nav .nav-link.show, .navbar-nav .nav-link:hover {
 	border-bottom: 1px dashed $primary;
@@ -232,7 +235,7 @@ footer {
 }
 /* ------------------------ title headers ------------------------- */
 .page-header {
-	background-color: #2b3e56;
+	background-color: #807F83;
 	position: relative;
 	z-index: 1;
 	padding-top: 100px;
@@ -520,6 +523,13 @@ footer {
 		.ca-placeholder{
 			background-color:transparent !important;
 		}
+		@media (min-device-width:1024px) {
+			img, .ca-placeholder{
+				height: 300px;
+				width: 100%;
+			}
+		}
+		
 	}
 	.card:hover{
 		box-shadow: inset 0 0 0 7px #fff,inset 0 0 0 8px #252525 !important;
@@ -544,12 +554,141 @@ footer {
 	box-shadow: inset 0 0 0 7px $light,inset 0 0 0 8px $gray;
 	padding: 28px;
 }
-/* ------------------------- Detail / Contact need a white bg -------------------------- */
-.detail > .container-xl, .contact > .container-xl{
+/* ------------------------- Detail / Contact / Advanced Search need a white bg -------------------------- */
+.detail > .container-xl, .contact > .container-xl, .search.advancedSearch > .container-xl{
 	border: 1px solid $gray;
 	box-shadow: inset 0 0 0 7px $light,inset 0 0 0 8px $gray;
 	margin-top:30px;
 	margin-bottom:30px;
 	padding:30px;
 	background-color:white;
+}
+#mediaviewer-overlay-caption{
+	#detailMediaCaption{
+		display:none;
+	}
+}
+#mediaviewer-caption{
+	#overlayMediaCaption{
+		display:none;
+	}
+}
+.detail{
+	dl.twoColDataList {
+  		column-count: 2;                        /* Splits the entire list into 2 vertical columns */
+  		column-gap: 30px;                       /* Gap between the two major columns */
+  		/* Prevents a term from separating from its description at the column break */
+		dt, dd {
+		  break-inside: avoid;
+		}
+	}
+	.readMore {
+		max-height: 2.8rem;
+		overflow: hidden;
+	}
+	.readMoreButton::after{
+		content: "Read More ›";
+	}
+	.readMoreButton.readMoreButtonExpanded::after {
+		content: "Read Less ›";
+	}
+	.card{
+		border: 1px solid $gray !important;
+		box-shadow: inset 0 0 0 7px $light,inset 0 0 0 8px $gray !important;
+		color: #000;
+		text-decoration:none;
+		transition: box-shadow .2s ease;		
+	}
+	.card:hover{
+		box-shadow: inset 0 0 0 7px #fff,inset 0 0 0 8px #252525 !important;
+	}
+	.double-border{
+		text-align:center;
+		color: #000;
+		text-decoration:none;
+	}
+
+}
+/* --------------------- Occupations ------------------------- */
+.occupationsList{
+	img{
+		height:250px;
+	}
+	a{
+		.occItem{
+			.occItemImg{
+				position:relative;
+			}
+			.occItemImg::before{
+				content: "";
+				display: block;
+				position: absolute;
+				border: 1px solid #eeedeb;
+				bottom: 0;
+				left: 0;
+				opacity: 0;
+				right: 0;
+				top: 0;
+				transition: opacity .2s cubic-bezier(0.055, 0.535, 0.45, 0.94),top .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) .2s,left .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) .2s,right .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) .2s,bottom .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) .2s;
+				z-index: 1;
+			}
+			.occItemLabel{
+				background: #000;
+				text-align: center;
+				padding: 25px 20px 60px 20px;
+				position: relative;
+				line-height: 1;
+				font-variant: small-caps;
+				font-weight: bold;
+				letter-spacing: 2px;
+				line-height: 1;
+				color:$yellow !important;
+			}
+			.occItemLabel::before{
+				content: "";
+				height: 0;
+				border-left: 20px solid rgba(0,0,0,0);
+				border-right: 20px solid rgba(0,0,0,0);
+				border-bottom: 20px solid #fff;
+				border-bottom-color: #000;
+				width: 0;
+				position: absolute;
+				top: 0;
+				transform: translate(-50%, -100%);
+				left: 50%;
+				
+			}
+		}
+	}
+	a:hover{
+		color: #f9d678 !important;
+		.occItem{
+			.occItemLabel{
+				color: #f9d678 !important;
+				text-decoration:none !important;
+			}
+			.occItemImg::before{
+				bottom: 15px;
+				left: 15px;
+				opacity: 1;
+				right: 15px;
+				top: 15px;
+				transition: opacity .2s cubic-bezier(0.055, 0.535, 0.45, 0.94),top .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) 0s,left .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) 0s,right .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) 0s,bottom .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) 0s;		
+				content: "";
+				display: block;
+				position: absolute;
+				border: 1px solid #eeedeb;
+				z-index:1;
+			}
+		}
+	}
+	a::focus{
+		color: #f9d678 !important;
+		.occItem{
+			.occItemLabel{
+				color: #f9d678 !important;
+				text-decoration:none;
+			}
+		}		
+	}
 }
