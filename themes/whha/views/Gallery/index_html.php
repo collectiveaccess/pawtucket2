@@ -45,7 +45,7 @@
 							<div class="row">
 <?php
 								if($va_first_item["representation_url"]){
-									print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-cover w-100'>", "", "", "Gallery", $vn_set_id)."</div>";
+									print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-".$vs_image_format." w-100'>", "", "", "Gallery", $vn_set_id)."</div>";
 								
 									print "<div class='col-sm-6'>";
 								}else{
