@@ -553,6 +553,12 @@ footer {
 	border: 1px solid $gray;
 	box-shadow: inset 0 0 0 7px $light,inset 0 0 0 8px $gray;
 	padding: 28px;
+	H2{
+		font-size: clamp(1.875rem, 4.625rem, 2.5vw);
+	
+		font-style: italic;
+		line-height: 1.35em;
+	}
 }
 /* ------------------------- Detail / Contact / Advanced Search need a white bg -------------------------- */
 .detail > .container-xl, .contact > .container-xl, .search.advancedSearch > .container-xl{

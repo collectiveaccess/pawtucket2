@@ -1,0 +1,72 @@
+<?php
+	# --- display the media item
+	$pn_previous_item_id = $this->getVar("previous_item_id");
+	$pn_next_item_id = $this->getVar("next_item_id");
+	$pn_previous_row_id = $this->getVar("previous_row_id");
+	$pn_next_row_id = $this->getVar("next_row_id");
+	$pn_previous_rep_id = $this->getVar("previous_representation_id");
+	$pn_next_rep_id = $this->getVar("next_representation_id");
+	
+	$pn_set_id = $this->getVar("set_id");
+	$pn_row_id = $this->getVar("row_id");
+	$ps_table = $this->getVar("table");
+	$pn_rep_id = $this->getVar("representation_id");
+?>
+<div class="row mb-2 align-items-center">
+	<div class="col-12">
+<?php
+	# --- display the metadata fro the item
+	$t_item = $this->getVar("instance");
+	$t_set_item = $this->getVar("set_item");
+	$config = $this->getVar("config");
+	
+	$views = $config->get('views');
+	$views_info = $views['slideshow'][$this->getVar("table")];
+	
+	$vs_label = $t_item->getWithTemplate($views_info["labelTemplate"]);
+	$vs_content = $t_item->getWithTemplate($views_info["contentTemplate"]);
+	$vs_set_item_content = $t_set_item->getWithTemplate($views_info["setItemContentTemplate"]);
+?>
+		<div class="row align-items-center">
+			<div class="col-2 col-sm-3 col-md-2">
+<?php
+	if($pn_previous_item_id > 0){
+		print "<button id='galleryPreviousButton' class='btn btn-sm btn-primary p-2 align-content-center' hx-target='#galleryDetailItemInfo' hx-trigger='click' hx-get='".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pn_previous_item_id, 'set_id' => $pn_set_id))."'><i class='bi bi-chevron-left' aria-label='previous'></i></button>";
+	}else{
+		print "<button id='galleryPreviousButton' class='btn btn-sm btn-primary p-2' disabled><i class='bi bi-chevron-left' aria-label='previous'></i></button>";
+	}
+?>
+			</div>
+			<div class="col-8 col-sm-6 col-md-8 text-center">
+<?php
+	print "<div class='small mb-1 text-center'>(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")</div>";
+
+	print "<H2 class='text-center'>".$t_item->get("ca_entities.preferred_labels.displayname")."</H2>";
+
+	print $vs_content;
+	print "<div class='text-center py-2 text-capitalize'>".caDetailLink($this->request, _t("More about %1", $t_item->get("ca_entities.preferred_labels.displayname"))." <i class='bi bi-arrow-right'></i>", 'btn btn-primary', $this->getVar("table"), $this->getVar("row_id"))."</div>";	
+?>
+			</div>
+			<div class="col-2 col-sm-3 col-md-2 text-end">
+<?php
+	if($pn_next_item_id > 0){
+		print "<button id='galleryNextButton' class='btn btn-sm btn-primary p-2' hx-target='#galleryDetailItemInfo' hx-trigger='click' hx-get='".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pn_next_item_id, 'set_id' => $pn_set_id))."'><i class='bi bi-chevron-right' aria-label='next'></i></button>";
+	}else{
+		print "<button id='galleryNextButton' class='btn btn-sm btn-primary p-2' disabled><i class='bi bi-chevron-right' aria-label='next'></i></button>";
+	}
+?>
+			</div>
+		</div>
+		<hr/>
+<?php	
+	
+	if($vs_set_item_content != "[BLANK]"){
+		print $vs_set_item_content;
+	}
+
+	
+	
+	
+?>	
+	</div>
+</div><!-- end row -->
