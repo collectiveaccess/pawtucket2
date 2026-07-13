@@ -35,7 +35,7 @@
 ?>
 <div class="container">
 	<div class="row justify-content-center text-center">
-		<div class="col-md-10 hpExplore py-5">
+		<div class="col-md-10 occupationsList py-5">
 
 			<div class="row justify-content-center">
 <?php
@@ -44,7 +44,7 @@
 				$img = caGetThemeGraphic($this->request, "explore_workers.jpg", array("alt" => "explore workers", "class" => "object-fit-cover w-100 shadow"));
 			}
 			print "<div class='col-md-6 col-lg-3 pb-5 pb-lg-0 mb-4'>".
-					caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".$img."</div><div class='exploreItemLabel'>".$qr_results->get("ca_list_item_labels.name_plural")."</div></div>", "text-decoration-none h-100 bg-black d-block", "", "Browse", "workers", array("facet" => $facet, "id" => $qr_results->get("ca_list_items.item_id")))
+					caNavLink($this->request, "<div class='occItem'><div class='occItemImg'>".$img."</div><div class='occItemLabel'>".$qr_results->get("ca_list_item_labels.name_plural")."</div></div>", "text-decoration-none h-100 bg-black d-block", "", "Browse", "workers", array("facet" => $facet, "id" => $qr_results->get("ca_list_items.item_id")))
 				."</div>";
 		}
 ?>

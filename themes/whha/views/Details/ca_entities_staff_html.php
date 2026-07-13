@@ -219,14 +219,6 @@ $media_options = array_merge($media_options, [
 						<dd><div id="map" class="map"><?php print $this->getVar("map"); ?></div></dd>
 					</div>
 				</ifdef>
-			</dl>
-			
-			
-			<dl>
-				<ifdef code="ca_entities.page_citation">
-					<dt><?= _t("Cite this Page"); ?></dt>
-					<dd>^ca_entities.page_citation, <?php print $this->request->config->get("site_host").caDetailUrl($this->request, "ca_entities", $id); ?>.</dd>
-				</ifdef>
 			</dl>}}}
 		</div>
 	</div>

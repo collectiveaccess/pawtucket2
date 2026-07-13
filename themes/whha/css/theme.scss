@@ -167,7 +167,7 @@ H4{
   
   transition: box-shadow .2s ease;
 }
-.double-border:hover{
+a.double-border:hover{
 	box-shadow: inset 0 0 0 7px #fff,inset 0 0 0 8px #252525;
 }
 .bgLinen::before{
@@ -303,37 +303,31 @@ footer {
 	mix-blend-mode: multiply;
 }
 /* ------------------------- Front ------------------------- */
-.parallax2 {
-    position: relative;
-    background-image: url("../assets/graphics/WHWHP_LandingPage_H.jpg");
-
-    /* Full height */
-    height: 400px;
-
-    /* Create the parallax scrolling effect */
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-
-}
 .hpExplore{
 	img{
 		height:250px;
 	}
 }
 
-.hero {
-    position: relative;
-    background-image: url("../assets/graphics/WHWHP_LandingPage_H.jpg");
+.heroLogo {
+    padding-bottom: 13%;
 }
+.heroSearch{
+	margin-bottom: 22%;
+}
+
 .hpExplore{
 	img{
-		height:250px;
+		height:100%;
+		transition: transform 0.3s ease-in-out, filter 0.3s ease; /* Smooth transition over 0.3 seconds */
 	}
 	a{
 		.exploreItem{
+			height:400px;
 			.exploreItemImg{
 				position:relative;
+				height:80%;
+				overflow:hidden
 			}
 			.exploreItemImg::before{
 				content: "";
@@ -350,17 +344,27 @@ footer {
 			}
 			.exploreItemLabel{
 				background: #000;
-				text-align: center;
-				padding: 25px 20px 60px 20px;
+				padding: 25px;
 				position: relative;
-				line-height: 1;
-				font-variant: small-caps;
+				/*font-variant: small-caps;
 				font-weight: bold;
-				letter-spacing: 2px;
-				line-height: 1;
+				letter-spacing: 2px;*/
+				line-height: 135%;
 				color:$yellow !important;
+				font-size: 1.3125rem;
+				width: 100%;
+				height:20%;
 			}
-			.exploreItemLabel::before{
+		@media (min-device-width:1024px) {
+			.exploreItemImg.large{
+				height:85%;
+			}
+			.exploreItemLabel.large{
+				font-size: 2rem;
+				height:15%
+			}
+		}
+		/*	.exploreItemLabel::before{
 				content: "";
 				height: 0;
 				border-left: 20px solid rgba(0,0,0,0);
@@ -374,6 +378,7 @@ footer {
 				left: 50%;
 				
 			}
+		*/
 		}
 	}
 	a:hover{
@@ -396,6 +401,13 @@ footer {
 				border: 1px solid #eeedeb;
 				z-index:1;
 			}
+			.exploreItemImg{
+				img{
+					transform: scale(1.05); /* Scales the element to 110% */
+					filter: brightness(90%);
+				}
+			}
+
 		}
 	}
 	a::focus{
@@ -447,10 +459,30 @@ footer {
 	position: relative;
 	z-index: 1;
 	overflow: hidden;
-	background-color: #2b3e56;
+	background-color: #807F83;
 	padding: 100px 0;
 }
 .section-blue-linen::before{
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: -1;
+	background: rgba(0,0,0,0) url("../assets/graphics/texture-linen-large.jpg") no-repeat center center;
+	background-size: auto;
+	background-size: cover;
+	content: "";
+	mix-blend-mode: multiply;
+}
+.section-dark-gray-linen{
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+	background-color: #323232;
+	padding: 100px 0;
+}
+.section-dark-gray-linen::before{
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -501,8 +533,18 @@ footer {
 /* ------------------------- Browse -------------------------- */
 #bLetterBar{
 	background-color:transparent !important;
+	.btn-white{
+		background-color: transparent;
+	}
 }
-
+#searchWithin{
+	.form-control{
+		border:1px solid #000 !important;
+	}
+	.btn{
+		margin-left:5px !important;
+	}
+}
 #browseResultsContainer{
 	#map{
 		height:600px !Important;
@@ -619,11 +661,13 @@ footer {
 .occupationsList{
 	img{
 		height:250px;
+		transition: transform 0.3s ease-in-out, filter 0.3s ease; /* Smooth transition over 0.3 seconds */
 	}
 	a{
 		.occItem{
 			.occItemImg{
 				position:relative;
+				overflow:hidden
 			}
 			.occItemImg::before{
 				content: "";
@@ -640,29 +684,15 @@ footer {
 			}
 			.occItemLabel{
 				background: #000;
-				text-align: center;
-				padding: 25px 20px 60px 20px;
+				padding: 25px;
 				position: relative;
-				line-height: 1;
-				font-variant: small-caps;
+				/*font-variant: small-caps;
 				font-weight: bold;
-				letter-spacing: 2px;
-				line-height: 1;
+				letter-spacing: 2px;*/
+				line-height: 135%;
 				color:$yellow !important;
-			}
-			.occItemLabel::before{
-				content: "";
-				height: 0;
-				border-left: 20px solid rgba(0,0,0,0);
-				border-right: 20px solid rgba(0,0,0,0);
-				border-bottom: 20px solid #fff;
-				border-bottom-color: #000;
-				width: 0;
-				position: absolute;
-				top: 0;
-				transform: translate(-50%, -100%);
-				left: 50%;
-				
+				font-size: 1.3125rem;
+				width: 100%;
 			}
 		}
 	}
@@ -686,6 +716,13 @@ footer {
 				border: 1px solid #eeedeb;
 				z-index:1;
 			}
+			.occItemImg{
+				img{
+					transform: scale(1.05); /* Scales the element to 110% */
+					filter: brightness(90%);
+				}
+			}
+
 		}
 	}
 	a::focus{

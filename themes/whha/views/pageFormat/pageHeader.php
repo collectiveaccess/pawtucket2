@@ -190,7 +190,10 @@ if($this->request->isLoggedIn()){
 					</div>
 				</div>
 				<div class='container-xl pt-4 mt-4'>
-<?php		
+<?php
+				if(strToLower($this->request->getAction()) == "birth_burial_map"){
+					print "<div class='mb-4 mt-3 fs-4'>".$this->getVar("map_page_intro")."</div>";
+				}		
 			}else{
 				print "<div class='container-xl pt-4'>";
 			}
