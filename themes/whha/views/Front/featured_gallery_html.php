@@ -39,8 +39,13 @@
 								$va_set_first_items = $t_set->getPrimaryItemsFromSets(array($vn_set_id), array("version" => "large", "checkAccess" => $va_access_values));
 								$t_set->load($vn_set_id);
 								$va_first_item = array_shift($va_set_first_items[$vn_set_id]);
-								print "<div class='col-sm-3 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id)."</div>";
-								print "<div class='col-sm-9'>".caNavLink($this->request, $va_set["name"], "fs-3 fw-medium", "", "Gallery", $vn_set_id);
+								if($va_first_item["representation_tag"]){
+									print "<div class='col-sm-3 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id)."</div>";
+									print "<div class='col-sm-9'>";
+								}else{
+									print "<div class='col-sm-12'>";
+								}
+								print caNavLink($this->request, $va_set["name"], "fs-3 fw-medium", "", "Gallery", $vn_set_id);
 								if($vs_desc = $t_set->get("ca_sets.set_description")){
 									if(mb_strlen($vs_desc) > 400){
 										$vs_desc = mb_substr($vs_desc, 0, 400)."...";						

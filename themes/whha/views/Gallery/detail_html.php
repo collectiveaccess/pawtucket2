@@ -21,6 +21,9 @@
 ?>	
 		</div>
 	</div>
+<?php
+if(is_array($pa_set_items) && sizeof($pa_set_items)){
+?>
 	<div class="row">
 		<div class='col-12 col-sm-8 mb-5'>
 			<div class="col" id="galleryDetailItemInfo"><!-- load gallery item information here --><div class='spinner-border htmx-indicator m-3' role='status'><span class='visually-hidden'>Loading...</span></div></div>
@@ -44,4 +47,6 @@
 			</div>		</div>
 	</div>
 	<div hx-target="#galleryDetailItemInfo" hx-trigger="load" hx-get="<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $vn_first_item_id, 'set_id' => $pn_set_id)); ?>"  ></div>
-				
+<?php
+}
+?>				
