@@ -104,19 +104,20 @@ if($show_nav){
 					</ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_display">
 						<dt><?= _t('Dimensions'); ?></dt>
-						<dd>^ca_objects.dimensions.dimensions_display</dd>
+						<unit relativeTo="ca_objects.dimensions" delimiter="">
+							<dd><ifdef code="ca_objects.dimensions.dimensions_type">^ca_objects.dimensions.dimensions_type: </ifdef>^ca_objects.dimensions.dimensions_display</dd>
+						</unit>
 					</ifdef>
-					<ifdef code="ca_objects.caption">
-						<dt><?= _t('Caption'); ?></dt>
-						<dd>^ca_objects.caption</dd>
-					</ifdef>
-					<ifdef code="ca_objects.description">
-						<dt><?= _t('Description'); ?></dt>
-						<dd>^ca_objects.description</dd>
-					</ifdef>
-					<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
-					
+					<ifcount code="ca_entities.related" restrictToRelationshipTypes="artist" min="1">
+						<dt><ifcount code="ca_entities.related" restrictToRelationshipTypes="artist" min="1" max="1"><?= _t('Artist'); ?></ifcount><ifcount code="ca_entities.related" restrictToRelationshipTypes="artist" min="2"><?= _t('Artists'); ?></ifcount></dt>
+						<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist" delimiter=""><dd>^ca_entities.preferred_labels</dd></unit>
+					</ifcount>
 				</dl>}}}
+<?php
+				if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
+					print "<div class='mt-3'><a class='btn btn-primary' href='".$this->request->config->get('admin_url')."/editor/objects/ObjectEditor/Edit/object_id/".$t_object->get("ca_objects.object_id")."'>"._t("Edit Record")."</a></div>";
+				}
+?>
 			</div>
 			
 		</div>
