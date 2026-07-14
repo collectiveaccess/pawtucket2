@@ -2242,6 +2242,24 @@ class BrowseEngine extends BaseFindEngine {
 											$va_sql_params[] = (isset($va_element_value['item_id'])) ? (int)$va_element_value['item_id'] : $va_element_value['value_longtext1'];
 										}
 									}
+									
+									if ($t_rel_item && isset($va_facet_info['filter_on_related']) && is_array($va_facet_info['filter_on_related']) && sizeof($va_facet_info['filter_on_related'])) {
+										foreach($va_facet_info['filter_on_related'] as $vs_field_name => $va_values) {
+											if (!$va_values) { continue; }
+											if (!is_array($va_values)) { $va_values = [$va_values]; }
+				
+											if (!($vn_element_id = (int)ca_metadata_elements::getElementID($vs_field_name))) { continue; }
+											if (!($o_value = \CA\Attributes\Attribute::getValueInstance(ca_metadata_elements::getElementDatatype($vs_field_name)))) { continue; }
+				
+											$va_element_value = $o_value->parseValue($va_values[0], array_merge(ca_metadata_elements::getElementSettingsForId($vs_field_name), ['list_id' => ca_metadata_elements::getElementListID($vs_field_name)], ['matchOn' => ['idno']]));
+		
+											$va_joins[] = "INNER JOIN ca_attributes c_a ON c_a.row_id = ".$t_rel_item->primaryKey(true)." AND c_a.table_num = ".$t_rel_item->tableNum();
+											$va_joins[] = "INNER JOIN ca_attribute_values c_av ON c_a.attribute_id = c_av.attribute_id";
+											$va_wheres[] = "c_av.element_id = {$vn_element_id} AND ".(isset($va_element_value['item_id']) ? "c_av.item_id = ?" : "c_av.value_longtext1 = ?");
+			
+											$va_sql_params[] = (isset($va_element_value['item_id'])) ? (int)$va_element_value['item_id'] : $va_element_value['value_longtext1'];
+										}
+									}
 
 									$vs_join_sql = join("\n", $va_joins);
 
@@ -6989,6 +7007,25 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 					}
 				}
 
+				if ($t_rel_item && isset($va_facet_info['filter_on_related']) && is_array($va_facet_info['filter_on_related']) && sizeof($va_facet_info['filter_on_related'])) {
+					foreach($va_facet_info['filter_on_related'] as $vs_field_name => $va_values) {
+						if (!$va_values) { continue; }
+						if (!is_array($va_values)) { $va_values = [$va_values]; }
+						
+						if (!($vn_element_id = (int)ca_metadata_elements::getElementID($vs_field_name))) { continue; }
+						if (!($o_value = \CA\Attributes\Attribute::getValueInstance(ca_metadata_elements::getElementDatatype($vs_field_name)))) { continue; }
+						
+						$va_element_value = $o_value->parseValue($va_values[0], array_merge(ca_metadata_elements::getElementSettingsForId($vs_field_name), ['list_id' => ca_metadata_elements::getElementListID($vs_field_name)], ['matchOn' => ['idno']]));
+				
+						$va_joins[] = "INNER JOIN ca_attributes c_a ON c_a.row_id = ".$t_rel_item->primaryKey(true)." AND c_a.table_num = ".$t_rel_item->tableNum();
+						$va_joins[] = "INNER JOIN ca_attribute_values c_av ON c_a.attribute_id = c_av.attribute_id";
+						$va_wheres[] = "c_av.element_id = {$vn_element_id} AND ".(isset($va_element_value['item_id']) ? "c_av.item_id = ?" : "c_av.value_longtext1 = ?");
+					
+						$va_sql_params[] = (isset($va_element_value['item_id'])) ? (int)$va_element_value['item_id'] : $va_element_value['value_longtext1'];
+					}
+				}
+
+
 				if ($t_item->hasField('deleted') && !($va_facet_info['show_all_when_first_facet'] ?? null)) {
 					$va_wheres[] = "(".$t_item->tableName().".deleted = 0)";
 				}
@@ -8453,5 +8490,4 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 		return true;
 	}
 	# ------------------------------------------------------
-
 }

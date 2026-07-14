@@ -137,9 +137,24 @@ if($show_nav){
 						<dt><?= _t('Ephemera Language'); ?></dt>
 						<dd>^ca_objects.language</dd>
 					</ifdef>
-					<ifdef code="ca_objects.rights.copyright_logo|ca_objects.rights.rights_holder">
+					<ifdef code="ca_objects.rights.copyright_logo|ca_objects.rights.rights_holder|ca_objects.rights.statement">
+<?php
+	$vo_cc_rights_list = new ca_list_items($t_object->get("ca_objects.rights.statement"));
+	$cc_rights_icon = $vo_cc_rights_list->get("ca_list_items.icon.original");
+	$cc_rights_url = $vo_cc_rights_list->get("ca_list_items.item_value");
+?>
 						<dt><?= _t('Rights'); ?></dt>
-						<dd><ifdef code="ca_objects.rights.copyright_logo">^ca_objects.rights.copyright_logo<ifdef code="ca_objects.rights.rights_holder">, </ifdef></ifdef><ifdef code="ca_objects.rights.rights_holder">^ca_objects.rights.rights_holder</ifdef></dd>
+						<dd>
+							<ifdef code="ca_objects.rights.statement">
+								<?php
+									print "<div class='img-fluid w-25'><a href='".$cc_rights_url."' target='_blank'>".$cc_rights_icon."</a></div>";
+								?>
+							</ifdef>
+							<ifnotdef code="ca_objects.rights.statement">
+								<ifdef code="ca_objects.rights.copyright_logo">^ca_objects.rights.copyright_logo<ifdef code="ca_objects.rights.rights_holder"><br/></ifdef></ifdef>
+							</ifnotdef>
+							<ifdef code="ca_objects.rights.rights_holder">Rights Holder: ^ca_objects.rights.rights_holder</ifdef>
+						</dd>
 					</ifdef>
 					<ifdef code="ca_objects.citation">
 						<dt><?= _t('Preferred Citation'); ?></dt>

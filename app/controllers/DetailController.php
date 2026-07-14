@@ -114,7 +114,7 @@ class DetailController extends FindController {
 		
 		if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($load_params, ['returnAs' => 'firstModelInstance'])))) {
 			// invalid id - throw error
-			throw new ApplicationException("Invalid id");
+			throw new ApplicationException("Invalid id {$id}");
 		} 
 		$t_subject->autoConvertLineBreaks(true);
 		
@@ -164,7 +164,6 @@ class DetailController extends FindController {
 	
 		$this->ops_tablename = $table;
 		
-	
 		$log = caGetLogger();
 		// $context = $this->request->getParameter('context', pString);
 		// $detail_id = $this->request->getParameter('id', pInteger);		
@@ -1643,7 +1642,7 @@ class DetailController extends FindController {
 	}
 	# -------------------------------------------------------
 	/**
-	 * 
+	 * Provide in-viewer search for those that support it (Eg. UniversalViewer)
 	 */
 	public function RemoveRepresentation() {
 		$log = caGetLogger();

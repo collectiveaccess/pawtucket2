@@ -1,0 +1,555 @@
+$body: #000000;
+$primary: #235ba0;
+$light: #eeedeb;
+$dark: #000000;
+$dk-gray: #807F83;
+$gray: #d9d9d6;
+$yellow: #FFF4CC;
+
+@font-face {
+    font-family: 'calendas_plus';
+    src: url('../assets/fonts/calendas_plus-webfont.eot');
+    src: url('../assets/fonts/calendas_plus-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../assets/fonts/calendas_plus-webfont.woff2') format('woff2'),
+         url('../assets/fonts/calendas_plus-webfont.woff') format('woff'),
+         url('../assets/fonts/calendas_plus-webfont.ttf') format('truetype'),
+         url('../assets/fonts/calendas_plus-webfont.svg#calendas_plusregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: '../assets/fonts/calendas_plus';
+    src: url('../assets/fonts/calendas_plus_bold-webfont.eot');
+    src: url('../assets/fonts/calendas_plus_bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../assets/fonts/calendas_plus_bold-webfont.woff2') format('woff2'),
+         url('../assets/fonts/calendas_plus_bold-webfont.woff') format('woff'),
+         url('../assets/fonts/calendas_plus_bold-webfont.ttf') format('truetype'),
+         url('../assets/fonts/calendas_plus_bold-webfont.svg#calendas_plusbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: '../assets/fonts/calendas_plus';
+    src: url('../assets/fonts/calendas_plus_italic-webfont.eot');
+    src: url('../assets/fonts/calendas_plus_italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../assets/fonts/calendas_plus_italic-webfont.woff2') format('woff2'),
+         url('../assets/fonts/calendas_plus_italic-webfont.woff') format('woff'),
+         url('../assets/fonts/calendas_plus_italic-webfont.ttf') format('truetype'),
+         url('../assets/fonts/calendas_plus_italic-webfont.svg#calendas_plusitalic') format('svg');
+    font-weight: normal;
+    font-style: italic;
+
+}
+body{
+	-webkit-font-smoothing: antialiased;
+	background-image: url("../assets/graphics/bg-tile.jpg");
+	background-repeat: repeat; 
+	background-size: 200px 200px;	
+}
+/*main.detail{
+	background-color:#FFF;
+}*/
+.calendas_plus{
+	font-family: "calendas_plus";
+}
+/* headings can not be fully adjusted with BS stylesheet variable to putting here */
+H1{
+	/*font-size: clamp(1.875rem, 6vw, 4.625rem);*/
+	font-size: clamp(1.875rem, 4.625rem, 2.5vw);
+	
+	font-style: italic;
+	line-height: 1.35em;
+}
+H2{
+	font-size: clamp(1.25rem, 2.5vw, 1.875rem);
+	font-weight: 400;
+	font-style: italic;
+	line-height: 1.75rem;
+}
+H2.caps{
+	font-size: 1.25rem;
+	font-weight: 700;
+	font-variant: small-caps;
+	text-transform: lowercase;
+	letter-spacing: 0.1em;
+}
+H3{
+	font-size: 1.3125rem;
+	font-weight: 400;
+	line-height: 1.15em;
+}
+H3.caps{
+	font-size: 1.25rem;
+	font-weight: 700;
+	font-variant: small-caps;
+	text-transform: lowercase;
+	letter-spacing: 0.1em;
+}
+H4{
+	font-size: 1rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+.small-caps{
+	font-size: 1em;
+	font-variant: all-small-caps;
+	font-weight: bold;
+	letter-spacing: 2px;
+	line-height: 1;
+}
+.text-gray{
+	color:#5d5c57;
+}
+/* ---------- buttons ----------- */
+.btn{
+	font-family: "calendas_plus";
+	font-style: italic;
+	text-decoration: none;
+	cursor: pointer;
+	display: inline-block;
+	transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+.btn-primary {
+	background-color: #000;
+	box-shadow: inset 0 0 0 3px #000, inset 0 0 0 4px $yellow;
+	color: $yellow;
+	font-size: 1.125rem;
+	line-height: 1.3125rem;
+	padding: 1.0625rem 1.5rem;
+	text-align: center;
+}
+.btn-primary:hover {
+	background-color: $yellow;
+	box-shadow: inset 0 0 0 3px $yellow, inset 0 0 0 4px #000;
+	color:#000;
+}
+.btn-lt {
+	background-color: #fff;
+	border: 1px solid $gray;
+	box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 4px $gray;
+	color: $body;
+	font-size: 1.125rem;
+	line-height: 1.3125rem;
+	padding: 1.0625rem 1.5rem;
+}
+.btn-lt:hover {
+	background-color: $gray;
+	border-color: $gray;
+	box-shadow: inset 0 0 0 3px $gray, inset 0 0 0 4px $body;
+}
+.btn-dk, .btn-secondary, .search.results .resultBlock .btn-dark {
+	background-color: #262a2f;
+	border: 1px solid #fff;
+	box-shadow: inset 0 0 0 3px #262a2f, inset 0 0 0 4px #808283;
+	color: #fff;
+	font-size: 1.125rem;
+	line-height: 1.3125rem;
+	padding: 1.0625rem 1.5rem;
+}
+.btn-dk:hover, .btn-secondary:hover, .search.results .btn-dark:hover {
+	background-color: #1e2226;
+	box-shadow: inset 0 0 0 3px #1e2226, inset 0 0 0 4px $gray;
+}
+.doubleRule{
+	height: 5px;
+	flex: 1 1 auto;
+	border-top: 1px solid $gray;
+	box-shadow: 0 1px 0 0 $gray;
+	display: block;
+}
+.double-border {
+  border: 1px solid $gray;
+  box-shadow: inset 0 0 0 7px $light,inset 0 0 0 8px $gray;
+  /*padding: 28px;*/
+  
+  transition: box-shadow .2s ease;
+}
+.double-border:hover{
+	box-shadow: inset 0 0 0 7px #fff,inset 0 0 0 8px #252525;
+}
+.bgLinen::before{
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: -1;
+	background: rgba(0,0,0,0) url("../assets/graphics/texture-linen-large.jpg") no-repeat center center;
+    background-size: auto;
+	background-size: cover;
+	content: "";
+	mix-blend-mode: multiply;
+	background-color: #2b3e56;
+}
+.bg-dark{
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+	background-color: #2b3e56 !important;
+	padding: 100px 0;
+}
+.bg-dark-blue{
+	background-color: #2b3e56 !important;
+}
+/* ------------------------ Navbar and Logo title bar ------------------------- */
+.titleBar{
+	border-bottom: 1px solid #87847e;
+	/*-webkit-box-shadow: inset 0px 50px 32px -20px rgb(255, 255, 255); 
+	box-shadow: inset 0px 50px 32px -20px rgb(255, 255, 255);*/
+	img{
+		max-width: 180px;
+	}
+}
+.navbar-brand {
+  /*width: 470px;*/
+  width: 225px;
+}
+.whhaLogo{
+	width: 12.5rem;
+	height: 1.5625rem;
+	fill: #252525;
+}
+.navbar{
+	.input-group{
+		min-width: 350px;
+	}
+}
+.navbar-nav .nav-link.active, .navbar-nav .nav-link.show, .navbar-nav .nav-link:hover {
+	border-bottom: 1px dashed $primary;
+}
+/* ------------------------ Footer ------------------------- */
+footer {
+	background-color: $light;
+	background-size: 1440px 250px;
+	background-position: top center;
+	background-image: url("../assets/graphics/subnav-noise.jpg");
+	background-repeat: repeat-x;
+	position: relative;
+	z-index: 10;
+}
+/* ------------------------ title headers ------------------------- */
+.page-header {
+	background-color: #2b3e56;
+	position: relative;
+	z-index: 1;
+	padding-top: 100px;
+	padding-bottom: 100px;
+	
+	H1{
+		font-size: clamp(2rem,5vw,4.625rem);
+  		color: #fff;
+  		font-feature-settings: "swsh" 1;
+	}
+	.divider{
+		height: 13px;
+		position: absolute;
+		right: 20px;
+		left: 20px;
+		bottom: 13px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding-top: 2px;
+		padding-bottom: 3px;
+	}
+	.divider::before{
+		left: 0;
+		width: calc(50% - 50px);
+		height: 1px;
+		position: absolute;
+		top: calc(50% - 1px);
+		background-color: #b0b6bd;
+		content: "";
+		display: block;
+	}
+	.divider::after{
+		right:0;
+		width: calc(50% - 50px);
+		height: 1px;
+		position: absolute;
+		top: calc(50% - 1px);
+		background-color: #b0b6bd;
+		content: "";
+		display: block;
+	}
+}
+.page-header::before {
+	z-index: -1;
+	background-color: rgba(0,0,0,0);
+	border: 1px solid #b0b6bd;
+	border-bottom: none;
+	margin: 20px;
+	transition: background-color .2s ease;
+	
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	content: "";
+	display: block;
+}
+.page-header::after{
+	z-index: -2;
+	background: rgba(0,0,0,0) url("../assets/graphics/texture-linen-dark.jpg") center center;
+	background-size: auto;
+	background-size: cover;
+	mix-blend-mode: multiply;
+}
+/* ------------------------- Front ------------------------- */
+.parallax2 {
+    position: relative;
+    background-image: url("../assets/graphics/WHWHP_LandingPage_H.jpg");
+
+    /* Full height */
+    height: 400px;
+
+    /* Create the parallax scrolling effect */
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+.hpExplore{
+	img{
+		height:250px;
+	}
+}
+
+.hero {
+    position: relative;
+    background-image: url("../assets/graphics/WHWHP_LandingPage_H.jpg");
+}
+.hpExplore{
+	img{
+		height:250px;
+	}
+	a{
+		.exploreItem{
+			.exploreItemImg{
+				position:relative;
+			}
+			.exploreItemImg::before{
+				content: "";
+				display: block;
+				position: absolute;
+				border: 1px solid #eeedeb;
+				bottom: 0;
+				left: 0;
+				opacity: 0;
+				right: 0;
+				top: 0;
+				transition: opacity .2s cubic-bezier(0.055, 0.535, 0.45, 0.94),top .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) .2s,left .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) .2s,right .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) .2s,bottom .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) .2s;
+				z-index: 1;
+			}
+			.exploreItemLabel{
+				background: #000;
+				text-align: center;
+				padding: 25px 20px 60px 20px;
+				position: relative;
+				line-height: 1;
+				font-variant: small-caps;
+				font-weight: bold;
+				letter-spacing: 2px;
+				line-height: 1;
+				color:$yellow !important;
+			}
+			.exploreItemLabel::before{
+				content: "";
+				height: 0;
+				border-left: 20px solid rgba(0,0,0,0);
+				border-right: 20px solid rgba(0,0,0,0);
+				border-bottom: 20px solid #fff;
+				border-bottom-color: #000;
+				width: 0;
+				position: absolute;
+				top: 0;
+				transform: translate(-50%, -100%);
+				left: 50%;
+				
+			}
+		}
+	}
+	a:hover{
+		color: #f9d678 !important;
+		.exploreItem{
+			.exploreItemLabel{
+				color: #f9d678 !important;
+				text-decoration:none !important;
+			}
+			.exploreItemImg::before{
+				bottom: 15px;
+				left: 15px;
+				opacity: 1;
+				right: 15px;
+				top: 15px;
+				transition: opacity .2s cubic-bezier(0.055, 0.535, 0.45, 0.94),top .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) 0s,left .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) 0s,right .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) 0s,bottom .2s cubic-bezier(0.055, 0.535, 0.45, 0.94) 0s;		
+				content: "";
+				display: block;
+				position: absolute;
+				border: 1px solid #eeedeb;
+				z-index:1;
+			}
+		}
+	}
+	a::focus{
+		color: #f9d678 !important;
+		.exploreItem{
+			.exploreItemLabel{
+				color: #f9d678 !important;
+				text-decoration:none;
+			}
+		}		
+	}
+}
+.hpOccupation{
+	a{
+		text-decoration:none;
+		.hpOccupationItem{
+			display:block;
+			height:100%;
+			text-decoration:none;
+			padding-bottom: 1.25rem;
+			padding-top: 2.5rem;
+			position:relative;
+			
+			color: #363d45;
+			font-size: 1.25rem;
+			font-weight: 700;
+			line-height: 1.5em;
+			text-decoration:none;
+		}
+		.hpOccupationItem::after{
+			content: "";
+			position: absolute;
+			inset: auto 0 0 0;
+			height: 1px;
+			background-color: #afaca6;
+			transition: background-color 200ms ease,height 200ms ease;
+		}
+	}
+	a:hover{
+		text-decoration:none;
+		.hpOccupationItem::after{
+			background-color: #a83636;
+			height: 4px;
+		}
+	}
+}
+/* --------------------- bg textures -------------------- */
+.section-blue-linen{
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+	background-color: #2b3e56;
+	padding: 100px 0;
+}
+.section-blue-linen::before{
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: -1;
+	background: rgba(0,0,0,0) url("../assets/graphics/texture-linen-large.jpg") no-repeat center center;
+	background-size: auto;
+	background-size: cover;
+	content: "";
+	mix-blend-mode: multiply;
+}
+.outlineItem{
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	background-color: #fff;
+	padding: 8px;
+	.outlineItemImg{
+		overflow:hidden;
+		img{
+			aspect-ratio: 145/96;
+			object-fit: cover;
+			object-position: center;
+			transform-origin: 50% 50%;
+			transition: transform .2s ease;
+		}
+	}
+}
+.outlineItem:hover{
+	.outlineItemImg{
+		img{
+			transform: scale(1.1);
+		}
+	}
+}
+/* ------------------------- Schools ------------------------- */
+.partners{
+	.leaflet-popup-content{
+		img{
+			width:100%;
+			height:150px;
+		}
+	}
+}
+
+/* ------------------------- Browse -------------------------- */
+#bLetterBar{
+	background-color:transparent !important;
+}
+
+#browseResultsContainer{
+	#map{
+		height:600px !Important;
+		box-shadow: var(--bs-box-shadow) !important;
+	}
+	/* over-ride some styles so don't need custom views */
+	.card{
+		border: 1px solid $gray !important;
+		box-shadow: inset 0 0 0 7px $light,inset 0 0 0 8px $gray !important;
+		
+		transition: box-shadow .2s ease;
+		.card-img-top{
+			padding:8px;
+		}
+		.card-footer{
+			border:0px;
+		}
+		.ca-placeholder{
+			background-color:transparent !important;
+		}
+	}
+	.card:hover{
+		box-shadow: inset 0 0 0 7px #fff,inset 0 0 0 8px #252525 !important;
+	}
+}
+#bRefine{
+	background-color:#FFF !important;
+	/* override in default view */
+/*
+	.input-group.p-3, div.p-3{
+		padding:1rem 0 1rem 0 !important;
+	}
+	h2.py-2{
+		padding:.5rem 0 .5rem 0 !important;
+	}
+*/
+}
+/* ------------------------- Gallery ------------------------- */
+#galleryDetailItemInfo, .gallery .bg-body-tertiary{
+	background-color:#FFFFFF;
+	border: 1px solid $gray;
+	box-shadow: inset 0 0 0 7px $light,inset 0 0 0 8px $gray;
+	padding: 28px;
+}
+/* ------------------------- Detail / Contact need a white bg -------------------------- */
+.detail > .container-xl, .contact > .container-xl{
+	border: 1px solid $gray;
+	box-shadow: inset 0 0 0 7px $light,inset 0 0 0 8px $gray;
+	margin-top:30px;
+	margin-bottom:30px;
+	padding:30px;
+	background-color:white;
+}
