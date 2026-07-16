@@ -97,10 +97,13 @@ if($show_nav){
 						<dt><?= _t('Date'); ?></dt>
 						<dd>^ca_objects.date</dd>
 					</ifdef>
-					<ifdef code="ca_objects.medium|ca_objects.archival_photograph_medium">
+					<ifdef code="ca_objects.medium_text|ca_objects.medium|ca_objects.archival_photograph_medium">
 						<dt><?= _t('Medium'); ?></dt>
-						<ifdef code="ca_objects.medium"><dd>^ca_objects.medium%delimiter=,_</dd></ifdef>
-						<ifdef code="ca_objects.archival_photograph_medium"><dd>^ca_objects.archival_photograph_medium%delimiter=,_</dd></ifdef>
+						<ifdef code="ca_objects.medium_text"><dd>^ca_objects.medium_text</dd></ifdef>
+						<ifnotdef code="ca_objects.medium_text">
+							<ifdef code="ca_objects.medium"><dd>^ca_objects.medium%delimiter=,_</dd></ifdef>
+							<ifdef code="ca_objects.archival_photograph_medium"><dd>^ca_objects.archival_photograph_medium%delimiter=,_</dd></ifdef>
+						</ifnotdef>
 					</ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_display">
 						<dt><?= _t('Dimensions'); ?></dt>
@@ -112,6 +115,20 @@ if($show_nav){
 						<dt><ifcount code="ca_entities.related" restrictToRelationshipTypes="artist" min="1" max="1"><?= _t('Artist'); ?></ifcount><ifcount code="ca_entities.related" restrictToRelationshipTypes="artist" min="2"><?= _t('Artists'); ?></ifcount></dt>
 						<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist" delimiter=""><dd>^ca_entities.preferred_labels</dd></unit>
 					</ifcount>
+					<ifcount code="ca_entities.related" restrictToRelationshipTypes="photographer" min="1">
+						<dt><ifcount code="ca_entities.related" restrictToRelationshipTypes="photographer" min="1" max="1"><?= _t('Photographer'); ?></ifcount><ifcount code="ca_entities.related" restrictToRelationshipTypes="photographer" min="2"><?= _t('Photographers'); ?></ifcount></dt>
+						<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="photographer" delimiter=""><dd>^ca_entities.preferred_labels</dd></unit>
+					</ifcount>
+<?php
+					if($this->request->isLoggedIn() && $this->request->user->hasRole("registrar")){
+?>				
+						<ifdef code="ca_objects.valuation">
+							<dt><?= _t('Insurance Value'); ?></dt>
+							<dd>^ca_objects.valuation</dd>
+						</ifdef>
+<?php
+					}
+?>
 				</dl>}}}
 <?php
 				if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
