@@ -71,7 +71,7 @@ if (!$ajax) {	// !ajax
 
 <div class="row" style="clear:both;">
 <?php
-	if(!in_array(strToLower($this->request->getAction()), array("presidencies", "birth_burial_map"))){
+	if(!in_array(strToLower($this->request->getAction()), array("presidencies"))){
 ?>
 	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
 <?php
@@ -219,7 +219,7 @@ if (!$ajax) {	// !ajax
 	</div><!-- end col-8 -->
 	
 <?php
-	if(!in_array(strToLower($this->request->getAction()), array("presidencies", "birth_burial_map"))){
+	if(!in_array(strToLower($this->request->getAction()), array("presidencies"))){
 ?>
 	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 offset-xl-1"><a name="filters"></a>
 <?php

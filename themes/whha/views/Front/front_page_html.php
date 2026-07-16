@@ -44,21 +44,19 @@
 
 	<div class="container-fluid h-100 position-absolute top-0">
 		<div class="row h-100 justify-content-center align-items-center heroLogo">
-			<div class="col-md-6 img-fluid">
+			<div class="col-md-5 img-fluid">
 				<?php print caGetThemeGraphic($this->request, "WHWHP_Text_Stacked.png", array("alt" => "White House Workers History Project")); ?>
-			</div>
-		</div>
-	</div>
-	<div class="container-fluid position-absolute bottom-0 heroSearch">
-		<div class="row justify-content-center">
-			<div class="col-md-4">
-				<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'Workers'); ?>">
-					<div class="input-group">
-						<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
-						<input name="search" type="text" class="form-control rounded-0 border-black" id="heroSearchInput" placeholder="Find workers" aria-label="Search Bar">
-						<button type="submit" class="btn btn-primary ms-3" id="heroSearchButton" aria-label="Search button">Search</button>
+				<div class="row justify-content-center heroSearch">
+					<div class="col-md-10 pt-3 mt-3">
+						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'Workers'); ?>">
+							<div class="input-group">
+								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
+								<input name="search" type="text" class="form-control rounded-0 border-black" id="heroSearchInput" placeholder="Find workers" aria-label="Search Bar">
+								<button type="submit" class="btn btn-primary ms-3" id="heroSearchButton" aria-label="Search button">Search</button>
+							</div>
+						</form>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>
