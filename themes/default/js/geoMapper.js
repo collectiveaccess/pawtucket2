@@ -11,10 +11,11 @@ function makeMap(options) {
 	const liveUpdateConf = options.liveUpdate;
 	const currentLocation = options.currentLocation;
 
+	const iconPath = options.themePath + '/assets/markers/';
 	L.Icon.Default.mergeOptions({
-	  iconRetinaUrl: options.themePath + '/assets/markers/marker-icon-2x.png',
-	  iconUrl: options.themePath + '/assets/markers/marker-icon.png',
-	  shadowUrl: options.themePath + '/assets/markers/marker-shadow.png'
+	  iconRetinaUrl: iconPath + 'marker-icon-2x.png',
+	  iconUrl: iconPath + 'marker-icon.png',
+	  shadowUrl: iconPath + 'marker-shadow.png'
 	});
 
 	let map = L.map(options.id ?? 'map', { 
@@ -53,19 +54,30 @@ function makeMap(options) {
 				m = L.circle([parseFloat(c.latitude), parseFloat(c.longitude)], {radius: c.radius}).addTo(g);
 			} else {
 				if((c.latitude === '') || (c.longitude === '')) { console.log("Invalid point", c); continue; }
+				
+				if(data[index]['icon']) {
+					var ci = L.icon({
+						iconUrl: iconPath + data[index]['icon']['icon'],
+						retinaUrl: iconPath + data[index]['icon']['icon-2x'],
+						shadowUrl: iconPath + data[index]['icon']['shadow']
+					});
+					opts['icon'] = ci;
+				}
+				
 				m = L.marker([parseFloat(c.latitude), parseFloat(c.longitude)], opts).addTo(g);
 			}
 			if(c.info) { 
 				if(options['ajaxContentUrl'] ?? null) {
+					console.log(options);
 					m.bindPopup(
 							(layer)=>{
 								var el = document.createElement('div');
-								htmx.ajax('GET', options['ajaxContentUrl'] + '?ids=' + c.ajaxContentIDs.join(';'), el);
+								htmx.ajax('GET', options['ajaxContentUrl'] + '?bundle=' + (c.bundle ?? '') + '&ids=' + c.ajaxContentIDs.join(';'), el);
 				
 								return el;
 							}, { minWidth: 400, maxWidth : 560, maxHeight: 300, keepInView: true, autoPan: true });
 				} else {
-					m.bindPopup((typeof myVar === "string") ? Object.values(data[index].info).join("<br>") : data[index].info); 
+					m.bindPopup((typeof data[index].info === "string") ?  data[index].info : Object.values(data[index].info).join("<br>")); 
 				}
 			}
 		}

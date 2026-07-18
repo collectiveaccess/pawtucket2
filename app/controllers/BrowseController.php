@@ -424,38 +424,8 @@ class BrowseController extends FindController {
 		//
 		// Maps
 		//
-		if ($view === 'map') {
-			$this->view->setVar("showMap", false);
-			if (!is_array($map_attributes = caGetOption(['data', 'mapAttributes', 'map_attributes'], $view_info, [])) || !sizeof($map_attributes)) {
-				if ($map_attribute = caGetOption('data', $view_info, false)) { $map_attributes = array($map_attribute); }
-			}
-			
-			if(is_array($map_attributes) && sizeof($map_attributes)) {			
-				$map_options = [
-					'width' => caGetOption(['mapWidth', 'map_width'], $view_info, 300),
-					'width' => caGetOption(['mapHeight', 'map_height'], $view_info, 300),
-					'zoom' => caGetOption(['mapZoomLevel', 'zoom_level'], $view_info, null), 
-					'minZoom' => caGetOption(['mapMinZoomLevel'], $view_info, 1), 
-					'maxZoom' => caGetOption(['mapMaxZoomLevel'], $view_info, 15),
-					'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $view_info, ''),
-					'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'mapContent', ['browse' => $function]),
-					'searchUrl' => caNavUrl($this->request, '*', 'Search', '*', ['search_refine_prefix' => 'Address']),
-					'themePath' => __CA_THEME_URL__
-				];
-				$this->view->setVar('mapOptions', $map_options);
-				
-				$map_data = [];
-				foreach($map_attributes as $map_attribute) {
-					$adata = caGetCoordinateDataFromResult($qr_res, $map_attribute, $map_options);
-					$map_data = array_merge($map_data ?? [], $adata['coordinates'] ?? []);
-				}
-				if (sizeof($map_data ?? []) > 0) {
-					$this->view->setVar("showMap", true);
-					$this->view->setVar('mapData', $map_data);
-					$map_options['data'] = $map_data;
-					$this->view->setVar('mapOptions', $map_options);
-				}
-			}
+		if (($view === 'map') && is_array($view_info)){
+			caSetMapVarsInView($qr_res, $this->view, $view_info, ['ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'mapContent', ['browse' => $function])]);
 		}
 		
 		switch($view) {
@@ -499,29 +469,6 @@ class BrowseController extends FindController {
 			)
 		];
 		return $ret;
-	}
-	# -------------------------------------------------------
-	/** 
-	 * Return content for map bubble
-	 */
-	public function mapContent() {
-		$ids = explode(';', $this->request->getParameter('ids', pString, ['forcePurify' => true]));
-		$browse = $this->request->getParameter('browse', pString, ['forcePurify' => true]);
-		
-		if(!is_array($browse_info = caGetInfoForBrowseType($browse))) {
-			throw new ApplicationException(_t('Invalid browse'));
-		}
-		$t = $browse_info['views']['map']['mapItemInfoTemplate'] ?? "???";
-		$acc = [];
-		if(sizeof($ids)) {
-			if($qr = caMakeSearchResult($browse_info['table'], $ids)) {
-				while($qr->nextHit()) {
-					$acc[] = $qr->getWithTemplate($t);
-				}
-			}
-		}
-		$this->view->setVar('items', $acc);
-		$this->render("Browse/ajax_map_item_html.php");
 	}
 	# -------------------------------------------------------
 	/** 

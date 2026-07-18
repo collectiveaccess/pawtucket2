@@ -503,27 +503,31 @@ class FindController extends BasePawtucketController {
 	public function mapContent() {
 		if($this->opb_is_login_redirect) { return; }
 		
-		$pa_ids = explode(";",$this->request->getParameter('ids', pString, ['forcePurify' => true])); 
-		$ps_view = $this->request->getParameter('view', pString, ['forcePurify' => true]);
-		$ps_browse = $this->request->getParameter('browse', pString, ['forcePurify' => true]);
-		if (!($va_browse_info = caGetInfoForBrowseType($ps_browse))) {
+		$ids = explode(";",$this->request->getParameter('ids', pString, ['forcePurify' => true])); 
+		$view = $this->request->getParameter('view', pString, ['forcePurify' => true]);
+		$browse = $this->request->getParameter('browse', pString, ['forcePurify' => true]);
+		$bundle = $this->request->getParameter('bundle', pString, ['forcePurify' => true]);
+		if(!$bundle) { $bundle = '__mixed__'; }
+		
+		if (!($browse_info = caGetInfoForBrowseType($browse))) {
 			// invalid browse type – throw error
 			throw new ApplicationException("Invalid browse type");
 		}
 		
-		$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request, 'default' => 'map')));
-		$this->view->setVar('views', $va_views = $this->opo_config->getAssoc("views"));
-		if (!is_array($va_view_info = $va_browse_info['views'][$ps_view])) {
+		$this->view->setVar('view', $view = caCheckLightboxView(array('request' => $this->request, 'default' => 'map')));
+		$this->view->setVar('views', $views = $this->opo_config->getAssoc("views"));
+		if (!is_array($view_info = $browse_info['views'][$view])) {
 			throw new ApplicationException("Invalid view");
 		}
-		//print_R($va_view_info);
-		$vs_content_template = $va_view_info['mapItemInfoTemplate'];
 		
-		$this->view->setVar('items', caProcessTemplateForIDs($vs_content_template, $va_browse_info['table'], $pa_ids, array('checkAccess' => $this->opa_access_values, 'returnAsArray' => true)));
+		$content_template = $view_info['mapItemInfoTemplates'][$bundle]['template'] ?? $view_info['mapItemInfoTemplate'] ?? '';
+		
+		$this->view->setVar('items', caProcessTemplateForIDs($content_template, $browse_info['table'], $ids, array('checkAccess' => $this->opa_access_values, 'returnAsArray' => true)));
 	
-		$this->view->setVar('heading', trim($va_view_info['display']['heading']) ? caProcessTemplateForIDs($va_view_info['display']['heading'], $va_browse_info['table'], [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");
-		$this->view->setVar('table', $va_browse_info['table']);
-		$this->view->setVar('ids', $pa_ids);
+		$this->view->setVar('heading', trim($view_info['display']['heading']) ? caProcessTemplateForIDs($view_info['display']['heading'], $browse_info['table'], [$ids[0]], array('checkAccess' => $this->opa_access_values)) : "");
+		$this->view->setVar('table', $browse_info['table']);
+		$this->view->setVar('ids', $ids);
+		
 		$this->render("Browse/ajax_map_item_html.php");   
 	}
 	# -------------------------------------------------------

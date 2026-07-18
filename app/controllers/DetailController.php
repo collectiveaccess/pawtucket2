@@ -442,39 +442,7 @@ class DetailController extends FindController {
 		//
 		// Map
 		//
-		$this->view->setVar("showMap", false);
-		if (!is_array($map_attributes = caGetOption(['mapAttributes', 'map_attributes'], $options, array())) || !sizeof($map_attributes)) {
-			if ($map_attribute = caGetOption(['mapAttribute', 'map_attribute'], $options, false)) { $map_attributes = array($map_attribute); }
-		}
-		
-		if(is_array($map_attributes) && sizeof($map_attributes)) {
-			$map_options = [
-				'width' => caGetOption(['mapWidth', 'map_width'], $options, 300),
-				'width' => caGetOption(['mapHeight', 'map_height'], $options, 300),
-				'zoom' => caGetOption(['mapZoomLevel', 'zoom_level'], $options, 5), 
-				'minZoom' => caGetOption(['mapMinZoomLevel'], $options, 1), 
-				'maxZoom' => caGetOption(['mapMaxZoomLevel'], $options, 15),
-				'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $options, ''),
-				'themePath' => __CA_THEME_URL__
-			];
-			$this->view->setVar('mapOptions', $map_options);
-			
-			$qr_relative_to = null;
-			if($map_relative_to = caGetOption(['mapRelativeTo', 'map_relative_to'], $options, null)) {
-				$qr_relative_to = $t_subject->getRelatedItems($map_relative_to, ['returnAs' => 'searchResult']);
-			}
-			$map_data = [];
-			foreach($map_attributes as $map_attribute) {
-				$adata = caGetCoordinateDataFromResult($qr_relative_to ?? $t_subject, $map_attribute, $map_options);
-				$map_data = array_merge($map_data ?? [], $adata['coordinates'] ?? []);
-			}
-			if (sizeof($map_data ?? []) > 0) {
-				$this->view->setVar("showMap", true);
-				$this->view->setVar('mapData', $map_data);
-				$map_options['data'] = $map_data;
-				$this->view->setVar('mapOptions', $map_options);
-			}
-		}
+		caSetMapVarsInView($qr_relative_to ?? $t_subject, $this->view, $options, []);
 		
 		// Filtering of related items
 		if (($t_subject->tableName() != 'ca_objects') && (!$this->opa_detail_types[$function]['disableRelatedItemsBrowse'])) {
