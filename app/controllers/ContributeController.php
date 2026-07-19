@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2025 Whirl-i-Gig
+ * Copyright 2014-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -140,8 +140,8 @@ class ContributeController extends BasePawtucketController {
 			if(!is_array($response_data['errors']['_general_'])) { $response_data['errors']['_general_'] = []; }
 			foreach($response_data['errors'] as $field => $errors_for_field) {
 				if (!isset($tag_list[$field])) { 
-					foreach($errors_for_field as $vn_i => $error_for_field) {
-						$errors_for_field[$vn_i] = "<strong>".$t_subject->getDisplayLabel($field)."</strong>: {$error_for_field}";
+					foreach($errors_for_field as $i => $error_for_field) {
+						$errors_for_field[$i] = "<strong>".$t_subject->getDisplayLabel($field)."</strong>: {$error_for_field}";
 					}
 					$response_data['errors']['_general_'] = array_merge($response_data['errors']['_general_'], $errors_for_field);
 				}	
@@ -304,7 +304,7 @@ class ContributeController extends BasePawtucketController {
 		$function = $this->request->getParameter('_contributeFormName', pString);
 		
 		$response_data = array('errors' => array(), 'numErrors' => 0, 'status' => 'OK');
-		$vn_num_errors = 0;
+		$num_errors = 0;
 		
 		if (!($form_info = $this->_checkForm($function))) { return; }
 		$related_form_item_config = caGetOption('related', $form_info, array());
@@ -375,7 +375,7 @@ class ContributeController extends BasePawtucketController {
 		}
 
 		// Set content from form
-		$vm_type = $idno = $vn_status = $vn_access = null;
+		$vm_type = $idno = $status = $access = null;
 		$has_media = false;
 		
 		$text_delimiters = caGetOption('text_delimiters', $form_info, []);
@@ -415,26 +415,26 @@ class ContributeController extends BasePawtucketController {
 									}
 									break;
 								case 'status':
-									$vn_status = (int)$vals[0];
+									$status = (int)$vals[0];
 									break;
 								case 'access':
-									$vn_access = (int)$vals[0];
+									$access = (int)$vals[0];
 									break;
 							}
 							
 						} elseif ($fld_bits[1] == 'preferred_labels') {	// preferred labels
 							if (!isset($fld_bits[2])) { $fld_bits[2] = $t_subject->getLabelDisplayField(); }
 							
-							foreach($vals as $vn_i => $val) {
-								if (!strlen($vals[$vn_i])) { continue; }
-								$content_tree[$subject_table]['preferred_labels'][$vn_i][$fld_bits[2]] = $vals[$vn_i]; 
+							foreach($vals as $i => $val) {
+								if (!strlen($vals[$i])) { continue; }
+								$content_tree[$subject_table]['preferred_labels'][$i][$fld_bits[2]] = $vals[$i]; 
 							}
 						} elseif ($fld_bits[1] == 'nonpreferred_labels') {	// preferred labels
 							if (!isset($fld_bits[2])) { $fld_bits[2] = $t_subject->getLabelDisplayField(); }
 							
-							foreach($vals as $vn_i => $val) {
-								 if (!strlen($vals[$vn_i])) { continue; }
-								$content_tree[$subject_table]['nonpreferred_labels'][$vn_i][$fld_bits[2]] = $vals[$vn_i]; 
+							foreach($vals as $i => $val) {
+								 if (!strlen($vals[$i])) { continue; }
+								$content_tree[$subject_table]['nonpreferred_labels'][$i][$fld_bits[2]] = $vals[$i]; 
 							}
 						} elseif ($t_subject->hasElement($fld_bits[1])) {
 							if (!isset($fld_bits[2])) { $fld_bits[2] = $fld_bits[1]; }
@@ -442,14 +442,14 @@ class ContributeController extends BasePawtucketController {
 							if(in_array(ca_metadata_elements::getDataTypeForElementCode($fld_bits[2]), [__CA_ATTRIBUTE_VALUE_MEDIA__, __CA_ATTRIBUTE_VALUE_FILE__], true)) {
 								$files = [];
 								if(is_array($_FILES[$field_proc]['tmp_name'])) {
-									foreach($_FILES[$field_proc]['tmp_name'] as $vn_index => $tmp_name) {
+									foreach($_FILES[$field_proc]['tmp_name'] as $index => $tmp_name) {
 										if (!trim($tmp_name)) { continue; }
-										$files[$vn_index] = array(
+										$files[$index] = array(
 											'tmp_name' => $tmp_name,
-											'name' => $_FILES[$field_proc]['name'][$vn_index],
-											'type' => $_FILES[$field_proc]['type'][$vn_index],
-											'error' => $_FILES[$field_proc]['error'][$vn_index],
-											'size' => $_FILES[$field_proc]['size'][$vn_index],
+											'name' => $_FILES[$field_proc]['name'][$index],
+											'type' => $_FILES[$field_proc]['type'][$index],
+											'error' => $_FILES[$field_proc]['error'][$index],
+											'size' => $_FILES[$field_proc]['size'][$index],
 											'_uploaded_file' => true
 										);
 									}
@@ -462,9 +462,9 @@ class ContributeController extends BasePawtucketController {
 						
 							$vals = self::_applyTextDelimiters($vals, $fld_tag_opts, $text_delimiters);
 					
-							foreach($vals as $vn_i => $val) {
+							foreach($vals as $i => $val) {
 								if((!is_array($val) && (strlen($val) === 0)) || (is_array($val) && !($val['tmp_name'] ?? null))) { continue; }
-								$content_tree[$subject_table][$fld_bits[1]][$vn_i][$fld_bits[2]] = $vals[$vn_i]; 
+								$content_tree[$subject_table][$fld_bits[1]][$i][$fld_bits[2]] = $vals[$i]; 
 							}
 						}
 						break;
@@ -482,69 +482,69 @@ class ContributeController extends BasePawtucketController {
 								if($t_instance->getFieldInfo($fld_bits[1], 'FIELD_TYPE') == FT_MEDIA) {
 									$files = [];
 									if(is_array($_FILES[$field_proc]['tmp_name'])) {
-										foreach($_FILES[$field_proc]['tmp_name'] as $vn_index => $tmp_name) {
+										foreach($_FILES[$field_proc]['tmp_name'] as $index => $tmp_name) {
 											if (!trim($tmp_name)) { continue; }
-											$files[$vn_index] = array(
+											$files[$index] = array(
 												'tmp_name' => $tmp_name,
-												'name' => $_FILES[$field_proc]['name'][$vn_index],
-												'type' => $_FILES[$field_proc]['type'][$vn_index],
-												'error' => $_FILES[$field_proc]['error'][$vn_index],
-												'size' => $_FILES[$field_proc]['size'][$vn_index],
+												'name' => $_FILES[$field_proc]['name'][$index],
+												'type' => $_FILES[$field_proc]['type'][$index],
+												'error' => $_FILES[$field_proc]['error'][$index],
+												'size' => $_FILES[$field_proc]['size'][$index],
 												'_uploaded_file' => true
 											);
 										}
-										foreach($files as $vn_index => $file) {
-											$content_tree[$table][$vn_index][$fld_bits[1]] = $file;
+										foreach($files as $index => $file) {
+											$content_tree[$table][$index][$fld_bits[1]] = $file;
 										}
 									}
 								} else {
-									foreach($vals as $vn_index => $vm_val) {
+									foreach($vals as $index => $vm_val) {
 									if (!strlen($vm_val)) { continue; }
-										$content_tree[$table][$vn_index][$fld_bits[1]] = $vm_val;
+										$content_tree[$table][$index][$fld_bits[1]] = $vm_val;
 									}
 								}
 							} elseif ($fld_bits[1] == 'preferred_labels') {	// preferred labels
 								if (!isset($fld_bits[2])) { $fld_bits[2] = $t_instance->getLabelDisplayField(); }
 							
-								foreach($vals as $vn_i => $val) {
-									if (!strlen($vals[$vn_i])) { continue; }
-									$content_tree[$table][$vn_i]['preferred_labels'][$fld_bits[2]] = $vals[$vn_i]; 
+								foreach($vals as $i => $val) {
+									if (!strlen($vals[$i])) { continue; }
+									$content_tree[$table][$i]['preferred_labels'][$fld_bits[2]] = $vals[$i]; 
 								}
 							} elseif ($fld_bits[1] == 'nonpreferred_labels') {	// nonpreferred labels
-								if (!strlen($vals[$vn_i])) { break; }
+								if (!strlen($vals[$i])) { break; }
 								if (!isset($fld_bits[2])) { $fld_bits[2] = $t_instance->getLabelDisplayField(); }
 							
-								foreach($vals as $vn_i => $val) {
-									if (!strlen($vals[$vn_i])) { continue; }
-									$content_tree[$table][$vn_i]['nonpreferred_labels'][$fld_bits[2]] = $vals[$vn_i]; 
+								foreach($vals as $i => $val) {
+									if (!strlen($vals[$i])) { continue; }
+									$content_tree[$table][$i]['nonpreferred_labels'][$fld_bits[2]] = $vals[$i]; 
 								}
 							} elseif ($t_instance->hasElement($fld_bits[1])) {
-								if (!strlen($vals[$vn_i])) { break; }
+								if (!strlen($vals[$i])) { break; }
 								if (!isset($fld_bits[2])) { $fld_bits[2] = $fld_bits[1]; }
 								
 								$vals = self::_applyTextDelimiters($vals, $fld_tag_opts, $text_delimiters);
-								foreach($vals as $vn_i => $val) {
-									if (!strlen($vals[$vn_i])) { continue; }
-									$content_tree[$table][$vn_i][$fld_bits[1]][$fld_bits[2]] = $vals[$vn_i]; 
+								foreach($vals as $i => $val) {
+									if (!strlen($vals[$i])) { continue; }
+									$content_tree[$table][$i][$fld_bits[1]][$fld_bits[2]] = $vals[$i]; 
 								}
 							} else {
-								foreach($vals as $vn_i => $val) {
-									if (!strlen($vals[$vn_i])) { continue; }
-									$content_tree[$table][$vn_i][$t_instance->primaryKey()] = $vals[$vn_i];
+								foreach($vals as $i => $val) {
+									if (!strlen($vals[$i])) { continue; }
+									$content_tree[$table][$i][$t_instance->primaryKey()] = $vals[$i];
 								}
 							}
 						}
 						
 						if (is_array($rel_types = $this->request->getParameter($field_proc.'_relationship_type', pArray))) {
-							foreach($rel_types as $vn_i => $rel_type) {
-								if (!strlen($vals[$vn_i])) { continue; }
-								$content_tree[$table][$vn_i]['_relationship_type'] = $rel_type; 
+							foreach($rel_types as $i => $rel_type) {
+								if (!strlen($vals[$i])) { continue; }
+								$content_tree[$table][$i]['_relationship_type'] = $rel_type; 
 							}
 						}
 						if (is_array($types = $this->request->getParameter($field_proc.'_type', pArray))) {
-							foreach($types as $vn_i => $type) {
-									if (!strlen($vals[$vn_i])) { continue; }
-								$content_tree[$table][$vn_i]['_type'] = $type; 
+							foreach($types as $i => $type) {
+									if (!strlen($vals[$i])) { continue; }
+								$content_tree[$table][$i]['_type'] = $type; 
 							}
 						}
 						break;
@@ -561,7 +561,7 @@ class ContributeController extends BasePawtucketController {
 				$varname = "vs_{$name}";
 				$t_subject->set($fld, $form_info[$name] ? $form_info[$name] : $$varname);
 			}
-			$this->_checkErrors($t_subject, $response_data, $vn_num_errors); 
+			$this->_checkErrors($t_subject, $response_data, $num_errors); 
 		}
 		
 		if (isset($form_info['access'])) { $t_subject->set('access', $form_info['access']); }
@@ -586,7 +586,7 @@ class ContributeController extends BasePawtucketController {
 		} else {
 			$t_subject->insert();
 		}
-		$this->_checkErrors($t_subject, $response_data, $vn_num_errors); 
+		$this->_checkErrors($t_subject, $response_data, $num_errors); 
 
 		// Set other content
 		$cleared_rels = [];
@@ -606,7 +606,7 @@ class ContributeController extends BasePawtucketController {
 				$l = $r;
 				if($t = Datamodel::getInstance($tmp[0], true)) { $l = $t->getDisplayLabel($r); }
 				$response_data['errors'][$r][] = _t('%1 must be set', trim($l));
-				$vn_num_errors++;
+				$num_errors++;
 			}
 		}
 		
@@ -617,13 +617,13 @@ class ContributeController extends BasePawtucketController {
 						case 'preferred_labels':
 							foreach($data_for_bundle as $data) {
 								$t_subject->replaceLabel($data, $locale_id, null, true);
-								$this->_checkErrors($t_subject, $response_data, $vn_num_errors); 
+								$this->_checkErrors($t_subject, $response_data, $num_errors); 
 							}
 							break;
 						case 'nonpreferred_labels':
 							foreach($data_for_bundle as $data) {
 								$t_subject->replaceLabel($data, $locale_id, null, false);
-								$this->_checkErrors($t_subject, $response_data, $vn_num_errors); 
+								$this->_checkErrors($t_subject, $response_data, $num_errors); 
 							}
 							break;
 						default:
@@ -648,7 +648,7 @@ class ContributeController extends BasePawtucketController {
 								}
 							}
 							
-							$this->_checkErrors($t_subject, $response_data, $vn_num_errors); 
+							$this->_checkErrors($t_subject, $response_data, $num_errors); 
 							break;
 					}
 				}
@@ -664,15 +664,15 @@ class ContributeController extends BasePawtucketController {
 				switch($table) {
 					case 'ca_object_representations':
 						$is_primary = true;
-						foreach($content_by_table as $vn_index => $representation) {
+						foreach($content_by_table as $index => $representation) {
 							if (!$representation['media']['tmp_name'] || ($representation['media']['size'] == 0)) { continue; }
 							if (isset($form_info['representation_type'])) { $representation['type_id']  = $form_info['representation_type']; }
 							if (isset($form_info['representation_access'])) { $representation['access']  = $form_info['representation_access']; }
 							if (isset($form_info['representation_status'])) { $representation['status']  = $form_info['representation_status']; }
-							$vn_rc = $t_subject->addRepresentation($representation['media']['tmp_name'], $representation['type_id'], $locale_id, $representation['status'], $representation['access'], $is_primary, $representation, array('original_filename' => $representation['media']['name']));
+							$rc = $t_subject->addRepresentation($representation['media']['tmp_name'], $representation['type_id'], $locale_id, $representation['status'], $representation['access'], $is_primary, $representation, array('original_filename' => $representation['media']['name']));
 							
 							if ($t_subject->numErrors()) {
-								$this->_checkErrors($t_subject, $response_data, $vn_num_errors); 
+								$this->_checkErrors($t_subject, $response_data, $num_errors); 
 							} else {
 								$has_media = true;
 								$is_primary = false;
@@ -681,134 +681,134 @@ class ContributeController extends BasePawtucketController {
 						break;
 					case 'ca_objects':
 						$rel_config = caGetOption('ca_objects', $related_form_item_config, array());
-						foreach($content_by_table as $vn_index => $rel) {
+						foreach($content_by_table as $index => $rel) {
 							if (!($rel_type = trim($rel['_relationship_type']))) { break; }
 							
 							$rel = array_merge($rel, $submission_values);
 							if(isset($rel['object_id']) && ((int)$rel['object_id'] > 0) && ca_objects::find(['object_id' => $rel['object_id']])) {
 									$t_subject->addRelationship($table, (int)$rel['object_id'], $rel_type);
 							
-									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 							} else {
 								if(isset($rel['object_id']) && !is_numeric($rel['object_id']) && !$rel['preferred_labels']['name']) {
 									$rel['preferred_labels']['name'] = $rel['object_id'];
 								}
 								foreach(array('idno', 'access', 'status') as $f) { $rel[$f] = $rel_config[$f]; }
 								if (!$rel['preferred_labels']['name']) { continue; }
-								if ($vn_rel_id = DataMigrationUtils::getObjectID($rel['preferred_labels']['name'], $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+								if ($rel_id = DataMigrationUtils::getObjectID($rel['preferred_labels']['name'], $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 									if (!($rel_type = trim($rel['_relationship_type']))) { break; }
 							
-									$t_subject->addRelationship($table, $vn_rel_id, $rel_type);
+									$t_subject->addRelationship($table, $rel_id, $rel_type);
 							
-									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 								}
 							}
 						}
 						break;
 					case 'ca_entities':
 						$rel_config = caGetOption('ca_entities', $related_form_item_config, array());
-						foreach($content_by_table as $vn_index => $rel) {
+						foreach($content_by_table as $index => $rel) {
 							if (!($rel_type = trim($rel['_relationship_type']))) { break; }
 			
 							$rel = array_merge($rel, $submission_values);
 							if(isset($rel['entity_id']) && ((int)$rel['entity_id'] > 0) && ca_entities::find(['entity_id' => $rel['entity_id']])) {
 									$t_subject->addRelationship($table, (int)$rel['entity_id'], $rel_type);
 							
-									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 							} else {
 								if(isset($rel['entity_id']) && !is_numeric($rel['entity_id']) && !$rel['preferred_labels']['displayname']) {
 									$rel['preferred_labels']['displayname'] = $rel['entity_id'];
 								}
 								foreach(array('idno', 'access', 'status') as $f) { $rel[$f] = $rel_config[$f]; }
 								if (!$rel['preferred_labels']['displayname']) { continue; }
-								if ($vn_rel_id = DataMigrationUtils::getEntityID(DataMigrationUtils::splitEntityName($rel['preferred_labels']['displayname']), $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
-									$t_subject->addRelationship($table, $vn_rel_id, $rel_type);
+								if ($rel_id = DataMigrationUtils::getEntityID(DataMigrationUtils::splitEntityName($rel['preferred_labels']['displayname']), $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+									$t_subject->addRelationship($table, $rel_id, $rel_type);
 							
-									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 								}
 							}
 						}
 						break;
 					case 'ca_places':
 						$rel_config = caGetOption('ca_places', $related_form_item_config, array());
-						foreach($content_by_table as $vn_index => $rel) {
+						foreach($content_by_table as $index => $rel) {
 							
 							$rel = array_merge($rel, $submission_values);
 							foreach(array('idno', 'access', 'status') as $f) { $rel[$f] = $rel_config[$f]; }
-							if ($vn_rel_id = DataMigrationUtils::getPlaceID($rel['preferred_labels']['name'], caGetOption('parent_id', $rel_config, null), $rel['_type'], $locale_id, null, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+							if ($rel_id = DataMigrationUtils::getPlaceID($rel['preferred_labels']['name'], caGetOption('parent_id', $rel_config, null), $rel['_type'], $locale_id, null, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 								if (!($rel_type = trim($rel['_relationship_type']))) { break; }
 							
-								$t_subject->addRelationship($table, $vn_rel_id, $rel_type);
+								$t_subject->addRelationship($table, $rel_id, $rel_type);
 							
-								if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+								if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 							} else {
 								if(isset($rel['place_id']) && !is_numeric($rel['place_id']) && !$rel['preferred_labels']['name']) {
 									$rel['preferred_labels']['name'] = $rel['place_id'];
 								}
 								foreach(array('idno', 'access', 'status') as $f) { $rel[$f] = $rel_config[$f]; }
 								if (!$rel['preferred_labels']['name']) { continue; }
-								if ($vn_rel_id = DataMigrationUtils::getPlaceID($rel['preferred_labels']['name'], $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+								if ($rel_id = DataMigrationUtils::getPlaceID($rel['preferred_labels']['name'], $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 									if (!($rel_type = trim($rel['_relationship_type']))) { break; }
 							
-									$t_subject->addRelationship($table, $vn_rel_id, $rel_type);
+									$t_subject->addRelationship($table, $rel_id, $rel_type);
 							
-									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 								}
 							}
 						}
 						break;
 					case 'ca_occurrences':
 						$rel_config = caGetOption('ca_occurrences', $related_form_item_config, array());
-						foreach($content_by_table as $vn_index => $rel) {
+						foreach($content_by_table as $index => $rel) {
 							
 							$rel = array_merge($rel, $submission_values);
 							foreach(array('idno', 'access', 'status') as $f) { $rel[$f] = $rel_config[$f]; }
-							if ($vn_rel_id = DataMigrationUtils::getOccurrenceID($rel['preferred_labels']['name'], caGetOption('parent_id', $rel_config, null), $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+							if ($rel_id = DataMigrationUtils::getOccurrenceID($rel['preferred_labels']['name'], caGetOption('parent_id', $rel_config, null), $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 								if (!($rel_type = trim($rel['_relationship_type']))) { break; }
 							
-								$t_subject->addRelationship($table, $vn_rel_id, $rel_type);
+								$t_subject->addRelationship($table, $rel_id, $rel_type);
 							
-								if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+								if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 							} else {
 								if(isset($rel['occurrence_id']) && !is_numeric($rel['occurrence_id']) && !$rel['preferred_labels']['name']) {
 									$rel['preferred_labels']['name'] = $rel['occurrence_id'];
 								}
 								foreach(array('idno', 'access', 'status') as $f) { $rel[$f] = $rel_config[$f]; }
 								if (!$rel['preferred_labels']['name']) { continue; }
-								if ($vn_rel_id = DataMigrationUtils::getOccurrenceID($rel['preferred_labels']['name'], $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+								if ($rel_id = DataMigrationUtils::getOccurrenceID($rel['preferred_labels']['name'], $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 									if (!($rel_type = trim($rel['_relationship_type']))) { break; }
 							
-									$t_subject->addRelationship($table, $vn_rel_id, $rel_type);
+									$t_subject->addRelationship($table, $rel_id, $rel_type);
 							
-									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 								}
 							}
 						}
 						break;
 					case 'ca_collections':
 						$rel_config = caGetOption('ca_collections', $related_form_item_config, array());
-						foreach($content_by_table as $vn_index => $rel) {
+						foreach($content_by_table as $index => $rel) {
 							
 							$rel = array_merge($rel, $submission_values);
 							foreach(array('idno', 'access', 'status', 'parent_id') as $f) { $rel[$f] = $rel_config[$f]; }
-							if ($vn_rel_id = DataMigrationUtils::getCollectionID($rel['preferred_labels']['name'], $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+							if ($rel_id = DataMigrationUtils::getCollectionID($rel['preferred_labels']['name'], $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 								if (!($rel_type = trim($rel['_relationship_type']))) { break; }
 							
-								$t_subject->addRelationship($table, $vn_rel_id, $rel_type);
+								$t_subject->addRelationship($table, $rel_id, $rel_type);
 							
-								if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+								if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 							} else {
 								if(isset($rel['collection_id']) && !is_numeric($rel['collection_id']) && !$rel['preferred_labels']['name']) {
 									$rel['preferred_labels']['name'] = $rel['collection_id'];
 								}
 								foreach(array('idno', 'access', 'status') as $f) { $rel[$f] = $rel_config[$f]; }
 								if (!$rel['preferred_labels']['name']) { continue; }
-								if ($vn_rel_id = DataMigrationUtils::getCollectionID($rel['preferred_labels']['name'], $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+								if ($rel_id = DataMigrationUtils::getCollectionID($rel['preferred_labels']['name'], $rel['_type'], $locale_id, $rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 									if (!($rel_type = trim($rel['_relationship_type']))) { break; }
 							
-									$t_subject->addRelationship($table, $vn_rel_id, $rel_type);
+									$t_subject->addRelationship($table, $rel_id, $rel_type);
 							
-									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+									if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 								}
 							}
 						}
@@ -821,7 +821,7 @@ class ContributeController extends BasePawtucketController {
 		}
 		
 		$t_subject->update();
-		$this->_checkErrors($t_subject, $response_data, $vn_num_errors); 
+		$this->_checkErrors($t_subject, $response_data, $num_errors); 
 
 		# references -> links to table that are embeded in form/ not created by the user
 		# this is useful for cases where the contribute form is linked to from another record and you want to create a link to that record          	
@@ -830,12 +830,12 @@ class ContributeController extends BasePawtucketController {
 			$ref_config = caGetOption('references', $form_info, array());
 			if($rel_type = $ref_config[$ref_table]){
 				$t_subject->addRelationship($ref_table, $ref_row_id, $rel_type);
-				if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $vn_num_errors);} 
+				if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $response_data, $num_errors);} 
 			}
 		}
 		
-		if($vn_num_errors > 0) {            
-			$response_data['numErrors'] = $vn_num_errors;
+		if($num_errors > 0) {            
+			$response_data['numErrors'] = $num_errors;
 			$response_data['status'] = 'ERR';
 			$response_data['formData'] = $_REQUEST;
 			$this->view->setVar('response', $response_data);
@@ -939,7 +939,7 @@ class ContributeController extends BasePawtucketController {
 	 * @return int The number of errors processed 
 	 */
 	private function _checkErrors($subject, &$response_data, &$pn_num_errors) {
-		$vn_c = 0;
+		$c = 0;
 		if ($subject->numErrors()) { 
 			foreach($subject->errors as $o_error) {
 				if(!($source = $o_error->getErrorSource())) { $source = '_general_'; }
@@ -948,13 +948,13 @@ class ContributeController extends BasePawtucketController {
 				if(!in_array($error_desc = $o_error->getErrorDescription(), $response_data['errors'][$source])) {
 					$response_data['errors'][$source][] = $error_desc;
 					$pn_num_errors++;
-					$vn_c++;
+					$c++;
 				}
 			}
 			$subject->clearErrors(); 
 		}
 		
-		return $vn_c;
+		return $c;
 	}
 	# -------------------------------------------------------
 	/**
@@ -964,7 +964,7 @@ class ContributeController extends BasePawtucketController {
 		if(($dt = caGetOption('useTextDelimiters', $fld_tag_opts, null)) && isset($text_delimiters[$dt]) && is_array($text_delimiters[$dt]) && sizeof($text_delimiters[$dt])) {
 			$exp_vals = [];
 			$regex_delimiters = join("|", array_map(function($v) { return preg_quote($v, "!"); }, $text_delimiters[$dt]));
-			foreach($vals as $vn_i => $val) {
+			foreach($vals as $i => $val) {
 				$exp_vals = array_merge($exp_vals, preg_split("!{$regex_delimiters}!", $val));
 			}
 			return array_map(function($v) { return trim($v); }, $exp_vals);

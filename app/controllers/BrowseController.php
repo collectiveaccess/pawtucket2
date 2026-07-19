@@ -55,8 +55,8 @@ class BrowseController extends FindController {
 	/**
 	 *
 	 */
-	public function __construct(&$po_request, &$po_response, $view_paths=null) {
-		parent::__construct($po_request, $po_response, $view_paths);
+	public function __construct(&$request, &$response, $view_paths=null) {
+		parent::__construct($request, $response, $view_paths);
 		if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
 			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
 		}
@@ -64,7 +64,7 @@ class BrowseController extends FindController {
 		$this->opo_config = caGetBrowseConfig();
 		
 		$this->view->setVar("find_type", $this->ops_find_type);
-		caSetPageCSSClasses(array("browse", "results"));
+		caSetPageCSSClasses(["browse", "results"]);
 	}
 	# -------------------------------------------------------
 	/**
@@ -120,10 +120,10 @@ class BrowseController extends FindController {
 		}
 		
 		$this->view->setVar('browseInfo', $browse_info);
-		$this->view->setVar('paging', in_array(strtolower($browse_info['paging']), array('continous', 'nextprevious', 'letter')) ? strtolower($browse_info['paging']) : 'continous');
+		$this->view->setVar('paging', in_array(strtolower($browse_info['paging']), ['continous', 'nextprevious', 'letter']) ? strtolower($browse_info['paging']) : 'continous');
 		
 		$this->view->setVar('name', $browse_info['displayName']);
-		$this->view->setVar('options', caGetOption('options', $browse_info, [], array('castTo' => 'array')));
+		$this->view->setVar('options', caGetOption('options', $browse_info, [], ['castTo' => 'array']));
 		
 		$views = caGetOption('views', $browse_info, [], array('castTo' => 'array'));
 		if(!is_array($views) || (sizeof($views) == 0)){
@@ -490,10 +490,10 @@ class BrowseController extends FindController {
 	 *
 	 * @return string Summary of current browse criteria ready for display
 	 */
-	public function getCriteriaForDisplay($po_browse=null) {
-		$criteria = $po_browse->getCriteriaWithLabels();
+	public function getCriteriaForDisplay($browse=null) {
+		$criteria = $browse->getCriteriaWithLabels();
 		if (!sizeof($criteria)) { return ''; }
-		$criteria_info = $po_browse->getInfoForFacets();
+		$criteria_info = $browse->getInfoForFacets();
 		
 		$buf = [];
 		foreach($criteria as $facet => $vals) {

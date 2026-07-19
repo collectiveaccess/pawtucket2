@@ -1007,7 +1007,7 @@ class LightboxController extends FindController {
 		$this->view->setVar('t_set', $t_set);
 
 		$new_token = [
-			'name' => $name ?: 'Untitled', 
+			'name' => $name ?: _t('Untitled'), 
 			'access' => 1,  
 			'effective_date' => $expirationDate,
 			'downloads' => $downloads
@@ -1019,14 +1019,14 @@ class LightboxController extends FindController {
 
 		// If successful, refresh the shared links list
 		if ($success) {
-			$this->view->setVar('success_message', 'New share link added');
+			$this->view->setVar('success_message', _t('New share link added'));
 			
 			$log->logJSON('AddAnonymousAccess', [
 				'user' => $this->request->user->get('user_name'),
 				'name' => $name,
 				'expirationDate' => $expirationDate,
 				'downloads' => $downloads,
-				'message' => 'New share link added',
+				'message' => _t('New share link added'),
 			], 'INFO');
 			
 		} else {
@@ -1038,7 +1038,7 @@ class LightboxController extends FindController {
 				'name' => $name,
 				'expirationDate' => $expirationDate,
 				'downloads' => $downloads,
-				'message' => 'Error adding new token',
+				'message' => _t('Error adding new token'),
 			], 'ERR');
 		}
 		$this->render("Lightbox/anonymous_access_list_html.php");
@@ -1071,13 +1071,13 @@ class LightboxController extends FindController {
 
 		// If successful, refresh the shared links list
 		if ($success) {
-			$this->view->setVar('success_message', 'Share link removed');
+			$this->view->setVar('success_message', _t('Share link removed'));
 
 			$log->logJSON('RemoveAnonymousAccess', [
 				'user' => $this->request->user->get('user_name'),
 				'name' => $name,
 				'expirationDate' => $expirationDate,
-				'message' => 'Share link removed',
+				'message' => _t('Share link removed'),
 			], 'INFO');
 		} else {
 			// echo "Error removing token";
@@ -1087,7 +1087,7 @@ class LightboxController extends FindController {
 				'user' => $this->request->user->get('user_name'),
 				'name' => $name,
 				'expirationDate' => $expirationDate,
-				'message' => 'Error removing token',
+				'message' => _t('Error removing token'),
 			], 'ERR');
 		}
 		$this->render("Lightbox/anonymous_access_list_html.php");
