@@ -76,15 +76,15 @@ footer{
 }
 /* ------------------ front ------------------------- */
 .front{
-	@media (min-width: 1400px) {
-		h1 {
-			font-size: 144px;
-			line-height: .8;
-		}
-	}
 	@media (min-width: 850px) {
 		h1 {
-			font-size: 102.4px;
+			font-size: 96px;
+    		line-height: 95%;
+		}
+	}
+	@media (min-width: 1400px) {
+		h1 {
+			font-size: 110px;
 		}
 	}
 }
@@ -130,4 +130,20 @@ footer{
 	H1{
 		font-family: "Theinhardt Pan";
 	}
+}
+/* ------------------ adv search ---------------------- */
+.searchFormLineModeElementSubLabel input {
+	display: block;
+	width: 100%;
+	padding: .375rem .75rem;
+	font-size: 1rem;
+	font-weight: 300;
+	line-height: 1.5;
+	color: var(--bs-body-color);
+	appearance: none;
+	background-color: var(--bs-body-bg);
+	background-clip: padding-box;
+	border: var(--bs-border-width) solid var(--bs-border-color);
+	border-radius: var(--bs-border-radius);
+	transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }

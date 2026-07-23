@@ -27,7 +27,11 @@
  */
 ?>
 	</main>
-	</div> <!-- end container -->
+<?php
+	if(strToLower($this->request->getController()) != "front"){
+		print "</div> <!-- end container -->";
+	}
+?>
 		<footer id="footer" class="p-5 mt-auto bg-dark text-bg-dark">
 			<div class="container-xl">
 				
@@ -36,11 +40,12 @@
 				</div>
 				<div class="row pt-4">
 					<div class="col-12 col-md-6 small">
-						&copy;2026 92nd Street Young Men's and Young Women's Hebrew Association.<br/>
-						All Rights Reserved. Proudly funded by UJA-Federation of New York.
+						&copy; <?= date("Y"); ?> The Young Men's and Young Women's Hebrew Association<br/>
+						All Rights Reserved.
 					</div>
 					<div class="col-12 col-md-6 text-md-end">
-						<a href="/about-92ny/policies">Privacy Policy</a>
+						
+						<a href="https://www.92ny.org/about-92ny/policies">Privacy Policy</a> | <?php print caNavLink($this->request, "Rights", "", "", "Rights", ""); ?>
 					</div>
 				</div>
 				

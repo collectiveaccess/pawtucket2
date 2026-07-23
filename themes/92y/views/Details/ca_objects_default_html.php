@@ -46,8 +46,9 @@ $in_lightboxes = $this->getVar('inLightboxes') ?? [];
 $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
 ]);
+$staff_role = $this->request->config->get("archive_staff_role");	# --- set in app.conf of theme
 $vb_archive_staff = false;
-if($this->request->user->hasRole("front_archive_staff")){
+if($this->request->user->hasRole($staff_role)){
 	$vb_archive_staff = true;
 }
 ?>
@@ -57,6 +58,15 @@ if($this->request->user->hasRole("front_archive_staff")){
 </script>
 
 <?php
+if(!$vb_archive_staff){
+?>
+	<div class="row my-5">
+		<div class="col-md-12">
+			<div class="alert alert-danger text-center">Only archive staff may access this content</div>
+		</div>
+	</div>
+<?php
+}else{
 	if($show_nav){
 ?>
 	<div class="row mt-n3">
@@ -116,9 +126,6 @@ if($this->request->user->hasRole("front_archive_staff")){
 								<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l></dd></unit>
 							</ifcount>
 					
-<?php
-	if($vb_archive_staff){
-?>							
 							<ifdef code="ca_objects.media_format">
 								<dt><?= _t('Format'); ?></dt>
 								<dd>^ca_objects.media_format</dd>
@@ -135,9 +142,6 @@ if($this->request->user->hasRole("front_archive_staff")){
 								<dt><ifcount code="ca_storage_locations" min="1" max="1"><?= _t('Storage Location'); ?></ifcount><ifcount code="ca_storage_locations" min="2"><?= _t('Storage Locations'); ?></ifcount></dt>
 								<unit relativeTo="ca_storage_locations" delimiter=""><dd><l>^ca_storage_locations.preferred_labels</l></dd></unit>
 							</ifcount>
-<?php
-	}
-?>
 							<ifdef code="ca_objects.external_link.url_entry">
 								<dt><?= _t('External Link'); ?></dt>
 								<unit relativeTo="ca_objects.external_link" delimiter="">
@@ -149,7 +153,10 @@ if($this->request->user->hasRole("front_archive_staff")){
 								<dt><?= _t('Notes'); ?></dt>
 								<dd>^ca_objects.general_notes</dd>
 							</ifdef>
-					
+							<ifdef code="ca_objects.conservation_notes">
+								<dt><?= _t('Preservation Notes'); ?></dt>
+								<dd>^ca_objects.general_notes</dd>
+							</ifdef>					
 						</dl>}}}
 						<!-- {{{<ifdef code="ca_objects.work_description">
 							<div class='unit'>
@@ -173,3 +180,6 @@ if($this->request->user->hasRole("front_archive_staff")){
 			</div>
 		</div>
 	</div>
+<?php
+}
+?>

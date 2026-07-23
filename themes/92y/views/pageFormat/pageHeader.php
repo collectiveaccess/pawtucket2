@@ -88,15 +88,20 @@ if($this->request->isLoggedIn()){
 ?>
 				</ul>
 				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
-					<div class="input-group my-4 bg-body-tertiary">
+					<div class="input-group mt-4 bg-body-tertiary">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 						<input type="text" name="search" class="form-control rounded-0 border-0 bg-body-tertiary" id="nav-search-input" placeholder="Search">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
+					<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/events"); ?></div>				
 				</form>
 			</div>
 		</div>
 	</nav>	
 
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
-		<div class='container-xl pt-4'>
+<?php
+	if(strToLower($this->request->getController()) != "front"){
+		print "<div class='container-xl pt-4'>";
+	}
+?>
