@@ -9,6 +9,7 @@ function makeMap(options) {
 	const searchUrl = options.searchUrl;
 	const mapElement = document.getElementById(id);
 	const liveUpdateConf = options.liveUpdate;
+	const currentLocation = options.currentLocation;
 
 	L.Icon.Default.mergeOptions({
 	  iconRetinaUrl: options.themePath + '/assets/markers/marker-icon-2x.png',
@@ -46,7 +47,7 @@ function makeMap(options) {
 			let m = null, c = data[index], opts = { };
 			if(c.coordinates) {
 				let pts = c.coordinates.map(c => { return [c.latitude, c.longitude]; });
-				//m = L.polygon(pts).addTo(g);
+				m = L.polygon(pts).addTo(g);
 			} else if(c.radius) {
 				if((c.latitude === '') || (c.longitude === '')) { console.log("Invalid point", c); continue; }
 				m = L.circle([parseFloat(c.latitude), parseFloat(c.longitude)], {radius: c.radius}).addTo(g);
@@ -64,7 +65,7 @@ function makeMap(options) {
 								return el;
 							}, { minWidth: 400, maxWidth : 560, maxHeight: 300, keepInView: true, autoPan: true });
 				} else {
-					m.bindPopup(Object.values(data[index].info).join("<br>")); 
+					m.bindPopup((typeof myVar === "string") ? Object.values(data[index].info).join("<br>") : data[index].info); 
 				}
 			}
 		}
@@ -76,18 +77,20 @@ function makeMap(options) {
 	if (bounds.isValid()) { map.fitBounds(bounds); };
 	
 	// Current user location
-	map.on('locationfound', function(e) {
-		const radius = e.accuracy;
-		L.circle(e.latlng, radius, {'color': '#cc0000'}).addTo(map);
-		map.stopLocate();
-		if(bounds.intersects(e.bounds)) {
-			map.setView(e.latlng, 16);
-		}
-	});
+	if(currentLocation) { 
+		map.on('locationfound', function(e) {
+			const radius = e.accuracy;
+			L.circle(e.latlng, radius, {'color': '#cc0000'}).addTo(map);
+			map.stopLocate();
+			if(bounds.intersects(e.bounds)) {
+				map.setView(e.latlng, 16);
+			}
+		});
 	
-	map.on('locationerror', function(e) {
-		console.log("Geolocation error", e.message);
-	});
+		map.on('locationerror', function(e) {
+			console.log("Geolocation error", e.message);
+		});
+	}
 	
 	// Force popup into view
 	map.on('popupopen', function(e) {

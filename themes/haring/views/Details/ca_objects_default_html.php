@@ -97,26 +97,44 @@ if($show_nav){
 						<dt><?= _t('Date'); ?></dt>
 						<dd>^ca_objects.date</dd>
 					</ifdef>
-					<ifdef code="ca_objects.medium|ca_objects.archival_photograph_medium">
+					<ifdef code="ca_objects.medium_text|ca_objects.medium|ca_objects.archival_photograph_medium">
 						<dt><?= _t('Medium'); ?></dt>
-						<ifdef code="ca_objects.medium"><dd>^ca_objects.medium%delimiter=,_</dd></ifdef>
-						<ifdef code="ca_objects.archival_photograph_medium"><dd>^ca_objects.archival_photograph_medium%delimiter=,_</dd></ifdef>
+						<ifdef code="ca_objects.medium_text"><dd>^ca_objects.medium_text</dd></ifdef>
+						<ifnotdef code="ca_objects.medium_text">
+							<ifdef code="ca_objects.medium"><dd>^ca_objects.medium%delimiter=,_</dd></ifdef>
+							<ifdef code="ca_objects.archival_photograph_medium"><dd>^ca_objects.archival_photograph_medium%delimiter=,_</dd></ifdef>
+						</ifnotdef>
 					</ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_display">
 						<dt><?= _t('Dimensions'); ?></dt>
-						<dd>^ca_objects.dimensions.dimensions_display</dd>
+						<unit relativeTo="ca_objects.dimensions" delimiter="">
+							<dd><ifdef code="ca_objects.dimensions.dimensions_type">^ca_objects.dimensions.dimensions_type: </ifdef>^ca_objects.dimensions.dimensions_display</dd>
+						</unit>
 					</ifdef>
-					<ifdef code="ca_objects.caption">
-						<dt><?= _t('Caption'); ?></dt>
-						<dd>^ca_objects.caption</dd>
-					</ifdef>
-					<ifdef code="ca_objects.description">
-						<dt><?= _t('Description'); ?></dt>
-						<dd>^ca_objects.description</dd>
-					</ifdef>
-					<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
-					
+					<ifcount code="ca_entities.related" restrictToRelationshipTypes="artist" min="1">
+						<dt><ifcount code="ca_entities.related" restrictToRelationshipTypes="artist" min="1" max="1"><?= _t('Artist'); ?></ifcount><ifcount code="ca_entities.related" restrictToRelationshipTypes="artist" min="2"><?= _t('Artists'); ?></ifcount></dt>
+						<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist" delimiter=""><dd>^ca_entities.preferred_labels</dd></unit>
+					</ifcount>
+					<ifcount code="ca_entities.related" restrictToRelationshipTypes="photographer" min="1">
+						<dt><ifcount code="ca_entities.related" restrictToRelationshipTypes="photographer" min="1" max="1"><?= _t('Photographer'); ?></ifcount><ifcount code="ca_entities.related" restrictToRelationshipTypes="photographer" min="2"><?= _t('Photographers'); ?></ifcount></dt>
+						<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="photographer" delimiter=""><dd>^ca_entities.preferred_labels</dd></unit>
+					</ifcount>
+<?php
+					if($this->request->isLoggedIn() && $this->request->user->hasRole("registrar")){
+?>				
+						<ifdef code="ca_objects.valuation">
+							<dt><?= _t('Insurance Value'); ?></dt>
+							<dd>^ca_objects.valuation</dd>
+						</ifdef>
+<?php
+					}
+?>
 				</dl>}}}
+<?php
+				if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
+					print "<div class='mt-3'><a class='btn btn-primary' href='".$this->request->config->get('admin_url')."/editor/objects/ObjectEditor/Edit/object_id/".$t_object->get("ca_objects.object_id")."'>"._t("Edit Record")."</a></div>";
+				}
+?>
 			</div>
 			
 		</div>

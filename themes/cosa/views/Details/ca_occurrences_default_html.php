@@ -112,11 +112,19 @@ if($show_nav){
 	</div>
 <?php
 	$artists = array();
-	$artist_list = $t_item->getWithTemplate('<ifcount code="ca_objects" min="1"><unit relativeTo="ca_objects" delimiter=", "><ifcount code="ca_entities" min="1" restrictToRelationshipTypes="artist"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></ifcount></unit></ifcount>', array("checkAccess" => $access_values));
-	if($artist_list){
-		$artists = explode(", ", $artist_list);
-		$artists = array_unique($artists);
-		$artist_list = join(", ", $artists);
+	$artist_list = "";
+	$artist_links = array();
+	$artist_id_list = $t_item->getWithTemplate('<ifcount code="ca_objects" min="1"><unit relativeTo="ca_objects" delimiter=", "><ifcount code="ca_entities" min="1" restrictToRelationshipTypes="artist"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", ">^ca_entities.entity_id</unit></ifcount></unit></ifcount>', array("checkAccess" => $access_values));
+	if($artist_id_list){
+		$artist_ids = explode(", ", $artist_id_list);
+		$artist_ids = array_unique($artist_ids);
+		$q_artists = caMakeSearchResult("ca_entities", $artist_ids, array("sort" => "ca_entities.preferred_labels.name_sort"));
+		if($q_artists->numHits()){
+			while($q_artists->nextHit()){
+				$artist_links[] = $q_artists->getWithTemplate("<l>^ca_entities.preferred_labels</l>");
+			}
+			$artist_list = join(", ", $artist_links);
+		}
 	}
 ?>
 	<div class="row">
