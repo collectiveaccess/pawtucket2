@@ -44,7 +44,7 @@
 
 	<div class="container-fluid h-100 position-absolute top-0">
 		<div class="row h-100 justify-content-center align-items-center heroLogo">
-			<div class="col-md-5 img-fluid">
+			<div class="col-md-4 img-fluid">
 				<?php print caGetThemeGraphic($this->request, "WHWHP_Text_Stacked.png", array("alt" => "White House Workers History Project")); ?>
 				<div class="row justify-content-center heroSearch">
 					<div class="col-md-10 pt-3 mt-3">

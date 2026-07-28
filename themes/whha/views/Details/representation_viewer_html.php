@@ -55,7 +55,7 @@ $subject = $this->getVar("subject");
   		justify-content: space-evenly;
   		
 		width: 100%;
-		height: 40px;
+		height: 51px;
 		color: #fff;
 		background-color: #000;
 		
@@ -78,6 +78,9 @@ $subject = $this->getVar("subject");
 		top: 0px;
 		z-index: 150000;
 		font-size: 20px;
+	}
+	div.mediaviewer-overlay-close .btn-primary {
+		background-color:#A6172B !important;
 	}
 	
 	div.mediaviewer-overlay-navigation {
@@ -212,7 +215,7 @@ $subject = $this->getVar("subject");
 			<span id="media-count" class="fs-5 ps-3"></span>
 		</div>
 		<div class="mediaviewer-overlay-close">
-			<button type="button" class="btn btn-link btn-lg p-0 text-light" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();' role='button' aria-label='close dialog'><i class="bi bi-x-lg"></i></button>
+			<button type="button" class="btn btn-primary btn-lg mt-2 p-2 border-white" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();' role='button' aria-label='close dialog'>CLOSE <i class="bi bi-x-lg"></i></button>
 		</div>
 	</div>
 	<div id="mediaviewer-overlay-content" class="mediaviewer-overlay-content">
