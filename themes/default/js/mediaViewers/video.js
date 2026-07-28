@@ -80,9 +80,6 @@ let videoViewer = function(id, options=null) {
 				};
 			that[k].seek_for_transcript = false;
 			if(source.start && (source.start > 0)) {
-				//that[k].on('ready', (event) => {
-				//  that.viewer.play();
-				//});
 				that[k].on('playing', (event) => {
 					if(!that[k].seek_for_transcript) {
 				  		that[k].currentTime = parseFloat(source.start);
