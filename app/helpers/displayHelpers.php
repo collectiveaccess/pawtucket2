@@ -3624,6 +3624,9 @@ function caCreateLinksFromText($pa_text, $ps_table_name, $pa_row_ids, $ps_class=
 	}
 
 	$pb_add_rel = caGetOption('addRelParameter', $pa_options, false);
+	$extra_params = caGetOption('extraParameters', $pa_options, []);
+	
+	if ($pb_add_rel) { $extra_params['rel'] = true; }
 
 	$vb_can_handle_target = false;
 	if ($ps_target) {
@@ -3667,10 +3670,10 @@ function caCreateLinksFromText($pa_text, $ps_table_name, $pa_row_ids, $ps_class=
 				} else {
 					switch(__CA_APP_TYPE__) {
 						case 'PROVIDENCE':
-							$vs_link_text= caEditorLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i], ($pb_add_rel ? array('rel' => true) : []), $va_l['attributes'], $va_link_opts);
+							$vs_link_text= caEditorLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i], $extra_params, $va_l['attributes'], $va_link_opts);
 							break;
 						case 'PAWTUCKET':
-							$vs_link_text= caDetailLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i], null, $va_l['attributes'], $va_link_opts);
+							$vs_link_text= caDetailLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i], $extra_params, $va_l['attributes'], $va_link_opts);
 							break;
 					}
 				}
@@ -3695,10 +3698,10 @@ function caCreateLinksFromText($pa_text, $ps_table_name, $pa_row_ids, $ps_class=
 				$link_attributes = caGetOption('attributes', $pa_options, null);
 				switch(__CA_APP_TYPE__) {
 					case 'PROVIDENCE':
-						$va_links[$vn_i] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], ($pb_add_rel ? ['rel' => true] : []), $link_attributes, $va_link_opts)) ? $vs_link : $vs_text;
+						$va_links[$vn_i] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], $extra_params, $link_attributes, $va_link_opts)) ? $vs_link : $vs_text;
 						break;
 					case 'PAWTUCKET':
-						$va_links[$vn_i] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], null, $link_attributes, $va_link_opts)) ? $vs_link : $vs_text;
+						$va_links[$vn_i] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], $extra_params, $link_attributes, $va_link_opts)) ? $vs_link : $vs_text;
 						break;
 					default:
 						$va_links[$vn_i] = $vs_text;
@@ -4458,7 +4461,8 @@ function caProcessBottomLineTemplateForPlacement($po_request, $pa_placement, $pr
  *		display = media_display.conf display version to use. [Default is 'detail']
  *		displayAnnotations = Mode of display for annotations on representation. Valid values are: viewer (in viewer), div (in external div with class #detailAnnotations), none (no display) [Default is none]
  *		displayAnnotationTemplate = Template to use when formatting list of annotations [Default is the annotation title (^ca_representation_annotations.preferred_labels.name)]
- *
+ *		
+ *	
  * @return string HTML output
  *
  * @see caGetMediaViewerHTML
@@ -4513,6 +4517,9 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 	$t_rep = new ca_object_representations();
 	$reps = [];
 	
+	$trans_start_rep_id = caGetOption('transcription_start_representation_id', $options, null);
+	$trans_start = caGetOption('transcription_start', $options, null);
+	
 	$caption_template = caGetOption('mediaCaptionTemplate', $options, '???');
 	while($qr->nextHit()) {
 		$rep_id = $qr->get('ca_object_representations.representation_id');
@@ -4566,8 +4573,10 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 		$use_embedded_player = ($embedded_player && (!$mimetype || $display_info['use_embedded_when_available'] ?? false));
 		
 		$rep = [
+			'id' => $rep_id,
 			'representation_id' => $rep_id,
-			'mimetype' => $mimetype,
+			'oriinal_mimetype' => $mimetype,
+			'mimetype' => $qr->get("ca_object_representations.media.{$display_version}.mimetype"),
 			'media_class' => $use_embedded_player ? 'embed' : caGetMediaClass($mimetype),
 			'original_url' => $qr->get("ca_object_representations.media.original.url"),
 			'url' => $qr->get("ca_object_representations.media.{$display_version}.url"),
@@ -4582,6 +4591,10 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 			'embeddedPlayer' => $embedded_player,
 			'download_version' => $allow_download ? caGetOption('download_version', $download_info, null) : null
 		];
+		
+		if($rep_id == $trans_start_rep_id) {
+			$rep['start'] = $trans_start;
+		}
 		
 		if(is_array($file_list = $qr->getFileList()) && sizeof($file_list)) {
 			$pages = array_map(function($v) {
