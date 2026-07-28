@@ -826,45 +826,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				
 				$acc += $hits;
 			}
-
-			$results_temp_table = array_pop($temp_tables);
-							
-			$this->db->query("UPDATE IGNORE {$results_temp_table} SET row_id = row_id - 1");
-			
-			$params = [];
-			if($restrictions = $this->_getFieldRestrictions($subject_tablenum)) {
-				$res = [];
-				foreach($restrictions['restrict'] as $r) {
-					$res[] = "(swi.field_table_num = ? AND swi.field_num = ?)";
-					$params[] = $r['table_num'];
-					$params[] = $r['field_num'];
-				}
-			
-				$flds = [];
-				foreach($restrictions['exclude'] as $r) {
-					$flds[] = $r['table_num'].'/'.$r['field_num'];
-				}
-				if(sizeof($flds)) {
-					$res[] = "(CONCAT(swi.field_table_num, '/', swi.field_num) NOT IN (?))";
-					$params[] = join(',', $flds);
-				}
-				if(sizeof($res)) {
-					$field_sql .= " AND (".join(' AND ', $res).")";
-				}
-			}
-			
-			$qr_res = $this->db->query("
-				SELECT swi.index_id, swi.row_id, ca.boost, ca.field_container_id
-				FROM {$results_temp_table} ca
-				INNER JOIN ca_sql_search_word_index AS swi ON swi.index_id = ca.row_id {$field_sql}
-			", $params);
-	 		$hits = $this->_arrayFromDbResult($qr_res, ['phraseWindow' => $wc]);
-	 		
-			// Clean up temp tables
-			foreach($temp_tables as $temp_table) {
-				$this->_dropTempTable($temp_table);
-			}
-			return $hits;
+			return $acc;
 	 	} else {
 	 		$acc = [];
 	 		$i = 0;
