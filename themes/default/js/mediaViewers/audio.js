@@ -45,6 +45,7 @@ let audioViewer = function(id, options=null) {
 					});
 				}
 			}
+			
 			if(tracks.length > 0) {
 				e.innerHTML = "<div data-plyr-provider='html5' style='width: " + (source.options['width'] ?? '100%') + "; height: " + (source.options['height'] ?? '100%') + ";'><video class='plyr__video-embed' id='" + that.id + '_' + source.display_class + overlay_ext + "_plyr' controls></video></div>";
 			} else {
@@ -52,7 +53,7 @@ let audioViewer = function(id, options=null) {
 			}
 			let poptions = {
 				debug: false,
-				autoplay: false,
+				autoplay: true,
 				fullscreen: {
 					enabled: false
 				},
@@ -76,8 +77,81 @@ let audioViewer = function(id, options=null) {
 				  tracks: tracks,
 				  poster: source.small
 				};
+			
+			that[k].seek_for_transcript = false;
+			if(source.start && (source.start > 0)) {
+				that[k].on('playing', (event) => {
+					if(!that[k].seek_for_transcript) {
+				  		that[k].currentTime = parseFloat(source.start);
+						that.viewer.pause();
+				  		that[k].seek_for_transcript = true;
+				  	}
+				});
+			}
+			that[k].viewerIsReady = false;
+			
+			that[k].on('ready', (event) => {
+				if(!that[k].viewerIsReady) {
+					console.log("[DEBUG] Viewer is ready");
+					that[k].viewerIsReady = true;
+				}
+			});
+			that[k].on('canplay', (event) => {
+				console.log("[DEBUG] Can play video");
+				that[k].canPlay = true;
+			});
+			
+			if(options.transcript_container_id && options.transcript_id) {
+				const el = document.getElementById(options.transcript_container_id);
+				console.log("el", el);
+				if(source.vttCaptions) {
+					const transcript_url = options.transcript_url.replace(/%25representation_id/, '' + source.id);	
+					htmx.ajax('GET', transcript_url, '#' + options.transcript_id);
+					if(el) {
+						el.style.display = 'block';
+					}
+				} else if(el) {
+					el.style.display = 'none';	
+				}
+			} 
 				
 			return that.viewer;
+		},
+		
+		//
+		//
+		//
+		seek: function(t) {
+			if(that.viewer) {
+				that.viewer.pause();
+				if(!that.viewer.canPlay || !that.viewer.viewerIsReady) {
+					that.viewer.seekTo = t;
+					that.viewer.on('playing', (event) => {
+						if(that.viewer.seekTo) {
+							that.viewer.currentTime = parseFloat(that.viewer.seekTo);
+							that.viewer.play();
+							that.viewer.seekTo = null;
+						}
+					});
+				} else {
+					console.log("[DEBUG] Set seek to", t);
+					that.viewer.seekTo = null;
+					that.viewer.currentTime = t;
+					that.viewer.play();
+				}
+			}
+		},
+		
+		play: function(t) {
+			if(that.viewer) {
+				that.viewer.play();
+			}
+		},
+		
+		pause: function(t) {
+			if(that.viewer) {
+				that.viewer.pause();
+			}
 		},
 		
 		//
