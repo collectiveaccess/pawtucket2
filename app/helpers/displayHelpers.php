@@ -4461,8 +4461,7 @@ function caProcessBottomLineTemplateForPlacement($po_request, $pa_placement, $pr
  *		display = media_display.conf display version to use. [Default is 'detail']
  *		displayAnnotations = Mode of display for annotations on representation. Valid values are: viewer (in viewer), div (in external div with class #detailAnnotations), none (no display) [Default is none]
  *		displayAnnotationTemplate = Template to use when formatting list of annotations [Default is the annotation title (^ca_representation_annotations.preferred_labels.name)]
- *		
- *	
+ *
  * @return string HTML output
  *
  * @see caGetMediaViewerHTML
@@ -4575,7 +4574,7 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 		$rep = [
 			'id' => $rep_id,
 			'representation_id' => $rep_id,
-			'oriinal_mimetype' => $mimetype,
+			'original_mimetype' => $mimetype,
 			'mimetype' => $qr->get("ca_object_representations.media.{$display_version}.mimetype"),
 			'media_class' => $use_embedded_player ? 'embed' : caGetMediaClass($mimetype),
 			'original_url' => $qr->get("ca_object_representations.media.original.url"),
