@@ -50,7 +50,7 @@
 		</div>
 	</div>
 <?php
-	$qr_members = ca_entities::find(["type_id" => "member"], ["returnAs" => "searchResult", 'sort' => 'ca_entities.preferred_labels.displayname']);
+	$qr_members = ca_entities::find(["type_id" => "member"], ['checkAccess' => $va_access_values, "returnAs" => "searchResult", 'sort' => 'ca_entities.preferred_labels.displayname']);
 	if ($qr_members) {
 		print "<div class='row members'>";
 		print '<div class="containerWrapper">';

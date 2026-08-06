@@ -68,6 +68,10 @@
 					$va_errors["display_errors"]["security_error"] = _t("Please answer the security question");
 				}
  			}
+ 			$opts = [];
+ 			
+			$from = $this->config->get('from_email') ?: $this->request->config->get("ca_admin_email");
+		
  			$va_fields = $this->config->get("contact_form_elements");
  			$this->view->setVar("contact_form_elements", $va_fields);
  			if(is_array($va_fields) && sizeof($va_fields)){
@@ -84,6 +88,10 @@
 							$va_errors[$vs_element_name] = true;
 						}
  					}
+ 					if($va_options['use_as_from_address'] ?? false) {
+						if(!is_array($opts['replyTo'])) { $opts['replyTo'] = []; }
+						$opts['replyTo'][] = $vs_element_value;
+					}
  					$this->view->setVar($vs_element_name, $vs_element_value);
  				}
  			}
@@ -112,9 +120,9 @@
 					# -- generate mail text from template - get both the text and the html versions
 					$vs_mail_message_text = $o_view->render("mailTemplates/contact.tpl");
 					$vs_mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
-					if(caSendmail($vs_email, $vs_email, $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
+					if(caSendmail([$vs_email, 'collectiveaccess@mnhistoryalliance.org', 'seth@whirl-i-gig.com'], $from, $vs_subject_line, $vs_mail_message_text, $vs_mail_message_htmlnull, null, null, $opts)){
 						$this->render("Contact/success_html.php");
-					}else{
+					} else {
 						$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");
 						$this->view->setVar("errors", $va_errors);
 						$this->form();

@@ -40,9 +40,9 @@
 							<div class='col-xs-12 col-sm-10'>
 								<div class="paragraph" style="text-align:left;">
 									General contact:<br>
-									Gibson Stanton, Alliance Coordinator<br>
+									Liz Koele, Alliance Coordinator<br>
 									612-500-7460<br>
-									<a href="mailto:gibson@mnhistoryalliance.org">Contact</a>
+									<a href="mailto:liz@mnhistoryalliance.org">Contact</a>
 									<br/><a href="http://www.mnhistoryalliance.org">http://www.mnhistoryalliance.org</a>
 								</div>					
 							</div>
@@ -50,9 +50,9 @@
 					</div>
 					<div class='col-sm-12 col-md-3 col-lg-3'> 
 						<div class='pull-right social'>
-							<span class='socialFooter'><a href='https://www.facebook.com/MNHistoryAlliance/' target='_blank'><i class='fa fa-facebook'></i></a></span>
-							<span class='socialFooter'><a href='mailTo:gibson@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></span>
-							<span class='socialFooter'><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fa fa-instagram'></i></a></span>
+							<span class='socialFooter'><a href='https://www.facebook.com/MNHistoryAlliance/' target='_blank'><i class='fab fa-facebook-f'></i></a></span>
+							<span class='socialFooter'><a href='mailTo:gibson@mnhistoryalliance.org' target='_blank'><i class='far fa-envelope'></i></a></span>
+							<span class='socialFooter'><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fab fa-instagram'></i></a></span>
 							<div class='copy'>© COPYRIGHT <?php print date("Y"); ?>. ALL RIGHTS RESERVED.</div>
 							<div class='clean'>
 								<?php print caGetThemeGraphic($this->request, 'clean.jpg'); ?>
@@ -65,7 +65,14 @@
 				
 			</div>
 		</footer><!-- end footer -->
-
+<?php
+	//
+	// Output HTML for debug bar
+	//
+	if(Debug::isEnabled()) {
+		print Debug::$bar->getJavascriptRenderer()->render();
+	}
+?>
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

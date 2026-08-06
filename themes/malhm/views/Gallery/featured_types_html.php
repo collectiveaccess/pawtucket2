@@ -28,7 +28,7 @@
 							$va_set_ids = array_keys($va_sets);
 							$r_sets = caMakeSearchResult("ca_sets", $va_set_ids, array("sort" => array("ca_sets.preferred_labels.name"), "sortDirection" => "asc"));
 							print '<div class="row">';
-							//print "<hr><h2>".$va_set_confs[$vs_typename]['name']." ".caNavLink($this->request, '<small> | see all <i class="fa fa-external-link"></i></small>', '', 'Gallery', 'featured', $vs_typename)."</h2>";
+							print "<hr><h2>".$va_set_confs[$vs_typename]['name']." ".caNavLink($this->request, '<small> | see all <i class="fa fa-external-link"></i></small>', '', 'Gallery', 'featured', $vs_typename)."</h2>";
 							print "<div class='lightboxDescription textContent'>".$va_set_confs[$vs_typename]['description']."</div>";
 							print '
 								<div class="jcarousel-wrapper col-sm-12">

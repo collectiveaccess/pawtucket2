@@ -27,6 +27,8 @@
  */
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
+	$va_classroomDisplayName = caGetClassroomDisplayName();
+	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
 	$class = null;
 	
@@ -38,7 +40,9 @@
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
-
+		if(caDisplayClassroom($this->request)){
+			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
+		}
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
@@ -66,13 +70,22 @@
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
-	
+	 <meta name="referrer" content="origin-when-cross-origin">
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
-
+<?php
+	if(Debug::isEnabled()) {		
+		//
+		// Pull in JS and CSS for debug bar
+		// 
+		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
+		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
+		print $o_debugbar_renderer->renderHead();
+	}
+?>
 	<link href="//fonts.googleapis.com/css?family=Merriweather:400,300,300italic,700,400italic,700italic&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
 	<link href="//fonts.googleapis.com/css?family=Montserrat:400,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
 	<link href="//fonts.googleapis.com/css?family=Josefin+Sans:700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
@@ -84,8 +97,8 @@
 			<ul class='socialRow'>
 				<li><span class="connect">Connect with us!</span></li>
 				<li><a href='mailto:gibson@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></li>
-				<li><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fa fa-instagram'></i></a></li>
-				<li><a href='https://www.facebook.com/MNHistoryAlliance/' target='_blank'><i class='fa fa-facebook'></i></a></li>
+				<li><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fab fa-instagram'></i></a></li>
+				<li><a href='https://www.facebook.com/MNHistoryAlliance/' target='_blank'><i class='fab fa-facebook-f'></i></a></li>
 			</ul>
 		</div></div></div>
 		<div class='containerWrapper'>

@@ -62,7 +62,7 @@
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
 <?php
-					if ($vs_date = $t_item->getWithTemplate('<unit relativeTo="ca_collections.unitdate" delimiter="">^ca_collections.unitdate.dacs_date_value ^ca_collections.unitdate.dacs_dates_types</unit>')) {
+					if (($t_item->get('ca_collections.unitdate.dacs_date_value')) && ($vs_date = $t_item->getWithTemplate('<unit relativeTo="ca_collections.unitdate" delimiter="">^ca_collections.unitdate.dacs_date_value ^ca_collections.unitdate.dacs_dates_types</unit>'))) {
 						print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
 					}
 					if ($vs_extent = $t_item->get('ca_collections.extentDACS', ['delimiter' => ''])) {

@@ -56,10 +56,10 @@
 			print "<div class='alert alert-danger'>".$va_errors["description"]."</div>";
 		}
 		print "<div class='form-group".(($va_errors["description"]) ? " has-error" : "")."'><label for='".$vs_description_attribute."' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' class='form-control' rows='3'>".htmlentities($this->getVar("description"), ENT_QUOTES, 'UTF-8', false)."</textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-		if($va_errors["access"]){
-			print "<div class='alert alert-danger'>".$va_errors["access"]."</div>";
-		}
-		print "<div class='form-group".(($va_errors["access"]) ? " has-error" : "")."'><label for='access' class='col-sm-4 control-label'>"._t("Access")."</label><div class='col-sm-7'><select name='access' class='form-control'><option value='0'>Private</option><option value='1'".($t_set->get("access") ? " selected" : "").">Public</option></select></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		// if($va_errors["access"]){
+// 			print "<div class='alert alert-danger'>".$va_errors["access"]."</div>";
+// 		}
+		//print "<div class='form-group".(($va_errors["access"]) ? " has-error" : "")."'><label for='access' class='col-sm-4 control-label'>"._t("Access")."</label><div class='col-sm-7'><select name='access' class='form-control'><option value='0'>Private</option><option value='1'".($t_set->get("access") ? " selected" : "").">Public</option></select></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		
 ?>
 		<div class="form-group">

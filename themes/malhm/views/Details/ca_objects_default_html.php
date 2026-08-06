@@ -80,13 +80,13 @@
 				if ($vs_alt = $t_object->get('ca_objects.title')) {
 					print "<div class='unit'><h6>Title</h6>".$vs_alt."</div>";
 				}							
-				if ($va_chenhall_ids = $t_object->get('ca_objects.chenhall', array('returnAsArray' => true))) {
-					print "<div class='unit'><h6>Category</h6>";
-					foreach ($va_chenhall_ids as $va_key => $vs_chenhall) {
-						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_chenhall, true), '', '', 'Browse', 'objects', array('facet' => 'chenhall_facet', 'id' => $vs_chenhall))."</div>";
-					}
-					print "</div>";
-				}
+				// if ($va_chenhall_ids = $t_object->get('ca_objects.chenhall', array('returnAsArray' => true))) {
+// 					print "<div class='unit'><h6>Category</h6>";
+// 					foreach ($va_chenhall_ids as $va_key => $vs_chenhall) {
+// 						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_chenhall, true), '', '', 'Browse', 'objects', array('facet' => 'chenhall_facet', 'id' => $vs_chenhall))."</div>";
+// 					}
+// 					print "</div>";
+// 				}
 
 				if ($vs_date = $t_object->get('ca_objects.date_created', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Creation Date</h6>".$vs_date."</div>";

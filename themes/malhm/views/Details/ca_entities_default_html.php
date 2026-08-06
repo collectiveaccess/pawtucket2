@@ -303,7 +303,7 @@
 			if(searchTerm){
 				searchTerm = encodeURIComponent(" AND " + searchTerm);
 			}
-			jQuery("#browseResultsContainerObjects").load("<?= caNavUrl($this->request, '', 'Search', 'objects', null, array('dontURLEncodeParameters' => true)); ?>/search/ca_objects.source_id:<?= $t_item->get('ca_entities.idno'); ?>" + searchTerm, function() {
+			jQuery("#browseResultsContainerObjects").load("<?= caNavUrl($this->request, '', 'Search', 'objects', null, array('dontURLEncodeParameters' => true)); ?>/setContext/1/search/ca_objects.source_id:<?= $t_item->get('ca_entities.idno'); ?>" + searchTerm, function() {
 				jQuery('#browseResultsContainerObjects').jscroll.destroy();
 				jQuery('#browseResultsContainerObjects').jscroll({
 					autoTrigger: true,
@@ -312,7 +312,7 @@
 					nextSelector: 'a.jscroll-next'
 				});
 			});
-			jQuery("#browseResultsContainerCollections").load("<?= caNavUrl($this->request, '', 'EntityDetail', 'collectionsSearch', null, array('dontURLEncodeParameters' => true)); ?>/all/1/search/ca_collections.source_id:<?= $t_item->get('ca_entities.idno'); ?>" + searchTerm, function() {
+			jQuery("#browseResultsContainerCollections").load("<?= caNavUrl($this->request, '', 'EntityDetail', 'collectionsSearch', null, array('dontURLEncodeParameters' => true)); ?>/setContext/1/all/1/search/ca_collections.source_id:<?= $t_item->get('ca_entities.idno'); ?>" + searchTerm, function() {
 				// noop
 			});
 		});
