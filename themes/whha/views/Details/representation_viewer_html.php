@@ -82,6 +82,9 @@ $subject = $this->getVar("subject");
 	div.mediaviewer-overlay-close .btn-primary {
 		background-color:#A6172B !important;
 	}
+	div.mediaviewer-overlay-close .btn-primary:hover {
+		background-color:#FFFFFF !important;
+	}
 	
 	div.mediaviewer-overlay-navigation {
 		position: fixed;
@@ -123,13 +126,11 @@ $subject = $this->getVar("subject");
 <!-- END: Media viewer caption -->
 <!-- START: Media viewer controls -->
 <div class="row">
-	<div class="col-6">
-		<button class='btn btn-md btn-white ps-0 ms-0 pe-2 me-1 mediaviewer-control' id="mediaviewer-show-overlay" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();' aria-label='enlarge'><i class="bi bi-zoom-in"></i></button>
-		<button class='btn btn-md btn-white ps-0 ms-0 mediaviewer-control' id="mediaviewer-download" aria-label="download" hx-on:click="window.location='<?= caNavUrl($this->request, '*', '*', 'DownloadMedia/'.$this->request->getAction(), ['t' => $subject->tableName(), 'id' => $subject->getPrimaryKey()]); ?>'"><i class="bi bi-download"></i></button>
-	</div>
-	<div class="col-6 text-end">
-		<button class='btn btn-lg btn-white ms-0 ps-0 pe-1 me-0 mediaviewer-control' id="mediaviewer-previous" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>
-		<button class='btn btn-lg btn-white ps-1 ms-0 pe-0 me-0 mediaviewer-control' id="mediaviewer-next" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext();' aria-label='next slide'><i class="bi bi-arrow-right"></i></button>
+	<div class="col-12 text-center">
+		<button class='btn btn-lg btn-white ms-0 ps-2 pe-1 me-0 mediaviewer-control' id="mediaviewer-previous" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>
+		<button class='btn btn-lg btn-white  ms-0 ps-1 pe-2 me-0 mediaviewer-control' id="mediaviewer-next" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext();' aria-label='next slide'><i class="bi bi-arrow-right"></i></button>
+		<button class='btn btn-md btn-white px-2 ms-1 me-2 mediaviewer-control' id="mediaviewer-show-overlay" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();' aria-label='enlarge'><i class="bi bi-zoom-in"></i></button>
+		<button class='btn btn-md btn-white px-2 ms-0 mediaviewer-control' id="mediaviewer-download" aria-label="download" hx-on:click="window.location='<?= caNavUrl($this->request, '*', '*', 'DownloadMedia/'.$this->request->getAction(), ['t' => $subject->tableName(), 'id' => $subject->getPrimaryKey()]); ?>'"><i class="bi bi-download"></i></button>
 	</div>
 </div>
 <!-- END: Media viewer controls -->

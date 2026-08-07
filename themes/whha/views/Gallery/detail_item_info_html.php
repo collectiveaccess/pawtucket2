@@ -58,15 +58,23 @@
 			</div>
 		</div>
 		<hr/>
+		<div class="row">
 <?php	
+		$rep = $this->getVar("rep");
+		if($rep){
+			print "<div class='col-md-6'><div id='galleryDetailImageWrapper' class='object-fit-contain'>".caDetailLink($this->request, $this->getVar("rep"), 'text-center w-100 h-100 d-block', $ps_table,  $this->getVar("row_id"))."</div></div>";
+		}
 	
 	if($vs_set_item_content != "[BLANK]"){
+		if($rep){
+			print "<div class='col-md-6'>";
+		}else{
+			print "<div class='col-md-12'>";
+		}
 		print $vs_set_item_content;
+		print "</div>";
 	}
-
-	
-	
-	
 ?>	
+		</div>
 	</div>
 </div><!-- end row -->

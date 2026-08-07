@@ -74,10 +74,10 @@ $media_options = array_merge($media_options, [
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
 				if($inquire_enabled) {
-					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_entities", "id" => $id));
+					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Ask a Historian"), "btn btn-sm btn-white ps-2 pe-2 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_entities", "id" => $id));
 				}
 				if($pdf_enabled) {
-					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_entities", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_entities_summary'));
+					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-2 pe-2 fw-medium", "ca_entities", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_entities_summary'));
 				}
 				if($copy_link_enabled){
 					print $this->render('Details/snippets/copy_link_html.php');
@@ -126,7 +126,7 @@ $media_options = array_merge($media_options, [
 			</dl>}}}
 	</div>
 </div>
-<div class="bg-light py-3 px-4 mb-5 h-100">
+<div class="bg-light py-3 pt-2 px-4 mb-5 h-100">
 	<div class="row row-cols-1 row-cols-md-3">
 		<div class="col">
 			{{{<dl>

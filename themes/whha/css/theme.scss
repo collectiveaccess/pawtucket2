@@ -235,7 +235,6 @@ footer {
 }
 /* ------------------------ title headers ------------------------- */
 .page-header {
-	background-color: #807F83;
 	position: relative;
 	z-index: 1;
 	padding-top: 100px;
@@ -281,7 +280,6 @@ footer {
 }
 .page-header::before {
 	z-index: -1;
-	background-color: rgba(0,0,0,0);
 	border: 1px solid #b0b6bd;
 	border-bottom: none;
 	margin: 20px;
@@ -292,8 +290,10 @@ footer {
 	right: 0;
 	bottom: 0;
 	left: 0;
-	content: "";
 	display: block;
+	content: "";
+	mix-blend-mode: multiply;
+
 }
 .page-header::after{
 	z-index: -2;
@@ -578,7 +578,6 @@ footer {
 	}
 }
 #bRefine{
-	background-color:#FFF !important;
 	/* override in default view */
 /*
 	.input-group.p-3, div.p-3{
@@ -611,16 +610,7 @@ footer {
 	padding:30px;
 	background-color:white;
 }
-#mediaviewer-overlay-caption{
-	#detailMediaCaption{
-		display:none;
-	}
-}
-#mediaviewer-caption{
-	#overlayMediaCaption{
-		display:none;
-	}
-}
+
 .detail{
 	dl.twoColDataList {
   		column-count: 2;                        /* Splits the entire list into 2 vertical columns */
@@ -629,6 +619,12 @@ footer {
 		dt, dd {
 		  break-inside: avoid;
 		}
+	}
+	dd{
+		margin-bottom:.25rem;
+	}
+	dt{
+		margin-top:.5rem
 	}
 	.readMore {
 		max-height: 2.8rem;
@@ -655,7 +651,42 @@ footer {
 		color: #000;
 		text-decoration:none;
 	}
-
+	#collapseFootnotes{
+		a{
+			overflow-wrap: break-word;
+		}
+	}
+}
+.mediaviewer-overlay-content{
+	height:75% !important;
+	.mediaviewer-overlay-display{
+		text-align:center;
+		.mediaviewer-image-overlay-control-bar{
+			background-color:transparent !important;
+			position: relative;
+			top: -55px;
+			z-index: 1;
+			background-color: transparent !important;
+			width: auto;
+			display: inline-block;
+			.imageviewer-control{
+				background-color: transparent;
+				color: #FFF;
+			}
+			.imageviewer-control:hover, .imageviewer-control:active, .imageviewer-control:focus{
+				box-shadow: 0 0 2px 2px #FFFFFF;
+			}
+		}
+		.mediaviewer-image-overlay-container{
+			top:-45px;
+		}
+	}
+}
+.mediaviewer-overlay-navigation{
+	padding-top: 8px;
+}
+#mediaviewer-overlay-next:hover, #mediaviewer-overlay-previous:hover{
+	box-shadow: 0 0 2px 2px #FFFFFF;
 }
 /* --------------------- Occupations ------------------------- */
 .occupationsList{

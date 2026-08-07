@@ -68,7 +68,6 @@ $va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
 if (!$ajax) {	// !ajax
 ?>
-
 <div class="row" style="clear:both;">
 <?php
 	if(!in_array(strToLower($this->request->getAction()), array("presidencies"))){
@@ -82,6 +81,9 @@ if (!$ajax) {	// !ajax
 	}
 ?>
 		<div class="row">
+<?php
+		if(!in_array(strToLower($this->request->getAction()), array("birth_burial_map", "presidencies"))){
+?>
 			<div class="col-md-12 col-lg-5">
 				<H1 class="text-capitalize fs-3">
 <?php
@@ -90,7 +92,13 @@ if (!$ajax) {	// !ajax
 				</H1>
 			</div>
 			<div class="col-md-12 col-lg-7 text-lg-end">
-
+<?php
+		}else{
+?>
+			<div class="col-md-12 text-lg-end">
+<?php
+		}
+?>
 				<ul class="list-group list-group-horizontal justify-content-lg-end small">
 <?php
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -184,13 +192,13 @@ if (!$ajax) {	// !ajax
 		}
 
 		if($showLetterBar){
-			print "<ul id='bLetterBar' class='list-inline p-0 mb-3'>";
+			print "<ul id='bLetterBar' class='list-inline p-0 mb-3 text-capitalize'>";
 			foreach(array_keys($va_letter_bar) as $l){
 				if(trim($l)){
-					print "<li class='list-inline-item p-0 m-0'>".caNavLink($this->request, $l, 'btn p-1 fw-medium'.(($letter == $l) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $browse_key, 'l' => $l))."</li>";
+					print "<li class='list-inline-item p-0 m-0'>".caNavLink($this->request, $l, 'btn p-1 fw-medium fst-normal'.(($letter == $l) ? ' btn-dark' : ' btn-white'), '*', '*', '*', array('key' => $browse_key, 'l' => $l))."</li>";
 				}
 			}
-			print "<li class='list-inline-item py-0 my-0'> <span aria-hidden='true'>|</span> </li><li class='list-inline-item p-0 m-0'>".caNavLink($this->request, _t("All"), 'btn p-1 fw-medium'.((!$letter) ? ' btn-primary' : ' btn-white'), '*', '*', '*', array('key' => $browse_key, 'l' => 'all'))."</li>"; 
+			print "<li class='list-inline-item py-0 my-0'> <span aria-hidden='true'>|</span> </li><li class='list-inline-item p-0 m-0'>".caNavLink($this->request, _t("All"), 'btn p-1 fw-medium fst-normal'.((!$letter) ? ' btn-dark' : ' btn-white'), '*', '*', '*', array('key' => $browse_key, 'l' => 'all'))."</li>"; 
 			print "</ul>";
 		}
 ?>

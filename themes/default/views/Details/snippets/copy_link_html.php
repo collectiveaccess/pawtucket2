@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium" onClick="copyCurrentURL();" data-bs-toggle="modal" data-bs-target="#copyURLModal"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
+<button type="button" class="btn btn-sm btn-white ps-2 pe-2 fw-medium fst-normal" onClick="copyCurrentURL();" data-bs-toggle="modal" data-bs-target="#copyURLModal"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
 <script>
 function copyCurrentURL() {
 	var inputc = document.body.appendChild(document.createElement("input"));

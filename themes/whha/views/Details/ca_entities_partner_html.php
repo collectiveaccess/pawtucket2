@@ -94,7 +94,7 @@ $media_options = array_merge($media_options, [
 		{{{media_viewer}}}
 	</div>
 	<div class="col-md-6 col-lg-8 mb-4">		
-		<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->			
+		<div class="bg-light py-3 pt-2 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->			
 			{{{<ifdef code="ca_entities.partner_website">
 					<div class="mb-3"><a href="^ca_entities.partner_website" target="_blank">^ca_entities.partner_website</a></dd>
 				</ifdef>

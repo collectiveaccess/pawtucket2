@@ -82,11 +82,11 @@ if($this->request->isLoggedIn()){
 					<li class="nav-item dropdown py-3 py-lg-0">
 						<a class="text-nowrap nav-link<?php print (in_array(strToLower($this->request->getController()), array("gallery"))) ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('Resources'); ?><i class="bi bi-chevron-down ms-1 fs-6"></i></a>
 						<ul class="dropdown-menu text-nowrap lh-lg ps-2 ps-lg-0 border-0">
+							<li><a href="#" class="nav-link"><?= _t("Using the Database"); ?></a></li>
 							<li><?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?></li>
-							<li><a href="https://www.whitehousehistory.org/rubenstein-center/k-12-education-resources-and-programs" class="nav-link"><?= _t('Educational Resources'); ?></a></li>
-							<li><a href="https://www.whitehousehistory.org/spn/introduction" class="nav-link"><?= _t("Slavery in the President's Neighborhood"); ?></a></li>
-							<li><a href="https://www.whitehousehistory.org/digital-archives" class="nav-link"><?= _t("Digital Archives"); ?></a></li>
-							<li><a href="#" class="nav-link"><?= _t("Guide to Research"); ?></a></li>
+							<li><a href="{{{slavery_url}}}" class="nav-link"><?= _t("Slavery in the President's Neighborhood"); ?></a></li>
+							<li><a href="{{{edu_resources_link}}}" class="nav-link"><?= _t('Educational Resources'); ?></a></li>
+							<li><a href="{{{dig_archives_url}}}" class="nav-link"><?= _t("Digital Archives"); ?></a></li>
 							
 						</ul>
 					</li>
@@ -96,7 +96,7 @@ if($this->request->isLoggedIn()){
 							<li><?= caNavlink($this->request, _t('About the Project'), "nav-link".(((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "project")) ? " active" : ""), "", "About", "index", "", (((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "project")) ? array("aria-current" => "page") : null)); ?></li>
 							<li><?= caNavlink($this->request, _t('Project Credits'), "nav-link".(((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "projectCredits")) ? " active" : ""), "", "About", "index", "", (((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "projectCredits")) ? array("aria-current" => "page") : null)); ?></li>
 							<li><?= caNavlink($this->request, _t('Contact Us'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?></li>
-							<li><a href="https://www.whitehousehistory.org/rights-reproductions" class="nav-link"><?= _t("Usage Rights/Reproductions"); ?></a></li>
+							<li><a href="{{{rights_repro_url}}}" class="nav-link"><?= _t("Usage Rights/Reproductions"); ?></a></li>
 						</ul>
 					</li>
 <?php
@@ -143,6 +143,7 @@ if($this->request->isLoggedIn()){
 			
 			
 ?>
+			<div class="section-dark-gray-linen p-0">
 				<div class="page-header">
 					<h1 class="text-center">
 <?php
@@ -189,10 +190,11 @@ if($this->request->isLoggedIn()){
 					  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="8" viewBox="0 0 46 8" fill="none"><path d="M45.0482 3.05535H41.7106L40.6795 0L39.6493 3.05535H36.3108L39.0116 4.94377L37.9787 8L40.6795 6.11069L43.3803 8L42.3483 4.94289L45.0482 3.05535ZM24.0303 3.05535L23.0001 0L21.9699 3.05535H18.6314L21.3322 4.94377L20.2994 8L23.0001 6.11069L25.7 8L24.668 4.94289L27.3688 3.05447L24.0303 3.05535ZM6.35095 3.05535L5.31986 0L4.28877 3.05535H0.951172L3.65194 4.94377L2.61909 8L5.31986 6.11069L8.01975 8L6.98778 4.94289L9.68855 3.05447L6.35095 3.05535Z" fill="#B0B6BD"></path></svg>
 					</div>
 				</div>
-				<div class='container-xl pt-4 mt-4'>
+			</div>
+			<div class='container-xl pt-4 mt-4'>
 <?php
 				if(strToLower($this->request->getAction()) == "birth_burial_map"){
-					print "<div class='mb-4 mt-3 fs-4'>".$this->getVar("map_page_intro")."</div>";
+					print "<div class='mb-4 mt-3 fs-4'>".$this->getVar("map_intro_text")."</div>";
 				}		
 			}else{
 				print "<div class='container-xl pt-4'>";

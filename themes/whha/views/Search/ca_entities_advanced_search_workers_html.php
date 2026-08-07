@@ -4,19 +4,18 @@
         <div class="my-3 fs-4"><?= _t("Enter your search terms in the fields below."); ?></div>
 
 		<?= $this->formTag(['class' => 'row g-4']); ?>
-			<div class='col-md-12'><?= $this->formElement('_fulltext', ['label' => _t('Keyword'), 'description' => _t("Search across all fields in the database.")]); ?></div>
+			<div class='col-md-12'><?= $this->formElement('_fulltext', ['label' => _t('Keyword'), 'description' => '']); ?></div>
 			
-			<div class='col-md-12'><?= $this->formElement('ca_entities.preferred_labels.surname', ['label' => _t('Last Name'), 'description' => _t("Search by the worker's last name.")]); ?></div>		
+			<div class='col-md-12'><?= $this->formElement('ca_entities.preferred_labels', ['label' => _t('Name'), 'description' => _t("Search by the worker's last name.")]); ?></div>		
 			
 			<div class='col-md-6'><?= $this->formElement('ca_entities.gender', ['label' => _t('Gender'), 'class' => 'form-select w-100']); ?></div>
 			<div class='col-md-6'><?= $this->formElement('ca_entities.race_ethnicity', ['class' => 'form-select w-100', 'label' => _t('Race')]); ?></div>
 			<div class='col-md-6'><?= $this->formElement('ca_entities.legal_status', ['class' => 'form-select w-100', 'label' => _t('Legal Status')]); ?></div>
 			<div class='col-md-6'><?= $this->formElement('ca_entities.birthplace', ['class' => 'form-control w-100 h-100', 'label' => _t('Birthplace')]); ?></div>
-			<div class='col-md-6'><?= $this->formElement('ca_entities.occupation', ['class' => 'form-select w-100', 'label' => _t('Occupation')]); ?></div>
-			<div class='col-md-6'><?= $this->formElement('ca_entities.positions.position', ['class' => 'form-control w-100 h-100', 'label' => _t('Position')]); ?></div>
+			<div class='col-md-12'><?= $this->formElement('ca_entities.occupation', ['class' => 'form-select w-100', 'label' => _t('Occupation')]); ?></div>
 			
 			<div class='col-md-6'><?= $this->formElement("ca_entities.service_years", ["label" => _t("Year's in President's House"), "description" => _t("Search by a specific date or a date range <em>(e.g. 1970-1979)</em>")]); ?></div>
-			<div class='col-md-6'><?= $this->formElement('ca_entities.related.preferred_labels', ['select' => true, 'restrictToTypes' => array('administration'), 'label' => _t('Presidency')]); ?></div>
+			<div class='col-md-6'><?= $this->formElement('ca_entities.related.preferred_labels', ['select' => true, 'restrictToTypes' => array('administration'), 'label' => _t('Presidency'), 'description' => '', 'sort' => 'ca_entities.date']); ?></div>
 			
 			<div class="col-12 mb-3">
 				<?= $this->formHiddenElements(); ?>
@@ -41,10 +40,10 @@
 			<p>If you do not include AND/OR between search terms, AND is assumed; records containing all terms will be retrieved.</p>
 			<p>AND is assumed when search terms are entered in more than one box.</p>
 			<p>Use "quotation marks" to search for exact phrases.</p>
-			<p>e.g. "language" AND "phonetics"</p>
+			<p>e.g. "lady's" AND "maid"</p>
 
 			<h3>Wildcard</h3>
-			<p>For a better search return, consider using the asterisk (*) after the root of a word. For example, camp* will retrieve records containing the word "camp", "camps", and "camping".</p>
+			<p>For a better search return, consider using the asterisk (*) after the root of a word. For example, cook* will retrieve records containing the word "cook", "cooks", and "cooking."</p>
 		</div>
 	</div>
 

@@ -54,6 +54,7 @@
 								<input name="search" type="text" class="form-control rounded-0 border-black" id="heroSearchInput" placeholder="Find workers" aria-label="Search Bar">
 								<button type="submit" class="btn btn-primary ms-3" id="heroSearchButton" aria-label="Search button">Search</button>
 							</div>
+							<div class="form-text mt-1"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/workers"); ?></div>
 						</form>
 					</div>
 				</div>
@@ -83,7 +84,7 @@
 <div class="container">
 	<div class="row justify-content-center">
 		<div class="col-md-10 hpExplore py-5">
-			<H2 class="mb-3">Explore</H2>
+			<H2 class="display-4 mb-3">Explore</H2>
 			<div class="row g-5">
 				<div class="col-md-6 mb-5">
 					<?php print caNavLink($this->request, "<div class='exploreItem h-100'><div class='exploreItemImg large'>".caGetThemeGraphic($this->request, "explore_workers.jpg", array("alt" => "explore workers", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel large align-content-center'>Workers</div></div>", "text-decoration-none h-100", "", "Browse", "workers"); ?>	
@@ -91,17 +92,19 @@
 				<div class="col-md-6">
 					<div class="row">
 						<div class="col-12 pb-5 pb-lg-0 mb-5">
-							<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_presidencies.jpg", array("alt" => "explore presidencies", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Presidencies</div></div>", "text-decoration-none h-100", "", "Browse", "presidencies"); ?>
-						</div>
-						<div class="col-12 pb-5 pb-lg-0 mb-5">
 							<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_occupations.jpg", array("alt" => "explore occupations", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Occupations</div></div>", "text-decoration-none h-100", "", "Occupations", "index"); ?>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12 pb-5 pb-lg-0 mb-5">
+							<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_presidencies.jpg", array("alt" => "explore presidencies", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Presidencies</div></div>", "text-decoration-none h-100", "", "Browse", "presidencies"); ?>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="row g-5">
 				<div class="col-md-6 pb-5 pb-lg-0">
-					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_map.jpg", array("alt" => "explore birth and burial map", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Birth & Burial Map</div></div>", "text-decoration-none h-100", "", "Browse", "birth_burial_map"); ?>
+					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_birthplace.jpg", array("alt" => "explore birth and burial map", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Birth & Burial Map</div></div>", "text-decoration-none h-100", "", "Browse", "birth_burial_map"); ?>
 				</div>
 				<div class="col-md-6 pb-5 pb-lg-0">
 					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_collections.jpg", array("alt" => "explore stories", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Collections</div></div>", "text-decoration-none h-100", "", "Gallery", "index"); ?>
@@ -126,7 +129,4 @@
 			</div>
 		</div>
 	</div>
-</div>
-<div class="container-flex">
-	<div class="fade-out bg-black bg-opacity-25 text-bg-dark p-3 text-center shadow w-100 fixed-bottom display-4"><i class="bi bi-chevron-down"></i></div>
 </div>

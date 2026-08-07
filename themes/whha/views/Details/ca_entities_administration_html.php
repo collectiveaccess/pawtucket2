@@ -97,17 +97,17 @@ $media_options = array_merge($media_options, [
 	</div>
 	{{{<ifdef code="ca_entities.description">
 		<div class="col-md-6 col-lg-8 mb-4">		
-			<div class="bg-light py-3 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->			
+			<div class="bg-light py-3 pt-2 px-4 mb-3 h-100"><!-- height is to make the gray background of box same height as the containing row -->			
 			<div class="mb-3">^ca_entities.description</div>
 		</div>
 	</div></ifdef>}}}
 </div>
 {{{<ifcount code="ca_entities.related" restrictToTypes="staff" min="1">
 	<div class="row">
-		<div class="col"><h2>Staff</h2><hr></div>
+		<div class="col"><h2><unit relativeTo="ca_entities.related" restrictToTypes="staff" limit="1">^count </unit>Worker<ifcount code="ca_entities.related" restrictToTypes="staff" min="2">s</ifcount></h2><hr></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'browse', 'workers', array('facet' => 'administration_facet', 'id' => $t_item->get("ca_entities.entity_id"), '_advanced' => 0)); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'browse', 'related_workers', array('facet' => 'administration_facet', 'id' => $t_item->get("ca_entities.entity_id"), "sort" => "Name", "direction" => "asc", '_advanced' => 0)); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
 	</div>
