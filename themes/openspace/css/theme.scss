@@ -1,0 +1,26 @@
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: url("../assets/graphics/hero_1.jpg");
+
+    /* Full height */
+    height: 100vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/hero_1.jpg");
+    }
+    .divide{
+    	width:170px;
+    }
+}
+.hpExplore{
+	img{
+		height:250px;
+	}
+}
