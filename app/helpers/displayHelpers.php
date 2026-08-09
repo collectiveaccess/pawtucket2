@@ -5598,7 +5598,7 @@ function caExtractSettingValueByLocale($pa_settings, $ps_key, $ps_locale) {
  *
  * @return string
  */
-function caProcessReferenceTags($request, $text, $options=null) {
+function caProcessReferenceTags(RequestHTTP $request, ?string $text, ?array $options=null) {
 	$pm_page = caGetOption('page', $options, null);
 	$idnos = [];
 
