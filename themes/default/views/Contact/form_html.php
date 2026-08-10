@@ -71,52 +71,42 @@ if($id && $t_item->getPrimaryKey()){
 <?php
 }
 ?>
-<div class="row">
-	<div class="col-md-8">
-		<div class="bg-light px-4 pt-4 pb-2 mb-4">		
-			<div class="row mt-2">
-				<div class="col-md-6 mb-4">
-					<label for="name" class="form-label"><?= _t("Name"); ?></label>
-					<input type="text" class="form-control<?= (($errors["name"]) ? " is-invalid" : ""); ?>" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
-				</div><!-- end col -->
-				<div class="col-md-6 mb-4">
-					<label for="email" class="form-label"><?= _t("Email address"); ?></label>
-					<input type="text" class="form-control<?= (($errors["email"]) ? " is-invalid" : ""); ?>" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
-				</div><!-- end col -->
-			</div>
-		<?php
-			if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
-		?>
-				<div class="row">
-					<script type="text/javascript">
-						var gCaptchaRender = function(){
-							grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
-						};
-					</script>
-					<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
-					<div class="col-12 mb-4">
-						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
-					</div>
-				</div><!-- end row -->
-		<?php
-			}
-		?>
-			
-			<div class="row mb-2">
-				<div class="col-12 mb-4">
-					<label for="message" class="form-label"><?= _t("Message"); ?></label>
-					<textarea class="form-control<?= (($errors["message"]) ? " is-invalid" : ""); ?>" id="message" name="message" rows="5">{{{message}}}</textarea>
-				</div><!-- end col -->
-			</div><!-- end row -->
+<div class="bg-light px-4 pt-4 pb-2 mb-4">		
+	<div class="row mt-2">
+		<div class="col-md-4 mb-4">
+			<label for="name" class="form-label"><?= _t("Name"); ?></label>
+			<input type="text" class="form-control<?= (($errors["name"]) ? " is-invalid" : ""); ?>" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
+		</div><!-- end col -->
+		<div class="col-md-4 mb-4">
+			<label for="email" class="form-label"><?= _t("Email address"); ?></label>
+			<input type="text" class="form-control<?= (($errors["email"]) ? " is-invalid" : ""); ?>" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
+		</div><!-- end col -->
+<?php
+	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+				grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+			};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+		<div class="col-md-4 mb-4">
+			<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
 		</div>
-			<div class="row mb-4">
-				<div class="col-12 mb-4">
-					<button type="submit" class="btn btn-primary"><?= _t("Send"); ?></button>
-				</div>
-			</div>
-		</form>
-	</div>
-	<div class="col-md-4">
-		<div class="bg-light px-4 pt-4 pb-2 mb-4"><H2>Mission</H2>{{{contact_text}}}</div>
-	</div>
+<?php
+	}
+?>
+	</div><!-- end row -->
+	<div class="row mb-2">
+		<div class="col-md-8 mb-4">
+			<label for="message" class="form-label"><?= _t("Message"); ?></label>
+			<textarea class="form-control<?= (($errors["message"]) ? " is-invalid" : ""); ?>" id="message" name="message" rows="5">{{{message}}}</textarea>
+		</div><!-- end col -->
+	</div><!-- end row -->
 </div>
+	<div class="row mb-4">
+		<div class="col-12 mb-4">
+			<button type="submit" class="btn btn-primary"><?= _t("Send"); ?></button>
+		</div>
+	</div>
+</form>
