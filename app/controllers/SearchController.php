@@ -368,6 +368,9 @@ class SearchController extends FindController {
 		if ($exclude_fields_from_search = caGetOption('excludeFieldsFromSearch', $browse_info, null)) {
 			$options['excludeFieldsFromSearch'] = $exclude_fields_from_search;
 		}
+		if (caGetOption('omitSelfRelationships', $browse_info, null)) {
+			$options['omitSelfRelationships'] = true;
+		}
 		
 		
 		if (caGetOption('dontShowChildren', $browse_info, false)) {
