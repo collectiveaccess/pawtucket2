@@ -95,6 +95,7 @@ require_once(__CA_APP_DIR__."/helpers/logHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/requestHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/themeHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/lightboxHelpers.php");
+require_once(__CA_APP_DIR__."/helpers/informationServiceHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/initializeLocale.php");
 
 if (isset($_COOKIE['CA_'.__CA_APP_NAME__.'_ui_locale'])) {
