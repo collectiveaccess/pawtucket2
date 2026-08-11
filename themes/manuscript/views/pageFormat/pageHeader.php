@@ -74,6 +74,7 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+</head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-JSQKK7PZN1"></script>
 <script>
@@ -82,7 +83,6 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-JSQKK7PZN1');
 </script>
-</head>
 <body>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div id="imgHeader" class="container">
@@ -124,12 +124,7 @@ gtag('config', 'G-JSQKK7PZN1');
 				</form>-->
 				<ul class="nav navbar-nav navbar-left">
 					<!--<li><a href="http://manuscript_cookbook.whirl-i-gig.com/">Home</a></li>-->
-					<li class='active dropdown'><a href="#">Databases</a>
-						<ul class="dropdown-menu">
-							<li class="dropdown-item"><?php print caNavLink($this->request, 'Manuscripts', '', 'Search', 'advanced', 'manuscripts'); ?></li>
-							<li class="dropdown-item"><?php print caNavLink($this->request, 'Kitchen Artifacts', '', 'Search', 'advanced', 'utensils'); ?></li>
-						</ul>
-					</li>
+					<li class='active'><?php print caNavLink($this->request, 'Database', '', 'Search', 'advanced', 'manuscripts'); ?></li>
 					<li><a href="/blog">Blog</a></li>
 					<li><a href="/?post_type=adapted_recipes">Adapted Recipes</a></li>
 					<li><a href="/?post_type=essays">History</a></li>

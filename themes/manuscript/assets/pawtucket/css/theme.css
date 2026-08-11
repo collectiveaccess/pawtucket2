@@ -5,6 +5,7 @@ html {
 body {
 	font-family:"Times new Roman";
 	margin-bottom:165px;
+	font-size:16px;
 }
 @media only screen and (max-width: 990px) and (min-width: 768px){
 	.navbar-left > li{
@@ -90,6 +91,21 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
     text-transform: none;
     font-family: "Times new Roman";
+}
+H2, h2{
+	font-size: 22px;
+}
+H3, h3{
+	font-size: 20px;
+}
+H4, h4{
+	font-size: 22px;
+}
+H5, h5{
+	font-size: 18px;
+}
+H6, h6{
+	font-size: 16px;
 }
 .menuBar {
 	background-color: #7BA477;
@@ -184,7 +200,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .advSearch {
 	color:#fff;
-	font-size:11px;
+	font-size:12px;
 	margin-left:20px;
 }
 .advSearch:hover {
@@ -253,20 +269,20 @@ ul.list {
 
 .unit {
 	margin-bottom:12px;
-	font-size: 14px;
+	font-size: 16px;
 }
 
 .unit h5, .unit h6{
 	padding: 0;
-	font-size: 16px;
+	font-size: 18px;
 }
 
 .unit{
-	font-size: 14px;
+	font-size: 16px;
 }
 blockquote, blockquote p{
 	font-family: "Times new Roman";
-	font-size: 14px;
+	font-size: 64px;
 }
 
 .mediaPlaceholder{
@@ -379,18 +395,22 @@ div.advancedSearchField {
 .collectionResultListItem:hover{
 	height: 66px;
 }
-
+.collectionResultListItemText{
+	padding: 3px 9px;
+}
 .collectionResultListItemText:hover{
 	background-color: #ededed;
 	padding: 3px 9px;
 }
-
+.collectionResultListItemText a{
+	font-size:20px;
+}
 .bResultListItemContent{
 	height: 142px;
 }
 
 .bResultListItem .bResultListItemText .viewableLink{
-	font-size: 14px;
+	font-size: 18px;
 	color: #a3783c;
 }
 
@@ -411,16 +431,16 @@ div.advancedSearchField {
 }
 
 .bResultListItem .bResultListItemText a, .bResultItem .bResultItemText a{
-	font-size: 16px;
+	font-size: 18px;
 	color: #5a7957;
 }
 
 .bResultItem .bResultItemText{
-	font-size: 12px;
+	font-size: 14px;
 }
 
 .bResultListItem .bResultListItemText{
-	font-size: 14px;
+	font-size: 16px;
 }
 
 .bResultListItem:hover{
@@ -428,7 +448,7 @@ div.advancedSearchField {
 }
 
 h1 small{
-	font-size: 18px;
+	font-size: 20px;
 	padding-left: 25px;
 }
 
@@ -451,6 +471,9 @@ h1 small{
 .browse .btn{
 	background-color: #5a7957;
 	border-radius: 5px;
+}
+#bRefine a {
+  font-size: 16px;
 }
 
 /* SEARCH */
