@@ -31,20 +31,20 @@ $lightbox_sectionHeading = ucFirst($lightboxDisplayName["section_heading"]);
 # Collect the user links
 $user_links = "";
 if($this->request->isLoggedIn()){
-	$user_links .= "<li class='nav-item dropdown'><a class='nav-link".(($this->request->getController() == 'LoginReg') ? ' active' : '')."' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'><i class='bi bi-person-circle' aria-label='"._t('User Options')."'></i></a>
-						<ul class='dropdown-menu'>";
+	$user_links .= "<li class='nav-item dropdown'><a class='nav-link usericon".(($this->request->getController() == 'LoginReg') ? ' active' : '')."' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'><i class='bi bi-person-circle' aria-label='"._t('User Options')."'></i><span class='d-lg-none'> "._t('Your Account')."</span></a>
+						<ul class='dropdown-menu dropdown-menu-end mt-lg-2'>";
 	
 	$user_links .= '<li><div class="dropdown-header fw-medium">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).'<br>'.$this->request->user->get("email").'</div></li>';
 	$user_links .= "<li><hr class='dropdown-divider'></li>";
 	if(caDisplayLightbox($this->request)){
-		$user_links .= "<li>".caNavLink($this->request, $lightbox_sectionHeading, 'dropdown-item', '', 'Lightbox', 'Index', array())."</li>";
+		$user_links .= "<li>".caNavLink($this->request, $lightbox_sectionHeading, 'dropdown-item nav-link', '', 'Lightbox', 'Index', array())."</li>";
 	}
-	$user_links .= "<li>".caNavLink($this->request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array())."</li>";
+	$user_links .= "<li>".caNavLink($this->request, _t('User Profile'), 'dropdown-item nav-link', '', 'LoginReg', 'profileForm', array())."</li>";
 	
 	if ($this->request->config->get('use_submission_interface')) {
-		$user_links .= "<li>".caNavLink($this->request, _t('Submit content'), 'dropdown-item', '', 'Contribute', 'List', array())."</li>";
+		$user_links .= "<li>".caNavLink($this->request, _t('Submit content'), 'dropdown-item nav-link', '', 'Contribute', 'List', array())."</li>";
 	}
-	$user_links .= "<li>".caNavLink($this->request, _t('Logout'), 'dropdown-item', '', 'LoginReg', 'Logout', array())."</li>";
+	$user_links .= "<li>".caNavLink($this->request, _t('Logout'), 'dropdown-item nav-link', '', 'LoginReg', 'Logout', array())."</li>";
 	$user_links .= "</ul></li>";
 } else {	
 	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $user_links = "<li class='nav-item'>".caNavlink($this->request, _t('Login'), "nav-link".((strToLower($this->request->getController()) == "loginreg") ? " active" : ""), "", "LoginReg", "LoginForm", "", ((strToLower($this->request->getController()) == "loginreg") ? array("aria-current" => "page") : null))."</li>"; }
@@ -77,7 +77,7 @@ if($this->request->isLoggedIn()){
 			  <span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav nav-underline ms-auto mb-2 mb-lg-0 me-4">				
+				<ul class="navbar-nav mainmenu ms-auto mb-2 mb-lg-0 me-4">				
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="nav-item dropdown py-3 py-lg-0">
 						<a class="text-nowrap nav-link<?php print (in_array(strToLower($this->request->getController()), array("gallery"))) ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('Resources'); ?><i class="bi bi-chevron-down ms-1 fs-6"></i></a>
@@ -99,11 +99,6 @@ if($this->request->isLoggedIn()){
 							<li><a href="{{{rights_repro_url}}}" class="nav-link"><?= _t("Usage Rights/Reproductions"); ?></a></li>
 						</ul>
 					</li>
-<?php
-					if($user_links){
-						print $user_links;
-					}
-?>
 
 				</ul>
 				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
@@ -114,6 +109,11 @@ if($this->request->isLoggedIn()){
 					</div>
 					<div class="form-text mt-0 ps-4"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/workers"); ?></div>
 				</form>
+<?php
+					if($user_links){
+						print '<ul class="navbar-nav mb-2 mb-lg-3 mt-3 mt-lg-0">'.$user_links.'</ul>';
+					}
+?>
 				
 			</div>
 		</div>

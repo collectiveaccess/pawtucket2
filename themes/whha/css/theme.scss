@@ -220,8 +220,16 @@ a.double-border:hover{
 		border:0px !important;
 	}
 }
+.navbar-nav .nav-link{
+	border-bottom: 1px solid #FFF;
+}
 .navbar-nav .nav-link.active, .navbar-nav .nav-link.show, .navbar-nav .nav-link:hover {
 	border-bottom: 1px dashed $primary;
+}
+@media (min-width: 992px){
+	.navbar-nav .nav-link.usericon.active, .navbar-nav .nav-link.usericon.show, .navbar-nav .nav-link.usericon:hover {
+		border-bottom: 1px solid #FFF;
+	}
 }
 /* ------------------------ Footer ------------------------- */
 footer {
