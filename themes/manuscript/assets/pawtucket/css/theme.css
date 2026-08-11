@@ -266,7 +266,10 @@ ul.list {
 
 
 /* Detail */
-
+.detail h2 {
+  font-size: 20px;
+  text-transform: none;
+}
 .unit {
 	margin-bottom:12px;
 	font-size: 16px;
@@ -403,7 +406,8 @@ div.advancedSearchField {
 	padding: 3px 9px;
 }
 .collectionResultListItemText a{
-	font-size:20px;
+	font-size:18px;
+	line-height: 1.1em;
 }
 .bResultListItemContent{
 	height: 142px;
