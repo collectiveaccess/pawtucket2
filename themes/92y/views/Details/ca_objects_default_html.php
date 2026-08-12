@@ -158,6 +158,38 @@ if(!$vb_archive_staff){
 								<dd>^ca_objects.general_notes</dd>
 							</ifdef>					
 						</dl>}}}
+					
+					<div class="col-lg-12" id="transcriptCol">
+<?php
+	# --- only display this div if there are results or a transcript
+?>
+			<dl class="position-relative h-100">
+					<dt><?php print _t("Transcript"); ?></dt>
+					<dd class="position-relative">
+<?php
+	$resultDescWordList = $this->getVar('resultDescWordList');
+	if(is_array($resultDescWordList) && sizeof($resultDescWordList)){
+?>
+							<div id="transcriptSearchResultList" class="fw-bolder mt-1 fs-5"><?= _t("Jump to Search Terms"); ?></div>
+							<div class="list-group mb-3 mt-1" aria-labelledby="transcriptSearchResultList">		
+<?php
+		$tc = new TimecodeParser();
+		foreach($resultDescWordList ?? [] as $w) {
+			if((int)$w['start'] <= 0) { continue; }
+			$tc->parse($w['start']);
+			print "<a href='#viewerContainer' class='list-group-item list-group-item-action search-term-timecode' onclick='seek(this, {$w['representation_id']}, {$w['start']})'>".$w['text'].' ('.$tc->getText().')</a>';
+		}
+?>
+							</div>
+<?php
+	}
+?>			
+
+							<div id="transcript"></div>
+					</dd>
+				</dl>
+		</div>
+					
 						<!-- {{{<ifdef code="ca_objects.work_description">
 							<div class='unit'>
 								<h6><?= _t('Description'); ?></h6>
@@ -183,3 +215,24 @@ if(!$vb_archive_staff){
 <?php
 }
 ?>
+
+<script>
+		function seek(e, id, t) {
+			document.querySelectorAll('.search-term-timecode').forEach(el => el.setAttribute('aria-current', 'false'));
+			document.querySelectorAll('.search-term-timecode').forEach(el => el.classList.remove('active'));
+			e.classList.add('active');
+			const m = pawtucketUIApps['mediaViewerManager']['instance'];
+			
+			// Switch to video
+			m.renderByID(id);
+			if(!m) { return; }
+			const v = m.getCurrentViewer();
+			if(!v) { return; }
+			
+			// Seek to just before word
+			v.seek(t-1);
+			
+			// Make sure video is now playing
+			//v.play();
+		}
+	</script>
