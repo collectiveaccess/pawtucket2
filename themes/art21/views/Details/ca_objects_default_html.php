@@ -157,6 +157,27 @@ if($show_nav){
 					</ifdef>
 					
 				</dl>}}}
+				
+<?php
+	$resultDescWordList = $this->getVar('resultDescWordList');
+	if(is_array($resultDescWordList) && sizeof($resultDescWordList)){
+?>
+							<div id="transcriptSearchResultList" class="fw-bolder mt-1 fs-5"><?= _t("Jump to Search Terms"); ?></div>
+							<div class="list-group mb-3 mt-1" aria-labelledby="transcriptSearchResultList">		
+<?php
+		$tc = new TimecodeParser();
+		foreach($resultDescWordList ?? [] as $w) {
+			if((int)$w['start'] <= 0) { continue; }
+			$tc->parse($w['start']);
+			print "<a href='#viewerContainer' class='list-group-item list-group-item-action search-term-timecode' onclick='seek(this, {$w['representation_id']}, {$w['start']})'>".$w['text'].' ('.$tc->getText().')</a>';
+		}
+	}
+?>
+				<div id="transcriptCol">
+					<dt>Transcript</dt>
+					<div id="transcript" style="overflow: auto; max-height 600px;></div>
+				</div>
+				
 				<div><div id="map" class="map">{{{map}}}</div></div>
 			</div>
 			
@@ -180,3 +201,24 @@ if($show_nav){
 			<unit relativeTo="ca_places" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-3 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br>^relationship_typename</l></dd></unit>
 		</dl>
 	</ifcount>}}}
+
+<script>
+		function seek(e, id, t) {
+			document.querySelectorAll('.search-term-timecode').forEach(el => el.setAttribute('aria-current', 'false'));
+			document.querySelectorAll('.search-term-timecode').forEach(el => el.classList.remove('active'));
+			e.classList.add('active');
+			const m = pawtucketUIApps['mediaViewerManager']['instance'];
+			
+			// Switch to video
+			m.renderByID(id);
+			if(!m) { return; }
+			const v = m.getCurrentViewer();
+			if(!v) { return; }
+			
+			// Seek to just before word
+			v.seek(t-1);
+			
+			// Make sure video is now playing
+			//v.play();
+		}
+	</script>

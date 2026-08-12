@@ -4461,8 +4461,7 @@ function caProcessBottomLineTemplateForPlacement($po_request, $pa_placement, $pr
  *		display = media_display.conf display version to use. [Default is 'detail']
  *		displayAnnotations = Mode of display for annotations on representation. Valid values are: viewer (in viewer), div (in external div with class #detailAnnotations), none (no display) [Default is none]
  *		displayAnnotationTemplate = Template to use when formatting list of annotations [Default is the annotation title (^ca_representation_annotations.preferred_labels.name)]
- *		
- *	
+ *
  * @return string HTML output
  *
  * @see caGetMediaViewerHTML
@@ -4575,7 +4574,7 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 		$rep = [
 			'id' => $rep_id,
 			'representation_id' => $rep_id,
-			'oriinal_mimetype' => $mimetype,
+			'original_mimetype' => $mimetype,
 			'mimetype' => $qr->get("ca_object_representations.media.{$display_version}.mimetype"),
 			'media_class' => $use_embedded_player ? 'embed' : caGetMediaClass($mimetype),
 			'original_url' => $qr->get("ca_object_representations.media.original.url"),
@@ -5444,19 +5443,21 @@ function caExtractSettingValueByLocale($pa_settings, $ps_key, $ps_locale) {
 /**
  *
  *
- * @param RequestHTTP $po_request
- * @param string $ps_text
- * @param array $pa_options Options include:
+ * @param RequestHTTP $request
+ * @param string $text
+ * @param array $options Options include:
  *      page = Page_id or path to evaluate media within. [Default is null]
  *		value_id = 
  *
  * @return string
  */
-function caProcessReferenceTags($request, $text, $options=null) {
+function caProcessReferenceTags(RequestHTTP $request, ?string $text, ?array $options=null) {
 	$pm_page = caGetOption('page', $options, null);
 	$idnos = [];
 
-	$allowed_tags = ['b', 'i', 'em', 'strong', 'u', 'strike', 'img', 'video', 'audio', 'div', 'span']; // TODO: make configurable
+	if(!is_array($allowed_tags = $request->getAppConfig()->getList('reference_tag_allowed_html_tags'))) {
+		$allowed_tags = ['b', 'i', 'em', 'strong', 'u', 'strike', 'img', 'video', 'audio', 'div', 'span']; 
+	}
 
 	$text = html_entity_decode($text);
 	$value_id = caGetOption('value_id', $options, null);
@@ -5467,6 +5468,10 @@ function caProcessReferenceTags($request, $text, $options=null) {
 		'object' => 'ca_objects', 'entity' => 'ca_entities', 'place' => 'ca_places',
 		'occurrence' => 'ca_occurrences', 'collection' => 'ca_collections', 'loan' => 'ca_loans',
 		'movement' => 'ca_movements', 'location' => 'ca_storage_locations', 'media' => 'ca_site_page_media', 'mediaRef' => 'ca_attributes'];
+	
+	if(is_array($additional_tags = $request->getAppConfig()->getAssoc('reference_tag_aliases'))) {
+		$tags = array_merge($tags, $additional_tags);
+	}
 	
 	// Old style (bbcode-like) tags
 	foreach($tags as $ref_tag => $ref_type
