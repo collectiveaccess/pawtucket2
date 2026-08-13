@@ -585,6 +585,11 @@ footer {
 		box-shadow: inset 0 0 0 7px #fff,inset 0 0 0 8px #252525 !important;
 	}
 }
+.presidencies{
+	#browseResultsContainer .card img.object-fit-cover {
+		object-position: top center !important;
+	}
+}
 #bRefine{
 	/* override in default view */
 /*

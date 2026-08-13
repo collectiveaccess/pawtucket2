@@ -69,9 +69,6 @@ if($this->request->isLoggedIn()){
 	<div class="titleBar bg-dark-blue px-2 pb-2 pt-2 text-center"><a href="https://www.whitehousehistory.org"><?= caGetThemeGraphic($this->request, 'WHHA_Logo_Alt-white.png', array("class" => "pb-1 pt-1", "alt" => "White House Historical Association")); ?></a></div>
 	<nav class="navbar navbar-expand-lg shadow-sm bg-white px-md-4 z-2">
 		<div class="container-fluid">
-			<!--<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP_Text_SingleLine.png', array("alt" => "Site logo", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>-->
-			<!--<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP_Text_Stacked.png', array("alt" => "Site logo", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>-->
-			<!---->
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP-TextLogo-Stacked-Lines.png', array("alt" => "White House Workers History Project", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
