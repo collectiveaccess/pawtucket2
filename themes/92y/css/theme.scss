@@ -124,6 +124,11 @@ footer{
 			}
 		}
 	}
+	#bLetterBar{
+		.list-inline-item a{
+			text-transform:uppercase;
+		}
+	}
 }
 /* ------------------ detail ------------------------ */
 .detail{

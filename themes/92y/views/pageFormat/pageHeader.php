@@ -77,10 +77,7 @@ if($this->request->isLoggedIn()){
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
-					<?= $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
-					</li>
+					<?= $this->render("pageFormat/browseMenu.php"); ?>
 <?php
 					if($user_links){
 						print $user_links;

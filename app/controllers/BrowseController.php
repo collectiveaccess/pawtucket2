@@ -459,10 +459,13 @@ class BrowseController extends FindController {
 		}
 		
 		switch($view) {
-			case 'xlsx':
-			case 'pptx':
 			case 'pdf':
 				$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $browse_info, $search_expression ?? 'browse')), $this->getCriteriaForDisplay($o_browse));
+				break;
+			case 'xlsx':
+			case 'pptx':
+				$export_filename = $this->request->getParameter("export_filename", pString, ['forcePurify' => true]);
+				$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(($export_filename) ? $export_filename : 'browse'), $this->getCriteriaForDisplay($o_browse));
 				break;
 			case 'timelineData':
 				$this->view->setVar('view', 'timeline');

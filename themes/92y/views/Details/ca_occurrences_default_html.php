@@ -163,7 +163,7 @@ if($this->request->user->hasRole($staff_role)){
 				<ifdef code="ca_occurrences.description">
 					<dt><?= _t('Abstract'); ?></dt>
 					<dd>
-						^ca_occurrences.description
+						<unit relativeTo="ca_occurrences.description" delimiter="<br/><br/>">^ca_occurrences.description</unit>
 					</dd>
 				</ifdef>
 <?php
@@ -197,14 +197,15 @@ if($this->request->user->hasRole($staff_role)){
 <?php
 					}
 				}
-				if($t_item->get("ca_occurrences.ev_secondary_series")){
-					if($links = caGetBrowseLinks($t_item, 'ca_occurrences.ev_secondary_series', ['template' => '<l>^ca_occurrences.ev_secondary_series</l>', 'linkTemplate' => '^LINK'])) {
 ?>
-						<dt><?= _t('Secondary Series'); ?></dt>
-						<dd><?= join(", ", $links); ?></dd>
-<?php
-					}
-				}
+				
+				<ifdef code="ca_occurrences.ev_secondary_series">
+					<dt><?= _t('Secondary Series'); ?></dt>
+					<dd>
+						^ca_occurrences.ev_secondary_series%delimiter=,_
+					</dd>
+				</ifdef>
+<?php			
 	if($vb_archive_staff){
 ?>
 				<ifdef code="ca_occurrences.bo_purpose|ca_occurrences.bo_type|ca_occurrences.bo_amount|ca_occurrences.bo_date|ca_occurrences.bo_notes">

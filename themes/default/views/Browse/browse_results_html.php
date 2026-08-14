@@ -128,7 +128,7 @@ if (!$ajax) {	// !ajax
 							<ul class="dropdown-menu" role='menu'>
 <?php
 							foreach($va_export_formats as $va_export_format){
-								print "<li class='dropdown-item' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $browse_key))."</li>";
+								print "<li class='dropdown-item' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => $va_export_format["type"], "export_filename" => (($va_export_format["filename"]) ? $va_export_format["filename"] : _t("results")), "download" => true, "export_format" => $va_export_format["code"], "key" => $browse_key))."</li>";
 							}
 ?>
 							</ul>
