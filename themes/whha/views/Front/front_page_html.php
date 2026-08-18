@@ -45,7 +45,7 @@
 	<div class="container-fluid h-100 heroLogoContainer">
 		<div class="row h-100 justify-content-center align-items-center heroLogo">
 			<div class="col-md-4 img-fluid">
-				<?php print caGetThemeGraphic($this->request, "WHWHP_Text_Stacked.png", array("alt" => "White House Workers History Project")); ?>
+				<h1 class="p-0 m-0"><?php print caGetThemeGraphic($this->request, "WHWHP_Text_Stacked.png", array("alt" => "White House Workers History Project")); ?></h1>
 				<div class="row justify-content-center heroSearch">
 					<div class="col-md-10 pt-3 mt-3">
 						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'Workers'); ?>">

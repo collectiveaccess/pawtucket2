@@ -40,7 +40,7 @@
 			<div class="row justify-content-center">
 <?php
 		while($qr_results->nextHit()){
-			if(!($img = $qr_results->get("ca_list_items.icon.original", array("class" => "object-fit-cover w-100 shadow")))){
+			if(!($img = $qr_results->get("ca_list_items.icon.original", array("class" => "object-fit-cover w-100 shadow", "alt" => "image of ".$qr_results->get("ca_list_item_labels.name_plural"))))){
 				$img = caGetThemeGraphic($this->request, "explore_workers.jpg", array("alt" => "explore workers", "class" => "object-fit-cover w-100 shadow"));
 			}
 			print "<div class='col-md-6 col-lg-3 pb-5 pb-lg-0 mb-4'>".

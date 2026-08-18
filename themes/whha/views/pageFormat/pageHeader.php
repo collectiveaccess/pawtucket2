@@ -66,7 +66,7 @@ if($this->request->isLoggedIn()){
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
-	<div class="titleBar bg-dark-blue px-2 pb-2 pt-2 text-center"><a href="https://www.whitehousehistory.org"><?= caGetThemeGraphic($this->request, 'WHHA_Logo_Alt-white.png', array("class" => "pb-1 pt-1", "alt" => "White House Historical Association")); ?></a></div>
+	<header class="titleBar bg-dark-blue px-2 pb-2 pt-2 text-center"><a href="https://www.whitehousehistory.org"><?= caGetThemeGraphic($this->request, 'WHHA_Logo_Alt-white.png', array("class" => "pb-1 pt-1", "alt" => "White House Historical Association")); ?></a></header>
 	<nav class="navbar navbar-expand-lg shadow-sm bg-white px-md-4 z-2">
 		<div class="container-fluid">
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'WHWHP-TextLogo-Stacked-Lines.png', array("alt" => "White House Workers History Project", "role" => "banner")), "navbar-brand  img-fluid ms-md-2", "", "", ""); ?>
@@ -184,7 +184,7 @@ if($this->request->isLoggedIn()){
 ?>				
 					</h1>
 					<div class="divider">
-					  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="8" viewBox="0 0 46 8" fill="none" role="graphics-document"><path d="M45.0482 3.05535H41.7106L40.6795 0L39.6493 3.05535H36.3108L39.0116 4.94377L37.9787 8L40.6795 6.11069L43.3803 8L42.3483 4.94289L45.0482 3.05535ZM24.0303 3.05535L23.0001 0L21.9699 3.05535H18.6314L21.3322 4.94377L20.2994 8L23.0001 6.11069L25.7 8L24.668 4.94289L27.3688 3.05447L24.0303 3.05535ZM6.35095 3.05535L5.31986 0L4.28877 3.05535H0.951172L3.65194 4.94377L2.61909 8L5.31986 6.11069L8.01975 8L6.98778 4.94289L9.68855 3.05447L6.35095 3.05535Z" fill="#B0B6BD"></path></svg>
+					  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="8" viewBox="0 0 46 8" fill="none" role="graphics-document" alt="3 stars"><path d="M45.0482 3.05535H41.7106L40.6795 0L39.6493 3.05535H36.3108L39.0116 4.94377L37.9787 8L40.6795 6.11069L43.3803 8L42.3483 4.94289L45.0482 3.05535ZM24.0303 3.05535L23.0001 0L21.9699 3.05535H18.6314L21.3322 4.94377L20.2994 8L23.0001 6.11069L25.7 8L24.668 4.94289L27.3688 3.05447L24.0303 3.05535ZM6.35095 3.05535L5.31986 0L4.28877 3.05535H0.951172L3.65194 4.94377L2.61909 8L5.31986 6.11069L8.01975 8L6.98778 4.94289L9.68855 3.05447L6.35095 3.05535Z" fill="#B0B6BD"></path></svg>
 					</div>
 				</div>
 			</div>
