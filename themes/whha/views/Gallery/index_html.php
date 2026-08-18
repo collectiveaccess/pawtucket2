@@ -39,7 +39,7 @@
 ?>
 				<H2><?php print $o_gallery_config->get("landing_page_featured_heading"); ?></H2>
 				<div id="galleryLandingFeatured" class="bg-body-tertiary mb-5 py-3 double-border">
-					<div class="row justify-content-center pt-3 pb-4 px-5">
+					<div class="row justify-content-center pt-3 pb-4 px-2 px-lg-5">
 						<div class="col">
 							
 							<div class="row">
@@ -81,7 +81,7 @@
 									<div class='card-text small text-body-secondary mb-0 pb-0'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("record") : _t("records"))."</div>
 								</div>
 							</div>";
-				$va_set_links[] = "<div class='col-sm-6 col-lg-4 d-flex'>".caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id)."</div>";
+				$va_set_links[] = "<div class='col-sm-6 col-lg-4 d-flex mb-4'>".caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id)."</div>";
 			}
 		}
 		

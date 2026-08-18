@@ -319,9 +319,22 @@ footer {
 		height:250px;
 	}
 }
-
-.heroLogo {
-    margin-top: -7%;
+@media (min-width: 768px){
+	.heroLogoContainer{
+		top:0px;
+		position:absolute;
+	}
+	.heroLogo {
+		margin-top: -7%;
+	}
+	#heroSearchInput{
+		width:100%;
+	}
+}
+@media (min-width: 992px){
+	#heroSearchInput{
+		width:1%;
+	}
 }
 /*.heroSearch{
 	margin-bottom: 22%;
@@ -591,6 +604,7 @@ footer {
 .presidencies{
 	#browseResultsContainer .card img.object-fit-cover {
 		object-position: top center !important;
+		height:300px;
 	}
 }
 #bRefine{

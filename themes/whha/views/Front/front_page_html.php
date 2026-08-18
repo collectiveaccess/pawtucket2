@@ -40,39 +40,37 @@
 	<div class="img-fluid shadow border border-white p-2"><?php print caGetThemeGraphic($this->request, "WHWHP_LandingPage_H.png", array("class" => "border border-white shadow", "alt" => "White House Workers History Project and collage of workers' silhouettes in window frame")); ?></div>
 </div>-->
 <div class="position-relative img-fluid">
-	<?php print caGetThemeGraphic($this->request, "bg_windows_hero.png", array("alt" => "Workers in Windows")); ?>
-
-	<div class="container-fluid h-100 position-absolute top-0">
+	<?php print caGetThemeGraphic($this->request, "bg_windows_hero.png", array("class" => "d-none d-md-inline", "alt" => "Workers in Windows")); ?>
+	<?php print caGetThemeGraphic($this->request, "bg_windows_hero_mobile.png", array("class" => "d-md-none", "alt" => "Workers in Windows")); ?>
+	<div class="container-fluid h-100 heroLogoContainer">
 		<div class="row h-100 justify-content-center align-items-center heroLogo">
 			<div class="col-md-4 img-fluid">
 				<?php print caGetThemeGraphic($this->request, "WHWHP_Text_Stacked.png", array("alt" => "White House Workers History Project")); ?>
 				<div class="row justify-content-center heroSearch">
 					<div class="col-md-10 pt-3 mt-3">
 						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'Workers'); ?>">
-							<div class="input-group">
+							<div class="input-group justify-content-md-center">
 								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
-								<input name="search" type="text" class="form-control rounded-0 border-black" id="heroSearchInput" placeholder="Find workers" aria-label="Search Bar">
-								<button type="submit" class="btn btn-primary ms-3" id="heroSearchButton" aria-label="Search button">Search</button>
+								<input name="search" type="text" class="form-control rounded-0 border-black mb-md-2 mb-lg-0" id="heroSearchInput" placeholder="Find workers" aria-label="Search Bar">
+								<button type="submit" class="btn btn-primary ms-3 ms-md-0 ms-lg-3" id="heroSearchButton" aria-label="Search button">Search</button>
 							</div>
-							<div class="form-text mt-1"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/workers"); ?></div>
+							<div class="form-text mt-1 text-md-center text-lg-start"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/workers"); ?></div>
 						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-
-<?php
+	<?php
 	$vs_hp_intro = $this->getVar("hp_intro");
 	if($vs_hp_intro){
 ?>
-		<div class="container mt-n5">
-			<div class="row justify-content-center mt-n5">
-				<div class="col-md-6 mb-5 pb-5 text-center mt-n5">
+		<div class="container mt-5 mt-md-n5">
+			<div class="row justify-content-center mt-md-n5">
+				<div class="col-md-6 mb-md-5 pb-md-5 text-center mt-md-n5">
 <?php
 					if($vs_hp_intro){
-						print "<div class='display-3 lh-sm'>".$vs_hp_intro."</div>";
+						print "<div class='display-4 display-md-3 lh-sm'>".$vs_hp_intro."</div>";
 					}
 ?>		
 				</div>
@@ -81,11 +79,14 @@
 <?php
 	}
 ?>
+</div>
+
+
 <div class="container">
 	<div class="row justify-content-center">
-		<div class="col-md-10 hpExplore py-5">
+		<div class="col-12 col-lg-10 hpExplore py-5">
 			<H2 class="display-4 mb-3">Explore</H2>
-			<div class="row g-5">
+			<div class="row g-md-5">
 				<div class="col-md-6 mb-5">
 					<?php print caNavLink($this->request, "<div class='exploreItem h-100'><div class='exploreItemImg large'>".caGetThemeGraphic($this->request, "explore_workers.jpg", array("alt" => "explore workers", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel large align-content-center'>Workers</div></div>", "text-decoration-none h-100", "", "Browse", "workers"); ?>	
 				</div>
@@ -96,13 +97,13 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-12 pb-5 pb-lg-0 mb-5">
+						<div class="col-12 pb-5 pb-md-0 mb-5">
 							<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_presidencies.jpg", array("alt" => "explore presidencies", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Presidencies</div></div>", "text-decoration-none h-100", "", "Browse", "presidencies"); ?>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row g-5">
+			<div class="row g-md-5">
 				<div class="col-md-6 pb-5 pb-lg-0">
 					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_birthplace.jpg", array("alt" => "explore birth and burial map", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Birth & Burial Map</div></div>", "text-decoration-none h-100", "", "Browse", "birth_burial_map"); ?>
 				</div>

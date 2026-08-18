@@ -44,8 +44,8 @@
 			<div class="bg-dark text-bg-dark px-0 py-3">
 				<div class="container-lg">
 					<div class="row">
-						<div class="col-md-5 offset-md-1 text-sm-start"><a href="https://www.whitehousehistory.org/about/terms-of-use-privacy-policy" class="text-bg-dark"><?= _t("Terms of Use and Privacy Policy"); ?></a></div>
-						<div class="col-md-5 text-sm-end">The White House Historical Association &copy; <?= date("Y"); ?></div>
+						<div class="col-md-5 offset-md-1 text-md-start"><a href="https://www.whitehousehistory.org/about/terms-of-use-privacy-policy" class="text-bg-dark"><?= _t("Terms of Use and Privacy Policy"); ?></a></div>
+						<div class="col-md-5 text-md-end">The White House Historical Association &copy; <?= date("Y"); ?></div>
 					</div>
 				</div>
 			</div>

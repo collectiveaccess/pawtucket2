@@ -98,7 +98,7 @@ if($this->request->isLoggedIn()){
 					</li>
 
 				</ul>
-				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
+				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search" class="py-md-1">
 					<div class="input-group ps-4 pe-4">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 						<input type="text" name="search" class="form-control rounded-0 border-black me-2" id="nav-search-input" placeholder="Search">
