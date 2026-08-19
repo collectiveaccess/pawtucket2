@@ -59,7 +59,7 @@ if($this->request->isLoggedIn()){
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 	
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
-	<link rel="icon" href="<?= caGetThemeGraphicURL($this->request, 'Favicon-Window-Border.png'); ?>" type="image/x-icon">
+	<link rel="icon" href="<?= caGetThemeGraphicURL($this->request, 'Favicon-Window.png'); ?>" type="image/x-icon">
 	<script>
 		let pawtucketUIApps = {};
 	</script>

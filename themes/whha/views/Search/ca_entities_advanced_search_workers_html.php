@@ -15,7 +15,7 @@
 			<div class='col-md-12'><?= $this->formElement('ca_entities.occupation', ['class' => 'form-select w-100', 'label' => _t('Occupation')]); ?></div>
 			
 			<div class='col-md-6'><?= $this->formElement("ca_entities.service_years", ["label" => _t("Year's in President's House"), "description" => _t("Search by a specific date or a date range <em>(e.g. 1970-1979)</em>")]); ?></div>
-			<div class='col-md-6'><?= $this->formElement('ca_entities.related.preferred_labels', ['select' => true, 'restrictToTypes' => array('administration'), 'label' => _t('Presidency'), 'description' => '', 'sort' => 'ca_entities.date']); ?></div>
+			<div class='col-md-6'><?= $this->formElement('ca_entities.related.preferred_labels', ['select' => true, 'restrictToTypes' => array('administration'), 'class' => 'form-select w-100', 'label' => _t('Presidency'), 'description' => '', 'sort' => 'ca_entities.date']); ?></div>
 			
 			<div class="col-12 mb-3">
 				<?= $this->formHiddenElements(); ?>
