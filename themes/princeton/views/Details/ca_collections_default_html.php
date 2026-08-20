@@ -202,7 +202,7 @@
 {{{<ifcount code="ca_objects" min="9">
 			<div class="row">
 				<div class="col-sm-12 text-center">
-					<?php print caNavLink($this->request, "Browse All Collection Objects", "btn btn-default", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
+					<?php print caNavLink($this->request, "Browse All Collection Objects", "btn btn-default", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"), "sort" => "Collection Order")); ?>
 				</div>
 			</div>
 </ifcount>}}}

@@ -108,7 +108,7 @@
 						foreach($va_gender_sex as $vn_i => $vs_gender_sex){
 							$vs_tmp = "";
 							if(is_array($va_source) && $va_source_text[$vn_i]){
-								$vs_tmp = caDetailLink($this->request, $va_source_text[$vn_i], "", "ca_occurrences", $va_source[$vn_i]);
+								$vs_tmp = caDetailLink($this->request, $va_source_text[$vn_i], "", "ca_objects", $va_source[$vn_i]);
 							}
 							$va_tmp[] = $vs_gender_sex.(($vs_tmp) ? ", Source: ".$vs_tmp : "");
 						}
@@ -144,11 +144,21 @@
 												</unit></ifcount>", array("checkAccess" => $va_access_values));
 			$va_interstitial_info = explode(";;;", $vs_tmp);
 	
+			$o_db = new Db();
+			$q_rels = $o_db->query("SELECT exe.relation_id from ca_entities_x_entities exe INNER JOIN ca_entities as e_left ON exe.entity_left_id = e_left.entity_id INNER JOIN ca_entities as e_right ON exe.entity_right_id = e_right.entity_id WHERE (exe.entity_right_id = ".$t_item->get("ca_entities.entity_id")." OR exe.entity_left_id = ".$t_item->get("ca_entities.entity_id").") AND e_right.deleted != 1 AND e_left.deleted != 1 ORDER BY exe.rank");
+			$va_source_name = $va_source_id = array();
+			if($q_rels->numRows()){
+				while($q_rels->nextRow()){
+					$t_rel = new ca_entities_x_entities($q_rels->get("ca_entities_x_entities.relation_id"));
+					$va_source_name[] = $t_rel->get("ca_entities_x_entities.source_object", array("convertCodesToDisplayText" => true));
+					$va_source_id[] = $t_rel->get("ca_entities_x_entities.source_object", array("convertCodesToDisplayText" => false));
+				}
+			}
 			# --- a space is included in the template because otherwise it returns nothing if there is no source and the arrays no longer line up properly
-			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities_x_entities.rank'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values));
-			$va_source_name = explode(";;;", $vs_tmp);
-			$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities_x_entities.rank'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values, "convertCodesToDisplayText" => false));
-			$va_source_id = explode(";;;", $vs_tmp);
+			#$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities_x_entities.rank'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values));
+			#$va_source_name = explode(";;;", $vs_tmp);
+			#$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1'><unit relativeTo='ca_entities_x_entities' delimiter=';;;' sort='ca_entities_x_entities.rank'>^ca_entities_x_entities.source_object </unit></ifcount>", array("checkAccess" => $va_access_values, "convertCodesToDisplayText" => false));
+			#$va_source_id = explode(";;;", $vs_tmp);
 
 			$vs_tmp = "";
 			foreach($va_entity_names_as_links as $vn_i => $vs_entity_names_as_link){

@@ -77,24 +77,22 @@
 				}
 ?>
 				<div class='col-sm-12 col-md-<?php print ($vs_map) ? "5" : "7"; ?>'>
-					<div class="stoneBg">				
-						<H4>{{{^ca_places.preferred_labels.name}}}</H4>
-						{{{<ifdef code="ca_places.parent_id"><H6><unit relativeTo="ca_places.parent"><l>^ca_places.preferred_labels.name</l></unit> > <unit relativeTo="ca_places">^ca_places.preferred_labels.name</unit></H6></ifdef>}}}
-						
-						{{{<ifdef code="ca_places.nonpreferred_labels.name"><div class='unit'><H6>Alternate Name(s)</H6><unit relativeTo="ca_places" delimiter="<br/>">^ca_places.nonpreferred_labels.name</unit></div></ifdef>}}}
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-						
-						{{{<ifdef code="ca_places.description">
-							<div class="unit"><h6>Description</h6>
-								<div class="trimText">^ca_places.description</div>
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_places.community_input_items.comments_objects">
-							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_places.community_input_items.comment_reference_objects"><h6>Dialogue</h6>
-								<div class="trimText">^ca_places.community_input_items.comments_objects</div>
-							</div>
-						</ifdef>}}}
-					</div><!-- end stoneBg -->
+					<H4>{{{^ca_places.preferred_labels.name}}}</H4>
+					{{{<ifdef code="ca_places.parent_id"><H6><unit relativeTo="ca_places.parent"><l>^ca_places.preferred_labels.name</l></unit> > <unit relativeTo="ca_places">^ca_places.preferred_labels.name</unit></H6></ifdef>}}}
+					
+					{{{<ifdef code="ca_places.nonpreferred_labels.name"><div class='unit'><H6>Alternate Name(s)</H6><unit relativeTo="ca_places" delimiter="<br/>">^ca_places.nonpreferred_labels.name</unit></div></ifdef>}}}
+					{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+					
+					{{{<ifdef code="ca_places.description">
+						<div class="unit"><h6>Description</h6>
+							<div class="trimText">^ca_places.description</div>
+						</div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_places.community_input_items.comments_objects">
+						<div class='unit' data-toggle="popover" title="Source" data-content="^ca_places.community_input_items.comment_reference_objects"><h6>Dialogue</h6>
+							<div class="trimText">^ca_places.community_input_items.comments_objects</div>
+						</div>
+					</ifdef>}}}
 					{{{<ifdef code="ca_places.public_notes">
 						<div class="collapseBlock">
 							<h3>More Information <i class="fa fa-<span class="glyphicon glyphicon-collapse-down" aria-hidden="true"></span></H3>

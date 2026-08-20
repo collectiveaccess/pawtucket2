@@ -114,7 +114,7 @@ if($vs_mode == "map"){
 					if(sizeof($va_reps) > 1){
 						print "<div><small>".sizeof($va_reps)." media</small></div>";
 					}
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "basic", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
 					
 ?>
 				</div><!-- end col -->
@@ -170,8 +170,7 @@ if($vs_mode == "map"){
 				}
 ?>
 				<!--<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>-->
-				<div class='col-sm-12 col-md-5'>
-					<div class="stoneBg">				
+				<div class='col-sm-12 col-md-5'>			
 <?php
 						$vs_source = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>', array("checkAccess" => $va_access_values));						
 						$vs_source_link = $t_object->get("ca_objects.link");
@@ -217,7 +216,6 @@ if($vs_mode == "map"){
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter="; ">^ca_objects.language</unit></div></ifdef>}}}
-					</div><!-- end stoneBg -->
 <?php
 						include("themes_html.php");
 
@@ -378,7 +376,7 @@ if($vs_mode == "map"){
 <?php				
 						}
 
-					if($t_object->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
+					if((strToLower($t_object->get("ca_objects.hide_map", array("convertCodesToDisplayText" => true))) != "yes") && ($t_object->get("ca_places.georeference", array("checkAccess" => $va_access_values)))){
 						include("map_html.php");
 					}
 ?>
@@ -415,15 +413,15 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 100
+		  maxHeight: 110
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 18
+		  maxHeight: 22
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
-		  maxHeight: 80,
+		  maxHeight: 85,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});

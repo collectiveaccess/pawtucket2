@@ -14,15 +14,54 @@ if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnW
 			}
 		}
 	}
-}					
+}
+
+$r_sets = $r_collections = null;
+	if($entity_source_id = caGetListItemID('object_sources', $t_item->get('ca_entities.idno'))) {
+	
+		$r_sets = ca_sets::findAsSearchResult(['created_by_member' => $entity_source_id], ['checkAccess' => $va_access_values, 'sort' => 'ca_sets.preferred_labels.name',]);
+		
+		$stats = [];
+		if (($vn_num_objects = ca_objects::find(['source_id' => $entity_source_id], ['checkAccess' => $va_access_values,'returnAs' => 'count'])) > 1000) {
+			$stats[] = "{$vn_num_objects} objects";
+		} elseif($vn_num_objects > 0) {
+			$stats[] = ($vn_num_objects == 1) ? "{$vn_num_objects} object" : "{$vn_num_objects} objects";
+		}
+		
+		if($coll_entity_source_id = caGetListItemID('collection_sources', $t_item->get('ca_entities.idno'))) {
+			if (($vn_num_collections = ca_collections::find(['source_id' => $coll_entity_source_id, 'type_id' => 'collection'], ['checkAccess' => $va_access_values,'returnAs' => 'count'])) > 1000) {
+				$stats[] = "{$vn_num_collections} archival collections";
+			} elseif($vn_num_collections > 0) {
+				$stats[] = ($vn_num_collections == 1) ? "{$vn_num_collections} archival collection" : "{$vn_num_collections} archival collections";
+			}
+			
+			$r_collections = ca_collections::findAsSearchResult(['source_id' => $coll_entity_source_id, 'type_id' => 'collection'], ['checkAccess' => $va_access_values, 'sort' => 'ca_collections.preferred_labels.name']);
+		}
+		
+		$stats_str = sizeof($stats) ? join(" & ", $stats).' on NovaMuse' : '';
+	
+	$search_browse_bar = '
+					<div class="browseSearchBar">'."<span class='resultCountDetailPage resultCount'>{$stats_str}</span>".'<form class="detailSearch" role="search" action="" id="detailSearchForm">
+						<div class="formOutline">
+							<div class="form-group">
+								<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>						
+								<input type="text" class="form-control detailSearchInput" placeholder="Search this Collection" name="search">
+							</div>	
+						</div>
+					</form>'.caNavLink($this->request, "Filter this Collection <i class='fa fa-external-link'></i>", 'filterCollection', '', 'Browse', 'objects', array('facet' => 'source_facet', 'id' => $entity_source_id))."</div>";
+		
+	} else {
+		$vs_num_objects = $search_browse_bar  = '';
+	}	
+			
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+		<?php if($t_item->get('type_id') != 464) { ?>{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}<?php } ?>
 	</div><!-- end detailTop -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
+			<?php if($t_item->get('type_id') != 464) { ?>{{{previousLink}}}{{{resultsLink}}}<?php } ?>
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
@@ -39,11 +78,11 @@ if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnW
 						print "<div class='unit'>".$va_description."</div>";
 					}		
 			
-					if($res = $t_item->get("ca_occurrences", array("restrictToTypes" => ["member_institution"], 'delimiter' => ', ', "returnAsLink" => true, "checkAccess" => $va_access_values))) {
+					if($res = $t_item->get("ca_occurrences", array('delimiter' => ', ', "returnAsLink" => true, "checkAccess" => $va_access_values))) {
 						print "<div class='unit'><span class='name'>"._t("Educational resources").": </span>".$res."</div>\n";
 					}
 
-			
+	if(false) {		
 					if ($va_social_media = $t_item->get('ca_entities.social_media', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 						print "<div class='unit connect'><div class='name' style='width:100%;'><?= _t('Connect'); ?></div>";
 						foreach ($va_social_media as $va_key => $va_social_media_t) { 
@@ -69,6 +108,7 @@ if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnW
 						}
 						print "</div>";
 					}
+	}
 					print "<div class='unit'>".$this->getVar('map')."</div>";
 					if($t_item->get("ca_entities.address")){
 						print "<div class='unit'><h6><?= _t('Address'); ?></h6>";
@@ -154,67 +194,57 @@ if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnW
 				</div><!-- end col -->
 			</div><!-- end row -->
 			
-{{{<ifcount code="ca_objects" min="1">
-			<div class='row'><div class='col-sm-12'><div class='browseSearchBar'>
-<?php
-			if (($vn_num_objects = $t_item->get("ca_objects", array("returnAsCount" => true, 'limit' => 1001))) > 1000) {
-			    $vs_num_objects = _t("1000+ results");
-			} else {
-			    $vs_num_objects = ($vn_num_objects == 1) ? _t("%1 result", $vn_num_objects) : _t("%1 results", $vn_num_objects);
-			}
-			
-			print 	"<div class='resultCountDetailPage resultCount'>{$vs_num_objects}</div>"; 
-
-		print 		'<form class="detailSearch" role="search" action="" id="detailSearchForm">
-						<div class="formOutline">
-							<div class="form-group">
-								<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>						
-								<input type="text" class="form-control" placeholder="Search this Collection" name="search" id="detailSearchInput">
-							</div>	
-						</div>
-					</form>';
-		print caNavLink($this->request, _t("Filter this Collection")." <i class='fa fa-external-link'></i>", 'filterCollection', '', 'Browse', 'objects', array('facet' => 'member_inst_facet', 'id' => $t_item->get('ca_entities.entity_id')));
+		<div class='row'><div class='col-sm-12'>
+			<div class='row'>
+				<div class='col-sm-12'>
+					<?= $search_browse_bar; ?>
+				</div>
+			</div>
+			<div class='row'>
+				<div class='col-sm-12'>
+						
+					<div id="browseResultsContainerObjects">
 					
-		print "</div></div></div>";
-?>
-				<script type="text/javascript">
+					</div><!-- end browseResultsContainerObjects -->
+				</div>
+			</div><!-- end row -->
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery("#browseResultsContainerObjects").load("<?= caNavUrl($this->request, '', 'Search', 'objects', array('sort' => 'Recently+added', 'search' => 'ca_objects.source_id:'.$t_item->get('ca_entities.idno')), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainerObjects').jscroll({
+							autoTrigger: true,
+							loadingHtml: "<?= caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+							padding: 20,
+							nextSelector: 'a.jscroll-next'
+						});
+					});	
+					
 					$('#detailSearchForm').on('submit', function (e) {
 						e.preventDefault();
-						searchTerm = jQuery("#detailSearchInput").val();
+						
+						jQuery('#browseResultsContainerCollections').html(<?= json_encode(caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...'))); ?>);
+						
+						jQuery(window).scrollTo('#browseResultsContainerCollections', {duration: 500});
+						
+						searchTerm = jQuery(this).find("input.detailSearchInput").val();
 						if(searchTerm){
 							searchTerm = encodeURIComponent(" AND " + searchTerm);
 						}
-						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', null, array('dontURLEncodeParameters' => true)); ?>/search/entity_id:<?php print $t_item->get('ca_entities.entity_id'); ?>" + searchTerm, function() {
-							jQuery('#browseResultsContainer').removeData('jscroll').jscroll.destroy();
-							jQuery('#browseResultsContainer').jscroll({
+						jQuery("#browseResultsContainerObjects").load("<?= caNavUrl($this->request, '', 'Search', 'objects', null, array('dontURLEncodeParameters' => true)); ?>/search/ca_objects.source_id:<?= $t_item->get('ca_entities.idno'); ?>" + searchTerm, function() {
+							jQuery('#browseResultsContainerObjects').jscroll.destroy();
+							jQuery('#browseResultsContainerObjects').jscroll({
 								autoTrigger: true,
-								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+								loadingHtml: <?= json_encode(caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...'))); ?>,
 								padding: 20,
 								nextSelector: 'a.jscroll-next'
 							});
 						});
-					});
-				</script>
-			<div class="row">
-				<div id="browseResultsContainer">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:'.$t_item->get('ca_entities.entity_id'), 'sort' => 'Title', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
+						jQuery("#browseResultsContainerCollections").load("<?= caNavUrl($this->request, '', 'EntityDetail', 'collectionsSearch', null, array('dontURLEncodeParameters' => true)); ?>/all/1/search/ca_collections.source_id:<?= $t_item->get('ca_entities.idno'); ?>" + searchTerm, function() {
+							// noop
 						});
 					});
-					
-					
 				});
 			</script>
-</ifcount>}}}
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>

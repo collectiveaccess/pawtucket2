@@ -418,9 +418,13 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$this->getDb()->query('DELETE FROM ca_set_items WHERE set_id = ?', array($this->getPrimaryKey()));
 
 			// remove search indexing for deleted set items
+			$set_item_table_num = Datamodel::getTableNum('ca_set_items');
 			foreach($va_item_ids as $vn_item_id) {
-				$this->getSearchIndexer()->commitRowUnIndexing($this->tableNum(), $vn_item_id, array('queueIndexing' => true));
+				$this->getSearchIndexer()->commitRowUnIndexing($set_item_table_num, $vn_item_id, ['queueIndexing' => true]);
+				$this->getSearchIndexer()->removeDependentIndexing($set_item_table_num, $vn_item_id);
 			}
+			$this->getSearchIndexer()->commitRowUnIndexing($this->tableNum(), $this->getPrimaryKey(), ['queueIndexing' => true]);
+			$this->getSearchIndexer()->removeDependentIndexing($this->tableNum(), $this->getPrimaryKey());
 		}
 
 		if($vn_rc = parent::delete($pb_delete_related, array_merge(array('queueIndexing' => true), $pa_options), $pa_fields, $pa_table_list)) {
@@ -733,7 +737,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$va_sql_wheres[] = "(csl.name = ?)";
 			$va_sql_params[] = (string)$ps_set_name;
 		}
-		$va_sql_selects[] = 'cs.`rank`';
 		
 		if (!$pb_set_ids_only && !$pb_omit_counts) {
 			// get set item counts
@@ -1092,7 +1095,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				}
 				
 				if(!$dont_check_access_value) {
-					if((int)$qr_res->get('access') > 0) {
+					if((int)$qr_res->get('access') >= $access) {
 						$ret[$set_id] = true;
 						continue;
 					}
@@ -1343,26 +1346,24 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		
 		if(sizeof($va_item_values)) {
 			// Quickly create set item links
-			// Peforming this with a single direct scales much much better than repeatedly populating a model and calling insert()
-			$this->getDb()->query("INSERT INTO ca_set_items (set_id, table_num, row_id, type_id, vars) VALUES ".join(",", $va_item_values));
-			if ($this->getDb()->numErrors()) {
-				$this->errors = $this->getDb()->errors;
-				return false;
+			// Peforming this with a single direct scales much much better than repeatedly populating a model and calling insert()	
+			$item_ids = [];
+			foreach($va_item_values as $s) {
+				$this->getDb()->query("INSERT INTO ca_set_items (set_id, table_num, row_id, type_id, vars) VALUES {$s}");
+				if ($this->getDb()->numErrors()) {
+					$this->errors = $this->getDb()->errors;
+					return false;
+				}
+				$item_ids[] = $this->getDb()->getLastInsertID();
 			}
-			
-			// Get the item_ids for the newly created links
-			$qr_res = $this->getDb()->query("SELECT item_id FROM ca_set_items WHERE set_id = ? AND table_num = ? AND type_id = ? AND row_id IN (?)", array(
-				(int)$vn_set_id, (int)$vn_table_num, (int)$vn_type_id, $va_row_ids
-			));
-			$va_item_ids = $qr_res->getAllFieldValues('item_id');
-			
+				
 			// Set the ranks of the newly created links
 			$this->getDb()->query("UPDATE ca_set_items SET `rank` = item_id WHERE set_id = ? AND table_num = ? AND type_id = ? AND row_id IN (?)", array(
 				$vn_set_id, $vn_table_num, $vn_type_id, $va_row_ids
 			));
 
 			// Add empty labels to newly created items
-			foreach($va_item_ids as $vn_item_id) {
+			foreach($item_ids as $vn_item_id) {
 				$va_label_values[] = "(".(int)$vn_item_id.",".(int)$g_ui_locale_id.",'["._t("BLANK")."]')";
 			}
 			$this->getDb()->query("INSERT INTO ca_set_item_labels (item_id, locale_id, caption) VALUES ".join(",", $va_label_values));
@@ -1372,26 +1373,40 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			}
 			
 			// Index the links
-			$this->getSearchIndexer()->reindexRows('ca_set_items', $va_item_ids, array('queueIndexing' => (bool) caGetOption('queueIndexing', $pa_options, true)));
+			$this->getSearchIndexer()->reindexRows('ca_set_items', $item_ids, array('queueIndexing' => (bool) caGetOption('queueIndexing', $pa_options, true)));
 		
 			// Create change log entries
-			if(sizeof($va_item_ids)) {
-				$qr_res = $this->getDb()->query("SELECT * FROM ca_set_items WHERE item_id IN (?)", array($va_item_ids));
+			if(sizeof($item_ids)) {
+				$qr_res = $this->getDb()->query("SELECT * FROM ca_set_items WHERE item_id IN (?)", array($item_ids));
 			
 				$t_set_item = new ca_set_items();
 				
 				$va_set_ids = [];
+				$log_entries = [];
 				while($qr_res->nextRow()) {
 					$va_snapshot = $qr_res->getRow();
 					$va_set_ids[$qr_res->get('ca_set_items.set_id')] = 1;
-					$t_set_item->logChange("I", $pn_user_id, ['row_id' => $qr_res->get('ca_set_items.item_id'), 'snapshot' => $va_snapshot]);
+					$log_entries[] = [
+						'table' => 'ca_set_items',
+						'row_id' => $qr_res->get('ca_set_items.item_id'),
+						'user_id' => $pn_user_id,
+						'type' => 'I',
+						'snapshot' => $va_snapshot
+					];
 				}
 			
 				$t_set_item_label = new ca_set_item_labels();
-				$qr_res = $this->getDb()->query("SELECT * FROM ca_set_item_labels WHERE item_id IN (?)", array($va_item_ids));
+				$qr_res = $this->getDb()->query("SELECT * FROM ca_set_item_labels WHERE item_id IN (?)", array($item_ids));
 				while($qr_res->nextRow()) {
 					$va_snapshot = $qr_res->getRow();
-					$t_set_item_label->logChange("I", $pn_user_id, ['row_id' => $qr_res->get('ca_set_item_labels.label_id'), 'snapshot' => $va_snapshot]);
+					
+					$log_entries[] = [
+						'table' => 'ca_set_item_labels',
+						'row_id' => $qr_res->get('ca_set_item_labels.ca_set_item_labels'),
+						'user_id' => $pn_user_id,
+						'type' => 'I',
+						'snapshot' => $va_snapshot
+					];
 				}
 				
 				$qr_res = $this->getDb()->query("SELECT * FROM ca_sets WHERE set_id IN (?)", array(array_keys($va_set_ids)));
@@ -1399,7 +1414,28 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				$t_set = new ca_sets();
 				while($qr_res->nextRow()) {
 					$va_snapshot = $qr_res->getRow();
-					$t_set->logChange("U", $pn_user_id, ['row_id' => $qr_res->get('ca_sets.set_id'), 'snapshot' => $va_snapshot]);
+					$log_entries[] = [
+						'table' => 'ca_sets',
+						'row_id' => $qr_res->get('ca_sets.set_id'),
+						'user_id' => $pn_user_id,
+						'type' => 'U',
+						'snapshot' => $va_snapshot
+					];
+				}
+				
+				if(sizeof($log_entries) > 0) {
+					$k = "ca_sets::{$vn_set_id}";
+					$o_tq = new TaskQueue(['transaction' => $this->getTransaction()]);
+					if (!$o_tq->addTask(
+						'bulkLogger',
+						[
+							"logEntries" => $log_entries,
+						],
+						["priority" => 50, "entity_key" => $k, "row_key" => $k, 'user_id' => $pn_user_id]))
+					{
+						// Error adding queue item
+						throw new ApplicationException(_t('Could not add logging tasks to queue'));
+					}
 				}
 			}
 			
@@ -1700,12 +1736,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			if ($vb_treat_row_ids_as_rids) { $va_tmp = explode("_", $vn_row_id); }
 			if (isset($va_row_ranks[$vn_row_id]) && $t_set_item->load($vb_treat_row_ids_as_rids ? array('set_id' => $vn_set_id, 'row_id' => $va_tmp[0], 'item_id' => $va_tmp[1]) : array('set_id' => $vn_set_id, 'row_id' => $vn_row_id))) {
 				if ($va_row_ranks[$vn_row_id] != $vn_rank_inc) {
-					$t_set_item->set('rank', $vn_rank_inc);
-					$t_set_item->update();
-				
-					if ($t_set_item->numErrors()) {
-						$va_errors[$vn_row_id] = _t('Could not reorder item %1: %2', $vn_row_id, join('; ', $t_set_item->getErrors()));
-					}
+					$va_rank_updates[$vn_row_id] = $vn_rank_inc;
 				}
 			} elseif($allow_dupes_in_set || (!$rows_in_set[(int)($vb_treat_row_ids_as_rids ? $va_tmp[0] : $vn_row_id)])) {
 				$this->addItem($vb_treat_row_ids_as_rids ? $va_tmp[0] : $vn_row_id, null, $pn_user_id, $vn_rank_inc);
@@ -1729,10 +1760,21 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$t_set_item = new ca_set_items();
 			
 			$va_set_ids = [];
+			
+			$o_tq = new TaskQueue(['transaction' => $this->getTransaction()]);
+			
+			$log_entries = [];
 			while($qr_res->nextRow()) {
 				$va_snapshot = $qr_res->getRow();
 				$va_set_ids[$qr_res->get('ca_set_items.set_id')] = 1;
-				$t_set_item->logChange("I", $pn_user_id, ['row_id' => $qr_res->get('ca_set_items.item_id'), 'snapshot' => $va_snapshot]);
+				$log_entries[] = [
+					'table' => 'ca_set_items',
+					'row_id' => $qr_res->get('ca_set_items.item_id'),
+					'user_id' => $pn_user_id,
+					'type' => 'U',
+					'snapshot' => $va_snapshot
+				];
+				
 			}
 			
 			if (sizeof($va_set_ids)) {
@@ -1741,11 +1783,29 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				$t_set = new ca_sets();
 				while($qr_res->nextRow()) {
 					$va_snapshot = $qr_res->getRow();
-					$t_set->logChange("U", $pn_user_id, ['row_id' => $qr_res->get('ca_sets.set_id'), 'snapshot' => $va_snapshot]);
+					$log_entries[] = [
+						'table' => 'ca_sets',
+						'row_id' => $qr_res->get('ca_sets.set_id'),
+						'user_id' => $pn_user_id,
+						'type' => 'U',
+						'snapshot' => $va_snapshot
+					];
+				}
+			}
+			
+			if(sizeof($log_entries)) {
+				if (!$o_tq->addTask(
+					'bulkLogger',
+					[
+						"logEntries" => $log_entries,
+					],
+					["priority" => 50, "entity_key" => $k, "row_key" => $k, 'user_id' => $pn_user_id]))
+				{
+					// Error adding queue item
+					throw new ApplicationException(_t('Could not add logging tasks to queue'));
 				}
 			}
 		}
-		
 		
 		if(sizeof($va_errors)) {
 			if ($vb_we_set_transaction) { $o_trans->rollback(); }
@@ -1949,7 +2009,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$va_rel_field_list = array();
 			foreach($t_rel_table->getFields() as $vs_rel_field) {
 				if($vs_rel_field == $t_rel_table->primaryKey()) {
-					$va_rel_field_list[] = "rel.{$vs_rel_field} as list_{$vs_rel_field}";
+					$va_rel_field_list[] = "rel.{$vs_rel_field} list_{$vs_rel_field}";
 				} else {
 					$va_rel_field_list[] = "rel.{$vs_rel_field}";
 				}
@@ -1961,7 +2021,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		
 		$qr_res = $o_db->query("
 			SELECT 
-				casi.set_id, casi.item_id, casi.row_id, casi.`rank`, casi.vars, casi.representation_id, casi.annotation_id,
+				casi.set_id, casi.item_id set_item_id, casi.row_id, casi.`rank`, casi.vars, casi.representation_id, casi.annotation_id,
 				casil.label_id, casil.caption, casil.locale_id set_item_label_locale_id,
 				{$vs_rel_field_list_sql}, rel_label.".$t_rel_label_table->getDisplayField()." set_item_label, rel_label.locale_id rel_locale_id
 				{$vs_rep_select}
@@ -1977,8 +2037,13 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			{$vs_limit_sql}
 		", (int)$vn_set_id);
 
+		$set_processed_templates = $va_processed_templates = null;
 		if($ps_template = caGetOption('template', $pa_options, null)) {
 			$va_processed_templates = caProcessTemplateForIDs($ps_template, $t_rel_table->tableName(), $qr_res->getAllFieldValues('row_id'), array('returnAsArray' => true));
+			$qr_res->seek(0);
+		}
+		if($set_item_template = caGetOption('setItemTemplate', $pa_options, null)) {
+			$set_processed_templates = caProcessTemplateForIDs($set_item_template, 'ca_set_items', $qr_res->getAllFieldValues('set_item_id'), array('returnAsArray' => true));
 			$qr_res->seek(0);
 		}
 
@@ -2012,7 +2077,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				continue;
 			}
 			if (!$sort && isset($pa_options['returnItemIdsOnly']) && ($pa_options['returnItemIdsOnly'])) {
-				$va_items[$qr_res->get('item_id')] = true;
+				$va_items[$qr_res->get('set_item_id')] = true;
 				continue;
 			}
 			
@@ -2067,12 +2132,12 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				$va_row['representation_count'] = (int)($va_representation_counts[$qr_res->get('row_id')] ?? 0);
 			}	
 			
-			if (is_array($va_labels[$vn_item_id = $qr_res->get('item_id')])) {
+			if (is_array($va_labels[$vn_item_id = $qr_res->get('set_item_id')])) {
 				$va_row = array_merge($va_row, $va_labels[$vn_item_id]);
 			}
 			if (isset($pa_options['returnItemAttributes']) && is_array($pa_options['returnItemAttributes']) && sizeof($pa_options['returnItemAttributes'])) {
 				// TODO: doing a load for each item is inefficient... must replace with a query
-				$t_item = new ca_set_items($va_row['item_id']);
+				$t_item = new ca_set_items($va_row['set_item_id']);
 				
 				foreach($pa_options['returnItemAttributes'] as $vs_element_code) {
 					$va_row['ca_attribute_'.$vs_element_code] = $t_item->getAttributesForDisplay($vs_element_code);
@@ -2081,14 +2146,18 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				$va_row['set_item_label'] = $t_item->getLabelForDisplay(false);
 			}
 
+			$va_row['displayTemplate'] = '';
 			if($ps_template) {
 				$va_row['displayTemplate'] = array_shift($va_processed_templates);
+			}
+			if($set_item_template) {
+				$va_row['displayTemplate'] .= array_shift($set_processed_templates);
 			}
 			if($ps_templateDescription) {
 				$va_row['displayTemplateDescription'] = array_shift($va_processed_templates_description);
 			}
 		
-			$va_items[$qr_res->get('item_id')][($qr_res->get('rel_locale_id') ? $qr_res->get('rel_locale_id') : 0)] = $va_row;
+			$va_items[$qr_res->get('set_item_id')][($qr_res->get('rel_locale_id') ? $qr_res->get('rel_locale_id') : 0)] = $va_row;
 		}
 		
 		if ($sort) {
@@ -2108,6 +2177,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$va_items = $sorted_items;
 		}
 		
+		if(caGetOption('shuffle', $pa_options, false)) {
+			$va_items = caShuffleArray($va_items);
+		}
 		
 		if (caGetOption('idsOnly', $pa_options, false)) {
 			return array_keys($va_items);
@@ -2262,8 +2334,10 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$va_items = caExtractValuesByUserLocale($this->getItems(array(
 				'thumbnailVersion' => $vs_thumbnail_version,
 				'user_id' => $po_request->getUserID(),
-				'template' => $vs_template
+				'template' => $vs_template,
+				'setItemTemplate' => caGetOption("ca_set_items_display_template", $pa_bundle_settings, null)
 			)), null, null, array());
+			$va_items = array_map(function($v) { unset($v['media_metadata']); return $v; }, $va_items);
 			$o_view->setVar('items', $va_items);
 		} else {
 			$o_view->setVar('items', array());
@@ -2606,6 +2680,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	*			user_id -> ca_users.user_id that owns or has access to set
 	*			owner - if set, returns only sets owned by the passed user_id
 	*			table - if set, list is restricted to sets that can contain the specified item. You can pass a table name or number. If omitted sets containing any content will be returned.
+	*			tables = 
 	*			setType - Restricts returned sets to those of the specified type. You can pass a type_id or list item code for the set type. If omitted sets are returned regardless of type.
 	*			access - read = 1, write = 2; Restricts returned sets to those with at least the specified access level for the specified user. If "owner" is true then this option has no effect.
 	*			checkAccess - Restricts returned sets to those with an access level of the specified values. If omitted sets are returned regardless of public access (ca_sets.access) value. Can be a single value or array if you wish to filter on multiple public access values.
@@ -2613,11 +2688,17 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	*
 	*
 	*/
-	public function getSetsForUser($pa_options){
+	public function getSetsForUser(?array $pa_options = null){
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		$pn_user_id = isset($pa_options['user_id']) ? (int)$pa_options['user_id'] : null;
 		$pm_table_name_or_num = isset($pa_options['table']) ? $pa_options['table'] : null;
 		if ($pm_table_name_or_num && !($vn_table_num = $this->_getTableNum($pm_table_name_or_num))) { return null; }
+		
+		$tables = caGetOption('tables', $pa_options, null);
+		if(is_array($tables)) { 
+			$tables = array_map(function($v) { return Datamodel::getTableNum($v); }, array_filter($tables, function($v) { return Datamodel::getInstance($v, true); }));
+		}
+		
 		$pm_type = isset($pa_options['setType']) ? $pa_options['setType'] : null;
 		$pn_access = isset($pa_options['access']) ? $pa_options['access'] : null;
 		$pa_public_access = isset($pa_options['checkAccess']) ? $pa_options['checkAccess'] : null;
@@ -2633,7 +2714,10 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$va_sql_params = array();
 			$o_db = $this->getDb();
 			
-			if ($vn_table_num) {
+			if(is_array($tables) && sizeof($tables)) {
+				$va_sql_wheres[] = "(cs.table_num IN (?))";
+				$va_sql_params[] = $tables;
+			} elseif ($vn_table_num) {
 				$va_sql_wheres[] = "(cs.table_num = ?)";
 				$va_sql_params[] = (int)$vn_table_num;
 			}
@@ -2972,7 +3056,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		}
 
 		// Check item level restrictions
-		if ((bool)$this->getAppConfig()->get('perform_item_level_access_checking') && $this->getPrimaryKey()) {
+		if (caACLIsEnabled($this) && $this->getPrimaryKey()) {
 			$vn_item_access = $this->checkACLAccessForUser($po_request->user);
 			if ($vn_item_access < __CA_ACL_EDIT_ACCESS__) {
 				return false;

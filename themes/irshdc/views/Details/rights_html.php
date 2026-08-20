@@ -1,0 +1,12 @@
+		{{{<ifdef code="ca_objects.dc_rights"><div class='unit'><h6>Rights Management</h6>^ca_objects.dc_rights</div></ifdef>}}}		
+		{{{<ifdef code="ca_objects.rightsResource"><div class='unit'><h6>Rights for Resource</h6>^ca_objects.rightsResource</div></ifdef>}}}		
+		{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="rights_holder" min="1"><H6>Rights holder(s)</H6><unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="rights_holder" delimiter=", "><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename)</unit></ifcount>}}}
+		{{{<ifdef code="ca_objects.dc_license"><div class='unit'><h6>License</h6>^ca_objects.dc_license</div></ifdef>}}}		
+		{{{<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>}}}		
+		{{{<ifdef code="ca_objects.access_rights"><div class='unit'><h6>Access Rights</h6>^ca_objects.access_rights</div></ifdef>}}}		
+		{{{<ifdef code="ca_objects.MARC_physical_access"><div class='unit'><h6>Physical Access Provisions</h6>^ca_objects.MARC_physical_access</div></ifdef>}}}		
+		{{{<ifdef code="ca_objects.RAD_useRepro"><div class='unit'><h6>Traditional Knowledge Labels</h6>^ca_objects.RAD_useRepro</div></ifdef>}}}		
+		{{{<ifdef code="ca_objects.RAD_usePub"><div class='unit'><h6>Terms Governing Publication</h6>^ca_objects.RAD_usePub</div></ifdef>}}}		
+		{{{<ifdef code="ca_objects.traditional_knowledge"><div class='unit' data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.traditional_knowledge.knowledge_reference"><h6>Traditional Knowledge</h6>^ca_objects.traditional_knowledge.knowledge_value</div></ifdef>}}}		
+		{{{<ifdef code="ca_objects.community_rights"><div class='unit' data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.community_rights.community_rights_entities"><h6>Community Rights</h6>^ca_objects.community_rights.community_rights_text<br/>^ca_objects.community_rights.community_rights_URL<br/></div></ifdef>}}}		
+		{{{<ifdef code="ca_objects.RAD_local_rights"><div class='unit'><h6>Rights and Access</h6>^ca_objects.RAD_local_rights</div></ifdef>}}}		

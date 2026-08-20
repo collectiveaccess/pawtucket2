@@ -63,7 +63,7 @@
 </script>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<base href="<?= $this->request->config->get('site_host').$this->request->config->get('ca_url_root'); ?>"/>
+	<!--<base href="<?= $this->request->config->get('site_host').$this->request->config->get('ca_url_root'); ?>"/>-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
     <meta name="pinterest" content="nopin" />

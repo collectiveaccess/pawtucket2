@@ -1071,9 +1071,11 @@ a.bListResultLink{
 /* 10 11 */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
      /* IE10+ CSS styles go here */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+     /* IE10+ CSS styles go here */
      .detail .repViewerCont img {
-		width: auto;
-		height: 500px;
+		width: 100%;
+		height: 100%;
 	}
 	.detail .repViewerCont{
 		text-align:center;

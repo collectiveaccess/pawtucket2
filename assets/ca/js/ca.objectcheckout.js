@@ -47,8 +47,9 @@ var caUI = caUI || {};
 			saveTransactionURL: null,
 			loadWidgetURL: null,
 			
-			perTransactionNotesAndDueDate: false,
 			initialValueList: [],
+			
+			perTransactionNotesAndDueDate: false,
 			
 			removeButtonIcon: '(X)',
 			

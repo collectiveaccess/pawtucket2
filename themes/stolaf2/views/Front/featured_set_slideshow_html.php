@@ -49,7 +49,7 @@
 						$media_url = null;
 						if(($elevator_url = $qr_res->get('ca_objects.url')) && preg_match("!viewAsset/([a-z0-9]{24})[/]?$!", $elevator_url, $m)) {
 							$elevator_id = $m[1];
-							$e = new elevatorAPI("https://elevator.stolaf.edu/archives/api/v1/", __ELEVATOR_KEY__, __ELEVATOR_SECRET__);
+							$e = new elevatorAPI("https://digital.stolaf.edu/archives/api/v1/", __ELEVATOR_KEY__, __ELEVATOR_SECRET__);
 							$children = $e->getAssetChildren($elevator_id);
 							if(is_array($children) && is_array($children['matches'])  && is_array($children['matches'][0])) {
 								$media_url = $children['matches'][0]['primaryHandlerThumbnail2x'];

@@ -44,7 +44,7 @@
 	}elseif(strpos($vs_last_find, "search") !== false){
 		$vs_link_text = "Search";	
 	}elseif(strpos($vs_last_find, "gallery") !== false){
-		$vs_link_text = "Explore Features";	
+		$vs_link_text = "Features";	
 	}
 	if($vs_link_text){
 		$va_params["row_id"] = $t_item->getPrimaryKey();

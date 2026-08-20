@@ -4,7 +4,9 @@ body{
 .container{
 	max-width:1010px;
 }
-
+.uk-navbar img, .uk-logo img{
+	width:134px;
+}
 /* red: #AC143A; gray blue #6C869E;*/
 .tm-navbar .tm-logo > * {
     max-height: 180px;
@@ -187,6 +189,13 @@ a:hover .hpFindBox{
     color: #000;
     font-size: 17px;
     font-weight: 400;
+}
+.repatriation #bRefine{
+	background-color:#497B94;
+	color:#FFF;
+}
+.repatriation #bRefine a, .repatriation #bRefine h2, .repatriation #bRefine h3{
+	color:#FFF;
 }
 #bRefine H2{
 	color:#000;

@@ -106,45 +106,43 @@ if($vs_mode == "map"){
 					{{{<ifdef code="ca_entities.note_community_name"><div class='unit'><H6>Note on Home Communities</H6><div class="trimTextShort">^ca_entities.note_community_name</div></div></ifdef>}}}		
 				</div>
 				<div class='col-sm-12 col-md-5'>
-					<div class="stoneBg">	
-						{{{<ifdef code="ca_entities.preferred_labels.displayname">
-							<H4><span data-toggle="popover" title="Source" data-content="^ca_entities.school_name_source">^ca_entities.preferred_labels.displayname</span>
-								<ifdef code="ca_entities.entity_website"><br/><a href="^ca_entities.entity_website" class='redLink' target="_blank">^ca_entities.entity_website <span class="glyphicon glyphicon-new-window"></span></a></div></ifdef>
-							</H4>
-						</ifdef>}}}
-						{{{<ifdef code="ca_entities.school_dates.school_dates_value">
-							<div class='unit'>
-								<H6>Dates of Operation</H6>
-								<unit delimiter=" "><div  data-toggle="popover" title="Source" data-content="^ca_entities.school_dates.date_source">
-									<ifdef code="ca_entities.school_dates.school_dates_value">^ca_entities.school_dates.school_dates_value<br/></ifdef>
-									<ifdef code="ca_entities.school_dates.date_narrative"><div class="trimTextShort">^ca_entities.school_dates.date_narrative</div></ifdef>
-								</div></unit>
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_entities.IRSSA_Dates.IRSSA_Dates_date">
-							<div class='unit'>
-								<H6>Settlement Agreement Dates</H6>
-								<unit delimiter="<br/>" relativeTo="ca_entities.IRSSA_Dates"><div data-toggle="popover" title="Source" data-content="^ca_entities.IRSSA_Dates.IRSSA_Dates_source">
-									<ifdef code="ca_entities.IRSSA_Dates.IRSSA_Dates_date">^ca_entities.IRSSA_Dates.IRSSA_Dates_date</ifdef>
-								</div></unit>
-							</div>
-						</ifdef>}}}
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><l><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit></l> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
-						{{{<ifdef code="ca_entities.description_new.description_new_txt">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
-								<div class="trimText">^ca_entities.description_new.description_new_txt</div>
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_entities.additionalResources"><div class='unit'><H6>Additional Resources</H6>^ca_entities.additionalResources</div></ifdef>}}}		
-						
-						{{{<ifdef code="ca_entities.community_input_objects.comments_objects">
-							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_entities.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
-								<div class="trimText">^ca_entities.community_input_objects.comments_objects</div>
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_entities.denomination"><div class='unit'><H6>Denomination</H6>^ca_entities.denomination%delimiter=,_</div></ifdef>}}}		
-						
-					</div><!-- end stoneBg -->
+					{{{<ifdef code="ca_entities.preferred_labels.displayname">
+						<H4><span data-toggle="popover" title="Source" data-content="^ca_entities.school_name_source">^ca_entities.preferred_labels.displayname</span>
+							<ifdef code="ca_entities.entity_website"><br/><a href="^ca_entities.entity_website" class='redLink' target="_blank">^ca_entities.entity_website <span class="glyphicon glyphicon-new-window"></span></a></div></ifdef>
+						</H4>
+					</ifdef>}}}
+					{{{<ifdef code="ca_entities.school_dates.school_dates_value">
+						<div class='unit'>
+							<H6>Dates of Operation</H6>
+							<unit delimiter=" "><div  data-toggle="popover" title="Source" data-content="^ca_entities.school_dates.date_source">
+								<ifdef code="ca_entities.school_dates.school_dates_value">^ca_entities.school_dates.school_dates_value<br/></ifdef>
+								<ifdef code="ca_entities.school_dates.date_narrative"><div class="trimTextShort">^ca_entities.school_dates.date_narrative</div></ifdef>
+							</div></unit>
+						</div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_entities.IRSSA_Dates.IRSSA_Dates_date">
+						<div class='unit'>
+							<H6>Settlement Agreement Dates</H6>
+							<unit delimiter="<br/>" relativeTo="ca_entities.IRSSA_Dates"><div data-toggle="popover" title="Source" data-content="^ca_entities.IRSSA_Dates.IRSSA_Dates_source">
+								<ifdef code="ca_entities.IRSSA_Dates.IRSSA_Dates_date">^ca_entities.IRSSA_Dates.IRSSA_Dates_date</ifdef>
+							</div></unit>
+						</div>
+					</ifdef>}}}
+					{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><l><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit></l> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
+					{{{<ifdef code="ca_entities.description_new.description_new_txt">
+						<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
+							<div class="trimText">^ca_entities.description_new.description_new_txt</div>
+						</div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_entities.additionalResources"><div class='unit'><H6>Additional Resources</H6>^ca_entities.additionalResources</div></ifdef>}}}		
+					
+					{{{<ifdef code="ca_entities.community_input_objects.comments_objects">
+						<div class='unit' data-toggle="popover" title="Source" data-content="^ca_entities.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
+							<div class="trimText">^ca_entities.community_input_objects.comments_objects</div>
+						</div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_entities.denomination"><div class='unit'><H6>Denomination</H6>^ca_entities.denomination%delimiter=,_</div></ifdef>}}}		
+					
 <?php
 						include("themes_html.php");
 ?>
@@ -293,15 +291,15 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 118
+		  maxHeight: 137
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 58
+		  maxHeight: 68
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
-		  maxHeight: 80,
+		  maxHeight: 85,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});

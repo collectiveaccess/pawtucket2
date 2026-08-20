@@ -27,7 +27,9 @@
  */
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_collections.php");
  	require_once(__CA_MODELS_DIR__."/ca_entities.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_places.php");
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  	require_once(__CA_LIB_DIR__.'/Search/EntitySearch.php');
@@ -96,12 +98,16 @@
  		}
  		# -------------------------------------------------------
  		public function schools(){
- 			$o_search = new EntitySearch();
- 		 	if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
- 		 		$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
+ 			$o_browse = caGetBrowseInstance("ca_entities");
+ 		 	$o_browse->setTypeRestrictions(array("school"));
+ 		 	$t_place = new ca_places(array("idno" => 37));
+			$vn_bc_place_id = "";
+			if($vn_bc_place_id = $t_place->get("ca_places.place_id")){
+				$o_browse->addCriteria("place_facet", $vn_bc_place_id);
 			}
-			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_school_id, array("sort" => "ca_entity_labels.name_sort"));
- 				
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => false));
+			$qr_res = $o_browse->getResults(array("sort" => "ca_entity_labels.name_sort", "sort_direction" => "asc"));
+				
  			$o_map = new GeographicMap('100%', 500, 'map');
 			$va_map_stats = $o_map->mapFrom($qr_res, "ca_places.georeference", array("labelTemplate" => "^ca_entities.preferred_labels%delimiter=; ", "ajaxContentUrl" => caNavUrl($this->request, "", "Explore", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
 			$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));
@@ -126,6 +132,21 @@
 			$this->view->setVar("schools_results", $qr_res);
 
  			$this->render("Explore/schools_html.php");
+ 		}
+ 		# -------------------------------------------------------
+ 		public function EducationalResources(){
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Explore > Educational Resources");
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "exploreEducationalResources");
+ 			$this->opo_result_context->setAsLastFind();
+ 			
+ 			$t_list = new ca_lists();
+			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", "ed_collection");
+			$qr_collections = ca_collections::find(array('parent_id' => 4, 'type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => 'ca_collections.rank'));
+			$this->view->setVar("collection_results", $qr_collections);
+			caSetPageCSSClasses(array("collections", "landing"));
+
+ 			$this->render("Explore/educational_resources_html.php");
  		}
  		# -------------------------------------------------------
  		

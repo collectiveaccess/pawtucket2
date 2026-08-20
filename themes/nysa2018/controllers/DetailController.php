@@ -677,14 +677,18 @@
 			if (sizeof($va_file_paths) > 1) {
 				if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
 				set_time_limit($vn_limit * 2);
-				$o_zip = new ZipFile();
+				//$o_zip = new ZipFile(__CA_APP_DIR__."/tmp/foo.zip");
+				require_once(__CA_LIB_DIR__."/Parsers/ZipStream.php");
+				$o_zip = new ZipStream();
 				foreach($va_file_paths as $vs_path => $vs_name) {
-					$o_zip->addFile($vs_path, $vs_name, null, array('compression' => 0));	// don't try to compress
+					$o_zip->addFile($vs_path, $vs_name); //, null, array('compression' => 5));	// don't try to compress
 				}
-				$this->view->setVar('archive_path', $vs_path = $o_zip->output(ZIPFILE_FILEPATH));
+				//$this->view->setVar('archive_path', $vs_path = $o_zip->output(ZIPFILE_FILEPATH));
+				$this->view->setVar('zip_stream', $o_zip);
 				$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
 				
-				$vn_rc = $this->render('Details/object_download_media_binary.php');
+				//$vn_rc = $this->render('Details/object_download_media_binary.php');
+				$vn_rc = $this->render('Details/download_file_binary.php');
 				
 				if ($vs_path) { unlink($vs_path); }
 			} else {
@@ -1003,7 +1007,7 @@
  				$this->render("Form/reload_html.php");
  				return;
  			}
- 			$o_purifier = caGetHTMLPurifier();
+ 			$o_purifier = new HTMLPurifier();
     		$ps_to_email = $o_purifier->purify($this->request->getParameter('to_email', pString));
  			$ps_from_email = $o_purifier->purify($this->request->getParameter('from_email', pString));
  			$ps_from_name = $o_purifier->purify($this->request->getParameter('from_name', pString));
@@ -1555,7 +1559,7 @@
 # Custom Worksheet stuff
 # -------------------------------------------------------
  		public function Custom() {
- 			$o_purifier = caGetHTMLPurifier();
+ 			$o_purifier = new HTMLPurifier();
  			$pa_print_fields = $this->request->getParameter('print_fields', pArray);
  			$pn_occurrence_id = $this->request->getParameter('occurrence_id', pString);
  			$t_occurrence = new ca_occurrences($pn_occurrence_id);
@@ -1695,7 +1699,7 @@
  		public function Full() {
  			$t_lists = new ca_lists();
 			$t_list_items = new ca_list_items();
- 			$o_purifier = caGetHTMLPurifier();
+ 			$o_purifier = new HTMLPurifier();
  			$pn_occurrence_id = $this->request->getParameter('occurrence_id', pString);
  			$t_occurrence = new ca_occurrences($pn_occurrence_id);
  			$va_access_values = caGetUserAccessValues($this->request);
@@ -1920,7 +1924,7 @@
  		}
  		# -------------------------------------------------------
  		public function downloadCustomWorksheet() {
- 			$o_purifier = caGetHTMLPurifier();
+ 			$o_purifier = new HTMLPurifier();
  			$pn_occurrence_id = $this->request->getParameter('occurrence_id', pInteger);
  			$pn_relation_id = $this->request->getParameter('relation_id', pInteger);
  			$t_objects_x_occurrences = new ca_objects_x_occurrences($pn_relation_id);

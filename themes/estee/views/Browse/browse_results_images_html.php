@@ -50,6 +50,8 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	$o_config = $this->getVar("config");	
 	
+	$va_browse_info = $this->getVar('browseInfo');
+	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
@@ -113,7 +115,7 @@
 				# --- check if this result has been cached
 				# --- key is MD5 of table, id, list, refine(vb_refine)
 				$vs_cache_key = md5($vs_table.$vn_id."images".$vb_refine);
-				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
+				if(!$va_browse_info['noCache'] && ($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{			
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id, array("last_tab" => "browse"));
@@ -196,7 +198,7 @@
 				$vn_results_output++;
 			}
 			
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('dontSetFind' => $this->request->getParameter('dontSetFind', pString), 's' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('key' => $vs_browse_key, 's' => $vn_start + $vn_results_output,  'view' => $vs_current_view, 'sort' => $vs_current_sort,'dontSetFind' => ($dsf = $this->request->getParameter('dontSetFind', pString)) ? $dsf : '0', '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
 ?>
 <script type="text/javascript">

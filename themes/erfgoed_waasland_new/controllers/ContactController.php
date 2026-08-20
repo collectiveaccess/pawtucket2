@@ -66,11 +66,38 @@
 					$va_errors["display_errors"]["security_error"] = _t("Please answer the security question");
 				}
  			}
+ 			if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") && __CA_GOOGLE_RECAPTCHA_SECRET_KEY__){
+ 				$ps_captcha = $this->request->getParameter("g-recaptcha-response", pString);
+ 				if(!$ps_captcha){
+						$va_errors["recaptcha"] = $va_errors["display_errors"]["recaptcha"] = _t("Please complete the captcha");
+				} else {
+					$va_request = curl_init();
+					curl_setopt($va_request, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
+					curl_setopt($va_request, CURLOPT_HEADER, 0);
+					curl_setopt($va_request, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($va_request, CURLOPT_POST, 1);
+					$va_request_params = ['secret'=>__CA_GOOGLE_RECAPTCHA_SECRET_KEY__, 'response'=>$ps_captcha];
+					curl_setopt($va_request, CURLOPT_POSTFIELDS, $va_request_params);
+					$va_captcha_resp = curl_exec($va_request);
+					$captcha_json = json_decode($va_captcha_resp, true);
+					if(!$captcha_json['success']){
+							$va_errors["recaptcha"] = $va_errors["display_errors"]["recaptcha"] = _t("Your Captcha was rejected, please try again");
+					}
+				}
+ 			}
  			$va_fields = $this->config->get("contact_form_elements");
+ 			$email_fields = array_keys(array_filter($va_fields, function($v) {
+ 				return (bool)$v['email_address'] ?? false;
+ 			}));
+
+ 			$from_address = null;
  			$this->view->setVar("contact_form_elements", $va_fields);
  			if(is_array($va_fields) && sizeof($va_fields)){
  				foreach($va_fields as $vs_element_name => $va_options){
- 					$vs_element_value = $o_purifier->purify($this->request->getParameter($vs_element_name, pString));
+ 					$vs_element_value = $o_purifier->purify($this->request->getParameter($vs_element_name, pString, ['forcePurify' => true]));
+ 					if(($email_fields[0] ?? false) && ($email_fields[0] === $vs_element_name) && $vs_element_value) {
+ 						$from_address = $vs_element_value;
+ 					}
  					if($va_options["required"] && !$vs_element_value){
  						$va_errors[$vs_element_name] = true;
  						$va_errors["display_errors"]["required_error"] = _t("Please enter the required information in the highlighted fields");
@@ -85,6 +112,7 @@
  					$this->view->setVar($vs_element_name, $vs_element_value);
  				}
  			}
+ 
  			if(sizeof($va_errors) == 0){
  				# --- send email
  					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));

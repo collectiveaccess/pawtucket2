@@ -149,6 +149,30 @@
 			$this->render("Collections/child_list_archival_html.php");
  		}
  		# -------------------------------------------------------
+ 		public function CollectionHierarchyArchivalViewer(){
+ 			$vn_collection_id = $this->request->getParameter('collection_id', pInteger);
+ 			if($vn_collection_id){
+ 				$t_item = new ca_collections($vn_collection_id);
+ 				$this->view->setVar("item", $t_item);
+ 				$this->view->setVar("collection_id", $vn_collection_id);
+ 			}else{
+ 				throw new ApplicationException("Invalid collection_id");
+ 			}
+ 			$this->render("Collections/collection_hierarchy_archival_viewer_html.php");
+ 		}
+ 		# -------------------------------------------------------
+ 		public function ChildListArchivalViewer(){
+ 			$vn_collection_id = $this->request->getParameter('collection_id', pInteger);
+ 			if($vn_collection_id){
+ 				$t_item = new ca_collections($vn_collection_id);
+ 				$this->view->setVar("item", $t_item);
+ 				$this->view->setVar("collection_id", $vn_collection_id);
+ 			}else{
+ 				throw new ApplicationException("Invalid collection_id");
+ 			}
+			$this->render("Collections/child_list_archival_viewer_html.php");
+ 		}
+ 		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link from a browse result item
 		 * as an array of path components.

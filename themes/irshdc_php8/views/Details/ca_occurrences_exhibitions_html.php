@@ -101,7 +101,6 @@ if($vs_mode == "map"){
 				}
 ?>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer || $vs_featured_image) ? "5" : "7"; ?>'>
-					<div class="stoneBg">				
 						<H4>{{{^ca_occurrences.preferred_labels.name}}}
 							{{{<ifdef code="ca_occurrences.online_exhibition"><br/><unit delimiter="<br/>"><a href="^ca_occurrences.online_exhibition" class="redLink" target="_blank">View Online Exhibiton <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
 						</H4>
@@ -123,7 +122,6 @@ if($vs_mode == "map"){
 								<div class="trimText">^ca_occurrences.community_input_items.comments_objects</div>
 							</div>
 						</ifdef>}}}
-					</div><!-- end stoneBg -->
 					{{{<ifdef code="ca_occurrences.exhibition_type|ca_occurrences.venue|ca_occurrences.public_notes">
 						<div class="collapseBlock">
 							<h3>More Information <span class="glyphicon glyphicon-collapse-down" aria-hidden="true"></span></H3>

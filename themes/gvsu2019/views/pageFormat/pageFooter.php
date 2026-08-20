@@ -34,10 +34,10 @@
 			<div class="row">
 				<div class="col-lg-8">
 					<div>
-						Copyright &copy; <?php print date("Y"); ?> Grand Valley State University | GVSU is an AA/EO institution | Art Gallery | <a href="mailto:artgallery@gvsu.edu?Subject=Online%20Collection">artgallery@gvsu.edu</a>
+						Copyright &copy; <?php print date("Y"); ?> Grand Valley State University | GVSU is an AA/EO institution | Art Museum | <a href="mailto:artgallery@gvsu.edu?Subject=Online%20Collection">artmuseum@gvsu.edu</a>
 					</div>
 					<ul class="list-inline">
-						<li><a href="http://www.gvsu.edu/artgallery">GVSU Art Gallery</a></li>
+						<li><a href="http://www.gvsu.edu/artmuseum">GVSU Art Museum</a></li>
 						<li><a href="http://www.gvsu.edu">Grand Valley State University</a></li>
 					</ul>
 					<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess <?php print date("Y"); ?></a></small></div>

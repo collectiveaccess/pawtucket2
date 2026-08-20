@@ -50,11 +50,11 @@ if($vs_mode == "map"){
 	}elseif(strpos($vs_last_find, "search") !== false){
 		$vs_link_text = "Search";	
 	}elseif(strpos($vs_last_find, "gallery") !== false){
-		$vs_link_text = "Explore Features";	
+		$vs_link_text = "Features";	
 	}elseif(strpos($vs_last_find, "narrative") !== false){
-		$vs_link_text = "Explore Narrative Threads";	
+		$vs_link_text = "Narrative Threads";	
 	}elseif(strpos($vs_last_find, "listing") !== false){
-		$vs_link_text = "Explore Resources";	
+		$vs_link_text = "Resources";	
 	}
 	if($vs_link_text){
 		$va_params["row_id"] = $t_object->getPrimaryKey();
@@ -78,6 +78,7 @@ if($vs_mode == "map"){
 ?>
 			<div class="row">
 <?php
+				$va_transcript_rep_ids = $va_full_text_rep_ids = array();
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 				if($vs_representationViewer){
 ?>
@@ -88,12 +89,18 @@ if($vs_mode == "map"){
 					$t_list = new ca_lists();
 					$va_type = $t_list->getItemFromList("object_representation_types", "transcript");
 					$va_transcript_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					
+					$va_type = $t_list->getItemFromList("object_representation_types", "full_text");
+					$va_full_text_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					
 					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
 						print "<div id='transcriptLink' class='text-center'>";
-						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
-							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+						if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
+							foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
+								$t_rep = new ca_object_representations($vn_transcript_rep_id);
 							
-							print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
+								print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
+							}
 						}
 						print "</div>";
 					}
@@ -185,7 +192,16 @@ if($vs_mode == "map"){
 ?>
 					{{{<ifdef code="ca_objects.dc_website"><div class='detailTool'><span class='glyphicon glyphicon-new-window'></span><a href="^ca_objects.dc_website" target="_blank">View Website</a></div></ifdef>}}}
 					
-<?php					
+<?php				
+					
+					if(is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids)){
+						foreach($va_full_text_rep_ids as $vn_full_text_rep_id){
+							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+							print "<div class='detailTool'><a href='#' title='"._t("Read Online")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_id, 'representation_id' => $vn_full_text_rep_id, 'item_id' => $vn_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span> Read Online</a></div>\n";
+							# --- online print one button to the first rep with read online
+							break;
+						}
+					}
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
 					
 					print '</div><!-- end detailTools -->';			
@@ -253,7 +269,7 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 60
+		  maxHeight: 100
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
@@ -311,6 +327,18 @@ if($vs_mode == "map"){
 					}
 				});
 			}
+<?php		
+		if(is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids)){
+			foreach($va_full_text_rep_ids as $vn_full_text_rep_id){
+?>
+				if(!$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").hasClass("readOnlineLoaded")){
+					$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").append("<span class='readOnline'>Read Online</span>");
+					$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").addClass("readOnlineLoaded");
+				}
+<?php			
+			}
+		}
+?>
 		});
 	});
 </script>

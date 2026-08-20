@@ -27,28 +27,26 @@
 					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
 					<H2>{{{^ca_entities.type_id}}}</H2>
 
-					<!-- {{{<ifdef code="ca_entities.idno"><label>Identifier</label>^ca_entities.idno</ifdef>}}} -->
-
 					{{{<ifdef code="ca_entities.biography">
-						<label>About</label>^ca_entities.biography<br/>
+						<div class="flabel">About</div>^ca_entities.biography<br/>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_entities.lifespan">
-						<label>Life Span</label>^ca_entities.lifespan<br/>
+						<div class="flabel">Life Span</div>^ca_entities.lifespan<br/>
 					</ifdef>}}}
 
-					{{{<ifdef code="ca_entities.description"><div class='unit'><label>Biography</label>^ca_entities.description</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.description"><div class='unit'><div class="flabel">Biography</div>^ca_entities.description</div></ifdef>}}}
 					
-					{{{<ifcount code="ca_entities.collections" min="1" max="1"><label>Related collection</label></ifcount>}}}
-					{{{<ifcount code="ca_entities.collections" min="2"><label>Related collections</label></ifcount>}}}
+					{{{<ifcount code="ca_entities.collections" min="1" max="1"><div class="flabel">Related collection</div></ifcount>}}}
+					{{{<ifcount code="ca_entities.collections" min="2"><div class="flabel">Related collections</div></ifcount>}}}
 					{{{<unit relativeTo="ca_entities.collections" delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l></unit></unit>}}}
 
-					{{{<ifcount code="ca_entities.related" min="1" max="1"><label>Related person</label></ifcount>}}}
-					{{{<ifcount code="ca_entities.related" min="2"><label>Related people</label></ifcount>}}}
+					{{{<ifcount code="ca_entities.related" min="1" max="1"><div class="flabel">Related person</div></ifcount>}}}
+					{{{<ifcount code="ca_entities.related" min="2"><div class="flabel">Related people</div></ifcount>}}}
 					{{{<unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					
-					{{{<ifcount code="ca_entities.places" min="1" max="1"><label>Related place</label></ifcount>}}}
-					{{{<ifcount code="ca_entities.places" min="2"><label>Related places</label></ifcount>}}}
+					{{{<ifcount code="ca_entities.places" min="1" max="1"><div class="flabel">Related place</div></ifcount>}}}
+					{{{<ifcount code="ca_entities.places" min="2"><div class="flabel">Related places</div></ifcount>}}}
 					{{{<unit relativeTo="ca_entities.places" delimiter="<br/>"><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit></unit>}}}
 
 				</div><!-- end col -->

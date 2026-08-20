@@ -368,6 +368,15 @@ body{
 	max-width:250px;
 }
 /* search / browse results */
+.resultsIntro{
+	padding-top:10px;
+	padding-bottom:10px;
+}
+.resultsIntro a{	
+	color:#000;
+	text-decoration:underline;
+	text-decoration-color: #E77500;
+}
 #bRefine H2, #bRefine H3, #bRefine H5{
 	color:#000;
 }
@@ -477,6 +486,12 @@ a.browseRemoveFacet .glyphicon{
 	color: #000;
 	font-size: 13px;
 	line-height: 1.1em;
+}
+#bMorePanel #bAncestorList a {
+  font-size: 16px;
+}
+#bMorePanel #bScrollList a {
+  font-size: 14px;
 }
 /* front */
 html.frontContainer {
@@ -886,7 +901,13 @@ body.frontContainer #footer{
   margin-top: 10%;
   font-size: 18px;
 }
-
+.collectionShowHideBrowser{
+	background-color: #8f8d8d !important;
+	text-decoration: none;
+	font-size: 12px;
+	padding: 4px 5px;
+	text-transform: none;
+}
 .form-control:focus {
 	border-color: #000;
 }

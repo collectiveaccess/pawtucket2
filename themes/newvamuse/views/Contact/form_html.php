@@ -20,7 +20,7 @@ $vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Det
 	}
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
-		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+		<input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 		<input type="hidden" name="itemId" value="<?php print $t_object->get("ca_objects.idno"); ?>">
 		<input type="hidden" name="itemTitle" value="<?php print $t_object->get("ca_objects.preferred_labels.name"); ?>">
 		<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
@@ -56,17 +56,6 @@ $vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Det
 					</div>
 				</div><!-- end col -->
 				<div class="col-sm-4">
-					<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-						<label for="security">Security Question</label>
-						<div class='row'>
-							<div class='col-sm-4'>
-								<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-							</div>
-							<div class='col-sm-4'>
-								<input name="security" value="" id="security" type="text" class="form-control input-sm" />
-							</div>
-						</div><!--end col-sm-8-->	
-						</div><!-- end row -->
 					</div>
 				</div><!-- end row -->
 			</div><!-- end col -->
@@ -79,6 +68,25 @@ $vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Det
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
+		<?php
+	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+			<div class="row">
+				<div class="col-sm-12 col-md-offset-1 col-md-10">
+					<div class='form-group<?= (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+					</div>
+				</div>
+			</div><!-- end row -->
+<?php
+	}
+?>
 		<div class="form-group">
 			<button type="submit" class="btn btn-default">Send</button>
 		</div><!-- end form-group -->

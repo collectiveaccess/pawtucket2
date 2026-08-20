@@ -16,7 +16,7 @@
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by an object’s proper name."><?= _t('Object Name'); ?>></span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by an object’s proper name."><?= _t('Object Name'); ?></span>
 			{{{ca_objects.preferred_labels.name%height=1}}}
 		</div>
 	</div>
@@ -74,8 +74,8 @@
 	</div>
 	<br style="clear: both;"/>
 	<div class='advancedFormSubmit'>
-		<span class='btn btn-default'>{{{reset%label=<?= _t('Reset'); ?>}}}</span>
 		<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=<?= _t('Search'); ?>}}}</span>
+		<span class='btn btn-default'>{{{reset%label=<?= _t('Reset'); ?>}}}</span>
 	</div>
 </div>	
 

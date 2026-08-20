@@ -5,7 +5,7 @@
 ?>
 	<div class="row tanBg exploreRow exploreSchoolsRow">
 		<div class="col-sm-12">
-			<H1>Explore BC Schools</H1>
+			<H1>BC Schools</H1>
 			<p>
 				Records and stories of Indian Residential Schools in British Columbia reveal a great deal about our history of BC and our histories of Canada. These collections provide a window into a way of knowing how the schools shaped the lives of Survivors, their families and communities. Here you can see the operation of these schools as a nation-wide system as well as very individual and distinct functions of community life in BC. Each school has a distinct set of histories and meaning to these communities. Survivor stories, documents, images, records and objects on the schools provide us a way of knowing stories so integral to the shape of our histories as Canadians and as Indigenous peoples.
 			</p>
@@ -36,8 +36,8 @@
 							$va_ids = array();
 							while($qr_schools->nextHit()){
 								# --- only show bc schools - idno = 37
-								$va_place_hier = array_pop($qr_schools->get("ca_places.hierarchy.idno", array("returnWithStructure" => true)));
-								if(is_array($va_place_hier) && in_array(37, $va_place_hier)){
+								#$va_place_hier = array_pop($qr_schools->get("ca_places.hierarchy.idno", array("returnWithStructure" => true)));
+								#if(is_array($va_place_hier) && in_array(37, $va_place_hier)){
 									print "<div class='col-xs-6 col-sm-3 col-md-2'>";
 									$vs_image = $qr_schools->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 									if(!$vs_image){
@@ -52,7 +52,7 @@
 									print "<div class='schoolLink'>".caDetailLink($this->request, $qr_schools->get('ca_entities.preferred_labels'), '', 'ca_entities', $qr_schools->get("entity_id"))."</div>";
 									print "</div>";
 									$va_ids[] = $qr_schools->get("entity_id");
-								}
+								#}
 							}
 							# --- do entity context here since we're filtering out non-bc schools
 							$o_entity_context = new ResultContext($this->request, 'ca_entities', 'exploreSchools');

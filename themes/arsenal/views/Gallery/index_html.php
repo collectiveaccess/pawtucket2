@@ -23,7 +23,7 @@
 			if(Datamodel::getTableName($va_set['table_num']) != "ca_objects"){
 				if (!($t_instance = Datamodel::getInstanceByTableNum($va_set['table_num']))) { throw new ApplicationException(_t('Invalid item')); }
 				$t_instance->load($first_item["row_id"]);
-				if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.widepreview</unit>', array("checkAccess" => $this->opa_access_values))){
+				if($vs_thumbnail = $t_instance->get('ca_object_representations.media.widepreview', array("checkAccess" => $this->opa_access_values))){
 					$va_first_items_from_set[$set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
 				}
 			}elseif(Datamodel::getTableName($va_set['table_num']) == "ca_objects"){

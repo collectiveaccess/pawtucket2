@@ -95,36 +95,33 @@ if($vs_mode == "map"){
 				}
 ?>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
-					<div class="stoneBg">	
-						<H4>{{{<ifdef code="ca_entities.preferred_labels.source_info"><span data-toggle="popover" title="Source" data-content="^ca_entities.preferred_labels.source_info">^ca_entities.preferred_labels.displayname</span></ifdef>}}}
-							{{{<ifnotdef code="ca_entities.preferred_labels.source_info">^ca_entities.preferred_labels.displayname</ifnotdef>}}}
-							{{{<ifdef code="ca_entities.website.website_url"><br/><unit delimiter="<br/>"><a href="^ca_entities.website.website_url" class="redLink" target="_blank"><ifdef code="ca_entities.website.link_text">^ca_entities.website.link_text</ifdef><ifnotdef code="ca_entities.website.link_text">^ca_entities.website.website_url</ifnotdef> <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
-						</H4>
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities.related" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
-						{{{<ifdef code="ca_entities.description_new.description_new_txt">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
-								<div class="trimText">^ca_entities.description_new.description_new_txt</div>
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_entities.community_history.community_history_text">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.community_history.community_history_source"><h6>History of Community Name</h6>^ca_entities.community_history.community_history_text</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_entities.nonpreferred_labels.displayname">
-							<div class='unit'>
-								<H6>Other Name(s)</H6>
-								<div class="trimTextAltNames"><unit relativeTo="ca_entities.nonpreferred_labels" delimiter="<br/>">
-									<ifdef code="ca_entities.nonpreferred_labels.source_info"><span data-toggle="popover" title="Source" data-content="^ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifdef>
-									<ifnotdef code="ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifnotdef>
-								</unit></div>
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_entities.alt_name_note">
-							<div class='unit'><h6>Note on Names</h6>^ca_entities.alt_name_note%delimiter=<br/></div>
-						</ifdef>}}}
+					<H4>{{{<ifdef code="ca_entities.preferred_labels.source_info"><span data-toggle="popover" title="Source" data-content="^ca_entities.preferred_labels.source_info">^ca_entities.preferred_labels.displayname</span></ifdef>}}}
+						{{{<ifnotdef code="ca_entities.preferred_labels.source_info">^ca_entities.preferred_labels.displayname</ifnotdef>}}}
+						{{{<ifdef code="ca_entities.website.website_url"><br/><unit delimiter="<br/>"><a href="^ca_entities.website.website_url" class="redLink" target="_blank"><ifdef code="ca_entities.website.link_text">^ca_entities.website.link_text</ifdef><ifnotdef code="ca_entities.website.link_text">^ca_entities.website.website_url</ifnotdef> <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
+					</H4>
+					{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities.related" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+					{{{<ifdef code="ca_entities.description_new.description_new_txt">
+						<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
+							<div class="trimText">^ca_entities.description_new.description_new_txt</div>
+						</div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_entities.community_history.community_history_text">
+						<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.community_history.community_history_source"><h6>History of Community Name</h6>^ca_entities.community_history.community_history_text</div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_entities.nonpreferred_labels.displayname">
+						<div class='unit'>
+							<H6>Other Name(s)</H6>
+							<div class="trimTextAltNames"><unit relativeTo="ca_entities.nonpreferred_labels" delimiter="<br/>">
+								<ifdef code="ca_entities.nonpreferred_labels.source_info"><span data-toggle="popover" title="Source" data-content="^ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifdef>
+								<ifnotdef code="ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifnotdef>
+							</unit></div>
+						</div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_entities.alt_name_note">
+						<div class='unit'><h6>Note on Names</h6>^ca_entities.alt_name_note%delimiter=<br/></div>
+					</ifdef>}}}
 								
 						
-						
-					</div><!-- end stoneBg -->
 					{{{<ifdef code="ca_entities.public_notes">
 						<div class="collapseBlock">
 							<h3>More Information <span class="glyphicon glyphicon-collapse-down" aria-hidden="true"></span></H3>
@@ -240,15 +237,15 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 100
+		  maxHeight: 110
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 18
+		  maxHeight: 22
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
-		  maxHeight: 80,
+		  maxHeight: 85,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});

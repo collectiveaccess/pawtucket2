@@ -52,6 +52,9 @@
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
+			if(strtoLower($qr_list->getWithTemplate("^ca_objects.exclude_explore")) == "yes"){
+				continue;
+			}
 			if($i == 3){
 				print "</div><div class='row'>";
 				$i = 0;

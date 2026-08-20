@@ -34,7 +34,7 @@
 	$vs_browse_type		= $this->getVar('browse_type');
 	$o_browse			= $this->getVar('browse');
 	
-	$vn_facet_display_length_initial = 7;
+	$vn_facet_display_length_initial = 8;
 	$vn_facet_display_length_maximum = 60;
 	
 	if(is_array($va_facets) && sizeof($va_facets)){

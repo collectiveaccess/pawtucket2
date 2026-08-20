@@ -29,7 +29,7 @@
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
-	
+
 	global $g_ui_locale;
 	$cur_locale = str_replace("_CA", "", $g_ui_locale);
 	
@@ -62,6 +62,9 @@
 		$va_og_url = caNavUrl($this->request, 'Detail', 'objects', $vn_object_meta_id, array(), array('absolute' => 1));
 		$va_og_title = $t_meta_object->get('ca_objects.preferred_labels');
 	}
+	
+	$params = $this->request->getParameters(['PATH', 'GET']);
+	unset($params['lang']);
 ?><!DOCTYPE html>
 <html lang="en"
 	xmlns:fb="http://ogp.me/ns/fb#">
@@ -181,8 +184,8 @@
 					
 					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= $cur_locale; ?></a>
 						<ul class='dropdown-menu'>
-							<li class="<?= ($g_ui_locale === 'en_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, "EN", "", "*", "*", "*", ['lang' => 'en_CA']); ?></li>
-							<li class="<?= ($g_ui_locale === 'fr_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, "FR", "", "*", "*", "*", ['lang' => 'fr_CA']); ?></li>
+							<li class="<?= ($g_ui_locale === 'en_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, "EN", "", "*", "*", "*", array_merge(['lang' => 'en_CA'], $params)); ?></li>
+							<li class="<?= ($g_ui_locale === 'fr_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, "FR", "", "*", "*", "*", array_merge(['lang' => 'fr_CA'], $params)); ?></li>
 						</ul>
 					</li>
 <?php

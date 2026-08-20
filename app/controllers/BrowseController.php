@@ -199,6 +199,12 @@
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			$show_base_criteria = caGetOption('showBaseCriteria', $va_browse_info, false);
 			
+			if (is_array($va_base_criteria) && !$vs_remove_criterion) {
+				foreach($va_base_criteria as $vs_facet => $vs_value) {
+					$o_browse->addCriteria($vs_facet, $vs_value);
+				}
+			} 
+			
 			if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 				foreach ($va_facets as $vs_facet_spec) {
 					if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
@@ -213,13 +219,7 @@
 				$o_browse->addCriteria($vs_facet, $p);
 			} else { 
 				if (($o_browse->numCriteria() == 0)) {
-					if (is_array($va_base_criteria) && !$vs_remove_criterion) {
-						foreach($va_base_criteria as $vs_facet => $vs_value) {
-							$o_browse->addCriteria($vs_facet, $vs_value);
-						}
-					} else {
-						$o_browse->addCriteria("_search", array("*"));
-					}
+					$o_browse->addCriteria("_search", array("*"));
 				}
 			}
 			
@@ -412,21 +412,25 @@
  			
  			// map
 			if ($ps_view === 'map') {
-				$va_opts = array(
+				$va_opts = [
 				    'renderLabelAsLink' => false, 
 				    'request' => $this->request, 
 				    'color' => '#cc0000', 
 				    'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
 				    'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
-				    //'ajaxContentUrl' => (caGetOption('title_template', $va_view_info['display'], null) || caGetOption('description_template', $va_view_info['display'], null)) ? caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view)) : null,
-				    'excludeRelationshipTypes' => caGetOption('excludeRelationshipTypes', $va_view_info['display'], null),
 				    'ajaxContentUrl' => caGetOption('ajaxContentUrl', $va_view_info['display'], null),
-				);
+				    'excludeRelationshipTypes' => caGetOption('excludeRelationshipTypes', $va_view_info['display'], null)
+				];
+				if(!$va_opts['ajaxContentUrl']) {
+					$va_opts['ajaxContentUrl'] = (caGetOption('title_template', $va_view_info['display'], null) || caGetOption('description_template', $va_view_info['display'], null))
+						? 
+						caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view)) : null;
+				}
 				
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$qr_res->seek(0);
 				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
-				$this->view->setVar('map', $o_map->render('HTML', array('labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null), 'circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_view_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_view_info, 12), 'noWrap' => caGetOption("noWrap", $va_view_info, null), 'request' => $this->request)));
+				$this->view->setVar('map', $o_map->render('HTML', array('labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null), 'circle' => 0, 'cluster' => caGetOption('cluster', $va_view_info, false, ['castTo' => 'bool']), 'minZoomLevel' => caGetOption("minZoomLevel", $va_view_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_view_info, 12), 'noWrap' => caGetOption("noWrap", $va_view_info, null), 'request' => $this->request)));
 			}
  			
  			switch($ps_view) {

@@ -33,7 +33,7 @@
 	</div><!-- end row -->
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'topicObjects', array('facet' => 'topic_collection_facet', 'id' => $t_item->get("ca_collections.collection_id"), 'limit_num_results' => 8, 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
+			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'topicObjects', array('facet' => 'topic_collection_facet', 'id' => $t_item->get("ca_collections.collection_id"), 'limit_num_results' => 8, 'view' => 'images', 'sort' => 'Title'), array('dontURLEncodeParameters' => true)); ?>", function() {
 				/*
 				Only want to show a few with link to all so just don't jscroll the results
 				jQuery("#browseResultsContainer").jscroll({
@@ -112,7 +112,7 @@
 					{{{<ifdef code="ca_collections.about_objects"><div class="unit"><b>About the Objects</b><br/>^ca_collections.about_objects</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.topic_overview"><div class="unit"><b>Overview</b><br/>^ca_collections.topic_overview</ifdef></ifdef>}}}
 					{{{<ifdef code="ca_collections.topic_related_resources"><div class="unit"><b>Related Resources</b><br/>^ca_collections.topic_related_resources</ifdef></ifdef>}}}
-					{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H3>Related Series</H3><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></ifdef></ifcount>}}}
+					{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H3>Related Series</H3><unit relativeTo="ca_collections.children" delimiter="<br/>" sort="ca_collections.preferred_labels" sortDirection="desc"><l>^ca_collections.preferred_labels.name</l></unit></ifdef></ifcount>}}}
 					
 				</div><!-- end col -->
 			</div><!-- end row -->

@@ -33,10 +33,11 @@
 	<div class="row">
 		<div class="col-sm-5 fullWidthImg maxWidth text-center">
 			<?php print caGetThemeGraphic($this->request, 'Chirkof-Reburial.jpg', array("alt" => "Chirkof Reburial")); ?>
+			<div class="uk-panel uk-text-small">Ancestral remains from Chirikof Island are reburied in the Kodiak City Cemetery, 2018 (AM847)</div>
 		</div>
 		<div class="col-sm-7">
 			<hr class="uk-divider-small">
-			<h2 class="uk-h1">How to Access the Repatriation Database</h2>
+			<h2 class="uk-h1">Access the Database</h2>
 			<p>{{{repatriation_login_intro}}}</p>
 			<div class="unit text-center"><a href="mailto:amanda@alutiiqmuseum.org" target="_blank" class="uk-button uk-button-default"><span class="uk-margin-small-right uk-icon" uk-icon="mail"><svg width="20" height="20" viewBox="0 0 20 20"><polyline fill="none" stroke="#000" points="1.4,6.5 10,11 18.6,6.5"></polyline><path d="M 1,4 1,16 19,16 19,4 1,4 Z M 18,15 2,15 2,5 18,5 18,15 Z"></path></svg></span> Contact Us</a></div>		
 		</div>

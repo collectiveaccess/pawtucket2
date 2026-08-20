@@ -50,11 +50,11 @@ if($vs_mode == "map"){
 	}elseif(strpos($vs_last_find, "search") !== false){
 		$vs_link_text = "Search";	
 	}elseif(strpos($vs_last_find, "gallery") !== false){
-		$vs_link_text = "Explore Features";	
+		$vs_link_text = "Features";	
 	}elseif(strpos($vs_last_find, "narrative") !== false){
-		$vs_link_text = "Explore Narrative Threads";	
+		$vs_link_text = "Narrative Threads";	
 	}elseif(strpos($vs_last_find, "listing") !== false){
-		$vs_link_text = "Explore Resources";	
+		$vs_link_text = "Resources";	
 	}
 	if($vs_link_text){
 		$va_params["row_id"] = $t_object->getPrimaryKey();
@@ -78,7 +78,7 @@ if($vs_mode == "map"){
 ?>
 			<div class="row">
 <?php
-				$va_transcript_rep_ids = array();
+				$va_transcript_rep_ids = $va_full_text_rep_ids = array();
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 				if($vs_representationViewer){
 ?>
@@ -89,12 +89,18 @@ if($vs_mode == "map"){
 					$t_list = new ca_lists();
 					$va_type = $t_list->getItemFromList("object_representation_types", "transcript");
 					$va_transcript_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					
+					$va_type = $t_list->getItemFromList("object_representation_types", "full_text");
+					$va_full_text_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					
 					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
 						print "<div id='transcriptLink' class='text-center'>";
-						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
-							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+						if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
+							foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
+								$t_rep = new ca_object_representations($vn_transcript_rep_id);
 							
-							print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
+								print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
+							}
 						}
 						print "</div>";
 					}
@@ -173,19 +179,70 @@ if($vs_mode == "map"){
 						}else{
 							print $vs_title;
 						}
-						print $vs_source_link."</H4>";
+						print $vs_source_link;
+						print "</H4>";
 ?>
-						{{{<ifdef code="ca_objects.displayDate">
-							<div class="unit" data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
-								^ca_objects.displayDate
-							</div>
-						</ifdef>}}}
-				
+						<div class="unit">
+							<div class="uppercase">{{{^ca_objects.type_id}}}</div>
+						</div>
+							{{{<ifdef code="ca_objects.displayDate">
+								<ifdef code="ca_objects.ISADG_dateNote"><div class="unit" data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
+									^ca_objects.displayDate
+								</div></ifdef>
+								<ifnotdef code="ca_objects.ISADG_dateNote">
+									<div class="unit">^ca_objects.displayDate</div>
+								</ifnotdef>
+							</ifdef>}}}
+<?php
+						# --- the collections the item is a direct part of
+						$vs_rel_collections = $t_object->getWithTemplate('<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part"><unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit></ifcount>', array("checkAccess" => $va_access_values));
+						# --- the fiels the item is a direct part of
+						#$vs_rel_files = $t_object->getWithTemplate('<ifcount code="ca_objects.related" min="1" restrictToRelationshipTypes="archival_part">
+						#												<unit relativeTo="ca_objects.related" restrictToRelationshipTypes="archival_part" delimiter="<br/>">
+						#													<unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter=" // "><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit>
+						#													> <l>^ca_objects.preferred_labels.name</l>
+						#												</unit>
+						#											</ifcount>', array("checkAccess" => $va_access_values));
+																	
+						$va_parent_files = $t_object->get("ca_objects.related.object_id", array("restrictToRelationshipTypes" => "archival_part", "checkAccess" => $va_access_values, "returnAsArray" => true));
+						$va_rel_files = array();
+						if(is_array($va_parent_files) && sizeof($va_parent_files)){
+							foreach($va_parent_files as $vn_parent_file_id){
+								$t_file = new ca_objects($vn_parent_file_id);
+								$tmp = $t_file->getWithTemplate("<l>^ca_objects.preferred_labels.name</l>");
+								$tmp2 = $t_file->getWithTemplate('<ifcount code="ca_collections" restrictToRelationshipTypes="archival_part" min="1"><unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>">
+																<ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit> > '.$tmp.'</ifdef>
+														</unit></ifcount>', array("checkAccess" => $va_access_values));
+								if($tmp2){
+									$va_rel_files[] = $tmp2;	
+								}else{
+									$va_rel_files[] = $tmp;
+								}
+							}
+						}
+						$vs_rel_files = join("<br/>", $va_rel_files);
+						
+						if($vs_rel_collections || $vs_rel_files){
+							print "<div class='unit'><H6>Location in Collection</H6>".$vs_rel_collections.(($vs_rel_collections && $vs_rel_files) ? "<br/>" : "").$vs_rel_files."</div>";
+						}											
+						
+?>
 						<H6>
-							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
+							{{{<if rule='^ca_objects.resource_type !~ /-/'><ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1<ifdef code="ca_objects.genre"> > </ifdef></ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef></if>}}}
 						</H6>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
-						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" min="1"><div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+<?php
+						$vs_creators_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" delimiter="; "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>', array("checkAccess" => $va_access_values));
+						$vs_creators_text = $t_object->getWithTemplate('<unit relativeTo="ca_objects" delimiter="; ">^ca_objects.creators</unit>', array("checkAccess" => $va_access_values));
+						if($vs_creators_entities || $vs_creators_text){
+							print '<div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? "; " : "").$vs_creators_text.'</div></div>';
+						}
+?>
+						{{{<ifdef code="ca_collections.RAD_admin_hist">
+							<div class="unit"><h6>Administrative/Biographical History</h6>
+								<div class="trimText">^ca_collections.RAD_admin_hist</div>
+							</div>
+						</ifdef>}}}
 						{{{<ifdef code="ca_objects.scope_new.scope_new_text">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source"><h6>Description</h6>
 								<div class="trimText">^ca_objects.scope_new.scope_new_text</div>
@@ -196,11 +253,16 @@ if($vs_mode == "map"){
 								<div class="trimText">^ca_objects.curators_comments.comments</div>
 							</div>
 						</ifdef>}}}
-						{{{<if rule="^ca_objects.show_photo_boilerplate =~ /Yes/">
-							<div class="unit" data-toggle="popover" title="Source" data-content="<?php print $this->getVar("photo_boilerplate_source"); ?>"><h6>About Residential School Photographs</h6>
-								<div class="trimText"><?php print $this->getVar("photo_boilerplate"); ?></div>
+						{{{<ifdef code="ca_objects.content_notice.content_notice_value">
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.content_notice.content_notice_source"><h6>Content Notice</h6>
+								<div class="trimText">^ca_objects.content_notice.content_notice_value</div>
 							</div>
-						</if>}}}
+						</ifdef>}}}
+						{{{<ifdef code="ca_objects.about_school_photographs.about_school_photos_text">
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.about_school_photographs.about_school_photos_source"><h6>About Residential School Photographs</h6>
+								<div class="trimTextAboutPhotos">^ca_objects.about_school_photographs.about_school_photos_text</div>
+							</div>
+						</ifdef>}}}
 						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
 								<div class="trimText">^ca_objects.community_input_objects.comments_objects</div>
@@ -214,6 +276,7 @@ if($vs_mode == "map"){
 					</div><!-- end stoneBg -->
 <?php
 					include("themes_html.php");
+if($x){
 ?>
 					{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url">
 						<div class="collapseBlock">
@@ -223,21 +286,27 @@ if($vs_mode == "map"){
 							</div>
 						</div>
 					</ifdef>}}}
+<?php
+}
+?>
 					<div class="collapseBlock">
 						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 						<div class="collapseContent">
 							{{{<ifcount min="1" code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^ca_objects.nonpreferred_labels.name</unit></div></ifcount>}}}
-							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
-							{{{<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Repository Object Identifier</h6>^ca_objects.source_identifer</div></ifdef>}}}
+							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Holding Repository</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
+							{{{<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Holding Repository Identifier</h6>^ca_objects.source_identifer</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.NCTR_id"><div class='unit'><h6>Commission Object Identifier</h6>^ca_objects.NCTR_id</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.RAD_extent"><div class='unit'><h6>Extent and Medium</h6>^ca_objects.RAD_extent</div></ifdef>}}}
-							<!--{{{<ifdef code="ca_objects.related_collection_list"><div class='unit'><H6>Collection Hierarchy List</H6><unit relativeTo="ca_objects" delimiter="<br/>"><l>^ca_objects.related_collection_list</l></unit></div></ifdef>}}}-->
-							{{{<ifdef code="ca_objects.ownership_credit"><div class='unit'><h6>Credit/Citation</h6>^ca_objects.ownership_credit</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.MARC_generalNote</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.digital_file_duration"><div class='unit'><h6>Duration</h6>^ca_objects.digital_file_duration</div></ifdef>}}}
+							
+							{{{<ifdef code="ca_objects.RAD_custodial"><div class='unit'><h6>Archival History</h6>^ca_objects.RAD_custodial</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Notes</h6><unit relativeTo="ca_objects.MARC_generalNote" delimiter="<br/>">^ca_objects.MARC_generalNote</unit></div></ifdef>}}}
+							{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.rights_new"><div class='unit'><h6>Terms Governing Use and Reproduction</h6>^ca_objects.rights_new</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_objects.RAD_local_rights</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_objects.ISADG_rules</div></ifdef>}}}
+							
 <?php
 							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."</textarea></div>";					
 ?>
@@ -259,6 +328,9 @@ if($vs_mode == "map"){
 					if ($this->getVar("nextLink")) {
 						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("nextLink").'</div><!-- end detailTool -->';
 					}
+					#if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
+						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
+					#}
 					print "<div class='detailTool'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array('object_id' => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]." ".$va_add_to_set_link_info["link_text"]."</a></div>";
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
@@ -269,10 +341,15 @@ if($vs_mode == "map"){
 					if($vb_show_download_all_link){
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caNavLink($this->request, "Download", "faDownload", "", "Detail",  "DownloadMedia", array('object_id' => $vn_id, "download" => 1))."</div>";
 					}
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
-					if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
-						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
+					if(is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids)){
+						foreach($va_full_text_rep_ids as $vn_full_text_rep_id){
+							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+							print "<div class='detailTool'><a href='#' title='"._t("Read Online")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_id, 'representation_id' => $vn_full_text_rep_id, 'item_id' => $vn_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span> Read Online</a></div>\n";
+							# --- online print one button to the first rep with read online
+							break;
+						}
 					}
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
 					print '</div><!-- end detailTools -->';			
 
 						if ($vn_comments_enabled) {
@@ -341,7 +418,7 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 60
+		  maxHeight: 100
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
@@ -352,6 +429,10 @@ if($vs_mode == "map"){
 		  maxHeight: 80,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
+		});
+		$('.trimTextAboutPhotos').readmore({
+		  speed: 75,
+		  maxHeight: 58
 		});
 		var options = {
 			placement: function () {
@@ -397,6 +478,18 @@ if($vs_mode == "map"){
 					}
 				});
 			}
+<?php		
+		if(is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids)){
+			foreach($va_full_text_rep_ids as $vn_full_text_rep_id){
+?>
+				if(!$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").hasClass("readOnlineLoaded")){
+					$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").append("<span class='readOnline'>Read Online</span>");
+					$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").addClass("readOnlineLoaded");
+				}
+<?php			
+			}
+		}
+?>
 		});
 	});
 </script>

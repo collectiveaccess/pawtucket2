@@ -294,7 +294,7 @@ class BaseQuickAddController extends ActionController {
 			);
 			
 			$this->view->setVar('response', $va_response);
-			
+			$this->response->setContentType('application/json');
 			$this->render('quickadd_result_json.php');
 			return;
 		}
@@ -347,6 +347,7 @@ class BaseQuickAddController extends ActionController {
 			
 			$this->view->setVar('response', $va_response);
 			
+			$this->response->setContentType('application/json');
 			$this->render('quickadd_result_json.php');
 			return;
 		}
@@ -405,7 +406,7 @@ class BaseQuickAddController extends ActionController {
 				Session::setVar($this->ops_table_name.'_browse_last_id', $vn_subject_id);	// set last edited
 				
 				// Set ACL for newly created record
-				if ($t_subject->getAppConfig()->get('perform_item_level_access_checking')) {
+				if (caACLIsEnabled($t_subject)) {
 					$t_subject->setACLUsers(array($this->request->getUserID() => __CA_ACL_EDIT_DELETE_ACCESS__));
 					$t_subject->setACLWorldAccess($t_subject->getAppConfig()->get('default_item_access_level'));
 				}
@@ -472,6 +473,7 @@ class BaseQuickAddController extends ActionController {
 		
 		$this->view->setVar('response', $va_response);
 		
+		$this->response->setContentType('application/json');
 		$this->render('quickadd_result_json.php');
 	}
 	# -------------------------------------------------------
@@ -485,7 +487,6 @@ class BaseQuickAddController extends ActionController {
 		// load required javascript
 		AssetLoadManager::register('bundleableEditor');
 		AssetLoadManager::register('imageScroller');
-		AssetLoadManager::register('ckeditor');
 		
 		$t_subject = Datamodel::getInstanceByTableName($this->ops_table_name);
 		

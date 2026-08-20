@@ -43,7 +43,7 @@
 			<div class="row">			
 				<div class='col-sm-7'><div class='bgLightGray'>
 <?php
-				if($vs_tmp = $t_entity->get("ca_entities.history_bio")){
+				if($vs_tmp = $t_entity->get("ca_entities.history_bio", ['doRefSubstitution' => true])){
 					print "<div class='unit'>".$vs_tmp."</div>";
 				}
 				

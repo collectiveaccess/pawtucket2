@@ -43,13 +43,13 @@ $path = join("/", $tmp);
 			
 			<div id="errorLocation" class="errorPanel">
 				<img src='<?= $path; ?>/themes/default/assets/pawtucket/graphics/glyphicons_078_warning_sign.png' class="permissionErrorIcon"/>
-				<div class="errorDescription"><span class="errorMessage"><?= $ps_errstr; ?></span> in <?= $ps_errfile; ?> line <?= $pn_errline; ?>:</div>
+				<div class="errorDescription"><span class="errorMessage"><?= $errstr; ?></span> in <?= $errfile; ?> line <?= $errline; ?>:</div>
 			</div>
 			<div id="stacktace">
 					<ol class="tracelist">
 <?php
-						foreach($pa_errcontext as $i => $trace) {
-							print "<li>".(($i == 0) ? "In " : "At ").$trace['class'].$trace['type'].$trace['function']."(".join(', ', $pa_errcontext_args[$i]).") in <a class='tracelistEntry' title='".$trace['file']."' ondblclick='var f=this.innerHTML;this.innerHTML=this.title;this.title=f;'>".pathinfo($trace['file'], PATHINFO_FILENAME)."</a> line ".$trace['line']."</li>\n";
+						foreach($errcontext as $i => $trace) {
+							print "<li>".(($i == 0) ? "In " : "At ").$trace['class'].$trace['type'].$trace['function']."(".join(', ', $errcontext_args[$i]).") in <a class='tracelistEntry' title='".$trace['file']."' ondblclick='var f=this.innerHTML;this.innerHTML=this.title;this.title=f;'>".pathinfo($trace['file'], PATHINFO_FILENAME)."</a> line ".$trace['line']."</li>\n";
 						}
 ?>
 					</ol>
@@ -60,7 +60,7 @@ $path = join("/", $tmp);
 					<span class="errorMessage"></span>Request parameters:</span>
 					<ol class="paramList">
 <?php
-					foreach($pa_request_params as $k => $v) {
+					foreach($request_params as $k => $v) {
 						print "<li>{$k} =&gt; {$v}</li>";
 					}
 ?>

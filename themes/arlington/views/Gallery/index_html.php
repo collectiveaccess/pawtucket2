@@ -30,7 +30,7 @@
 				print "<div class='col-sm-3'>";
 				$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
 				print "<div class='galleryList'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id).
-							"<label>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</label>
+							"<div class='flabel'>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</div>
 							<div><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></div>
 						</div>\n";
 				print "</div><!-- end col -->";

@@ -24,7 +24,7 @@
 <div class="row"><div class="col-sm-12">
 	<H1><?= $vs_page_title; ?></H1>
 
-		<h2>Jacob’s Pillow Preservation Staff</h2><br/>
+		<!-- <h2>Jacob’s Pillow Preservation Staff</h2><br/>
 		
     	<p>Norton Owen, Director of Preservation </p>
 		<p><a href='mailto:nowen@jacobspillow.org'>nowen@jacobspillow.org</a></p>		
@@ -43,7 +43,11 @@
 		<p>Would you like to schedule an appointment? Do you have a research question or general inquiry about our collection?</p>
 		<p>We’d love to hear from you! Please fill out the following form, and we will get back with you as soon as possible.</p>
 		<p>Your question or research request:</p>	
-		<br>
+		<br> -->
+
+		{{{contact_page}}}
+
+		<br><br>
 
 <?php
 	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){

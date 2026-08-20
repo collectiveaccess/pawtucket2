@@ -26,10 +26,11 @@
  * ----------------------------------------------------------------------
  */
 if(($this->request->getAction() == "repatriation") && !$this->request->isLoggedIn()){
-	print "do redirect";
-	#$vs_url = caNavUrl($this->request, "", "LoginReg", "LoginForm");
-	#$this->notification->addNotification(_t("You must be logged in to view that content"), __NOTIFICATION_TYPE_INFO__);
-	#$this->response->setRedirect($vs_url);
+	$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "", "LoginReg", "LoginForm");
+	caSetRedirect($vs_url);
+	return;
+	#print "<div class='unit text-center'><H2 class-'uk-h1 text-center'>Please ".caNavLink($this->request, "Login", "el-link", "", "loginReg", "loginform")." to access repatriation records.</H2><br/>".caNavLink($this->request, "Login", "uk-button uk-button-default", "", "loginReg", "loginform")."</div>";
+
 }else{
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets

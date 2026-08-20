@@ -19,6 +19,7 @@
 			<a role="button" class="btn btn-primary btn-lg landingBtn" href="/EducationalResources/Browse/facet/type_facet/id/1615"><?= _t('Learning Activities'); ?></a>
 			<a role="button" class="btn btn-success btn-lg landingBtn" href="/EducationalResources/Browse/facet/type_facet/id/1614"><?= _t('Colouring, Games and Puzzles'); ?></a>
 			<a role="button" class="btn btn-warning btn-lg landingBtn" href="/EducationalResources/Browse/facet/type_facet/id/1616"><?= _t('Audio/Video'); ?></a>
+			<a role="button" class="btn btn-info btn-lg landingBtn" href="/EducationalResources/Browse/facet/type_facet/id/1860"><?= _t('Stories'); ?></a>
 			<a role="button" class="btn btn-danger btn-lg landingBtn" href="/Gallery/Index"><?= _t('Create Your Own Gallery'); ?></a>
 		</div>
 	</div>

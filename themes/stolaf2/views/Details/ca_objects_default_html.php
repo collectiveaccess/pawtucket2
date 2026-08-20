@@ -40,7 +40,7 @@
 	$media_url = null;
 	if(($elevator_url = $t_object->get('ca_objects.url')) && preg_match("!viewAsset/([a-z0-9]{24})[/]?$!", $elevator_url, $m)) {
 		$elevator_id = $m[1];
-		$e = new elevatorAPI("https://elevator.stolaf.edu/archives/api/v1/", __ELEVATOR_KEY__, __ELEVATOR_SECRET__);
+		$e = new elevatorAPI("https://digital.stolaf.edu/archives/api/v1/", __ELEVATOR_KEY__, __ELEVATOR_SECRET__);
 		$children = $e->getAssetChildren($elevator_id);
 		if(is_array($children) && is_array($children['matches'])  && is_array($children['matches'][0])) {
 			$media_url = $children['matches'][0]['primaryHandlerThumbnail2x'];
@@ -118,9 +118,9 @@
 					</div>
 				</ifdef>}}}
 				{{{<ifdef code="ca_objects.url"><div class="unit"><label>Url To External Media</label><a href="^ca_objects.url" target="_blank" class="url"><i class="fa fa-external-link" aria-hidden="true"></i> ^ca_objects.url</a></div></ifdef>}}}
-				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location</label>
-					<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
-				</div></ifcount>}}}
+				{{{<ifdef code="ca_objects.history_tracking_current_value%policy=current_location"><div class="unit"><label>Location</label>
+					^ca_objects.history_tracking_current_value%policy=current_location
+				</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.general_notes"><div class="unit"><label>Notes</label>^ca_objects.general_notes%delimiter=<br/></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.accessrestrict"><div class="unit"><label>Conditions Governing Access</label>^ca_objects.accessrestrict%delimiter=<br/></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.physaccessrestrict"><div class="unit"><label>Physical Access</label>^ca_objects.physaccessrestrict%delimiter=<br/></div></ifdef>}}}

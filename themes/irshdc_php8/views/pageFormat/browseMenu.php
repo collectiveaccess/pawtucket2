@@ -48,7 +48,7 @@
 							}
 						}
 ?>
-						<li><a href="https://collections.irshdc.ubc.ca/WhereToFindRecords">Archives</a></li>
+						<li><?php print caDetailLink($this->request, "The Loyie-Brissenden Collection", "", "ca_collections", 48); ?></li>
 					</ul>	
 				</li>
 <?php				

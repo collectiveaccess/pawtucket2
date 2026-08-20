@@ -58,11 +58,11 @@ $vs_mode = $this->request->getParameter("mode", pString);
 	}elseif(strpos($vs_last_find, "search") !== false){
 		$vs_link_text = "Search";	
 	}elseif(strpos($vs_last_find, "gallery") !== false){
-		$vs_link_text = "Explore Features";	
+		$vs_link_text = "Features";	
 	}elseif(strpos($vs_last_find, "school") !== false){
-		$vs_link_text = "Explore Schools";	
+		$vs_link_text = "Schools";	
 	}elseif(strpos($vs_last_find, "listing") !== false){
-		$vs_link_text = "Explore Exhibitions";	
+		$vs_link_text = "Exhibitions";	
 	}
 	if($vs_link_text){
 		$va_params["row_id"] = $t_item->getPrimaryKey();

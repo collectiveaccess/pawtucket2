@@ -449,6 +449,15 @@ class ca_data_importer_items extends BaseModel {
 			'label' => _t('Delimiter'),
 			'description' => _t('Delimiter to split repeating values on.')
 		);
+		$settings['useConstant'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 10, 'height' => 1,
+			'takesLocale' => false,
+			'default' => null,
+			'label' => _t('Use constant'),
+			'description' => _t('Set value to constant, rather than source value')
+		);
 		$settings['restrictToTypes'] = array(
 			'formatType' => FT_TEXT,
 			'displayType' => DT_FIELD,
@@ -662,6 +671,27 @@ class ca_data_importer_items extends BaseModel {
 			'label' => _t('Treat value as identifiers for multiple rows'),
 			'description' => _t('Explode value on delimiter and use as identifiers for multiple rows.')
 		);
+		
+		$settings['treatAsIdnosForMultipleRows'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 2,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Treat value as identifiers for multiple rows'),
+			'description' => _t('Explode value on delimiter and use as identifiers for multiple rows.')
+		);
+		
+		$settings['treatAsIdsForMultipleRows'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 2,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Treat value as CollectiveAccess IDs for multiple rows'),
+			'description' => _t('Explode value on delimiter and use as CollectiveAccess IDs for multiple rows.')
+		);
+		
 		$settings['displaynameFormat'] = array(
 			'formatType' => FT_TEXT,
 			'displayType' => DT_FIELD,

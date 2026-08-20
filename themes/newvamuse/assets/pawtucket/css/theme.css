@@ -698,7 +698,7 @@ div.caMediaOverlayControlsMinimal:hover {
     margin: 5% auto;
     padding: 20px;
     border: 2px solid #ccc;
-    max-height: 406px;
+    max-height: 506px;
     overflow-y: auto;
 }
 
@@ -1312,4 +1312,58 @@ div.caMediaOverlayControlsMinimal:hover {
 	color:white;
 	background-color:white;
 	opacity: 1;
+}
+
+#bMorePanel #bScrollList div {
+	padding-bottom: 0px;
+	margin-bottom: 0px;
+}
+
+aside {
+	float: right;
+	width: 20vw;
+	margin-right: -22vw;
+	font-size: 14px;
+	line-height: 17px;
+}
+
+blockquote aside {
+	float: right;
+	width: 20vw;
+	margin-right: -23.5vw;
+	font-size: 14px;
+	line-height: 17px;
+}
+
+.storySlideshow {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	padding: 10px 0 10px 0;
+}
+.storySlideshowMedia {
+	text-align: center;
+}
+
+.storySlideshowMedia img {
+	object-fit: contain;
+	width: 100%;
+	height: 100%;
+}
+
+div.storySlideshowMediaNavPrevious {
+	text-align: left;
+}
+
+div.storySlideshowMediaNavNext {
+	text-align: right;
+}
+
+a.storySlideshowNav {
+	font-size: 24px;
+}
+
+span.storySlideshowSlide {
+	font-style: italic;
+	font-size: 12px;
 }

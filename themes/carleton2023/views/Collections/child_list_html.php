@@ -18,7 +18,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 	$vs_output = "";
 	$vs_desc_template = $o_config->get("description_template");
 	$vs_label_template = $o_config->get("label_template");
-	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
+	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids, ['sort' => 'ca_collections.id_number']);
 	
 	if($qr_collections->numHits()){
 		while($qr_collections->nextHit()) {

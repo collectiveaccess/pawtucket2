@@ -1,7 +1,6 @@
 <?php
 	$t_item = $this->getVar("item");
-	$collection_id = $t_item->getPrimaryKey();
-	
+	$collection_id = 		$t_item->getPrimaryKey();
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
@@ -60,11 +59,14 @@
 	);
 	if($this->request->isLoggedIn()){
 		$va_fields["Unit ID"] = "^ca_collections.unit_id%delimiter=;_";
+		$va_fields["Custodial History"] = "^ca_collections.custodhist";
 		$va_fields["Serial ID"] = "^ca_collections.idno";
 		$va_fields["Legacy Metadata"] = "^ca_collections.legacy_metadata.legacy_metadata_value";
 		$va_fields["Storage Location"] = "<ifcount code='ca_storage_locations' min='1'><unit relativeTo='ca_collections_x_storage_locations' delimiter='<br/><br/>'>^ca_storage_locations.hierarchy.preferred_labels.name%delimiter=_➜_<ifdef code='ca_collections_x_storage_locations.effective_date'><br>Location Date: ^ca_collections_x_storage_locations.effective_date</ifdef><ifdef code='ca_collections_x_storage_locations.staff'><br>Staff: ^ca_collections_x_storage_locations.staff</ifdef><ifdef code='ca_collections_x_storage_locations.description'><br>Content: ^ca_collections_x_storage_locations.description</ifdef><ifdef code='ca_collections_x_storage_locations.item_extent.extent_value'><br>Extent: ^ca_collections_x_storage_locations.item_extent.extent_value ^ca_collections_x_storage_locations.item_extent.extent_unit<ifdef code='ca_collections_x_storage_locations.item_extent.extent_note'><br/>^ca_collections_x_storage_locations.item_extent.extent_note</ifdef></ifdef></unit></ifcount>";
 		$edit_link = "https://archive.carleton.edu/admin/editor/collections/CollectionEditor/Edit/collection_id/" . "^ca_collections.collection_id";
 		$va_fields["Edit record"] = "<a href='" . $edit_link . "'target=\"_blank\">Click here to edit this record</a>";
+		$list_contents_link = "https://archive.carleton.edu/admin/find/SearchCollections/Index/search/ca_collections.collection_id%253A" . "^ca_collections.collection_id" . "/type_id/%2A";
+		$va_fields["View child records"] = "<a href='" . $list_contents_link . "'target=\"_blank\">Click here to view and edit child records</a>";
 	}
 	
 	// Calculate next/prev in container

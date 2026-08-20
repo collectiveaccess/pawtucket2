@@ -38,10 +38,11 @@
 						if (($o_collections_config->get("description_template")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template")))) {
 							$vs_scope = strip_tags($vs_scope);
 							$vs_tmp .= "<div>".$vs_scope."</div>". "<div class='collectionTileViewBtn text-right'>".caDetailLink($this->request, "View", "btn btn-default btn-small", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";
-;
+
 						}
 						$vs_tmp .= "</div>";
-						print caDetailLink($this->request, $vs_tmp, "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
+						print $vs_tmp;
+						//print caDetailLink($this->request, $vs_tmp, "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
 						print "</div>";
 
 						$vn_i++;

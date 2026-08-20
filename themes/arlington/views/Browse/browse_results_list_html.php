@@ -116,7 +116,7 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = (in_array($vs_table, array('ca_entities', 'ca_objects'))) ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					$vs_image = (in_array($vs_table, array('ca_entities', 'ca_objects'))) ? $qr_res->get("ca_object_representations.media.small", array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
 					if(!$vs_image){
 						if ($vs_table == 'ca_objects') {
@@ -146,7 +146,7 @@
 					$vs_result_output = "
 		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
-				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
+				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}' aria-label='Select item'></div>
 				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultListItemText'>
 						{$vs_caption}

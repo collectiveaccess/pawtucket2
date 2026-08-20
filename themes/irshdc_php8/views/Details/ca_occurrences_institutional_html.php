@@ -133,24 +133,22 @@ if($vs_mode == "map"){
 				}
 ?>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer || $vs_featured_image) ? "5" : "7"; ?>'>
-					<div class="stoneBg">				
-						<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
-						{{{<if rule='^ca_occurrences.hideDate%convertCodesToDisplayText=1 !~ /Yes/'><ifdef code="ca_occurrences.displayDate"><div class="unit">^ca_occurrences.displayDate</unit></ifdef><ifnotdef code="ca_occurrences.displayDate"><ifdef code="ca_occurrences.occurrence_dates"><div class="unit">^ca_occurrences.occurrence_dates</div></ifdef><ifnotdef></if>}}}
-						
-						{{{<ifcount code="ca_entities" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-						{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><div class="unit"><H6>Creator<ifcount code="ca_entities.related" restrictToRelationshipTypes="creator" min="2">s</ifcount></H6><div class="trimTextShort"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
-						{{{<ifcount code="ca_places" min="1"><div class="unit"><H6>Location<ifcount code="ca_places" min="2">s</ifcount></H6><unit relativeTo="ca_places">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
-						{{{<ifdef code="ca_occurrences.description_new.description_new_txt">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_occurrences.description_new.description_new_source"><h6>Description</h6>
-								<div class="trimTextDescription">^ca_occurrences.description_new.description_new_txt</div>
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_occurrences.community_input_items.comments_objects">
-							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_occurrences.community_input_items.comment_reference_objects"><h6>Dialogue</h6>
-								<div class="trimText">^ca_occurrences.community_input_items.comments_objects</div>
-							</div>
-						</ifdef>}}}
-					</div><!-- end stoneBg -->
+					<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
+					{{{<if rule='^ca_occurrences.hideDate%convertCodesToDisplayText=1 !~ /Yes/'><ifdef code="ca_occurrences.displayDate"><div class="unit">^ca_occurrences.displayDate</unit></ifdef><ifnotdef code="ca_occurrences.displayDate"><ifdef code="ca_occurrences.occurrence_dates"><div class="unit">^ca_occurrences.occurrence_dates</div></ifdef><ifnotdef></if>}}}
+					
+					{{{<ifcount code="ca_entities" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><div class="unit"><H6>Creator<ifcount code="ca_entities.related" restrictToRelationshipTypes="creator" min="2">s</ifcount></H6><div class="trimTextShort"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><H6>Location<ifcount code="ca_places" min="2">s</ifcount></H6><unit relativeTo="ca_places">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
+					{{{<ifdef code="ca_occurrences.description_new.description_new_txt">
+						<div class="unit" data-toggle="popover" title="Source" data-content="^ca_occurrences.description_new.description_new_source"><h6>Description</h6>
+							<div class="trimTextDescription">^ca_occurrences.description_new.description_new_txt</div>
+						</div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.community_input_items.comments_objects">
+						<div class='unit' data-toggle="popover" title="Source" data-content="^ca_occurrences.community_input_items.comment_reference_objects"><h6>Dialogue</h6>
+							<div class="trimText">^ca_occurrences.community_input_items.comments_objects</div>
+						</div>
+					</ifdef>}}}
 					{{{<ifdef code="ca_occurrences.public_notes">
 						<div class="collapseBlock">
 							<h3>More Information <span class="glyphicon glyphicon-collapse-down" aria-hidden="true"></span></H3>

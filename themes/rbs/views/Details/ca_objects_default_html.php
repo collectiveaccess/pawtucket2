@@ -70,6 +70,10 @@
 				if ($vs_date_comments = $t_object->get('ca_objects.date_comments')) {
 					print "<div class='unit'><h6>Date Comments</h6>".$vs_date_comments."</div>";
 				}	
+				if ($sequential_designation = $t_object->get('ca_objects.sequential_designation')) {
+					print "<div class='unit'><h6>Sequential Designation/Dates of Publication</h6>".$sequential_designation."</div>";
+				}	
+				
 				if ($vs_publisher = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>', 'restrictToRelationshipTypes' => array('publisher')))) {
 					print "<div class='unit'><h6>Publisher</h6>".$vs_publisher."</div>";
 				}	
@@ -114,6 +118,9 @@
 				}	
 				if ($vs_notes = $t_object->getWithTemplate('<unit delimiter="<br/>">^ca_objects.notes</unit>')) {
 					print "<div class='unit notes'><h6>Notes</h6><p>".$vs_notes."</p></div>";
+				}	
+				if ($summary_holdings = $t_object->get('ca_objects.summary_holdings')) {
+					print "<div class='unit'><h6>Summary Holdings</h6>".$summary_holdings."</div>";
 				}
 
 ?>

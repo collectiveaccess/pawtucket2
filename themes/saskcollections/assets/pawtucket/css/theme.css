@@ -122,12 +122,14 @@ a:hover {
 	text-align:right;
 }
 .headerAdvancedSearch a{
-	font-size:13px;
-	color: #000;
+	font-size:15px;
+	/*color: #000;*/
+	font-weight: 600;
 }
 .headerAdvancedSearch a:hover{
-	font-size:13px;
+	font-size:15px;
 	color: #22559a;
+	text-decoration:underline;
 }
 #headerSearchButton{
 	color:#22559a;

@@ -446,7 +446,7 @@
  			
  			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
  			// set_id is passed through form, otherwise we're saving a new set
- 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_EDIT_READ_ACCESS__) : new ca_sets();
+ 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_SET_READ_ACCESS__) : new ca_sets();
  			
  			if(!$t_set->get("set_id") && ($pn_parent_id = $this->request->getParameter('parent_id', pInteger))){
  				# --- if making a new reponse set, check there isn't already one for the user
@@ -1141,7 +1141,7 @@
             
  			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
  			if($this->request->getParameter('set_id', pInteger)){
- 				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
+ 				$t_set = $this->_getSet(__CA_SET_READ_ACCESS__);
  				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
  					$va_errors["general"] = _t("You can not add items to this %1.  You have read only access.", $vs_display_name);
  					$this->view->setVar('errors', $va_errors);
@@ -1470,7 +1470,6 @@
  			$vn_set_id = $this->_getSetID();
  			if($vn_set_id){
 				$t_set->load($vn_set_id);
-				
 				if ($t_set->getPrimaryKey() && ($t_set->haveAccessToSet($this->request->getUserID(), $pn_access_level))) {
 					$this->request->user->setVar('current_set_id', $vn_set_id);
 					// pass the access level the user has to the set - needed to display the proper controls in views

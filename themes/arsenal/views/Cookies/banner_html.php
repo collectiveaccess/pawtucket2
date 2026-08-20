@@ -17,13 +17,13 @@
 	<div class="row">
 		<div class="col-sm-12 col-md-offset-3 col-md-6">
 			<div class="cookieNoticeHeading">
-				<?= _t('This website uses cookies'); ?>
+				<?= 'This website uses cookies'; ?>
 			</div>
 			<div>
 				<?= $text; ?>
 			</div>
 			<div class="text-center">
-				<?php print caNavLink($this->request, _t("Manage"), "btn btn-default btn-inverse", "", "Cookies", "manage").caNavLink($this->request, _t("Accept"), "btn btn-default", "", "Cookies", "manage", ['accept' => 1]); ?>
+				<?php print caNavLink($this->request, "Manage", "btn btn-default btn-inverse", "", "Cookies", "manage").caNavLink($this->request, "Accept", "btn btn-default", "", "Cookies", "manage", ['accept' => 1]); ?>
 			</div>
 		</div>
 	</div>

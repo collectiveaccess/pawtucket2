@@ -45,7 +45,6 @@
 ?>
 	<form id="ShareSetForm" action="#" class="form-horizontal" role="form">
 <?php
-		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
 		if(is_array($va_user_groups) && sizeof($va_user_groups)){
 			if($va_errors["group_id"]){
 				print "<div class='alert alert-danger'>".$va_errors["group_id"]."</div>\n";

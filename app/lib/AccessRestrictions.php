@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2023 Whirl-i-Gig
+ * Copyright 2011-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,9 +28,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
- */
-/**
- *
  */
 class AccessRestrictions {
 	# -------------------------------------------------------
@@ -122,7 +119,7 @@ class AccessRestrictions {
 
 		// check controller
 		$module = join("/",(is_array($pa_module_path) ? $pa_module_path : []));
-		$vs_controller_path = ($module ? "/{$module}" : '').ucfirst($ps_controller).'Controller';
+		$vs_controller_path = ($module ? "{$module}/" : '').ucfirst($ps_controller).'Controller';
 		if(is_array($this->opa_acr[$vs_controller_path] ?? null)){
 			foreach($this->opa_acr[$vs_controller_path] as $va_group){
 				$va_groups_to_check[] = $va_group;
@@ -130,7 +127,7 @@ class AccessRestrictions {
 		}
 
 		// check action
-		$vs_action_path = ($module ? "/{$module}" : '').ucfirst($ps_controller)."Controller/".$ps_action;
+		$vs_action_path = ($module ? "{$module}/" : '').ucfirst($ps_controller)."Controller/".$ps_action;
 		if(is_array($this->opa_acr[$vs_action_path] ?? null)){
 			foreach($this->opa_acr[$vs_action_path] as $va_group){
 				$va_groups_to_check[] = $va_group;
@@ -138,6 +135,7 @@ class AccessRestrictions {
 		}
 
 		// check rules
+		$groups_passed_count = 0;
 		foreach($va_groups_to_check as $va_group){
 			if(!is_array($va_group) || !is_array($va_group["actions"] ?? null)) continue; // group without action restrictions
 			$vb_group_passed = false;
@@ -170,7 +168,12 @@ class AccessRestrictions {
 			if(!$vb_group_passed) { // one has to pass ALL groups!
 				return false;
 			}
+			$groups_passed_count++;
 		}
+		
+		// Fallback to denying if it appears to be an API call not defined in the restrictions file
+		if(($groups_passed_count === 0) && in_array('json', array_map('strtolower', $pa_module_path))) { return false; }
+		
 		return true; // all groups passed
 	}
 	# -------------------------------------------------------

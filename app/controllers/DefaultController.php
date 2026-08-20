@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2023 Whirl-i-Gig
+ * Copyright 2014-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -60,8 +60,14 @@ class DefaultController extends BasePawtucketController {
 		
 		if($this->viewExists($v = join("/", $path[0]).".php")) {
 			$this->render($v, false);
-		} else {
-			$this->response->addContent(_t('Page is not available'));
+		} else if (defined('__CA_404_PAGE_PATH__') && __CA_404_PAGE_PATH__)  {
+			$content = ca_site_pages::renderPageForPath($this,'/'.ucfirst(__CA_404_PAGE_PATH__).'/_default', ['locale_id' => $g_ui_locale_id, 'incrementViewCount' => true, 'checkAccess' => caGetUserAccessValues($this->request)]);
+			$this->response->addContent($content);
+			return;
+		}
+		 else {
+			$this->response->addContent($m = _t('Page is not available'));
+			$this->response->setHTTPResponseCode(404, $m);
 		}
 	}
 	# ------------------------------------------------------

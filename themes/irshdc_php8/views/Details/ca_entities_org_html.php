@@ -94,22 +94,20 @@ if($vs_mode == "map"){
 				}
 ?>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
-					<div class="stoneBg">	
-						<H4>{{{^ca_entities.preferred_labels.displayname}}}
-							{{{<ifdef code="ca_entities.entity_website"><br/><unit delimiter="<br/>"><a href="^ca_entities.entity_website" class="redLink" target="_blank">^ca_entities.entity_website <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
-						</H4>
-						{{{<ifdef code="ca_entities.org_type"><div class="unit"><unit relativeTo="ca_entities" convertCodesToDisplayText="true">^ca_entities.org_type%useSingular=1</unit></div></ifdef>}}}
+					<H4>{{{^ca_entities.preferred_labels.displayname}}}
+						{{{<ifdef code="ca_entities.entity_website"><br/><unit delimiter="<br/>"><a href="^ca_entities.entity_website" class="redLink" target="_blank">^ca_entities.entity_website <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
+					</H4>
+					{{{<ifdef code="ca_entities.org_type"><div class="unit"><unit relativeTo="ca_entities" convertCodesToDisplayText="true">^ca_entities.org_type%useSingular=1</unit></div></ifdef>}}}
+					
+					{{{<ifdef code="ca_entities.indexingDatesSet"><div class="unit"><unit relativeTo="ca_entities" delimiter=", ">^ca_entities.indexingDatesSet</unit></div></ifdef>}}}
+					
+					{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities.related" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+					{{{<ifdef code="ca_entities.description_new.description_new_txt">
+						<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
+							<div class="trimText">^ca_entities.description_new.description_new_txt</div>
+						</div>
+					</ifdef>}}}
 						
-						{{{<ifdef code="ca_entities.indexingDatesSet"><div class="unit"><unit relativeTo="ca_entities" delimiter=", ">^ca_entities.indexingDatesSet</unit></div></ifdef>}}}
-						
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities.related" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
-						{{{<ifdef code="ca_entities.description_new.description_new_txt">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
-								<div class="trimText">^ca_entities.description_new.description_new_txt</div>
-							</div>
-						</ifdef>}}}
-						
-					</div><!-- end stoneBg -->
 					{{{<ifdef code="ca_entities.public_notes|ca_entities.nonpreferred_labels.displayname">
 						<div class="collapseBlock">
 							<h3>More Information <span class="glyphicon glyphicon-collapse-down" aria-hidden="true"></span></H3>
@@ -225,15 +223,15 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 100
+		  maxHeight: 110
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 18
+		  maxHeight: 22
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
-		  maxHeight: 80,
+		  maxHeight: 85,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});

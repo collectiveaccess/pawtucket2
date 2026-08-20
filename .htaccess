@@ -2,6 +2,9 @@ Options -Indexes
 Order allow,deny
 Allow from all
 
+AddType text/vtt .vtt
+AddType text/srt .srt
+
 <FilesMatch ".*\.[A-Za-z0-9]+">
 	Deny from all
 </FilesMatch>
@@ -14,7 +17,7 @@ Allow from all
 <FilesMatch "^(index|service|tilepic)\.php$">
         Allow from all
 </FilesMatch>
-<FilesMatch "^.*\.(css|gif|jpg|jpeg|png|js|woff|woff2|ttf|swf|map|tif|tiff|m4v|xml|ply|stl|html|json|mp3|wav|aiff|tiff|obj|bmp|mp4|pdf|svg|properties|xls|xlsx)$">
+<FilesMatch "^.*\.(css|gif|jpg|png|js|woff|woff2|ttf|swf|map|tif|tiff|webp|m4v|xml|ply|stl|html|json|mp3|wav|aiff|obj|bmp|mp4|pdf|svg|vtt|srt|ico|gltf|mtl|bin|js|txt|mov|glb|usdz|properties)$">
         Allow from all
 </FilesMatch>
 

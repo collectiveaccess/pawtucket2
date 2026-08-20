@@ -93,7 +93,7 @@
 					<div class="uk-first-column">
 						<div class="uk-panel">
 							<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo">
-								<?php print caGetThemeGraphic($this->request, "AlutiiqMuseum_Logo.png", array("alt" => "Alutiiq Museum Logo")); ?>
+								<?php print caGetThemeGraphic($this->request, "AMAR-logo-cropped.jpg", array("alt" => "Alutiiq Museum Logo")); ?>
 							</a>
 						</div>
 					</div>
@@ -158,13 +158,7 @@
 				<div class="uk-container uk-container-expand">
 					<nav class="uk-navbar" uk-navbar="{&quot;container&quot;:&quot;.tm-header-mobile&quot;,&quot;boundary&quot;:&quot;.tm-header-mobile .uk-navbar-container&quot;}">
 						<div class="uk-navbar-left">
-								<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo uk-navbar-item"><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png 134w" sizes="(min-width: 134px) 134px">
-								<img alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png" width="134" height="98">
-								</picture><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png 134w" sizes="(min-width: 134px) 134px">
-								<img class="uk-logo-inverse" alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png" width="134" height="98">
-								</picture></a>                        
+								<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo uk-navbar-item"><?php print caGetThemeGraphic($this->request, "AMAR-logo-cropped.jpg", array("alt" => "Alutiiq Museum Logo")); ?></a>                        
 						</div>
 						<div class="uk-navbar-right">
 							<a uk-toggle="" href="#tm-dialog-mobile" class="uk-navbar-toggle" role="button" aria-label="Open menu">
@@ -181,13 +175,7 @@
 					<div class="uk-container">
                 		<nav class="uk-navbar" uk-navbar="{&quot;align&quot;:&quot;center&quot;,&quot;container&quot;:&quot;.tm-header > [uk-sticky]&quot;,&quot;boundary&quot;:&quot;.tm-header .uk-navbar-container&quot;}">
 							<div class="uk-navbar-left">
-								<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo uk-navbar-item"><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png 134w" sizes="(min-width: 134px) 134px">
-								<img alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png" width="134" height="98">
-								</picture><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png 134w, /wp-content/themes/yootheme/cache/f9/Alutiiq-Museum-Logo-Inverse-f9f1b723.webp 268w" sizes="(min-width: 134px) 134px">
-								<img class="uk-logo-inverse" alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png" width="134" height="98">
-								</picture></a>                        
+								<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo uk-navbar-item"><?php print caGetThemeGraphic($this->request, "AMAR-logo-cropped.jpg", array("alt" => "Alutiiq Museum Logo")); ?></a>                        
                     		</div>
                     		<div class="uk-navbar-center">
 								<ul class="uk-navbar-nav">

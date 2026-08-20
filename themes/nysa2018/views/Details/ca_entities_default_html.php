@@ -28,7 +28,8 @@
 					}
 
 					# --- collections
-					if ($vs_collections = $t_item->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections' delimiter='<br/>'><l>^ca_collections.preferred_labels</l></unit></ifcount>")){	
+					# JB Edit: Added ', array("checkAccess" => [1])' to end of line below to limit related collections to publicly available collections.
+					if ($vs_collections = $t_item->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections' delimiter='<br/>'><l>^ca_collections.preferred_labels</l></unit></ifcount>", array("checkAccess" => [1]))){	
 						print "<div class='unit'><h3>"._t("Related collections")."</h3>";
 						print $vs_collections;
 						print "</div><!-- end unit -->";

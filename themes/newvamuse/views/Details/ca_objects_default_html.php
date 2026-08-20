@@ -233,7 +233,7 @@ if(sizeof($va_categories)){
 				if ($vs_vesName = $t_object->get('ca_objects.vesName')) {
 					print "<div class='unit'><span class='name'>"._t("Vessel Name").": </span><span class='data'>".$vs_vesName."</span></div>";
 				}
-				if ($vs_culture = $t_object->get('ca_objects.culture')) {
+				if ($vs_culture = $t_object->get('ca_objects.culture', ['convertCodesToDisplayText' => true])) {
 					print "<div class='unit'><span class='name'>"._t("Culture").": </span><span class='data'>".$vs_culture."</span></div>";
 				}	
 				if ($vs_fondsTitle = $t_object->get('ca_objects.fondsTitle')) {
@@ -269,11 +269,6 @@ if(sizeof($va_categories)){
 					<div class='unit'><span class='name'><?php print _t("History of Use"); ?>: </span><span class='data'><?php print $t_object->get("historyUse", array("convertHTMLBreaks" => true)); ?></span></div>
 <?php
 				}
-				if($t_object->get("cataloguerRem")){
-?>
-					<div class='unit'><span class='name'><?php print _t("Notes"); ?>: </span><span class='data'><?php print $t_object->get("cataloguerRem", array("convertHTMLBreaks" => true)); ?></span></div>
-<?php
-				}
 				if ($va_manufacturer = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', ', 'restrictToRelationshipTypes' => 'manufacturer'))) {
 					print "<div class='unit'><span class='name'>"._t("Manufacturer").": </span><span class='data'>".$va_manufacturer."</span></div>";
 				}
@@ -293,18 +288,15 @@ if(sizeof($va_categories)){
 
 				<div class="sharethis-inline-share-buttons"></div>	
 <?php
-			/*	if ($va_related_contributors = $t_object->get('ca_entities.entity_id', array('restrictToTypes' => array('member_institution'), 'returnAsArray' => true))) {
-					foreach ($va_related_contributors as $va_key => $va_related_contributor) {
-						$t_entity = new ca_entities($va_related_contributor);
+				if ($source_id = $t_object->get('ca_objects.source_id', ['convertIdsToIdnos' => true])) {
 						print "<div class='repository'>";
 						print "<p class='label'>From the collection</p>";
-						print "<p>".$t_entity->get('ca_entities.preferred_labels')."</p>";
-						print "<p>".$t_entity->get('ca_entities.address.city').", ".$t_entity->get('ca_entities.address.stateprovince')."</p>";
-						print "<div>".$t_entity->get('ca_entities.mem_inst_image', array('version' => 'medium', 'checkAccess' => $va_access_values))."</div>";
-						print "<p>".caNavLink($this->request, 'More information', '', '', 'Detail', 'entities/'.$va_related_contributor)."</p>";
+						print "<p>".caNavLink($this->request, caGetListItemByIDForDisplay($source_id), '', '', 'Detail', 'entities/'.ca_entities::getIDForIdno(caGetListItemIdno($source_id)))."</p>";
+						// print "<p>".$t_entity->get('ca_entities.address.city').", ".$t_entity->get('ca_entities.address.stateprovince')."</p>";
+// 						print "<div>".$t_entity->get('ca_entities.mem_inst_image', array('version' => 'medium', 'checkAccess' => $va_access_values))."</div>";
+// 						print "<p>".caNavLink($this->request, 'More information', '', '', 'Detail', 'entities/'.$va_related_contributor)."</p>";
 						print "</div>";
-					}
-				} */
+				} 
 ?>							
 						
 			</div><!-- end col -->

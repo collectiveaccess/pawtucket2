@@ -129,7 +129,7 @@
 		<div class="form-group">
 			<div class="col-sm-7 col-sm-offset-4 ">
 				<b>Collection of Personal Information</b><br/>
-				Your personal information is collected under the authority of section 26(c) of the <i>Freedom of Information and Protection of Privacy Act</i> (FIPPA). This information will be used for the purposes of creating and managing your Residential School History and Dialogue Centre account. Questions about the collection of this information may be directed to <a href="mailto:irshdc.reference@ubc.ca">irshdc.reference@ubc.ca</a>.
+				Your personal information is collected under the authority of section 26(c) of the <i>Freedom of Information and Protection of Privacy Act</i> (FIPPA). This information will be used for the purposes of creating and managing your Indian Residential School History and Dialogue Centre account. Questions about the collection of this information may be directed to <a href="mailto:irshdc.reference@ubc.ca">irshdc.reference@ubc.ca</a>.
 			</div>
 		</div>
 		<div class="form-group">

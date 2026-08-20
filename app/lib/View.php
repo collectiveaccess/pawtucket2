@@ -314,6 +314,34 @@ class View extends BaseObject {
 	}
 	# -------------------------------------------------------
 	/**
+	 * Render view variable as JSON. Variable used can by set using the 'var' option. If not set 
+	 * the "data" variable is used.
+	 *
+	 * @param array $options Options include:
+	 *		var = Name of view variable to render. [Default is "data"]
+	 *
+	 * @string JSON output
+	 */
+	public function renderAsJSON(?array $options=null) {
+		$var = caGetOption('var', $options, 'data');
+		return json_encode($this->getVar($var));
+	}
+	# -------------------------------------------------------
+	/**
+	 * Render view variable as text. Variable used can by set using the 'var' option. If not set 
+	 * the "data" variable is used.
+	 *
+	 * @param array $options Options include:
+	 *		var = Name of view variable to render. [Default is "data"]
+	 *
+	 * @string Text output
+	 */
+	public function renderAsText(?array $options=null) {
+		$var = caGetOption('var', $options, 'data');
+		return $this->getVar($var);
+	}
+	# -------------------------------------------------------
+	/**
 	 *
 	 */
 	private function _render($ps_filename) {

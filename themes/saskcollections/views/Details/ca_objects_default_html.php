@@ -108,7 +108,7 @@
 				</ifdef>}}}
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="artist,manufacturer" min="1">
 					<div class="unit"><label><t>Artist/Maker</t></label>
-						<unit relativeTo="ca_entities" restrictToRelationshipTypes="artist,manufacturer" delimiter="<br/>">^ca_entities.preferred_labels</unit>
+						<unit relativeTo="ca_entities" restrictToRelationshipTypes="artist,manufacturer" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit>
 					</div>
 				</ifcount>}}}
 				

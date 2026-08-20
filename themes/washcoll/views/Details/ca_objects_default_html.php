@@ -103,6 +103,22 @@
 							 }
 						break;
 						# ------------
+						case "commodore license":
+							 if($vs_tmp = $this->getVar("commodore_license")){
+							 	print $vs_tmp;
+							 }else{
+							 	print $vs_copyright;
+							 }
+						break;
+						# ------------
+						case "trumpington license":
+							 if($vs_tmp = $this->getVar("trumpington_license")){
+							 	print $vs_tmp;
+							 }else{
+							 	print $vs_copyright;
+							 }
+						break;
+						# ------------
 						default:
 							print $vs_copyright;
 						break;
