@@ -39,7 +39,7 @@
 <div class="container d-flex align-items-center justify-content-center" style='height:500px;'>
 	<div class="row">
 		<div class="col-auto">
-			<H1><div class="line1">Welcome to the Chicago Film Archive</div></H1>
+			<H1><div class="line1">Welcome to Chicago Film Archives</div></H1>
 		</div>
 	</div>
 </div>

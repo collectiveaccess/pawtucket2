@@ -60,7 +60,7 @@
 	// 	$vs_default_placeholder = "<i class='bi bi-card-image'></i>";
 	// }
 	// $vs_default_placeholder_tag = "<div class='bListItemPlaceholder'></div>";
-	$vs_default_placeholder_tag = "<img src='/themes/cfa/assets/pawtucket/graphics/placeholder.png'>";
+	$vs_default_placeholder_tag = "<img src='/themes/cfa/assets/pawtucket/graphics/placeholder.png' alt='Thumbnail missing'>";
 
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);

@@ -43,12 +43,12 @@ MetaTagManager::addMeta("search-thumbnail", $t_item->get('ca_object_representati
 MetaTagManager::addMeta("search-access", ($t_item->get('ca_collections.access') == 2) ? 'restricted' : 'public');
 MetaTagManager::addMeta("search-collection-type", 'subseries');
 
-MetaTagManager::addMeta("og:title", $t_item->get('ca_collections.preferred_labels'));
-MetaTagManager::addMeta("og:description", $t_item->get('ca_collections.cfaAbstract'));
-MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
-MetaTagManager::addMeta("og:image", $t_root->get('ca_object_representations.media.large.url'));
-MetaTagManager::addMeta("og:image:width", $t_root->get('ca_object_representations.media.large.width'));
-MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representations.media.large.height'));
+MetaTagManager::addMetaProperty("og:title", $t_item->get('ca_collections.preferred_labels'));
+MetaTagManager::addMetaProperty("og:description", $t_item->get('ca_collections.cfaAbstract'));
+MetaTagManager::addMetaProperty("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+MetaTagManager::addMetaProperty("og:image", $t_root->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMetaProperty("og:image:width", $t_root->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMetaProperty("og:image:height", $t_root->get('ca_object_representations.media.large.height'));
 
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -161,7 +161,7 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
                       <div class="paragraph">
                         <div class="text__eyebrow color__gray">
                           Subject
-                          <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="Objects in this collection relate to some of the following subjects.">
+                          <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="Objects in this subseries relate to some of the following subjects.">
                             <div class="trigger-icon color-icon-orange">
                               <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
@@ -182,6 +182,26 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
                         </div>
                       </div>
                   </ifdef>
+                  
+                 <ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,complier,source,participant">
+                    <div class="paragraph" style="break-before: column;">
+                      <div class="text__eyebrow color__gray">Creators</div>
+                      <div class="text__body-3">
+                        <div class="paragraph">
+                          <unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,complier,source,participant" delimiter="<div style='margin-bottom: 10px;'></div>">
+                            <span class="link-orange">
+                              <strong>
+                                <a href="/Browse/Objects/facet/entity/id/^ca_entities.entity_id">^ca_entities.preferred_labels</a>
+                              </strong>
+                            </span>
+                            (^relationship_typename)
+                            <div class="trimText" id="bio_^ca_entities.entity_id" style="line-height: 20px;">^ca_entities.biography</div>
+                          </unit>
+                        </div>
+                      </div>
+                    </div>
+                </ifcount>
+
 
                 </div>
               </if>
@@ -452,6 +472,12 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
 <script>
   $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
+    
+    $('.trimText').readmore({
+      speed: 150,
+      collapsedHeight: 200
+    });
+
 
     $(".view-more-btn").click(function(){
       $(".collection-grid").animate({height: "100%"}, 800);

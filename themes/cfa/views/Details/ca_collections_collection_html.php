@@ -40,12 +40,12 @@ MetaTagManager::addMeta("search-thumbnail", $t_item->get('ca_object_representati
 MetaTagManager::addMeta("search-access", ($t_item->get('ca_collections.access') == 2) ? 'restricted' : 'public');
 MetaTagManager::addMeta("search-collection-type", 'collection');
 
-MetaTagManager::addMeta("og:title", $t_item->get('ca_collections.preferred_labels'));
-MetaTagManager::addMeta("og:description", $t_item->get('ca_collections.cfaAbstract'));
-MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
-MetaTagManager::addMeta("og:image", $t_item->get('ca_object_representations.media.large.url'));
-MetaTagManager::addMeta("og:image:width", $t_item->get('ca_object_representations.media.large.width'));
-MetaTagManager::addMeta("og:image:height", $t_item->get('ca_object_representations.media.large.height'));
+MetaTagManager::addMetaProperty("og:title", $t_item->get('ca_collections.preferred_labels'));
+MetaTagManager::addMetaProperty("og:description", $t_item->get('ca_collections.cfaAbstract'));
+MetaTagManager::addMetaProperty("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+MetaTagManager::addMetaProperty("og:image", $t_item->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMetaProperty("og:image:width", $t_item->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMetaProperty("og:image:height", $t_item->get('ca_object_representations.media.large.height'));
 
 # --- get collections configuration
 $o_collections_config = caGetCollectionsConfig();
@@ -147,7 +147,21 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                       </if>
 
                       <if rule="^access = 'yes'">
-                        <div class="size-column">
+			<div class="size-column">
+
+			  <ifcount code="ca_entities" min="1" restrictToRelationshipTypes="cfa_sponsor">
+                              <div class="max__640 text__eyebrow color__light_gray block-xxxs">Preservation Sponsor</div>
+                              <unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="cfa_sponsor">
+                                <ifdef code="^ca_entities.file">
+                                  <div class="max__640 text__body-3 color__white"><img src="^ca_entities.file" style="max-height: 80px; max-width: 450px;"></div>
+                                </ifdef>
+                                <ifnotdef code="^ca_entities.file">
+                                  <div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.surname</div>
+                                </ifnotdef>
+                                <br>
+                              </unit>
+                          </ifcount>
+
                           <ifdef code="ca_collections.cfaInclusiveDates">
                             <div class="max__640 text__eyebrow color__light_gray block-xxxs">
                               Inclusive Dates
@@ -180,18 +194,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                             <div class="max__640 text__body-3 color__white block-sm">^ca_collections.cfaBulkDates</div>
                           </ifdef>
 
-                          <ifcount code="ca_entities" min="1" restrictToRelationshipTypes="cfa_sponsor">
-                              <div class="max__640 text__eyebrow color__light_gray block-xxxs">Preservation Sponsor</div>
-                              <unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="cfa_sponsor">
-                                <ifdef code="^ca_entities.file">
-                                  <div class="max__640 text__body-3 color__white"><img src="^ca_entities.file" style="max-height: 80px; max-width: 450px;"></div>
-                                </ifdef>
-                                <ifnotdef code="^ca_entities.file">
-                                  <div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.surname</div>
-                                </ifnotdef>
-                                <br>
-                              </unit>
-                          </ifcount>
 
                           <ifdef code="ca_collections.cfaAbstract">
                             <div class="max__640 text__eyebrow color__light_gray block-xxxs">Abstract</div>
@@ -454,7 +456,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   {{{<ifcount code="ca_collections.branch" min="0">
                 
 
-                      <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_collections.idno_sort">
+                      <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_objects.object_id">
                         <ifcount code="ca_objects" min="1">
                           <?php
                             // removed filter="/<img/" from unit below
@@ -745,7 +747,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 </ifcount>
 				
                 <ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,complier,source,participant">
-                    <div class="paragraph" style="break-before: column;">
+                    <div class="paragraph">
                       <div class="text__eyebrow color__gray">Creators</div>
                       <div class="text__body-3">
                         <div class="paragraph">

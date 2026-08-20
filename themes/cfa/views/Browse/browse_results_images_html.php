@@ -63,7 +63,7 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x' aria-label='placeholder image'></i>";
 	}
 
-	$vs_default_placeholder_tag = "<div class='bResultItemPlaceholder'><img src='/themes/cfa/assets/pawtucket/graphics/placeholder.png'></div>";
+	$vs_default_placeholder_tag = "<div class='bResultItemPlaceholder'><img src='/themes/cfa/assets/pawtucket/graphics/placeholder.png' alt='Thumbnail missing'></div>";
 		
 		$vn_col_span = 3;
 		$vn_col_span_sm = 4;

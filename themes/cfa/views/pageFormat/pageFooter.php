@@ -105,25 +105,8 @@
 												</svg>
 											</a>
 										</li>
-										<li>
-											<a href="https://twitter.com/ChiFilmArchives" target="_blank" aria-label="Open Icon-twitter in a new Window"
-											title="Open Icon-twitter in a new Window">
-												<svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<mask id="mask0_1078_692" style="mask-type:luminance" maskUnits="userSpaceOnUse"
-													x="0" y="0" width="31" height="30">
-														<path fill-rule="evenodd" clip-rule="evenodd" d="M0 30H30.5555V0H0L0 30H0Z"
-														fill="white">
-														</path>
-													</mask>
-													<g mask="url(#mask0_1078_692)">
-														<path fill-rule="evenodd" clip-rule="evenodd" d="M21.4906 12.2882C21.4969 12.4151 21.4992 12.5426 21.4992 12.6707C21.4992 16.5748 18.4726 21.0766 12.9379 21.0766C11.2389 21.0766 9.65731 20.5873 8.32592 19.7488C8.56081 19.7766 8.80016 19.7904 9.04333 19.7904C10.453 19.7904 11.7504 19.3182 12.7807 18.5254C11.4639 18.5019 10.3524 17.6476 9.96955 16.4741C10.1535 16.5082 10.3419 16.5269 10.5358 16.5269C10.8098 16.5269 11.0759 16.4907 11.3283 16.4232C9.95204 16.1516 8.91443 14.9579 8.91443 13.5263C8.91443 13.5138 8.91443 13.5016 8.91506 13.4894C9.32056 13.7107 9.78494 13.8435 10.2776 13.8588C9.47016 13.3288 8.93925 12.4247 8.93925 11.3994C8.93925 10.8582 9.08726 10.351 9.34666 9.91442C10.8305 11.7019 13.048 12.8782 15.5488 13.0013C15.4972 12.7851 15.4711 12.5594 15.4711 12.3279C15.4711 10.6963 16.8181 9.37379 18.4799 9.37379C19.3453 9.37379 20.1274 9.73254 20.6761 10.3066C21.362 10.1741 22.0059 9.92848 22.5871 9.58973C22.362 10.2794 21.8853 10.8588 21.2643 11.2244C21.8728 11.1529 22.4528 10.9941 22.9926 10.7591C22.589 11.3513 22.0788 11.8719 21.4906 12.2882ZM15.2775 0C6.8391 0 -0.000244141 6.71565 -0.000244141 15C-0.000244141 23.2844 6.8391 30.0001 15.2775 30.0001C23.715 30.0001 30.5553 23.2844 30.5553 15C30.5553 6.71565 23.715 0 15.2775 0Z"
-														fill="white">
-														</path>
-													</g>
-												</svg>
-											</a>
-										</li>
-										<li>
+											<li><a href="https://bsky.app/profile/chicagofilmarchives.org" target="_blank" aria-label="Open Bluesky in a new Window" title="Open Bluesky in a new Window"><img alt="Bluesky" src="https://www.chicagofilmarchives.org/wp-content/uploads/2025/01/icon-bluesky.svg" width="30" height="30"></a></li>
+<li>
 											<a href="https://vimeo.com/chicagofilmarchives" target="_blank" aria-label="Open Icon-vimeo in a new Window"
 											title="Open Icon-vimeo in a new Window">
 												<svg fill="none" height="30" viewBox="0 0 31 30" width="31" xmlns="http://www.w3.org/2000/svg"
@@ -211,7 +194,7 @@
 												</a>
 											</li>
 											<li id="menu-item-15074" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-15074">
-												<a target="_blank" rel="noopener" href="https://interland3.donorperfect.net/weblink/WebLink.aspx?name=E245007&amp;id=1">
+												<a target="_blank" rel="noopener" href="https://www.chicagofilmarchives.org/support/">
 													Make a Donation
 												</a>
 											</li>
@@ -239,7 +222,7 @@
 									<ul id="menu-policy-menu" class="menu horizontal policy">
 										<li>
 											<a href="https://www.chicagofilmarchives.org/">
-												© 2023 Chicago Film Archives
+												© 2026 Chicago Film Archives
 											</a>
 										</li>
 										<li id="menu-item-296" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-296">
@@ -295,6 +278,14 @@
 			</div>
 		</div>
 
+		<?php
+			//
+			// Output HTML for debug bar
+			//
+			if(Debug::isEnabled()) {
+				print Debug::$bar->getJavascriptRenderer()->render();
+			}
+		?>
 		
 		<?php print TooltipManager::getLoadHTML(); ?>
 

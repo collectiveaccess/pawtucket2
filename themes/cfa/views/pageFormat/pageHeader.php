@@ -93,21 +93,6 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<meta name="msapplication-wide310x150logo" content="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-310x150.png">
 	<meta name="msapplication-square310x310logo" content="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-310x310.png">
 
-	<!-- This site is optimized with the Yoast SEO plugin v20.9 - https://yoast.com/wordpress/plugins/seo/ -->
-	<meta name="description" content="Dedicated to collecting, preserving and providing access to films that represent the Midwest. We hold over 30,000 films and 2,000 audio recordings, including thousands of media items accessible online.">
-	<meta property="og:locale" content="en_US">
-	<meta property="og:type" content="website">
-	<meta property="og:site_name" content="Chicago Film Archives">
-	<meta property="og:image:type" content="image/jpeg">
-
-	
-	<!-- <meta property="og:url" content="https://chicagofilmarchives.org/">
-	<meta property="article:modified_time" content="2023-06-13T16:03:32+00:00"> -->
-
-	<meta name="twitter:card" content="summary_large_image">
-	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://chicagofilmarchives.org/","url":"https://chicagofilmarchives.org/","name":"Chicago Film Archives","isPartOf":{"@id":"https://chicagofilmarchives.org/#website"},"primaryImageOfPage":{"@id":"https://chicagofilmarchives.org/#primaryimage"},"image":{"@id":"https://chicagofilmarchives.org/#primaryimage"},"thumbnailUrl":"https://chicagofilmarchives.org/wp-content/uploads/2023/05/Image.jpg","datePublished":"2023-04-21T13:03:38+00:00","dateModified":"2023-06-13T16:03:32+00:00","description":"Dedicated to collecting, preserving and providing access to films that represent the Midwest. We hold over 30,000 films and 2,000 audio recordings, including thousands of media items accessible online.","breadcrumb":{"@id":"https://chicagofilmarchives.org/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://chicagofilmarchives.org/"]}]},{"@type":"ImageObject","inLanguage":"en-US","@id":"https://chicagofilmarchives.org/#primaryimage","url":"https://chicagofilmarchives.org/wp-content/uploads/2023/05/Image.jpg","contentUrl":"https://chicagofilmarchives.org/wp-content/uploads/2023/05/Image.jpg","width":464,"height":355},{"@type":"BreadcrumbList","@id":"https://chicagofilmarchives.org/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home"}]},{"@type":"WebSite","@id":"https://chicagofilmarchives.org/#website","url":"https://chicagofilmarchives.org/","name":"Chicago Film Archives","description":"","potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://chicagofilmarchives.org/?s={search_term_string}"},"query-input":"required name=search_term_string"}],"inLanguage":"en-US"}]}</script>
-	<!-- / Yoast SEO plugin. -->
-
 	<link rel="stylesheet" id="style-all-0-css" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/dist/style.css?ver=404" type="text/css" media="all">
 	<script src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/js/libs/custom/slick-min.js" type="text/javascript"></script>
 	<script type="text/javascript" src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/dist/app.min.esbuild.js?ver=404" id="script-1-0-js"></script>  
