@@ -75,9 +75,9 @@ if($this->request->isLoggedIn()){
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">	
 <?php
-					if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
+				///	if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
 						print $this->render("pageFormat/browseMenu.php");
-					}
+				//	}
 					if($user_links){
 						print $user_links;
 					}
