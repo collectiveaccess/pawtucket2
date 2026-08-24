@@ -75,7 +75,7 @@ if (!$vb_ajax) {	// !ajax
 	<?php if($vs_current_view == "map" && $vs_table == "ca_collections" ){ ?>
 		<div class="col-sm-10">
 	<?php } elseif($vs_current_view == "list" && $vs_table == "ca_collections" ) { ?>
-		<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-9 col-lg-9"; ?>'>
+		<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-9 col-lg-10"; ?>'>
 	<?php } else { ?>
 		<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 	<?php } ?>
@@ -213,7 +213,7 @@ if (!$vb_ajax) {	// !ajax
 	<?php if($vs_current_view == "map" && $vs_table == "ca_collections" ){ ?>
 		<div class="col-sm-1 col-sm-offset-1">
 	<?php } elseif($vs_current_view == "list" && $vs_table == "ca_collections" ) { ?>
-		<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-3"; ?>">
+		<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-2"; ?>">
 	<?php } else { ?>
 		<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 	<?php } ?>

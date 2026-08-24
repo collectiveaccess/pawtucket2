@@ -122,7 +122,11 @@
 					if(strlen($vs_tmp_label) > 190){
 						$vs_tmp_label = substr($vs_tmp_label, 0, 187)."...";
 					}
-					$vs_label_detail_link 	= caDetailLink($this->request, $vs_tmp_label, '', $vs_table, $vn_id);
+					if($vs_table == 'ca_collections'){
+						$vs_label_detail_link 	= caDetailLink($this->request, "<i class='fa fa-bank'></i> ".$vs_tmp_label, '', $vs_table, $vn_id);
+					}else{
+						$vs_label_detail_link 	= caDetailLink($this->request, $vs_tmp_label, '', $vs_table, $vn_id);
+					}
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
@@ -163,11 +167,11 @@
 			</div><!-- end col -->";
 					} else if($vs_table == 'ca_collections') {
 						$vs_result_output = "
-			<div class='collectionResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+			<div class='collectionResultListItemCol col-xs-{$vn_col_span_xs} col-sm-12 col-md-12 col-lg-6'>
 				<div class='collectionResultListItem' id='row{$vn_id}'>
 					<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 					<div class='collectionResultListItemText'>
-						{$vs_label_detail_link}<br/>{$vs_materials}<br/>{$vs_label_coll_info}
+						{$vs_label_detail_link}<br/><hr/>
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItem -->
 			</div><!-- end col -->";

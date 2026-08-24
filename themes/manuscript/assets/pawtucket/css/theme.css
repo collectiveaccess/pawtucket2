@@ -270,6 +270,9 @@ ul.list {
   font-size: 20px;
   text-transform: none;
 }
+.detail a{
+	color:#a3783c;
+}
 .unit {
 	margin-bottom:12px;
 	font-size: 16px;
@@ -387,23 +390,23 @@ div.advancedSearchField {
 	height: 152px;
 }
 
-.collectionResultListItemCol{
-	height: 96px;
+.collectionResultListItemCol, .collectionResultListItemCol:hover{
+	height: auto;
 }
-
+.collectionResultListItemCol hr{
+	margin-bottom: 0px;
+}
+.collectionResultListItemCol a .fa {
+  color: #a3783c !important;
+}
 .collectionResultListItemContent {
-	height: 56px;
+	height: auto;
 }
-
-.collectionResultListItem:hover{
-	height: 66px;
-}
-.collectionResultListItemText{
-	padding: 3px 9px;
+.collectionResultListItemText, .collectionResultListItemText:hover{
+	padding: 20px 9px 0px 9px;
 }
 .collectionResultListItemText:hover{
 	background-color: #ededed;
-	padding: 3px 9px;
 }
 .collectionResultListItemText a{
 	font-size:18px;
