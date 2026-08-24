@@ -100,12 +100,47 @@ $map_options = $this->getVar('mapOptions') ?? [];
 						^ca_occurrences.idno
 					</dd>
 				</ifdef>
+				<ifdef code="ca_occurrences.program_type">
+					<dt><?= _t('Type'); ?></dt>
+					<dd>
+						^ca_occurrences.program_type%convertCodesToDisplayText=1
+					</dd>
+				</ifdef>
+				<ifdef code="ca_occurrences.program_category">
+					<dt><?= _t('Category'); ?></dt>
+					<dd>
+						^ca_occurrences.program_category%convertCodesToDisplayText=1
+					</dd>
+				</ifdef>
+				<ifdef code="ca_occurrences.location.name">
+					<dt><?= _t('Location'); ?></dt>
+					<dd>
+						^ca_occurrences.location.name<ifdef code="ca_occurrences.location.type"> (^ca_occurrences.location.type%convertCodesToDisplayText=1)</ifdef>
+					</dd>
+				</ifdef>
+				<ifdef code="ca_occurrences.date">
+					<dt><?= _t('Date'); ?></dt>
+					<dd>
+						^ca_occurrences.date
+					</dd>
+				</ifdef>
 				<ifdef code="ca_occurrences.description">
 					<dt><?= _t('Description'); ?></dt>
 					<dd>
 						^ca_occurrences.description
 					</dd>
 				</ifdef>
+				<if rule="^ca_occurrences.external_link.url_entry =~ /[A-Za-z]+/">
+					<dt><?= _t('Links'); ?></dt>
+					<unit relativeTo="ca_occurrences.external_link">
+						<dd>
+							<a href="^ca_occurrences.external_link.url_entry" target="_new"><case>
+<ifdef code="ca_occurrences.external_link.url_source">^ca_occurrences.external_link.url_source</ifdef>
+<ifdef code="ca_occurrences.external_link.url_entry">^ca_occurrences.external_link.url_entry</ifdef>
+</case></a>
+						</dd>
+					</unit>
+				</if>
 			</dl>}}}
 		</div>
 		<div class="col">
@@ -115,7 +150,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 				</ifcount>
 				<ifcount code="ca_entities" min="1">
-					<dt><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
+					<dt><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Artists and contributors'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
 					<unit relativeTo="ca_entities" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
 				</ifcount>
 
