@@ -54,7 +54,7 @@
 		<div class="col-12 col-md-5 img-fluid">
 			<?php print caGetThemeGraphic($this->request, 'Jazz_in_July_1985.jpg', array("alt" => "Black and white photo of jazz musicians waving")); ?>
 		</div>
-		<div class="col-12 col-md-7 display-4">
+		<div class="col-12 col-md-7 display-5">
 			{{{hp_intro}}}
 		</div>
 	</div>

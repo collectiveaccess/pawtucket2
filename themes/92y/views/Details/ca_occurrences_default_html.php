@@ -254,7 +254,7 @@ if($this->request->user->hasRole($staff_role)){
 			<unit relativeTo="ca_entities_x_occurrences" delimiter="" restrictToRelationshipTypes="performer">
 				<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><div class="pt-3 pb-4 px-2 d-flex align-items-center justify-content-center bg-light h-100 w-100 text-black">
 					<div><l class="fs-4 fw-bold">^ca_entities.preferred_labels</l>
-						<ifdef code="ca_entities_x_occurrences.release_link"><div class="small pt-1"><unit relativeTo="ca_entities_x_occurrences.release_link" delimiter="<br/>"><ifdef code="ca_entities_x_occurrences.release_link.release_link1"><a href="^ca_entities_x_occurrences.release_link.release_link1">View Release <i class="bi bi-arrow-up-right-square"></i></a><ifdef code="ca_entities_x_occurrences.release_link.release_files"><br/></ifdef></ifdef><ifdef code="ca_entities_x_occurrences.release_link.release_files"><a href="^ca_entities_x_occurrences.release_link.release_files.original.url">Download Release <i class="bi bi-download"></i></a></ifdef><ifdef code="ca_entities_x_occurrences.release_link.release_type"> (^ca_entities_x_occurrences.release_link.release_type)</ifdef></unit></div></ifdef>
+						<ifdef code="ca_entities_x_occurrences.release_link"><div class="small pt-1"><unit relativeTo="ca_entities_x_occurrences.release_link" delimiter="<br/>"><ifdef code="ca_entities_x_occurrences.release_link.release_files"><a href="^ca_entities_x_occurrences.release_link.release_files.original.url">Download Release <i class="bi bi-download"></i></a></ifdef><ifdef code="ca_entities_x_occurrences.release_link.release_type"> (^ca_entities_x_occurrences.release_link.release_type)</ifdef></unit></div></ifdef>
 					</div>
 				</dd>
 			</unit>

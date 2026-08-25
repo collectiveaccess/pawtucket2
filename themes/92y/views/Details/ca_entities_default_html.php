@@ -123,6 +123,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 			</div>
 		</div>
+	</ifcount>
 	<div class="row" id="browseResultsContainer">	
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'events', array('search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"), '_advanced' => 0)); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
