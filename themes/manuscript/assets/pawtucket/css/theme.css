@@ -395,6 +395,7 @@ div.advancedSearchField {
 }
 .collectionResultListItemCol hr{
 	margin-bottom: 0px;
+	margin-top: 15px;
 }
 .collectionResultListItemCol a .fa {
   color: #a3783c !important;
@@ -403,7 +404,7 @@ div.advancedSearchField {
 	height: auto;
 }
 .collectionResultListItemText, .collectionResultListItemText:hover{
-	padding: 20px 9px 0px 9px;
+	padding: 15px 9px 0px 9px;
 }
 .collectionResultListItemText:hover{
 	background-color: #ededed;
@@ -411,6 +412,7 @@ div.advancedSearchField {
 .collectionResultListItemText a{
 	font-size:18px;
 	line-height: 1.1em;
+	font-weight:bold;
 }
 .bResultListItemContent{
 	height: 142px;
