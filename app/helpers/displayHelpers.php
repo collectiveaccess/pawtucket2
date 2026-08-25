@@ -5443,8 +5443,10 @@ function caProcessReferenceTags($request, $text, $options=null) {
 	$pm_page = caGetOption('page', $options, null);
 	$idnos = [];
 
-	$allowed_tags = ['b', 'i', 'em', 'strong', 'u', 'strike', 'img', 'video', 'audio', 'div', 'span']; // TODO: make configurable
-
+	if(!is_array($allowed_tags = $request->getAppConfig()->getList('reference_tag_allowed_html_tags'))) {
+		$allowed_tags = ['b', 'i', 'em', 'strong', 'u', 'strike', 'img', 'video', 'audio', 'div', 'span']; 
+	}
+	
 	$text = html_entity_decode($text);
 	$value_id = caGetOption('value_id', $options, null);
 
@@ -5455,9 +5457,12 @@ function caProcessReferenceTags($request, $text, $options=null) {
 		'occurrence' => 'ca_occurrences', 'collection' => 'ca_collections', 'loan' => 'ca_loans',
 		'movement' => 'ca_movements', 'location' => 'ca_storage_locations', 'media' => 'ca_site_page_media', 'mediaRef' => 'ca_attributes'];
 	
+	if(is_array($additional_tags = $request->getAppConfig()->getAssoc('reference_tag_aliases'))) {
+		$tags = array_merge($tags, $additional_tags);
+	}
+	
 	// Old style (bbcode-like) tags
-	foreach($tags as $ref_tag => $ref_type
-	) {
+	foreach($tags as $ref_tag => $ref_type) {
 		if (preg_match_all("!\[{$ref_tag} ([^\]]+)\]([^\[]+)\[/{$ref_tag}\]!", $text, $matches)) {
 			foreach($matches[1] as $i => $attr_string) {
 				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version', 'mode', 'target'])) > 0) {

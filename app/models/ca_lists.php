@@ -595,7 +595,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 					$va_items[] = $vn_item_id;
 					continue;
 				}
-				if ((isset($pa_options['idnosOnly']) && $pa_options['idnosOnly'])) {
+				if ($pa_options['idnosOnly'] ?? false) {
 					$va_items[] = $qr_res->get('idno');
 					continue;
 				}
@@ -610,7 +610,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 				$va_seen_locales[$vn_locale_id] = true;
 			}
 			
-			if ((isset($pa_options['idsOnly']) && $pa_options['idsOnly'])) {
+			if (($pa_options['idsOnly'] ?? false) || ($pa_options['idnosOnly'] ?? false)) {
 				ExternalCache::save($vs_cache_key, $va_items, 'listItems');
 				return $va_items;
 			}
