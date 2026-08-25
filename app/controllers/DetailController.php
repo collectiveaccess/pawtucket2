@@ -390,6 +390,25 @@ class DetailController extends FindController {
 					$options,
 					['checkAccess' => $item_is_in_users_lightbox ? null : $this->opa_access_values]
 				);
+				
+				
+				if($transcription = $this->request->getParameter('transcription', pString)) {
+					$tmp = explode(':', $transcription);
+					if(in_array(Datamodel::getTableName($tmp[0]), ['ca_object_representation_captions', 'ca_representation_annotations'], true)) {
+						$t_anno = Datamodel::getInstance($tmp[0], false, $tmp[1]);
+						$rep_id = $t_anno->get('representation_id');
+						
+						$media_opts['transcription_start_representation_id'] = $rep_id;
+						$media_opts['transcription_start'] = $tmp[2] ?? 0;
+					}
+				}
+			
+				$result_desc = $o_context->getResultDesc();
+				$this->view->setVar('resultDesc', $result_desc[$id] ?? null);
+				if(is_array($result_desc[$id])) {
+					$this->view->setVar('resultDescWordList', caGetResultDescWordList($t_subject->tableName(), $id, $result_desc, []));
+				}
+				
 				$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
 				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail', 'detail_options' => $options])));
 				$this->view->setVar('media_options', [
@@ -413,7 +432,11 @@ class DetailController extends FindController {
 					
 					'base_url' => $this->request->getThemeUrlPath(),
 					'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}",
-					'media_remove_url' => $this->request->getBaseUrlPath()."/Detail/RemoveRepresentation?context={$function}&id={$id}"
+					'media_remove_url' => $this->request->getBaseUrlPath()."/Detail/RemoveRepresentation?context={$function}&id={$id}",
+					
+					'transcript_container_id' => 'transcriptCol', // @TODO: make configurable
+					'transcript_id' => 'transcript', // @TODO: make configurable
+					'transcript_url' => caNavUrl($this->request, '*', '*', 'Transcript', ['representation_id' => '%representation_id'])
 				]);
 			} else {
 				$this->view->setVar('media_list', null);
@@ -1686,6 +1709,22 @@ class DetailController extends FindController {
 		}
 		
 		print json_encode($resp);
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function Transcript() {
+		$rep_id = $this->request->getParameter('representation_id', pInteger);
+		
+		$t_rep = new ca_object_representations($rep_id);
+		$this->view->setVar('representation_id', $rep_id);
+		if(is_array($caption_list = $t_rep->getCaptionFileList())) {
+			$captions = array_shift($caption_list);
+			$this->view->setVar('transcript', json_decode($captions['caption_content'] ?? null, true));
+		};
+		
+		$this->render('Details/transcript_html.php');
 	}
 	# -------------------------------------------------------
 	/**
