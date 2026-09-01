@@ -5475,8 +5475,7 @@ function caProcessReferenceTags(RequestHTTP $request, ?string $text, ?array $opt
 	}
 	
 	// Old style (bbcode-like) tags
-	foreach($tags as $ref_tag => $ref_type
-	) {
+	foreach($tags as $ref_tag => $ref_type) {
 		if (preg_match_all("!\[{$ref_tag} ([^\]]+)\]([^\[]+)\[/{$ref_tag}\]!", $text, $matches)) {
 			foreach($matches[1] as $i => $attr_string) {
 				if (sizeof($vals = caParseAttributes($attr_string, ['id', 'idno', 'class', 'version', 'mode', 'target'])) > 0) {
