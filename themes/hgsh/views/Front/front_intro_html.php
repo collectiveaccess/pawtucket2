@@ -107,12 +107,12 @@
 		</div>
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
-				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/videos.jpg')."<div class='hpBrowseTitle'>Videos</div>", "", "", "Collections", "videos"); ?>
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/videos.jpg')."<div class='hpBrowseTitle'>Videos</div>", "", "", "Detail", "Collections/videos"); ?>
 			</div>
 		</div>
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
-				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/vr.jpg')."<div class='hpBrowseTitle'>Virtual Reality Tours</div>", "", "", "Collections", "VR-1"); ?>
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/vr.jpg')."<div class='hpBrowseTitle'>Virtual Reality Tours</div>", "", "", "Detail", "Collections/VR-1"); ?>
 			</div>
 		</div>
 	</div><!-- end row -->
