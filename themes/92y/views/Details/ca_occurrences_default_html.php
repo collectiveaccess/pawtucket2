@@ -105,7 +105,7 @@ if($this->request->user->hasRole($staff_role)){
 		</div>
 	</div>
 </ifdef>}}}
-	<div class="row row-cols-1 row-cols-md-2">
+	<div class="row row-cols-1 row-cols-md-2 mb-3">
 		<div class="col">				
 			{{{<dl class="mb-0">
 				<ifdef code="ca_occurrences.common_date">
@@ -135,7 +135,7 @@ if($this->request->user->hasRole($staff_role)){
 				<ifdef code="ca_occurrences.idno">
 					<dt><?= _t('KCH Number'); ?></dt>
 					<dd>
-						^ca_occurrences.idno
+						<case><if rule='^ca_occurrences.idno !~ /%/'>^ca_occurrences.idno</if><else>NA</else></case>
 					</dd>
 				</ifdef>
 <?php

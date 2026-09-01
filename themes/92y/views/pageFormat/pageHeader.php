@@ -31,7 +31,7 @@ $lightbox_sectionHeading = ucFirst($lightboxDisplayName["section_heading"]);
 # Collect the user links
 $user_links = "";
 if($this->request->isLoggedIn()){
-	$user_links .= "<li class='nav-item dropdown'><a class='nav-link".(($this->request->getController() == 'LoginReg') ? ' active' : '')."' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'><i class='bi bi-person-circle' aria-label='"._t('User Options')."'></i></a>
+	$user_links .= "<li class='nav-item dropdown'><a class='nav-link".(($this->request->getController() == 'LoginReg') ? ' active' : '')."' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'><i class='bi bi-person-circle' aria-label='"._t('User Options')."'></i><span class='d-lg-none'> "._t('User Options')."</span></a>
 						<ul class='dropdown-menu'>";
 	
 	$user_links .= '<li><div class="dropdown-header fw-medium">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).'<br>'.$this->request->user->get("email").'</div></li>';
@@ -73,7 +73,7 @@ if($this->request->isLoggedIn()){
 			  <span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="nav-underline navbar-nav ms-auto mb-2 mb-lg-0 me-4">				
+				<ul class="nav-underline navbar-nav ms-auto mt-3 mt-lg-0 mb-2 mb-lg-0 me-4">				
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
@@ -85,7 +85,7 @@ if($this->request->isLoggedIn()){
 ?>
 				</ul>
 				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
-					<div class="input-group mt-4 bg-body-tertiary">
+					<div class="input-group mt-lg-4 bg-body-tertiary">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 						<input type="text" name="search" class="form-control rounded-0 border-0 bg-body-tertiary" id="nav-search-input" placeholder="Search">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>

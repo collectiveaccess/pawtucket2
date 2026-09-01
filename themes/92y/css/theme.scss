@@ -53,13 +53,22 @@ hr{
 .nav-underline .nav-link.active, .nav-underline .show > .nav-link{
 	font-weight:400;
 }
-.navbar-nav .nav-item{
-	padding-left: 1rem;
-	padding-right: 1rem;
+@media (min-width: 992px) {
+	.navbar-nav .nav-item{
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+}
+@media (max-width: 991px) {
+	.navbar-nav .nav-item{
+		padding-top: .5rem;
+		padding-bottom: .5rem;
+	}
 }
 .nav-underline .nav-link.active, .nav-underline .show > .nav-link{
 	border-bottom-color: $primary;
 }
+
 /* ------------------ footer ------------------------- */
 footer{
 	img {
@@ -68,10 +77,6 @@ footer{
   	a{
   		color: #93aadd !important;
   		text-decoration: none !important;
-  	}
-  	.container-xl{
-  		padding-left: 3.75rem;
-    	padding-right: 3.75rem;
   	}
 }
 /* ------------------ front ------------------------- */
@@ -84,7 +89,7 @@ footer{
 	}
 	@media (min-width: 1400px) {
 		h1 {
-			font-size: 110px;
+			font-size: 5rem;
 		}
 	}
 }

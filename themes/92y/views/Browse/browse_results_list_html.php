@@ -151,7 +151,7 @@
 							$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2 ms-1', $table, $id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 							$result_output = "
 								<div class='col-md-12'>
-									<div id='row{$id}' class='card width-100 rounded-0 shadow border-0 mb-4'>
+									<div id='row{$id}' class='card w-100 rounded-0 shadow border-0 mb-4'>
 										<div class='row g-0'>
 											<div class='col-sm-3'>
 												{$rep_detail_link}
@@ -174,13 +174,13 @@
 						break;
 						# ---------------------------------------
 						case "text_list":
-							$result_output = "<div class='col-md-12 d-flex'>".caDetailLink($this->request, "
+							$result_output = "<div class='col-md-12'>".caDetailLink($this->request, "
 								
-									<div id='row{$id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
+									<div id='row{$id}' class='card w-100 rounded-0 shadow border-0 mb-4'>
 										<div class='card-body'>
 											{$caption}
 										</div>
-									 </div>", "w-100 d-flex", $table, $id)."</div><!-- end col -->";
+									 </div>", "", $table, $id)."</div><!-- end col -->";
 						break;
 						# ----------------------------------------
 						default:
@@ -202,8 +202,8 @@
 				$results_output++;
 			}
 			
-			print "<div style='clear:both' class='text-center m-3' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $start + $results_output, 'key' => $browse_key, 'view' => $current_view, 'sort' => $current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."' hx-trigger='revealed' hx-swap='outerHTML'>
-						<div class='spinner-border htmx-indicator' role='status'><span class='visually-hidden'>Loading...</span></div>
+			print "<div style='clear:both' class='text-center' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $start + $results_output, 'key' => $browse_key, 'view' => $current_view, 'sort' => $current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."' hx-trigger='revealed' hx-swap='outerHTML'>
+						<div class='spinner-border htmx-indicator m-3' role='status'><span class='visually-hidden'>Loading...</span></div>
 					</div>";
 		}
 ?>

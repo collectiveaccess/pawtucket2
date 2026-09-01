@@ -39,36 +39,44 @@
 	}
 ?>
 
-<div class="container border-top border-black">
-	<h1 class="py-4">92NY Historical<br/>Archive Center</h1>
-	<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
-		<div class="input-group">
-			<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
-			<input name="search" type="text" class="form-control rounded-0 border-black" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
-			<button type="submit" class="btn btn-primary bg-black ms-2" aria-label="Search button">Search the Archive</button>
+<div class="container-xl border-top border-black">
+	<div class="row">
+		<div class="col">
+			<h1 class="py-4">92NY Historical Archive Center</h1>
+			<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
+				<div class="input-group">
+					<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
+					<input name="search" type="text" class="form-control rounded-0 border-black" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
+					<button type="submit" class="btn btn-primary bg-black ms-2" aria-label="Search button">Search the Archive</button>
+				</div>
+			</form>
 		</div>
-	</form>
+	</div>
 </div>
-<div class="container pt-5 pb-5">
-	<div class="row g-5">
-		<div class="col-12 col-md-5 img-fluid">
+<div class="container-xl pt-5">
+	<div class="row">
+		<div class="col-12 col-md-5 img-fluid pb-5">
 			<?php print caGetThemeGraphic($this->request, 'Jazz_in_July_1985.jpg', array("alt" => "Black and white photo of jazz musicians waving")); ?>
 		</div>
-		<div class="col-12 col-md-7 display-5">
-			{{{hp_intro}}}
+		<div class="col-12 col-md-7 lh-sm fs-2 pb-5">
+			<div class="ps-md-3">{{{hp_intro}}}</div>
 		</div>
 	</div>
 </div>
 <div class="container-fluid bg-light py-5 mt-5">
-	<div class="container pb-5">
-		<div class="row">
-			<div class="col">
-				<H2 class="mb-3 display-1">Explore</H2>
+	<div class="row">
+		<div class="col">
+			<div class="container-xl pb-5">
+				<div class="row">
+					<div class="col">
+						<H2 class="mb-3 display-1">Explore</H2>
+					</div>
+				</div>
+				<div class="row g-5">
+					<div class="col-12 col-md-6"><?php print caNavLink($this->request, "Events", "btn btn-primary bg-black w-100 pt-3 pb-5 fs-3 text-start", "", "Browse", "events"); ?></div>
+					<div class="col-12 col-md-6"><?php print caNavLink($this->request, "Performers", "btn btn-primary bg-black w-100 pt-3 pb-5 fs-3 text-start", "", "Browse", "entities"); ?></div>
+				</div>
 			</div>
-		</div>
-		<div class="row g-5">
-			<div class="col-12 col-md-6"><?php print caNavLink($this->request, "Events", "btn btn-primary bg-black w-100 pt-3 pb-5 fs-3 text-start", "", "Browse", "events"); ?></div>
-			<div class="col-12 col-md-6"><?php print caNavLink($this->request, "Performers", "btn btn-primary bg-black w-100 pt-3 pb-5 fs-3 text-start", "", "Browse", "entities"); ?></div>
 		</div>
 	</div>
 </div>

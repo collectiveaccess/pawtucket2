@@ -32,11 +32,14 @@
 		print "</div> <!-- end container -->";
 	}
 ?>
-		<footer id="footer" class="p-5 mt-auto bg-dark text-bg-dark">
+		<footer id="footer" class="py-5 mt-auto bg-dark text-bg-dark">
 			<div class="container-xl">
-				
-				<div class="border-bottom border-white pb-5 img-fluid">
-					<a href="https://www.92ny.org"><?php print caGetThemeGraphic($this->request, '92ny-logo-w_1.svg', array("alt" => "92NY")); ?></a>
+				<div class="row">
+					<div class="col">
+						<div class="border-bottom border-white pb-5 img-fluid">
+							<a href="https://www.92ny.org"><?php print caGetThemeGraphic($this->request, '92ny-logo-w_1.svg', array("alt" => "92NY")); ?></a>
+						</div>
+					</div>
 				</div>
 				<div class="row pt-4">
 					<div class="col-12 col-md-6 small">
@@ -48,7 +51,6 @@
 						<a href="https://www.92ny.org/about-92ny/policies">Privacy Policy</a> | <?php print caNavLink($this->request, "Rights", "", "", "Rights", ""); ?>
 					</div>
 				</div>
-				
 			</div>
 		</footer><!-- end footer -->
 		
