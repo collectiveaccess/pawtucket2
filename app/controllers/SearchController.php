@@ -601,6 +601,9 @@ class SearchController extends FindController {
 			'icons' => $search_builder_config->getAssoc('query_builder_icons'),
 			'sort_filters' => false
 		];
+		if($query_builder_global_options = $search_builder_config->getAssoc('query_builder_global_options')){
+			$builder_options = array_merge($builder_options, $query_builder_global_options);
+		}
 		$this->view->setVar('form_options', $builder_options);
 		
 		$this->render($va_search_info['view']);
