@@ -93,6 +93,8 @@
 				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/suburb_news.png')."<div class='hpBrowseTitle'>Suburb News</div>", "", "", "News", "Index"); ?>
 			</div>
 		</div>
+	</div>
+	<div class="row">
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
 				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/collections.jpg')."<div class='hpBrowseTitle'>Collections</div>", "", "", "Browse", "collections"); ?>
@@ -101,6 +103,16 @@
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
 				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/events.jpg')."<div class='hpBrowseTitle'>Events</div>", "", "", "Browse", "events"); ?>
+			</div>
+		</div>
+		<div class="col-xs-6 col-sm-3">
+			<div class="hpBrowseImage">
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/videos.jpg')."<div class='hpBrowseTitle'>Videos</div>", "", "", "Collections", "videos"); ?>
+			</div>
+		</div>
+		<div class="col-xs-6 col-sm-3">
+			<div class="hpBrowseImage">
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/vr.jpg')."<div class='hpBrowseTitle'>Virtual Reality Tours</div>", "", "", "Collections", "VR-1"); ?>
 			</div>
 		</div>
 	</div><!-- end row -->
