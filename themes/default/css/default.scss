@@ -372,8 +372,14 @@ div.banContinue {
 	overflow-y: auto;
 }
 /* ------------------------advanced search form -------------------------- */
-.attributeListItem{
-	width:100%;
+.advancedSearch{
+	.attributeListItem{
+		width:100%;
+	}
+	.form-control{
+		width:100% !important;
+		height: auto !important;
+	}
 }
 /* -------------- Alerts --------------- */
 .alert{

@@ -103,6 +103,23 @@ let mediaViewerManager = function(options=null) {
 		//
 		//
 		//
+		renderByID: function(id, options={}) {
+			const media_list = that.media_list;
+			
+			for(let index in media_list) {
+				if(media_list[index].id == id) {
+					if(that.index != index) {
+						return that.render(index, options);
+					}
+					return true;
+				}
+			}
+			return null;
+		},
+		
+		//
+		//
+		//
 		render: function(index, options={}) {
 			let media_list = that.media_list;
 			if(media_list === undefined) { return false; }
@@ -481,6 +498,14 @@ let mediaViewerManager = function(options=null) {
 			options['mediaViewer'] = that;
 			let v = iv.default(options);
 			return v.init(that.id, options);
+		},
+		
+		
+		//
+		// Return instance for currently rendered media viewer, allowing direct use of viewer's API
+		//
+		getCurrentViewer: function(viewer_class, options={}) {
+			return that.viewer;
 		}
 	};
 	that.init(options.id, options);

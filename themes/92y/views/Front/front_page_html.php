@@ -40,9 +40,9 @@
 ?>
 
 <div class="container border-top border-black">
-	<h1 class="pt-5">The Archives</h1>
+	<h1 class="py-4">92NY Historical<br/>Archive Center</h1>
 	<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
-		<div class="input-group pb-3 pt-5">
+		<div class="input-group">
 			<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
 			<input name="search" type="text" class="form-control rounded-0 border-black" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
 			<button type="submit" class="btn btn-primary bg-black ms-2" aria-label="Search button">Search the Archive</button>
@@ -52,7 +52,7 @@
 <div class="container pt-5 pb-5">
 	<div class="row g-5">
 		<div class="col-12 col-md-5 img-fluid">
-			<?php print caGetThemeGraphic($this->request, 'jazz-in-july-concert-hall.jpg', array("alt" => "Image of performane")); ?>
+			<?php print caGetThemeGraphic($this->request, 'Jazz_in_July_1985.jpg', array("alt" => "Black and white photo of jazz musicians waving")); ?>
 		</div>
 		<div class="col-12 col-md-7 display-4">
 			{{{hp_intro}}}

@@ -39,11 +39,11 @@ $id =				$t_item->get('ca_occurrences.occurrence_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
 
+$staff_role = $this->request->config->get("archive_staff_role");	# --- set in app.conf of theme
 $vb_archive_staff = false;
-if($this->request->user->hasRole("front_archive_staff")){
+if($this->request->user->hasRole($staff_role)){
 	$vb_archive_staff = true;
 }
-
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
@@ -63,7 +63,15 @@ if($this->request->user->hasRole("front_archive_staff")){
 	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-3">{{{^ca_occurrences.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_occurrences.event_type_id"><div class="fw-medium mb-3 text-capitalize">^ca_occurrences.event_type</div></ifdef>}}}
+<?php
+				if($t_item->get("ca_occurrences.event_type")){
+					if($links = caGetBrowseLinks($t_item, 'ca_occurrences.event_type', ['template' => '<l>^ca_occurrences.event_type</l>', 'linkTemplate' => '^LINK'])) {
+?>
+						<div class="fw-medium mb-3 text-capitalize"><?= join("", $links); ?></div>
+<?php
+					}
+				}
+?>
 			<hr class="mb-0 bg-black">
 		</div>
 	</div>
@@ -106,30 +114,48 @@ if($this->request->user->hasRole("front_archive_staff")){
 						^ca_occurrences.common_date
 					</dd>
 				</ifdef>
-				<ifdef code="ca_occurrences.ev_location">
-					<dt><?= _t('Location'); ?></dt>
-					<dd>
-						^ca_occurrences.ev_location
-					</dd>
-				</ifdef>
-				<ifdef code="ca_occurrences.ev_season">
-					<dt><?= _t('Season'); ?></dt>
-					<dd>
-						^ca_occurrences.ev_season
-					</dd>
-				</ifdef>
-				<ifdef code="ca_occurrences.general_notes">
-					<dt><?= _t('Note'); ?></dt>
-					<dd>
-						^ca_occurrences.general_notes
-					</dd>
-				</ifdef>
+<?php
+				if($t_item->get("ca_occurrences.ev_location")){
+					if($links = caGetBrowseLinks($t_item, 'ca_occurrences.ev_location', ['template' => '<l>^ca_occurrences.ev_location</l>', 'linkTemplate' => '^LINK'])) {
+?>
+						<dt><?= _t('Location'); ?></dt>
+						<dd><?= join(", ", $links); ?></dd>
+<?php
+					}
+				}
+				if($t_item->get("ca_occurrences.ev_season")){
+					if($links = caGetBrowseLinks($t_item, 'ca_occurrences.ev_season', ['template' => '<l>^ca_occurrences.ev_season</l>', 'linkTemplate' => '^LINK'])) {
+?>
+						<dt><?= _t('Season'); ?></dt>
+						<dd><?= join(", ", $links); ?></dd>
+<?php
+					}
+				}
+?>
 				<ifdef code="ca_occurrences.idno">
-					<dt><?= _t('Identifier'); ?></dt>
+					<dt><?= _t('KCH Number'); ?></dt>
 					<dd>
 						^ca_occurrences.idno
 					</dd>
 				</ifdef>
+<?php
+	if($vb_archive_staff){
+?>
+				<ifdef code="ca_occurrences.general_notes">
+					<dt><?= _t('Event Notes'); ?></dt>
+					<dd>
+						^ca_occurrences.general_notes
+					</dd>
+				</ifdef>
+				<ifdef code="ca_occurrences.internal_notes">
+					<dt><?= _t('Archival Notes'); ?></dt>
+					<dd>
+						^ca_occurrences.internal_notes
+					</dd>
+				</ifdef>
+<?php
+	}
+?>
 			</dl>}}}
 		</div>
 		<div class="col">
@@ -140,58 +166,102 @@ if($this->request->user->hasRole("front_archive_staff")){
 						^ca_occurrences.description
 					</dd>
 				</ifdef>
+<?php
+	if($vb_archive_staff){
+?>
 				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="sponsor">
 					<dt><ifcount code="ca_entities" restrictToRelationshipTypes="sponsor" min="1" max="1"><?= _t('Sponsor'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="sponsor" min="2"><?= _t('Sponsors'); ?></ifcount></dt>
 					<unit relativeTo="ca_entities" restrictToRelationshipTypes="sponsor" delimiter=""><dd><l><ifdef code="ca_entities.ev_sponsor_credit">^ca_entities.ev_sponsor_credit</ifdef><ifnotdef code="ca_entities.ev_sponsor_credit">^ca_entities.preferred_labels</ifnotdef></l></dd></unit>
 				</ifcount>
+<?php
+	}
+?>
 				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="center">
 					<dt><ifcount code="ca_entities" restrictToRelationshipTypes="center" min="1" max="1"><?= _t('Center'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="center" min="2"><?= _t('Centers'); ?></ifcount></dt>
 					<unit relativeTo="ca_entities" restrictToRelationshipTypes="center" delimiter=""><dd><l>^ca_entities.preferred_labels</l></dd></unit>
 				</ifcount>
+<?php
+	if($vb_archive_staff){
+?>
 				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="broadcast">
 					<dt><ifcount code="ca_entities" restrictToRelationshipTypes="broadcast" min="1" max="1"><?= _t('Broadcast Outlet'); ?></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="broadcast" min="2"><?= _t('Broadcast Outlets'); ?></ifcount></dt>
 					<unit relativeTo="ca_entities" restrictToRelationshipTypes="broadcast" delimiter=""><dd><l>^ca_entities.preferred_labels</l></dd></unit>
 				</ifcount>
-				<ifdef code="ca_occurrences.ev_primary_series">
-					<dt><?= _t('Primary Series'); ?></dt>
-					<dd>
-						^ca_occurrences.ev_primary_series
-					</dd>
+<?php
+	}
+				if($t_item->get("ca_occurrences.ev_primary_series")){
+					if($links = caGetBrowseLinks($t_item, 'ca_occurrences.ev_primary_series', ['template' => '<l>^ca_occurrences.ev_primary_series</l>', 'linkTemplate' => '^LINK'])) {
+?>
+						<dt><?= _t('Primary Series'); ?></dt>
+						<dd><?= join(", ", $links); ?></dd>
+<?php
+					}
+				}
+				if($t_item->get("ca_occurrences.ev_secondary_series")){
+					if($links = caGetBrowseLinks($t_item, 'ca_occurrences.ev_secondary_series', ['template' => '<l>^ca_occurrences.ev_secondary_series</l>', 'linkTemplate' => '^LINK'])) {
+?>
+						<dt><?= _t('Secondary Series'); ?></dt>
+						<dd><?= join(", ", $links); ?></dd>
+<?php
+					}
+				}
+	if($vb_archive_staff){
+?>
+				<ifdef code="ca_occurrences.bo_purpose|ca_occurrences.bo_type|ca_occurrences.bo_amount|ca_occurrences.bo_date|ca_occurrences.bo_notes">
+					<dt><?= _t('Buyout'); ?></dt>
+					<ifdef code="ca_occurrences.bo_purpose">
+						<dd>
+							Purpose: ^ca_occurrences.bo_purpose
+						</dd>
+					</ifdef>
+					<ifdef code="ca_occurrences.bo_type">
+						<dd>
+							Type: ^ca_occurrences.bo_type
+						</dd>
+					</ifdef>
+					<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="buyout">
+						<dd>Buyout entities: 
+							<unit relativeTo="ca_entities" restrictToRelationshipTypes="buyout" delimiter=", ">^ca_entities.preferred_labels</unit>
+						</dd>
+					</ifcount>
+					<ifdef code="ca_occurrences.bo_amount">
+						<dd>
+							Amount: ^ca_occurrences.bo_amount
+						</dd>
+					</ifdef>
+					<ifdef code="ca_occurrences.bo_date">
+						<dd>
+							Date: ^ca_occurrences.bo_date
+						</dd>
+					</ifdef>
+					<ifdef code="ca_occurrences.bo_notes">
+						<dd>
+							Notes: ^ca_occurrences.bo_notes
+						</dd>
+					</ifdef>
 				</ifdef>
-				<ifdef code="ca_occurrences.ev_secondary_series">
-					<dt><?= _t('Secondary Series'); ?></dt>
-					<dd>
-						^ca_occurrences.ev_secondary_series
-					</dd>
-				</ifdef>
-				<ifdef code="ca_occurrences.ev_series_type">
-					<dt><?= _t('Series'); ?></dt>
-					<dd>
-						^ca_occurrences.ev_series_type
-					</dd>
-				</ifdef>
-				<ifdef code="ca_occurrences.ev_topic">
-					<dt><?= _t('Topic'); ?></dt>
-					<dd>
-						^ca_occurrences.ev_topic
-					</dd>
-				</ifdef>
-				<ifdef code="ca_occurrences.ev_subtopic">
-					<dt><?= _t('Subtopic'); ?></dt>
-					<dd>
-						^ca_occurrences.ev_subtopic
-					</dd>
-				</ifdef>
+<?php
+	}
+?>
 				
 			</dl>}}}					
 		</div>
 	</div>
-	{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="performer">
+	{{{<ifcount code="ca_entities_x_occurrences" min="1" restrictToRelationshipTypes="performer">
 		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities" restrictToRelationshipTypes="performer" min="1" max="1"><?= _t('Performer'); ?></ifcount><ifcount code="ca_entities"  restrictToRelationshipTypes="performer" min="2"><?= _t('Performers'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="performer"><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-2 d-flex align-items-center justify-content-center bg-light h-100 w-100 text-black">^ca_entities.preferred_labels</l></dd></unit>
+			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities_x_occurrences" restrictToRelationshipTypes="performer" min="1" max="1"><?= _t('Performer'); ?></ifcount><ifcount code="ca_entities_x_occurrences"  restrictToRelationshipTypes="performer" min="2"><?= _t('Performers'); ?></ifcount></dt>
+			<unit relativeTo="ca_entities_x_occurrences" delimiter="" restrictToRelationshipTypes="performer">
+				<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><div class="pt-3 pb-4 px-2 d-flex align-items-center justify-content-center bg-light h-100 w-100 text-black">
+					<div><l class="fs-4 fw-bold">^ca_entities.preferred_labels</l>
+						<ifdef code="ca_entities_x_occurrences.release_link"><div class="small pt-1"><unit relativeTo="ca_entities_x_occurrences.release_link" delimiter="<br/>"><ifdef code="ca_entities_x_occurrences.release_link.release_link1"><a href="^ca_entities_x_occurrences.release_link.release_link1">View Release <i class="bi bi-arrow-up-right-square"></i></a><ifdef code="ca_entities_x_occurrences.release_link.release_files"><br/></ifdef></ifdef><ifdef code="ca_entities_x_occurrences.release_link.release_files"><a href="^ca_entities_x_occurrences.release_link.release_files.original.url">Download Release <i class="bi bi-download"></i></a></ifdef><ifdef code="ca_entities_x_occurrences.release_link.release_type"> (^ca_entities_x_occurrences.release_link.release_type)</ifdef></unit></div></ifdef>
+					</div>
+				</dd>
+			</unit>
 		</dl>
 	</ifcount>}}}
+<?php
+	if($vb_archive_staff){
+?>
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row">
 		<div class="col"><h2>Event Media</h2><hr></div>
@@ -202,3 +272,6 @@ if($this->request->user->hasRole("front_archive_staff")){
 		</div>
 	</div>
 </ifcount>}}}
+<?php
+	}
+?>

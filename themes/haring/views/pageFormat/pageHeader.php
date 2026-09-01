@@ -86,7 +86,7 @@ if($this->request->isLoggedIn()){
 <?php
 				if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
 ?>
-				<form action="<?= caNavUrl($this->request, '', 'Search', 'Objects'); ?>" role="search">
+				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
 					<div class="input-group">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search">

@@ -81,8 +81,17 @@
 				</td><td>
 					<div class="metaBlock">
 <?php				
-					print "<div class='title'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name (^ca_objects.idno)')."</div>"; 
-					
+					print "<div class='metadataSmall'>".$vo_result->getWithTemplate('^ca_objects.idno')."</div>";
+					print "<div class='title'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name')."</div>"; 
+					print $vo_result->getWithTemplate('<ifdef code="ca_objects.date"><div class="metadata">^ca_objects.date</div></ifdef>
+							<ifdef code="ca_objects.medium_text"><div class="metadata">^ca_objects.medium_text</div></ifdef>
+							<ifnotdef code="ca_objects.medium_text">
+								<ifdef code="ca_objects.medium"><div class="metadata">^ca_objects.medium%delimiter=,_</div></ifdef>
+								<ifdef code="ca_objects.archival_photograph_medium"><div class="metadata">^ca_objects.archival_photograph_medium%delimiter=,_</div></ifdef>
+							</ifdef>
+							<ifdef code="ca_objects.dimensions.dimensions_display"><unit relativeTo="ca_objects.dimensions" delimiter=""><div class="metadata"><ifdef code="ca_objects.dimensions.dimensions_type">^ca_objects.dimensions.dimensions_type: </ifdef>^ca_objects.dimensions.dimensions_display</div></unit></ifdef>
+							<ifcount code="ca_entities.related" restrictToRelationshipTypes="artist" min="1"><div class="metadata"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist" delimiter=", ">^ca_entities.preferred_labels</unit></div></ifcount>
+					');
 ?>
 					</div>				
 				</td>	
