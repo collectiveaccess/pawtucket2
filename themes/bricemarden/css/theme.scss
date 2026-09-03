@@ -48,6 +48,14 @@ body{
 	font-variant-numeric: proportional-nums;
 	font-variant-numeric: oldstyle-nums;
 }
+.fullHeightNumbers{
+	font-variant-numeric: proportional-nums;
+}
+@media (min-width: 1600px) {
+	.container-fluid {
+		max-width: 1540px;
+	}
+}
 .text-indent{
 	padding-left: 25px; /* Indents the entire block to the right */
 	text-indent: -25px;
@@ -70,6 +78,9 @@ dt{
 dd {
 	margin-bottom: 1.5rem;
 }
+.noDelay.collapsing {
+	transition: none !important;
+}
 /* ------------------------- navbar -------------------------- */
 nav{
 	.bi{
@@ -80,10 +91,17 @@ nav{
 	.form-control.border-bottom{
 		border-bottom-width:.25px !important;
 	}
+	.nav-link.active{
+		text-decoration: underline;
+	}
 }
 @media(min-width:992px){
 	.navbar-expand-lg .dropdown-menu{
 		top:100%;
+	}
+	.navbar-brand {
+		width: 280px;
+		margin-bottom: 5px;
 	}
 }
 @media(min-width:1200px){
@@ -94,7 +112,6 @@ nav{
 /* ------------------------- about pages -------------------------- */
 .staticPage{
 	H1{
-		margin-top: 1rem;
 		margin-bottom: 4.5rem;
 	}
 }
@@ -150,6 +167,13 @@ nav{
 	#mediaviewer-container:hover{
 		cursor: zoom-in;
 	}
+	div.imageviewer-container{
+		div.mediaviewer{
+			img{
+				object-position: top left;
+			}
+		}
+	}
 	#detailViewerCaption{
 		min-height:2rem;
 	}
@@ -193,4 +217,7 @@ nav{
 			}
 		}
 	}
+}
+form#searchWithin{
+	margin-top: -.225rem;
 }

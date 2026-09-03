@@ -1,6 +1,6 @@
 <div class="row mb-5 g-5">
 	<div class="col-md-8">
-		<h1 class="mt-3"><?= _t("Artworks Advanced Search"); ?></h1>
+		<h1><?= _t("Artworks Advanced Search"); ?></h1>
         <div class="my-3"><?= _t("Enter your search terms in the fields below."); ?></div>
 
 		<?= $this->formTag(['class' => 'row g-4']); ?>

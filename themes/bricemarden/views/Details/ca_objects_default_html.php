@@ -52,10 +52,22 @@ $media_options = array_merge($media_options, [
 </script>
 <?php
 if($show_nav){
+	$results_link = $previous_link = $next_link;
+	if($this->getVar("resultsURL")){
+		$results_link = "<a href='".$this->getVar("resultsURL")."' class='".(($previous_link || $next_link) ? "pe-4 " : "").$options["detailNavLinkClass"]."'>".$options["resultsLink"]."</a>";
+	}
+	if($this->getVar("nextID")){
+		$next_link = "<a href='".$this->getVar("nextURL")."' class='pe-0 ".$options["detailNavLinkClass"]."'>".$options["nextLink"]."</a>";
+	}
+	if($this->getVar("previousID")){
+		$previous_link = "<a href='".$this->getVar("previousURL")."' class='pe-0 ".$options["detailNavLinkClass"]."'>".$options["previousLink"]."</a>";
+	}
+	
+	
 ?>
-	<div class="row mt-n3">
+	<div class="row mt-n4">
 		<div class="col text-center text-md-end">
-			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
+			<nav aria-label="result"><?= $results_link.$previous_link.$next_link; ?></nav>
 		</div>
 	</div>
 <?php
@@ -84,21 +96,21 @@ if($show_nav){
 	}
 ?>
 
-	<div class="row align-items-center">
+	<div class="row">
 		<div class="col-md-6">
 			{{{media_viewer}}}
 		</div>
 		<div class="col-md-6 pb-lg-5">
-			{{{<ifdef code='ca_objects.sort_number'><div class="pb-4">^ca_objects.sort_number</div></ifdef>
-				<H1 class="pb-4 mb-0">^ca_objects.preferred_labels.name</H1>
+			{{{<H1 class="pb-4 mb-0">^ca_objects.preferred_labels.name</H1>
 				<div class="pb-4">
 					<ifdef code='ca_objects.print_date'>^ca_objects.print_date<br/></ifdef>
 					<ifdef code='ca_objects.medium.medium_notes_text'>^ca_objects.medium.medium_notes_text<br/></ifdef>
 					<ifdef code='ca_objects.master_dimensions'>^ca_objects.master_dimensions%delimiter=;_<br/></ifdef>
 					<ifdef code="ca_objects.inscription_text"><br/>^ca_objects.inscription_text</ifdef>
 				</div>
+				<ifdef code='ca_objects.sort_number'><div class="pb-4 fullHeightNumbers"><div class='fst-italic'>Catalogue Number</div>^ca_objects.sort_number</div></ifdef>
 				<ifdef code="ca_objects.creation_location">
-					<div class='pb-4'><div class='fst-italic'>Studio</div>
+					<div class='pb-4'><div class='fst-italic'>Studio (list field)</div>
 <?php
 					if($creation_location = caGetBrowseLinks($t_object, 'ca_objects.creation_location', ['template' => '<div><l>^ca_objects.creation_location</l></div>', 'linkTemplate' => '^LINK'])) {
 						print join("", $creation_location);
@@ -106,6 +118,10 @@ if($show_nav){
 ?>
 					</div>
 				</ifdef>
+				<ifcount code="ca_places" restrictToRelationshipTypes="created" min="1">
+					<dt><?= _t('Studio'); ?></dt>
+					<unit relativeTo="ca_places" delimiter="" restrictToRelationshipTypes="created"><dd><l>^ca_places.preferred_labels</l></dd></unit>
+				</ifcount>
 			}}}
 		</div>
 	</div>
@@ -114,26 +130,32 @@ if($show_nav){
 			<div id="col1">
 			{{{<dl>
 				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="provenance">
-					<dt><?= _t('Provenance'); ?></dt>
-					<dd>
-					<unit relativeTo="ca_objects_x_entities" delimiter="<br/>" restrictToRelationshipTypes="provenance" sort="ca_objects_x_entities.rank">^ca_objects_x_entities.interstitial_notes</unit>
-					</dd>
+					<dt class='pt-3 mb-2'><?= _t('Provenance'); ?></dt>
+<?php
+					$provenances = array();
+					$provenances = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_entities" delimiter=";;" restrictToRelationshipTypes="provenance" sort="ca_objects_x_entities.rank">^ca_objects_x_entities.entity_id::^ca_objects_x_entities.interstitial_notes</unit>');
+					$provenances = explode(";;", $provenances);
+					foreach($provenances as $provenance){
+						$pieces = explode("::", $provenance);
+						print "<dd class='mb-2'>".caNavLink($this->request, $pieces[1], '', 'Browse', 'artworks', '', array('facet'=>'provenance_facet', 'id' => $pieces[0]))."</dd>";
+					}
+?>
 				</ifcount>
 				<ifdef code='ca_objects.nonpreferred_labels'>
-					<dt>Alternate Title</dt>
-					<dd>^ca_objects.nonpreferred_labels%delimiter=<br/></dd>
+					<dt class='pt-3 mb-2'>Alternate Title</dt>
+					<dd class='mb-2'>^ca_objects.nonpreferred_labels%delimiter=<br/></dd>
 				</ifdef>
 				<ifdef code="ca_objects.group">
-					<dt><?= _t('Group'); ?></dt>
+					<dt class='pt-3 mb-2'><?= _t('Group'); ?></dt>
 <?php
-					if($group = caGetBrowseLinks($t_object, 'ca_objects.group', ['template' => '<dd><l>^ca_objects.group</l></dd>', 'linkTemplate' => '^LINK'])) {
+					if($group = caGetBrowseLinks($t_object, 'ca_objects.group', ['template' => '<dd class="mb-2"><l>^ca_objects.group</l></dd>', 'linkTemplate' => '^LINK'])) {
 						print join("", $group);
 					}
 ?>	
 				</ifdef>
 				<ifdef code="ca_objects.notes">
-					<dt><?= _t('Notes'); ?></dt>
-					<dd>^ca_objects.notes</dd>
+					<dt class='pt-3 mb-2'><?= _t('Notes'); ?></dt>
+					<dd class='mb-2'>^ca_objects.notes</dd>
 				</ifdef>
 			</dl>}}}
 			</div>
@@ -143,12 +165,12 @@ if($show_nav){
 			<div id="readMoreCol2" class="readMore">
 				<dl>
 					<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
-						<if rule="^ca_occurrences.solo_group =~ /solo/i"><dt><?= _t('Solo Exhibitions'); ?></dt></if>
-						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /group/i"><dd><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
+						<if rule="^ca_occurrences.solo_group =~ /solo/i"><dt class='pt-3 mb-2'><?= _t('Solo Exhibitions'); ?></dt></if>
+						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /group/i"><dd class="mb-2"><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
 					</ifcount>
 					<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition" restrictToRelationshipTypes="includes">
-						<if rule="^ca_occurrences.solo_group =~ /group/i"><dt><?= _t('Group Exhibitions'); ?></dt></if>
-						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /solo/i"><dd><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
+						<if rule="^ca_occurrences.solo_group =~ /group/i"><dt class='pt-3 mb-2'><?= _t('Group Exhibitions'); ?></dt></if>
+						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="exhibition" restrictToRelationshipTypes="includes" skipIfExpression="^ca_occurrences.solo_group =~ /solo/i"><dd class="mb-2"><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
 					</ifcount>
 				</dl>
 			</div>
@@ -159,8 +181,8 @@ if($show_nav){
 		<div class="col-md-4">
 			<div id="readMoreCol3" class="readMore">
 				<dl>
-					<dt><?= _t('Literature'); ?></dt>
-					<?php print str_replace(array("<p>", "</p>"), array("", ""), $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_occurrences" delimiter="" restrictToTypes="literature" restrictToRelationshipTypes="references"><dd><l>^ca_occurrences.lit_citation<ifdef code="ca_objects_x_occurrences.citation">, ^ca_objects_x_occurrences.citation</ifdef><if rule="^ca_objects_x_occurrences.illustrated =~ /yes/"> (Illustrated)</if></l></dd></unit>')); ?>
+					<dt class='pt-3 mb-2'><?= _t('Literature'); ?></dt>
+					<?php print str_replace(array("<p>", "</p>"), array("", ""), $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_occurrences" delimiter="" restrictToTypes="literature" restrictToRelationshipTypes="references"><dd class="mb-2"><l>^ca_occurrences.lit_citation<ifdef code="ca_objects_x_occurrences.citation">, ^ca_objects_x_occurrences.citation</ifdef><if rule="^ca_objects_x_occurrences.illustrated =~ /yes/"> (Illustrated)</if></l></dd></unit>')); ?>
 				</dl>
 			</div>			
 			<div><button id="readMoreCol3Btn" class="btn btn-white btn-sm px-0 mt-2 readMoreButton d-none" hx-on:click="htmx.toggleClass(htmx.find('#readMoreCol3'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreCol3Btn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button></div>	

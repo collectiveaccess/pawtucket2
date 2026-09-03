@@ -49,12 +49,18 @@ if($this->request->isLoggedIn()){
 } else {	
 	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $user_links = "<li class='list-inline-item'>".caNavlink($this->request, _t('Login'), "", "", "LoginReg", "LoginForm", "")."</li>"; }
 }
-
+		if(in_array(strToLower($this->request->getController()), array("about", "references"))){
 ?>
+				</div>
+			</div>
+<?php
+		}
+?>
+
 		</main>
 	</div> <!-- end container -->
 		<footer id="footer" class="pt-5 pb-3 text-start mt-auto">
-			<div class="container-xl">
+			<div class="container-fluid">
 				<div class="row">
 					<div class="col-12 text-end">
 						<ul class="list-inline">

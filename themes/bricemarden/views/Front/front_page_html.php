@@ -32,7 +32,7 @@
 
 	$va_access_values = $this->getVar("access_values");
 ?>
-		<div class="row align-items-center">
+		<div class="row align-items-center pt-2">
 			<div class="col-md-6 img-fluid">
 				<?php print caGetThemeGraphic($this->request, 'temp-cropped-Mapplethorpe-Marden.jpg', array("alt" => "Brice Marden in Studio")); ?>
 			</div>

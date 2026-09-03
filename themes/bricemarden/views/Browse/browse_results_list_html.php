@@ -72,7 +72,7 @@
 	
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-	
+
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
@@ -115,7 +115,21 @@
 				}else{
 				
 					$caption 	= $qr_res->getWithTemplate($result_caption_template, array("checkAccess" => $va_access_values));
-					
+
+$result_output = "";
+if((strToLower($this->request->getAction()) == 'exhibitions') && (strToLower($current_sort) == 'date')){
+	$vb_output_year = false;
+	$year = $qr_res->get("ca_occurrences.exhibition_year");
+	if((!$start) && ($c == 0)){
+		$vb_output_year = true;
+	}elseif(Session::getVar('last_exhibition_year') != $year){
+		$vb_output_year = true;
+	}
+	if($vb_output_year){
+		Session::setVar('last_exhibition_year', $year);
+		$result_output .= "<div class='col-md-12 fs-4".(($start || (!$start && ($c > 0))) ? " mt-3" : "")."'>".$year."</div>";
+	}
+}					
 					if ($image_format == "image") {
 						$thumbnail = "";
 						$type_placeholder = "";
@@ -148,7 +162,7 @@
 									aria-label='"._t("Select record")."'><i class='bi bi-check-circle'></i></button>";
 						}
 						$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2 ms-1', $table, $id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
-						$result_output = "
+						$result_output .= "
 							<div class='col-md-12'>
 								<div id='row{$id}' class='card width-100 rounded-0 shadow border-0 mb-4'>
 									<div class='row g-0'>
@@ -172,10 +186,10 @@
 							</div><!-- end col -->";
 					}else{
 						#$result_output = "<div class='col-md-6 col-lg-4 d-flex'>".caDetailLink($this->request, "
-						$result_output = "<div class='col-12 d-flex'>".caDetailLink($this->request, "
+						$result_output .= "<div class='col-12 d-flex'>".caDetailLink($this->request, "
 							
 								<div id='row{$id}' class='card flex-grow-1 width-100 rounded-0 border-0 mb-0'>
-									<div class='card-body px-0 pt-0'>
+									<div class='card-body px-0 pt-0 pb-1'>
 										{$caption}
 									</div>
 								 </div>", "w-100 d-flex", $table, $id)."</div><!-- end col -->";
@@ -188,8 +202,8 @@
 				$results_output++;
 			}
 			
-			print "<div style='clear:both' class='text-center m-3' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $start + $results_output, 'key' => $browse_key, 'view' => $current_view, 'sort' => $current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."' hx-trigger='revealed' hx-swap='outerHTML'>
-						<div class='spinner-border htmx-indicator' role='status'><span class='visually-hidden'>Loading...</span></div>
+			print "<div style='clear:both' class='text-center' hx-get='".caNavUrl($this->request, '*', '*', '*', array('s' => $start + $results_output, 'key' => $browse_key, 'view' => $current_view, 'sort' => $current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0))."' hx-trigger='revealed' hx-swap='outerHTML'>
+						<div class='spinner-border htmx-indicator m-3' role='status'><span class='visually-hidden'>Loading...</span></div>
 					</div>";
 		}
 ?>

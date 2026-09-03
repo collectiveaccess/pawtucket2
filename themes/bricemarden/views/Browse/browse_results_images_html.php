@@ -66,7 +66,7 @@ $result_caption_template = caGetOption('result_caption', $va_view_info, null);
 $image_format = caGetOption('image_format', $va_view_info, 'cover');
 $image_class = "";
 if($image_format == "contain"){
-	$image_class = "card-img-top object-fit-contain pt-3 rounded-0";
+	$image_class = "card-img-top object-fit-contain rounded-0";
 }else{
 	$image_class = "card-img-top object-fit-cover rounded-0";
 }
@@ -124,13 +124,7 @@ if ($start < $qr_res->numHits()) {
 			}
 				
 			if(!$image){
-				$t_list_item->load($qr_res->get("type_id"));
-				$typecode = $t_list_item->get("idno");
-				if($type_placeholder = caGetPlaceholder($typecode, "placeholder_media_icon")){
-					$image = $type_placeholder;
-				}else{
-					$image = $default_placeholder;
-				}
+				$image = "<div class='text-center d-flex justify-content-center align-items-center bg-light ca-placeholder'>Image Unavailable</div>";
 			}
 			$rep_detail_link 	= caDetailLink($this->request, $image, '', $table, $id);
 			$select_button = "";
@@ -144,7 +138,7 @@ if ($start < $qr_res->numHits()) {
 			}
 			$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2 ms-1', $table, $id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 			$result_output = "
-	<div class='col-md-6 col-lg-4 d-flex'>
+	<div class='col-md-6 col-lg-4 col-xl-3 d-flex'>
 		<div id='row{$id}' class='card flex-grow-1 width-100 rounded-0 border-0 mb-4'>
 		  {$rep_detail_link}
 			<div class='card-body px-0'>

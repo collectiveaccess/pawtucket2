@@ -67,38 +67,27 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
 	<nav class="navbar navbar-expand-lg ">
-		<div class="container-xl my-3">
+		<div class="container-fluid my-3">
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'temp_logo.png', array("alt" => "Brice Marden", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse align-items-end" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-auto my-2 my-lg-0 me-4">				
-					<li class="nav-item dropdown py-3 py-lg-0">
-						<a class="text-nowrap nav-link<?php print (strToLower($this->request->getController()) == "about") ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('About'); ?><i class="bi bi-chevron-down ms-1"></i></a>
-						<ul class="dropdown-menu text-nowrap lh-lg ps-2 ps-lg-0">
-							<li><?= caNavlink($this->request, _t('Introduction'), "nav-link".(((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "introduction")) ? " active" : ""), "", "About", "Introduction", "", (((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "introduction")) ? array("aria-current" => "page") : null)); ?></li>
-							<li><?= caNavlink($this->request, _t('Note to the Reader'), "nav-link".(((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "notereader")) ? " active" : ""), "", "About", "NoteReader", "", (((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "notereader")) ? array("aria-current" => "page") : null)); ?></li>
-							<li><?= caNavlink($this->request, _t('Catalogue Raisonné Team'), "nav-link".(((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "team")) ? " active" : ""), "", "About", "Team", "", (((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "team")) ? array("aria-current" => "page") : null)); ?></li>
-							<li><?= caNavlink($this->request, _t('Acknowledgements'), "nav-link".(((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "acknowledgements")) ? " active" : ""), "", "About", "Acknowledgements", "", (((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "acknowledgements")) ? array("aria-current" => "page") : null)); ?></li>
-						</ul>
+					<li class="nav-item py-3 py-lg-0">
+						<?= caNavlink($this->request, _t('Artworks'), "nav-link".((strToLower($this->request->getAction()) == "artworks") ? " active" : ""), "", "Browse", "artworks", "", ((strToLower($this->request->getAction()) == "artworks") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item py-3 py-lg-0">
-						<?= caNavlink($this->request, _t('Artworks'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "artworks")) ? " active" : ""), "", "Browse", "artworks", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "artworks")) ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Exhibitions'), "nav-link".((strToLower($this->request->getAction()) == "exhibitions") ? " active" : ""), "", "Browse", "exhibitions", "", ((strToLower($this->request->getAction()) == "exhibitions") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item py-3 py-lg-0">
-						<?= caNavlink($this->request, _t('Exhibitions'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "exhibitions")) ? " active" : ""), "", "Browse", "exhibitions", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "exhibitions")) ? array("aria-current" => "page") : null)); ?>
-					</li>
-					<li class="nav-item py-3 py-lg-0">
-						<?= caNavlink($this->request, _t('Literature'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "literature")) ? " active" : ""), "", "Browse", "literature", "", (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "literature")) ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('Literature'), "nav-link".((strToLower($this->request->getAction()) == "literature") ? " active" : ""), "", "Browse", "literature", "", ((strToLower($this->request->getAction()) == "literature") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<li class="nav-item dropdown py-3 py-lg-0">
-						<a class="text-nowrap nav-link<?php print (strToLower($this->request->getController()) == "references") ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('References'); ?><i class="bi bi-chevron-down ms-1"></i></a>
+						<a class="text-nowrap nav-link<?php print ((strToLower($this->request->getController()) == "marden") || (strToLower($this->request->getController()) == "about")) ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('About'); ?><i class="bi bi-chevron-down ms-1"></i></a>
 						<ul class="dropdown-menu text-nowrap lh-lg ps-2 ps-lg-0">
-							<li><?= caNavlink($this->request, _t("Brice Marden's Paintings: An Overview"), "nav-link".(((strToLower($this->request->getController()) == "references") && (strToLower($this->request->getAction()) == "overview")) ? " active" : ""), "", "References", "Overview", "", (((strToLower($this->request->getController()) == "references") && (strToLower($this->request->getAction()) == "overview")) ? array("aria-current" => "page") : null)); ?></li>
-							<li><?= caNavlink($this->request, _t('Statement for Master of Fine Arts'), "nav-link".(((strToLower($this->request->getController()) == "references") && (strToLower($this->request->getAction()) == "statement")) ? " active" : ""), "", "References", "Statement", "", (((strToLower($this->request->getController()) == "references") && (strToLower($this->request->getAction()) == "statement")) ? array("aria-current" => "page") : null)); ?></li>
-							<li><?= caNavlink($this->request, _t('This is what I do, this is what I try to do'), "nav-link".(((strToLower($this->request->getController()) == "references") && (strToLower($this->request->getAction()) == "whatido")) ? " active" : ""), "", "References", "WhatIDo", "", (((strToLower($this->request->getController()) == "references") && (strToLower($this->request->getAction()) == "whatido")) ? array("aria-current" => "page") : null)); ?></li>
-							<li><?= caNavlink($this->request, _t('Chronology'), "nav-link".(((strToLower($this->request->getController()) == "references") && (strToLower($this->request->getAction()) == "chronology")) ? " active" : ""), "", "References", "Chronology", "", (((strToLower($this->request->getController()) == "references") && (strToLower($this->request->getAction()) == "chronology")) ? array("aria-current" => "page") : null)); ?></li>
+							<li><?= caNavlink($this->request, _t('About Brice Marden'), "nav-link".((strToLower($this->request->getController()) == "marden") ? " active" : ""), "", "Marden", "Overview", "", ((strToLower($this->request->getController()) == "marden") ? array("aria-current" => "page") : array())); ?></li>
+							<li><?= caNavlink($this->request, _t('About the Catalogue Raisonné'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "Introduction", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : array())); ?></li>
 						</ul>
 					</li>
 					
@@ -120,4 +109,4 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 	</nav>	
 
 	<main <?= caGetPageCSSClasses(); ?>><a name="page-content"></a>
-		<div class='container-xl pt-4'>
+		<div class='container-fluid pt-4'>
