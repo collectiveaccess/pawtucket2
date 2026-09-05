@@ -103,7 +103,6 @@ if($show_nav){
 							<hr class="mb-3">
 
 							<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
-xxx
 							<if rule="length(^ca_objects.creation_date_display) > 0">
 								<ifdef code="ca_objects.creation_date_display">
 									<dt><?= _t('Date'); ?></dt>
