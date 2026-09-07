@@ -821,7 +821,8 @@ function caSetMapVarsInView(BaseModel|SearchResult $qr_res, View $view, array $i
 			'ajaxContentUrl' => caGetOption('ajaxContentUrl', $options, null),
 			'searchUrl' => caNavUrl($view->request, '*', 'Search', '*', ['search_refine_prefix' => 'Address']),
 			'themePath' => __CA_THEME_URL__,
-			'icons' => $icons = caGetOption('mapIcons', $info, [])
+			'icons' => $icons = caGetOption('mapIcons', $info, []),
+			'tileServerUrl' => $view->request->config->get('leaflet_base_layer')
 		];
 		$view->setVar('mapOptions', $map_options);
 		$map_data = [];

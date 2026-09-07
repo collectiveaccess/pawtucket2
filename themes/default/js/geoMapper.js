@@ -13,9 +13,10 @@ function makeMap(options) {
 
 	const iconPath = options.themePath + '/assets/markers/';
 	L.Icon.Default.mergeOptions({
-	  iconRetinaUrl: iconPath + 'marker-icon-2x.png',
 	  iconUrl: iconPath + 'marker-icon.png',
-	  shadowUrl: iconPath + 'marker-shadow.png'
+	  iconRetinaUrl: iconPath + 'marker-icon-2x.png',
+	  shadowUrl: iconPath + 'marker-shadow.png',
+	  shadowRetinaUrl: iconPath + 'marker-shadow.png'
 	});
 
 	let map = L.map(options.id ?? 'map', { 
@@ -58,8 +59,12 @@ function makeMap(options) {
 				if(data[index]['icon']) {
 					var ci = L.icon({
 						iconUrl: iconPath + data[index]['icon']['icon'],
-						retinaUrl: iconPath + data[index]['icon']['icon-2x'],
-						shadowUrl: iconPath + data[index]['icon']['shadow']
+						iconRetinaUrl: iconPath + data[index]['icon']['icon-2x'],
+						shadowUrl: iconPath + data[index]['icon']['shadow'],
+						shadowRetinaUrl: iconPath + data[index]['icon']['shadow-2x'],
+						iconSize: [parseInt(data[index]['icon']['iconSize'][0]), parseInt(data[index]['icon']['iconSize'][1])],
+						iconAnchor: [parseInt(data[index]['icon']['iconSize'][0]), parseInt(data[index]['icon']['iconSize'][1])], 
+						popupAnchor: [parseInt(data[index]['icon']['popupAnchor'][0]), parseInt(data[index]['icon']['popupAnchor'][1])]
 					});
 					opts['icon'] = ci;
 				}
