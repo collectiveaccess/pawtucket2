@@ -33,34 +33,33 @@
 	// print $this->render("Front/featured_set_slideshow_html.php");
 
 	$va_access_values = $this->getVar("access_values");
-	$vs_hero = $this->request->getParameter("hero", pString);
-	if(!$vs_hero){
- 		$vs_hero = rand(1, 3);
-	}
 ?>
 
 <div class="bg-black">
-<div class="container-flex mx-4 pt-4">
-	<div class="parallax hero<?php print $vs_hero; ?>">
-		<div class="row h-100">
-			<div class="col-md-9 col-lg-6 col-xl-5">
-				<div class="bg-black text-bg-dark p-5 shadow w-100 h-100 align-items-center">
-					<div class="py-5 my-5">
-						<div class="py-3">
-							<div class="fs-2 fw-light ">Welcome to the</div>
-							<div class="pt-2 display-3 fw-medium">Art21 Archive</div>
-						</div>
-						<div class="fs-4 pt-1">{{{hp_search_text}}}</div>
-						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
-							<div class="input-group pb-3">
-								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
-								<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
-								<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
-							</div>
-						</form>
+<div class="container-flex mx-4 pt-4">	
+	<div class="row h-100">
+		<div class="col-md-12 col-lg-6 col-xl-5">
+			<div class="bg-black text-bg-dark p-5 shadow w-100 h-100 align-items-center">
+				<div class="py-5 my-5">
+					<div class="py-3">
+						<div class="fs-2 fw-light ">Welcome to the</div>
+						<div class="pt-2 display-3 fw-medium">Art21 Archive</div>
 					</div>
+					<div class="fs-4 pt-1">{{{hp_search_text}}}</div>
+					<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
+						<div class="input-group pb-3">
+							<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
+							<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
+							<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
+						</div>
+					</form>
 				</div>
 			</div>
+		</div>
+		<div class="col-md-12 col-lg-6 col-xl-7">
+<?php
+			print caGetThemeGraphic($this->request, "hero.jpg", array("alt" => "Clapperboard in front of person at beginning of scene being filmed", "class" => "object-fit-cover w-100 h-100"));;
+?>
 		</div>
 	</div>
 </div>
@@ -95,13 +94,13 @@
 					<H2 class="mb-3 text-white fs-4 fw-bold mb-5">Explore The Art21 Archive</H2>
 					<div class="row g-5">
 						<div class="col-md-4">
-							<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "explore1.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-bold fs-4 mt-3'>Footage Archive</div><div>".$this->getVar("hp_footage")."</div></div>", "text-white text-decoration-none", "", "Browse", "projects"); ?>
+							<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "footageArchive.jpg", array("alt" => "Film shoot in garden", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-bold fs-4 mt-3'>Footage Archive</div><div>".$this->getVar("hp_footage")."</div></div>", "text-white text-decoration-none", "", "Browse", "projects"); ?>
 						</div>
 						<div class="col-md-4">
-							<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "explore2.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-bold fs-4 mt-3'>Film Library</div><div>".$this->getVar("hp_film_library")."</div></div>", "text-white text-decoration-none", "", "Collections", "Index"); ?>
+							<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "explore2.jpg", array("alt" => "Artist in studio on ladder", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-bold fs-4 mt-3'>Film Library</div><div>".$this->getVar("hp_film_library")."</div></div>", "text-white text-decoration-none", "", "Collections", "Index"); ?>
 						</div>
 						<div class="col-md-4">
-							<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "explore3.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-bold fs-4 mt-3'>Artists</div><div>".$this->getVar("hp_artists")."</div></div>", "text-white text-decoration-none", "", "Browse", "Artists"); ?>
+							<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "artists.jpg", array("alt" => "Artist working in studio", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-bold fs-4 mt-3'>Artists</div><div>".$this->getVar("hp_artists")."</div></div>", "text-white text-decoration-none", "", "Browse", "Artists"); ?>
 						</div>
 					</div>
 				</div>

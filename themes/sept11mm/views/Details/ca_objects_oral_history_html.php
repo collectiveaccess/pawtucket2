@@ -352,7 +352,7 @@ if(sizeof($va_related_ids)){
 	</div>
 
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'all_objects', array('search' => $search_term, '_advanced' => 0)); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'related_objects', array('search' => $search_term, '_advanced' => 0)); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
 	</div>

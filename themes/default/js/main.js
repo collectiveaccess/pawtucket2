@@ -26,12 +26,12 @@ function initPawtucketApps(app=null) {
 	Object.entries(apps).forEach(([key, value]) => {
 		try {
 			let m = require('themeJS/' + key + ".js");
-			m.default(value);
+			pawtucketUIApps[key]['instance'] = m.default(value);
 		} catch (e) {
 			themeErr = e;
 			try {
 				let m = require('defaultJS/' + key + ".js");
-				m.default(value);
+				pawtucketUIApps[key]['instance'] = m.default(value);
 			} catch (e) {
 				console.log(`WARNING: No module defined in theme for PawtucketApp ${key}`, themeErr);
 				console.log(`WARNING: No default module defined for PawtucketApp ${key}`, e);
@@ -43,5 +43,3 @@ function initPawtucketApps(app=null) {
 window.initApp = initPawtucketApps;
 
 export default initPawtucketApps;
-
-

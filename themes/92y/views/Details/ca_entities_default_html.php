@@ -37,6 +37,7 @@ $inquire_enabled = 	$this->getVar("inquireEnabled");
 $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_item->get('ca_entities.entity_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
+$browse_info = caGetInfoForBrowseType("entities");
 $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 <script>
@@ -57,7 +58,6 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row">
 		<div class="col-md-12">
 			<H1 class="fs-3">{{{^ca_entities.preferred_labels.displayname}}}</H1>
-			{{{<ifdef code="ca_entities.type_id"><div class="fw-medium mb-3 text-capitalize">^ca_entities.type_id</div></ifdef>}}}
 			<hr class="mb-0">
 		</div>
 	</div>
@@ -95,6 +95,34 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row">
 		<div class="col"><h2>Events</h2><hr></div>
 	</div>
+	<ifcount code="ca_occurrences" min="2">
+		<div class="row">
+			<div class="col">
+<?php
+			
+				if(is_array($sorts = caGetOption('sortBy', $browse_info, null))) {
+					print "<li class='list-group-item border-0 px-0 pt-1'>\n";
+					print "<ul class='list-inline p-0 me-2'><li class='list-inline-item fw-medium text-uppercase me-1'>"._t("Sort by:")."</li>\n";
+					$i = 0;
+					foreach($sorts as $sort => $sort_flds) {
+						$i++;
+						if ($current_sort === $sort) {
+							print "<li class='list-inline-item me-1'>{$sort}</li>\n";
+						} else {
+							print "<li class='list-inline-item me-1'><button class='btn-white btn p-0' hx-target='#browseResultsContainer' hx-swap='innerHTML' hx-get='".caNavUrl($this->request, '', 'Search', 'events', array('search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"), 'sort' => $sort, '_advanced' => 0))."'>".$sort."</button></li>\n";
+						}
+						if($i < sizeof($sorts)){
+							print "<li class='list-inline-item me-2'><span aria-hidden='true'>|</span></li>";
+						}
+					}
+					print "<li class='list-inline-item'><button class='btn-white btn p-0' hx-target='#browseResultsContainer' hx-swap='innerHTML' hx-get='".caNavUrl($this->request, '', 'Search', 'events', array('search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"), 'direction' => 'asc', '_advanced' => 0))."'><i class='bi bi-sort-down-alt' aria-label='direction'></i></button></li>";
+					print "<li class='list-inline-item'><button class='btn-white btn p-0' hx-target='#browseResultsContainer' hx-swap='innerHTML' hx-get='".caNavUrl($this->request, '', 'Search', 'events', array('search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"), 'direction' => 'desc', '_advanced' => 0))."'><i class='bi bi-sort-up' aria-label='direction'></i></button></li>";
+					print "</ul>\n";
+					print "</li>\n";
+				}
+?>
+			</div>
+		</div>
 	<div class="row" id="browseResultsContainer">	
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'events', array('search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"), '_advanced' => 0)); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>

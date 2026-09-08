@@ -1,3 +1,7 @@
+.text-indent{
+	padding-left: 15px; /* Indents the entire block to the right */
+	text-indent: -15px;
+}
 .btn-primary{
 	border-radius: 30px;
 }
@@ -23,7 +27,7 @@
 /* home */
 .parallax {
     position: relative;
-    background-image: url("../assets/graphics/Art21_S12_EpTwo_Realms_of_the_Real.jpeg");
+    background-image: url("../assets/graphics/hero.jpg");
 
     /* Full height */
     /*height: 100vh;*/
@@ -36,7 +40,7 @@
     background-size: cover;
 
     .hero1, .hero2, .hero3 {
-        background-image: url("../assets/graphics/Art21_S12_EpTwo_Realms_of_the_Real.jpeg");
+        background-image: url("../assets/graphics/hero.jpg");
     }
     .divide{
     	width:170px;
@@ -47,4 +51,10 @@
 	.btn.btn-dark{
 		border-radius: 0px;
 	}
+}
+/* ----- detail -------- */
+
+#transcriptCol{
+	min-height:400px;
+	display: none;
 }

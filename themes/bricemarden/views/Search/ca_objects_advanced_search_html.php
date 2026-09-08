@@ -8,7 +8,7 @@
 			
 			<?= $this->formElement('ca_objects.preferred_labels', ['label' => _t('Title'), 'description' => ""]); ?>			
 
-			<?= $this->formElement('ca_objects.idno', ['label' => _t('Number in CR'), 'description' => ""]); ?>
+			<?= $this->formElement('ca_objects.sort_number', ['label' => _t('Catalogue Number'), 'description' => ""]); ?>
 
 			<?= $this->formElement('ca_objects.common_date', ['label' => _t('Date Range <em>(e.g. 1970-1979)</em>'), 'description' => ""]); ?>
 

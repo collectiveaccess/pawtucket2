@@ -4128,7 +4128,7 @@ class SearchResult extends BaseObject {
 	 */
 	public function getResultDesc(array $hits) : ?array {
 		$result_desc = [];
-		$result_desc_full = $this->opo_engine_result->getResultDesc();
+		$result_desc_full = $this->opo_engine_result->getRawResultDesc();
 		
 		foreach($hits as $id) {
 			if(isset($result_desc_full[$id])) {
