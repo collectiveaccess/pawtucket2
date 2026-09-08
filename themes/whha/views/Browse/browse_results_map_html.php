@@ -57,5 +57,5 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 <div class="col">
 	<div id="map" style="width: 100%; height: 400px;" class="map">{{{map}}}</div>
-	<div class="py-3 fs-5"><?= _t("Shift click and drag to search by an area on the map. Green markers indicate birthplaces and black markers indicate burial places. Yellow markers are used for places of both birth and burial."); ?></div>
+	<div class="py-3 fs-5"><?= _t("Shift click and drag to search by an area on the map. Blue markers indicate birthplaces and green markers indicate burial places. Black markers are used for places of both birth and burial."); ?></div>
 </div>

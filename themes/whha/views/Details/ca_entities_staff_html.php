@@ -210,7 +210,9 @@ $media_options = array_merge($media_options, [
 					</unit>
 				</ifdef>
 				<ifdef code="ca_entities.birthplace_geonames|ca_entities.burial_geoname">
-					<dd><div id="map" class="map mt-3"><?php print $this->getVar("map"); ?></div></dd>
+					<dd><div id="map" class="map mt-3"><?php print $this->getVar("map"); ?></div>
+						<div class="py-3 small"><?= _t("Blue markers indicate birthplaces and green markers indicate burial places. Black markers are used for places of both birth and burial."); ?></div>
+					</dd>
 				</ifdef>
 			</dl>}}}
 		</div>
@@ -223,7 +225,7 @@ $media_options = array_merge($media_options, [
 			<l class="w-100 h-100 d-flex flex-grow-1">
 				<div class="card w-100 h-100 rounded-0 border-0 mb-4">
 					<div class="card-body">
-						<div class='card-title text-center'><div class='fw-bold lh-sm fs-3'>^ca_entities.preferred_labels</div></div><ifdef code='ca_entities.service_years|ca_entities.occupation'><div class='fw-medium lh-sm fs-5'><ifdef code='ca_entities.occupation'>^ca_entities.occupation%delimiter=,_</ifdef><ifdef code='ca_entities.service_years,ca_entities.occupation'>, </ifdef><ifdef code='ca_entities.service_years'>^ca_entities.service_years%delimiter=,_</ifdef></div></ifdef>
+						<div class='card-title text-center'><div class='fw-bold lh-sm fs-3'>^ca_entities.preferred_labels</div></div><ifdef code='ca_entities.service_years|ca_entities.positions.position'><div class='fw-medium lh-sm fs-5'><ifdef code='ca_entities.positions.position'>^ca_entities.positions.position%delimiter=,_</ifdef><ifdef code='ca_entities.service_years,ca_entities.positions.position'>, </ifdef><ifdef code='ca_entities.service_years'>^ca_entities.service_years%delimiter=,_</ifdef></div></ifdef>
 					</div>
 				</div>
 			</l>
@@ -232,18 +234,18 @@ $media_options = array_merge($media_options, [
 </ifcount>}}}
 
 {{{<dl class="row row-cols-1 row-cols-md-3">
-	<ifdef code="ca_entities.assoc_content">
+	<ifdef code="ca_entities.assoc_content.assoc_doc.original.url|ca_entities.assoc_content.assoc_url">
 		<div class="col">
 			<dt class="fs-3"><?= _t("Related Association Content"); ?></dt>
 			<unit relativeTo="ca_entities.assoc_content" delimiter="">
 				<ifdef code="ca_entities.assoc_content.assoc_doc.original.url">
 					<dd class="mb-4">
-						<a href="^ca_entities.assoc_content.assoc_doc.original.url" class="double-border text-black p-3 d-block"><i class='bi bi-download me-1'></i> <ifdef code="ca_entities.assoc_content.assoc_title">^ca_entities.assoc_content.assoc_title</ifdef><ifdef code="ca_entities.assoc_content.assoc_title,ca_entities.assoc_content.assoc_description"><br/></ifdef><ifdef code="ca_entities.assoc_content.assoc_description">^ca_entities.assoc_content.assoc_description</ifdef></a>
+						<a href="^ca_entities.assoc_content.assoc_doc.original.url" class="double-border text-black p-3 d-block"><div class="fw-bold"><i class='bi bi-download me-1'></i> <ifdef code="ca_entities.assoc_content.assoc_title">^ca_entities.assoc_content.assoc_title</ifdef></div><ifdef code="ca_entities.assoc_content.assoc_description"><div class="fst-italic">^ca_entities.assoc_content.assoc_description</div></ifdef></a>
 					</dd>
 				</ifdef>
 				<ifdef code="ca_entities.assoc_content.assoc_url">
 					<dd class="mb-4">
-						<a href="^ca_entities.assoc_content.assoc_url" class="double-border text-black p-3 d-block"><ifdef code="ca_entities.assoc_content.assoc_title">^ca_entities.assoc_content.assoc_title</ifdef> <i class="ms-1 bi bi-box-arrow-up-right"></i><ifdef code="ca_entities.assoc_content.assoc_title,ca_entities.assoc_content.assoc_description"><br/></ifdef><ifdef code="ca_entities.assoc_content.assoc_description">^ca_entities.assoc_content.assoc_description</ifdef></a>
+						<a href="^ca_entities.assoc_content.assoc_url" class="double-border text-black p-3 d-block"><div class="fw-bold"><ifdef code="ca_entities.assoc_content.assoc_title">^ca_entities.assoc_content.assoc_title</ifdef> <i class="ms-1 bi bi-box-arrow-up-right"></i></div><ifdef code="ca_entities.assoc_content.assoc_description"><div class="fst-italic">^ca_entities.assoc_content.assoc_description</div></ifdef></a>
 					</dd>
 				</ifdef>
 			</unit>
@@ -254,13 +256,13 @@ $media_options = array_merge($media_options, [
 			<dt class="fs-3"><?= _t("External Content"); ?></dt>
 			<unit relativeTo="ca_entities.public_documentation" delimiter="">
 				<ifdef code="ca_entities.public_documentation.public_doc.original.url">
-					<dd class="mb-4">
-						<a href="^ca_entities.public_documentation.public_doc.original.url" class="double-border text-black p-3 d-block"><i class='bi bi-download me-1'></i> <ifdef code="ca_entities.public_documentation.public_title">^ca_entities.public_documentation.public_title</ifdef><ifdef code="ca_entities.public_documentation.public_title,ca_entities.public_documentation.public_description"><br/></ifdef><ifdef code="ca_entities.public_documentation.public_description">^ca_entities.public_documentation.public_description</ifdef></a>
-					</dd>
+					<dd class="mb-4"><div>
+						<a href="^ca_entities.public_documentation.public_doc.original.url" class="double-border text-black p-3 d-block"><div class="fw-bold"><i class='bi bi-download me-1'></i> <ifdef code="ca_entities.public_documentation.public_title">^ca_entities.public_documentation.public_title</ifdef></div><ifdef code="ca_entities.public_documentation.public_description"><div class="fst-italic">^ca_entities.public_documentation.public_description</div></ifdef></a>
+					</div></dd>
 				</ifdef>
 				<ifdef code="ca_entities.public_documentation.public_url">
 					<dd class="mb-4">
-						<a href="^ca_entities.public_documentation.public_url" class="double-border text-black p-3 d-block"><ifdef code="ca_entities.public_documentation.public_title">^ca_entities.public_documentation.public_title</ifdef> <i class="ms-1 bi bi-box-arrow-up-right"></i><ifdef code="ca_entities.public_documentation.public_title,ca_entities.public_documentation.public_description"><br/></ifdef><ifdef code="ca_entities.public_documentation.public_description">^ca_entities.public_documentation.public_description</ifdef></a>
+						<div><a href="^ca_entities.public_documentation.public_url" class="double-border text-black p-3 d-block"><div class="fw-bold"><ifdef code="ca_entities.public_documentation.public_title">^ca_entities.public_documentation.public_title</ifdef> <i class="ms-1 bi bi-box-arrow-up-right"></i></div><ifdef code="ca_entities.public_documentation.public_description"><div class="fst-italic">^ca_entities.public_documentation.public_description</div></ifdef></a></div>
 					</dd>
 				</ifdef>
 			</unit>
@@ -268,13 +270,13 @@ $media_options = array_merge($media_options, [
 	</ifdef>
 	<ifdef code="ca_entities.resource|ca_entities.resource_url">
 		<div class="col">
-			<dt><?= _t("Educational Resources"); ?></dt>
+			<dt class="fs-3"><?= _t("Educational Resources"); ?></dt>
 			<unit relativeTo="ca_entities.resource" delimiter="">
-				<dd class="mb-4"><ifdef code="ca_entities.resource.resource_description.original.url"><a href="^ca_entities.resource.resource_description.original.url" class="double-border text-black p-3 d-block"><i class='bi bi-download me-1'></i> ^ca_entities.resource.resource_description</a></ifdef><ifnotdef code="ca_entities.resource.resource_description.original.url">^ca_entities.resource.resource_description</ifnotdef></dd>
+				<dd class="mb-4"><div><ifdef code="ca_entities.resource.resource_description.original.url"><a href="^ca_entities.resource.resource_description.original.url" class="double-border text-black p-3 d-block fw-bold"><i class='bi bi-download me-1'></i> ^ca_entities.resource.resource_description</a></ifdef><ifnotdef code="ca_entities.resource.resource_description.original.url"><div class="fst-italic">^ca_entities.resource.resource_description</div></ifnotdef></div></dd>
 			</unit>
 			<unit relativeTo="ca_entities.resource_url" delimiter="">
-				<dd class="mb-4"><a href="^ca_entities.resource_url.url" target="_blank" class="double-border text-black p-3 d-block">^ca_entities.resource_url.site_name <i class="bi bi-box-arrow-up-right"></i>
-					<ifdef code="ca_entities.resource_url.site_description"><br/>^ca_entities.resource_url.site_description</ifdef></a>
+				<dd class="mb-4"><div><a href="^ca_entities.resource_url.url" target="_blank" class="double-border text-black p-3 d-block"><span class="fw-bold">^ca_entities.resource_url.site_name <i class="bi bi-box-arrow-up-right"></i></span>
+					<ifdef code="ca_entities.resource_url.site_description"><div class="fst-italic">^ca_entities.resource_url.site_description</div></ifdef></a></div>
 				</dd>
 			</unit>
 		</div>

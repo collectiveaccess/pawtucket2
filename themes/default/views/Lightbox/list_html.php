@@ -208,7 +208,7 @@ if(!$incremental) { ?>
 	if(!$qr_sets) {
 ?>
 		<div class='col-md-12 col-lg-12 d-flex'>
-			<?= _t('No lightboxes available'); ?>
+			<?= _t('No %1 available', $lightbox_displayname_plural); ?>
 		</div>	
 <?php
 	} else {

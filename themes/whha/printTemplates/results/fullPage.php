@@ -26,7 +26,7 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Worker Summary (PDF)
+ * @name Detailed Worker Summary (PDF)
  * @filename WorkerSummary
  * @type page
  * @pageSize letter
