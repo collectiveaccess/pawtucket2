@@ -70,14 +70,16 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 		</form>
 <?php
 	}
-	print "<H2 class='fs-4 px-3 pt-2'>"._t("Show")."</H2>";		
+	if(strToLower($this->request->getAction()) == "birth_burial_map"){
+		print "<H2 class='fs-4 px-3 pt-2'>"._t("Show")."</H2>";		
 ?>
-	<div class="btn-group px-3 mb-2">
-  		<a href="#" aria-current="page" class="btn btn-white p-1 me-1 fst-normal active">All</a>
-  		<a href="#" class="btn btn-white p-1 me-1 fst-normal">Birth</a>
-  		<a href="#" class="btn btn-white p-1 fst-normal">Burial</a>
-	</div>
+		<div class="btn-group px-3 mb-2">
+			<a href="#" aria-current="page" class="btn btn-white p-1 me-1 fst-normal active">All</a>
+			<a href="#" class="btn btn-white p-1 me-1 fst-normal">Birth</a>
+			<a href="#" class="btn btn-white p-1 fst-normal">Burial</a>
+		</div>
 <?php	
+	}
 	if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
 		print "<H2 class='fs-4 px-3 py-2'>"._t("Filter by")."</H2>";
 		
