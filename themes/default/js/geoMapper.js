@@ -19,7 +19,7 @@ function makeMap(options) {
 	  shadowRetinaUrl: iconPath + 'marker-shadow.png'
 	});
 
-	let map = L.map(options.id ?? 'map', { 
+	let map = L.map(id ?? 'map', { 
 		zoomControl: options.showZoom ?? true, 
 		attributionControl: false, 
 		selectArea: searchUrl ? true : false,
@@ -27,9 +27,10 @@ function makeMap(options) {
 		maxZoom: options.maxZoom ?? 15 }
 	).setView([30, -74], options.zoom ?? 3);
 	
+	const mapDiv = document.getElementById(id);
+	mapDiv.map = map;
+	
 	let b = L.tileLayer(options.tileServerUrl ?? defaultTileServerUrl , {noWrap: true}).addTo(map);	
-	let g = new L.featureGroup(); 
-	g.addTo(map);
 	
 	if(searchUrl) {
 		map.selectArea.setControlKey(true);
@@ -45,14 +46,29 @@ function makeMap(options) {
 	
 	let data = options.data;
 	if(data && (data.length > 0)) {
+		const bundles = data.reduce((acc, item) => {
+			if(acc.indexOf(item.bundle) === -1) {
+				acc.push(item.bundle);
+			}
+			return acc;
+		}, []);
+		
+		let layers = {};
+		for(let index in bundles) {
+			layers[bundles[index]] = new L.featureGroup();
+			layers[bundles[index]].addTo(map);
+		}
+		
+		map.layerList = layers;
+		
 		for(let index in data) {
 			let m = null, c = data[index], opts = { };
 			if(c.coordinates) {
 				let pts = c.coordinates.map(c => { return [c.latitude, c.longitude]; });
-				m = L.polygon(pts).addTo(g);
+				m = L.polygon(pts).addTo(layers[c.bundle]);
 			} else if(c.radius) {
 				if((c.latitude === '') || (c.longitude === '')) { console.log("Invalid point", c); continue; }
-				m = L.circle([parseFloat(c.latitude), parseFloat(c.longitude)], {radius: c.radius}).addTo(g);
+				m = L.circle([parseFloat(c.latitude), parseFloat(c.longitude)], {radius: c.radius}).addTo(layers[c.bundle]);
 			} else {
 				if((c.latitude === '') || (c.longitude === '')) { console.log("Invalid point", c); continue; }
 				
@@ -69,11 +85,10 @@ function makeMap(options) {
 					opts['icon'] = ci;
 				}
 				
-				m = L.marker([parseFloat(c.latitude), parseFloat(c.longitude)], opts).addTo(g);
+				m = L.marker([parseFloat(c.latitude), parseFloat(c.longitude)], opts).addTo(layers[c.bundle]);
 			}
 			if(c.info) { 
 				if(options['ajaxContentUrl'] ?? null) {
-					console.log(options);
 					m.bindPopup(
 							(layer)=>{
 								var el = document.createElement('div');

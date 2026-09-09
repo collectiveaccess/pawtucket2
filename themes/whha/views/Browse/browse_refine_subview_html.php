@@ -74,9 +74,9 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 		print "<H2 class='fs-4 px-3 pt-2'>"._t("Show")."</H2>";		
 ?>
 		<div class="btn-group px-3 mb-2">
-			<a href="#" aria-current="page" class="btn btn-white p-1 me-1 fst-normal active">All</a>
-			<a href="#" class="btn btn-white p-1 me-1 fst-normal">Birth</a>
-			<a href="#" class="btn btn-white p-1 fst-normal">Burial</a>
+			<a href="#" id="mapAll" class="btn btn-white p-1 me-1 fst-normal active" onclick="show('all'); return false;">All</a>
+			<a href="#" id="mapBirth" class="btn btn-white p-1 me-1 fst-normal" onclick="show('birth'); return false;">Birth</a>
+			<a href="#" id="mapBurial" class="btn btn-white p-1 fst-normal" onclick="show('burial'); return false;">Burial</a>
 		</div>
 <?php	
 	}
@@ -129,3 +129,39 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 	}
 	print "</div></div><!-- end bRefine -->\n";	
 }
+?>
+
+
+<script type="text/javascript">
+	let map = document.getElementById('map');
+	let mapAll = document.getElementById('mapAll');
+	let mapBirth = document.getElementById('mapBirth');
+	let mapBurial = document.getElementById('mapBurial');
+	
+	function show(mode) {
+		let m = map.map;
+		
+		if(mode == 'birth') {
+			m.addLayer(m.layerList['ca_entities.birthplace_geonames']);
+			m.removeLayer(m.layerList['ca_entities.burial_geonames']);
+			
+			mapAll.classList.remove('active');
+			mapBirth.classList.add('active');
+			mapBurial.classList.remove('active');
+		} else if(mode == 'burial') {
+			m.removeLayer(m.layerList['ca_entities.birthplace_geonames']);
+			m.addLayer(m.layerList['ca_entities.burial_geonames']);
+			
+			mapAll.classList.remove('active');
+			mapBirth.classList.remove('active');
+			mapBurial.classList.add('active');
+		} else {
+			m.addLayer(m.layerList['ca_entities.birthplace_geonames']);
+			m.addLayer(m.layerList['ca_entities.burial_geonames']);
+			
+			mapAll.classList.add('active');
+			mapBirth.classList.remove('active');
+			mapBurial.classList.remove('active');
+		}
+	}
+</script>
