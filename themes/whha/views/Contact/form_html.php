@@ -90,8 +90,8 @@ if($id && $t_item->getPrimaryKey()){
 					<input type="text" class="form-control<?= (($errors["email"]) ? " is-invalid" : ""); ?>" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
 				</div><!-- end col -->
 				<div class="col-md-6 mb-4">
-					<label for="confirmemail" class="form-label"><?= _t("Confirm Email address"); ?></label>
-					<input type="text" class="form-control<?= (($errors["confirmemail"]) ? " is-invalid" : ""); ?>" id="confirmemail" placeholder="Confirm Enter email" name="confirmemail" value="{{{confirmemail}}}">
+					<label for="confirmemail" class="form-label"><?= _t("Confirm email address"); ?></label>
+					<input type="text" class="form-control<?= (($errors["confirmemail"]) ? " is-invalid" : ""); ?>" id="confirmemail" placeholder="Enter email" name="confirmemail" value="{{{confirmemail}}}">
 					<div class="invalid-feedback"><?= (($errors["confirmemail"]) ? _t("Email addresses are invalid or do not match.") : _t("Email addresses do not match.")); ?></div>
 				</div><!-- end col -->
 			</div>
