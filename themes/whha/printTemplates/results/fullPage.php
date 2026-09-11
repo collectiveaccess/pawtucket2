@@ -128,10 +128,12 @@
 							</div>
 						</ifdef>
 						<ifdef code="ca_entities.burial_place">
-							<div class="summaryLabel">Burial Place</div>
-							<unit relativeTo="ca_entities.burial_place" delimiter="">
-								<div>^ca_entities.burial_place</div>
-							</unit>
+							<div class="summaryUnit">
+								<div class="summaryLabel">Burial Place</div>
+								<unit relativeTo="ca_entities.burial_place" delimiter="">
+									<div>^ca_entities.burial_place</div>
+								</unit>
+							</div>
 						</ifdef>
 					</td>
 					<td style="width:50%; vertical-align: top;">
