@@ -103,6 +103,13 @@ if ($start < $qr_res->numHits()) {
 		$id = $qr_res->get("{$table}.{$pk}");
 		if($id == $row_id){
 			$row_id_loaded = true;
+?>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('row<?=$row_id; ?>').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
+<?php
 		}
 		
 		# --- check if this result has been cached

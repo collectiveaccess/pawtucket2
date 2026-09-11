@@ -87,17 +87,17 @@
 		<div class="col-12 col-lg-10 hpExplore py-5">
 			<H2 class="display-4 mb-3">Explore</H2>
 			<div class="row g-md-5">
-				<div class="col-md-6 mb-5">
+				<div class="col-md-6 pb-5 pb-md-0 mb-md-5">
 					<?php print caNavLink($this->request, "<div class='exploreItem h-100'><div class='exploreItemImg large'>".caGetThemeGraphic($this->request, "explore_workers.jpg", array("alt" => "explore workers", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel large align-content-center'>Workers</div></div>", "text-decoration-none h-100", "", "Browse", "workers"); ?>	
 				</div>
 				<div class="col-md-6">
 					<div class="row">
-						<div class="col-12 pb-5 pb-lg-0 mb-5">
+						<div class="col-12 pb-5 pb-md-0 mb-md-5">
 							<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_occupations.jpg", array("alt" => "explore occupations", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Occupations</div></div>", "text-decoration-none h-100", "", "Occupations", "index"); ?>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-12 pb-5 pb-md-0 mb-5">
+						<div class="col-12 pb-5 pb-md-0 mb-md-5">
 							<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_presidencies.jpg", array("alt" => "explore presidencies", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Presidencies</div></div>", "text-decoration-none h-100", "", "Browse", "presidencies"); ?>
 						</div>
 					</div>

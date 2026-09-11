@@ -106,6 +106,13 @@
 				$id 					= $qr_res->get("{$table}.{$pk}");
 				if($id == $row_id){
 					$vb_row_id_loaded = true;
+?>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('row<?=$row_id; ?>').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
+<?php
 				}
 				# --- check if this result has been cached
 				# --- key is MD5 of table, id, view, refine(vb_refine)
