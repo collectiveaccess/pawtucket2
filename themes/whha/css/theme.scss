@@ -395,7 +395,7 @@ footer {
 				width: 100%;
 				height:20%;
 			}
-		@media (min-device-width:1024px) {
+		@media (min-width:1024px) {
 			.exploreItemImg.large{
 				height:85%;
 			}
@@ -404,6 +404,12 @@ footer {
 				height:15%
 			}
 		}
+		@media (min-width:768px) {
+			.exploreItemLabel.large{
+				font-size: 2rem;
+			}
+		}
+		
 		/*	.exploreItemLabel::before{
 				content: "";
 				height: 0;
@@ -605,7 +611,7 @@ footer {
 		.ca-placeholder{
 			background-color:transparent !important;
 		}
-		@media (min-device-width:1024px) {
+		@media (min-width:1024px) {
 			img, .ca-placeholder{
 				height: 300px;
 				width: 100%;
