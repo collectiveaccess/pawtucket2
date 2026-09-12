@@ -31,7 +31,7 @@ $lightbox_sectionHeading = ucFirst($lightboxDisplayName["section_heading"]);
 # Collect the user links
 $user_links = "";
 if($this->request->isLoggedIn()){
-	$user_links .= "<li class='nav-item dropdown'><a class='nav-link usericon".(($this->request->getController() == 'LoginReg') ? ' active' : '')."' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'><i class='bi bi-person-circle' aria-label='"._t('User Options')."'></i><span class='d-lg-none'> "._t('Your Account')."</span></a>
+	$user_links .= "<li class='nav-item dropdown pb-3' id='userLinks'><a class='nav-link usericon".(($this->request->getController() == 'LoginReg') ? ' active' : '')."' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'><i class='bi bi-person-circle' aria-label='"._t('User Options')."'></i><span class='d-lg-none'> "._t('Your Account')."</span></a>
 						<ul class='dropdown-menu dropdown-menu-end mt-lg-2'>";
 	
 	$user_links .= '<li><div class="dropdown-header fw-medium">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).'<br>'.$this->request->user->get("email").'</div></li>';
@@ -47,7 +47,7 @@ if($this->request->isLoggedIn()){
 	$user_links .= "<li>".caNavLink($this->request, _t('Logout'), 'dropdown-item nav-link', '', 'LoginReg', 'Logout', array())."</li>";
 	$user_links .= "</ul></li>";
 } else {	
-	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $user_links = "<li class='nav-item'>".caNavlink($this->request, _t('Login'), "nav-link".((strToLower($this->request->getController()) == "loginreg") ? " active" : ""), "", "LoginReg", "LoginForm", "", ((strToLower($this->request->getController()) == "loginreg") ? array("aria-current" => "page") : null))."</li>"; }
+	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $user_links = "<li class='nav-item py-3' id='userLinks'>".caNavlink($this->request, _t('Login'), "nav-link".((strToLower($this->request->getController()) == "loginreg") ? " active" : ""), "", "LoginReg", "LoginForm", "", ((strToLower($this->request->getController()) == "loginreg") ? array("aria-current" => "page") : null))."</li>"; }
 }
 
 ?><!DOCTYPE html>
@@ -79,7 +79,7 @@ if($this->request->isLoggedIn()){
 					<li class="nav-item dropdown py-3 py-lg-0">
 						<a class="text-nowrap nav-link<?php print (in_array(strToLower($this->request->getController()), array("gallery"))) ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('Resources'); ?><i class="bi bi-chevron-down ms-1 fs-6"></i></a>
 						<ul class="dropdown-menu text-nowrap lh-lg ps-2 ps-lg-0 border-0">
-							<li><a href="#" class="nav-link"><?= _t("Using the Database"); ?></a></li>
+							<li><?= caNavlink($this->request, _t('FAQ & Glossary'), "nav-link".(((strToLower($this->request->getController()) == "resources") && (strToLower($this->request->getAction()) == "faq")) ? " active" : ""), "", "Resources", "FAQ", "", (((strToLower($this->request->getController()) == "resources") && (strToLower($this->request->getAction()) == "faq")) ? array("aria-current" => "page") : null)); ?></li>
 							<li><?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?></li>
 							<li><a href="{{{slavery_url}}}" class="nav-link"><?= _t("Slavery in the President's Neighborhood"); ?></a></li>
 							<li><a href="{{{edu_resources_link}}}" class="nav-link"><?= _t('Educational Resources'); ?></a></li>
@@ -96,9 +96,12 @@ if($this->request->isLoggedIn()){
 							<li><a href="{{{rights_repro_url}}}" class="nav-link"><?= _t("Usage Rights/Reproductions"); ?></a></li>
 						</ul>
 					</li>
+<?php
+					print $user_links;
+?>
 
 				</ul>
-				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search" class="py-md-1">
+				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search" class="pb-4 pt-lg-2 pb-lg-1">
 					<div class="input-group ps-4 pe-4">
 						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 						<input type="text" name="search" class="form-control rounded-0 border-black me-2" id="nav-search-input" placeholder="Search">
@@ -108,7 +111,7 @@ if($this->request->isLoggedIn()){
 				</form>
 <?php
 					if($user_links){
-						print '<ul class="navbar-nav mb-2 mb-lg-3 mt-3 mt-lg-0">'.$user_links.'</ul>';
+						print '<ul class="d-none d-lg-block navbar-nav mb-2 mb-lg-0 mt-3 mt-lg-0">'.$user_links.'</ul>';
 					}
 ?>
 				

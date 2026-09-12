@@ -79,11 +79,13 @@ $subject = $this->getVar("subject");
 		z-index: 150000;
 		font-size: 20px;
 	}
-	div.mediaviewer-overlay-close .btn-primary {
+	div.mediaviewer-overlay-close .btn-primary, div.mediaviewer-overlay-navigation .btn-primary {
 		background-color:#A6172B !important;
 	}
-	div.mediaviewer-overlay-close .btn-primary:hover {
+	div.mediaviewer-overlay-close .btn-primary:hover, div.mediaviewer-overlay-navigation .btn-primary:hover {
 		background-color:#FFFFFF !important;
+		box-shadow: inset 0 0 0 3px #FFF4CC, inset 0 0 0 4px #000 !important;
+  		color: #000 !important;
 	}
 	
 	div.mediaviewer-overlay-navigation {
@@ -95,6 +97,7 @@ $subject = $this->getVar("subject");
 		top: 0px;
 		z-index: 150000;
 		font-size: 20px;
+		padding-top:0px;
 	}
 	
 	#mediaviewer-container {
@@ -211,8 +214,8 @@ $subject = $this->getVar("subject");
 <dialog id="mediaviewer-overlay" class="mediaviewer-overlay position-fixed w-100 h-100 mw-100 mh-100 top-0 start-0 bg-white bg-opacity-75 p-0 m-0 overflow-hidden">
 	<div class="mediaviewer-overlay-controls bg-dark">
 		<div class="mediaviewer-overlay-navigation">
-			<button type="button" id="mediaviewer-overlay-previous" class="btn btn-link btn-lg p-0 text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);' role='button' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>
-			<button type="button" id="mediaviewer-overlay-next" class="btn btn-link btn-lg p-0 text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);' role='button' aria-label='next slide'><i class="bi bi-arrow-right"></i></button>
+			<button type="button" id="mediaviewer-overlay-previous" class="btn btn-primary btn-lg mt-2 p-2 border-white text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);' role='button' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>
+			<button type="button" id="mediaviewer-overlay-next" class="btn btn-primary btn-lg mt-2 p-2 border-white mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);' role='button' aria-label='next slide'><i class="bi bi-arrow-right"></i></button>
 			<span id="media-count" class="fs-5 ps-3"></span>
 		</div>
 		<div class="mediaviewer-overlay-close">

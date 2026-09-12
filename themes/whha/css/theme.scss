@@ -316,6 +316,18 @@ footer {
 	background-size: cover;
 	mix-blend-mode: multiply;
 }
+@media (min-width: 992px){
+	.mainmenu{
+		#userLinks{
+			display:none; /* hide login/user menu in main nav on large screens so alternate mobile one will display */
+		}
+	}
+}
+@media (max-width: 576px){
+	.text-nowrap{
+		white-space: wrap !important;
+	}
+}
 /* ------------------------- Front ------------------------- */
 .hpExplore{
 	img{
@@ -351,6 +363,7 @@ footer {
 	a{
 		.exploreItem{
 			height:400px;
+			min-height:400px;
 			.exploreItemImg{
 				position:relative;
 				height:80%;
@@ -382,7 +395,7 @@ footer {
 				width: 100%;
 				height:20%;
 			}
-		@media (min-device-width:1024px) {
+		@media (min-width:1024px) {
 			.exploreItemImg.large{
 				height:85%;
 			}
@@ -391,6 +404,12 @@ footer {
 				height:15%
 			}
 		}
+		@media (min-width:768px) {
+			.exploreItemLabel.large{
+				font-size: 2rem;
+			}
+		}
+		
 		/*	.exploreItemLabel::before{
 				content: "";
 				height: 0;
@@ -592,7 +611,7 @@ footer {
 		.ca-placeholder{
 			background-color:transparent !important;
 		}
-		@media (min-device-width:1024px) {
+		@media (min-width:1024px) {
 			img, .ca-placeholder{
 				height: 300px;
 				width: 100%;
@@ -720,6 +739,15 @@ footer {
 }
 #mediaviewer-overlay-next:hover, #mediaviewer-overlay-previous:hover{
 	box-shadow: 0 0 2px 2px #FFFFFF;
+}
+@media (max-width: 767px){
+	#mediaviewer-previous, #mediaviewer-next, #mediaviewer-show-overlay{
+		font-size:26px;
+	}
+	#mediaviewer-overlay-caption{
+		max-height:105px;
+		overflow:auto;
+	}
 }
 /* --------------------- Occupations ------------------------- */
 .occupationsList{

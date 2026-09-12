@@ -40,8 +40,8 @@
 								$t_set->load($vn_set_id);
 								$va_first_item = array_shift($va_set_first_items[$vn_set_id]);
 								if($va_first_item["representation_tag"]){
-									print "<div class='col-sm-3 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id)."</div>";
-									print "<div class='col-sm-9'>";
+									print "<div class='col-md-6 col-lg-4 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id)."</div>";
+									print "<div class='col-md-6 col-lg-8 mt-5 mt-md-0'>";
 								}else{
 									print "<div class='col-sm-12'>";
 								}

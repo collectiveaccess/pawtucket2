@@ -30,12 +30,14 @@
 		}
 	}
 	$va_set_links = array();
+	$vb_featured_output = false;
 	if(is_array($va_sets) && sizeof($va_sets)){
 		foreach($va_sets as $vn_set_id => $va_set){
 			$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
 			$t_set = new ca_sets();
 			$t_set->load($vn_set_id);
-			if($t_set->get("ca_sets.featured", array("convertCodesToDisplayText" => true)) == "Yes"){
+			if(!$vb_featured_output && ($t_set->get("ca_sets.featured", array("convertCodesToDisplayText" => true)) == "Yes")){
+				$vb_featured_output = true;
 ?>
 				<H2><?php print $o_gallery_config->get("landing_page_featured_heading"); ?></H2>
 				<div id="galleryLandingFeatured" class="bg-body-tertiary mb-5 py-3 double-border">

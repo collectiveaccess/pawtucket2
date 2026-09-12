@@ -6,7 +6,7 @@
 		<?= $this->formTag(['class' => 'row g-4']); ?>
 			<div class='col-md-12'><?= $this->formElement('_fulltext', ['label' => _t('Keyword'), 'description' => '']); ?></div>
 			
-			<div class='col-md-12'><?= $this->formElement('ca_entities.preferred_labels', ['label' => _t('Name'), 'description' => _t("Search by the worker's last name.")]); ?></div>		
+			<div class='col-md-12'><?= $this->formElement('ca_entities.preferred_labels', ['label' => _t('Name'), 'description' => _t("Search by the worker's first or last name.")]); ?></div>		
 			
 			<div class='col-md-6'><?= $this->formElement('ca_entities.gender', ['label' => _t('Gender'), 'class' => 'form-select w-100']); ?></div>
 			<div class='col-md-6'><?= $this->formElement('ca_entities.race_ethnicity', ['class' => 'form-select w-100', 'label' => _t('Race')]); ?></div>

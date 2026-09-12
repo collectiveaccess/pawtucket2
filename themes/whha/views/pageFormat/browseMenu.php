@@ -40,7 +40,7 @@
 				}
 			}else{
 ?>
-				<li class="nav-item dropdown">
+				<li class="nav-item dropdown py-3 py-lg-0">
 					<a class="text-nowrap nav-link<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						<?= ($o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse")); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
 					</a>
