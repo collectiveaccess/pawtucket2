@@ -44,7 +44,7 @@ $qr_authors = $o_browse_authors->getResults();
 ?>
 		
 			<div>
-				<b>INSTITUTIONS</b> in public view <?php print $q_institutions_public->numRows(); ?>, in protected view <?php print $q_institutions_protected->numRows(); ?>
+				<b>INSTITUTIONS</b> <?php print $q_institutions_public->numRows(); ?>
 				<br/><b>NUMBER OF SUELTAS</b> <?php print $q_sueltas_public->numRows(); ?>
 				<br/><b>AUTHORS</b> <?php print $qr_authors->numHits(); ?>
 				<br/><b>PRINTERS</b> <?php print $qr_printers->numHits(); ?>

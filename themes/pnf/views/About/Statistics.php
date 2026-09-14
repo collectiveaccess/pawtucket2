@@ -49,15 +49,9 @@ $qr_authors = $o_browse_authors->getResults();
 			<div class="statisticsIntro">{{{statistics_intro}}}</div>
 			<hr/>
 			<div class="row">
-				<div class="col-sm-3"><p><b>INSTITUTIONS</b><br/>in public view</p></div>
+				<div class="col-sm-3"><p><b>INSTITUTIONS</b></p></div>
 				<div class="col-sm-2"><p>Running Tally<br/><?php print $q_institutions_public->numRows(); ?></p></div>
 				<div class="col-sm-7"><p>{{{statistics_inst_public}}}</p></div>
-			</div>
-			<hr/>
-			<div class="row">
-				<div class="col-sm-3"><p><b>INSTITUTIONS</b><br/>in protected view</p></div>
-				<div class="col-sm-2"><p>Running Tally<br/><?php print $q_institutions_protected->numRows(); ?></p></p></div>
-				<div class="col-sm-7"><p>{{{statistics_inst_protected}}}</p></div>
 			</div>
 			<hr/>
 			<div class="row">
