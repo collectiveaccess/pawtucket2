@@ -4,6 +4,8 @@ require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
 $va_public_access = array(1);
 $va_restricted_access = array(2);
 
+global $g_ui_locale;
+
 $o_browse = caGetBrowseInstance("ca_objects");
 $va_types = caMakeTypeIDList("ca_objects", array("book"), array('dontIncludeSubtypesInTypeRestriction' => true));
 $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => true));
