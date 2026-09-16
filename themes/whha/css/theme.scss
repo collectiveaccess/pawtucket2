@@ -219,6 +219,7 @@ a.double-border:hover{
 	fill: #252525;
 }
 .navbar{
+	z-index:11;
 	.input-group{
 		min-width: 350px;
 	}
@@ -727,6 +728,14 @@ footer {
 			}
 			.imageviewer-control:hover, .imageviewer-control:active, .imageviewer-control:focus{
 				box-shadow: 0 0 2px 2px #FFFFFF;
+			}
+		}
+		@media (max-width: 375px){
+			.mediaviewer-image-overlay-control-bar{
+				button{
+					padding-left:3px;
+					padding-right:3px;
+				}
 			}
 		}
 		.mediaviewer-image-overlay-container{
