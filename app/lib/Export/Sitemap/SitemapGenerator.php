@@ -119,18 +119,19 @@ class SitemapGenerator {
 							$pc = 0;
 							while($qr->nextHit()) {
 								$access = $qr->get("{$table}.access");
-								if(!is_null($access) && !in_array($access, $access_values)) { continue; }
-								$id = $qr->getPrimaryKey();
-								$url = $this->itemURL("/Detail/{$s}/{$id}");
-								$last_mod = date('c', $lm = $qr->get("{$table}.lastModified.timestamp") ?: time());
-								if(is_null($latest_mod) || ($latest_mod < $lm)) {
-									$latest_mod = $lm;
-								}
-								$acc[] = "<url><loc>{$url}</loc><lastmod>{$last_mod}</lastmod></url>";
-								$c++;
-								$pc++;
-								if(SearchResult::getCacheSizes('prefetch_cache') > self::$max_prefetch_cache_length) {
-									SearchResult::clearCaches('prefetch_cache');
+								if(!is_null($access) && in_array($access, $access_values)) {
+									$id = $qr->getPrimaryKey();
+									$url = $this->itemURL("Detail/{$s}/{$id}");
+									$last_mod = date('c', $lm = $qr->get("{$table}.lastModified.timestamp") ?: time());
+									if(is_null($latest_mod) || ($latest_mod < $lm)) {
+										$latest_mod = $lm;
+									}
+									$acc[] = "<url><loc>{$url}</loc><lastmod>{$last_mod}</lastmod></url>";
+									$c++;
+									$pc++;
+									if(SearchResult::getCacheSizes('prefetch_cache') > self::$max_prefetch_cache_length) {
+										SearchResult::clearCaches('prefetch_cache');
+									}
 								}
 								if((sizeof($acc) >= $max_urls_per_file) || (sizeof($acc) && $qr->isLastHit())) {
 									$path = $this->directory."/{$table}_{$s}".(($fc > 0) ? "_{$fc}" : "").".xml";
@@ -203,11 +204,13 @@ class SitemapGenerator {
 		$site_protocol = self::$config->get('site_protocol') ?: __CA_SITE_PROTOCOL__;
 		$site_hostname = self::$config->get('site_hostname') ?: __CA_SITE_HOSTNAME__;
 		$site_url_root = self::$config->get('site_url_root') ?: __CA_URL_ROOT__;
-		
+		$sitemap_root = self::$config->('sitemap_root') ?: '';
+
 		return [
 			'protocol' => $site_protocol,
 			'hostname' => $site_hostname,
-			'url_root' => $site_url_root
+			'url_root' => $site_url_root,
+			'sitemap_root' => $sitemap_root
 		];
 	}
 	# -------------------------------------------------------
@@ -216,7 +219,7 @@ class SitemapGenerator {
 	 */
 	private function sitemapURL(string $path) {
 		$site_config = $this->siteConfig();
-		$sitemap_url = $site_config['protocol'].'://'.$site_config['hostname'].($site_config['url_root'] ? '/'.$site_config['url_root'] : '')."/".pathinfo($path, PATHINFO_BASENAME);
+		$sitemap_url = $site_config['protocol'].'://'.$site_config['hostname'].($site_config['url_root'] ? '/'.$site_config['url_root'] : '').($site_config['sitemap_root'] ? '/'.$site_config['sitemap_root'] : '')."/".pathinfo($path, PATHINFO_BASENAME);
 		return $sitemap_url;
 	} 
 	# -------------------------------------------------------
