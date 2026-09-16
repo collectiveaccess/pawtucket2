@@ -836,3 +836,15 @@ footer {
 		}		
 	}
 }
+
+/* ------ Lightbox ------ */
+#lightboxContent{
+	.btn-white{
+		background-color:transparent !important;
+	}
+	#searchWithin{
+		.btn{
+			border: 0px !important;
+		}
+	}
+}
