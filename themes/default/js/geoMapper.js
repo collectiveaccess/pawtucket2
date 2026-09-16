@@ -45,6 +45,7 @@ function makeMap(options) {
 	});
 	
 	let data = options.data;
+	let g = new L.featureGroup();
 	if(data && (data.length > 0)) {
 		const bundles = data.reduce((acc, item) => {
 			if(acc.indexOf(item.bundle) === -1) {
@@ -56,8 +57,10 @@ function makeMap(options) {
 		let layers = {};
 		for(let index in bundles) {
 			layers[bundles[index]] = new L.featureGroup();
-			layers[bundles[index]].addTo(map);
+			layers[bundles[index]].addTo(g);
 		}
+		
+		g.addTo(map);
 		
 		map.layerList = layers;
 		
