@@ -474,6 +474,8 @@ class SearchController extends FindController {
 		
 		$this->opo_result_context->setParameter('key', $key);
 		
+		$this->opo_result_context->setParameter('_advanced', $is_advanced);
+		
 		if (($key_start = (int)$start - 5000) < 0) { $key_start = 0; }
 		$qr_res->seek($key_start);
 		$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(5000));
@@ -669,10 +671,10 @@ class SearchController extends FindController {
 			if((sizeof($tmp) > 1) && ($tmp[0] === 'search_advanced')) {
 				return array(
 					'module_path' => '',
-					'controller' => 'Search/advanced',
+					'controller' => 'Search',
 					'action' => $browse,
 					'params' => array(
-						'key'
+						'key', '_advanced'
 					)
 				);
 				
