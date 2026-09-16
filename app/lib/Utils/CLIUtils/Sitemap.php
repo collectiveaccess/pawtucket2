@@ -64,14 +64,18 @@ trait CLIUtilsSitemap {
 	 *
 	 */
 	public static function export_sitemapHelp() {
-		return _t("To come");
+		return _t("Exports sitemap xml files based on configuration in sitemap.conf.  
+	
+\tIt will create a sitemaps.xml as the index sitemap that links to other sitemap xml files. The xml files will be split by page types, eg. Details, About, Gallery, Collection.
+	
+\tSitemaps are helpful for indexing bots like Googlebot and Bingbot, allowing them to access the most important pages directly instead of going through browse/search pages.");
 	}
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
 	public static function export_sitemapShortHelp() {
-		return _t("To come");
+		return _t("Exports sitemap xml files based on configuration in sitemap.conf");
 	}
 	# -------------------------------------------------------
 }
