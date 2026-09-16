@@ -209,7 +209,7 @@ $media_options = array_merge($media_options, [
 						<dd>^ca_entities.burial_place</dd>
 					</unit>
 				</ifdef>
-				<ifdef code="ca_entities.birthplace_geonames|ca_entities.burial_geoname">
+				<ifdef code="ca_entities.birthplace_geonames|ca_entities.burial_geonames">
 					<dd><div id="map" class="map mt-3"><?php print $this->getVar("map"); ?></div>
 						<div class="py-3 small"><?= _t("Blue markers indicate birthplaces and green markers indicate burial places. Black markers are used for places of both birth and burial."); ?></div>
 					</dd>
