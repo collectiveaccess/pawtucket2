@@ -21,6 +21,48 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
+<?php
+			if($t_item->get("ca_occurrences.occ_media_display", array("convertCodesToDisplayText" => true)) == "2 Column Lists"){
+?>
+				<div class='col-sm-12'>
+<?php
+					if ($vs_desc = $t_item->get('ca_occurrences.description')) {
+						print "<br/><div class='unit'>".$vs_desc."</div>";
+					}																				
+?>
+				</div><!-- end col -->
+			</div>
+<?php
+				$cols = $t_item->getWithTemplate('<ifdef code="ca_object_representations.media">
+					<unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="0" delimiter="|">
+						<div class="col-sm-12 col-md-6"><div class="miscImageList fullWidthImg">
+							^ca_object_representations.media.large
+							<if rule="^ca_object_representations.preferred_labels.name !~ /BLANK/"><div class="small text-center">^ca_object_representations.preferred_labels.name</div></if>
+						</div></div>
+					</unit>
+				</ifdef>');
+				$va_cols = explode("|", $cols);
+				$i = 0;
+				foreach($va_cols as $col){
+					if($i == 0){
+						print "<div class='row'>";
+					}
+					print $col;
+					$i++;
+					if($i == 2){
+						print "</div>";
+						$i = 0;
+					}					
+				}
+				if($i > 0){
+					print "</div>";
+				}
+?>
+			<div class="row">
+				<div class="col-sm-12">
+<?php
+			}else{
+?>
 				<div class='col-sm-12 col-md-6'>
 <?php
 					if ($vs_desc = $t_item->get('ca_occurrences.description')) {
@@ -30,25 +72,25 @@
 				</div><!-- end col -->
 				<div class='col-sm-12 col-md-6'>
 <?php
-			if($t_item->get("ca_occurrences.occ_media_display", array("convertCodesToDisplayText" => true)) == "Lists"){
+					if($t_item->get("ca_occurrences.occ_media_display", array("convertCodesToDisplayText" => true)) == "Lists"){
 ?>
-				{{{<ifdef code="ca_object_representations.media">
-					<unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="0" delimiter=" ">
-						<div class="miscImageList fullWidthImg">
-							^ca_object_representations.media.large
-							<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if>
-						</div>
-					</unit>
-				</ifdef>}}}
+						{{{<ifdef code="ca_object_representations.media">
+							<unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="0" delimiter=" ">
+								<div class="miscImageList fullWidthImg">
+									^ca_object_representations.media.large
+									<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if>
+								</div>
+							</unit>
+						</ifdef>}}}
 <?php
-			}else{
+					}else{
 ?>
-				{{{representationViewer}}}
-								
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+						{{{representationViewer}}}
+										
+						<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 <?php
-			}
-				
+					}
+			}				
 				$va_youTube_ids = $t_item->get("youTubeID", array("returnAsArray" => true));
 				if(is_array($va_youTube_ids) && sizeof($va_youTube_ids)){
 					if(trim($this->getVar("representationViewer"))){
