@@ -60,6 +60,9 @@ strong{
 .alert{
 	z-index:1;
 }
+.text-wrap{
+	overflow-wrap: break-word;
+}
 /* headings can not be fully adjusted with BS stylesheet variable to putting here */
 H1{
 	/*font-size: clamp(1.875rem, 6vw, 4.625rem);*/

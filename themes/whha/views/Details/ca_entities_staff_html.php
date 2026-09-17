@@ -105,7 +105,7 @@ $media_options = array_merge($media_options, [
 		</div>
 	</div>
 	{{{<ifdef code="ca_entities.page_citation">
-		<div id="collapseCitation" class="row justify-content-center collapse">
+		<div id="collapseCitation" class="row justify-content-center collapse text-wrap">
 			<div class="col-12 col-md-6 text-center">
 				<div class="bg-light py-3 px-4 my-4">
 					<div class="fw-bold"><?= _t("Cite this Page"); ?></div>
