@@ -72,6 +72,9 @@ if($this->request->isLoggedIn()){
 	<script>
 		let pawtucketUIApps = {};
 	</script>
+	
+	<link rel="canonical" href="<?= $this->request->getCanonicalUrl(); ?>">
+	
 </head>
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
@@ -89,7 +92,7 @@ if($this->request->isLoggedIn()){
 						<a class="text-nowrap nav-link<?php print (in_array(strToLower($this->request->getController()), array("gallery"))) ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('Resources'); ?><i class="bi bi-chevron-down ms-1 fs-6"></i></a>
 						<ul class="dropdown-menu text-nowrap lh-lg ps-2 ps-lg-0 border-0">
 							<li><?= caNavlink($this->request, _t('FAQ & Glossary'), "nav-link".(((strToLower($this->request->getController()) == "resources") && (strToLower($this->request->getAction()) == "faq")) ? " active" : ""), "", "Resources", "FAQ", "", (((strToLower($this->request->getController()) == "resources") && (strToLower($this->request->getAction()) == "faq")) ? array("aria-current" => "page") : null)); ?></li>
-							<li><?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?></li>
+							<li><?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Resources", "Collections", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?></li>
 							<li><a href="{{{slavery_url}}}" class="nav-link"><?= _t("Slavery in the President's Neighborhood"); ?></a></li>
 							<li><a href="{{{edu_resources_link}}}" class="nav-link"><?= _t('Educational Resources'); ?></a></li>
 							<li><a href="{{{dig_archives_url}}}" class="nav-link"><?= _t("Digital Archives"); ?></a></li>
