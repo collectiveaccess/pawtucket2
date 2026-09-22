@@ -51,7 +51,7 @@
 								print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), 'dropdown-item nav-link', '', 'Browse', $vs_browse_name, '')."</li>";
 							}
 							if($vs_browse_name == "workers"){
-								print "<li>".caNavLink($this->request, _t("Occupations"), 'dropdown-item nav-link', '', 'Occupations', 'list', '')."</li>";						
+								print "<li>".caNavLink($this->request, _t("Occupations"), 'dropdown-item nav-link', '', 'Browse', 'occupations', '')."</li>";						
 							}
 						}
 ?>						
