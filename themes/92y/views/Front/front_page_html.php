@@ -33,10 +33,6 @@
 	// print $this->render("Front/featured_set_slideshow_html.php");
 
 	$va_access_values = $this->getVar("access_values");
-	$vs_hero = $this->request->getParameter("hero", pString);
-	if(!$vs_hero){
- 		$vs_hero = rand(1, 3);
-	}
 ?>
 
 <div class="container-xl border-top border-black">
