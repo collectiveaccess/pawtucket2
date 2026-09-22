@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2024 Whirl-i-Gig
+ * Copyright 2024-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -264,12 +264,12 @@ if(!$incremental) {
 			</div><!-- end row -->
 <?php } ?>			
 			<div class="row mt-2">
-<?php } ?> <!-- end if incremental -->
+<?php } ?> <!-- end !if incremental -->
 <?= $this->render($configured_modes[$current_view_mode]['view']);   ?>
 <?php if(!$incremental) { ?>
 			</div>
 </div><!-- end lightboxContent -->
-<?php } ?> <!-- end if incremental -->
+<?php } ?> 
 
 <script>
 if (typeof selectionListInput === 'undefined') {
