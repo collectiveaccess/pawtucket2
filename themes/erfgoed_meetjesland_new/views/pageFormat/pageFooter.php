@@ -36,8 +36,8 @@
 						<div class="col-sm-4 footerContact">
 							<b>Contact</b><br/>
 							Erfgoedcel Meetjesland - COMEET<br/>
-							Pastoor De Nevestraat 8<br/>
-							9900 Eeklo<br/><br/>
+							Kerkstraat 7<br/>
+							9950 Lievegem (Waarschoot)<br/><br/>
 							T - 09 373 75 96<br/>
 							E - <a href="mailto:erfgoedcel@comeet.be">erfgoedcel@comeet.be</a>
 
