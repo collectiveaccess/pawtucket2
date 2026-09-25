@@ -268,16 +268,16 @@ $media_options = array_merge($media_options, [
 			</unit>
 		</div>
 	</ifdef>
-	<ifdef code="ca_entities.resource|ca_entities.resource_url">
+	<ifdef code="ca_entities.resource.resource_description.original.url|ca_entities.resource.resource_description|ca_entities.resource_url.url">
 		<div class="col">
 			<dt class="fs-3"><?= _t("Educational Resources"); ?></dt>
 			<unit relativeTo="ca_entities.resource" delimiter="">
-				<dd class="mb-4"><div><ifdef code="ca_entities.resource.resource_description.original.url"><a href="^ca_entities.resource.resource_description.original.url" class="double-border text-black p-3 d-block fw-bold"><i class='bi bi-download me-1'></i> ^ca_entities.resource.resource_description</a></ifdef><ifnotdef code="ca_entities.resource.resource_description.original.url"><div class="fst-italic">^ca_entities.resource.resource_description</div></ifnotdef></div></dd>
+				<ifdef code="ca_entities.resource.resource_description.original.url|ca_entities.resource.resource_description"><dd class="mb-4"><div><ifdef code="ca_entities.resource.resource_description.original.url"><a href="^ca_entities.resource.resource_description.original.url" class="double-border text-black p-3 d-block fw-bold"><i class='bi bi-download me-1'></i> ^ca_entities.resource.resource_description</a></ifdef><ifnotdef code="ca_entities.resource.resource_description.original.url"><div class="fst-italic">^ca_entities.resource.resource_description</div></ifnotdef></div></dd></ifdef>
 			</unit>
 			<unit relativeTo="ca_entities.resource_url" delimiter="">
-				<dd class="mb-4"><div><a href="^ca_entities.resource_url.url" target="_blank" class="double-border text-black p-3 d-block"><span class="fw-bold">^ca_entities.resource_url.site_name <i class="bi bi-box-arrow-up-right"></i></span>
+				<ifdef code="ca_entities.resource_url.url"><dd class="mb-4"><div><a href="^ca_entities.resource_url.url" target="_blank" class="double-border text-black p-3 d-block"><span class="fw-bold">^ca_entities.resource_url.site_name <i class="bi bi-box-arrow-up-right"></i></span>
 					<ifdef code="ca_entities.resource_url.site_description"><div class="fst-italic">^ca_entities.resource_url.site_description</div></ifdef></a></div>
-				</dd>
+				</dd></ifdef>
 			</unit>
 		</div>
 	</ifdef>
