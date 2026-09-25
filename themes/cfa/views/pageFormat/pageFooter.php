@@ -340,7 +340,5 @@
 
 		<?= $this->render("Cookies/banner_html.php"); ?>
 
-		<script async src="https://js.sitesearch360.com/plugin/bundle/14734.js"></script>
-
 	</body>
 </html>

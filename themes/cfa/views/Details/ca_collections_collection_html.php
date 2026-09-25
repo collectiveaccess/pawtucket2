@@ -40,12 +40,12 @@ MetaTagManager::addMeta("search-thumbnail", $t_item->get('ca_object_representati
 MetaTagManager::addMeta("search-access", ($t_item->get('ca_collections.access') == 2) ? 'restricted' : 'public');
 MetaTagManager::addMeta("search-collection-type", 'collection');
 
-MetaTagManager::addMeta("og:title", $t_item->get('ca_collections.preferred_labels'));
-MetaTagManager::addMeta("og:description", $t_item->get('ca_collections.cfaAbstract'));
-MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
-MetaTagManager::addMeta("og:image", $t_item->get('ca_object_representations.media.large.url'));
-MetaTagManager::addMeta("og:image:width", $t_item->get('ca_object_representations.media.large.width'));
-MetaTagManager::addMeta("og:image:height", $t_item->get('ca_object_representations.media.large.height'));
+MetaTagManager::addMetaProperty("og:title", $t_item->get('ca_collections.preferred_labels'));
+MetaTagManager::addMetaProperty("og:description", $t_item->get('ca_collections.cfaAbstract'));
+MetaTagManager::addMetaProperty("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+MetaTagManager::addMetaProperty("og:image", $t_item->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMetaProperty("og:image:width", $t_item->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMetaProperty("og:image:height", $t_item->get('ca_object_representations.media.large.height'));
 
 # --- get collections configuration
 $o_collections_config = caGetCollectionsConfig();
@@ -454,7 +454,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   {{{<ifcount code="ca_collections.branch" min="0">
                 
 
-                      <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_collections.idno_sort">
+                      <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_objects.object_id">
                         <ifcount code="ca_objects" min="1">
                           <?php
                             // removed filter="/<img/" from unit below

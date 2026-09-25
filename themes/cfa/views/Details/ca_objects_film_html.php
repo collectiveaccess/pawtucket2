@@ -33,23 +33,171 @@ $vn_comments_enabled = 	$this->getVar("commentsEnabled");
 $vn_share_enabled = 	$this->getVar("shareEnabled");
 $vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 $vn_id =				$t_object->get('ca_objects.object_id');
+$vn_access =                                $t_object->get('ca_objects.access');
+$vn_obj_rep_access=                               $t_object->get('ca_object_representations.access'); 
 
-MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": ".$t_object->get('ca_objects.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
+// add robots noindex if restricted + non-public representation
+if ($vn_access == 2 && $vn_obj_rep_access != 1) {
+    MetaTagManager::addMeta("robots", "noindex");
+}
 
+// set browser window title
+MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels')." : ".$t_object->get('ca_objects.type_id', ['convertCodesToDisplayText' => true])." : Chicago Film Archives");
+
+// add canonical URL
+if ($vn_id) {
+    MetaTagManager::addMetaProperty(
+        "og:canonical",
+        "https://collections.chicagofilmarchives.org/Detail/objects/" . $vn_id
+    );
+    echo '<link rel="canonical" href="https://collections.chicagofilmarchives.org/Detail/objects/' . $vn_id . '" />';
+}
+
+
+// meta tags for internal search results via SiteSearch360 (I think?) 
 MetaTagManager::addMeta("search-title", $t_object->get('ca_objects.preferred_labels'));
 MetaTagManager::addMeta("search-group", 'Collection Items');
 MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.hierarchy.preferred_labels', ['maxLevelsFromTop' => 1]));
-MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
+MetaTagManager::addMeta(
+    "search-thumbnail",
+    ($t_object->get('ca_object_representations.access') == 1)
+        ? $t_object->get('ca_object_representations.media.small.url')
+        : 'https://collections.chicagofilmarchives.org/themes/cfa/assets/pawtucket/graphics/placeholder.png'
+);
+// MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
 MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
 
-MetaTagManager::addMeta("og:title", $t_object->get('ca_objects.preferred_labels'));
-MetaTagManager::addMeta("og:description", $t_object->get('ca_occurrences.cfaAbstract'));
-MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
-MetaTagManager::addMeta("og:image", $t_object->get('ca_object_representations.media.large.url'));
-MetaTagManager::addMeta("og:image:width", $t_object->get('ca_object_representations.media.large.width'));
-MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representations.media.large.height'));
+// open graph and twitter card meta properties needed for all objects
+MetaTagManager::addMetaProperty("og:title", $t_object->get('ca_objects.preferred_labels'));
+MetaTagManager::addMetaProperty(
+    "og:url",
+    html_entity_decode(caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]), ENT_QUOTES | ENT_HTML5)
+);
+MetaTagManager::addMeta("twitter:title", $t_object->get('ca_objects.preferred_labels'));
 
+// some open graph and twitter card field values behave differently depending on the value of ca_objects.access 
+if ($vn_access == 2) {
+    MetaTagManager::addMetaProperty(
+        "og:description",
+        "This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org"
+    );
+MetaTagManager::addMetaProperty(
+        "twitter:description",
+        "This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org"
+    );
+    MetaTagManager::addMeta(
+        "description",
+        "This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org"
+    );  
+} else {
+    MetaTagManager::addMetaProperty("og:description", trim(preg_replace('/\s+/', ' ', strip_tags(html_entity_decode($t_object->get('ca_occurrences.cfaAbstract'), ENT_QUOTES | ENT_HTML5)))));
+    MetaTagManager::addMetaProperty("twitter:description", trim(preg_replace('/\s+/', ' ', strip_tags(html_entity_decode($t_object->get('ca_occurrences.cfaAbstract'), ENT_QUOTES | ENT_HTML5)))));
+    MetaTagManager::addMeta("description", trim(preg_replace('/\s+/', ' ', strip_tags(html_entity_decode($t_object->get('ca_occurrences.cfaAbstract'), ENT_QUOTES | ENT_HTML5)))));
+}
+
+// some open graph and twitter card field values behave differently depending on the value of ca_object_representations.access (will also vary for templates that aren't for video or film objects)
+if ($vn_obj_rep_access == 1) {
+    MetaTagManager::addMetaProperty("og:type", "video.other");
+    MetaTagManager::addMetaProperty("og:image", $t_object->get('ca_object_representations.media.large.url'));
+    MetaTagManager::addMetaProperty("og:image:alt", $t_object->get('ca_objects.preferred_labels'));
+    MetaTagManager::addMetaProperty("og:video", $t_object->get('ca_object_representations.media.original.url'));
+    MetaTagManager::addMetaProperty("og:video:type", $t_object->get('ca_object_representations.mimetype'));
+    MetaTagManager::addMetaProperty("og:video:width", $t_object->get('ca_object_representations.media.original.width'));
+    MetaTagManager::addMetaProperty("og:video:height", $t_object->get('ca_object_representations.media.original.height'));
+    MetaTagManager::addMeta("twitter:card", "player");
+    MetaTagManager::addMeta("twitter:image", $t_object->get('ca_object_representations.media.large.url'));
+    MetaTagManager::addMeta("twitter:player", $t_object->get('ca_object_representations.media.original.url'));
+    MetaTagManager::addMeta("twitter:player:width", $t_object->get('ca_object_representations.media.original.width'));
+    MetaTagManager::addMeta("twitter:player:height", $t_object->get('ca_object_representations.media.original.height'));
+} else {
+    MetaTagManager::addMetaProperty("og:type", "article");
+    MetaTagManager::addMetaProperty("og:image", "https://collections.chicagofilmarchives.org/themes/cfa/assets/pawtucket/graphics/placeholder.png");
+    MetaTagManager::addMetaProperty("og:image:alt", "Digitized media for this item is not currently available online.");
+    MetaTagManager::addMeta("twitter:card", "summary");
+}
 ?>
+
+<?php
+// JSON-LD for Google
+// Determine description based on ca_objects.access
+if ($vn_access == 2) {
+    $description = "This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org";
+} else {
+    $description = trim(preg_replace(
+        '/\s+/',
+        ' ',
+        strip_tags(html_entity_decode($t_object->get('ca_occurrences.cfaAbstract'), ENT_QUOTES | ENT_HTML5))
+    ));
+}
+
+// Base schema
+$schema = [
+    "@context" => "https://schema.org",
+    "@type"    => ($vn_obj_rep_access == 1) ? "VideoObject" : "ArchiveComponent",
+    "name"     => $t_object->get('ca_objects.preferred_labels'),
+    "url" => html_entity_decode(caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]), ENT_QUOTES | ENT_HTML5),
+    "description" => $description
+];
+
+// Add video-related fields only if ca_object_representations.access == 1
+if ($vn_obj_rep_access == 1) {
+    $schema["image"]        = $t_object->get('ca_object_representations.media.large.url');
+    $schema["thumbnailUrl"] = $t_object->get('ca_object_representations.media.small.url');
+    $schema["contentUrl"]   = $t_object->get('ca_object_representations.media.original.url');
+    $schema["encodingFormat"] = $t_object->get('ca_object_representations.mimetype');
+    $schema["width"]          = $t_object->get('ca_object_representations.media.original.width');
+    $schema["height"]         = $t_object->get('ca_object_representations.media.original.height');
+    $schema["uploadDate"]         = $t_object->get('ca_object_representations.created');
+}
+
+// Output JSON-LD
+echo '<script type="application/ld+json">'.json_encode($schema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE).'</script>';
+?>
+
+
+<?php
+// --- breadcrumb schema ---
+$breadcrumb_ids = $t_object->getWithTemplate(
+    '<unit relativeTo="ca_collections" restrictToRelationshipTypes="part_of" delimiter="|">
+        <unit relativeTo="ca_collections.hierarchy">^ca_collections.collection_id</unit>
+    </unit>'
+);
+
+$breadcrumb_labels = $t_object->getWithTemplate(
+    '<unit relativeTo="ca_collections" restrictToRelationshipTypes="part_of" delimiter="|">
+        <unit relativeTo="ca_collections.hierarchy">^ca_collections.preferred_labels</unit>
+    </unit>'
+);
+
+$ids   = array_map('trim', explode('|', $breadcrumb_ids));
+$names = array_map('trim', explode('|', $breadcrumb_labels));
+?>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    <?php foreach ($names as $i => $crumb): ?>
+    {
+      "@type": "ListItem",
+      "position": <?= $i+1 ?>,
+      "name": <?= json_encode($crumb, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>,
+      "item": "https://collections.chicagofilmarchives.org/Detail/collections/<?= $ids[$i] ?>"
+    }<?= $i < count($names)-1 ? ',' : '' ?>
+    <?php endforeach; ?><?= count($names) ? ',' : '' ?>
+
+    {
+      "@type": "ListItem",
+      "position": <?= count($names)+1 ?>,
+      "name": <?= json_encode($t_object->get("ca_objects.preferred_labels"), JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>,
+      "item": "https://collections.chicagofilmarchives.org/Detail/objects/<?= $t_object->get('ca_objects.object_id') ?>"
+    }
+  ]
+}
+</script>
+
+
+
 <div class="row">
 	<main class="flush">
 
@@ -105,6 +253,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 													"^ca_objects.cfaColor" => "Color",
 													"^ca_objects.cfaSoundFilm" => "Sound",
 													"^ca_objects.cfaReel" => "Reel/Tape Number",
+                                                                                                        "^ca_objects.cfaInventoryNumber" => "Inventory Number", 
 													"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
 													"^ca_objects.cfaPublicObjectNotes" => "Notes",
 												);
@@ -166,6 +315,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 													"^ca_objects.cfaColor" => "Color",
 													"^ca_objects.cfaSoundFilm" => "Sound",
 													"^ca_objects.cfaReel" => "Reel/Tape Number",
+                                                                                                        "^ca_objects.cfaInventoryNumber" => "Inventory Number",
 													"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
 													"^ca_objects.cfaPublicObjectNotes" => "Notes",
 													"^ca_occurrences.cfaLanguageMaterials" => "Language Of Materials",
@@ -352,9 +502,9 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 
 											<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
 												<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
-													<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
+													<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group, depicts">
 														<div class="max__640 text__eyebrow color__light_gray block-xxxs">Participants And Performers</div>
-														<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
+														<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group, depicts">
 															<div class="max__640 text__body-3 color__white">
 																<a href="/Browse/Objects/facet/entity/id/^ca_entities.entity_id">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)
 															</div>
@@ -380,7 +530,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 		<section class="section-more-about-item">
 			<div class="int wrap text-align-center">
 			<div class="text__nav block-xxs">Do you know more about this item?</div>
-			<div class="color__gray text__body-3">If you have more information about this item please contact us at <a href="mailto:info@chicagofilmarchives.com" class="color-link-inverted-orange">info@chicagofilmarchives.com</a>. </div>
+			<div class="color__gray text__body-3">If you have more information about this item please contact us at <a href="mailto:info@chicagofilmarchives.org" class="color-link-inverted-orange">info@chicagofilmarchives.org</a>. </div>
 			</div>
 		</section>
 

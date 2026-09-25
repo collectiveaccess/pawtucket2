@@ -205,25 +205,25 @@ $va_access_values = caGetUserAccessValues($this->request);
                             </ul>
                         </div>
                         <div class="module-search-form">
-                            <form role="search" aria-label="Search For" method="get" class="search-form"
-                            action="https://chicagofilmarchives.org/results/">
-                                <label for="search-form-1" class="visually-hidden">
-                                    Search
-                                </label>
-                                <div class="search-container">
-                                    <input type="search" id="search-form-1" class="search-field" value=""
-                                    name="search" placeholder="Search" />
-                                    <button type="submit" title="Submit Search" aria-label="Submit Search"
-                                    class="search-submit icon">
-                                        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="7.07143" cy="6.57143" r="6.07143" stroke="white">
-                                            </circle>
-                                            <path d="M11.4618 10.9618L15.9359 15.4359" stroke="white" stroke-linecap="square">
-                                            </path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </form>
+    <form role="search" aria-label="Search For" method="get" class="search-form" action="https://www.chicagofilmarchives.org/">
+        <fieldset>
+            <legend class="visually-hidden">Search Form</legend>
+            <label for="search-form-1" class="visually-hidden">Search</label>
+            <div class="search-container">
+                <input type="search" id="search-form-1" autocomplete="off" class="search-field" value="" name="s" placeholder="Search"/>
+                <select name="target">
+                    <option value="Collection" selected>Collections Catalog</option>
+                    <option value="Content" >Website</option>
+                </select>
+                <button type="submit" title="Submit Search" aria-label="Submit Search" class="search-submit icon">
+                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="7.07143" cy="6.57143" r="6.07143" stroke="white"/>
+                        <path d="M11.4618 10.9618L15.9359 15.4359" stroke="white" stroke-linecap="square"/>
+                    </svg>
+                </button>
+            </div>
+        </fieldset>
+    </form>
                         </div>
                     </div>
                 </div>
@@ -316,24 +316,25 @@ $va_access_values = caGetUserAccessValues($this->request);
                 <div class="menu-container">
                     <div class="wrap">
                         <div class="module-search-form">
-                            <form role="search" aria-label="Search For" method="get" class="search-form" action="https://chicagofilmarchives.org/">
-                                <label for="search-form-3" class="visually-hidden">
-                                    Search
-                                </label>
-                                <div class="search-container">
-                                    <input type="search" id="search-form-3" class="search-field" value=""
-                                    name="s" placeholder="Search" />
-                                    <button type="submit" title="Submit Search" aria-label="Submit Search"
-                                    class="search-submit icon">
-                                        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="7.07143" cy="6.57143" r="6.07143" stroke="white">
-                                            </circle>
-                                            <path d="M11.4618 10.9618L15.9359 15.4359" stroke="white" stroke-linecap="square">
-                                            </path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </form>
+    <form role="search" aria-label="Search For" method="get" class="search-form" action="https://www.chicagofilmarchives.org/">
+        <fieldset>
+            <legend class="visually-hidden">Search Form</legend>
+            <label for="search-form-1" class="visually-hidden">Search</label>
+            <div class="search-container">
+                <input type="search" id="search-form-1" autocomplete="off" class="search-field" value="" name="s" placeholder="Search"/>
+                <select name="target">
+                    <option value="Collection" selected>Collections Catalog</option>
+                    <option value="Content" >Website</option>
+                </select>
+                <button type="submit" title="Submit Search" aria-label="Submit Search" class="search-submit icon">
+                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="7.07143" cy="6.57143" r="6.07143" stroke="white"/>
+                        <path d="M11.4618 10.9618L15.9359 15.4359" stroke="white" stroke-linecap="square"/>
+                    </svg>
+                </button>
+            </div>
+        </fieldset>
+    </form>
                         </div>
                         <ul id="menu-main-mobile" class="nav header-nav main">
                             <li id="menu-item-265" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-265">

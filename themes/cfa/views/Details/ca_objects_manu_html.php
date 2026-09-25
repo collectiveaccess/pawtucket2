@@ -33,6 +33,7 @@ $vn_comments_enabled = 	$this->getVar("commentsEnabled");
 $vn_share_enabled = 	$this->getVar("shareEnabled");
 $vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 $vn_id =				$t_object->get('ca_objects.object_id');
+$vn_access =                                $t_object->get('ca_objects.access');
 
 MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": ".$t_object->get('ca_objects.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
 
@@ -42,12 +43,27 @@ MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.hierarc
 MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
 MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
 
-MetaTagManager::addMeta("og:title", $t_object->get('ca_objects.preferred_labels'));
-MetaTagManager::addMeta("og:description", $t_object->get('ca_occurrences.cfaAbstract'));
-MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
-MetaTagManager::addMeta("og:image", $t_object->get('ca_object_representations.media.large.url'));
-MetaTagManager::addMeta("og:image:width", $t_object->get('ca_object_representations.media.large.width'));
-MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representations.media.large.height'));
+MetaTagManager::addMetaProperty("og:title", $t_object->get('ca_objects.preferred_labels'));
+MetaTagManager::addMetaProperty("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+
+if ($vn_access == 2) {
+    MetaTagManager::addMetaProperty(
+        "og:description",
+        "This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org"
+    );  
+    MetaTagManager::addMetaProperty(
+        "og:image",
+        "https://collections.chicagofilmarchives.org/themes/cfa/assets/pawtucket/graphics/placeholder.png"
+    );  
+
+    MetaTagManager::addMetaProperty("og:image:width", 600);
+    MetaTagManager::addMetaProperty("og:image:height", 400);
+} else {
+    MetaTagManager::addMetaProperty("og:description", trim(preg_replace('/\s+/', ' ', strip_tags(html_entity_decode($t_object->get('ca_objects.cfaAbstract'), ENT_QUOTES | ENT_HTML5)))));
+    MetaTagManager::addMetaProperty("og:image", $t_object->get('ca_object_representations.media.large.url'));
+    MetaTagManager::addMetaProperty("og:image:width", $t_object->get('ca_object_representations.media.large.width'));
+    MetaTagManager::addMetaProperty("og:image:height", $t_object->get('ca_object_representations.media.large.height'));
+}
 ?>
 <div class="row">
 	
@@ -336,7 +352,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 	<section class="section-more-about-item">
 		<div class="int wrap text-align-center">
 		<div class="text__nav block-xxs">Do you know more about this item?</div>
-		<div class="color__gray text__body-3">If you have more information about this item please contact us at <a href="mailto:info@chicagofilmarchives.com" class="color-link-inverted-orange">info@chicagofilmarchives.com</a>. </div>
+		<div class="color__gray text__body-3">If you have more information about this item please contact us at <a href="mailto:info@chicagofilmarchives.org" class="color-link-inverted-orange">info@chicagofilmarchives.org</a>. </div>
 		</div>
 	</section>
 	

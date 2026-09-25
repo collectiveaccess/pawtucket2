@@ -1288,6 +1288,45 @@ class DetailController extends FindController {
 		$this->response->addContent($o_view->render('download_file_binary.php'));
 	}
 	# -------------------------------------------------------
+	/**
+	 * Initiates user download of media stored in a media attribute, returning file in response to request.
+	 * Adds download output to response directly. No view is used.
+	 *
+	 * @param array $pa_options Array of options passed through to _initView 
+	 */
+	public function DownloadVTT($options=null) {
+		if(!Datamodel::getInstance($table = $this->request->getParameter('table', pString), true)) {
+			$table = 'ca_objects';
+		}
+		$rep_id = $this->request->getParameter('representation_id', pInteger);
+		if(!($t_rep = ca_object_representations::findAsInstance($rep_id))) {
+			throw new ApplicationException(_t('Invalid representation_id'));
+		}
+		if(!in_array((int)$t_rep->get('ca_object_representations.access'), $this->opa_access_values, true)) {
+			throw new ApplicationException(_t('Access denied'));
+		}
+		if($t_rep->get('ca_object_representations.show_transcript', ['convertCodesToIdno' => true]) !== 'yes') {
+			throw new ApplicationException(_t('Access to transcript denied'));
+		}
+		$caption_files = $t_rep->getCaptionFileList();
+		if(!is_array($caption_files) || !sizeof($caption_files)) {
+			throw new ApplicationException(_t('No VTT file is available'));
+		}		
+		$o_view = new View($this->request, $this->request->getViewsDirectoryPath().'/bundles/');
+		$caption_file = array_shift($caption_files);
+		
+		$o_view->setVar('archive_path', $caption_file['path']);
+		
+		$title = $t_rep->get("{$table}.preferred_labels");
+		if(!($title_proc = mb_substr(preg_replace('![^A-Z0-9_\-\.]+!i', '_', mb_strtolower($title)), 0, 30))) {
+			$title_proc = 'transcript';
+		}
+		$o_view->setVar('archive_name', "{$title_proc}.vtt");
+		
+		// send download
+		$this->response->addContent($o_view->render('download_file_binary.php'));
+	}
+	# -------------------------------------------------------
 	# User annotations
 	# -------------------------------------------------------
 	/**
