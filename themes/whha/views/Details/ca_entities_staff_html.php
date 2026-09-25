@@ -192,7 +192,7 @@ $media_options = array_merge($media_options, [
 					<dd>
 						<div id="collapseFootnotes" class="collapse">
 							<unit relativeTo="ca_entities.sources" delimiter="">
-								<div>^ca_entities.sources</div>
+								<div class="text-wrap">^ca_entities.sources</div>
 							</unit>
 						</div>
 					</dd>
