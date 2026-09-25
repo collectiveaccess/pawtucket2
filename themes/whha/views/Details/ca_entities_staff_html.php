@@ -251,7 +251,7 @@ $media_options = array_merge($media_options, [
 			</unit>
 		</div>
 	</ifdef>	
-	<ifdef code="ca_entities.public_documentation">
+	<ifdef code="ca_entities.public_documentation.public_doc.original.url|ca_entities.public_documentation.public_doc.original.url">
 		<div class="col">
 			<dt class="fs-3"><?= _t("External Content"); ?></dt>
 			<unit relativeTo="ca_entities.public_documentation" delimiter="">
