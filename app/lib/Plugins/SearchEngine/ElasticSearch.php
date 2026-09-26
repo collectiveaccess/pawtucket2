@@ -766,4 +766,8 @@ class WLPlugSearchEngineElasticSearch extends BaseSearchPlugin implements IWLPlu
 		return (defined('__CollectiveAccess_IS_REINDEXING__') && __CollectiveAccess_IS_REINDEXING__);
 	}
 	# -------------------------------------------------------
+
+	public function _resolveHitInformation($res) {
+		return $res;
+	}
 }
