@@ -80,7 +80,7 @@
 				$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 mb-4 outlineItem double-border h-100 text-center'>
 								<div class='card-body p-3 fs-3 text-black text-decoration-none fst-italic align-content-center'>
 									<div class='card-title fw-medium lh-sm fs-3 text-decoration-underline'>".$va_set["name"]."</div>
-									<div class='card-text small text-body-secondary mb-0 pb-0'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("record") : _t("records"))."</div>
+									<div class='card-text small text-body-secondary mb-0 pb-0'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("worker") : _t("workers"))."</div>
 								</div>
 							</div>";
 				$va_set_links[] = "<div class='col-sm-6 col-lg-4 d-flex mb-4'>".caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id)."</div>";
