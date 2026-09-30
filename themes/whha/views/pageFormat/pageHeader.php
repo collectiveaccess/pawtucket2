@@ -93,9 +93,9 @@ if($this->request->isLoggedIn()){
 						<ul class="dropdown-menu text-nowrap lh-lg ps-2 ps-lg-0 border-0">
 							<li><?= caNavlink($this->request, _t('FAQ & Glossary'), "nav-link".(((strToLower($this->request->getController()) == "resources") && (strToLower($this->request->getAction()) == "faq")) ? " active" : ""), "", "Resources", "FAQ", "", (((strToLower($this->request->getController()) == "resources") && (strToLower($this->request->getAction()) == "faq")) ? array("aria-current" => "page") : null)); ?></li>
 							<li><?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Resources", "Collections", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?></li>
-							<li><a href="{{{slavery_url}}}" class="nav-link"><?= _t("Slavery in the President's Neighborhood"); ?></a></li>
-							<li><a href="{{{edu_resources_link}}}" class="nav-link"><?= _t('Educational Resources'); ?></a></li>
-							<li><a href="{{{dig_archives_url}}}" class="nav-link"><?= _t("Digital Archives"); ?></a></li>
+							<li><a href="{{{slavery_url}}}" class="nav-link" target="_blank"><?= _t("Slavery in the President's Neighborhood"); ?></a></li>
+							<li><a href="{{{edu_resources_link}}}" class="nav-link" target="_blank"><?= _t('Educational Resources'); ?></a></li>
+							<li><a href="{{{dig_archives_url}}}" class="nav-link" target="_blank"><?= _t("Digital Archives"); ?></a></li>
 							
 						</ul>
 					</li>
@@ -105,7 +105,7 @@ if($this->request->isLoggedIn()){
 							<li><?= caNavlink($this->request, _t('About the Project'), "nav-link".(((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "project")) ? " active" : ""), "", "About", "project", "", (((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "project")) ? array("aria-current" => "page") : null)); ?></li>
 							<li><?= caNavlink($this->request, _t('Project Credits'), "nav-link".(((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "projectCredits")) ? " active" : ""), "", "About", "projectCredits", "", (((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "projectCredits")) ? array("aria-current" => "page") : null)); ?></li>
 							<li><?= caNavlink($this->request, _t('Contact Us'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?></li>
-							<li><a href="{{{rights_repro_url}}}" class="nav-link"><?= _t("Usage Rights/Reproductions"); ?></a></li>
+							<li><a href="{{{rights_repro_url}}}" class="nav-link" target="_blank"><?= _t("Usage Rights/Reproductions"); ?></a></li>
 						</ul>
 					</li>
 <?php
