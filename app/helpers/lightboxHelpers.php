@@ -184,13 +184,17 @@ function caGetLightboxDisplayName($o_lightbox_config = null){
 /** 
  *
  */
-function caDisplayLightbox() : bool {
+function caDisplayLightbox(mixed $t_item=null) : bool {
 	global $g_request;
 	if($g_request->isLoggedIn() && !$g_request->config->get("disable_lightbox")) {
+		if($t_item) {
+			if(!(caGetLightboxTypeForTable($t_item->tableName(), ['restrictToTypes' => [$t_item->getTypeID()]]))) {
+				return false;
+			}
+		}
 		return true;
-	} else {
-		return false;
 	}
+	return false;
 }
 # ---------------------------------------
 /** 
@@ -198,7 +202,7 @@ function caDisplayLightbox() : bool {
  */
 function caLightboxTypeListAsHTML(?array $options=null) : ?string {
 	global $g_request;
-	if(!caDisplayLightbox($g_request)) { return null; }
+	if(!caDisplayLightbox()) { return null; }
 	
 	$types = caLightboxGetConfiguredTypes();
 	
@@ -218,7 +222,7 @@ function caLightboxTypeListAsHTML(?array $options=null) : ?string {
  */
 function caLightboxGetConfiguredTypes() : ?array {
 	global $g_request;
-	if(!caDisplayLightbox($g_request)) { return null; }
+	if(!caDisplayLightbox()) { return null; }
 	
 	$lconfig = caGetLightboxConfig();	
 	$loptions = $lconfig->getAssoc('lightbox_options');
@@ -243,7 +247,7 @@ function caLightboxGetConfiguredTypes() : ?array {
  */
 function caGetLightboxTypeForTable(string $table, ?array $options=null) : ?string {
 	global $g_request;
-	if(!caDisplayLightbox($g_request)) { return null; }
+	if(!caDisplayLightbox()) { return null; }
 	
 	$lconfig = caLightboxGetConfiguredTypes();	
 	$restrict_to_types = caMakeTypeIDList($table, caGetOption('restrictToTypes', $options, []));
