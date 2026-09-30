@@ -145,7 +145,7 @@ if (!$ajax) {	// !ajax
 ?>
 				</ul>
 <?php
-			if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
+			if(($table == 'ca_objects') && caDisplayLightbox()){
 ?>
 				<ul class="list-group list-group-horizontal justify-content-lg-end small">
 <?php
@@ -219,7 +219,7 @@ if (!$ajax) {	// !ajax
 
 <?php
 } //!ajax
-if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
+if(caDisplayLightbox($t_instance)){
 ?>
 <script>
 if (typeof selectionListInput === 'undefined') {
@@ -283,20 +283,6 @@ if (typeof selectionListInput === 'undefined') {
 			? '<i class="bi bi-x-circle-fill"></i> <?= _t("Deselect All"); ?>'
 			: '<i class="bi bi-check-circle-fill"></i> <?= _t("Select All"); ?>';
 	}
-	
-// 	function downloadSelected(dtype, dversion, url) {
-// 		const allAreSelected = selectAllBtn.getAttribute('data-state') === 'deselect'; 
-// 		const item_ids = document.getElementById('selection').value;
-// 		const omit_item_ids = document.getElementById('omitSelection').value;
-// 		switch(dtype) {
-// 			case 'media':
-// 				window.location = url + '/item_id/' + item_ids + ((allAreSelected === true) ? '/selectAll/1/omit_item_id/' + omit_item_ids : '');
-// 				break;
-// 			default:
-// 				window.location = url + '/item_id/' + item_ids + ((allAreSelected === true) ? '/selectAll/1/omit_item_id/' + omit_item_ids : '');
-// 				break;
-// 		}
-// 	}
 
 	document.body.addEventListener('htmx:load', function (event) {
 		// console.log('HTMX Load Event:', event);

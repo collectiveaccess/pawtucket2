@@ -28,7 +28,8 @@
 /*
 *	This view is re-rendered when a new lightbox is added so the list is updated
 */
-if(!(caDisplayLightbox($this->request))) { return ''; }
+if(!$this->getVar('displayLightbox')) { return ''; }
+
 $in_lightboxes = $this->getVar("in_lightboxes");
 $errors = $this->getVar("errors");
 $success = $this->getVar("success");

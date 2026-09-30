@@ -77,6 +77,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				if($copy_link_enabled){
 					print $this->render('Details/snippets/copy_link_html.php');
 				}
+				print $this->render('Details/snippets/lightbox_list_html.php');
 ?>
 			</div>
 		</div>

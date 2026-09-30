@@ -110,10 +110,15 @@ if ($start < $qr_res->numHits()) {
 		}else{
 			$caption 	= $qr_res->getWithTemplate($result_caption_template, array("checkAccess" => $access_values));
 			
-			$select_button = caDisplayLightbox($this->request) ? "<button type='button' 
+			if ($image_format == "image") {
+				$btn_class = "btn btn-white btn-select px-2";
+			}else{
+				$btn_class = "btn btn-white px-1 py-0";
+			}
+			$select_button = caDisplayLightbox($t_instance) ? "<button type='button' 
 					id='result-select-btn-{$id}'
 					onclick='toggleSelection({$id})'
-					class='btn btn-white btn-select px-2' 
+					class='{$btn_class}' 
 					title='"._t("Select record")."'
 					aria-label='"._t("Select record")."'><i class='bi bi-check-circle'></i></button>" : "";
 					
@@ -121,10 +126,9 @@ if ($start < $qr_res->numHits()) {
 				$thumbnail = "";
 				$type_placeholder = "";
 				$typecode = "";
-				#$image = ($table === 'ca_objects') ? $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $access_values, "class" => $image_class)) : $images[$id];
 				$image = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $access_values, "class" => $image_class));
 				if(!$image){
-					if($images[$id]){ $image = str_replace("<img", "<img class='".$image_class."'", $images[$id]); }
+					if($images[$id]){ $image = str_replace("<img", "<img class='{$image_class}'", $images[$id]); }
 				}
 		
 				if(!$image){
@@ -164,10 +168,10 @@ if ($start < $qr_res->numHits()) {
 			} else {
 				$result_output = "<div class='col-md-6 col-lg-4 d-flex'>
 						<div id='row{$id}' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
-							<div class='card-body'>
+							<div class='card-body'><div class='w-100 h-100 d-flex justify-content-between align-items-center'>
 								".caDetailLink($this->request, $caption, "w-100 d-flex", $table, $id)."
-								<div class='position-absolute bottom-0 end-0 p-1'>{$select_button}</div>
-							</div>
+								<div class='ps-2 mb-2'>{$select_button}</div>
+							</div></div>
 							
 						 </div></div><!-- end col -->";
 			}
