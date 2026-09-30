@@ -46,7 +46,7 @@ function caGetLightboxPreviewImage(int $id, SearchResult $qr_res, ?array $option
 	if(!($default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
 		$default_placeholder = "<div class='display-1 text-center d-flex bg-light ca-placeholder' aria-label='media placeholder image' aria-role='img'><i class='bi bi-card-image align-self-center w-100'></i></div>";
 	}
-	if ($table == 'ca_objects') {
+	#if ($table == 'ca_objects') {
 		$t_set = $qr_res->getInstance();
 		$set_items = caExtractValuesByUserLocale($t_set->getItems(["user_id" => $g_request->user->get("user_id"), "thumbnailVersions" => ["iconlarge", "icon", "small", "large"], "class" => $class,  "limit" => 5])); // "checkAccess" => $access_values,
 	
@@ -63,11 +63,11 @@ function caGetLightboxPreviewImage(int $id, SearchResult $qr_res, ?array $option
 			}
 		}
 		$rep_detail_link = caNavLink($g_request, $thumbnail, '', '*', '*', 'Detail/'.$id);				
-	} else {
-		// TODO: get reps for non-objects
-		$vs_thumbnail = $default_placeholder;
-		$rep_detail_link = caNavLink($g_request, $thumbnail, '', '*', '*', 'Detail/'.$id);			
-	}
+	#} else {
+	#	// TODO: get reps for non-objects
+	#	$thumbnail = $default_placeholder;
+	#	$rep_detail_link = caNavLink($g_request, $thumbnail, '', '*', '*', 'Detail/'.$id);			
+	#}
 	return $rep_detail_link;
 }
 # ---------------------------------------

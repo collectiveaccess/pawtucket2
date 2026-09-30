@@ -25,6 +25,10 @@ if($image_format == "contain"){
 }else{
 	$image_class = "card-img-top object-fit-cover rounded-0";
 }
+$o_icons_conf = caGetIconsConfig();
+if(!($default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+	$default_placeholder = "<div class='display-1 text-center d-flex bg-light ca-placeholder' aria-label='media placeholder image' aria-role='img'><i class='bi bi-card-image align-self-center w-100'></i></div>";
+}
 
 	while($qr_items->nexthit()) {
 		$item_is_in_users_lightbox = caItemIsInUserLightbox($qr_items, $this->request->getUserID());
@@ -41,10 +45,10 @@ if($image_format == "contain"){
 				if($type_placeholder = caGetPlaceholder($typecode, "placeholder_media_icon")){
 					$image = "<div class='bResultItemImgPlaceholder'>{$type_placeholder}</div>";
 				}else{
-					$image = $default_placeholder_tag;
+					$image = $default_placeholder;
 				}
 			}else{
-				$image = $default_placeholder_tag;
+				$image = $default_placeholder;
 			}
 		}
 		$rep_detail_link = $this->request->isLoggedIn() ? caDetailLink($this->request, $image, 'lb-detail-img-link', $table, $id) : $image;			

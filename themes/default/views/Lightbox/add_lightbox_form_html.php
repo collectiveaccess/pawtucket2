@@ -63,7 +63,7 @@ $target = $this->getVar('target') ?: "#lightboxContent";
 			# Show list of potential lightbox "types" (tables + optional type restriction) in general contexts such as the lightbox list
 ?>
 			<label for="lightboxType" class="col-form-label"><?= _t('Type'); ?>:</label>
-			<?= caLightboxTypeListAsHTML(['class' => 'form-control lightboxAddFormControl', 'id' => 'lightboxType']); ?>
+			<?= caLightboxTypeListAsHTML(['class' => 'form-control form-select lightboxAddFormControl', 'id' => 'lightboxType']); ?>
 <?php
 		}
 ?>
