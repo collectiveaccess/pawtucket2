@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2025 Whirl-i-Gig
+ * Copyright 2008-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -233,6 +233,20 @@ function caHTMLTextInput($name, $attributes=null, $options=null) {
 								SpecialCharactersLatin, SpecialCharactersMathematical, SpecialCharactersText, Strikethrough, 
 								Subscript, Superscript, TextTransformation, TodoList, Underline, Undo, LinkImage
 							],
+							htmlSupport: {
+								allow: [
+									{
+										name: 'a',
+										attributes: ['name', 'id'] 
+									},
+									{
+										name: /(div|p|h[1-6])/,
+										attributes: ['id', 'class']
+									},
+									{ name: 'details' },
+									{ name: 'summary' }
+								]
+							},
 							toolbar: {
 								items: ".json_encode($toolbar).",
 								shouldNotGroupWhenFull: true
@@ -373,7 +387,6 @@ function caHTMLRadioButtonInput($ps_name, $pa_attributes=null, $pa_options=null)
 	if(caGetOption('disabled', $pa_options, false)) { $pa_attributes['disabled'] = 1; }
 	$vs_attr_string = _caHTMLMakeAttributeString($pa_attributes);
 	
-	// standard check box
 	$vs_element = "<input name='{$ps_name}' {$vs_attr_string} type='radio'/>\n";
 	return $vs_element;
 }
@@ -384,7 +397,6 @@ function caHTMLRadioButtonInput($ps_name, $pa_attributes=null, $pa_options=null)
  * $ps_name - name of the element
  * $pa_attributes - optional associative array of <input> tag options applied to the checkbox; keys are attribute names and values are attribute values
  * $pa_options - optional associative array of options. Valid options are:
- *		value				= the default value of the element	
  *		disabled			= boolean indicating if checkbox is enabled or not (true=disabled; false=enabled)
  *		returnValueIfUnchecked = boolean indicating if checkbox should return value in request if unchecked; default is false
  */
