@@ -331,4 +331,3 @@ if (typeof selectionListInput === 'undefined') {
 </script>
 <?php
 }
-?>

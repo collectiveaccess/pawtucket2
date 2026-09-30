@@ -121,6 +121,7 @@ class DetailController extends FindController {
 		$this->view->setVar('table', $table);
 		$this->view->setVar('id', $id);
 		$this->view->setVar('detail', $detail_type);
+		$this->view->setVar('detailConfig', $this->opa_detail_types[$detail_type]);
 		
 		return [
 			'table' => $table,

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2024 Whirl-i-Gig
+ * Copyright 2024-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -184,11 +184,102 @@ function caGetLightboxDisplayName($o_lightbox_config = null){
 /** 
  *
  */
-function caDisplayLightbox(RequestHTTP $request) : bool {
-	if($request->isLoggedIn() && !$request->config->get("disable_lightbox")) {
+function caDisplayLightbox() : bool {
+	global $g_request;
+	if($g_request->isLoggedIn() && !$g_request->config->get("disable_lightbox")) {
 		return true;
 	} else {
 		return false;
 	}
 }
 # ---------------------------------------
+/** 
+ *
+ */
+function caLightboxTypeListAsHTML(?array $options=null) : ?string {
+	global $g_request;
+	if(!caDisplayLightbox($g_request)) { return null; }
+	
+	$types = caLightboxGetConfiguredTypes();
+	
+	$opts = [];
+	foreach($types as $type => $tinfo) {
+		if($tinfo['table'] === 'ca_sets') { continue; }
+		$opts[$tinfo['label_plural']] = $type;
+	}
+	
+	$html = caHTMLSelect('ltype', $opts, ['id' => caGetOption('id', $options, 'ltype'), 'class' => caGetOption('class', $options, null)]);
+	
+	return $html;
+}
+# ---------------------------------------
+/** 
+ *
+ */
+function caLightboxGetConfiguredTypes() : ?array {
+	global $g_request;
+	if(!caDisplayLightbox($g_request)) { return null; }
+	
+	$lconfig = caGetLightboxConfig();	
+	$loptions = $lconfig->getAssoc('lightbox_options');
+	
+	$types = [];
+	foreach($loptions as $type => $tinfo) {
+		if(Datamodel::tableExists($type) && !($tinfo['table'] ?? null)) {
+			$tinfo['table'] = $type;
+		}
+		if(!($tinfo['table'] ?? null)) { continue; }
+		if(!($tinfo['name'])) { $tinfo['name'] = Datamodel::getTableProperty($tinfo['table'], 'NAME_PLURAL'); }
+		if(!($tinfo['label_singular'])) { $tinfo['label_singular'] = Datamodel::getTableProperty($tinfo['table'], 'NAME_SINGULAR'); }
+		if(!($tinfo['label_plural'])) { $tinfo['label_plural'] = Datamodel::getTableProperty($tinfo['table'], 'NAME_PLURAL'); }
+		$types[$type] = $tinfo;
+	}
+	
+	return $types;
+}
+# ---------------------------------------
+/** 
+ *
+ */
+function caGetLightboxTypeForTable(string $table, ?array $options=null) : ?string {
+	global $g_request;
+	if(!caDisplayLightbox($g_request)) { return null; }
+	
+	$lconfig = caLightboxGetConfiguredTypes();	
+	$restrict_to_types = caMakeTypeIDList($table, caGetOption('restrictToTypes', $options, []));
+
+	foreach($lconfig as $type => $tinfo) {
+		if($tinfo['table'] === $table) {
+			$trestrict_to_types = caMakeTypeIDList($table, caGetOption('restrict_to_types', $tinfo, []));
+	
+			if($restrict_to_types && !is_array($restrict_to_types)) { $restrict_to_types = [$restrict_to_types]; }
+			if(is_array($trestrict_to_types) && sizeof($trestrict_to_types) && is_array($restrict_to_types) && sizeof($restrict_to_types)) {
+				$t = array_intersect($restrict_to_types, $trestrict_to_types);
+				if(sizeof($t) === sizeof($restrict_to_types)) { 
+					return $type;
+				}
+				continue;
+			}
+			return $type;
+		}
+	}
+	
+	return null;
+}
+# ---------------------------------------
+/**
+ *
+ */
+function caIsValidLightboxType(?string $ltype=null, ?array $options=null) : ?array {
+	global $g_request;
+	if(is_null($ltype)) { $ltype = $g_request->getParameter('ltype', pString); }
+	
+	$lconfig = caLightboxGetConfiguredTypes();	
+	if(!$ltype && caGetOption('useFirstAvailableType', $options, true)) { 
+		$ltype = array_key_first($lconfig);
+	}
+	if(!$ltype && caGetOption('throw', $options, true)) { throw new ApplicationException(_t('No lightbox types are configured')); }
+
+	return isset($lconfig[$ltype]) ? ['type' => $ltype, 'typeinfo' => $lconfig[$ltype], 'table' => $lconfig[$ltype]['table'], 'restrictToTypes' => $lconfig[$ltype]['restrict_to_types'] ?? null] : null;
+}
+# -------------------------------------------------------

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2024-2025 Whirl-i-Gig
+ * Copyright 2024-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -62,11 +62,6 @@ class LightboxController extends FindController {
 	protected $is_login_redirect = false;
 	
 	/**
-	 * @var string
-	 */
-	protected $table = 'ca_objects';
-	
-	/**
 	 *
 	 */
 	protected $ops_view_prefix = 'Lightbox';
@@ -76,6 +71,10 @@ class LightboxController extends FindController {
 	 */
 	protected $anonymous_set = null;
 	
+	/** 
+	 *
+	 */
+	protected $configured_types = [];
 	
 	# -------------------------------------------------------
 	/**
@@ -103,7 +102,6 @@ class LightboxController extends FindController {
 				)
 			) {
 				// Anonymous access to set is set up here
-				
 				$this->anonymous_set = $t_set;
 				$this->dont_require_login = true;
 				
@@ -126,6 +124,8 @@ class LightboxController extends FindController {
 		$this->config = caGetLightboxConfig();
 		$this->view->setVar('lightbox_config', $this->config);
 		
+		$this->configured_types = caLightboxGetConfiguredTypes();
+				
 		// Lightbox display name
 		$display_name = caGetLightboxDisplayName($this->config);
 		
@@ -153,6 +153,8 @@ class LightboxController extends FindController {
 	function Index(?array $options=null) {
 		if($this->is_login_redirect) { return; }
 		
+		['type' => $type, 'typeinfo' => $typeinfo, 'table' => $table, 'restrictToTypes' => $restrict_to_types] = caIsValidLightboxType();
+
 		if($saved_search = Session::getVar("lightbox_search_ca_sets")) {
 			$options['set_ids'] = $this->_search('ca_sets', $saved_search);
 			$this->view->setVar('search', $saved_search);
@@ -162,12 +164,11 @@ class LightboxController extends FindController {
 		$start = (int)$this->request->getParameter('s', pInteger);
 		$is_incremental_load = (bool)$this->request->getParameter('incremental', pInteger);
 		
-		// @TODO generalize for all tables
-		$o_context = new ResultContext($this->request, 'ca_objects', 'lightbox');
+		$o_context = new ResultContext($this->request, 'ca_sets', 'lightbox');
 		$o_context->setAsLastFind();
 		
 		// Sort list
-		$loptions = $this->config->getAssoc('lightbox_options');
+		$loptions = caLightboxGetConfiguredTypes();
 		$tconfig = $loptions['ca_sets'] ?? [];
 		$this->view->setVar('sorts', $available_sorts = $tconfig['sorts'] ?? []);
 		$this->view->setVar('sort_directions', $tconfig['sort_directions'] ?? []);
@@ -200,11 +201,9 @@ class LightboxController extends FindController {
 		$this->view->setVar('mode', $mode);
 		$this->view->setVar('configured_modes', $configured_modes);
 		
-		// @TODO: generalize
-		$configured_tables = ['ca_objects'];
 
 		# Get sets for display
-		[$read_sets, $write_sets] = array_values($this->_getSetsForUser($this->request->getUserID(), $configured_tables));		
+		[$read_sets, $write_sets] = array_values($this->_getSetsForUser($this->request->getUserID()));		
 
 		$this->view->setVar("read_sets", $read_sets);
 		$this->view->setVar("write_sets", $write_sets);
@@ -214,6 +213,7 @@ class LightboxController extends FindController {
 		
 		$this->view->setVar('mode', $mode);
 		$this->view->setVar('type', 'ca_sets');
+		$this->view->setVar('lightbox_type_info', caLightboxGetConfiguredTypes());
 	
 		if(!($set_ids = caGetOption('set_ids', $options, null))) {
 			$set_ids = array_merge(array_keys($read_sets), array_keys($write_sets));
@@ -243,21 +243,30 @@ class LightboxController extends FindController {
 		$start = (int)$this->request->getParameter('s', pInteger);
 
 		$is_incremental_load = (bool)$this->request->getParameter('incremental', pInteger);
+
+		if($this->anonymous_set) {
+			$t_set = $this->anonymous_set;
+		} elseif(!$set_id || !($t_set = ca_sets::findAsInstance($set_id))) {
+			return $this->Index();
+		}
 		
-		// @TODO generalize for all tables
-		$o_context = new ResultContext($this->request, 'ca_objects', 'lightbox');
+		$table_num = $t_set->get('ca_sets.table_num');
+		$table = Datamodel::getTableName($table_num);
+		
+		$type_restrictions = $t_set->getTypeRestrictions() ?? [];
+		$type = caGetLightboxTypeForTable($table, ['restrictToTypes' => array_map(function($v) { return $v['type_id']; }, $type_restrictions)]);
+
+		$o_context = new ResultContext($this->request, $table, 'lightbox');
 		$o_context->setAsLastFind();
 		
 		// Sort list
-		$loptions = $this->config->getAssoc('lightbox_options');
+		$loptions = caLightboxGetConfiguredTypes();
 		
-		// @TODO support different types of lightboxes
-		$tconfig = $loptions['ca_objects'] ?? [];
+		$tconfig = $loptions[$type] ?? [];
 		$this->view->setVar('sorts', $available_sorts = $tconfig['sorts'] ?? []);
 		$this->view->setVar('sort_directions', $tconfig['sort_directions'] ?? []);
 		
 		// View modes
-		
 		$configured_modes = $tconfig['view_modes'] ?? [];
 		$configured_mode_codes = array_keys($configured_modes);
 		
@@ -272,20 +281,15 @@ class LightboxController extends FindController {
 		$this->view->setVar('mode', $mode);
 		$this->view->setVar('configured_modes', $configured_modes);
 		
-		// Load set
-		if($this->anonymous_set) {
-			$t_set = $this->anonymous_set;
-		} elseif(!$set_id || !($t_set = ca_sets::findAsInstance($set_id))) {
-			return $this->Index();
-		}
 		$this->view->setVar('access_is_anonymous', $this->anonymous_set ? true : false);
 		$this->view->setVar('t_set', $t_set);
 		$this->view->setVar('set_id', $set_id);
-		$this->view->setVar('table_num', $table_num = $t_set->get('ca_sets.table_num'));
+		$this->view->setVar('table_num', $table_num);
 		$this->view->setVar('table', Datamodel::getTableName($table_num));
+		$this->view->setVar('lightbox_type_info', $loptions[$type]);
 		
 		// Set configuration options in view
-		$this->view->setVar('caption_template', caGetOption(["caption_template_{$mode}", 'caption_template'], $tconfig, '^ca_objects.preferred_labels'));
+		$this->view->setVar('caption_template', caGetOption(["caption_template_{$mode}", 'caption_template'], $tconfig, "^{$table}.preferred_labels"));
 				
 		// Set current sort
 		if(($current_sort_name = $this->request->getParameter('sort', pString)) && isset($available_sorts[$current_sort_name])) {
@@ -317,13 +321,12 @@ class LightboxController extends FindController {
 		$this->view->setVar('limit', $limit);
 	
 		//'checkAccess' => $this->opa_access_values,
-		$this->view->setVar('items', $qr = caMakeSearchResult('ca_objects', $ids, ['sort' => $current_sort, 'sortDirection' => $current_sort_direction, 'start' => $start, 'limit' => $limit]));
+		$this->view->setVar('items', $qr = caMakeSearchResult($table, $ids, ['sort' => $current_sort, 'sortDirection' => $current_sort_direction, 'start' => $start, 'limit' => $limit]));
 
 		$this->view->setVar('total', count($ids));
 		$this->view->setVar('is_incremental_load', $is_incremental_load);
 		
-		// TODO: support different types of lightboxes
-		$this->view->setVar('type', 'ca_objects');
+		$this->view->setVar('type', $type);
 
 		// Get all available download options
 		$downloads = $tconfig['downloads'] ?? [];
@@ -359,7 +362,7 @@ class LightboxController extends FindController {
 				'url' => caNavUrl($this->request, '*', '*', "Export/{$set_id}", ['dcode' => $dinfo['code'], 'type' => $dinfo['type'], 'display' => $dinfo['display']]),
 			]);
 		}
-		$pdf_exports = caGetAvailablePrintTemplates('results', ['table' => 'ca_objects']);
+		$pdf_exports = caGetAvailablePrintTemplates('results', ['table' => $table]);
 		if(is_array($pdf_exports) && sizeof($pdf_exports)) {
 			foreach($pdf_exports as $dcode => $dinfo) {
 				$dinfo['label'] = $dinfo['name'];
@@ -392,18 +395,18 @@ class LightboxController extends FindController {
 	 */
 	function Add(?array $options=null) {
 		global $g_ui_locale_id;
+		['type' => $type, 'typeinfo' => $typeinfo, 'table' => $table, 'restrictToTypes' => $restrict_to_types] = caIsValidLightboxType();
+		
 		$name = $this->request->getParameter('name', pString);
 		$description = $this->request->getParameter('description', pString);
-		$table = $this->request->getParameter('table', pString);
 		$row_id = $this->request->getParameter('row_id', pString);
 		$mode = $this->request->getParameter('mode', pString); # --- set to addFromResults to indicate need to redirect to addItemsToSet after ligthbox set is created
 		
 		$errors = [];
 		$preserve_model_values = false;
-		
 		$t_set = new ca_sets();
 		$t_set->set([
-			'table_num' => 57,			// @TODO: allow set by user
+			'table_num' => Datamodel::getTableNum($table),
 			'type_id' => 'user',	// @TODO: make configurable
 			'user_id' => $this->request->getUserID(),
 			'set_code' => $this->request->getUserID().'_'.time(),
@@ -421,6 +424,9 @@ class LightboxController extends FindController {
 			$errors[] = _t(strlen($name) ? 'Could not label %1 as %2: %3' : 'Could not label %1: %3', $this->lightbox_display_name_singular, $name, join('; ', $t_set->getErrors()));
 			$preserve_model_values = true;
 			$t_set->delete(true);
+		}
+		if(is_array($restrict_to_types) && sizeof($restrict_to_types)) {
+			$t_set->setTypeRestrictions(caMakeTypeIDList($table, $restrict_to_types));
 		}
 		$this->view->setVar('modalValues', [
 			'name' => $name, 'description' => $description, 'row_id' => $row_id, 'table' => $table
@@ -453,9 +459,6 @@ class LightboxController extends FindController {
 		}else{
 			$this->Index();
 		}
-		
-		
-		
 	}
 	# -------------------------------------------------------
 	/**
@@ -572,37 +575,6 @@ class LightboxController extends FindController {
 	 */
 	function Download(?array $options=null) {
 		$set_id = $this->request->getActionExtra(); // set_id or guid
-		$type = $this->request->getParameter('type', pString);
-		$item_ids = $this->_getItemIDs($this->request->getParameter('item_id', pString));
-		//$version = $this->request->getParameter('version', pString);
-		$dcode = $this->request->getParameter('dcode', pString);
-		$select_all = (bool)$this->request->getParameter('selectAll', pString);
-		$omit_item_ids = $select_all ? $this->_getItemIDs($this->request->getParameter('omit_item_id', pString)) : null;
-		
-		
-		$loptions = $this->config->getAssoc('lightbox_options');
-		
-		// @TODO support different types of lightboxes
-		$tconfig = $loptions['ca_objects'] ?? [];
-		
-		if(!isset($tconfig['downloads'][$dcode])) {
-			throw new ApplicationException(_t('Invalid dcode'));
-		}
-		
-		// Verify user can download specified version
-		if(!$this->request->isLoggedIn()) {
-			$guid = $this->request->getActionExtra();
-			if(!($t_rel = ca_sets_x_anonymous_access::findAsInstance(['guid' => $guid]))) {
-				throw new ApplicationException(_t('Guid is invalid'));
-			}
-			$allowed_versions = $t_rel->getSetting('download_versions') ?: [];
-			if(!in_array($dcode, $allowed_versions, true)) {
-				throw new ApplicationException(_t('No access for dcode'));
-			}
-		}
-		$version = $tconfig['downloads'][$dcode]['version'];
-
-
 		$errors = [];
 		
 		if(caIsGuid($set_id)) {
@@ -624,6 +596,35 @@ class LightboxController extends FindController {
 			$this->view->setVar('errors', $errors);
 			return $this->Detail(['id' => $set_id]);
 		} 
+		$table_num = $t_set->get('ca_sets.table_num');
+		$table = Datamodel::getTableName($table_num);
+		
+		$type = $this->request->getParameter('type', pString);
+		$item_ids = $this->_getItemIDs($this->request->getParameter('item_id', pString));
+		$dcode = $this->request->getParameter('dcode', pString);
+		$select_all = (bool)$this->request->getParameter('selectAll', pString);
+		$omit_item_ids = $select_all ? $this->_getItemIDs($this->request->getParameter('omit_item_id', pString)) : null;
+		
+		$loptions = $this->config->getAssoc('lightbox_options');
+
+		$tconfig = $loptions[$table] ?? [];
+		
+		if(!isset($tconfig['downloads'][$dcode])) {
+			throw new ApplicationException(_t('Invalid dcode'));
+		}
+		
+		// Verify user can download specified version
+		if(!$this->request->isLoggedIn()) {
+			$guid = $this->request->getActionExtra();
+			if(!($t_rel = ca_sets_x_anonymous_access::findAsInstance(['guid' => $guid]))) {
+				throw new ApplicationException(_t('Guid is invalid'));
+			}
+			$allowed_versions = $t_rel->getSetting('download_versions') ?: [];
+			if(!in_array($dcode, $allowed_versions, true)) {
+				throw new ApplicationException(_t('No access for dcode'));
+			}
+		}
+		$version = $tconfig['downloads'][$dcode]['version'];
 		
 		$set_items = caExtractValuesByUserLocale($t_set->getItems(['thumbnailVersions' => [$version], 'row_ids' => $select_all ? null : $item_ids]));
 		
@@ -667,17 +668,6 @@ class LightboxController extends FindController {
 	 */
 	function Export(?array $options=null) {
 		$set_id = $this->request->getActionExtra(); // set_id or guid
-		$type = $this->request->getParameter('type', pString);
-		$item_ids = $this->_getItemIDs($this->request->getParameter('item_id', pString));
-		$select_all = (bool)$this->request->getParameter('selectAll', pString);
-		$omit_item_ids = $select_all ? $this->_getItemIDs($this->request->getParameter('omit_item_id', pString)) : null;
-
-		$format = $this->request->getParameter('dcode', pString);
-		
-		// Lightbox options
-		$loptions = $this->config->getAssoc('lightbox_options');
-		$tconfig = $loptions['ca_objects'] ?? []; // @TODO support different types of lightboxes
-		
 		$errors = [];
 		
 		if(caIsGuid($set_id)) {
@@ -700,6 +690,20 @@ class LightboxController extends FindController {
 			return $this->Detail(['id' => $set_id]);
 		} 
 		
+		$table_num = $t_set->get('ca_sets.table_num');
+		$table = Datamodel::getTableName($table_num);
+		
+		$type = $this->request->getParameter('type', pString);
+		$item_ids = $this->_getItemIDs($this->request->getParameter('item_id', pString));
+		$select_all = (bool)$this->request->getParameter('selectAll', pString);
+		$omit_item_ids = $select_all ? $this->_getItemIDs($this->request->getParameter('omit_item_id', pString)) : null;
+
+		$format = $this->request->getParameter('dcode', pString);
+		
+		// Lightbox options
+		$loptions = $this->config->getAssoc('lightbox_options');
+		$tconfig = $loptions[$table] ?? [];
+			
 		$set_items = caExtractValuesByUserLocale($t_set->getItems(['thumbnailVersions' => [$version], 'row_ids' => $select_all ? null : $item_ids]));
 		
 		$file_paths = $row_ids = [];
@@ -722,7 +726,7 @@ class LightboxController extends FindController {
 					break;
 				default:
 					$row_ids = array_values(array_map(function($v) { return $v['row_id']; }, $set_items));
-					$qr = caMakeSearchResult('ca_objects', $row_ids);
+					$qr = caMakeSearchResult($table, $row_ids);
 					
 					if($export_config = $tconfig['exports'][$format] ?? null) {
 						$t = "_{$export_config['type']}_{$export_config['display']}";
@@ -850,6 +854,7 @@ class LightboxController extends FindController {
 			$errors[] = _t('Access denied');
 		}
 		
+		$this->view->setVar('table', $table);
 		$this->view->setVar('set_name', $t_set->getLabelForDisplay());
 		$this->view->setVar('num_items_added', (int)$added_items_count);
 		$this->view->setVar('num_items_already_in_set', (int)$dupe_items_count);
@@ -909,10 +914,10 @@ class LightboxController extends FindController {
 	/**
 	 *
 	 */
-	private function _getSetsForUser(int $user_id, array $configured_tables) : ?array {
+	private function _getSetsForUser(int $user_id) : ?array {
 		$t_sets = new ca_sets();
 		$read_sets = $t_sets->getSetsForUser([
-			'tables' => $configured_tables, 
+			'tables' => $this->configured_tables, 
 			"user_id" => $user_id, 
 			//"checkAccess" => $this->opa_access_values,
 			"access" => (!is_null($access = $this->request->config->get('lightbox_default_access'))) ? $access : 1, 
@@ -920,7 +925,7 @@ class LightboxController extends FindController {
 		]) ?? [];
 
 		$write_sets = $t_sets->getSetsForUser([
-			'tables' => $configured_tables, 
+			'tables' => $this->configured_tables, 
 			"user_id" => $user_id, 
 			//"checkAccess" => $this->opa_access_values, 
 			"parents_only" => true

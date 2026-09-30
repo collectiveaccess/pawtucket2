@@ -1,6 +1,32 @@
 <?php
+/* ----------------------------------------------------------------------
+ * themes/default/views/Details/snippers/lightbox_list_html.php : 
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
+ * ----------------------------------------------------------------------
+ *
+ * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
+ * Copyright 2024-2026 Whirl-i-Gig
+ *
+ * For more information visit http://www.CollectiveAccess.org
+ *
+ * This program is free software; you may redistribute it and/or modify it under
+ * the terms of the provided license as published by Whirl-i-Gig
+ *
+ * CollectiveAccess is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * This source code is free and modifiable under the terms of 
+ * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
+ * the "license.txt" file for details, or visit the CollectiveAccess web site at
+ * http://www.CollectiveAccess.org
+ *
+ * ----------------------------------------------------------------------
+ */
 /*
-*	this view is re-rendered when a new lightbox is added so the list is updated
+*	This view is re-rendered when a new lightbox is added so the list is updated
 */
 if(!(caDisplayLightbox($this->request))) { return ''; }
 $in_lightboxes = $this->getVar("in_lightboxes");
@@ -15,6 +41,7 @@ $not_in_lightbox_template = $lightbox_conf->get('not_in_lightbox_template');
 $in_lightbox_template = $lightbox_conf->get('in_lightbox_template');
 
 $t_item = $this->getVar("item");
+$table = $t_item->tableName();
 $id = $t_item->getPrimaryKey();
 ?>
 <span id="lightboxList">
@@ -33,7 +60,7 @@ $id = $t_item->getPrimaryKey();
 				<li id="lightbox_<?= $set_id; ?>">
 					<div class="dropdown-item">
 						<a href="#" class="me-2" id="lightbox_link_<?= $set_id; ?>" hx-post="<?= caNavUrl($this->request, '', 'Lightbox', 'LightboxMembership', ['id' => $id, 'set_id' => $set_id]); ?>" hx-trigger="click consume" hx-target="#lightbox_link_<?= $set_id; ?>" hx-swap="innerHTML" title="<?= $lightboxes->getWithTemplate(isset($in_lightboxes[$set_id]) ? _t("Remove") : _t("Add")); ?>" aria-label="<?= $lightboxes->getWithTemplate(isset($in_lightboxes[$set_id]) ? _t("Remove") : _t("Add")); ?>"><?= $lightboxes->getWithTemplate(isset($in_lightboxes[$set_id]) ? $in_lightbox_template : $not_in_lightbox_template); ?></a>
-						<?= caNavLink($this->request, $label, '', '', 'Lightbox', "Detail/{$set_id}", [], ["title" => _t("View %1 %2", $lightbox_displayname_singular, $label), "aria-label" => _t("View %1 %2", $lightbox_displayname_singular, $label)]); ?>
+						<?= caNavLink($this->request, $label, '', '', 'Lightbox', "Detail/{$set_id}", ['table' => $table], ["title" => _t("View %1 %2", $lightbox_displayname_singular, $label), "aria-label" => _t("View %1 %2", $lightbox_displayname_singular, $label)]); ?>
 					</div>
 				</li>		
 <?php

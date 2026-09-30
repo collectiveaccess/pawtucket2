@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/Browse/browse_results_images_html.php : 
+ * themes/default/views/Browse/browse_results_images_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2024 Whirl-i-Gig
+ * Copyright 2024-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,45 +25,41 @@
  *
  * ----------------------------------------------------------------------
  */
-$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
-$va_facets 			= $this->getVar('facets');				// array of available browse facets
-$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
-$browse_key 		= $this->getVar('key');					// cache key for current browse
-$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
-$hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
+$qr_res 		= $this->getVar('result');				// browse results (subclass of SearchResult)
+$facets 		= $this->getVar('facets');				// array of available browse facets
+$criteria 		= $this->getVar('criteria');			// array of browse criteria
+$browse_key 	= $this->getVar('key');					// cache key for current browse
+$access_values 	= $this->getVar('access_values');		// list of access values for this user
+$hits_per_block = (int)$this->getVar('hits_per_block');	// number of hits to display per block
 $start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 $row_id		 	= (int)$this->getVar('row_id');			// id of last visited detail item so can load to and jump to that result - passed in back button
 $row_id_loaded 	= false;
-if(!$row_id){
-	$row_id_loaded = true;
-}
+if(!$row_id){ $row_id_loaded = true; }
 	
-$va_views			= $this->getVar('views');
+$views			= $this->getVar('views');
 $current_view	= $this->getVar('view');
-$va_view_icons		= $this->getVar('viewIcons');
+$view_icons		= $this->getVar('viewIcons');
 $current_sort	= $this->getVar('sort');
 
-$t_instance			= $this->getVar('t_instance');
+$t_instance		= $this->getVar('t_instance');
 $table 			= $this->getVar('table');
 $pk				= $this->getVar('primaryKey');
-$va_access_values = caGetUserAccessValues($this->request);
-$o_config = $this->getVar("config");	
+$access_values 	= caGetUserAccessValues($this->request);
 
-$va_options			= $this->getVar('options');
-$va_view_info 		= $va_views[$current_view];
+$o_config 		= $this->getVar("config");	
+$o_icons_conf 	= caGetIconsConfig();
+
+$options		= $this->getVar('options');
+$view_info 		= $views[$current_view];
 
 $ajax			= (bool)$this->request->isAjax();
 
-
-$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-
-$o_icons_conf = caGetIconsConfig();
-$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+$object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
 if(!($default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
 	$default_placeholder = "<div class='display-1 text-center d-flex bg-light ca-placeholder' aria-label='media placeholder image' aria-role='img'><i class='bi bi-card-image align-self-center w-100'></i></div>";
 }
-$result_caption_template = caGetOption('result_caption', $va_view_info, null);
-$image_format = caGetOption('image_format', $va_view_info, 'cover');
+$result_caption_template = caGetOption('result_caption', $view_info, null);
+$image_format = caGetOption('image_format', $view_info, 'cover');
 $image_class = "";
 if($image_format == "contain"){
 	$image_class = "card-img-top object-fit-contain px-3 pt-3 rounded-0";
@@ -71,7 +67,7 @@ if($image_format == "contain"){
 	$image_class = "card-img-top object-fit-cover rounded-0";
 }
 $refine = false;
-if(is_array($va_facets) && sizeof($va_facets)){
+if(is_array($facets) && sizeof($facets)){
 	$refine = true;
 }
 if ($start < $qr_res->numHits()) {
@@ -80,12 +76,12 @@ if ($start < $qr_res->numHits()) {
 	$qr_res->seek($start);
 	
 	if ($table != 'ca_objects') {
-		$va_ids = array();
+		$ids = array();
 		while($qr_res->nextHit() && ($c < $hits_per_block)) {
-			$va_ids[] = $qr_res->get($pk);
+			$ids[] = $qr_res->get($pk);
 			$c++;
 		}
-		$va_images = caGetDisplayImagesForAuthorityItems($table, $va_ids, array('version' => 'medium', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+		$images = caGetDisplayImagesForAuthorityItems($table, $ids, array('version' => 'medium', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $options, null), 'checkAccess' => $access_values));
 	
 		$c = 0;	
 		$qr_res->seek($start);
@@ -111,15 +107,15 @@ if ($start < $qr_res->numHits()) {
 		if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($cache_key,'browse_result')){
 			print ExternalCache::fetch($cache_key, 'browse_result');
 		}else{			
-			$caption 	= $qr_res->getWithTemplate($result_caption_template, array("checkAccess" => $va_access_values));
+			$caption 	= $qr_res->getWithTemplate($result_caption_template, array("checkAccess" => $access_values));
 			$image = "";
 			$type_placeholder = "";
 			$typecode = "";
 			
-			$image = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => $image_class));
+			$image = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $access_values, "class" => $image_class));
 			if(!$image){
-				if($va_images[$id]){
-					$image = str_replace("<img", "<img class='".$image_class."'", $va_images[$id]);
+				if($images[$id]){
+					$image = str_replace("<img", "<img class='".$image_class."'", $images[$id]);
 				}
 			}
 				
@@ -133,15 +129,14 @@ if ($start < $qr_res->numHits()) {
 				}
 			}
 			$rep_detail_link 	= caDetailLink($this->request, $image, '', $table, $id);
-			$select_button = "";
-			if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
-				$select_button = "<button type='button' 
+			$select_button = caDisplayLightbox($this->request) ? 
+					"<button type='button' 
 						id='result-select-btn-{$id}'
 						onclick='toggleSelection({$id})'
 						class='btn btn-white btn-select px-2' 
 						title='"._t("Select record")."'
-						aria-label='"._t("Select record")."'><i class='bi bi-check-circle'></i></button>";
-			}
+						aria-label='"._t("Select record")."'><i class='bi bi-check-circle'></i></button>" : "";
+						
 			$detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2 ms-1', $table, $id, null, array("title" => _t("View Record"), "aria-label" => _t("View Record")));
 			$result_output = "
 	<div class='col-md-6 col-lg-4 d-flex'>
