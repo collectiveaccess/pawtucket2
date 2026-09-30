@@ -39,6 +39,7 @@ $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || 
 $map_options = $this->getVar('mapOptions') ?? [];
 $media_options = $this->getVar('media_options') ?? [];
 
+$display_lightbox = $this->getVar('displayLightbox');
 $lightboxes = $this->getVar('lightboxes') ?? [];
 $in_lightboxes = $this->getVar('inLightboxes') ?? [];
 
@@ -69,7 +70,7 @@ if($show_nav){
 		</div>
 	</div>
 <?php
-	if(caDisplayLightbox($this->request) || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
+	if($display_lightbox || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
@@ -84,9 +85,9 @@ if($show_nav){
 				if($copy_link_enabled){
 					print $this->render('Details/snippets/copy_link_html.php');
 				}
+				print $this->render('Details/snippets/lightbox_list_html.php');
 ?>				
 			</div>
-			<?= $this->render('Details/snippets/lightbox_list_html.php'); ?>
 		</div>
 	</div>
 <?php

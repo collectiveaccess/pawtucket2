@@ -63,8 +63,6 @@ $va_browse_type_info = $o_config->get($va_browse_info["table"]);
 $va_all_facets = $va_browse_type_info["facets"];	
 $va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
-		
-
 if (!$ajax) {	// !ajax
 ?>
 
@@ -84,7 +82,7 @@ if (!$ajax) {	// !ajax
 <?php
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<li class='list-group-item border-0 px-0 pt-1'>\n";
-					print "<ul class='list-inline p-0 me-2'><li class='list-inline-item fw-medium text-uppercase me-1'>"._t("Sort by:")."</li>\n";
+					print "<ul class='list-inline p-0'><li class='list-inline-item fw-medium text-uppercase me-1'>"._t("Sort by:")."</li>\n";
 					$i = 0;
 					foreach($va_sorts as $sort => $sort_flds) {
 						$i++;
@@ -103,8 +101,8 @@ if (!$ajax) {	// !ajax
 				}
 
 				if(is_array($va_views) && (sizeof($va_views) > 1)){
-					print "<li class='list-group-item border-0 px-0 pt-0'>\n";
-					print "<ul class='list-inline p-0 me-2 text-nowrap'>\n";
+					print "<li class='list-group-item border-0 px-0 pt-0 ms-2'>\n";
+					print "<ul class='list-inline p-0 text-nowrap'>\n";
 					foreach($va_views as $view => $va_view_info) {
 						print "<li class='list-inline-item me-1'>";
 						if ($current_view === $view) {
@@ -119,7 +117,7 @@ if (!$ajax) {	// !ajax
 				}
 				if(is_array($va_export_formats) && sizeof($va_export_formats)){
 ?>
-					<li class='list-group-item border-0 px-0 pt-0'>
+					<li class='list-group-item border-0 px-0 pt-0 ms-2'>
 						<div class="dropdown inline w-auto">
 							<button class="btn btn-light btn-sm dropdown-toggle small" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="<?php print _t("Export Results"); ?>">
 								<i class="bi bi-download"></i>
@@ -144,7 +142,7 @@ if (!$ajax) {	// !ajax
 ?>
 				</ul>
 <?php
-			if(caDisplayLightbox($this->request)){
+			if(caDisplayLightbox($t_instance)){
 ?>
 				<ul class="list-group list-group-horizontal justify-content-lg-end small">
 <?php
@@ -222,7 +220,7 @@ if (!$ajax) {	// !ajax
 
 <?php
 } //!ajax
-if(caDisplayLightbox($this->request)) {
+if(caDisplayLightbox($t_instance)) {
 ?>
 <script>
 if (typeof selectionListInput === 'undefined') {

@@ -45,6 +45,7 @@ $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
 ]);
 
+$display_lightbox = $this->getVar('displayLightbox');
 $lightboxes = $this->getVar('lightboxes') ?? [];
 $in_lightboxes = $this->getVar('inLightboxes') ?? [];
 
@@ -80,7 +81,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 		</div>
 	</div>
 <?php
-	if(caDisplayLightbox($this->request) || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
+	if($display_lightbox || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
@@ -95,8 +96,8 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				if($copy_link_enabled){
 					print $this->render('Details/snippets/copy_link_html.php');
 				}
+				print $this->render('Details/snippets/lightbox_list_html.php');
 ?>
-				<?= $this->render('Details/snippets/lightbox_list_html.php'); ?>
 			</div>
 		</div>
 	</div>
@@ -199,7 +200,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 if ($show_hierarchy_viewer) {	
 ?>
 	<div class="row mt-5">
-		<div class="col"><h2>Other Shoots in <?php print $t_item->getWithTemplate("<unit relativeTo='ca_collections.parent'><l>^ca_collections.preferred_labels.name</l></unit>"); ?></h2></div>
+		<div class="col"><h2>Other Shoots in <?= $t_item->getWithTemplate("<unit relativeTo='ca_collections.parent'><l>^ca_collections.preferred_labels.name</l></unit>"); ?></h2></div>
 	</div>
 		<div hx-trigger="load" hx-get="<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('ca_collections.parent.collection_id'))); ?>"  ></div>
 <?php				
