@@ -443,7 +443,7 @@ class LightboxController extends FindController {
 				$message = _t("Added to %1.", $t_set->getLabelForDisplay());
 				$this->view->setVar('success', $message);				
 			}
-			# --- redraw the dropdown of lightboxes
+			# Redraw the dropdown of lightboxes
 			$t_item = Datamodel::getInstance($table, true);
 			$t_item->load($row_id);
 			$this->view->setVar('item', $t_item);
@@ -454,9 +454,9 @@ class LightboxController extends FindController {
 			$this->view->setVar('lightbox_conf', $lightbox_conf);
 			
 			$this->render("Details/snippets/lightbox_list_html.php");
-		}elseif($mode == "addFromResults"){
+		} elseif($mode === "addFromResults"){
 			$this->addItemsToSet($t_set->get("set_id"));
-		}else{
+		} else{
 			$this->Index();
 		}
 	}

@@ -25,24 +25,20 @@
  *
  * ----------------------------------------------------------------------
  */
-$preserve							= $this->getVar('preserveModalValues');
-$mv									= $this->getVar('modalValues');
+$preserve						= $this->getVar('preserveModalValues');
+$mv								= $this->getVar('modalValues');
 
-$lightbox_conf = caGetLightboxConfig();
-$lightbox_displayname_singular = $lightbox_conf->get('lightbox_displayname_singular');
-$lightbox_displayname_plural = $lightbox_conf->get('lightbox_displayname_plural');
+$lightbox_conf 					= caGetLightboxConfig();
+$lightbox_displayname_singular 	= $lightbox_conf->get('lightbox_displayname_singular');
+$lightbox_displayname_plural 	= $lightbox_conf->get('lightbox_displayname_plural');
 
-# --- when used on detail pages need row id and table to add record to new lightbox
+# When used on detail pages need row id and table to add record to new lightbox
 $id = $table = null;
-$t_item = $this->getVar("item");
-if($t_item){
+if($t_item = $this->getVar("item")){
 	$id = $t_item->getPrimaryKey();
 	$table = $t_item->TableName();
 }
-$target = $this->getVar('target');
-if(!$target){
-	$target = "#lightboxContent";
-}
+$target = $this->getVar('target') ?: "#lightboxContent";
 ?>
 <div class="modal fade" id="addLightboxModal" tabindex="-1" aria-labelledby="addLightboxModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -55,12 +51,16 @@ if(!$target){
 		<label for="lightboxName" class="col-form-label"><?= _t('Name'); ?>:</label>
 		<?= caHTMLTextInput('name', ['value' => $preserve ? $mv['name'] ?? null : null, 'class' => 'form-control lightboxAddFormControl', 'id' => 'lightboxName'], ['width' => '100%']); ?>
 <?php
-		# --- when used on detail page include the row_id and table
 		if($id){
+			# When used on detail page include the row_id and table
 			print caHTMLHiddenInput('row_id', ['value' => $preserve ? $mv['row_id'] ?? null : $id, 'class' => 'lightboxAddFormControl', 'id' => 'rowId']);
 			print caHTMLHiddenInput('table', ['value' => $preserve ? $mv['table'] ?? null : $table, 'class' => 'lightboxAddFormControl', 'id' => 'table']);
 			print caHTMLHiddenInput('ltype', ['value' => caGetLightboxTypeForTable($this->getVar('detailConfig')['table'], ['restrictToTypes' => $this->getVar('detailConfig')['restrictToTypes'] ?? null]), 'class' => 'lightboxAddFormControl', 'id' => 'ltype']);
+		} elseif($this->getVar('table')) { 
+			# When used on browse browse table is set in view var
+			print caHTMLHiddenInput('ltype', ['value' => caGetLightboxTypeForTable($this->getVar('table')), 'class' => 'lightboxAddFormControl', 'id' => 'table']);
 		} else {
+			# Show list of potential lightbox "types" (tables + optional type restriction) in general contexts such as the lightbox list
 ?>
 			<label for="lightboxType" class="col-form-label"><?= _t('Type'); ?>:</label>
 			<?= caLightboxTypeListAsHTML(['class' => 'form-control lightboxAddFormControl', 'id' => 'lightboxType']); ?>

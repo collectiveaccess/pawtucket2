@@ -52,18 +52,19 @@ $lightbox_icon = $lightbox_conf->get('lightbox_icon');
 ?>
 		<div id="errors" class="text-center alert alert-warning alert-dismissible fade show position-absolute w-75 start-50 translate-middle" style="z-index:1000;" role="alert">
 			<ul class="list-unstyled"><?= join("\n", array_map(function($v) { return "<li>{$v}</li>\n"; }, $errors)); ?></ul>
-			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<?= htmlspecialchars(_t('Close')); ?>"></button>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<?= _t('Close'); ?>"></button>
 		</div>
+		<?= caAutoHideAlert('errors', 2000, ['wrap' => true]); ?>
 <?php
 	}
 	if($success){
 ?>
 		<div id="success" class="text-center alert alert-success alert-dismissible fade show position-absolute w-75 start-50 translate-middle" style="z-index:1000;" role="alert">
 			<div><?= $success; ?></div>
-			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<?= htmlspecialchars(_t('Close')); ?>"></button>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<?= _t('Close'); ?>"></button>
 		</div>
+		<?= caAutoHideAlert('success', 2000, ['wrap' => true]); ?>
 <?php
-	
 	}
 	$lightboxes = caGetLightboxesForUser($this->request->getUserID(), null, ['tables' => [$table]]);
 ?>
@@ -87,5 +88,4 @@ $lightbox_icon = $lightbox_conf->get('lightbox_icon');
 			</ul>
 		</div>
 	</li>
-					
 </span>

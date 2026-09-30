@@ -283,3 +283,19 @@ function caIsValidLightboxType(?string $ltype=null, ?array $options=null) : ?arr
 	return isset($lconfig[$ltype]) ? ['type' => $ltype, 'typeinfo' => $lconfig[$ltype], 'table' => $lconfig[$ltype]['table'], 'restrictToTypes' => $lconfig[$ltype]['restrict_to_types'] ?? null] : null;
 }
 # -------------------------------------------------------
+/**
+ *
+ */
+function caAutoHideAlert(string $id, ?int $timeout=3000, ?array $options=null) : string {
+	$js = "
+		setTimeout(() => {
+			const e = document.getElementById('{$id}');
+			if (e) {
+				const a = window.bootstrap.Alert.getOrCreateInstance(e);
+				a.close();
+			}
+		}, {$timeout});\n";
+	if(caGetOption('wrap', $options, false)) { $js = "<script>{$js}</script>"; }
+	return $js;
+}
+# -------------------------------------------------------
