@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2024 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -44,6 +44,10 @@ $media_options = $this->getVar('media_options') ?? [];
 $media_options = array_merge($media_options, [
 	'id' => 'mediaviewer'
 ]);
+
+$lightboxes = $this->getVar('lightboxes') ?? [];
+$in_lightboxes = $this->getVar('inLightboxes') ?? [];
+
 # --- get collections configuration
 $collections_config = caGetCollectionsConfig();
 $show_hierarchy_viewer = true;
@@ -76,7 +80,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 		</div>
 	</div>
 <?php
-	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
+	if(caDisplayLightbox($this->request) || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
@@ -92,6 +96,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					print $this->render('Details/snippets/copy_link_html.php');
 				}
 ?>
+				<?= $this->render('Details/snippets/lightbox_list_html.php'); ?>
 			</div>
 		</div>
 	</div>
