@@ -134,7 +134,7 @@ if ($start < $qr_res->numHits()) {
 			}
 			$rep_detail_link 	= caDetailLink($this->request, $image, '', $table, $id);
 			$select_button = "";
-			if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
+			if(($table == 'ca_objects') && caDisplayLightbox()){
 				$select_button = "<button type='button' 
 						id='result-select-btn-{$id}'
 						onclick='toggleSelection({$id})'

@@ -31,7 +31,7 @@ $lightbox_sectionHeading = ucFirst($lightboxDisplayName["section_heading"]);
 # Collect the user links
 $user_links = "";
 if($this->request->isLoggedIn()){
-	if(caDisplayLightbox($this->request)){
+	if(caDisplayLightbox()){
 		$user_links .= "<li class='nav-item'>".caNavLink($this->request, $lightbox_sectionHeading, 'nav-link'.((strToLower($this->request->getController()) == "lightbox") ? " active" : ""), '', 'Lightbox', 'Index', array(), ((strToLower($this->request->getController()) == "lightbox") ? array("aria-current" => "page") : null))."</li>";
 	}
 	$user_links .= "<li class='nav-item dropdown'><a class='nav-link".(($this->request->getController() == 'LoginReg') ? ' active' : '')."' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'><i class='bi bi-person-circle' aria-label='"._t('User Options')."'></i></a>

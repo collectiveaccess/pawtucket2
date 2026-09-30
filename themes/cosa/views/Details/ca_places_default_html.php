@@ -56,7 +56,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row mt-n3">
 		<div class="col-md-6 text-center text-md-start">
 <?php
-			if(caDisplayLightbox($this->request) || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
+			if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
 				<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php

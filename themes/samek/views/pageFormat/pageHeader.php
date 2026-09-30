@@ -36,7 +36,7 @@ if($this->request->isLoggedIn()){
 	
 	$user_links .= '<li class="dropdown-item"><a class="dropdown-header fs-5 text-wrap pe-none text-break">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).'<br>'.$this->request->user->get("email").'</a></li>';
 	// $user_links .= "<li><hr class='dropdown-divider'></li>";
-	if(caDisplayLightbox($this->request)){
+	if(caDisplayLightbox()){
 		$user_links .= "<li class='dropdown-item'>".caNavLink($this->request, $lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 	}
 	$user_links .= "<li class='dropdown-item'>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
