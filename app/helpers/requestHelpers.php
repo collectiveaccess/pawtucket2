@@ -223,6 +223,7 @@ function caEmitHeaders($response) {
  * @throws CaptchaException
  */
 function caVerifyCaptcha(string $captcha) : bool {
+	require_once(__CA_LIB_DIR__.'/Exceptions/CaptchaException.php');
 	if(!$captcha){
 		throw new CaptchaException(_t("Please complete the captcha"));
 	} else {
