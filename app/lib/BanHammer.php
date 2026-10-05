@@ -25,6 +25,10 @@
  *
  * ----------------------------------------------------------------------
  */
+  require_once(__CA_MODELS_DIR__.'/ca_ip_bans.php');
+ require_once(__CA_MODELS_DIR__.'/ca_ip_whitelist.php');
+ 
+ define('__CA_TEMP_DIR__', __CA_BASE_DIR__.'/tmp');
 class BanHammer {
 	# ------------------------------------------------------
 	/**

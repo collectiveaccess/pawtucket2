@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
-use Jaybizzle\CrawlerDetect\CrawlerDetect;
 require_once(__CA_LIB_DIR__."/Plugins/BanHammer/BaseBanHammerPlugin.php");
 
 class WLPlugBanHammerUserAgent Extends BaseBanHammerPlugin  {
@@ -87,13 +86,6 @@ class WLPlugBanHammerUserAgent Extends BaseBanHammerPlugin  {
 				self::setDetails(['details' => _t('User agent %1 is on ban list', $request_useragent)]);
 				return 1.0;
 			}
-		}
-		
-		$cd = new CrawlerDetect();
-		if($cd->isCrawler($_SERVER["HTTP_USER_AGENT"])) {
-			if($log) { $log->logInfo(_t('[BanHammer::UserAgent] Banned ip %1 because user agent %2 is on CrawlerDetect list', $ip, $request_useragent)); }
-			self::setDetails(['details' => _t('User agent %1 is on CrawlerDetect list', $request_useragent)]);
-			return 1.0;
 		}
 		
 		return 0;
