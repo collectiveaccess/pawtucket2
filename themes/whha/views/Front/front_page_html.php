@@ -93,7 +93,7 @@
 				<div class="col-md-6">
 					<div class="row">
 						<div class="col-12 pb-5 pb-md-0 mb-md-5">
-							<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_occupations.jpg", array("alt" => "explore occupations", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Occupations</div></div>", "text-decoration-none h-100", "", "Occupations", "index"); ?>
+							<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_occupations.jpg", array("alt" => "explore occupations", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Occupations</div></div>", "text-decoration-none h-100", "", "Browse", "occupations"); ?>
 						</div>
 					</div>
 					<div class="row">
@@ -108,7 +108,7 @@
 					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_birthplace.jpg", array("alt" => "explore birth and burial map", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Birth & Burial Map</div></div>", "text-decoration-none h-100", "", "Browse", "birth_burial_map"); ?>
 				</div>
 				<div class="col-md-6 pb-5 pb-lg-0">
-					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_collections.jpg", array("alt" => "explore stories", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Collections</div></div>", "text-decoration-none h-100", "", "Gallery", "index"); ?>
+					<?php print caNavLink($this->request, "<div class='exploreItem'><div class='exploreItemImg'>".caGetThemeGraphic($this->request, "explore_collections.jpg", array("alt" => "explore stories", "class" => "object-fit-cover w-100 shadow"))."</div><div class='exploreItemLabel align-content-center'>Collections</div></div>", "text-decoration-none h-100", "", "Resources", "collections"); ?>
 				</div>
 			</div>
 		</div>

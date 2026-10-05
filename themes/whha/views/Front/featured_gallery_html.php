@@ -40,19 +40,19 @@
 								$t_set->load($vn_set_id);
 								$va_first_item = array_shift($va_set_first_items[$vn_set_id]);
 								if($va_first_item["representation_tag"]){
-									print "<div class='col-md-6 col-lg-4 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id)."</div>";
+									print "<div class='col-md-6 col-lg-4 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Collections", $vn_set_id)."</div>";
 									print "<div class='col-md-6 col-lg-8 mt-5 mt-md-0'>";
 								}else{
 									print "<div class='col-sm-12'>";
 								}
-								print caNavLink($this->request, $va_set["name"], "fs-3 fw-medium", "", "Gallery", $vn_set_id);
+								print caNavLink($this->request, $va_set["name"], "fs-3 fw-medium", "", "Collections", $vn_set_id);
 								if($vs_desc = $t_set->get("ca_sets.set_description")){
 									if(mb_strlen($vs_desc) > 400){
 										$vs_desc = mb_substr($vs_desc, 0, 400)."...";						
 									}
 									print "<div class='py-2 fs-3'>".$vs_desc."</div>";
 								}
-								print "<div class='text-center py-2'>".caNavLink($this->request, "View All Collections".ucwords($gallery_plural_name)." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Gallery", "Index")."</div>";
+								print "<div class='text-center py-2'>".caNavLink($this->request, "View All Collections".ucwords($gallery_plural_name)." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Resources", "collections")."</div>";
 								print "</div>";
 								
 	?>

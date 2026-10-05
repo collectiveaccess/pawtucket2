@@ -47,21 +47,21 @@
 							<div class="row">
 <?php
 								if($va_first_item["representation_url"]){
-									print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-".$vs_image_format." w-100'>", "", "", "Gallery", $vn_set_id)."</div>";
+									print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-".$vs_image_format." w-100'>", "", "", "Collections", $vn_set_id)."</div>";
 								
 									print "<div class='col-sm-6'>";
 								}else{
 									print "<div class='col-12'>";
 								}
 								
-								print caNavLink($this->request, $va_set["name"], "fs-2 fw-bold", "", "Gallery", $vn_set_id);
+								print caNavLink($this->request, $va_set["name"], "fs-2 fw-bold", "", "Collections", $vn_set_id);
 								if($vs_desc = strip_tags($t_set->get("ca_sets.".$vs_description_element_code))){
 									if(mb_strlen($vs_desc) > 400){
 										$vs_desc = mb_substr($vs_desc, 0, 400)."...";						
 									}
 									print "<div class='py-2 fs-4 mb-3'>".$vs_desc."</div>";
 								}
-								print "<div class='text-center py-2 text-capitalize'>".caNavLink($this->request, _t("View ").$o_gallery_config->get("gallery_section_item_name")." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Gallery", $vn_set_id)."</div>";
+								print "<div class='text-center py-2 text-capitalize'>".caNavLink($this->request, _t("View ").$o_gallery_config->get("gallery_section_item_name")." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Collections", $vn_set_id)."</div>";
 								print "</div>";
 								
 ?>
@@ -83,7 +83,7 @@
 									<div class='card-text small text-body-secondary mb-0 pb-0'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("worker") : _t("workers"))."</div>
 								</div>
 							</div>";
-				$va_set_links[] = "<div class='col-sm-6 col-lg-4 d-flex mb-4'>".caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id)."</div>";
+				$va_set_links[] = "<div class='col-sm-6 col-lg-4 d-flex mb-4'>".caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "Collections", $vn_set_id)."</div>";
 			}
 		}
 		
