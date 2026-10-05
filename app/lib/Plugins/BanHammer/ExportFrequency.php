@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/lib/Plugins/RequestFrequency.php : 
+ * app/lib/Plugins/ExporFrequency.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2019-2025 Whirl-i-Gig
+ * Copyright 2023-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,7 +27,7 @@
  */
 require_once(__CA_LIB_DIR__."/Plugins/BanHammer/BaseBanHammerPlugin.php");
 
-class WLPlugBanHammerRequestFrequency Extends BaseBanHammerPlugin  {
+class WLPlugBanHammerExportFrequency Extends BaseBanHammerPlugin  {
 	# ------------------------------------------------------
 	/**
 	 *
@@ -40,35 +40,42 @@ class WLPlugBanHammerRequestFrequency Extends BaseBanHammerPlugin  {
 	 */
 	static public function evaluate($request, $options=null) {
 		self::init($request, $options);
-		$config = self::$config->get('plugins.RequestFrequency');
-		if ((($frequency_threshold = (float)$config['frequency_threshold']) < 0.1) || ($frequency_threshold > 999)) {
+		$log = self::getLogger();
+		$config = self::$config->get('plugins.ExportFrequency');
+		if ((($frequency_threshold = (float)($config['frequency_threshold'] ?? 0)) < 0.1) || ($frequency_threshold > 999)) {
 			$frequency_threshold = 10;
 		}
 		
-		if ((($ban_probability = (float)$config['ban_probability']) < 0) || ($ban_probability > 1.0)) {
+		if ((($ban_probability = (float)($config['ban_probability'] ?? 0)) < 0) || ($ban_probability > 1.0)) {
 			$ban_probability = 1.0;
 		}
-		
-		
+		// Frequency ban
 		if (!($ip = RequestHTTP::ip())) { return 0; }
-		$request_count = ExternalCache::fetch($ip, 'BanHammer_RequestCounts');
-		if(!is_array($request_count)) {
-			$request_count = ['s' => time(), 'c' => 1];
-		} elseif((time() - $request_count['s']) > 60) {
-			$request_count = ['s' => time(), 'c' => 1];
+		$export_count = ExternalCache::fetch($ip, 'BanHammer_ExportCounts');
+		if(!is_array($export_count)) {
+			$export_count = ['s' => time(), 'c' => 1, 'total' => 1];
+		} elseif((time() - $export_count['s']) > 60) {
+			$export_count = ['s' => time(), 'c' => 1, 'total' => $export_count['total'] + 1];
 		} else {
-			$request_count['c']++;
+			$export_count['c']++;
+			$export_count['total']++;
 		}
-		ExternalCache::save($ip, $request_count, 'BanHammer_RequestCounts');
+		ExternalCache::save($ip, $export_count, 'BanHammer_ExportCounts');
 	
-		if (($interval = (time() - $request_count['s'])) > 0) {
-			$freq = (float)$request_count['c']/(float)$interval;
-			
-			$log = self::getLogger();
-			
-			if($log) { $log->logInfo(_t('[BanHammer::RequestFrequency] Request freq %1 (%2) > threshold %3', $freq, $request_count['c'], $frequency_threshold)); }
-			self::setDetails(['details' => _t('Request freq %1 (%2) > threshold %3', $freq, $request_count['c'], $frequency_threshold)]);
+		if (($interval = (time() - $export_count['s'])) > 0) {
+			$freq = (float)$export_count['c']/(float)$interval;
+			if($log) { $log->logError(_t('[BanHammer::ExportFrequency] Export freq %1 (%2) > threshold %3', $freq, $export_count['c'], $frequency_threshold)); }
+			self::setDetails(['details' => _t('Export freq %1 (%2) > threshold %3', $freq, $export_count['c'], $frequency_threshold)]);
 			if ($freq > $frequency_threshold) { return $ban_probability; }
+		}
+		
+		// Absolute count ban
+		if(($exports_per_session = ($config['allowed_exports_per_session'] ?? 100)) > 0) {
+			if($export_count['total'] > $exports_per_session) {
+				if($log) { $log->logError(_t('[BanHammer::ExportFrequency] Export count %1 > count limit %2', $export_count['total'], $exports_per_session)); }
+				self::setDetails(['details' => _t('Export count %1  > count limit %2', $export_count['total'], $exports_per_session)]);
+				return $ban_probability;
+			}
 		}
 		
 		return 0;
@@ -85,8 +92,15 @@ class WLPlugBanHammerRequestFrequency Extends BaseBanHammerPlugin  {
 	 *
 	 */
 	static public function banTTL() {
-		$config = self::$config ? self::$config->get('plugins.RequestFrequency') : [];
+		$config = self::$config ? self::$config->get('plugins.ExportFrequency') : [];
 		return self::getTTLFromConfig($config);
+	}
+	# ------------------------------------------------------
+	/**
+	 * Ban is partial or global?
+	 */
+	static public function isPartial() {
+		return true;	
 	}
 	# ------------------------------------------------------
 }

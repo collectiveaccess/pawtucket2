@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2019 Whirl-i-Gig
+ * Copyright 2019-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,48 +25,159 @@
  *
  * ----------------------------------------------------------------------
  */
+use Jaybizzle\CrawlerDetect\CrawlerDetect;
+require_once(__CA_LIB_DIR__."/Plugins/BanHammer/BaseBanHammerPlugin.php");
 
-	require_once(__CA_LIB_DIR__."/Plugins/BanHammer/BaseBanHammerPlugin.php");
-
-	class WLPlugBanHammerUserAgent Extends BaseBanHammerPlugIn  {
-		# ------------------------------------------------------
-		/**
-		 *
-		 */
-		static $priority = 100;
+class WLPlugBanHammerUserAgent Extends BaseBanHammerPlugin  {
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static $priority = 100;
+	
+	/**
+	 *
+	 */
+	static $banned_useragents_list_filepath = __CA_TEMP_DIR__.'/userAgents.json';
+	
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function evaluate($request, $options=null) {
+		self::init($request, $options);
+		$config = self::$config->get('plugins.UserAgent');
+		$banned_useragents = caGetOption('banned_useragents', $config, []);
 		
-		# ------------------------------------------------------
-		/**
-		 *
-		 */
-		static public function evaluate($request, $options=null) {
-			self::init($request, $options);
-			$config = self::$config->get('plugins.UserAgent');
-			$banned_useragents = caGetOption('banned_useragents', $config, []);
-			
-			$request_useragent = $_SERVER["HTTP_USER_AGENT"];
-			foreach($banned_useragents as $u) {
-				if (preg_match("!".preg_quote($u, "!")."!", $request_useragent)) {
-					return 1.0;
+		$request_useragent = $_SERVER["HTTP_USER_AGENT"];
+		$ip = RequestHTTP::ip();
+		
+		if(is_array($exclude_list = $config['exclude_useragents'] ?? []) && sizeof($exclude_list)) {
+			foreach($exclude_list as $u) {
+				if (preg_match("!{$u}!i", $request_useragent)) {
+					return 0;
 				}
 			}
-			
-			
-			return 0;
 		}
-		# ------------------------------------------------------
-		/**
-		 *
-		 */
-		static public function shouldBanIP() {
-			return true;
+		
+		$ip_to_ua = ExternalCache::fetch('ip_to_ua');
+		if(!is_array($ip_to_ua)) { $ip_to_ua = []; }
+		
+		$log = self::getLogger();
+		if(isset($ip_to_ua[$ip]) && ($ip_to_ua[$ip] !== $request_useragent) && !($config['disableUAChangeBan'] ?? false)) {
+			if($log) { $log->logInfo(_t('[BanHammer::UserAgent] Banned ip %1 because user agent changed from %2 to %3', $ip, $ip_to_ua[$ip], $request_useragent)); }
+			self::setDetails(['details' => _t('User agent changed from %1 to %2', $ip_to_ua[$ip], $request_useragent)]);
+			return 1.0;
 		}
-		# ------------------------------------------------------
-		/**
-		 *
-		 */
-		static public function banTTL() {
-			return 60 * 60 * 24;	// ban for 1 day
+		$ip_to_ua[$ip] = $request_useragent;
+		if(sizeof($ip_to_ua) > 10000) {
+			$ip_to_ua = array_slice($ip_to_ua, 0, 7500);
 		}
-		# ------------------------------------------------------
+		ExternalCache::save('ip_to_ua', $ip_to_ua);
+		
+		if($config['use_useragent_list'] ?? false) {
+			if(is_array($banned_useragents_list = self::getBannedUserAgentList())) {
+				$banned_useragents = array_merge($banned_useragents, $banned_useragents_list);
+			}
+		}
+		
+		foreach($banned_useragents as $u) {
+			if (preg_match("!{$u}!i", $request_useragent)) {
+				if($log) { $log->logInfo(_t('[BanHammer::UserAgent] Banned ip %1 because user agent %2 is on ban list', $ip, $request_useragent)); }
+				self::setDetails(['details' => _t('User agent %1 is on ban list', $request_useragent)]);
+				return 1.0;
+			}
+		}
+		
+		$cd = new CrawlerDetect();
+		if($cd->isCrawler($_SERVER["HTTP_USER_AGENT"])) {
+			if($log) { $log->logInfo(_t('[BanHammer::UserAgent] Banned ip %1 because user agent %2 is on CrawlerDetect list', $ip, $request_useragent)); }
+			self::setDetails(['details' => _t('User agent %1 is on CrawlerDetect list', $request_useragent)]);
+			return 1.0;
+		}
+		
+		return 0;
 	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function shouldBanIP() {
+		return true;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function banTTL() {
+		$config = self::$config ? self::$config->get('plugins.UserAgent') : [];
+		return self::getTTLFromConfig($config);
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function getBannedUserAgentList() {
+		self::init($request, $options);
+		if(file_exists(self::$banned_useragents_list_filepath)) {
+			return json_decode(file_get_contents(self::$banned_useragents_list_filepath), true) ?? [];
+		}
+		return [];
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public function hookPeriodicTask(&$params) {
+		self::init($request, $options);
+		$config = self::$config ? self::$config->get('plugins.UserAgent') : [];
+		if(!$config['use_useragent_list']) { return true; }
+		if(!$config['useragent_list_url']) { return true; }
+		$appvars = new ApplicationVars();
+		
+		$log = self::getLogger();
+		
+		$force = (bool)($config['useragent_list_force_reload'] ?? false);
+		
+		$is_loading = $appvars->getVar('banhammerUserAgentData_isLoading');
+		if(!$is_loading || $force){
+			$appvars->setVar('banhammerUserAgentData_isLoading', true);	
+			$appvars->save();
+			
+			$filetime = filemtime(self::$banned_useragents_list_filepath);
+			$threshold = (int)($config['useragent_list_ttl'] ?? 0);
+			if($threshold <= 0) { $threshold = 21600; }
+			
+			if(!file_exists(self::$banned_useragents_list_filepath) || ((time() - $filetime) > $threshold) || $force) {
+				$data = json_decode(file_get_contents($config['useragent_list_url']), true);
+			 	if(!is_array($data)) {
+			 		$log->logError(_t('[BanHammer::UserAgent] Could not load user agent list from URL "%1"', $config['useragent_list_url']));
+			 		return true;
+			 	}
+				$user_agents = array_map(function ($v) {
+					return $v['pattern'];
+				}, $data);
+				
+				if(is_array($exclude_list = $config['exclude_useragents'] ?? []) && sizeof($exclude_list)) {
+					$user_agents = array_filter($user_agents, function($v) use ($exclude_list) {
+						foreach($exclude_list as $e) {
+							if(preg_match("!{$e}!i", $v)) {
+								return false;
+							}
+						}
+						return true;
+					});
+				}
+				$log->logInfo(_t('[BanHammer::UserAgent] Loaded user agent list from URL "%1"; got %2 user agents', $config['useragent_list_url'], sizeof($user_agents)));
+			
+				if(!file_put_contents(self::$banned_useragents_list_filepath, json_encode(array_values($user_agents)))) {
+					$log->logError(_t('[BanHammer::UserAgent] Could not write user agent list to "%1"', self::$banned_useragents_list_filepath));
+				}
+				$appvars->setVar('banhammerUserAgentData_isLoading', false);
+				$appvars->save();	
+			}
+		} 
+		return $params;
+	}
+	# ------------------------------------------------------
+}
