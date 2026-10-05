@@ -610,6 +610,49 @@ class RequestHTTP extends Request {
 		return false;
 	}
 	# -------------------------------------------------------
+	/**
+	 * Redirect request to specified controller and action, superceding any content genersted by the original controller and action.
+	 *
+	 * @param array $components Array with keys for request routing elements: module, controller, action and actionextra (if required)
+	 *
+	 * @return bool True if redirect is valid
+	 */
+	function setInternalRedirect(array $components) : bool {
+		$app = AppController::getInstance();
+		$module = $controller = $action = $action_extra = null;
+		foreach($components as $k => $v) {
+			switch(strtolower($k)) {
+				case 'module':
+					if($v === '*') { $v = $this->getModulePath(); }
+					$this->setModulePath($module = $v);
+					break;
+				case 'controller':
+					if($v === '*') { $v = $this->getController(); }
+					$this->setController($controller = $v);
+					break;
+				case 'action':
+					if($v === '*') { $v = $this->getAction(); }
+					$this->setAction($action = $v);
+					break;
+				case 'actionextra':
+					if($v === '*') { $v = $this->getActionExtra(); }
+					$this->setActionExtra($action_extra = $v);
+					break;
+			}
+		}
+		if(!$controller || !$action) { return false; }
+		
+		$url = caNavUrl($this, $module, $controller, $action.($action_extra ? '/'.$action_extra : ''));
+		$_SERVER['REQUEST_URI'] = $url;
+		
+		$this->init(['dont_redirect' => true, 'no_authentication' => true]);
+		$dispatcher = $app->getDispatcher();
+		
+		$dispatcher->setRequest($this);
+		
+		return true;
+	}
+	# -------------------------------------------------------
  	/**
 	 *
 	 * Saves changes to user object and sends asynchronous request for search indexing

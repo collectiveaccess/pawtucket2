@@ -64,8 +64,12 @@
 		$g_request = $app->getRequest();
 		$resp = $app->getResponse();
 		
-		if (!BanHammer::verdict($g_request)) {
-			die("Connection refused");
+		if (($g_request->getController() !== 'Ban') && !BanHammer::verdict($g_request)) {
+			$path = $g_request->getFullUrlPath();
+			if(!$g_request->isAjax() && ($resp->getHTTPResponseCode() == 200) && !preg_match('!/themes/!', $path)) {
+				Session::setVar('pawtucket2_page_at_ban', $path);
+			}
+			$g_request->setInternalRedirect(['module' => '', 'controller' => 'Ban', 'action' => 'verify']);
 		}
 
 		// TODO: move this into a library so $_, $g_ui_locale_id and $g_ui_locale gets set up automatically
