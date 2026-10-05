@@ -40,7 +40,7 @@
             }
             
             caSetPageCSSClasses(array("occupations"));
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Partners");
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Occupations");
  			
  			$this->config = Configuration::load("browse.conf");
  			$this->ops_facet = $this->config->get("occupations_list_facet");
