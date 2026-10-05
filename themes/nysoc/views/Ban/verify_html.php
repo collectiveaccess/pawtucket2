@@ -50,29 +50,29 @@ if(is_array($errors) && sizeof($errors)){
 		</script>
 		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
 		<div class="row justify-content-center">
-			<div class="col-12 col-md-10">
+			<div class="col-md-offset-2 col-8 col-md-8">
 				<div class='banHeadline'>
 					<h1><?= _t('Please confirm that you are not a robot'); ?></h1>
 				</div>
 			</div>
 		</div>
 		<div class="row justify-content-center">
-			<div class="col-12 col-md-6">
+			<div class="col-md-offset-2 col-8 col-md-8">
 				<div class='banDescription'>
 					<?= _t("We have a hunch that you might be a robot scanning this site for data. Please click on the <i>I'm not a robot</i> button and follow the provided instructions to confirm your status as a sentient human being."); ?>
 				</div>
 			</div>
 		</div>
 		<div class="row justify-content-center">
-			<div class="col-12 col-md-10 text-center">
+			<div class="col-md-offset-4 col-2 col-md-2 text-center">
 				<div class='form-group<?= (($errors["recaptcha"]) ? " has-error" : ""); ?> d-flex justify-content-center'>
-					<div id="regCaptcha" class=""></div>
+					<div id="regCaptcha" style="text-align: center;"></div>
 				</div>
 			</div>
 		</div><!-- end row -->
 		
 		<div class="row justify-content-center mb-4">
-			<div class="col-12 col-md-10 text-center">
+			<div class="col-md-offset-2 col-8 col-md-8 text-center">
 				<div id='regCaptchaSubmit' class="banContinue d-flex justify-content-center">
 					<button href="#" class="btn btn-primary" id="banContinueButton" onclick="document.getElementById('banCaptcha').submit(); return false;">
                         <?= _t('Click here to continue'); ?>
