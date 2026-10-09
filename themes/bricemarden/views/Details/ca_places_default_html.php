@@ -38,9 +38,15 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_item->get('ca_occurrences.occurrence_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+$media_options = $this->getVar('media_options') ?? [];
+
+$media_options = array_merge($media_options, [
+	'id' => 'mediaviewer'
+]);
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
+	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 
 <?php
@@ -86,9 +92,22 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	</div>
 <?php
 	}
+	if(trim($this->getVar("media_viewer"))){
 ?>
-	<div class="row row-cols-1 my-3">
-		<div class="col">				
+	<div class="row mb-4 mt-1">
+		<div class="col-md-6">
+			{{{media_viewer}}}
+		</div>
+		<div class="col-md-6 pb-lg-5">	
+<?php
+	}else{
+?>
+		<div class="row row-cols-1 mb-3 mt-1">
+			<div class="col">
+<?php
+	}
+?>
+			<div class='mb-2 fst-italic'>Studio</div>
 			{{{<H1 class="pb-4 mb-0">^ca_places.preferred_labels<ifdef code="ca_places.common_date">, ^ca_places.common_date</ifdef></H1>}}}
 			{{{<ifdef code="ca_places.description"><div class="pb-4">^ca_places.description</div></ifdef>}}}
 		</div>
@@ -96,7 +115,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 {{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="references">
 	<if rule="^ca_objects.classification =~ /painting/i">
 	<div class="row">
-		<div class="col"><h2>Artworks</h2></div>
+		<div class="col"><h2 class="fw-normal fst-italic fs-5">Artworks</h2></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'artworks', array('facet' => 'creation_place_facet', 'id' => $t_item->get("ca_places.place_id"))); ?>">

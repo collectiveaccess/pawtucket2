@@ -1,25 +1,23 @@
 	<div class="row">
 		<div class="col-12">
-			<h1 class="withByLine">{{{title}}}<div class="fs-5">{{{subtitle}}}</div></h1>
-		
+			<h1>{{{title}}}</h1>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-12 col-md-5 col-lg-4 col-xl-3">
+		<div class="col-12 col-md-3">
 <?php
-		$url_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-		$path_array = explode('/', trim($url_path, '/'));
-		$path_array = array_filter($path_array);
-
-		if(in_array("About", $path_array)){
+		if(strToLower($this->request->getController()) == "about")){
+			print $this->render("About/about_subnav_html.php");
 ?>
 			<ul class="text-nowrap list-unstyled lh-lg ps-2 ps-lg-0">
+				<li><?= caNavlink($this->request, _t('Introduction'), "nav-link".((in_array("Introduction", $path_array)) ? " active" : ""), "", "About", "Introduction", "", ((in_array("Introduction", $path_array)) ? array("aria-current" => "page") : null)); ?></li>
 				<li><?= caNavlink($this->request, _t('Note to the Reader'), "nav-link".((in_array("NoteReader", $path_array)) ? " active" : ""), "", "About", "NoteReader", "", ((in_array("NoteReader", $path_array)) ? array("aria-current" => "page") : null)); ?></li>
 				<li><?= caNavlink($this->request, _t('Catalogue Raisonné Team'), "nav-link".((in_array("Team", $path_array)) ? " active" : ""), "", "About", "Team", "", ((in_array("Team", $path_array)) ? array("aria-current" => "page") : null)); ?></li>
 				<li><?= caNavlink($this->request, _t('Acknowledgments'), "nav-link".((in_array("Acknowledgments", $path_array)) ? " active" : ""), "", "About", "Acknowledgments", "", ((in_array("Acknowledgments", $path_array)) ? array("aria-current" => "page") : null)); ?></li>
 			</ul>
 <?php
-		}elseif(in_array("Marden", $path_array)){
+		}elseif(strToLower($this->request->getController()) == "marden"){
+			print $this->render("About/marden_subnav_html.php");
 ?>
 			<ul class="text-nowrap list-unstyled lh-lg ps-2 ps-lg-0">
 				<li><?= caNavlink($this->request, _t("Brice Marden's Paintings: An Overview"), "nav-link".((in_array("Overview", $path_array)) ? " active" : ""), "", "Marden", "Overview", "", ((in_array("Overview", $path_array)) ? array("aria-current" => "page") : null)); ?></li>
@@ -31,7 +29,8 @@
 		}
 ?>			
 		</div>
-		<div class="col-12 col-md-6 col-lg-5 mt-5 mt-md-0">
+		<div class="col-12 col-md-9">
 			{{{bodytext}}}
 		</div>
 	</div>
+</div>

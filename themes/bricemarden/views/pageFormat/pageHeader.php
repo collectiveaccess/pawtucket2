@@ -87,7 +87,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 						<a class="text-nowrap nav-link<?php print ((strToLower($this->request->getController()) == "marden") || (strToLower($this->request->getController()) == "about")) ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('About'); ?><i class="bi bi-chevron-down ms-1"></i></a>
 						<ul class="dropdown-menu text-nowrap lh-lg ps-2 ps-lg-0">
 							<li><?= caNavlink($this->request, _t('About Brice Marden'), "nav-link".((strToLower($this->request->getController()) == "marden") ? " active" : ""), "", "Marden", "Overview", "", ((strToLower($this->request->getController()) == "marden") ? array("aria-current" => "page") : array())); ?></li>
-							<li><?= caNavlink($this->request, _t('About the Catalogue Raisonné'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "Introduction", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : array())); ?></li>
+							<li><?= caNavlink($this->request, _t('About the Catalogue Raisonné'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "NoteReader", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : array())); ?></li>
 						</ul>
 					</li>
 					

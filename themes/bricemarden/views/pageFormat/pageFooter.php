@@ -64,7 +64,7 @@ if($this->request->isLoggedIn()){
 				<div class="row">
 					<div class="col-12 text-end">
 						<ul class="list-inline">
-							<li class="list-inline-item">&copy; <?= date('Y'); ?></li>
+							<li class="list-inline-item">&copy; <?= date('Y'); ?> Estate of Brice Marden</li>
 <?php
 					if($user_links){
 						print $user_links;

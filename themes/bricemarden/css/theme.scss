@@ -114,6 +114,51 @@ nav{
 	H1{
 		margin-bottom: 4.5rem;
 	}
+	H1.withByLine{
+		margin-bottom: 3.3rem;
+	}
+	H2{
+		font-size:1rem;
+		font-weight:normal;
+		font-style: italic;
+		margin-bottom:1rem;
+		margin-top:2rem;
+	}
+	p, p.text-indent-first {
+		text-indent: 1.5rem;
+		margin-bottom:0px;
+	}
+	p:first-of-type, h2 + p, ol + p, .text-start {
+		text-indent: 0em;
+	}
+	.normal-p p, .normal-p{
+		text-indent: 0em;
+		margin-bottom:1rem;
+	}
+	ol{
+		margin-left: 1.5rem;
+		padding-left:1rem;
+		margin-bottom:1rem;
+	}
+	#footnotes{
+		font-size: 0.75rem;
+		margin-top: 3.5rem;
+	}
+	ol li::marker {
+		font-variant-numeric: oldstyle-nums;
+	}
+	ol.footnotes{
+		margin-left:0px;
+		padding-left:0px;
+		li {
+			list-style-position: inside;
+		}
+	}
+	@media(max-width: 1119px){
+		.w-25, .w-50, .w-75 {
+			width:100% !important;
+		}
+	}
 }
 /* ------------------------- browse -------------------------- */
 #bRefine{
@@ -163,6 +208,9 @@ nav{
 	}
 	.readMoreButton.readMoreButtonExpanded::after {
 		content:"Read Less \203A"
+	}
+	.text-small{
+		font-size:.9rem;
 	}
 	#mediaviewer-container:hover{
 		cursor: zoom-in;

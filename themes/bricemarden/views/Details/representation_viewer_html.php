@@ -120,10 +120,7 @@ $subject = $this->getVar("subject");
 <!-- END: Media viewer caption -->
 <!-- START: Media viewer controls -->
 <div class="row pt-1">
-	<div class="col-10">
-		<div id="mediaviewer-caption"></div>
-	</div>
-	<div class="col-2">
+	<div class="col-12">
 		<button class='btn btn-lg btn-white ps-0 ms-0 pe-2 me-1 mediaviewer-control pt-0' id="mediaviewer-previous" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>
 		<button class='btn btn-lg btn-white ps-0 ms-0 mediaviewer-control pt-0' id="mediaviewer-next" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext();' aria-label='next slide'><i class="bi bi-arrow-right"></i></button>
 	</div>

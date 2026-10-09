@@ -119,7 +119,7 @@
 $result_output = "";
 if((strToLower($this->request->getAction()) == 'exhibitions') && (strToLower($current_sort) == 'date')){
 	$vb_output_year = false;
-	$year = $qr_res->get("ca_occurrences.exhibition_year");
+	$year = $qr_res->getWithTemplate("^ca_occurrences.sort_date%dateFormat=yearOnly");
 	if((!$start) && ($c == 0)){
 		$vb_output_year = true;
 	}elseif(Session::getVar('last_exhibition_year') != $year){

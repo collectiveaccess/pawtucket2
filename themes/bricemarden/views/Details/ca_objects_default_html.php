@@ -133,11 +133,16 @@ if($show_nav){
 					<dt class='pt-3 mb-2'><?= _t('Provenance'); ?></dt>
 <?php
 					$provenances = array();
-					$provenances = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_entities" delimiter=";;" restrictToRelationshipTypes="provenance" sort="ca_objects_x_entities.rank">^ca_objects_x_entities.entity_id::^ca_objects_x_entities.interstitial_notes</unit>');
+					$provenances = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_entities" delimiter=";;" restrictToRelationshipTypes="provenance" sort="ca_objects_x_entities.rank">^ca_entities.type_id ^ca_entities.org_category\\^ca_objects_x_entities.entity_id::^ca_objects_x_entities.interstitial_notes</unit>');
 					$provenances = explode(";;", $provenances);
 					foreach($provenances as $provenance){
-						$pieces = explode("::", $provenance);
-						print "<dd class='mb-2'>".caNavLink($this->request, $pieces[1], '', 'Browse', 'artworks', '', array('facet'=>'provenance_facet', 'id' => $pieces[0]))."</dd>";
+						$type = explode("\\", $provenance);
+						$pieces = explode("::", $type[1]);
+						if(strToLower($type[0]) == "organization public collection"){
+							print "<dd class='mb-2'>".caNavLink($this->request, $pieces[1], '', 'Browse', 'artworks', '', array('facet'=>'provenance_facet', 'id' => $pieces[0]))."</dd>";
+						}else{
+							print "<dd class='mb-2'>".$pieces[1]."</dd>";
+						}
 					}
 ?>
 				</ifcount>
