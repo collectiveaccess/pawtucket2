@@ -688,38 +688,36 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 		return $this->_processQueryChangeLog($subject_tablenum, $query);
 	 	}
 	 	
-	 	
-		$words = [];
-		$ap_spec = null;
-	 	
-	 	foreach($terms as $term) {
-			if (!$ap_spec && ($field = $term->field)) { $ap_spec = $field; }
-			
-			if (strlen($escaped_text = $this->db->escape(join(' ', self::tokenize($term->text, true))))) {
-				$words[] = $escaped_text;
-				$this->searched_terms[] = $escaped_text;
-			}
-		}
-		
-		if (!sizeof($words)) { return []; }
-		
-		$phrases = [$words];
-		$phr = trim(mb_strtolower(join(' ', $words)));
-		
-		$ap = $this->_getElementIDForAccessPoint($subject_tablenum, $ap_spec);
-		if(is_array($ap) && ($ap['expand_search_using_list'] ?? null)) {
-			$dict = self::getListsAsDict($ap['expand_search_using_list']);
-		} else {
-			$dict = self::$dict;
-		}
-		if(is_array($syns = $dict[$phr] ?? null)) {
-			$syns = array_map(function($v) { return self::tokenize($v); }, $syns);
-			$phrases = array_merge($phrases, $syns);	
-		}
-			
 	 	$field_sql = null;
 	 	if ($this->getOption('strictPhraseSearching') || $force_strict) {
-	
+	 		$words = [];
+	 		$ap_spec = null;
+	 		
+			foreach($terms as $term) {
+				if (!$ap_spec && ($field = $term->field)) { $ap_spec = $field; }
+				
+				if (strlen($escaped_text = $this->db->escape(join(' ', self::tokenize($term->text, true))))) {
+					$words[] = $escaped_text;
+					$this->searched_terms[] = $escaped_text;
+				}
+			}
+			
+			if (!sizeof($words)) { return []; }
+			
+			$phrases = [$words];
+			$phr = trim(mb_strtolower(join(' ', $words)));
+			
+			$ap = $this->_getElementIDForAccessPoint($subject_tablenum, $ap_spec);
+			if(is_array($ap) && ($ap['expand_search_using_list'] ?? null)) {
+				$dict = self::getListsAsDict($ap['expand_search_using_list']);
+			} else {
+				$dict = self::$dict;
+			}
+			if(is_array($syns = $dict[$phr] ?? null)) {
+				$syns = array_map(function($v) { return self::tokenize($v); }, $syns);
+				$phrases = array_merge($phrases, $syns);	
+			}
+				
 			$acc = [];	
 			foreach($phrases as $words) {	
 				$temp_tables = [];
@@ -780,7 +778,6 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 								$anchor_sql = '';
 								$word_op = 'LIKE';
 								$word = ($w == 0) ? "%{$word}%" : "{$word}%";
-								print "[$w] $word<br>\n";
 							}
 							break;
 						case 'START':
@@ -856,21 +853,16 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			}
 			return $acc;
 	 	} else {
-	 		$acc = $tacc = [];
-	 		$p = 0;
-			foreach($phrases as $phrase) {
-	 			$i = 0;
-				foreach($phrase as $term) {
-					$hits = $this->_processQueryTerm($subject_tablenum, new Zend_Search_Lucene_Index_Term($term));
-					if(!is_array($hits)) { continue; }
-					if ($i == 0) { $i++; $acc[$p] = $hits; continue; }
-					$acc[$p] = array_intersect_key($acc[$p], $hits);
-					$i++;
-				}
-				$tacc = array_merge($tacc, $acc[$p]);
-				$p++;
+	 		$acc = [];
+	 		$i = 0;
+			foreach($terms as $term) {
+				$hits = $this->_processQueryTerm($subject_tablenum, $term);
+				if(!is_array($hits)) { continue; }
+				if ($i == 0) { $i++; $acc = $hits; continue; }
+				$acc = array_intersect_key($acc, $hits);
+				$i++;
 			}
-			return $tacc;
+			return $acc;
 	 	}
 	}
 	# -------------------------------------------------------
@@ -2003,7 +1995,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if(is_array($indexing_info = $this->search_indexing_config->get(Datamodel::getTableName($subject_tablenum)))) {
 			$indexing_info = $indexing_info[$table]['fields'][$field] ?? null;
 		}
-		if (strtolower($field) == 'count') {
+		if((strtolower($field) == 'count') && !$t_table->hasElement($field)) {
 			if (!is_array($rel_type_ids) || !sizeof($rel_type_ids)) { $rel_type_ids = [0]; }	// for counts must pass "0" as relationship type to pull count for all reltypes in aggregate
 			return array(
 				'access_point' => "{$table}.{$field}",
@@ -2050,7 +2042,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			$t_element = new ca_metadata_elements();
 			
 			$vb_is_count = false;
-			if(strtolower($subfield) == 'count') {
+			if((strtolower($subfield) == 'count') && !$t_table->hasElement($subfield)) {
 				$subfield = null;
 				$vb_is_count = true;
 				if (!is_array($rel_type_ids) || !sizeof($rel_type_ids)) { $rel_type_ids = [0]; }
@@ -2699,7 +2691,9 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if(!$lists) { return null; }
 		if(!is_array($lists)) { $lists = [$lists]; }
 		$key = join('-', $lists);
-		if(CompositeCache::contains($key, 'SqlSearch2SearchExpansionDict')) {
+		
+		$cache_timeout = caGetSearchConfig()->get('expand_search_using_lists_cache_timeout');
+		if(($cache_timeout > 0) && CompositeCache::contains($key, 'SqlSearch2SearchExpansionDict')) {
 			return CompositeCache::fetch($key, 'SqlSearch2SearchExpansionDict');
 		} else {
 			$t_list = new ca_lists();
@@ -2745,7 +2739,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					$dict[$n] = array_unique($dict[$n]);
 				}
 			}
-			CompositeCache::save($key, $dict, 'SqlSearch2SearchExpansionDict');
+			CompositeCache::save($key, $dict, 'SqlSearch2SearchExpansionDict', $cache_timeout);
 			return $dict;
 		}
 	}
