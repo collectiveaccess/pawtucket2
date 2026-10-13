@@ -69,7 +69,7 @@ if($this->request->isLoggedIn()){
 	
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 	<link rel="icon" href="<?= caGetThemeGraphicURL($this->request, 'Favicon-Window.png'); ?>" type="image/x-icon">
-	<meta property="og:image" content="<?= caGetThemeGraphicURL($this->request, 'WHWHP_thumb.jpg'); ?>" />
+	<meta property="og:image" content="<?= $this->request->config->get("site_host").caGetThemeGraphicURL($this->request, 'WHWHP_thumb.jpg'); ?>" />
 	<script>
 		let pawtucketUIApps = {};
 	</script>
