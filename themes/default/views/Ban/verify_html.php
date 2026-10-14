@@ -36,7 +36,7 @@ if(is_array($errors) && sizeof($errors)){
 <?= caFormTag($this->request, 'confirm', 'banCaptcha', 'Ban', 'post', 'multipart/form-data', '_top', ['disableUnsavedChangesWarning' => true]); ?>
 	<div class="bg-light px-4 pt-4 pb-2 mb-4">
 <?php
-	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+	if(defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
 ?>
 		<script type="text/javascript">
 			var gCaptchaRender = function(){
