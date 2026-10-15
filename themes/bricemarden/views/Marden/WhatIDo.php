@@ -1,15 +1,11 @@
 	<div class="row">
-		<div class="col-12">
-			<h1 class="withByLine">This Is What I Do, this is what I try to do<div class="fs-5">Brice Marden</div></h1>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-12 col-md-5 col-lg-4 col-xl-3">
+		<div class="col-12 col-xl-3">
 <?php
 			print $this->render("Marden/marden_subnav.php");
 ?>			
 		</div>
-		<div class="col-12 col-md-6 col-lg-5 mt-5 mt-md-0 normal-p">
+		<div class="col-12 col-xl-9 normal-p">
+			<h1 class="withByLine">This Is What I Do, this is what I try to do<div class="fs-5">Brice Marden</div></h1>
 			<p class="ms-4">
 				Yellow bark acacia, fever acacia, wet areas
 				<br/>misty white blue green, yellow greens
@@ -166,13 +162,15 @@ appearance of things, whereas the function
 of truth is to capture their essence. 
 <br/>&mdash;Shi Tao<a href="#footnote4"><sup>4</sup></a></div>
 
-<div class="mt-5 fs-6 pt-2">
-<div id="footnote1" class="fs-6"><sup>1</sup> This text was given as a lecture by Marden at Tate Modern, London, on May 14, 2012, to inaugurate its American Artist Lecture Series and later published as formatted here in Anfam and Marden 2013, 37–42.</div>
-<div id="footnote2" class="fs-6"><sup>2</sup> <i>The Propitious Garden of Plane Image, Second Version</i> (2000–2006; no. 370) and <i>The Propitious Garden of Plane Image, Third Version</i> (2000–2006; no. 371). </div>
+	<div class="mt-5 fs-6 pt-2">
+		<ol class="fs-6 footnotes">
+			<li id="footnote1">This text was given as a lecture by Marden at Tate Modern, London, on May 14, 2012, to inaugurate its American Artist Lecture Series and later published as formatted here in Anfam and Marden 2013, 37–42.</li>
+			<li id="footnote2"><i>The Propitious Garden of Plane Image, Second Version</i> (2000–2006; no. 370) and <i>The Propitious Garden of Plane Image, Third Version</i> (2000–2006; no. 371). </li>
 
-<div id="footnote3" class="fs-6"><sup>3</sup> <i>Moss Sutra with the Seasons</i> (2010–15; no. 419). </div>
-<div id="footnote4" class="fs-6"><sup>4</sup> Shi Tao was a seventeenth-century Chinese Buddhist monk who was a calligrapher and landscape painter. He wrote several theoretical texts on painting. The exact source of this quotation is not known.  </div>
-
+			<li id="footnote3"><i>Moss Sutra with the Seasons</i> (2010–15; no. 419). </li>
+			<li id="footnote4">Shi Tao was a seventeenth-century Chinese Buddhist monk who was a calligrapher and landscape painter. He wrote several theoretical texts on painting. The exact source of this quotation is not known.  </li>
+		</ol>
+	</div>
 </div>
 			
 			

@@ -62,7 +62,7 @@ if($this->request->isLoggedIn()){
 		<footer id="footer" class="pt-5 pb-3 text-start mt-auto">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-12 text-end">
+					<div class="col-12 text-center text-md-end">
 						<ul class="list-inline">
 							<li class="list-inline-item">&copy; <?= date('Y'); ?> Estate of Brice Marden</li>
 <?php

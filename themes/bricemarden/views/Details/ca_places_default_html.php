@@ -94,7 +94,7 @@ $media_options = array_merge($media_options, [
 	}
 	if(trim($this->getVar("media_viewer"))){
 ?>
-	<div class="row mb-4 mt-1">
+	<div class="row mb-4 mt-1 mb-4">
 		<div class="col-md-6">
 			{{{media_viewer}}}
 		</div>

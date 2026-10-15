@@ -87,7 +87,18 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 						<a class="text-nowrap nav-link<?php print ((strToLower($this->request->getController()) == "marden") || (strToLower($this->request->getController()) == "about")) ? " active" : ""; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php print _t('About'); ?><i class="bi bi-chevron-down ms-1"></i></a>
 						<ul class="dropdown-menu text-nowrap lh-lg ps-2 ps-lg-0">
 							<li><?= caNavlink($this->request, _t('About Brice Marden'), "nav-link".((strToLower($this->request->getController()) == "marden") ? " active" : ""), "", "Marden", "Overview", "", ((strToLower($this->request->getController()) == "marden") ? array("aria-current" => "page") : array())); ?></li>
+<?php
+	$action = strToLower($this->request->getAction());
+?>							
+							
+								<li class="ps-3 d-xl-none"><?= caNavlink($this->request, _t("Brice Marden's Paintings: An Overview"), "nav-link".(($action == "overview") ? " active" : ""), "", "Marden", "Overview", "", (($action == "overview") ? array("aria-current" => "page") : null)); ?></li>
+								<li class="ps-3 d-xl-none"><?= caNavlink($this->request, _t("Statement for Master of Fine Arts"), "nav-link".(($action == "statement") ? " active" : ""), "", "Marden", "Statement", "", (($action == "statement") ? array("aria-current" => "page") : null)); ?></li>
+								<li class="ps-3 d-xl-none"><?= caNavlink($this->request, _t("This is what I do, this is what I try to do"), "nav-link".(($action == "whatido") ? " active" : ""), "", "Marden", "WhatIDo", "", (($action == "whatido") ? array("aria-current" => "page") : null)); ?></li>
+								<li class="ps-3 d-xl-none"><?= caNavlink($this->request, _t("Chronology"), "nav-link".(($action == "chronology") ? " active" : ""), "", "Marden", "Chronology", "", (($action == "chronology") ? array("aria-current" => "page") : null)); ?></li>			
 							<li><?= caNavlink($this->request, _t('About the Catalogue Raisonné'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "NoteReader", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : array())); ?></li>
+								<li class="ps-3 d-xl-none"><?= caNavlink($this->request, _t('Note to the Reader'), "nav-link".(($action == "NoteReader") ? " active" : ""), "", "About", "NoteReader", "", (($action == "NoteReader") ? array("aria-current" => "page") : null)); ?></li>
+								<li class="ps-3 d-xl-none"><?= caNavlink($this->request, _t('Catalogue Raisonné Team'), "nav-link".(($action == "Team") ? " active" : ""), "", "About", "Team", "", (($action == "Team") ? array("aria-current" => "page") : null)); ?></li>
+								<li class="ps-3 d-xl-none"><?= caNavlink($this->request, _t('Acknowledgments'), "nav-link".(($action == "Acknowledgments") ? " active" : ""), "", "About", "Acknowledgments", "", (($action == "Acknowledgments") ? array("aria-current" => "page") : null)); ?></li>
 						</ul>
 					</li>
 					

@@ -1,18 +1,17 @@
 	<div class="row">
-		<div class="col-12">
-			<h1 class="withByLine">Chronology<div class="fs-5">Tiffany Bell and Anna Gray</div></h1>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-12 col-md-5 col-lg-4 col-xl-3">
+		<div class="col-12 col-xl-3">
 <?php
 			print $this->render("Marden/marden_subnav.php");
 ?>			
 		</div>
-		<div class="col-12 col-md-7 col-lg-8 mt-5 mt-md-0 col-xl-9">
+		<div class="col-12 col-xl-9">
+			<div class="row">
+				<div class="col-12">
+					<h1 class="withByLine">Chronology<div class="fs-5">Tiffany Bell and Anna Gray</div></h1>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-12 col-md-6">
-
 					<H2 class="mt-0">
 						1938–56
 					</H2>
@@ -47,14 +46,14 @@
 						Besides meeting other artists—including the painters Pat Steir, Alan Cote, Harvey Quaytman, and Bob Neuwirth (who later became a well-known musician and was Bob Dylan’s road manager for a while but remained a good friend throughout Marden’s life)—and visiting the Boston museums frequently, Marden participated in the folk music scene in Cambridge, Massachusetts, spending time at Club 47, where the singer Joan Baez started her career and folk singer Eric Von Schmidt and blues musicians such as Reverend Gary Davis and Lightnin’ Hopkins were playing.
 					</p>
 				</div>
-				<div class="col-12 col-md-6 ">
-					<div class="mb-5 pb-5">
+				<div class="col-12 col-md-6 pt-5 pt-md-0">
+					<div class="mb-5 pb-md-5">
 						<div class="w-75">
 							<?php print caGetThemeGraphic($this->request, 'chronology/1.jpg', array("alt" => "Black and white photograph of house", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Marden’s childhood home in Briarcliff Manor, New York</div>
 						</div>
 					</div>
-					<div class="my-5 py-5 d-flex justify-content-end">
+					<div class="mb-2 py-md-5 mt-md-5 d-flex justify-content-end">
 						<div class="w-50">
 							<?php print caGetThemeGraphic($this->request, 'chronology/2.jpg', array("alt" => "Marden family portrait", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Marden (at left, age ten) with his family, Briarcliff Manor, New York, June 1949</div>
@@ -198,50 +197,50 @@
 						On September 25, Marden’s first European exhibition opened at Galerie Yvon Lambert, Paris. Before the show, he and Helen spent some time in Paris; he rented a studio and made two paintings, <i>Au Centre</i> (no. 70) and <i>D’après la Marquise de la Solana</i> (no. 73) for inclusion in the show, along with other paintings sent from New York.
 					</p>
 				</div>
-				<div class="col-12 col-md-6 ">
+				<div class="col-12 col-md-6 pt-5 pt-md-0">
 					<div class="d-flex justify-content-end">
-						<div class="w-50 pt-3 pb-5 my-5">
+						<div class="w-50 mb-5 pb-md-5 pt-md-3 my-md-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/3.jpg', array("alt" => "Painting of pine trees", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3"><i>Norfolk Pines</i>, 1961, oil on canvas, 19 × 23 1/2 inches (48.3×59.7cm)</div>
 						</div>
 					</div>
-					<div class="mb-5 pb-5">
+					<div class="mb-5 pb-md-5">
 						<div class="w-75">
 							<?php print caGetThemeGraphic($this->request, 'chronology/4.jpg', array("alt" => "Abstract painting in white, gray and pink", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3"><i>Norfolk</i>, 1961, oil on canvas, dimensions unknown</div>
 						</div>
 					</div>
-					<div class="mb-5 pb-5 d-flex justify-content-center">
+					<div class="mb-5 my-md-5 pb-md-5 d-flex justify-content-center">
 						<div class="w-75">
 							<?php print caGetThemeGraphic($this->request, 'chronology/5.jpg', array("alt" => "Painted portrait of man", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3"><i>Untitled (Student Self-Portrait)</i>, c.1959, oil on canvas, 14 × 23 inches (35.6 × 58.4 cm)</div>
 						</div>
 					</div>
-					<div class="py-5 my-5 d-flex justify-content-end">
+					<div class="pt-0 pb-md-5 py-lg-5 my-5 d-flex justify-content-end">
 						<div class="w-50">
 							<?php print caGetThemeGraphic($this->request, 'chronology/6.jpg', array("alt" => "Man sitting", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Marden outside his apartment and studio at 76 Jefferson Street, NewYork, April 1967</div>
 						</div>
 					</div>
-					<div class="py-5 my-5 d-flex justify-content-end">
+					<div class="pt-0 pb-md-5 py-lg-5 my-5 d-flex justify-content-end">
 						<div class="w-75">
 							<?php print caGetThemeGraphic($this->request, 'chronology/7.jpg', array("alt" => "Artist working in his studio", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Marden in his studio at 76 Jefferson Street, New York; this photo was used to announce his first solo exhibition in New York, Brice Marden, Bykert Gallery, New York, November 15–December 7, 1966</div>
 						</div>
 					</div>
-					<div class=" py-5 my-5 d-flex justify-content-start">
+					<div class="pb-0 mb-5 pb-md-5 py-lg-5 my-lg-5 d-flex justify-content-start">
 						<div class="w-75">
 							<?php print caGetThemeGraphic($this->request, 'chronology/8.jpg', array("alt" => "Men sittig in kitchen", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Robert Rauschenberg and Marden in the kitchen of Rauschenberg’s studio at 381 Lafayette Street, New York, 1968.<br/>Photo by Henri Cartier-Bresson</div>
 						</div>
 					</div>
-					<div class=" py-5 my-5 d-flex justify-content-center">
+					<div class="mb-5 pb-md-5 d-flex justify-content-center">
 						<div class="w-75">
 							<?php print caGetThemeGraphic($this->request, 'chronology/9.jpg', array("alt" => "Invitation with image of nude woman's back and paintings", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Announcement for <i>Brice Marden: Back Series</i>, Bykert Gallery, New York, January 6–31, 1968, showing Helen Harrington in Marden’s studio at 4 Grand Street with two paintings from the Back Series</div>
 						</div>
 					</div>
-					<div class=" py-5 my-5 d-flex justify-content-end">
+					<div class="mb-2 pb-md-5 py-lg-5 my-md-5 d-flex justify-content-end">
 						<div class="w-50">
 							<?php print caGetThemeGraphic($this->request, 'chronology/10.jpg', array("alt" => "Man and woman infront of Eiffel Tower", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Brice and Helen Marden at the Eiffel Tower, Paris, 1969</div>
@@ -368,30 +367,26 @@
 						On September 26, <i>Brice Marden: New Paintings and Drawings</i> opened at Pace Gallery. The show included <i>Thira</i> (no. 178), among other paintings.
 					</p>
 				</div>
-				<div class="col-12 col-md-6 ">
+				<div class="col-12 col-md-6 pt-5 pt-md-0">
 					<div class="d-flex justify-content-end">
-						<div class="w-50 pt-3 pb-5 my-5">
+						<div class="w-75 mb-5 pb-md-5 pt-md-3 my-md-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/11.jpg', array("alt" => "Man and women seated in front of Parthenon", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Brice and Helen Marden at the Parthenon, Athens, 1971</div>
 						</div>
 					</div>
-					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 pb-5 my-5">
+					<div class="w-75 mb-5 my-lg-5 pb-md-5 py-lg-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/12.jpg', array("alt" => "Paintings in gallery", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Brice Marden, Solomon R. Guggenheim Museum, New York, March 7–May 4, 1975. Installation view, showing (from left): <i>Red Yellow Blue III</i> (no.145), <i>Red Yellow Blue I</i> (no.143), and <i>Red Yellow Blue II</i> (no.144)</div>
-						</div>
 					</div>
-					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 pb-5 my-5">
+					<div class="d-flex justify-content-center">
+						<div class="w-50 mb-5 my-lg-5 pb-md-5 py-lg-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/13.jpg', array("alt" => "Artist painting in studio", "class" => "img-fluid mb-2"))."<br>".caGetThemeGraphic($this->request, 'chronology/14.jpg', array("alt" => "Man smoking and speaking to camera", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Outtake and film still from <i>Brice Marden</i> (Tuckernuck Productions, 1977), showing Marden painting in his studio at 74 Grand Street, New York, 1968 (top) and in his studio at 105 Bowery with <i>Moon I</i> (no.166), 1975 (bottom)</div>
 						</div>
 					</div>
-					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 pb-5 my-5">
+					<div class="w-50 mb-2 py-lg-5 my-lg-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/15.jpg', array("alt" => "Painting of stained glass windows", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3"><i>Window Study II (for Basel Munster)</i>, 1983, graphite, watercolor, and ink on honeycomb board, 48 × 48 inches (121.9 × 121.9 cm)</div>
-						</div>
 					</div>
 
 				</div>
@@ -489,33 +484,31 @@
 						Marden acquired the building on Hydra that would become his painting studio. Previously, he had made only small works in Greece. About the new studio, Marden said: “The great thing about that studio in August is that it’s hot and dry. . . . You can paint in the morning, have a big lunch, go for a swim and come back in the afternoon, and the paint’s dry.” He believed the paintings made in Greece were different than those made in his other studios: “Because the light is so bright there, you have to bring the painting up to that light. . . . The Greek pictures are much more high intensity, pure chroma colors.”<a href="#footnote37"><sup>37</sup></a>
 					</p>
 				</div>
-				<div class="col-12 col-md-6 ">
-					<div class="d-flex justify-content-end">
-						<div class="w-50 pt-3 pb-5 my-5">
+				<div class="col-12 col-md-6 pt-5 pt-md-0">
+					<div class="d-flex justify-content-center">
+						<div class="w-75 mb-5 pb-md-5 pt-md-3 my-md-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/16.jpg', array("alt" => "Group sitting on sofa", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Nick, Brice, Mirabelle, and Helen Marden, in their home at West Twelfth Street, New York, 1980.<br/>Photo by Robert Mapplethorpe</div>
 						</div>
 					</div>
-					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 py-5">
+					<div class="d-flex justify-content-center">
+						<div class="w-50 mb-5 my-lg-5 pb-md-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/17.jpg', array("alt" => "Family portrait", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Mirabelle, Brice, Helen, and Melia Marden, 1993.<br/>Photo by Annie Leibovitz</div>
 						</div>
 					</div>
 					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 py-5">
+						<div class="w-50 mb-5 my-lg-5 pb-md-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/18.jpg', array("alt" => "Invitation to exhibition", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3"><i>Brice Marden: New Paintings and Drawings</i>, Pace Gallery, New York, September 26–October 25, 1980. Exhibition announcement, showing Marden in his studio with Thira (1979–80; no.178; in progress)</div>
 						</div>
 					</div>
-					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 py-5">
+					<div class="w-75 mb-5 my-lg-5 pb-md-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/19.jpg', array("alt" => "Artist in front of painting in studio", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Marden in his studio at 276 Bowery, New York, 1989, with <i>Cold Mountain 1 (Path)</i> (1988–89; no.300).<br/>Photo by Brigitte Lacombe</div>
 						</div>
-					</div>
 					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 py-5">
+						<div class="w-75 mb-2 py-lg-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/20.jpg', array("alt" => "Artist working on multiple paintings in studio", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Marden painting (from left): <i>Presentation</i> (1990–92; no.306), <i>The Studio</i> (1990; no.298), and <i>Kalokeri</i> (1990; no.299; all in progress) in his studio in Hydra, Greece, 1990.<br/>Photo by Bill Jacobson</div>
 						</div>
@@ -621,34 +614,29 @@
 						On October 3, <i>Work Books and Series</i>, a version of the earlier <i>Work Books</i> exhibition, opened at the Museum of Fine Arts in Houston.
 					</p>
 				</div>
-				<div class="col-12 col-md-6 ">
-					<div class="d-flex justify-content-end">
-						<div class="w-50 pt-3 pb-5 my-5">
+				<div class="col-12 col-md-6 pt-5 pt-md-0">
+					<div class="d-flex justify-content-center">
+						<div class="w-75 mb-5 pb-md-5 pt-md-3 my-md-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/21.jpg', array("alt" => "Man sitting in front of stone walled building", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Marden outside his studio in Hydra, Greece, 1990.<br/>Photo by Bill Jacobson</div>
 						</div>
 					</div>
-					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 my-5">
+					<div class="w-50 mb-5 my-lg-5 pb-md-5 py-lg-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/22.jpg', array("alt" => "Man standing back from and looking at painting in studio", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Marden in his studio in Eagles Mere, Pennsylvania, 1995 with <i>Skull with Thought</i> (1993–95; no.325; in progress).<br/>Photo by Nan Goldin</div>
-						</div>
 					</div>
 					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 my-5">
+						<div class="w-75 mb-5 my-lg-5 pb-md-5 py-lg-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/23.jpg', array("alt" => "Seashells", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Examples from Marden’s seashell collection, with <i>Uxmal</i> (1991–93; no.311; partial view; in progress) in his studio at 276 Bowery, NewYork, c.1993.<br/>Photo by David Seidner</div>
 						</div>
 					</div>
 					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 my-5">
+						<div class="w-50 mb-2 py-lg-5 my-lg-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/24.jpg', array("alt" => "Bronze, circular award", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Bronze designed by Marden for the William Moses Kunstler Award for Racial Justice, 1996</div>
 						</div>
 					</div>
-					
-					
-					
 				</div>
 			</div>
 			<div class="row">
@@ -732,28 +720,26 @@
 						Marden was awarded the Alexei von Jawlensky Prize by the Museum Wiesbaden in Germany. The museum organized <i>A Retrospective of Prints</i>, which opened on September 28 in recognition of the award. The exhibition traveled to the Museum Kurhaus in Kleve, Germany.
 					</p>
 				</div>
-				<div class="col-12 col-md-6 ">
-					<div class="d-flex justify-content-end">
-						<div class="w-50 pt-3 pb-5 mb-5">
+				<div class="col-12 col-md-6 pt-5 pt-md-0">
+					<div class="w-75 mb-5 pb-md-5 pt-md-3 my-md-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/25.jpg', array("alt" => "Man sitting in studio looking out window", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Marden in his studio at 495 West Street, New York, 2006 with his collection of scholar’s rocks and several paintings in progress.<br/>Photo by Mirabelle Marden</div>
-						</div>
 					</div>
 					
 					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 my-5">
+						<div class="w-75 mb-5 my-lg-5 pb-md-5 py-lg-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/26.jpg', array("alt" => "View looking out window of studio with man outside", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Brice Marden, Brice Marden’s studio, Tivoli, New York, 2013.<br/>Photo by Annie Leibovitz</div>
 						</div>
 					</div>
-					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 my-5">
+					<div class="d-flex justify-content-center">
+						<div class="w-50 mb-5 my-lg-5 pb-md-5 py-lg-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/27.jpg', array("alt" => "Performers on stage in theater", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3"><i>Orfeo ed Euridice</i>, Teatro di San Carlo, Naples, Italy, 2003, featuring Marden’s set design.<br/>Photo by Luciano Romano</div>
 						</div>
 					</div>	
-					<div class="d-flex justify-content-end">
-						<div class="w-50 py-5 my-5">
+					<div class="d-flex justify-content-center">
+						<div class="w-75 mb-2 py-lg-5 my-lg-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/28.jpg', array("alt" => "Installation view of exhibition in museum", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3"><i>Brice Marden: A Retrospective of Paintings and Drawings</i>, Museum of Modern Art, New York, October 29, 2006–January 15, 2007. Installation view, featuring (from left): <i>The Propitious Garden of Plane Image, Third Version</i> (2000–06; no.371) and <i>7 Red Rock 2</i> (2000–02; no.364)</div>
 						</div>
@@ -835,9 +821,9 @@
 						On November 9, <i>Brice Marden: It reminds me of something, and I don’t know what it is.</i> opened at Gagosian’s gallery at 980 Madison Avenue, New York. The exhibition included <i>Yellow Painting</i> (no. 458), <i>Oued</i> (no. 456), and <i>Withwhite</i> (no. 460), among others.
 					</p>
 				</div>
-				<div class="col-12 col-md-6 ">
+				<div class="col-12 col-md-6 pt-5 pt-md-0">
 					<div>
-						<div class="pt-5 pb-5 mb-5">
+						<div class="mb-2 pb-md-5 pt-md-3 my-md-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/29.jpg', array("alt" => "Performers on stage in front of an image of a painting", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3"><i>Four Quartets</i>, Fisher Center, Bard College, Annandale-on-Hudson, New York, 2018, featuring an enlarged reproduction of <i>Thira</i> (1979–80; no.178) as the backdrop.</br>Photo by Maria Baranova</div>
 						</div>
@@ -883,79 +869,87 @@
 						On November 2, <i>Let the painting make you</i>, an exhibition of Marden’s final works, opened at the Gagosian gallery at 980 Madison Avenue in New York.
 					</p>
 				</div>
-				<div class="col-12 col-md-6 ">
+				<div class="col-12 col-md-6 pt-5 pt-md-0">
 					<div class="">
-						<div class="pt-5 pb-5 mb-5">
+						<div class="mb-2 pb-md-5 pt-md-3 my-md-5">
 							<?php print caGetThemeGraphic($this->request, 'chronology/30.jpg', array("alt" => "Artist in wheelchari working on a drawing", "class" => "img-fluid")); ?>
 							<div class="fs-6 pt-3">Marden working on a drawing in Nevis, 2023.<br/>Photo by Mirabelle Marden</div>
 						</div>
 					</div>	
 				</div>
 			</div>
-<div class="mt-5 fs-6 pt-2">
-	<ol class="fs-6 footnotes">
-		<li id="footnote1">Cummings 1972.</li>
-		<li id="footnote2">Marden, [Mirabelle] 2014, 122.The Mardens established a foundation to purchase St. Sylvia’s Church, a historic deconsecrated Catholic church in Tivoli, and turn it into a community center and cultural facility. When the church was purchased, the original stained-glass windows were removed by the Archdiocese of New York. As one of his last projects, Marden designed the replacement windows, which will be posthumously installed (nos. 484–491).</li>
-		<li id="footnote3">Marden, [Mirabelle] 2014, 122.</li>
-		<li id="footnote1">Cummings 1972.</li>
-		<li id="footnote1">Cummings 1972.</li>
-		<li id="footnote6">Grant and Marden 2008, 46.</li>
-		<li id="footnote7">Cummings 1972; Martin 2002, 13.</li>
-		<li id="footnote8">Cummings 1972.</li>
-		<li id="footnote9">Ashbery 1972, 65.</li>
-		<li id="footnote10">Cummings 1972.</li>
-		<li id="footnote11">Marden, interview by Ed Howard, 1976, unpublished transcript, Brice Marden archives, New York,&nbsp;34–35.&nbsp;</li>
-		<li id="footnote12">Martin 2002, 13.</li>
-		<li id="footnote13">Cummings 1972.</li>
-		<li id="footnote14">La Prade 2024, 132–36.&nbsp;</li>
-		<li id="footnote15">Brice Marden to his parents, January 18, 1966, Brice Marden archives, New York.</li>
-		<li id="footnote16">Cummings 1972.</li>
-		<li id="footnote17">Blacklock 2018, 11.</li>
-		<li id="footnote18">See Glueck 1966 and Goldin 1966b, 14.</li>
-		<li id="footnote19">Marden 2008, 437.</li>
-		<li id="footnote20">Cummings 1972.</li>
-		<li id="footnote21">Mirabelle Marden, conversation with the author, New York, September 2025.</li>
-		<li id="footnote22">Cummings 1972.</li>
-		<li id="footnote23">Brice Marden, interviewed by Liza Zapol, April 17, 2012, New York, unpublished transcript, Brice Marden archives, New York.</li>
-		<li id="footnote24">Marta 2006, 130.</li>
-		<li id="footnote25">Josenhans 2021, 38.</li>
-		<li id="footnote26">Josenhans 2021, 34–35.</li>
-		<li id="footnote27">White 1980, 3.</li>
-		<li id="footnote28">Maschke 1991, 29.</li>
-		<li id="footnote29">As quoted in Richardson 1992a, 77.</li>
-		<li id="footnote30">Larson 1991c, 79.</li>
-		<li id="footnote31">Brice Marden to Arne Glimcher, January 17, 1984, in Glimcher and Glimcher 2001, 275.</li>
-		<li id="footnote32">Hay 1997, 24.</li>
-		<li id="footnote33">Transcribed from “Spoken Word: Brice Marden in Conversation with Gary Garrels,” MoMA Audio, 2006, 49:00, Brice Marden archives, New York.</li>
-		<li id="footnote34">Larson 1991c, 80.</li>
-		<li id="footnote35">Spitz 1991, 94.</li>
-		<li id="footnote36">Larson 1991c, 80.</li>
-		<li id="footnote37">Loos 2006, 36.</li>
-		<li id="footnote38">Brenda Richardson, “Even a Stone Knows You,” in&nbsp;Garrels 2006, 91.</li>
-		<li id="footnote39"> Loos 2006.</li>
-		<li id="footnote40"> Reginato 1997, 248.</li>
-		<li id="footnote41">Rales and Nemerov 2018, 30.</li>
-		<li id="footnote42">Hay 1997, 27.</li>
-		<li id="footnote43">Katz 1998a, 29. <strong>[please confirm – no entry for Katz 1999 - YES]</strong></li>
-		<li id="footnote44">As quoted in Richardson,&nbsp;“Even a Stone,” in&nbsp;Garrels 2006, 94.</li>
-		<li id="footnote45">Brice Marden, “Chinese Calligraphy: A Contemporary View," lecture, China Institute, New York, 1995, unpublished transcript, Brice Marden archives, New York,&nbsp;6.</li>
-		<li id="footnote46">Hay 1997, 29.</li>
-		<li id="footnote47">Hay 1997, 29–30.</li>
-		<li id="footnote48">Loos 2006, 36.</li>
-		<li id="footnote49">See Encrevé and Cars 2006.</li>
-		<li id="footnote50"> Connors 2016, 87–88.</li>
-		<li id="footnote51">Encrevé and Cars 2006, 25.</li>
-		<li id="footnote52">“Brice Marden: Abstract Painting,” SFMOMA video, 3:33, July 2014, &nbsp;www.sfmoma.org/watch/brice-marden-abstract-painting-can-take-you-to-paradise/.</li>
-		<li id="footnote53">“Brice Marden,” SFMOMA video.</li>
-		<li id="footnote54">Brice Marden, interviewed by Charlie Rose, November 22, 2006, unpublished transcript, Brice Marden Archives, New York, 3.</li>
-		<li id="footnote55">Marden, interviewed by Rose.</li>
-		<li id="footnote56">Rales and Nemerov 2018, 34.</li>
-		<li id="footnote57">Loos 2014.</li>
-		<li id="footnote58">Belcove 2017.&nbsp;</li>
-		<li id="footnote59">Vogel 2019.</li>
-		<li id="footnote60">Niquet 2021, 77, 80.</li>
-	</ol>
-</div>
+			<div class="row">
+				<div class="col-12 col-md-12">
+
+					<div class="mt-5 fs-6 pt-2">
+						<ol class="fs-6 footnotes">
+							<li id="footnote1">Cummings 1972.</li>
+							<li id="footnote2">Marden, [Mirabelle] 2014, 122.The Mardens established a foundation to purchase St. Sylvia’s Church, a historic deconsecrated Catholic church in Tivoli, and turn it into a community center and cultural facility. When the church was purchased, the original stained-glass windows were removed by the Archdiocese of New York. As one of his last projects, Marden designed the replacement windows, which will be posthumously installed (nos. 484–491).</li>
+							<li id="footnote3">Marden, [Mirabelle] 2014, 122.</li>
+							<li id="footnote1">Cummings 1972.</li>
+							<li id="footnote1">Cummings 1972.</li>
+							<li id="footnote6">Grant and Marden 2008, 46.</li>
+							<li id="footnote7">Cummings 1972; Martin 2002, 13.</li>
+							<li id="footnote8">Cummings 1972.</li>
+							<li id="footnote9">Ashbery 1972, 65.</li>
+							<li id="footnote10">Cummings 1972.</li>
+							<li id="footnote11">Marden, interview by Ed Howard, 1976, unpublished transcript, Brice Marden archives, New York,&nbsp;34–35.&nbsp;</li>
+							<li id="footnote12">Martin 2002, 13.</li>
+							<li id="footnote13">Cummings 1972.</li>
+							<li id="footnote14">La Prade 2024, 132–36.&nbsp;</li>
+							<li id="footnote15">Brice Marden to his parents, January 18, 1966, Brice Marden archives, New York.</li>
+							<li id="footnote16">Cummings 1972.</li>
+							<li id="footnote17">Blacklock 2018, 11.</li>
+							<li id="footnote18">See Glueck 1966 and Goldin 1966b, 14.</li>
+							<li id="footnote19">Marden 2008, 437.</li>
+							<li id="footnote20">Cummings 1972.</li>
+							<li id="footnote21">Mirabelle Marden, conversation with the author, New York, September 2025.</li>
+							<li id="footnote22">Cummings 1972.</li>
+							<li id="footnote23">Brice Marden, interviewed by Liza Zapol, April 17, 2012, New York, unpublished transcript, Brice Marden archives, New York.</li>
+							<li id="footnote24">Marta 2006, 130.</li>
+							<li id="footnote25">Josenhans 2021, 38.</li>
+							<li id="footnote26">Josenhans 2021, 34–35.</li>
+							<li id="footnote27">White 1980, 3.</li>
+							<li id="footnote28">Maschke 1991, 29.</li>
+							<li id="footnote29">As quoted in Richardson 1992a, 77.</li>
+							<li id="footnote30">Larson 1991c, 79.</li>
+							<li id="footnote31">Brice Marden to Arne Glimcher, January 17, 1984, in Glimcher and Glimcher 2001, 275.</li>
+							<li id="footnote32">Hay 1997, 24.</li>
+							<li id="footnote33">Transcribed from “Spoken Word: Brice Marden in Conversation with Gary Garrels,” MoMA Audio, 2006, 49:00, Brice Marden archives, New York.</li>
+							<li id="footnote34">Larson 1991c, 80.</li>
+							<li id="footnote35">Spitz 1991, 94.</li>
+							<li id="footnote36">Larson 1991c, 80.</li>
+							<li id="footnote37">Loos 2006, 36.</li>
+							<li id="footnote38">Brenda Richardson, “Even a Stone Knows You,” in&nbsp;Garrels 2006, 91.</li>
+							<li id="footnote39"> Loos 2006.</li>
+							<li id="footnote40"> Reginato 1997, 248.</li>
+							<li id="footnote41">Rales and Nemerov 2018, 30.</li>
+							<li id="footnote42">Hay 1997, 27.</li>
+							<li id="footnote43">Katz 1998a, 29. <strong>[please confirm – no entry for Katz 1999 - YES]</strong></li>
+							<li id="footnote44">As quoted in Richardson,&nbsp;“Even a Stone,” in&nbsp;Garrels 2006, 94.</li>
+							<li id="footnote45">Brice Marden, “Chinese Calligraphy: A Contemporary View," lecture, China Institute, New York, 1995, unpublished transcript, Brice Marden archives, New York,&nbsp;6.</li>
+							<li id="footnote46">Hay 1997, 29.</li>
+							<li id="footnote47">Hay 1997, 29–30.</li>
+							<li id="footnote48">Loos 2006, 36.</li>
+							<li id="footnote49">See Encrevé and Cars 2006.</li>
+							<li id="footnote50"> Connors 2016, 87–88.</li>
+							<li id="footnote51">Encrevé and Cars 2006, 25.</li>
+							<li id="footnote52">“Brice Marden: Abstract Painting,” SFMOMA video, 3:33, July 2014, &nbsp;www.sfmoma.org/watch/brice-marden-abstract-painting-can-take-you-to-paradise/.</li>
+							<li id="footnote53">“Brice Marden,” SFMOMA video.</li>
+							<li id="footnote54">Brice Marden, interviewed by Charlie Rose, November 22, 2006, unpublished transcript, Brice Marden Archives, New York, 3.</li>
+							<li id="footnote55">Marden, interviewed by Rose.</li>
+							<li id="footnote56">Rales and Nemerov 2018, 34.</li>
+							<li id="footnote57">Loos 2014.</li>
+							<li id="footnote58">Belcove 2017.&nbsp;</li>
+							<li id="footnote59">Vogel 2019.</li>
+							<li id="footnote60">Niquet 2021, 77, 80.</li>
+						</ol>
+					</div>
+
+
+				</div>
+			</div>
+
 
 
 		</div>

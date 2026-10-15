@@ -65,7 +65,7 @@ if($show_nav){
 	
 	
 ?>
-	<div class="row mt-n4">
+	<div class="row mt-n4 mb-4">
 		<div class="col text-center text-md-end">
 			<nav aria-label="result"><?= $results_link.$previous_link.$next_link; ?></nav>
 		</div>

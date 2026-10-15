@@ -130,13 +130,13 @@ $subject = $this->getVar("subject");
 <!-- START: Full-window media overlay display <div>'s -->
 <dialog id="mediaviewer-overlay" class="mediaviewer-overlay position-fixed w-100 h-100 mw-100 mh-100 top-0 start-0 bg-white bg-opacity-75 p-0 m-0 overflow-hidden">
 	<div class="mediaviewer-overlay-controls bg-dark">
-		<div class="mediaviewer-overlay-navigation">
+		<div class="mediaviewer-overlay-navigation pt-2">
 			<button type="button" id="mediaviewer-overlay-previous" class="btn btn-link btn-lg p-0 text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);' role='button' aria-label='previous slide'><i class="bi bi-arrow-left"></i></button>
 			<button type="button" id="mediaviewer-overlay-next" class="btn btn-link btn-lg p-0 text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);' role='button' aria-label='next slide'><i class="bi bi-arrow-right"></i></button>
 			<span id="media-count" class="fs-5 ps-3"></span>
 		</div>
 		<div id="mediaviewer-overlay-caption" class="mediaviewer-caption"></div>
-		<div class="mediaviewer-overlay-close">
+		<div class="mediaviewer-overlay-close pt-2">
 			<button type="button" class="btn btn-link btn-lg p-0 text-light" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();' role='button' aria-label='close dialog'><i class="bi bi-x-lg"></i></button>
 		</div>
 	</div>

@@ -115,9 +115,9 @@ if (!$ajax) {	// !ajax
 					foreach($va_views as $view => $va_view_info) {
 						print "<li class='list-inline-item me-1'>";
 						if ($current_view === $view) {
-							print '<button class="btn btn-dark btn-sm disabled" aria-label="'.$view.'"  title="'.$view.'"><i class="bi '.$va_view_icons[$view]['icon'].'"></i></button>';
+							print '<button class="btn btn-white btn-sm disabled opacity-100 px-1" aria-label="'.$view.'"  title="'.$view.'"><i class="bi '.$va_view_icons[$view]['icon_selected'].'"></i></button>';
 						} else {
-							print caNavLink($this->request, '<i class="bi '.$va_view_icons[$view]['icon'].'"></i>', 'btn btn-light btn-sm', '*', '*', '*', array('view' => $view, 'key' => $browse_key), array("title" => $view, "aria-label" => $view));
+							print caNavLink($this->request, '<i class="bi '.$va_view_icons[$view]['icon'].'"></i>', 'btn btn-white btn-sm px-1', '*', '*', '*', array('view' => $view, 'key' => $browse_key), array("title" => $view, "aria-label" => $view));
 						}
 						print "</li>\n";
 					}

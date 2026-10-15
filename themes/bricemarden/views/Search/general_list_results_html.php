@@ -45,7 +45,7 @@
 			print "<dd class='col-12 col-md-6 mt-0 mt-md-4 text-md-end'>".caNavLink($this->request, _t("Full Results")."  &rsaquo;", "fs-3", "", "Search", $vs_block, array("search" => $vs_search))."</dd>";
 		}
 		while($qr_results->nextHit()) {
-			print "<dd>";
+			print "<dd class='mb-0'>";
 			print $qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values));
 			
 			$vn_i++;
