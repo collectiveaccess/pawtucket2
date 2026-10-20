@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2025 Whirl-i-Gig
+ * Copyright 2008-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -59,7 +59,7 @@ $_ca_attribute_settings['TextAttributeValue'] = array(		// global
 		'width' => 60, 'height' => 1,
 		'default' => '',
 		'label' => _t('Regular expression to validate input with'),
-		'description' => _t('A Perl-format regular expression with which to validate the input. Input not matching the expression will be rejected. Do not include the leading and trailling delimiter characters (typically "/") in your expression. Leave blank if you don\'t want to use regular expression-based validation.')
+		'description' => _t('A Perl-format regular expression with which to validate the input. Input not matching the expression will be rejected. Do not include the leading and trailing delimiter characters (typically "/") in your expression. Leave blank if you don\'t want to use regular expression-based validation.')
 	),
 	'fieldWidth' => array(
 		'formatType' => FT_NUMBER,
@@ -229,7 +229,7 @@ $_ca_attribute_settings['TextAttributeValue'] = array(		// global
 		'formatType' => FT_TEXT,
 		'displayType' => DT_FIELD,
 		'default' => '',
-		'width' => 90, 'height' => 4,
+		'width' => '670px', 'height' => 12,
 		'label' => _t('Dependent value template'),
 		'validForNonRootOnly' => 1,
 		'description' => _t('Template to be used to format content for dependent values. Template should reference container values using their bare element code prefixed with a caret (^). Do not include the table or container codes.')
@@ -250,6 +250,16 @@ $_ca_attribute_settings['TextAttributeValue'] = array(		// global
 		'width' => "200px", 'height' => 1,
 		'label' => _t('Reference media in'),
 		'description' => _t('Allow in-line references in text to a media element.')
+	),
+	'expandSearchUsingList' => array(
+		'formatType' => FT_TEXT,
+		'displayType' => DT_SELECT,
+		'showLists' => true,
+		'allowNull' => true,
+		'default' => '',
+		'width' => "200px", 'height' => 1,
+		'label' => _t('Expand searches using list'),
+		'description' => _t('Expand text searches on this element using the specified list.')
 	),
 	'moveArticles' => array(
 		'formatType' => FT_NUMBER,
@@ -287,7 +297,7 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 		
 		// process reference tags
 		if ($g_request && caGetOption('doRefSubstitution', $options, __CA_APP_TYPE__ == 'PAWTUCKET')) {
-			return caProcessReferenceTags($g_request, $this->ops_text_value);
+			return caProcessReferenceTags($g_request, $this->ops_text_value, ['value_id' => $this->opn_value_id, 'context' => 'attribute']);
 		}
 		
 		if(caGetOption('stripEnclosingParagraphTags', $options, false)) {
@@ -437,6 +447,20 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 									SpecialCharactersLatin, SpecialCharactersMathematical, SpecialCharactersText, Strikethrough, 
 									Subscript, Superscript, TextTransformation, TodoList, Underline, Undo, LinkImage, ResizableHeight
 								],
+								htmlSupport: {
+									allow: [
+										{
+											name: 'a',
+											attributes: ['name', 'id'] 
+										},
+										{
+											name: /(div|p|h[1-6])/,
+											attributes: ['id', 'class']
+										},
+										{ name: 'details' },
+										{ name: 'summary' }
+									]
+								},
 								toolbar: {
 									items: ".json_encode(caGetCK5Toolbar()).",
 									shouldNotGroupWhenFull: true
