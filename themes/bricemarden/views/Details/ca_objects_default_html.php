@@ -109,15 +109,6 @@ if($show_nav){
 					<ifdef code="ca_objects.inscription_text"><br/>^ca_objects.inscription_text</ifdef>
 				</div>
 				<ifdef code='ca_objects.sort_number'><div class="pb-4 fullHeightNumbers"><div class='fst-italic'>Catalogue Number</div>^ca_objects.sort_number</div></ifdef>
-				<ifdef code="ca_objects.creation_location">
-					<div class='pb-4'><div class='fst-italic'>Studio (list field)</div>
-<?php
-					if($creation_location = caGetBrowseLinks($t_object, 'ca_objects.creation_location', ['template' => '<div><l>^ca_objects.creation_location</l></div>', 'linkTemplate' => '^LINK'])) {
-						print join("", $creation_location);
-					}
-?>
-					</div>
-				</ifdef>
 				<ifcount code="ca_places" restrictToRelationshipTypes="created" min="1">
 					<dt><?= _t('Studio'); ?></dt>
 					<unit relativeTo="ca_places" delimiter="" restrictToRelationshipTypes="created"><dd><l>^ca_places.preferred_labels</l></dd></unit>
