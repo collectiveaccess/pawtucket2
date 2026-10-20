@@ -185,7 +185,7 @@ function caGetLightboxDisplayName($o_lightbox_config = null){
 /** 
  *
  */
-function caDisplayLightbox(RequestHTTP $request) : bool {z
+function caDisplayLightbox(?RequestHTTP $request) : bool {
 	if($request->isLoggedIn() && !$request->config->get("disable_lightbox")) {
 		return true;
 	} else {
