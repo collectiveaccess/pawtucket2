@@ -113,6 +113,7 @@ function caGetLightboxesForItem(BaseModel $t_subject) {
  *
  */
 function caItemIsInUserLightbox(BaseModel|SearchResult $t_subject, ?int $user_id, ?array $options=null) {
+	if(!caDisplayLightbox()) { return false; }
 	$t_set = new ca_sets();
 	$item_set_ids = $t_set->getSetIDsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), []);
 	
@@ -184,7 +185,7 @@ function caGetLightboxDisplayName($o_lightbox_config = null){
 /** 
  *
  */
-function caDisplayLightbox(RequestHTTP $request) : bool {
+function caDisplayLightbox(RequestHTTP $request) : bool {z
 	if($request->isLoggedIn() && !$request->config->get("disable_lightbox")) {
 		return true;
 	} else {
