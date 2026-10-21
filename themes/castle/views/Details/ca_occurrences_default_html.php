@@ -63,7 +63,7 @@
 				{{{representationViewer}}}
 <?php
 				$vs_rel_doc = "";
-				if ($va_related_documents = $t_item->get('ca_occurrences.attachment', array('returnWithStructure' => true))) {
+				if ($va_related_documents = $t_item->get('ca_occurrences.attachment.thumbnail', array('returnWithStructure' => true))) {
 					$o_db = new Db();
 					$vn_media_element_id = ca_metadata_elements::getElementID('attachment');
 					foreach ($va_related_documents as $va_key => $va_related_document_t) {
@@ -92,7 +92,7 @@
 					
 					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l></unit>}}}
+					{{{<unit relativeTo="ca_occurrences.related" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
 					
 					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
