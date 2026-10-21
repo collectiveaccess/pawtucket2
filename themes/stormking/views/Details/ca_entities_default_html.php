@@ -32,21 +32,22 @@
 				</div>		
 			</div><!-- end row -->
 			<div class="row">			
-				<div class='col-sm-6 col-md-6 col-lg-6'>
+<?php
+				$vs_bio = $t_item->getWithTemplate('<unit relativeTo="ca_entities.biography"><if rule="^ca_entities.biography.display_bio =~ /yes/">^ca_entities.biography.bio_text</if></unit>');
+?>
+				<div class='<?php print ($vs_bio) ? "col-sm-6 col-md-6 col-lg-6 text-center" : "col-sm-12 text-center"; ?>'>
 <?php
 					if($va_primary_rep = $t_item->getPrimaryRepresentation(array('version' => 'page'), null, array('return_with_access' => $va_access_values))){
 						print "<div class='repViewerCont'>".$va_primary_rep["tags"]["page"]."</div>";
 						print $t_item->getWithTemplate($va_config_options['representationViewerCaptionTemplate']);
 					}
 ?>	
-				</div><!-- end col -->
-				<div class='col-sm-6 col-md-6 col-lg-6'>
+				</div><!-- end col -->				
 <?php
-					if ($vs_bio = $t_item->get('<unit relativeTo="ca_entities.biography"><if rule="^ca_objects.biography.display_bio =~ /yes/">^ca_entities.biography.bio_text</if></unit>')) {
-						print $vs_bio;
+					if (trim($vs_bio)) {
+						print "<div class='col-sm-6 col-md-6 col-lg-6'>".$vs_bio."</div><!-- end col -->";
 					}					
-?>					
-				</div><!-- end col -->
+?>								
 			</div><!-- end row -->
 <?php
 		#Related Artworks	
