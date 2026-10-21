@@ -240,11 +240,11 @@
 								}
 							}
 							if(is_array($va_future_events) && sizeof($va_future_events)){
-								print "<div class='unit'><H6>Upcoming Event".((sizeof($va_future_events) > 1) ? "s" : "")."</H6>".join($va_future_events, " ")."</div>";
+								print "<div class='unit'><H6>Upcoming Event".((sizeof($va_future_events) > 1) ? "s" : "")."</H6>".join(" ", $va_future_events)."</div>";
 							}
 							if(is_array($va_past_events) && sizeof($va_past_events)){
 								$va_past_events = array_reverse($va_past_events);
-								print "<div class='unit'><H6>Past Event".((sizeof($va_past_events) > 1) ? "s" : "")."</H6>".join($va_past_events, " ")."</div>";
+								print "<div class='unit'><H6>Past Event".((sizeof($va_past_events) > 1) ? "s" : "")."</H6>".join("", $va_past_events)."</div>";
 							}
 						}
 ?>
