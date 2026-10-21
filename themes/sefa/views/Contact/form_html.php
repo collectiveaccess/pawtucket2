@@ -128,12 +128,12 @@
 	</div>	
 	<div class="col-sm-4 col-md-3 col-md-offset-1">
 	 	<div class="thumbnail">
-	 		<?php print caGetThemeGraphic($this->request, 'SEFA-StorefrontNYC-sm.jpg', array('alt' => 'Exterior of Susan Eley Fine Art, NYC')); ?>
-	 		<small>NYC</small>
+	 		<?php print caGetThemeGraphic($this->request, 'SEFA-HUDSON-vert.jpg', array('alt' => 'Exterior of Susan Eley Fine Art Hudson NY')); ?>
+	 		<small>Installation View of Ellen Hermanos, Flora Inhabited, 2022, SEFA Hudson</small>
 	 	</div>
 	 	<div class="thumbnail">
-	 		<?php print caGetThemeGraphic($this->request, 'SEFA-HUDSON-vert.jpg', array('alt' => 'Exterior of Susan Eley Fine Art Hudson NY')); ?>
-	 		<small>Hudson, NY</small>
+	 		<?php print caGetThemeGraphic($this->request, 'interiorHester2.jpg', array('alt' => 'Installation View of Redefine at SEFA Hudson')); ?>
+	 		<small>Francie Hester, Installation View of Redefine at SEFA Hudson, 2021, Image by Greg Staley</small>
 	 	</div>
 	</div>
 </div>

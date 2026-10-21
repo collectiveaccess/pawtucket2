@@ -35,6 +35,11 @@
 			#print $va_object["object_id"]." - ";
 		}
 	}
+	# --- how to  order artworks...either the user defined order or artwork date (default)
+	$vs_artwork_sort = "date";
+	if($t_item->get("ca_entities.artworkOrder", array("convertCodesToDisplayText" => true)) == "User defined order"){
+		$vs_artwork_sort = "userDefined";
+	}
 ?>	
 	<div class="row contentbody_sub">
 
@@ -143,7 +148,9 @@
 							$va_images[$q_objects->get("ca_objects.date_created").".".$q_objects->get("ca_objects.object_id")] = array("object_id" => $q_objects->get("ca_objects.object_id"), "image" => $vs_image, "caption" => sefaFormatCaption($this->request, $q_objects));
 						}
 					}
-					krsort($va_images);
+					if($vs_artwork_sort == "date"){
+						krsort($va_images);
+					}
 ?>
 					<div class="jcarousel-wrapper">
 						<!-- Carousel -->
@@ -255,7 +262,10 @@
 							$va_images[$q_objects->get("ca_objects.date_created").".".$q_objects->get("ca_objects.object_id")] = "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $q_objects->get("ca_object_representations.media.thumbnail300square"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "works", "id" => $q_objects->get("object_id"), "artworkType" => $ps_artwork_type), null, array("type_id" => $t_item->get("type_id")))."</div>";
 						}
 					}
-					krsort($va_images);
+					
+					if($vs_artwork_sort == "date"){
+						krsort($va_images);
+					}
 					print join(" ", $va_images);
 				}
 ?>
