@@ -416,6 +416,10 @@ nav, .navbar, .navbar-default{
 	color:#717B67;
 }
 
+
+.detail a{
+	color:#006E9D;
+}
 /* browse results */
 .browse .btn{
 	background-color:#006E9D;
@@ -629,6 +633,12 @@ div.detailRelatedTitle{
 }
 #placeMapContainer{
 	margin-bottom:30px;
+}
+@media(max-width:767px){
+	#placeMapContainer{
+		margin-left:30px;
+		margin-right:30px;
+	}
 }
 .btn.btn-default.text-left{
 	text-align:left;

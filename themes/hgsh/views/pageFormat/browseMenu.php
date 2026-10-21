@@ -38,7 +38,7 @@
 <?php
 						print "<li>".caNavLink($this->request, "<span class='glyphicon glyphicon-play'></span>History", '', '', 'Detail', 'collections/64')."</li>";
 						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-							if($vs_browse_name != 'articles'){
+							if(!in_array($vs_browse_name, array("people", "articles"))){
 								print "<li class='{$vs_browse_name}'>".caNavLink($this->request, "<span class='glyphicon glyphicon-play'></span>".caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, '')."</li>";
 								if($vs_browse_name == "places"){
 									# --- put news link after places

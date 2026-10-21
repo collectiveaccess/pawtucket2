@@ -30,7 +30,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
-	<link href="http://fonts.googleapis.com/css?family=Gudea:400,400italic,700" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Gudea:400,400italic,700" rel="stylesheet" type="text/css">
 	
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
 
@@ -44,7 +44,16 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
-
+<?php
+	//
+	// Pull in JS and CSS for debug bar
+	// 
+	if(Debug::isEnabled()) {
+		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
+		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
+		print $o_debugbar_renderer->renderHead();
+	}
+?>
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108626782-1"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -60,7 +69,7 @@
 			<div class="row">
 				<div class="col-xs-12 col-sm-10">
 <?php
-					print "<div class='headerTitle'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'hgsh_title2.png', array('title' => _t('Hampstead Garden Suburb Heritage'))), "", "", "","")."</div>";
+					print "<div class='headerTitle'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'hgsh_title3.png', array('title' => _t('Hampstead Garden Suburb Heritage'))), "", "", "","")."</div>";
 ?>		
 				</div><!-- end col -->
 				<div class="col-sm-2">
@@ -106,7 +115,7 @@
 <?php
 						print $this->render("pageFormat/browseMenu.php");
 ?>
-					<li><?php print caNavLink($this->request, _t("About HGS Heritage"), '', '', 'About', 'HGSH'); ?></li>
+					<li><?php print caNavLink($this->request, _t("About HGS Virtual Museum"), '', '', 'About', 'HGSH'); ?></li>
 					<li><?php print caNavLink($this->request, _t("Contact Details"), '', '', 'About', 'contact_details'); ?></li>
 					<li><?php print caNavLink($this->request, _t("Donate"), '', '', 'About', 'donate'); ?></li>
 				</ul>
