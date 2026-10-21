@@ -59,7 +59,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-5 col-md-7 col-sm-12 col-xs-12">
-						<H1>The Student <br/>Work Collection</H1>
+						<H1>The Architecture Archive</H1>
 						<p>{{{home_page_intro}}}</p>
 						<div class="jcarousel-paginationHero jcarousel-pagination"><!-- Pagination items will be generated in here --></div>
 

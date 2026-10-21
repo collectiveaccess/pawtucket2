@@ -281,7 +281,7 @@
 															$va_aat_terms = $t_item->get("ca_occurrences.subject_aat", array("returnWithStructure" => true));
 				
 												
-															if((is_array($va_list_items) && sizeof($va_list_items)) || (is_array($va_lcsh_terms) && sizeof($va_lcsh_terms))){
+															if((is_array($va_list_items) && sizeof($va_list_items)) || (is_array($va_lcsh_terms) && sizeof($va_lcsh_terms)) || (is_array($va_aat_terms) && sizeof($va_aat_terms))){
 																$va_terms = array();
 																if(is_array($va_list_items) && sizeof($va_list_items)){
 																	foreach($va_list_items as $va_list_item){
@@ -299,7 +299,7 @@
 																	$va_aat_terms = array_pop($va_aat_terms);
 																	foreach($va_aat_terms as $vn_term_id => $va_aat_term){
 																		$vs_tmp = substr($va_aat_term["subject_aat"], 0, strpos($va_aat_term["subject_aat"], " ["));
-																		$va_terms[] = caNavLink($this->request, $va_aat_term["aat"], "", "", "Search", "exhibitions", array("search" => $va_aat_term["aat"]));
+																		$va_terms[] = caNavLink($this->request, $va_aat_term["subject_aat"], "", "", "Search", "exhibitions", array("search" => $va_aat_term["subject_aat"]));
 																	}
 																}
 																

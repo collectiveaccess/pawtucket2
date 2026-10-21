@@ -351,7 +351,7 @@ if($vb_ajax){
 												$va_aat_terms = $t_object->get("aat", array("returnWithStructure" => true));
 	
 									
-												if((is_array($va_list_items) && sizeof($va_list_items)) || (is_array($va_lcsh_terms) && sizeof($va_lcsh_terms))){
+												if((is_array($va_list_items) && sizeof($va_list_items)) || (is_array($va_lcsh_terms) && sizeof($va_lcsh_terms)) || (is_array($va_aat_terms) && sizeof($va_aat_terms))){
 													$va_terms = array();
 		 											if(is_array($va_list_items) && sizeof($va_list_items)){
 														foreach($va_list_items as $va_list_item){
