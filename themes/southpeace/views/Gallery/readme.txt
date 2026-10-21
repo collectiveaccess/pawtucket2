@@ -1,0 +1,2 @@
+#This directory is intentionally left blank, as all views will fall back to those in the "default" theme.  
+#To override a view, copy it from the default theme into the appropriate folder in your custom theme.
