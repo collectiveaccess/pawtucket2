@@ -57,30 +57,17 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="row">
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 							<label for="name"><?php print _t("Name"); ?></label>
 							<input type="text" class="form-control input-sm" aria-label="<?php print _t("Enter name"); ?>" name="name" value="{{{name}}}">
 						</div>
 					</div><!-- end col -->
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
 							<label for="email"><?php print _t("Email address"); ?></label>
 							<input type="text" class="form-control input-sm" aria-label="<?php print _t("Enter email"); ?>" id="email" name="email" value="{{{email}}}">
 						</div>
-					</div><!-- end col -->
-					<div class="col-sm-4">
-						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-							<label for="security"><?php print _t("Security Question"); ?></label>
-							<div class='row'>
-								<div class='col-sm-6'>
-									<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-								</div>
-								<div class='col-sm-6'>
-									<input name="security" value="" id="security" type="text" class="form-control input-sm" />
-								</div>
-							</div><!--end row-->	
-						</div><!-- end form-group -->
 					</div><!-- end col -->
 				</div><!-- end row -->
 			</div><!-- end col -->
@@ -105,9 +92,9 @@
 
 
 			<div class="row">
-				<div class="col-sm-12 col-md-offset-1 col-md-10">
+				<div class="col-sm-12">
 					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
-						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+						<div id="regCaptcha"></div>
 					</div>
 				</div>
 			</div><!-- end row -->
