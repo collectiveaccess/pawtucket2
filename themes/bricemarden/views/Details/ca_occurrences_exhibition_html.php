@@ -117,7 +117,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<div class="col"><h2 class="fw-normal fst-italic fs-5">Exhibited Artworks</h2></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'artworks', array('facet' => 'exhibition_facet', 'id' => $t_item->get("ca_occurrences.occurrence_id"))); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'artworks', array('view' => 'images', 'facet' => 'exhibition_facet', 'id' => $t_item->get("ca_occurrences.occurrence_id"))); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
 	</div>

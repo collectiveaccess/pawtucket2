@@ -208,10 +208,10 @@ window.addEventListener('load', function(evt) {
     }   
 });
 </script>
-{{{<ifcount code="ca_objects.related" min="1">
+{{{<ifcount code="ca_objects.related" min="1" restrictToType="artwork">
 	<div class="row mt-5"><div class="col"><h2>Related Artwork<ifcount code="ca_objects.related" min="s">s</ifcount></h2></div></div>
 	<div class="row" id="browseResultsContainer">
-		<unit relativeTo="ca_objects.related" delimiter="">
+		<unit relativeTo="ca_objects.related" delimiter="" restrictToType="artwork">
 			<div class="col-md-6 col-lg-4 d-flex">
 				<div class="card flex-grow-1 width-100 rounded-0 border-0 mb-4 px-0">
 					<l>^ca_object_representations.media.large%class=card-img-top,object-fit-contain,pt-3,rounded-0</l>

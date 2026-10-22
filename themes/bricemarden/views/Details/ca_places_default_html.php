@@ -118,7 +118,7 @@ $media_options = array_merge($media_options, [
 		<div class="col"><h2 class="fw-normal fst-italic fs-5">Artworks</h2></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
-		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'artworks', array('facet' => 'creation_place_facet', 'id' => $t_item->get("ca_places.place_id"))); ?>">
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'artworks', array('view' => 'images', 'facet' => 'creation_place_facet', 'id' => $t_item->get("ca_places.place_id"))); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>
 	</div>

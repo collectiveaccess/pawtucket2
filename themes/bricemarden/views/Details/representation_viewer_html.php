@@ -116,7 +116,7 @@ $subject = $this->getVar("subject");
 </div>
 <!-- END: Primary media display <div>'s -->
 <!-- START: Media viewer caption -->
-
+<?php print ($subject->tableName() == "ca_places") ? "<div id='mediaviewer-caption'></div>" : ""; ?>
 <!-- END: Media viewer caption -->
 <!-- START: Media viewer controls -->
 <div class="row pt-1">
