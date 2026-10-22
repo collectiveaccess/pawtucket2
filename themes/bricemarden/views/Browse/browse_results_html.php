@@ -176,7 +176,7 @@ if (!$ajax) {	// !ajax
 		</div>
 <?php				
 		if($facet_description){
-			print "<div class='py-3'>";
+			print "<div class='py-3 facet-description'>";
 			if($facet_description_title){
 				print "<H3 class='fs-4'>".$facet_description_title."</H3>";
 			}

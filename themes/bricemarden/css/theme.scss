@@ -84,6 +84,19 @@ dd {
 .text-small{
 	font-size: 0.75rem !important;
 }
+.facet-description{
+	ol li::marker {
+		font-variant-numeric: oldstyle-nums;
+	}
+	ol{
+		margin-left:0px;
+		padding-left:0px;
+		li {
+			list-style-position: inside;
+			font-size: 0.75rem !important;
+		}
+	}	
+}
 /* ------------------------- navbar -------------------------- */
 nav{
 	.bi{
