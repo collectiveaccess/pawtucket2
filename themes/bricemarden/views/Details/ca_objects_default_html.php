@@ -111,7 +111,7 @@ if($show_nav){
 				<ifdef code='ca_objects.sort_number'><div class="pb-4 fullHeightNumbers"><div class='fst-italic'>Catalogue Number</div>^ca_objects.sort_number</div></ifdef>
 				<ifcount code="ca_places" restrictToRelationshipTypes="created" min="1">
 					<dt><?= _t('Studio'); ?></dt>
-					<unit relativeTo="ca_places" delimiter="" restrictToRelationshipTypes="created"><dd><l>^ca_places.preferred_labels</l></dd></unit>
+					<unit relativeTo="ca_places" delimiter="" restrictToRelationshipTypes="created"><dd class="mb-0"><l>^ca_places.preferred_labels</l></dd></unit>
 				</ifcount>
 			}}}
 		</div>
