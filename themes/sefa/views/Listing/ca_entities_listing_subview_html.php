@@ -46,8 +46,9 @@
 		$qr_list->seek(0);
 		$va_images = caGetDisplayImagesForAuthorityItems("ca_entities", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("creator_website"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
 		while($qr_list->nextHit()) {
+			$estate = "";
 			$estate = (strtolower($qr_list->getWithTemplate("^ca_entities.estate")) == "yes") ? "Estate of " : "";
-			print "<div class='col-sm-4 artistListing'>".caDetailLink($this->request, $va_images[$qr_list->get("entity_id")], '', 'ca_entities', $qr_list->get("entity_id"))."<h1>".$qr_list->getWithTemplate('<l>'.$estate.'Estate of </if>^ca_entities.preferred_labels.displayname</l>', null, null, array("type_id" => $qr_list->get("type_id")))."</h1></div>\n";	
+			print "<div class='col-sm-4 artistListing'>".caDetailLink($this->request, $va_images[$qr_list->get("entity_id")], '', 'ca_entities', $qr_list->get("entity_id"))."<h1>".$qr_list->getWithTemplate('<l>'.$estate.'^ca_entities.preferred_labels.displayname</l>', null, null, array("type_id" => $qr_list->get("type_id")))."</h1></div>\n";	
 		}
 		print "</div><!-- end row -->\n";
 	}
