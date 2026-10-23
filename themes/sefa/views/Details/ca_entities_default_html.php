@@ -44,7 +44,7 @@
 	<div class="row contentbody_sub">
 
 		<div class="col-sm-3 subnav">
-			<H1><?php print $t_item->get("ca_entities.preferred_labels.displayname"); ?></H1>	
+			<H1><?php print ((strtolower($t_item->getWithTemplate("^ca_entities.estate")) == "yes") ? "<span class='small-text'>Estate of</span><br>" : "").$t_item->get("ca_entities.preferred_labels.displayname"); ?></H1>	
 			<ul>
 				<li<?php print ($ps_view == "works") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Selected Works"), '', 'ca_entities', $t_item->get("entity_id"), null, null, array("type_id" => $t_item->get("type_id"))); ?></li>
 				<li<?php print ($ps_view == "exhibitions") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Exhibitions"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "exhibitions"), null, array("type_id" => $t_item->get("type_id"))); ?></li>
