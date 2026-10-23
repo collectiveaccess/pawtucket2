@@ -177,8 +177,8 @@
 <?php
 					if($q_objects->numHits() > 1){
 ?>
-						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left" aria-label="previous"></i></a>
-						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right" aria-label="next"></i></a>
+						<a href="#" class="jcarousel-control-prev"><i class="fas fa-long-arrow-alt-left" aria-label="previous"></i></a>
+						<a href="#" class="jcarousel-control-next"><i class="fas fa-long-arrow-alt-right" aria-label="next"></i></a>
 <?php
 					}
 ?>
