@@ -54,7 +54,7 @@
 							<li>Copyright © <?php print date("Y"); ?> Manuscript Cookbooks Survey</li>
 							<li>All Rights Reserved</li>
 							<li>Library Website Design by Acorn Digital Marketing</li>
-							<li>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2017</a></li>
+							<li><a href="mailto:info@manuscriptcookbookssurvey.org">info@manuscriptcookbookssurvey.org</a></li>
 						</ul>
 					</div>
 				</div>
