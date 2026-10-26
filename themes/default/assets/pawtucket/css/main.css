@@ -3025,15 +3025,10 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 }
 
 .caAudioPlayer {
-	position: absolute;
-	top: 50%;
-	left:0;
-	right:0;
+	position: relative;
 	margin-left: auto;
 	margin-right: auto;
 	padding: 0px;
-	width: 50%;
-	height: 40px;
 }
 
 .caAudioPlayerEmbedded {
@@ -3086,7 +3081,7 @@ div.caMediaOverlayControls {
 .plyr video {
 	height: 100%;
 	width: 100%;
-	object-fit: fill;
+	object-fit: contain;
 }
 .plyr__poster {
 	background-size: contain;
@@ -3360,7 +3355,7 @@ div.caMediaOverlayControls {
 	margin-right:20px;
 	text-align:right;
 }
-.advancedFormSubmit a:hover {
+.advancedFormSubmit a:hover, .advancedFormSubmit a:focus, .advancedFormSubmit a:active  {
 	text-decoration:none;
 	color: #fff;
 }
