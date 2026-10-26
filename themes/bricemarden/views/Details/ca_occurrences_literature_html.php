@@ -94,6 +94,10 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				<dd class="mb-0">
 					<H1 class="pb-4 mb-0">^ca_occurrences.lit_citation</H1>
 				</dd>
+				<ifdef code="ca_occurrences.url">
+					<dt class='pt-3 mb-2'><?= _t('URL'); ?></dt>
+					<dd class='mb-2'><a href="^ca_occurrences.url" target="_blank">^ca_occurrences.url</a></dd>
+				</ifdef>
 					<ifcount code="ca_occurrences.related" min="1" restrictToTypes="exhibition">
 						<dt class='pt-0 mb-2'><?= _t('Related Exhibitions'); ?></dt>
 						<unit relativeTo="ca_occurrences.related" delimiter="" restrictToTypes="exhibition"><dd class='mb-2'><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>

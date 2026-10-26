@@ -178,7 +178,7 @@ if($show_nav){
 			<div id="readMoreCol3" class="readMore">
 				<dl>
 					<dt class='pt-3 mb-2'><?= _t('Literature'); ?></dt>
-					<?php print str_replace(array("<p>", "</p>"), array("", ""), $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_occurrences" delimiter="" restrictToTypes="literature" restrictToRelationshipTypes="references"><dd class="mb-2"><l>^ca_occurrences.lit_citation<ifdef code="ca_objects_x_occurrences.citation">, ^ca_objects_x_occurrences.citation</ifdef><if rule="^ca_objects_x_occurrences.illustrated =~ /yes/"> (Illustrated)</if></l></dd></unit>')); ?>
+					<?php print str_replace(array("<p>", "</p>"), array("", ""), $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_occurrences" delimiter="" restrictToTypes="literature" restrictToRelationshipTypes="references"><dd class="mb-2"><l>^ca_occurrences.lit_citation<ifdef code="ca_objects_x_occurrences.citation">, ^ca_objects_x_occurrences.citation</ifdef><if rule="^ca_objects_x_occurrences.illustrated =~ /yes/"> (illustrated)</if></l></dd></unit>')); ?>
 				</dl>
 			</div>			
 			<div><button id="readMoreCol3Btn" class="btn btn-white btn-sm px-0 mt-2 readMoreButton d-none" hx-on:click="htmx.toggleClass(htmx.find('#readMoreCol3'), 'readMoreExpanded'); htmx.toggleClass(htmx.find('#readMoreCol3Btn'), 'readMoreButtonExpanded');" aria-label="Read More / Less"></button></div>	

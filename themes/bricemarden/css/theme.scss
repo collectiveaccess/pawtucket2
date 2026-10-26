@@ -239,18 +239,12 @@ nav{
 			}
 		}
 	}
-	#detailViewerCaption{
-		min-height:2rem;
-	}
 	#overlayViewerCaption{
 		display:none;
 	}
 	#mediaviewer-overlay{
 		#overlayViewerCaption{
-			display:block;
-		}	
-		#detailViewerCaption{
-			display:none;
+			display:inline;
 		}	
 	}
 }
