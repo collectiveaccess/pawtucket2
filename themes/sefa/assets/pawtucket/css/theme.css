@@ -109,6 +109,9 @@ h5 {
 strong, b {
 	font-family: GillSansMTStd-Medium;
 	font-weight:normal;
+}
+.small-text	{
+	font-size:85% !Important;
 }	
 /*@media (min-width: 768px) {
   .container {

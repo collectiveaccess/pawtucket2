@@ -71,12 +71,13 @@
 							}
 ?>
 						</div>
-<?php
-						}
-?>
 						<div class="col-sm-<?php print (sizeof($va_thumbnails) > 1) ? "10" : "12"; ?>">
 							<div id="detailObjectImageLarge">{{{representationViewer}}}</div>
 						</div>
+
+<?php
+						}
+?>
 					</div>
 
 

@@ -37,7 +37,7 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 	$o_browse = caGetBrowseInstance("ca_objects");
-	if ($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
+	if ($ps_cache_key = $this->request->getParameter('detail_browse_key', pString, ['forcePurify' => true])) {
 		$o_browse->reload($ps_cache_key);
 	}
 	$o_browse->setTypeRestrictions(array("exhibition_item"), array('dontExpandHierarchically' => false));
@@ -102,7 +102,7 @@
 					
 						if (sizeof($va_criteria_for_display) > 0) {
 							foreach($va_criteria_for_display as $va_criterion) {
-								print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span>'.$va_criterion['value'].' </button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'key' => $vs_key));
+								print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span>'.$va_criterion['value'].' </button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'detail_browse_key' => $vs_key));
 							}
 						}
 						if(is_array($va_facets) && sizeof($va_facets)){
@@ -121,7 +121,7 @@
 											foreach($va_facet_info['content'] as $va_item) {
 												$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? $va_item['content_count'] : "";
 												$vs_label = $va_item['label'];
-												print "<div>".caNavLink($this->request, "<span>".$vs_content_count."</span>".$vs_label, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id']))."</div>";
+												print "<div>".caNavLink($this->request, "<span>".$vs_content_count."</span>".$vs_label, '', '*', '*','*', array('detail_browse_key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id']))."</div>";
 												$vn_c++;
 											}
 										break;
