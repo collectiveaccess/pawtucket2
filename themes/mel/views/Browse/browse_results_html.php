@@ -71,6 +71,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
 	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
+	<div class="browseIntro">{{{browse_text}}}</div>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {

@@ -44,22 +44,23 @@
 			<div class="row">
 				<div class="col-sm-12 text-center">	
 					<ul class="list-inline">
-						<li><?php print caNavLink($this->request, _t("Impressum & Credits"), "", "", "", "impressum_credits"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Imprint & Credits"), "", "", "", "imprint_credits"); ?></li>
 						<li><?php print caNavLink($this->request, _t("Acknowledgements"), "", "", "", "acknowledgements"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "", "contact_us"); ?></li>
+						<!-- <li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li> -->
 					</ul>
 				</div>
 				<br><br>
 			</div>
 			<div class="row funderLinks">
 				<div class="col-sm-12 text-center">
-					<a href="" class="funderLinksHorizontal">
+					<a class="funderLinksHorizontal">
 						<?php print caGetThemeGraphic($this->request, 'EN_DH_WEB.png', array("alt" => $this->request->config->get("app_display_name")));?>
 					</a>
-					<a href="" class="funderLinksHorizontal">
+					<a class="funderLinksHorizontal">
 						<?php print caGetThemeGraphic($this->request, 'fwf-logo_var2.jpg', array("alt" => $this->request->config->get("app_display_name")));?>
 					</a>
-					<a href="" class="funderLinksHorizontal">
+					<a class="funderLinksHorizontal">
 						<?php print caGetThemeGraphic($this->request, 'Uni_Logo_2016.jpg', array("alt" => $this->request->config->get("app_display_name")));?>
 					</a>
 				</div>

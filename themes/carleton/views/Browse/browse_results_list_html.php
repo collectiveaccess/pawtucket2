@@ -105,6 +105,7 @@
 			#}
 			
 			$t_list_item = new ca_list_items();
+			$qr_res->filterNonPrimaryRepresentations(false);
 			while($qr_res->nextHit()) {
 				if($vn_c == $vn_hits_per_block){
 					if($vb_row_id_loaded){
@@ -154,6 +155,8 @@
 							}else{
 								$vs_desc = strip_tags($qr_res->getWithTemplate("^ca_collections.scope_content%convertLineBreaks=1&truncate=500&ellipsis=1"));
 							}
+							
+							$vs_desc .= caGetTextExcerpt($qr_res->get('ca_object_representations.media_content', ['highlight' => false]), MetaTagManager::getHighlightText());
 						break;
 						# ---------
 						case "ca_object_lots":

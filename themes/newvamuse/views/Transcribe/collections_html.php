@@ -38,12 +38,10 @@
 		<div class="col-sm-10 col-sm-offset-1">
 			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; All Collections</H1>
 			<p>
-				By transcribing a record, you are creating searchable data that can be used by genealogists, 
-				researchers, students, teachers, and everyone else. You are helping museums document their 
-				collections and share information in a meaningful way.
+				<?= _t('By transcribing a record, you are creating searchable data that can be used by genealogists, researchers, students, teachers, and everyone else. You are helping museums document their collections and share information in a meaningful way.'); ?>
 			</p>
 			<p>
-				Want to start transcribing? Please read our <a href="/TranscriptionTips/Index">Transcription Tips</a> first. 
+				<?= _t('Want to start transcribing? Please read our <a href="/TranscriptionTips/Index">Transcription Tips</a> first.'); ?> 
 			</p>
 		</div>
 	</div>

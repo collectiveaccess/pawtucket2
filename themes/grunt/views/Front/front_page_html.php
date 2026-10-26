@@ -47,7 +47,7 @@
 				<div class="callout">
 	<?php
 				if($vs_hp_intro_title){
-					print "<div class='calloutTitle'>".$vs_hp_intro_title."</div>";
+					print "<H1><div class='calloutTitle'>".$vs_hp_intro_title."</div></H1>";
 				}
 				if($vs_hp_intro){
 					print "<p>".$vs_hp_intro."</p>";

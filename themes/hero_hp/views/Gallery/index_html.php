@@ -6,9 +6,10 @@
 	$t_set = new ca_sets();
 	$va_access_values = caGetUserAccessValues($this->request);
  	$va_sets = $this->getVar("sets");
-	if(is_array($va_sets) && sizeof($va_sets)){
-		$va_first_items_from_set = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
-	}
+	$va_first_items_from_set = $this->getVar("first_items_from_sets");
+	#if(is_array($va_sets) && sizeof($va_sets)){
+	#	$va_first_items_from_set = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
+	#}
 ?>
 
 <div class="row"><div class="col-sm-12 col-md-8 col-md-offset-2">

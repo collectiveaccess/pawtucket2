@@ -39,13 +39,13 @@
 ?>
 		<footer id="footer">
 			<ul class="list-inline pull-right social">
-				<li class='connectWith'>Connect With Us</li>
+				<li class='connectWith'><?= _t('Connect With Us'); ?></li>
 				<li><a href="https://www.facebook.com/NovaMuse" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
 				<li><a href="https://twitter.com/novamuse_ca" target="_blank"><i class="fa fa-twitter"></i></a></li>
 				<li><a href="https://www.pinterest.com/novamuse/" target="_blank"><i class="fa fa-pinterest"></i></a></li>
 				<li><a href="mailto:support@ansm.ns.ca" ><i class="fa fa-envelope"></i></a></li>
 			</ul>
-			<div style='padding-left:15px;'>© 2015-2020 ANSM</div>
+			<div style='padding-left:15px;'>© 2015-2023 ANSM</div>
 		<?php
 			if ($this->request->getController() == 'Front') {
 		?>

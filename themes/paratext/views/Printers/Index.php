@@ -47,6 +47,7 @@
             <tr><td data-label='Printers name'>Herederos de la Viuda Plan</td><td data-label='Address'>calle de los Algodoneros</td><td data-label=City>Barcelona</td></tr>
             <tr><td data-label='Printers name'>Oficina de la viuda de Comes</td><td data-label='Address'></td><td data-label=City>Cádiz</td></tr>
             <tr><td data-label='Printers name'>Oficina de Francisco Periu</td><td data-label='Address'></td><td data-label=City>Isla de León</td></tr>
+            <tr><td data-label='Printers name'>Andres Ramirez</td><td data-label='Address'>Calle de los tres peces</td><td data-label=City>Madrid</td></tr>
             <tr><td data-label='Printers name'>Antonio Sanz</td><td data-label='Address'>Plazuela de la calle de la Paz</td><td data-label=City>Madrid</td></tr>
             <tr><td data-label='Printers name'>Libreria de los Herederos de Gabriel de Leon</td><td data-label='Address'>La Puerta del Sol</td><td data-label=City>Madrid</td></tr>
             <tr><td data-label='Printers name'>Teresa de Guzmán</td><td data-label='Address'>Hallaràse en su Lonja de Comedias de la Puerta del Sol</td><td data-label=City>Madrid</td></tr>
@@ -60,11 +61,11 @@
             <tr><td data-label='Printers name'>en el Despacho principal de Diario, Carrera de San Gerónimo, frente de la Librería de Maféo, junto la de Copin; y en los Puestos de la Puerta del Sol, y frente de Santo Tomás, á dos reales</td><td data-label='Address'></td><td data-label=City>Madrid</td></tr>
             <tr><td data-label='Printers name'>Librería de Don Isidro Lopez</td><td data-label='Address'>calle de la Cruz Numero 3, frente de la Nevería</td><td data-label=City>Madrid</td></tr>
             <tr><td data-label='Printers name'>Imprenta, y Librerìa de Manuel Fernandez</td><td data-label='Address'>Caba Baxa, frente de la casa de Don Vicente Quadros</td><td data-label=City>Madrid</td></tr>
-            <tr><td data-label='Printers name'>Oficina de don Antonio Fernandez de Quincozes</td><td data-label='Address'></td><td data-label=City>Málaga</td></tr>
+        	 <tr><td data-label='Printers name'>Oficina de don Antonio Fernandez de Quincozes</td><td data-label='Address'></td><td data-label=City>Málaga</td></tr>
             <tr><td data-label='Printers name'>Imprenta de Casas y Vidondo</td><td data-label='Address'></td><td data-label=City>Málaga</td></tr>
             <tr><td data-label='Printers name'>Imprenta de Miguel Domingo</td><td data-label='Address'></td><td data-label=City>Palma</td></tr>
             <tr><td data-label='Printers name'>Imprenta Papelería de José Mir</td><td data-label='Address'>Cadena, II</td><td data-label=City>Palma</td></tr>
-            <tr><td data-label='Printers name'>Palma, tienda de ANTONIO BORRÁS </td><td data-label='Address'>Casita de madera. Cuesta del Teatro. También se escríben Cartas</td><td data-label=City>Palma</td></tr>
+            <tr><td data-label='Printers name'>Palma, tienda de Antonio Borrás </td><td data-label='Address'>Casita de madera. Cuesta del Teatro. También se escríben Cartas</td><td data-label=City>Palma</td></tr>
             <tr><td data-label='Printers name'>Imprenta de Francisco Garcia Onorato y San Miguel</td><td data-label='Address'>Vive en la calle de Libreros, junto à la Universidad</td><td data-label=City>Salamanca</td></tr>
             <tr><td data-label='Printers name'>Imprenta de D. Francisco de Tóxar</td><td data-label='Address'>calle de la Rua</td><td data-label=City>Salamanca</td></tr>
             <tr><td data-label='Printers name'>Imprenta de la Santa Cruz</td><td data-label='Address'>calle de la Rua</td><td data-label=City>Salamanca</td></tr>
@@ -82,10 +83,10 @@
             <tr><td data-label='Printers name'>Oficina del Diario</td><td data-label='Address'>calle del Mar, frente la de la Cruz Nueva, casa baxa, núm. 5</td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Imprenta y Librería de Miguel Domingo</td><td data-label='Address'>calle de Caballeros número 48</td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Imprenta de Domingo y Mompié</td><td data-label='Address'>hallará en su librería, calle de Caballeros, núm. 48</td><td data-label=City>Valencia</td></tr>
-            <tr><td data-label='Printers name'>Imprenta de Estevan</td><td data-label='Address'>frente al horno de Salicofres</td><td data-label=City>Valencia</td></tr>
+            <tr><td data-label='Printers name'>Imprenta de Estevan</td><td data-label='Address'>frente el horno de Salicofres</td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Imprenta de Joseph, y Thomàs de Orga</td><td data-label='Address'>calle de la Cruz Nueva, junto al Real Colegio de Corpus Christi</td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Viuda de Joseph de Orga</td><td data-label='Address'>calle de la Cruz Nueva, junto [al] Real Colegio del Señor Patriarca</td><td data-label=City>Valencia</td></tr>
-            <tr><td data-label='Printers name'>lldefonso Mompié, </td><td data-label='Address'>calle nueva de San Fernando, núm. 63 y 64, junto al mercado</td><td data-label=City>Valencia</td></tr>
+            <tr><td data-label='Printers name'>lldefonso Mompié</td><td data-label='Address'>calle nueva de San Fernando, núm. 63 y 64, junto al mercado</td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Imprenta de José Gimeno</td><td data-label='Address'>Véndese en su librería, frente al Miguelete, </td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Librería de José Cárlos Navarro</td><td data-label='Address'>calle de la Lonja de la Seda</td><td data-label=City>Valencia</td></tr>
             <tr><td data-label='Printers name'>Imprenta de D. Benito Monfort</td><td data-label='Address'></td><td data-label=City>Valencia</td></tr>
@@ -95,6 +96,8 @@
             <tr><td data-label='Printers name'>Herederos de D. Dormer</td><td data-label='Address'></td><td data-label=City>Zaragoça</td></tr>
             <tr><td data-label='Printers name'>Imprenta de Roque Gallifa </td><td data-label='Address'></td><td data-label=City>Zaragoza</td></tr>
             <tr><td data-label='Printers name'>Imprenta que està en la Plaza del Carbon sobre el Peso Real</td><td data-label='Address'></td><td data-label=City>Zaragoza</td></tr>
+			<tr><td data-label='Printers name'>Viuda de Alonso Martín</td><td data-label='Address'>vendese en su casa al lado del correo mayor</td><td data-label=City>Madrid</td></tr>
+			<tr><td data-label='Printers name'>Imprenta de Francisco Garcia Onorato y San Miguèl, Impressor</td><td data-label='Address'>Vive en la calle de Libreros, junto à la Vniversidad</td><td data-label=City>Salamanca</td></tr>
         </tbody>
 
     </table>

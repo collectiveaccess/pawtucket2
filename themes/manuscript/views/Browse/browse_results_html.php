@@ -74,9 +74,8 @@ if (!$vb_ajax) {	// !ajax
 <div class="row" style="clear:both;">
 	<?php if($vs_current_view == "map" && $vs_table == "ca_collections" ){ ?>
 		<div class="col-sm-10">
-		
-	<?php }elseif($vs_current_view == "list" && $vs_table == "ca_collections" ){ ?>
-	        <div class="col-sm-10">
+	<?php } elseif($vs_current_view == "list" && $vs_table == "ca_collections" ) { ?>
+		<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-9 col-lg-10"; ?>'>
 	<?php } else { ?>
 		<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 	<?php } ?>
@@ -116,8 +115,6 @@ if (!$vb_ajax) {	// !ajax
 <?php 
 			if($vs_table == 'ca_collections'){
 				print caNavLink($this->request, _t("View all Manuscripts"), '', '', 'Browse', 'manuscripts');
-				print " | ";
-				print caNavLink($this->request, _t("View all Utensils"), '', '', 'Browse', 'utensils');
 			}
 ?>
 			</small>
@@ -193,22 +190,7 @@ if (!$vb_ajax) {	// !ajax
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
-		if($vb_is_search && !$vn_result_size && $vs_search){
-			# --- try to display did you mean results if available
-			$o_search = caGetSearchInstance($vs_table);
-			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
-				$va_suggest_links = array();
-				foreach($va_suggestions as $vs_suggestion){
-					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));
-				}
-				
-				if (sizeof($va_suggest_links) > 1) {
-					print "<div class='col-sm-12'>"._t("Did you mean one of these: %1?", join(', ', $va_suggest_links))."</div>";
-				} else {
-					print "<div class='col-sm-12'>"._t("Did you mean %1?", join(', ', $va_suggest_links))."</div>";
-				}
-			}
-		}
+		
 } // !ajax
 
 # --- check if this result page has been cached
@@ -231,7 +213,7 @@ if (!$vb_ajax) {	// !ajax
 	<?php if($vs_current_view == "map" && $vs_table == "ca_collections" ){ ?>
 		<div class="col-sm-1 col-sm-offset-1">
 	<?php } elseif($vs_current_view == "list" && $vs_table == "ca_collections" ) { ?>
-	    <div class="col-sm-1 col-sm-offset-1">
+		<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-2"; ?>">
 	<?php } else { ?>
 		<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 	<?php } ?>

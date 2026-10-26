@@ -46,7 +46,7 @@
 				case 'reset':
 		?>
 					<p><?php print _t("Please enter your new password."); ?></p>
-					<form id="ResetForm" action="<?php print caNavUrl($this->request, '', 'LoginReg', 'resetSave'); ?>" method="post" class="form-horizontal" role="form" method="POST">
+					<form id="ResetForm" action="<?php print caNavUrl($this->request, '', 'LoginReg', 'resetSave'); ?>" method="post" class="form-horizontal" method="POST">
 
 
 						<div class="form-group">
@@ -76,7 +76,7 @@
 				default:
 ?>
 					<p><?php print _t("To reset your password enter the e-mail address you used to register below. A message will be sent to the address with instructions on how to reset your password."); ?></p>
-					<form id="ResetForm" action="<?php print caNavUrl($this->request, '', 'LoginReg', 'resetSend'); ?>" method="post" class="form-horizontal" role="form">
+					<form id="ResetForm" action="<?php print caNavUrl($this->request, '', 'LoginReg', 'resetSend'); ?>" method="post" class="form-horizontal">
 						<div class="form-group">
 							<label for="reset_email" class="col-sm-4 control-label"><?php print _t("E-mail"); ?></label>
 							<div class="col-sm-7">

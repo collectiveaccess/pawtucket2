@@ -42,13 +42,13 @@
 	<div class="row">
 		<div class="col-sm-1">
 			<div class="setsBack">
-				<?php print $previous_id ? caNavLink($this->request, '<i class="fa fa-angle-left" aria-label="back"></i><div class="small">Previous</div>', '', '*', 'Transcribe', 'Collection/'.$previous_id) : ''; ?>
-				<?php print caNavLink($this->request, '<i class="fa fa-angle-double-left" aria-label="back"></i><div class="small">Back</div>', '', '*', 'Transcribe', 'Collections'); ?>
+				<?php print $previous_id ? caNavLink($this->request, '<i class="fa fa-angle-left" aria-label="back"></i><div class="small">'._t('Previous').'</div>', '', '*', 'Transcribe', 'Collection/'.$previous_id) : ''; ?>
+				<?php print caNavLink($this->request, '<i class="fa fa-angle-double-left" aria-label="back"></i><div class="small">'._t('Back').'</div>', '', '*', 'Transcribe', 'Collections'); ?>
 			</div>
 		</div>
 		<div class="col-sm-10">
 			
-			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; Collection: <?php print $t_set->get('ca_sets.preferred_labels.name'); ?></H1>
+			<h1><a href="/Transcribe/Index"><?= _t('Transcribe'); ?></a> &gt; <?= _t('Collection'); ?>: <?php print $t_set->get('ca_sets.preferred_labels.name'); ?></H1>
 			<p style='padding-bottom:15px;'>
 				<?php print $t_set->get('ca_sets.set_description'); ?>
 			</p>

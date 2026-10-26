@@ -208,6 +208,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
+	<a href="#top" class="btn btn-default browseTop"><span class="glyphicon glyphicon-chevron-up"></span> Top</a>
 	</div><!-- end col-2 -->
 	
 	

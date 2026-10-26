@@ -10,7 +10,7 @@
         <div class="col-sm-8">
             {{{contact_text}}}
         </div>
-        <div cass="col-sm-4">
+        <div class="col-sm-4">
             {{{contact_info}}}
         </div>
     </div>

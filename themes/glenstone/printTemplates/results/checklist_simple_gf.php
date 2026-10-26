@@ -72,7 +72,7 @@
 			$vn_object_id = $vo_result->get('ca_objects.object_id');		
 ?>
 			<div class="row">
-			<table style="height:120px;">
+			<table>
 			<tr>
 				<td width="170px" >
 <?php 
@@ -119,7 +119,13 @@
 					print "<div class='title'>".$vo_result->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."</div>"; 				
 					print "<div><i>".$vo_result->get('ca_objects.preferred_labels.name')."</i>, ".$vo_result->getWithTemplate('^ca_objects.creation_date_display')."</div>"; 
 					print "<div>".$vo_result->get('ca_objects.medium')."</div>"; 	
-					print "<div>".$vo_result->get('ca_objects.dimensions.display_dimensions', array('delimiter' => '<br/>'))."</div>"; 				
+					print "<div>".$vo_result->get('ca_objects.dimensions.display_dimensions', array('delimiter' => '<br/>'))."</div>"; 		
+					
+					if(!($credit_line = trim($vo_result->get('ca_objects.lender.lender_credit_line', array('delimiter' => ';'))))) {
+						$credit_line = "Glenstone Museum, Potomac, Maryland";
+					}
+					print "<div>{$credit_line}</div>"; 	
+							
 					if ($vo_result->get('ca_objects.edition.edition_number')) {
 						print "<div class='unit'>Edition ".$vo_result->get('ca_objects.edition.edition_number')." / ".$vo_result->get('ca_objects.edition.edition_total');
 						if ($vo_result->get('ca_objects.edition.ap_total')) {

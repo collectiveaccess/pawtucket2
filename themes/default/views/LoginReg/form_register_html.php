@@ -46,7 +46,7 @@
 	// initialize CA Utils
 	caUI.initUtils();
 </script>
-	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
+	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" method="POST">
 	    <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
 	if($this->request->isAjax()){

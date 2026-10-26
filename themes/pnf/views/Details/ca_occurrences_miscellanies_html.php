@@ -29,10 +29,25 @@
 ?>
 				</div><!-- end col -->
 				<div class='col-sm-12 col-md-6'>
+<?php
+			if($t_item->get("ca_occurrences.occ_media_display", array("convertCodesToDisplayText" => true)) == "Lists"){
+?>
+				{{{<ifdef code="ca_object_representations.media">
+					<unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="0" delimiter=" ">
+						<div class="miscImageList fullWidthImg">
+							^ca_object_representations.media.large
+							<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if>
+						</div>
+					</unit>
+				</ifdef>}}}
+<?php
+			}else{
+?>
 				{{{representationViewer}}}
 								
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 <?php
+			}
 				
 				$va_youTube_ids = $t_item->get("youTubeID", array("returnAsArray" => true));
 				if(is_array($va_youTube_ids) && sizeof($va_youTube_ids)){

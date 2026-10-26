@@ -90,12 +90,12 @@
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-				$vs_label_detail_link 	= caDetailLink($this->request, (strlen($qr_res->get("{$vs_table}.preferred_labels")) > 80 ? substr($qr_res->get("{$vs_table}.preferred_labels"), 0, 77)."... " : $qr_res->get("{$vs_table}.preferred_labels")), '', $vs_table, $vn_id);
+				$vs_label_detail_link 	= caDetailLink($this->request, (strlen($qr_res->get("{$vs_table}.preferred_labels")) > 80 ? mb_substr($qr_res->get("{$vs_table}.preferred_labels"), 0, 77)."... " : $qr_res->get("{$vs_table}.preferred_labels")), '', $vs_table, $vn_id);
 				$vs_alt_label = "";
 				if(in_array($vs_action, array("archives", "objects"))){
 					if(!in_array($qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)), array("Library Item", "Library Component"))){
 						if($vs_alt_label = $qr_res->get("{$vs_table}.nonpreferred_labels")){
-							$vs_label_detail_link .= "<br/>".caDetailLink($this->request, (strlen($vs_alt_label) > 80 ? substr($vs_alt_label)."... " : $vs_alt_label), '', $vs_table, $vn_id);
+							$vs_label_detail_link .= "<br/>".caDetailLink($this->request, strip_tags((mb_strlen($vs_alt_label) > 80) ? mb_substr($vs_alt_label, 0, 80)."... " : $vs_alt_label), '', $vs_table, $vn_id);
 						}
 					}
 				}
@@ -137,9 +137,11 @@
 				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 					$vs_add_to_set_link = "<a class='addToSetLink' href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 				}
-				$vs_expanded_info = "<p class='resultType'>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>";
-				if ($va_collection = $qr_res->get('ca_collections.preferred_labels')) {
-					$vs_expanded_info.= "<p class='collectionInfo'>".$va_collection."<p>";
+				if($vs_table == 'ca_objects'){
+					$vs_expanded_info = "<p class='resultType'>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>";
+					if ($va_collection = $qr_res->get('ca_collections.preferred_labels')) {
+						$vs_expanded_info.= "<p class='collectionInfo'>".$va_collection."<p>";
+					}
 				}
 				print "
 	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>

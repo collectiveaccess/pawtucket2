@@ -36,9 +36,9 @@
 						<div class="address">Address</div>
 					</p>
 					<ul class="list-inline social">
-						<li><a href="#" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fa fa-instagram"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fa fa-twitter-square"></i></a></li>
+						<li><a href="#" target="_blank"><i class="fa fa-facebook-square" role="graphics-document" aria-label="Facebook"></i></a></li>
+						<li><a href="#" target="_blank"><i class="fa fa-instagram" role="graphics-document" aria-label="Instagram"></i></a></li>
+						<li><a href="#" target="_blank"><i class="fa fa-twitter-square" role="graphics-document" aria-label="Twitter"></i></a></li>
 					</ul>
 					<ul class="list-inline">
 						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>

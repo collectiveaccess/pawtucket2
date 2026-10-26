@@ -46,14 +46,21 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+<?php
+		if($t_object->get("ca_objects.sensitive_material", array("convertCodesToDisplayText" => true)) == "Yes"){
+?>
+			<div class="alert alert-danger">{{{sensitive_materials_message}}}</div>
+<?php
+		}else{
+?>
 				{{{representationViewer}}}
 				
 				
 				<div id="detailAnnotations"></div>
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
 <?php
+				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+	}				
+
 				# Inquire, Comment and Share Tools
 						
 					print '<div id="detailTools">';
@@ -108,13 +115,14 @@
 						<unit relativeTo="ca_objects.idno" delimiter="<br/>">^ca_objects.idno</unit>
 					</div>
 				</ifdef>}}}
-
+<?php
+		if($t_object->get("ca_objects.sensitive_material", array("convertCodesToDisplayText" => true)) != "Yes"){
+?>
 				{{{<ifdef code="ca_objects.type_id" >
 					<div class="unit">
 						<unit relativeTo="ca_objects.type_id" delimiter="<br/>">^ca_objects.type_id</unit>
 					</div>
 				</ifdef>}}}	
-
 				{{{<ifdef code="ca_objects.date" >
 					<div class="unit">
 						<unit relativeTo="ca_objects.date" delimiter=", ">^ca_objects.date</unit>
@@ -247,6 +255,7 @@
 				if($vs_map = $this->getVar("map")){
 					print "<hr></hr><div class='unit'>".$vs_map."</div>";
 				}
+		}
 ?>
 						
 			</div><!-- end col -->

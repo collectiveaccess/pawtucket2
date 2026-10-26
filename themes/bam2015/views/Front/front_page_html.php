@@ -433,7 +433,7 @@
 				</div><!-- end container -->
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_sets.set_id:'.$t_set->get('set_id'), 'homePage' => true, 'sort' => 'ca_sets.set_id:'.$t_set->get('set_id')), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_sets.set_id:'.$t_set->get('set_id'), 'homePage' => true, 'sort' => 'ca_set_items.rank:'.$t_set->get('set_id')), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery('#browseResultsContainer').jscroll({
 								autoTrigger: true,
 								loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",

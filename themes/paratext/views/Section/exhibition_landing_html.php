@@ -24,7 +24,7 @@
 		$t_nav_section = new ca_occurrences();
 		foreach($va_paratext_exhibition_sections as $vs_idno){
 			$t_nav_section->load(array("idno" => $vs_idno));
-			print caNavLink($this->request, "<div class='case_buttons col".$col."'><div class='case_number'>Exhibit Case ".$c.":</div><div class='case_title'>".$t_nav_section->get("ca_occurrences.preferred_labels.name")."</div></div>", "", '', "Section", $vs_idno);
+			print caNavLink($this->request, "<div class='case_buttons col".$col."'><div class='case_number'>Exhibit Case ".$c.":</div><div class='case_title'>".$t_nav_section->get("ca_occurrences.preferred_labels.name").(($c == 8) ? "<br/><br/>" : "")."</div></div>", "", '', "Section", $vs_idno);
 			$c++;
 			if($col == 1){
 				$col = 2;

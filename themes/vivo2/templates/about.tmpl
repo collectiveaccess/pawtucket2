@@ -1,0 +1,22 @@
+<?php
+	if ($t_page = $this->getVar("page")) {
+		$va_all_media = $t_page->getPageMedia(array("large"));
+	}
+?>
+<div class="row">
+	<div class="col-sm-12 col-md-6">
+		<div class="bodyTextCol">
+			<H1>{{{title}}}</H1>
+			{{{bodytext}}}
+		</div>
+	</div>
+	<div class="col-sm-12 col-md-6">
+<?php
+	if(is_array($va_all_media) && sizeof($va_all_media)){
+		foreach($va_all_media as $va_media){
+			print $va_media["tags"]["large"];
+		}
+	}
+?>
+	</div>
+</div>

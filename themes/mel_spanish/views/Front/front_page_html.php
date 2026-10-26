@@ -75,7 +75,7 @@
 				<div class="col-sm-8 col-sm-offset-2 col-md-offset-0 col-md-2 text-center">
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'education.jpg', array("alt" => "Education")), "", "", "Education", "");
-				print caNavLink($this->request, "Education", "", "", "Education", "");
+				print caNavLink($this->request, "Learn", "", "", "Education", "");
 ?>
 				</div>
 			</div><!-- end row -->

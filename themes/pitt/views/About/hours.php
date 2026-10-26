@@ -7,7 +7,8 @@
 	<div class="col-sm-10">
 		<H1><?php print _t("Hours of operation"); ?></H1>
 
-		<p><b>Normal gallery hours are Monday-Friday 10:00 AM - 4:00 PM</b></p>
+		<p><b>Normal gallery hours are by appointment, Tuesday-Friday 12-4 and Thursdays 12-7.</b></p>
+		<p><b>To schedule a group visit, please complete the following form: <a href="https://pitt.co1.qualtrics.com/jfe/form/SV_5hEpVLuo4YyZEMu">https://pitt.co1.qualtrics.com/jfe/form/SV_5hEpVLuo4YyZEMu</a></b></p>
 		<div>
 			The gallery’s schedule follows the Fall and Spring academic semesters. 
 			It is closed for Martin Luther King Day, Thanksgiving (and the day before and after Thanksgiving) and the week of Spring Break.

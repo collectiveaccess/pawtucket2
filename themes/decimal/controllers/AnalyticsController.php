@@ -69,10 +69,11 @@
 			$o_browse = caGetBrowseInstance($va_browse_info['table']);
 			$o_browse->removeAllCriteria();
 			$o_browse->setFacetGroup("analytics");
-			$va_facets = $o_browse->getInfoForFacetsWithContent();
+			$va_facets = $o_browse->getFacetsWithContentList();
 			$va_analytics_facets = array();
 			$va_analytics_chart_facets = array();
-			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+			foreach($va_facets as $vs_facet_name) {
+				$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
 				if(in_array($vs_facet_name, $va_analytics_facets_to_display)){
 					if(in_array($vs_facet_name, $va_analytics_facets_to_display_hierarchical)){
 						# --- group it hierarchical

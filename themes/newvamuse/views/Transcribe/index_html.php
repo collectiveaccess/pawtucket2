@@ -36,24 +36,21 @@
 <div class="transcription container textContent">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1">
-			<h1>Transcribe</H1>
+			<h1><?= _t('Transcribe'); ?></H1>
 			<p>
-				Transcribe is a new way for people to connect with collections and share knowledge. 
-				By transcribing a record, you are creating searchable data that can be used by genealogists, 
-				researchers, students, teachers, and everyone else. You are helping museums document their 
-				collections and share information in a meaningful way.
+				<?= _t('Transcribe is a new way for people to connect with collections and share knowledge. By transcribing a record, you are creating searchable data that can be used by genealogists,  researchers, students, teachers, and everyone else. You are helping museums document their collections and share information in a meaningful way.'); ?>
 			</p>
 			<p>
-				Want to start transcribing? Please read our <a href="/TranscriptionTips/Index">Transcription Tips</a> first. 
+				<?= _t('Want to start transcribing? Please read our <a href="/TranscriptionTips/Index">Transcription Tips</a> first.'); ?>
 			</p>
 			<div style="clear:both; margin-top:40px;">
 				<p class="text-center">
-					<?php print caNavLink($this->request, 'View all collections', 'btn btn-danger btn-lg', '*', 'Transcribe', 'Collections'); ?>
-					<?php print caNavLink($this->request, 'Browse items for transcription', 'btn btn-danger btn-lg', '*', 'Transcribe', 'Browse'); ?>
+					<?php print caNavLink($this->request, _t('View all collections'), 'btn btn-danger btn-lg', '*', 'Transcribe', 'Collections'); ?>
+					<?php print caNavLink($this->request, _t('Browse items for transcription'), 'btn btn-danger btn-lg', '*', 'Transcribe', 'Browse'); ?>
 				</p>
 				
 				<div style="clear:both; margin-top:10px;">
-					<h2>Featured Collections</h2>
+					<h2><?= _t('Featured Collections'); ?></h2>
 					<div class="jcarousel-wrapper">
 						<div class="jcarousel">
 							<ul>

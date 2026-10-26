@@ -86,10 +86,19 @@
 ?>
 			<div class='{{{block}}}Result multisearchResult'>
 <?php 
-				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
+				$vs_typecode = "";
+				$t_list_item->load($qr_results->get("type_id"));
+				$vs_typecode = $t_list_item->get("idno");
+				
+				$vs_image = "";		
+				if($vs_typecode == "nonav_manifestation"){
+					# --- image needs to come from related item for text and images
+					$vs_image = $qr_results->getWithTemplate("<unit relativeTo='ca_objects.related' restrictToTypes='item' restrictToRelationshipTypes='IsItemOfNonAV' limit='1'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values));						
+				}else{
+					$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
+				}
+				
 				if(!$vs_image){
-					$t_list_item->load($qr_results->get("type_id"));
-					$vs_typecode = $t_list_item->get("idno");
 					
 					# --- have different icons for text and media nonav_manifestation
 					if($vs_typecode == "nonav_manifestation"){

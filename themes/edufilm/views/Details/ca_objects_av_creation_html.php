@@ -61,7 +61,7 @@
 							print '<div id="detailTools">';
 							if ($vn_comments_enabled) {
 					?>				
-							<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?= _t("Comments and tags"); ?>"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
+							<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<t>Comments and tags</t>"></span><t>Comments and Tags</t> (<?= sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
 							<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
 					<?php				
 							}
@@ -84,14 +84,18 @@
 
 					<HR>
 					
-					{{{<ifdef code="ca_objects.idno"><label>Identifier:</label>^ca_objects.idno<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.idno"><div class="unit"><label><t>Identifier</t></label>^ca_objects.idno</div></ifdef>}}}
 
 					{{{<ifdef code="ca_objects.vhh_Title">
-						<label>Title:</label>
-						<ifdef code="ca_objects.vhh_Title.TitleText">^ca_objects.vhh_Title.TitleText</ifdef>
-
+						<div class="unit"><label><t>Title</t></label>
 						<unit relativeTo="ca_objects.vhh_Title" delimiter="<br/>">
-							<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+						<ifdef code="ca_objects.vhh_Title.TitleText">
+							^ca_objects.vhh_Title.TitleText 
+							<ifdef code="ca_objects.vhh_Title.TitleType">(^ca_objects.vhh_Title.TitleType)</ifdef>
+						</ifdef>
+						
+						
+							<ifdef code="ca_objects.vhh_Title.TitleTemporalScope|ca_objects.vhh_Title.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 								<ifdef code="ca_objects.vhh_Title.TitleTemporalScope">
 									<br/>
@@ -100,111 +104,191 @@
 								</ifdef>
 								<ifdef code="ca_objects.vhh_Title.__source__">
 									<br/>
-									<small>Source:</small>
+									<small><t>Source</t>:</small>
 									<small>^ca_objects.vhh_Title.__source__</small>
 								</ifdef>
 							</div>
 						</unit>
 						
-						<br/>
+						</div>
 					</ifdef>}}}
 					
 					{{{<ifdef code="ca_objects.vhh_Identifier">
-						<label>External Identifier:</label>
-						<unit relativeTo="ca_objects.vhh_Identifier" delimiter="<br/>">
-							<ifdef code="ca_objects.vhh_Identifier.IdentifierScheme">^IdentifierScheme</ifdef>
-							<if rule='^ca_objects.vhh_Identifier.IdentifierValue !~ /\?/'>(^ca_objects.vhh_Identifier.IdentifierValue)</if>
-						</unit>
+						<div class="unit"><label><t>External Identifier</t></label>
+						
+							<unit relativeTo="ca_objects.vhh_Identifier" delimiter="<br/>">
+								<ifdef code="ca_objects.vhh_Identifier.IdentifierScheme">^IdentifierScheme</ifdef>
+								<if rule='^ca_objects.vhh_Identifier.IdentifierValue !~ /\?/'>
+									(^ca_objects.vhh_Identifier.IdentifierValue)
+								</if>
+
+								<ifdef code="ca_objects.vhh_Identifier.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+								<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+									<ifdef code="ca_objects.vhh_Identifier.__source__">
+										<br/>
+										<small><t>Source</t>:</small>
+										<small>^ca_objects.vhh_Identifier.__source__</small>
+									</ifdef>
+								</div>
+							</unit>
+						</div>
 					</ifdef>}}}	
 
 					{{{<ifdef code="ca_objects.vhh_CountryOfReference">
-						<label>Country of Reference:</label>
+						<div class="unit"><label><t>Country of Reference</t></label>
 						<unit relativeTo="ca_objects.vhh_CountryOfReference" delimiter="<br/>">
 							^CountryPlace (^Reference)
+
+							<ifdef code="ca_objects.vhh_CountryOfReference.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+								<ifdef code="ca_objects.vhh_CountryOfReference.__source__">
+									<br/>
+									<small><t>Source</t>:</small>
+									<small>^ca_objects.vhh_CountryOfReference.__source__</small>
+								</ifdef>
+							</div>
 						</unit>
-					</ifdef>}}}	
+					</div></ifdef>}}}	
 
 					{{{<ifdef code="ca_objects.vhh_Date" >
-						<label>Date:</label>
+						<div class="unit"><label><t>Date</t></label>
 						<unit relativeTo="ca_objects.vhh_Date" delimiter="<br/>">
 							^date_Date <ifdef code="ca_objects.vhh_Date.date_Type">(^date_Type)</ifdef>
+
+							<ifdef code="ca_objects.vhh_Date.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+								<ifdef code="ca_objects.vhh_Date.__source__">
+									<br/>
+									<small><t>Source</t>:</small>
+									<small>^ca_objects.vhh_Date.__source__</small>
+								</ifdef>
+							</div>
 						</unit>
-					</ifdef>}}}				
+					</div></ifdef>}}}				
 					
 					{{{<ifdef code="ca_objects.vhh_Description">
 						<div class='unit'>
-							<label>Description</label>
-							<span class="trimText">^ca_objects.vhh_Description.DescriptionText</span>
+							<label><t>Description</t></label>
+							
+
+							<unit relativeTo="ca_objects.vhh_Description" delimiter="<br/><br/>">
+								<span class="trimText">^ca_objects.vhh_Description.DescriptionText</span>
+								<ifdef code="ca_objects.vhh_Description.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+								<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+									<ifdef code="ca_objects.vhh_Description.__source__">
+										<br/>
+										<small><t>Source</t>:</small>
+										<small>^ca_objects.vhh_Description.__source__</small>
+									</ifdef>
+								</div>
+							</unit>
 						</div>
 					</ifdef>}}}
 				
 					{{{<ifdef code="ca_objects.vhh_URL">
-						<label>URL:</label>
-						<unit relativeTo="ca_objects" delimiter="<br/>">
-							<l>^ca_objects.vhh_URL</l>
-						</unit>
+						<div class="unit"><label><t>URL</t></label>
+						<unit relativeTo="ca_objects.vhh_URL" delimiter="<br/>">
+							<a href="^ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a>
+							<ifdef code="ca_objects.vhh_URL.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+								<ifdef code="ca_objects.vhh_URL.__source__">
+									<br/>
+									<small>Source:</small>
+									<small>^ca_objects.vhh_URL.__source__</small>
+								</ifdef>
+							</div>
+						</unit></div>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_objects.vhh_Note">
-						<label>Note:</label>
+						<div class="unit"><label><t>Note</t></label>
 						<unit relativeTo="ca_objects" delimiter="<br/>">							
 							<span class="trimText">^ca_objects.vhh_Note.vhh_NoteText</span>
-							<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+							<ifdef code="^ca_objects.vhh_Note.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
-								<ifdef code="^ca_objects.vhh_Note.vhh_NoteReference">
+								<ifdef code="^ca_objects.vhh_Note.__source__">
 									<br/>
-									<small>Reference:</small>
-									<small>^ca_objects.vhh_Note.vhh_NoteReference</small>
-									<br/>
-									<small>Source:</small>
-									<small>^ca_objects.vhh_Note.vhh_NoteReference.__source__</small>
+									<small><t>Source</t>:</small>
+									<small>^ca_objects.vhh_Note.__source__</small>
 								</ifdef>
 							</div>
 						</unit>
-						
+						</div>
 					</ifdef>}}}
 
-					{{{<ifdef code="ca_objects.vhh_MediaType">
-						<label>Media Type:</label>
-						<unit relativeTo="ca_objects.vhh_MediaType" delimiter="<br/>">
-							^MT_List
-						</unit>
-					</ifdef>}}}
 
 					{{{<ifdef code="ca_objects.vhh_GenreAV">
-						<label>Genre(AV):</label>
+						<div class="unit"><label><t>Genre(AV)</t></label>
 						<unit relativeTo="ca_objects.vhh_GenreAV" delimiter="<br/>">
 							^GenreAV_List
-						</unit>
+
+							<ifdef code="^ca_objects.vhh_GenreAV"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+								<ifdef code="^ca_objects.vhh_GenreAV">
+									<br/>
+									<small><t>Source</t>:</small>
+									<small>^ca_objects.vhh_GenreAV.__source__</small>
+								</ifdef>
+							</div>
+						</unit></div>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_objects.edu_FilmDevices">
-						<label>Devices:</label>
+						<div class="unit"><label><t>Devices</t></label>
 						<unit relativeTo="ca_objects" delimiter="<br/>">
 							^ca_objects.edu_FilmDevices
-						</unit>
+
+						</unit></div>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_objects.edu_KnowledgeField">
-						<label>Field of Knowledge:</label>
+						<div class="unit"><label><t>Field of Knowledge</t></label>
 						<unit relativeTo="ca_objects.edu_KnowledgeField" delimiter="<br/>">
 							^edu_KnowlegdeFieldType
-						</unit>
+
+							<ifdef code="^ca_objects.edu_KnowledgeField"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+								<ifdef code="^ca_objects.edu_KnowledgeField">
+									<br/>
+									<small><t>Source</t>:</small>
+									<small>^ca_objects.edu_KnowledgeField.__source__</small>
+								</ifdef>
+							</div>
+						</unit></div>
+					</ifdef>}}}
+
+					{{{<ifdef code="ca_objects.edu_EducationType">
+						<div class="unit"><label><t>Education Type</t></label>
+						<unit relativeTo="ca_objects.edu_EducationType" delimiter="<br/>">
+
+							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeType|ca_objects.edu_EducationType.edu_EducationTypeText"><t>Type</t> &mdash; (<b>^ca_objects.edu_EducationType.edu_EducationTypeType</b><ifdef code="ca_objects.edu_EducationType.edu_EducationTypeText,ca_objects.edu_EducationType.edu_EducationTypeType"> - </ifdef>^ca_objects.edu_EducationType.edu_EducationTypeText)</ifdef>
+							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeGrade"><b><t>Grade</t></b> &mdash; (^ca_objects.edu_EducationType.edu_EducationTypeGrade)</ifdef>
+							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeAge"><b><t>Age</t></b> &mdash; (^ca_objects.edu_EducationType.edu_EducationTypeAge)</ifdef>
+
+							<ifdef code="^ca_objects.edu_EducationType"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+								<ifdef code="^ca_objects.edu_EducationType">
+									<br/>
+									<small><t>Source</t>:</small>
+									<small>^ca_objects.edu_EducationType.__source__</small>
+								</ifdef>
+							</div>
+						</unit></div>
 					</ifdef>}}}
 							
 					<!-- <hr></hr> -->
 
-					{{{<ifcount code="ca_collections" min="1" max="1"><label><?= _t('Related Case Study'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><label><?= _t('Related Case Studies'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+					{{{<ifcount code="ca_collections" min="1"><div class="unit"><ifcount code="ca_collections" min="1" max="1"><label><t>Case Study</t></label></ifcount>
+						<ifcount code="ca_collections" min="2"><label><t>Case Studies</t></label></ifcount>
+						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
 									
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><label><?= _t('Related Event'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><label><?= _t('Related Events'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+					{{{<ifcount code="ca_occurrences" min="1"><div class="unit"><ifcount code="ca_occurrences" min="1" max="1"><div class="unit"><label><t>Event</t></label></ifcount>
+						<ifcount code="ca_occurrences" min="2"><label><t>Events</t></label></ifcount>
+						<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
 					
-					{{{<ifcount code="ca_places" min="1" max="1"><label><?= _t('Related Location'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><label><?= _t('Related Locations'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}				
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><ifcount code="ca_places" min="1" max="1"><label><t>Location</t></label></ifcount>
+						<ifcount code="ca_places" min="2"><label><t>Locations</t></label></ifcount>
+						<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}				
 
 					<div class="row">
 						<div class="col-sm-12">		
@@ -224,13 +308,13 @@
 
 				<div class="col-sm-6 col-md-6 col-lg-5 col-lg-offset-1">
 
-					{{{<ifcount code="ca_entities.related" min="1" max="1"><label><?= _t('Related Person/Organization'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_entities.related" min="2"><label><?= _t('Related People/Organizations'); ?></label></ifcount>}}}
+					{{{<ifcount code="ca_entities.related" min="1"><div class="unit"><ifcount code="ca_entities.related" min="1" max="1"><label><t>Person/Organization</t></label></ifcount>
+						<ifcount code="ca_entities.related" min="2"><label><t>People/Organizations</t></label></ifcount>
 
-					{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>">
+						<unit relativeTo="ca_objects_x_entities" delimiter="<br/>">
 						<l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)
 					
-						<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+						<ifdef code="ca_objects_x_entities.vhh_HasAgent.HA_CreditText|ca_objects_x_entities.vhh_HasAgent.HA_NameUsed|ca_objects_x_entities.vhh_HasAgent.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 						<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 							<ifdef code="ca_objects_x_entities.vhh_HasAgent.HA_CreditText">
 								<br/>
@@ -248,250 +332,351 @@
 							</ifdef>
 							<ifdef code="ca_objects_x_entities.vhh_HasAgent.__source__">
 								<br/>
-								<small>Source:</small>
+								<small><t>Source</t>:</small>
 								<unit relativeTo="ca_objects_x_entities.vhh_HasAgent.__source__" delimiter="</br>">
 									<small id="copy-text">^ca_objects_x_entities.vhh_HasAgent.__source__</small>
 									<button class="copy-btn btn" style="padding: 0px 3px 0px 3px !important;"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
 								</unit>
 							</ifdef>
 						</div>
-						<br/>
-					</unit>}}}
+					</unit></div></ifcount>}}}
 				</div>
 
 				<div class="col-sm-6 col-md-6 col-lg-5">
-					{{{<ifdef code="ca_objects.related"><label><?= _t('Related Manifestations and Items'); ?></label></ifdef>}}}
+					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label><t>Manifestations and Items</t></label>
 
-					{{{<unit relativeTo="ca_objects.related" delimiter="<br/>" restrictToTypes="av_manifestation">
+						<unit relativeTo="ca_objects.related" delimiter="<br/>" restrictToTypes="av_manifestation">
 						^ca_objects.preferred_labels (^ca_objects.type_id)
 						
 						<a href="#" class="itemInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
 						<div class="itemInfo" style="padding-left: 20px !important;display: none !important;">
+
 							<ifdef code="ca_objects.idno">
 								<br/>
-								<small>Identifier: ^ca_objects.idno</small>
+								<t>Identifier</t>: ^ca_objects.idno
+								<br/>
 							</ifdef>
+
 							<ifdef code="ca_objects.vhh_MediaTypeTech">
 								<br/>
-								<small>Media Technology Type:</small>
+								<t>Media Technology Type</t>:
 								<unit relativeTo="ca_objects.vhh_MediaTypeTech" delimiter=",">
-									<small>^MTT_List</small>
+									^MTT_List
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_MediaTypeTech">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_MediaTypeTech.__source__</small>
+										</ifdef>
+									</p>
 								</unit>
 							</ifdef>
+
 							<ifdef code="ca_objects.vhh_Language">
 								<br/>
-								<small>Language:</small>
-								<unit relativeTo="ca_objects.vhh_Language" delimiter=",">
-									<small>^lang_Name <ifdef code="ca_objects.vhh_Language">(^lang_Usage)</ifdef></small>
+								<t>Language</t>:
+								<unit relativeTo="ca_objects.vhh_Language" delimiter="</br>">
+									^lang_Name <ifdef code="ca_objects.vhh_Language">(^lang_Usage)</ifdef>
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_Language">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_Language.__source__</small>
+										</ifdef>
+									</p>
 								</unit>
 							</ifdef>
 
 							<ifdef code="ca_objects.vhh_Description">
 								<br/>
-								<small>Description</small>
+								<t>Description</t>:
 								<div class='unit'>
 									<span class="trimText">^ca_objects.vhh_Description.DescriptionText</span>
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_Description">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_Description.__source__</small>
+										</ifdef>
+									</p>
 								</div>
 							</ifdef>
 
-							<ifdef code="ca_objects.vhh_URL"><small>URL:</small><unit relativeTo="ca_objects.vhh_URL"><a href="ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a></unit><br/></ifdef>
+							<ifdef code="ca_objects.vhh_URL">
+								<br/>
+								<t>URL</t>:
+								<unit relativeTo="ca_objects.vhh_URL" delimiter="<br/>">
+									<a href="^ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a>
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_URL">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_URL.__source__</small>
+										</ifdef>
+									</p>
+								</unit>							
+							</ifdef>
 
 							<ifdef code="ca_objects.vhh_Note">
 								<br/>
-								<small>Note:</small>
+								<t>Note</t>:
 								<unit relativeTo="ca_objects" delimiter="<br/>">							
 									<span class="trimText">^ca_objects.vhh_Note.vhh_NoteText</span>
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_Note">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_Note.__source__</small>
+										</ifdef>
+									</p>
 								</unit>
 							</ifdef>		
 
 							<ifdef code="ca_objects.vhh_Origin">
 								<br/>
-								<small>Origin:</small>
+								<t>Origin</t>:
 								^ca_objects.vhh_Origin
+								<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+									<ifdef code="ca_objects.vhh_Origin">
+										<small><t>Source</t>:</small>
+										<small>^ca_objects.vhh_Origin.__source__</small>
+									</ifdef>
+								</p>
 							</ifdef>
 
 							<ifdef code="ca_objects.vhh_CarrierType2">
 								<br/>
-								<small>Carrier Type:</small>
+								<t>Carrier Type</t>:
 								<unit relativeTo="ca_objects.vhh_CarrierType2" delimiter="<br/>">
 									^CarrierTypeList
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_CarrierType2">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_CarrierType2.__source__</small>
+										</ifdef>
+									</p>
 								</unit>
 							</ifdef>
 
 							<ifdef code="ca_objects.vhh_DigitalFormatAV">
 								<br/>
-								<small>Digital Format:</small>
+								<t>Digital Format</t>:
 								<unit relativeTo="ca_objects.vhh_DigitalFormatAV" delimiter=",">
-									<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_Coding"><small>(^digi_Coding)</small></ifdef>
-									<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_CodingAudio"><small>(^digi_CodingAudio)</small></ifdef>
-									<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_MIME2"><small>(^digi_MIME2)</small></ifdef>
+									<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_Coding">(^digi_Coding)</ifdef>
+									<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_CodingAudio">(^digi_CodingAudio)</ifdef>
+									<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_MIME2">(^digi_MIME2)</ifdef>
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_DigitalFormatAV">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_DigitalFormatAV.__source__</small>
+										</ifdef>
+									</p>
+								</unit>	
+							</ifdef>
+
+							<ifdef code="ca_objects.vhh_Gauge">
+								<br/>
+								<t>Gauge</t>:
+								<unit relativeTo="ca_objects.vhh_Gauge" delimiter=",">
+									^ca_objects.vhh_Gauge
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_Gauge">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_Gauge.__source__</small>
+										</ifdef>
+									</p>
 								</unit>	
 							</ifdef>
 
 							<ifdef code="ca_objects.vhh_AspectRatio">
 								<br/>
-								<small>Aspect Ratio:</small>
+								<t>Aspect Ratio</t>:
 								^ca_objects.vhh_AspectRatio
+								<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+									<ifdef code="ca_objects.vhh_AspectRatio">
+										<small><t>Source</t>:</small>
+										<small>^ca_objects.vhh_AspectRatio.__source__</small>
+									</ifdef>
+								</p>
 							</ifdef>
 
 							<ifdef code="ca_objects.vhh_Extent">
 								<br/>
-								<small>Extent:</small>
+								<t>Extent</t>:
 								<unit relativeTo="ca_objects.vhh_Extent" delimiter="<br/>">
-									^ext_Value <ifdef code="ca_objects.vhh_Extent">(^ext_Unit)</ifdef>
+									^ext_Value <ifdef code="ca_objects.vhh_Extent">^ext_Unit</ifdef>
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_Extent">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_Extent.__source__</small>
+										</ifdef>
+									</p>
 								</unit>	
 							</ifdef>
 
 							<ifdef code="ca_objects.vhh_Duration">
 								<br/>
-								<small>Duration:</small>
+								<t>Duration</t>:
 								<unit relativeTo="ca_objects.vhh_Duration" delimiter=",">
-									<small>^ca_objects.vhh_Duration</small>
+									^ca_objects.vhh_Duration
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_Duration">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_Duration.__source__</small>
+										</ifdef>
+									</p>
 								</unit>
 							</ifdef>
 
 							<ifdef code="ca_objects.vhh_Sound">
 								<br/>
-								<small>Sound</small>
-								<ifdef code="ca_objects.vhh_Sound.snd_SystemName">System - (^ca_objects.vhh_Sound.snd_SystemName)</ifdef>
-								<ifdef code="ca_objects.vhh_Sound.snd_HasSound">Has Sound? - (^ca_objects.vhh_Sound.snd_HasSound)</ifdef>
-								<ifdef code="ca_objects.vhh_Sound.snd_Method">Method - (^ca_objects.vhh_Sound.snd_Method)</ifdef>
+								<t>Sound</t>: 
+								<ifdef code="ca_objects.vhh_Sound.snd_SystemName">^ca_objects.vhh_Sound.snd_SystemName</ifdef>
+								<ifdef code="ca_objects.vhh_Sound.snd_HasSound">^ca_objects.vhh_Sound.snd_HasSound</ifdef>
+								<ifdef code="ca_objects.vhh_Sound.snd_Method"> (^ca_objects.vhh_Sound.snd_Method)</ifdef>
+								<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+									<ifdef code="ca_objects.vhh_Sound">
+										<small><t>Source</t>:</small>
+										<small>^ca_objects.vhh_Sound.__source__</small>
+									</ifdef>
+								</p>
 							</ifdef>
 
 							<ifdef code="ca_objects.vhh_ColorAV">
 								<br/>
-								<small>Color:</small>
-								<ifdef code="ca_objects.vhh_ColorAV.colAV_HasColor">Has Color? - (^ca_objects.vhh_ColorAV.colAV_HasColor)</ifdef>
-								<ifdef code="ca_objects.vhh_ColorAV.colAV_ColorDetail">Color Detail - (^ca_objects.vhh_ColorAV.colAV_ColorDetail)</ifdef>
+								<t>Color</t>: 
+								<ifdef code="ca_objects.vhh_ColorAV.colAV_ColorDetail">(^ca_objects.vhh_ColorAV.colAV_ColorDetail)</ifdef>
+								<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+									<ifdef code="ca_objects.vhh_ColorAV">
+										<small><t>Source</t>:</small>
+										<small>^ca_objects.vhh_ColorAV.__source__</small>
+									</ifdef>
+								</p>
 							</ifdef>
 
 							<ifdef code="ca_objects.vhh_Provenance">
 								<br/>
-								<small>Provenance:</small>
+								<t>Provenance</t>:
 								^ca_objects.vhh_Provenance
+								<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+									<ifdef code="ca_objects.vhh_Provenance">
+										<small><t>Source</t>:</small>
+										<small>^ca_objects.vhh_Provenance.__source__</small>
+									</ifdef>
+								</p>
 							</ifdef>
 						</div>
-					</unit>}}}
+					</unit><br/>
 
-					<br/>
-
-					{{{<unit relativeTo="ca_objects.related" delimiter="<br/>" restrictToTypes="item">
+					<unit relativeTo="ca_objects.related" delimiter="<br/>" restrictToTypes="item">
 						^ca_objects.preferred_labels (^ca_objects.type_id)
 						<a href="#" class="itemInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
 						<div class="itemInfo" style="padding-left: 20px !important;display: none !important;">
+
 							<ifdef code="ca_objects.idno">
 								<br/>
-								<small>Identifier: ^ca_objects.idno</small>
+								<t>Identifier</t>: ^ca_objects.idno
 							</ifdef>
 
-							<ifdef code="ca_objects.measurementSet.measurements">
-								^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)
-							</ifdef>
-							<ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef>
-							<ifdef code="ca_objects.measurementSet.measurements2">
-								^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)
-							</ifdef>
-
-							<ifdef code="ca_objects.vhh_Title.TitleText">
+							<ifdef code="ca_objects.vhh_TitleItem.TitleTextI">
 								<br/>
-								<small>Title:</small>
-								^ca_objects.vhh_Title.TitleText
+								<t>Title</t>:
+								^ca_objects.vhh_TitleItem.TitleTextI
+								<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+									<ifdef code="ca_objects.vhh_TitleItem">
+										<small><t>Source</t>:</small>
+										<small>^ca_objects.vhh_TitleItem.__source__</small>
+									</ifdef>
+								</p>
 							</ifdef>	
 
 							<ifdef code="ca_objects.vhh_Identifier">
 								<br/>
-								<small>External Identifier:</small>
+								<t>External Identifier</t>:
 								<unit relativeTo="ca_objects.vhh_Identifier" delimiter="<br/>">
-								^IdentifierScheme <if rule='^ca_objects.vhh_Identifier.IdentifierValue !~ /\?/'>(^ca_objects.vhh_Identifier.IdentifierValue)</if>
+									^IdentifierScheme 
+									<if rule='^ca_objects.vhh_Identifier.IdentifierValue !~ /\?/'>(^ca_objects.vhh_Identifier.IdentifierValue)</if>
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_Identifier.__source__">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_Identifier.__source__</small>
+										</ifdef>
+									</p>
 								</unit>
 							</ifdef>
 
-							<ifdef code="ca_objects.vhh_CountryOfReference">
+							<ifdef code="ca_objects.vhh_ItemSpecifics">
 								<br/>
-								<small>Country of Reference:</small>
-								<unit relativeTo="ca_objects.vhh_CountryOfReference" delimiter="<br/>">
-									^CountryPlace (^Reference)
+								<t>Item Specifics</t>:
+								<unit relativeTo="ca_objects.vhh_ItemSpecifics" delimiter="<br/>">
+									^vhh_ItemSpecifics
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_ItemSpecifics.__source__">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_ItemSpecifics.__source__</small>
+										</ifdef>
+									</p>
 								</unit>
 							</ifdef>
 
-							<ifdef code="ca_objects.vhh_Date">
+							<ifdef code="ca_objects.vhh_AccessStatus2.AS_List">
 								<br/>
-								<small>Date:</small>
-								<unit relativeTo="ca_objects.vhh_Date" delimiter="<br/>">
-									^date_Date <ifdef code="ca_objects.vhh_Date.date_Type">(^date_Type)</ifdef>
+								<t>Access Status</t>:
+								<unit relativeTo="ca_objects.vhh_AccessStatus2.AS_List" delimiter="<br/>">
+									^ca_objects.vhh_AccessStatus2.AS_List
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_AccessStatus2.__source__">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_AccessStatus2.__source__</small>
+										</ifdef>
+									</p>
 								</unit>
 							</ifdef>				
 				
-							<ifdef code="ca_objects.vhh_Description">
+							<ifdef code="ca_objects.vhh_Extent">
 								<br/>
-								<small>Description</small>
-								<div class='unit'>
-									<span class="trimText">^ca_objects.vhh_Description.DescriptionText</span>
-								</div>
+								<t>Extent</t>:
+								<unit relativeTo="ca_objects.vhh_Extent.ext_Value" delimiter="<br/>">
+									^ca_objects.vhh_Extent.ext_Value
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_Extent.__source__">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_Extent.__source__</small>
+										</ifdef>
+									</p>
+								</unit>
 							</ifdef>
 						
 							<ifdef code="ca_objects.vhh_URL">
 								<br/>
-								<small>URL:</small>
-								<unit relativeTo="ca_objects" delimiter="<br/>">
-									<l>^ca_objects.vhh_URL</l>
+								<t>URL</t>:
+								<unit relativeTo="ca_objects.vhh_URL" delimiter="<br/>">
+									<a href="^ca_objects.vhh_URL">^ca_objects.vhh_URL</a>
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_URL.__source__">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_URL.__source__</small>
+										</ifdef>
+									</p>
 								</unit>
 							</ifdef>
 
 							<ifdef code="ca_objects.vhh_Note">
 								<br/>
-								<small>Note:</small>
-								<unit relativeTo="ca_objects" delimiter="<br/>">							
+								<t>Note</t>:
+								<unit relativeTo="ca_objects.vhh_Note" delimiter="<br/>">							
 									<span class="trimText">^ca_objects.vhh_Note.vhh_NoteText</span>
+									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
+										<ifdef code="ca_objects.vhh_Note.__source__">
+											<small><t>Source</t>:</small>
+											<small>^ca_objects.vhh_Note.__source__</small>
+										</ifdef>
+									</p>
 								</unit>
 							</ifdef>
 
-							<ifdef code="ca_objects.vhh_MediaType">
-								<br/>
-								<small>Media Type:</small>
-								<unit relativeTo="ca_objects.vhh_MediaType" delimiter=",">
-									<small>^MT_List</small>
-								</unit>
-							</ifdef>
-
-							<ifdef code="ca_objects.vhh_GenreAV">
-								<br/>
-								<small>Genre(AV):</small>
-								<unit relativeTo="ca_objects.vhh_GenreAV" delimiter=",">
-									<small>^GenreAV_List</small>
-								</unit>
-							</ifdef>
-
-							<ifdef code="ca_objects.edu_FilmDevices">
-								<br/>
-								<small>Devices:</small>
-								<unit relativeTo="ca_objects.edu_FilmDevices" delimiter=",">
-									<small>^edu_FilmDevices</small>
-								</unit>
-							</ifdef>
-
-							<ifdef code="ca_objects.edu_KnowledgeField">
-								<br/>
-								<small>Field of Knowledge:</small>
-								<unit relativeTo="ca_objects.edu_KnowledgeField" delimiter="<br/>">
-									^edu_KnowlegdeFieldType
-								</unit>
-							</ifdef>
-
-							<ifdef code="ca_objects.dateSet.setDisplayValue">
-								<br/>
-								<small>Date:</small>
-								^ca_objects.dateSet.setDisplayValue
-							</ifdef>
 						</div>
-					</unit>}}}
+					</unit></div></ifcount>}}}
 
-					<br/>
-
-					{{{<unit relativeTo="ca_objects.related" delimiter="<br/>" excludeTypes="av_manifestation, item">
-						<ifdef code="ca_objects.related"><label><?= _t('Related Objects'); ?></label></ifdef>
-						<l>^ca_objects.preferred_labels</l> (^ca_objects.type_id)
-					</unit>}}}
+					{{{<ifcount code="ca_objects.related" excludeTypes="av_manifestation, item" min="1"><div class="unit"><label><t>Objects</t></label>
+						<unit relativeTo="ca_objects.related" delimiter="<br/>" excludeTypes="av_manifestation, item">
+						<l>^ca_objects.preferred_labels</l> (^relationship_typename)
+						</unit></div></ifcount>}}}
 
 				</div>
 			</div>

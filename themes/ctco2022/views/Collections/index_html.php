@@ -4,8 +4,14 @@
 ?>
 	<div class="row">
 		<div class='col-sm-12 col-md-8 col-md-offset-2 collectionsList'>
-			<h1><?php print $this->getVar("section_name"); ?></h1>
-			<br/>
+			<div class="row">
+				<div class="col-sm-6">
+					<h1><?php print $this->getVar("section_name"); ?></h1>
+				</div>
+				<div class="col-sm-6 collectionBrowseAll">
+					<?php print caNavLink($this->request, "Browse All Collections", "btn btn-default", "", "Collections",  "Collections"); ?>
+				</div>
+			</div><br/>
 <?php
 
 	if($vs_intro_global_value = $o_collections_config->get("collections_intro_text_global_value")){

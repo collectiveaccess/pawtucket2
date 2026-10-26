@@ -84,6 +84,7 @@
 				<HR>
 				
 				{{{
+					<ifdef code="ca_objects.measurementSet.measurements|ca_objects.measurementSet.measurements"><div class="unit">
 					<ifdef code="ca_objects.measurementSet.measurements">
 						^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)
 					</ifdef>
@@ -91,91 +92,99 @@
 					<ifdef code="ca_objects.measurementSet.measurements2">
 						^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)
 					</ifdef>
+					</div></ifdef>
 				}}}
 				
 				{{{<ifdef code="ca_objects.idno">
-					<label>Identifier:</label>
-					^ca_objects.idno
+					<div class="unit"><label><t>Identifier</t></label>
+					^ca_objects.idno</div>
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_Title.TitleText">
-					<label>Title:</label>
-					^ca_objects.vhh_Title.TitleText
+					<div class="unit"><label><t>Title</t></label>
+					^ca_objects.vhh_Title.TitleText</div>
 				</ifdef>}}}			
 
 				{{{<ifdef code="ca_objects.vhh_Identifier">
-					<label>External Identifier:</label>
+					<div class="unit"><label><t>External Identifier</t></label>
 					<unit relativeTo="ca_objects.vhh_Identifier" delimiter="<br/>">
 						^IdentifierScheme <if rule='^ca_objects.vhh_Identifier.IdentifierValue !~ /\?/'>(^ca_objects.vhh_Identifier.IdentifierValue)</if>
-					</unit>
+					</unit></div>
 				</ifdef>}}}	
 
 				{{{<ifdef code="ca_objects.vhh_CountryOfReference">
-					<label>Country of Reference:</label>
+					<div class="unit"><label><t>Country of Reference</t></label>
 					<unit relativeTo="ca_objects.vhh_CountryOfReference" delimiter="<br/>">
 						^CountryPlace (^Reference)
-					</unit>
+					</unit></div>
 				</ifdef>}}}	
 
 				{{{<ifdef code="ca_objects.vhh_Date" >
-					<label>Date:</label>
+					<div class="unit"><label><t>Date</t></label>
 					<unit relativeTo="ca_objects.vhh_Date" delimiter="<br/>">
 						^date_Date <ifdef code="ca_objects.vhh_Date.date_Type">(^date_Type)</ifdef>
-					</unit>
+					</unit></div>
 				</ifdef>}}}				
 	
 				{{{<ifdef code="ca_objects.vhh_Description">
-					<label>Description</label>
-					<div class='unit'>
+					<div class="unit"><label><t>Description</t></label>
 						<span class="trimText">^ca_objects.vhh_Description.DescriptionText</span>
 					</div>
 				</ifdef>}}}
 			
 				{{{<ifdef code="ca_objects.vhh_URL">
-					<label>URL:</label>
-					<unit relativeTo="ca_objects" delimiter="<br/>">
-						<a href="ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a>
-					</unit>
+					<div class="unit"><label><t>URL</t></label>
+					<unit relativeTo="ca_objects.vhh_URL" delimiter="<br/>">
+						<a href="^ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a>
+						<ifdef code="ca_objects.vhh_URL.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+						<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+							<ifdef code="ca_objects.vhh_URL.__source__">
+								<br/>
+								<small>Source:</small>
+								<small>^ca_objects.vhh_URL.__source__</small>
+							</ifdef>
+						</div>
+					</unit></div>
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_Note">
-					<label>Note:</label>
+					<div class="unit"><label><t>Note</t></label>
 					<unit relativeTo="ca_objects" delimiter="<br/>">							
 						<span class="trimText">^ca_objects.vhh_Note.vhh_NoteText</span>
-					</unit>
+					</unit></div>
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_MediaType">
-					<label>Media Type:</label>
+					<div class="unit"><label><t>Media Type</t></label>
 					<unit relativeTo="ca_objects.vhh_MediaType" delimiter="<br/>">
 						^MT_List
-					</unit>
+					</unit></div>
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_GenreAV">
-					<label>Genre(AV):</label>
+					<div class="unit"><label><t>Genre(AV)</t></label>
 					<unit relativeTo="ca_objects.vhh_GenreAV" delimiter="<br/>">
 						^GenreAV_List
-					</unit>
+					</unit></div>
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.edu_FilmDevices">
-					<label>Devices:</label>
+					<div class="unit"><label><t>Devices</t></label>
 					<unit relativeTo="ca_objects" delimiter="<br/>">
 						^ca_objects.edu_FilmDevices
-					</unit>
+					</unit></div>
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.edu_KnowledgeField">
-					<label>Field of Knowledge:</label>
+					<div class="unit"><label><t>Field of Knowledge</t></label>
 					<unit relativeTo="ca_objects.edu_KnowledgeField" delimiter="<br/>">
 						^edu_KnowlegdeFieldType
-					</unit>
+					</unit></div>
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.dateSet.setDisplayValue">
-					<label>Date:</label>
-					^ca_objects.dateSet.setDisplayValue
+					<div class="unit"><label><t>Date</t></label>
+					^ca_objects.dateSet.setDisplayValue</div>
 				</ifdef>}}}
 
 				<hr></hr>
@@ -183,10 +192,10 @@
 				<div class="row">
 					<div class="col-sm-12">		
 
-						{{{<ifdef code="ca_objects.related"><label><?= _t('Related Items'); ?></label></ifdef>}}}
-						{{{<unit relativeTo="ca_objects.related" delimiter="<br/>">
+						{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label><t>Items</t></label>
+							<unit relativeTo="ca_objects.related" delimiter="<br/>">
 							<l>^ca_objects.preferred_labels</l> (^ca_objects.type_id)
-						</unit>}}}
+						</unit></div></ifcount>}}}
 						
 					</div><!-- end col -->				
 					<!-- <div class="col-sm-6 colBorderLeft">

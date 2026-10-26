@@ -1,13 +1,13 @@
 <?php
-    require_once(__CA_MODELS_DIR__."/ca_objects.php");
-	$va_errors = $this->getVar("errors");
-	$vn_num1 = rand(1,10);
-	$vn_num2 = rand(1,10);
-	$vn_sum = $vn_num1 + $vn_num2;
+require_once(__CA_MODELS_DIR__."/ca_objects.php");
+$va_errors = $this->getVar("errors");
+$vn_num1 = rand(1,10);
+$vn_num2 = rand(1,10);
+$vn_sum = $vn_num1 + $vn_num2;
 
-	$vn_object_id = $this->request->getParameter("object_id", pString);
-	$t_object = new ca_objects($vn_object_id);
-	$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_object->get("ca_objects.object_id"));
+$vn_object_id = $this->request->getParameter("object_id", pString);
+$t_object = new ca_objects($vn_object_id);
+$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_object->get("ca_objects.object_id"));
 
 ?>
 <div id="askACurator"><div class='inside'>

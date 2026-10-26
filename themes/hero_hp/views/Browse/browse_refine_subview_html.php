@@ -44,7 +44,7 @@
 		$i = 0;
 		$vb_start_over = false;
 		foreach($va_criteria as $va_criterion) {
-			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 			$vb_start_over = true;
 			$i++;
 		}
@@ -60,7 +60,8 @@
 ?>
 			<div class="bSearchWithinContainer">
 				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-					<input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within"><button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button>
+					<label for="searchWithinSearchRefine" class="sr-only">Search Within:</label>
+					<input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within"><button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search" role="graphics-document"></span></button>
 					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
 				</form>
@@ -69,7 +70,7 @@
 <?php
 		}
 		if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
-			print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
+			print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove'></span></a>";
 			print "<H2>"._t("Filter by")."</H2>";
 			if($vs_criteria){
 				print "<div class='bCriteria'>".$vs_criteria."</div>";

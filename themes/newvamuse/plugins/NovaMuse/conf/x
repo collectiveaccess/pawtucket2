@@ -1,0 +1,6 @@
+# Set to 0 to disable the plugin
+enabled = 1
+
+# navigation.conf menu code to place NovaStory menu item *before*
+# Leave this blank if you want this to be the last (right most) item in the top-level navigation bar
+position_top_level_nav_item_before = about

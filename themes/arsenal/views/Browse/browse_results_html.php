@@ -107,7 +107,7 @@ if (!$vb_ajax) {	// !ajax
 					print $vn_result_size.(($vn_result_size == 1) ? " werk gefunden" : " werke gefunden");	
 				
 				}else{
-					print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));			
+					print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? $va_browse_info["labelSingular"] : $va_browse_info["labelPlural"])." "._t("Found");			
 				}
 			}
 ?>		

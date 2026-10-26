@@ -53,7 +53,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				}
 			}
 			# --- should collection record title open collapsed sub items?
-			if(($vn_level > 1) && $va_options["collapse_levels"]){
+			if(($vn_level > 1) && ($o_config->get("max_levels") && ($vn_level < $o_config->get("max_levels"))) && $va_options["collapse_levels"]){
 				$vb_collapse_link = true;
 			}else{
 				$vb_collapse_link = false;

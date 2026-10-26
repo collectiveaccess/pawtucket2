@@ -79,7 +79,7 @@
 ?>								
 
 				</td><td>
-					<div class="metaBlock">hello!!!!!!
+					<div class="metaBlock">
 <?php				
 					print "<div class='title'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name (^ca_objects.idno)')."</div>"; 
 					if(is_array($va_display_list) && sizeof($va_display_list)){

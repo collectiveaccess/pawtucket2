@@ -4,7 +4,7 @@
 	$config = $this->getVar("config");
 	
 	$views = $config->get('views');
-	$views_info = $views['slideshow']['ca_objects'];
+	$views_info = $views['slideshow'][$this->getVar("table")];
 	
 	$vs_label = $t_item->getWithTemplate($views_info["labelTemplate"]);
 	$vs_content = $t_item->getWithTemplate($views_info["contentTemplate"]);

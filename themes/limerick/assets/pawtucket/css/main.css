@@ -12,6 +12,7 @@ body {
     font-family: Georgia, serif;
     color: #432;
     margin-bottom: 80px;
+    font-size: 16px;
 }
 
 a,
@@ -1686,7 +1687,7 @@ lbSetThumb {
 
 .detail {
     color: #432;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .detail a {

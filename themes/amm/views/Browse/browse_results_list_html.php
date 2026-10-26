@@ -115,7 +115,7 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					$vs_image = (($vs_table === 'ca_objects') && ($qr_res->get("ca_objects.sensitive_material", array("convertCodesToDisplayText" => true)) != "Yes")) ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
 					if(!$vs_image){
 						if ($vs_table == 'ca_objects') {

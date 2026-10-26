@@ -6,6 +6,7 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$va_access_values = caGetUserAccessValues($this->request);
 	
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -84,19 +85,6 @@
 ?>
 				</div><!-- end col -->
 			</div><!-- end row -->
-<?php
-			$o_browse = caGetBrowseInstance('ca_objects');
-			$o_browse->addCriteria("collection_facet", $t_item->getPrimaryKey() );
-			$o_browse->execute();
-			$qr_rel_res = $o_browse->getResults(array('sort' => 'ca_entity_labels.surname/author;ca_entity_labels.forename/author;ca_objects.260_date', 'sort_direction' => 'asc'));	
-			
-			if($qr_rel_res->numHits()){
-				$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', 'collections');
-				$o_rel_context->setAsLastFind(true);
-				$o_rel_context->setResultList($qr_rel_res->getPrimaryKeyValues(1000));
-				$o_rel_context->saveContext();
-			}
-?>
 {{{
 			<div class="row">
 				<hr/>
@@ -106,7 +94,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'institution_facet', 'id' => '^ca_collections.collection_id', 'showFilterPanel' => 1, 'view' => 'list', 'sort' => 'Author', 'sortDirection' => 'asc'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'institution_facet', 'id' => '^ca_collections.collection_id', 'showFilterPanel' => 1, 'view' => 'list', 'sort' => 'Author', 'sortDirection' => 'asc', 'dontSetFind' => true), array('dontURLEncodeParameters' => true)); ?>", function() {
 						//jQuery('#browseResultsContainer').jscroll({
 						//	autoTrigger: true,
 						//	loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

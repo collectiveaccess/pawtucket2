@@ -78,7 +78,7 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
+				<H1>{{{ca_objects.preferred_labels}}}</H1>
 				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 				<HR>
 				
@@ -90,6 +90,7 @@
 				{{{<ifdef code="ca_objects.period"><label>Period:</label> <a href="/Search/objects/search/ca_objects.period:^ca_objects.period">^ca_objects.period</a><br/></ifdef>}}}				
 				{{{<ifdef code="ca_objects.dimensions_text"><label>Dimensions:</label> ^ca_objects.dimensions_text<br/></ifdef>}}}
 				
+
 				{{{<ifdef code="ca_objects.materials">
 					<div class='unit'><label>Materials:</label>
 						<unit relativeTo="ca_objects.materials" delimiter=", ">
@@ -107,7 +108,7 @@
 				
 				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><label>Date:</label>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
 			
-				<hr></hr>
+				<hr>
 					<div class="row">
 						<div class="col-sm-6">		
 							{{{<ifcount code="ca_entities" min="1" max="1" excludeRelationshipTypes="donor"><label>Related person</label><br/></ifcount>}}}
@@ -126,6 +127,7 @@
 						<div class="col-sm-6 colBorderLeft">
 							{{{map}}}
 						</div>
+						
 					</div><!-- end row -->
 						
 			</div><!-- end col -->

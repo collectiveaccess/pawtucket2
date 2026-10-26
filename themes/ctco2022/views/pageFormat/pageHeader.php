@@ -171,12 +171,18 @@
 					<li class="dropdown-container">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Collections</a>
 						<ul class="dropdown-menu">
-							<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artifacts"), "", "", "Browse", "objects"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Guide"), "", "", "guide", ""); ?></li>
+							<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Objects"), "", "", "Browse", "objects"); ?></li>
 							<li <?php print (strtoLower($this->request->getController()) == "collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "Collections", "index"); ?></li>	
 						</ul>
 					</li>
-					
-					<li <?php print ($this->request->getController() == "Contributors") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Institutions"), "", "", "Contributors", ""); ?></li>	
+					<li class="dropdown-container">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Institutions</a>
+						<ul class="dropdown-menu">
+							<li <?php print ((strToLower($this->request->getController()) == "contributors") && (strToLower($this->request->getAction()) == "list")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Contributors", "list"); ?></li>
+							<li <?php print ((strToLower($this->request->getController()) == "contributors") && (strToLower($this->request->getAction()) == "map")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Map"), "", "", "Contributors", "map"); ?></li>
+						</ul>
+					</li>
 					<li <?php print ($this->request->getController() == "Transcribe") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Transcribe"), "", "", "Transcribe", "Index"); ?></li>					
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<!-- <li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>					 -->
@@ -184,11 +190,11 @@
 					<li class="dropdown-container">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 						<ul class="dropdown-menu">
-							<li><a href="/index.php/about">About The Project</a></li>
-							<li><a href="/index.php/guide">Guide</a></li>
-							<li><a href="/index.php/faq">FAQ</a></li>
-							<li><a href="/index.php/terms_of_use">Terms of Use</a></li>
-							<li><a href="/index.php/plan_your_visit">Plan Your Visit</a></li>
+							<li><?php print caNavLink($this->request, _t("About The Project"), "", "", "about", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("Guide"), "", "", "guide", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("FAQ"), "", "", "faq", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "terms_of_use", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("Plan Your Visit"), "", "", "plan_your_visit", ""); ?></li>
 						</ul>
 					</li>
 

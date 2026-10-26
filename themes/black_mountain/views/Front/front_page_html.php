@@ -41,32 +41,6 @@
 		</div>
 	</div>
 <?php
-	$hp_video_1 = $this->getVar("hp_video_1");
-	$hp_video_2 = $this->getVar("hp_video_2");
-	$hp_video_3 = $this->getVar("hp_video_3");
-	$hp_video_4 = $this->getVar("hp_video_4");
-	if($hp_video_1 || $hp_video_2 || $hp_video_3 || $hp_video_4){
-?>
-	<div class="frontFeaturedVideos">
-		<div class="row">
-<?php
-			if($hp_video_1){
-				print "<div class='col-sm-6 videoCol'>".$hp_video_1."</div>";
-			}
-			if($hp_video_2){
-				print "<div class='col-sm-6 videoCol'>".$hp_video_2."</div>";
-			}
-			if($hp_video_3){
-				print "<div class='col-sm-6 videoCol'>".$hp_video_3."</div>";
-			}
-			if($hp_video_4){
-				print "<div class='col-sm-6 videoCol'>".$hp_video_4."</div>";
-			}
-?>
-		</div>				
-	</div>
-<?php
-	}	
 	$t_lists = new ca_lists();
 	$vn_event_id = $t_lists->getItemIDFromList("occurrence_types", "event");
 	$vn_exhibition_id = $t_lists->getItemIDFromList("occurrence_types", "exhibitions");
@@ -116,5 +90,32 @@
 <?php					
 			}
 		}
+	}
+	
+	$hp_video_1 = $this->getVar("hp_video_1");
+	$hp_video_2 = $this->getVar("hp_video_2");
+	$hp_video_3 = $this->getVar("hp_video_3");
+	$hp_video_4 = $this->getVar("hp_video_4");
+	if($hp_video_1 || $hp_video_2 || $hp_video_3 || $hp_video_4){
+?>
+	<div class="frontFeaturedVideos">
+		<div class="row">
+<?php
+			if($hp_video_1){
+				print "<div class='col-sm-6 videoCol'>".$hp_video_1."</div>";
+			}
+			if($hp_video_2){
+				print "<div class='col-sm-6 videoCol'>".$hp_video_2."</div>";
+			}
+			if($hp_video_3){
+				print "<div class='col-sm-6 videoCol'>".$hp_video_3."</div>";
+			}
+			if($hp_video_4){
+				print "<div class='col-sm-6 videoCol'>".$hp_video_4."</div>";
+			}
+?>
+		</div>				
+	</div>
+<?php
 	}
 ?>

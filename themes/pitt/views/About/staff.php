@@ -8,17 +8,36 @@
 		<H1><?php print _t("Staff"); ?></H1>
 		
 
-<b>Barbara McCloskey</b><br/>
-Director and Chair of the Department of History of Art and Architecture<br/>
-104 Frick Fine Arts Building<br/>
-Tel: 412-648-2417<br/>
-Email: <a href='mailto:bmcc@pitt.edu'>bmcc@pitt.edu</a><br/><br/>
-
-<b>Isabelle Chartier</b><br/>
-Curator of the University Art Gallery and Lecturer in the Department of History of Art and Architecture<br/>
+<b>Sylvia Rhor Samaniego, PhD</b><br/>
+Director and Curator<br/>
 104 Frick Fine Arts Building<br/>
 Tel: 412-648-2423<br/>
-Email: <a href='mailto:ilc7@pitt.edu'>ilc7@pitt.edu</a><br/><br/>				
+Email: <a href='mailto:sylvia.rhor@pitt.edu'>sylvia.rhor@pitt.edu</a><br/><br/>
+
+<b>Mrinalini Rajagopalan</b><br/>
+Chair and Associate Professor<br/>
+115 Frick Fine Arts Building<br/>
+Tel: 412-648-2400<br/>
+Email: <a href='mailto"mrr55@pitt.edu'>mrr55@pitt.edu</a><br/><br/>
+
+<b>Isaiah Bertagnolli</b><br/>
+UAG Graduate Fellow, 2021-22<br/>
+104 Frick Fine Arts Building<br/>
+Tel: 412-648-2423<br/>
+Email: <a href='mailto:itb4@pitt.edu'>itb4@pitt.edu</a><br/><br/>
+
+<b>Jamie Roncinske</b><br/>
+UAG Intern<br/><br/>
+ 
+<b>Emily Wiley</b><br/>
+UAG Intern<br/><br/>
+
+<b>Karoline Swiontek</b><br/>
+Academic and Fiscal Manager<br/> 
+104 Frick Fine Arts Building<br/>
+Tel: 412-648-2400<br/>
+Email: <a href='mailto:karoline@pitt.edu'>karoline@pitt.edu</a><br/><br/>
+
 	</div>
 	<div class="col-sm-1"></div>
 </div>

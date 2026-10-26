@@ -86,6 +86,50 @@
 
  			$this->render("Contributors/index_html.php");
  		}
+ 		
+ 		# -------------------------------------------------------
+ 		public function map(){
+ 			$o_search = new EntitySearch();
+ 		 	if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
+ 		 		$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
+			}
+			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_contributor_id, array("sort" => "ca_entity_labels.name_sort"));
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, "ca_entities", "contributors");
+			$this->opo_result_context->setAsLastFind();
+			
+ 			$o_map = new GeographicMap('100%', $this->config->get("contributor_map_height"), 'map');
+			$va_map_stats = $o_map->mapFrom($qr_res, $this->config->get("contributor_map_georeference_field"), array("labelTemplate" => $this->config->get("contributor_map_label_template"), "contentTemplate" => $this->config->get("contributor_map_content_template"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
+			$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));
+
+			$qr_res->seek(0);
+			
+			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(200));
+			$this->opo_result_context->saveContext();
+			
+			$this->view->setVar("contributor_results", $qr_res);
+
+ 			$this->render("Contributors/map_html.php");
+ 		}
+ 		
+ 		# -------------------------------------------------------
+ 		public function list(){
+ 			$o_search = new EntitySearch();
+ 		 	if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
+ 		 		$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
+			}
+			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_contributor_id, array("sort" => "ca_entity_labels.name_sort"));
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, "ca_entities", "contributors");
+			$this->opo_result_context->setAsLastFind();
+			
+ 			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(200));
+			$this->opo_result_context->saveContext();
+			
+			$this->view->setVar("contributor_results", $qr_res);
+
+ 			$this->render("Contributors/list_html.php");
+ 		}
  		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link from a browse result item

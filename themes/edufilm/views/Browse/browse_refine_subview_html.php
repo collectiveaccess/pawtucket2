@@ -25,7 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ 	global $g_ui_locale;
+ 	
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
 	$vs_key 			= $this->getVar('key');					// cache key for current browse
@@ -50,6 +51,14 @@
 					$vs_label = $va_criterion['value'];
 					if(mb_strlen($va_criterion['value']) > 20){
 						$vs_label = mb_substr($va_criterion['value'], 0, 20)."...";
+					}
+					if(($g_ui_locale == "de_DE") && ($va_criterion["facet_name"] == "media_class")){
+						if($vs_label == "image"){
+							$vs_label = "Bild";
+						}
+						if($vs_label == "video"){
+							$vs_label = "Video";
+						}
 					}
 					$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_label.' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_view, 'key' => $vs_key, 'is_advanced' => $vn_is_advanced));
 					$vn_num_criteria++;
@@ -103,7 +112,18 @@
 					$va_facet_popover = array();
 					$vs_facet_desc = "";
 					$vs_label = $va_item['label'];
-					$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+					$vs_content_count = "";
+					if(!in_array($vs_facet_name, array("type_of_activity_facet", "media_class"))){
+						$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+					}
+					if(($g_ui_locale == "de_DE") && ($vs_facet_name == "media_class")){
+						if($vs_label == "image"){
+							$vs_label = "Bild";
+						}
+						if($vs_label == "video"){
+							$vs_label = "Video";
+						}
+					}
 					print "<div class='".(($va_facet_info["columns"]) ? "col-md-12 col-lg-4" : "col-sm-12")." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view)).$vs_facet_desc."</div>";
 					$vn_c++;
 					$vn_col++;

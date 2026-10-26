@@ -26,7 +26,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			if(is_array($va_options["collection_type_icons"])){
 				$vs_icon = $va_options["collection_type_icons"][$qr_collections->get("ca_collections.type_id")];
 			}
-			$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.idno_sort"));
+			$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.rank"));
 			# --- check if collection record type is configured to be excluded
 			if(($vn_level > 1) && is_array($va_options["exclude_collection_type_ids"]) && (in_array($qr_collections->get("ca_collections.type_id"), $va_options["exclude_collection_type_ids"]))){
 				continue;

@@ -146,6 +146,20 @@ if (!$vb_ajax) {	// !ajax
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
+				
+				if ($va_criterion['facet_name'] == "collection" ) {
+					$vn_collection_id = $va_criterion['id'];
+					$t_collection = new ca_collections($vn_collection_id);
+					if(!in_array($t_collection->get('ca_collections.access'), $va_access_values)) { 
+						$app = AppController::getInstance();
+						$resp = $app->getResponse();
+						$n = new NotificationManager($this->request);
+						$n->addNotification(_t("This item is not available for view"), "message");
+						$resp->setRedirect('/');
+						return;
+					}
+				}
+				
 				print "<strong>".$va_criterion['facet'].':</strong>';
 				if ($va_criterion['facet_name'] != '_search') {
 					$vs_criterion_value = $va_criterion['value'];
@@ -172,9 +186,6 @@ if (!$vb_ajax) {	// !ajax
 					$t_authority_table->load($va_criterion['id']);
 					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
 				}
-				if ($va_criterion['facet_name'] == "collection" ) {
-					$vn_collection_id = $va_criterion['id'];
-				}
 			}
 		}
 ?>		
@@ -184,7 +195,6 @@ if (!$vb_ajax) {	// !ajax
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
 		if ($vn_collection_id) {
-			$t_collection = new ca_collections($vn_collection_id);
 			if ($vs_description = $t_collection->get('ca_collections.description')) {
 			print "<div class='collectionDescription'>";
 			print "<h1>".$t_collection->get('ca_collections.preferred_labels')."</h1>";
@@ -197,22 +207,7 @@ if (!$vb_ajax) {	// !ajax
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
-		if($vb_is_search && !$qr_res->numHits() && $vs_search){
-			# --- try to display did you mean results if available
-			$o_search = caGetSearchInstance($vs_table);
-			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
-				$va_suggest_links = array();
-				foreach($va_suggestions as $vs_suggestion){
-					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));
-				}
-				
-				if (sizeof($va_suggest_links) > 1) {
-					print "<div class='col-sm-12'>"._t("Did you mean one of these: %1?", join(', ', $va_suggest_links))."</div>";
-				} else {
-					print "<div class='col-sm-12'>"._t("Did you mean %1?", join(', ', $va_suggest_links))."</div>";
-				}
-			}
-		}
+		
 } // !ajax
 
 print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
@@ -275,4 +270,3 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		print $this->render('Browse/browse_panel_subview_html.php');
 } //!ajax
-?>

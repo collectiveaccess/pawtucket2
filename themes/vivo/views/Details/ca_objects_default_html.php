@@ -53,8 +53,13 @@
 				</div>
 				<div class='col-md-2'>
 <?php
-					print "<div id='detailTools'><div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
-					print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Feedback", "", "", "Contact", "Form", array("contactType" => "Feedback", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div></div>";
+					print "<div id='detailTools'>";
+					if($t_object->get("ca_objects.video_out", array("convertCodesToDisplayText" => true)) == "Yes"){
+						print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Rent or Purchase", "", "", "Contact", "Form", array("contactType" => "RentalPurchase", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+					}
+					print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+					print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Feedback", "", "", "Contact", "Form", array("contactType" => "Feedback", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+					print "</div>";
 ?>
 				
 				</div><!-- end col -->

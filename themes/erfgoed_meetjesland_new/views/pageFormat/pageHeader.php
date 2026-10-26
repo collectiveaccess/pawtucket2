@@ -187,6 +187,7 @@
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Expo's", "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
 					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Bladeren", "", "", "Browse", "Objects"); ?></li>
+					<li <?php print ($this->request->getController() == "Projecten") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Projecten", "", "", "Projecten", ""); ?></li>
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
 						<ul class="dropdown-menu">

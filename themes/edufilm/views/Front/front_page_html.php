@@ -34,6 +34,12 @@
  if(!$vs_hero){
  	$vs_hero = rand(1, 3);
  }
+ 
+ 	global $g_ui_locale;
+	$vs_global_value_suffix = "";
+	if($g_ui_locale == "de_DE"){
+		$vs_global_value_suffix = "_de";
+	}
 ?>
 
 <div class="parallax hero<?php print $vs_hero; ?>">
@@ -43,9 +49,8 @@
 				
 				<div class="heroSearch">
 					<H1>
-						<div class="line1"><?= _t('Welcome to'); ?></div>
-						<div class="line2"><?= _t('Educational Film Practice'); ?> </br> <?= _t('in Austria'); ?></div>
-						<div class="line3">{{{hp_search_text}}}</div>
+						<!-- <div class="line1"><?= _t('Welcome to'); ?></div> -->
+						<div class="line2">{{{hp_search_text<?php print $vs_global_value_suffix; ?>}}}</div>
 					</H1>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
@@ -53,7 +58,7 @@
 								<input type="text" class="form-control" id="heroSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
 							</div>
 							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
-						</div>
+						</div> <span class="hpSearchHelp"><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-info-sign" aria-label="'._t("Search information").'"></span>', '', '', 'search_info', ''); ?></span>
 					</form>
 				</div>
 			</div>
@@ -61,8 +66,8 @@
 	</div>
 </div>
 <?php
-	$vs_hp_intro_title = $this->getVar("hp_intro_title");
-	$vs_hp_intro = $this->getVar("hp_intro");
+	$vs_hp_intro_title = $this->getVar("hp_intro_title".$vs_global_value_suffix);
+	$vs_hp_intro = $this->getVar("hp_intro".$vs_global_value_suffix);
 	if($vs_hp_intro_title || $vs_hp_intro){
 ?>
 	<div class="container hpIntro">
@@ -86,14 +91,14 @@
 ?>
 	<div class="row hpExplore bgLightGray">
 		<div class="col-md-12 col-lg-8 col-lg-offset-2">
-		<H2 class="frontSubHeading text-center"><?= _t('Explore The Archive'); ?></H2>
+		<H2 class="frontSubHeading text-center">{{{hp_explore<?php print $vs_global_value_suffix; ?>}}}</H2>
 
 			<div class="row">
 				<div class="col-md-4">
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "browse", "films"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Films", "", "", "browse", "films"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, _t("Films"), "", "", "browse", "films"); ?></div>
 						</div>
 					</div>
 				</div>
@@ -101,7 +106,7 @@
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage2'></div>", "", "", "browse", "people"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "People", "", "", "browse", "people"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, _t("People"), "", "", "browse", "people"); ?></div>
 						</div>
 					</div>
 				</div>
@@ -109,7 +114,7 @@
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage3'></div>", "", "", "browse", "organization"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Organizations", "", "", "browse", "organization"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, _t("Organizations"), "", "", "browse", "organization"); ?></div>
 						</div>
 					</div>
 				</div>
@@ -120,7 +125,7 @@
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage4'></div>", "", "", "browse", "texts"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Texts", "", "", "browse", "texts"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, _t("Texts"), "", "", "browse", "texts"); ?></div>
 						</div>
 					</div>
 				</div>
@@ -128,7 +133,7 @@
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage5'></div>", "", "", "browse", "images"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Images", "", "", "browse", "images"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, _t("Images"), "", "", "browse", "images"); ?></div>
 						</div>
 					</div>
 				</div>
@@ -136,7 +141,7 @@
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage6'></div>", "", "", "browse", "places"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Locations", "", "", "browse", "places"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, _t("Locations"), "", "", "browse", "places"); ?></div>
 						</div>
 					</div>
 				</div>

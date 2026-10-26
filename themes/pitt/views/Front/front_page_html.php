@@ -33,11 +33,14 @@
 ?>
 <div class="container">
 	<div class="row">
-		<div class="col-sm-8">
+	<div class="col-sm-12" style="background-color: white; padding: 20px 20px 5px 20px;">&nbsp;</div><!--end col-sm-12-->
+			<div class="col-sm-8">
+			<p>&nbsp;</p>
 			<p>The University Art Gallery (UAG) is located in the Frick Fine Arts Building in the heart of Pittsburgh’s Oakland neighborhood.  Administered by the Department of History of Art and Architecture, the UAG is the major repository of art at the University of Pittsburgh, with a collection of more than 3,000 objects from around the world and from a diverse range of periods. Gallery holdings include some valuable American paintings, a rich collection of European, British and American works on paper, Inuit carvings, and Japanese and Chinese scrolls and sculpture.</p>
 			<p>The UAG showcases the work of faculty and students in the history of art and architecture and in studio arts. As a teaching gallery, the UAG is deeply involved in the development of aspiring museum professionals and oversees training in areas of curating and collection management.  </p>
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">
+		<p>&nbsp;</p>
 <?php
 		print $this->render("Front/gallery_set_links_html.php");
 ?>

@@ -29,11 +29,11 @@
  *
  * ----------------------------------------------------------------------
  */
-  $va_access_values = $this->getVar("access_values");
- $vs_hero = $this->request->getParameter("hero", pString);
- if(!$vs_hero){
- 	$vs_hero = rand(1, 3);
- }
+	$va_access_values = $this->getVar("access_values");
+	$vs_hero = $this->request->getParameter("hero", pString);
+	if(!$vs_hero){
+ 		$vs_hero = rand(1, 3);
+	}
 ?>
 
 <div class="parallax hero<?php print $vs_hero; ?>">
@@ -50,9 +50,10 @@
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
 							<div class="form-group">
+								<label for="heroSearchInput" class="sr-only">Search:</label>
 								<input type="text" class="form-control" id="heroSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
 							</div>
-							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
+							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" role="graphics-document" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
 				</div>

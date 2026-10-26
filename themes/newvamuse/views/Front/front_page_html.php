@@ -29,6 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	global $g_ui_locale;
  	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 	<div class="row">
@@ -36,16 +37,16 @@
 <?php
 		print caGetThemeGraphic($this->request, 'leader2.jpg');
 ?>
-			<div class='collectConnect'>Collect Connect Share</div>		
+			<div class='collectConnect'><?= _t('Collect Connect Share'); ?></div>		
 		</div>
 	</div><!-- end row leader -->
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1 homeText">
-			<H1>{{{homepage_leader}}}</H1>
+			<H1><?= $this->getVar('homepage_leader_'.$g_ui_locale); ?></H1>
 		</div><!--end col-sm-8-->	
 	</div><!-- end row text -->
 	<div class="row members">
-		<h2>Featured Contributors</h2>
+		<h2><?= _t('Featured Contributors'); ?></h2>
 		<div class="jcarousel-wrapper">
 			<div class="jcarousel">
 				<ul>
@@ -227,27 +228,27 @@
 	</div><!-- end row curated -->
 
 	<div class="row cats" >
-		<h2>Browse Themes</h2>
+		<h2><?= _t('Browse Themes'); ?></h2>
 		<div class="col-sm-1"></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'architecturedark.png')."<p>Architecture</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/470'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'artdark.png')."<p>Art</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/474'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'communicationsdark.png')."<p>Communications</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/473'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'farmingdark.png')."<p>Farming</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/469'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'fishingdark.png')."<p>Fishing</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/468'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'architecturedark.png')."<p>"._t('Architecture')."</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/470'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'artdark.png')."<p>"._t('Art')."</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/474'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'communicationsdark.png')."<p>"._t('Communications')."</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/473'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'farmingdark.png')."<p>"._t('Farming')."</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/469'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'fishingdark.png')."<p>"._t('Fishing')."</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/468'); ?></div>
 		<div class="col-sm-1"></div>
 	</div><!-- end row cats -->
 	<div class="row cats" style="margin-bottom:70px;">
 		<div class="col-sm-1"></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'household_lifedark.png')."<p>Household Life</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/466'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'industrydark.png')."<p>Industry</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/472'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'militarydark.png')."<p>Military</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/471'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'recreationdark.png')."<p>Recreation</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/475'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'transportationdark.png')."<p>Transportation</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/467'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'household_lifedark.png')."<p>"._t('Household Life')."</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/466'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'industrydark.png')."<p>"._t('Industry')."</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/472'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'militarydark.png')."<p>"._t('Military')."</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/471'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'recreationdark.png')."<p>"._t('Recreation')."</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/475'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'transportationdark.png')."<p>"._t('Transportation')."</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/467'); ?></div>
 		
 		<div class="col-sm-1"></div>
 	</div>	<!-- end row cats -->
 	<div class="row recent">
-		<h2>What's New</h2>
+		<h2><?= _t('What\'s New'); ?></h2>
 		<div class="recent jcarousel-wrapper">
 			<div class="recent jcarousel">
 				<ul>
@@ -337,8 +338,8 @@
 	<div class="row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-8 offset-sm-1 supportText">
-			<h2>Support the Museums</h2>
-			Help preserve Nova Scotia's rich history. Museums across the province depend on generous contributions from dedicated volunteers and community members. Contact your local museum to see what opportunities there are for you.
+			<h2><?= _t('Support the Museums'); ?></h2>
+			<?= _t('Help preserve Nova Scotia\'s rich history. Museums across the province depend on generous contributions from dedicated volunteers and community members. Contact your local museum to see what opportunities there are for you.'); ?>
 			<br/><br/><br/>
 		</div>
 	</div><!-- end row fund -->

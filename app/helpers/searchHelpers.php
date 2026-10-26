@@ -606,7 +606,7 @@
 			$o_view->setVar('sort', $ps_sort);
 			$o_view->setVar('accessValues', $va_access_values);
 			
-			$o_view->setVar('sortDirectionControl', '<a href="#" id="'.$vs_block.'_sort_direction"><span class="glyphicon glyphicon-sort-by-alphabet'.(($ps_sort_direction == 'desc') ? '-alt' : '').'" role="button" aria-label="Sort direction"></span></a>');
+			$o_view->setVar('sortDirectionControl', '<a href="#" id="'.$vs_block.'_sort_direction"><span class="glyphicon glyphicon-sort-by-alphabet'.(($ps_sort_direction == 'desc') ? '-alt' : '').'" aria-label="Sort direction" role="graphics-document"></span></a>');
 			$o_view->setVar('sortDirection', $ps_sort_direction);
 			
 			
@@ -1507,12 +1507,12 @@
 			}
 		} 
 		
-		// Try to use customer user interface labels for fields when set
+		// Try to use custom user interface labels for fields when set
 		$ui_bundle_label_map = [];
 		if (isset($options['request']) && ($t_ui = ca_editor_uis::loadDefaultUI($ps_table, $options['request'], $pn_type_id))) {
-			$va_screens = $t_ui->getScreens();
+			$va_screens = $t_ui->getScreens($pn_type_id);
 			foreach($va_screens as $va_screen) {
-				if (is_array($va_placements = $t_ui->getScreenBundlePlacements($va_screen['screen_id']))) {
+				if (is_array($va_placements = $t_ui->getScreenBundlePlacements($va_screen['screen_id'], $pn_type_id))) {
 					foreach($va_placements as $va_placement) {
 						// Older installations have the bundle name prefixed with "ca_attribute_"
 						$vs_bundle_name = str_replace('ca_attribute_', '', $va_placement['bundle_name']);

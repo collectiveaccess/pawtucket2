@@ -35,11 +35,16 @@
 						<a href="https://www.lamama.org"><?php print caGetThemeGraphic($this->request, 'LaMaMaLogoWhite.png', array("alt" => $this->request->config->get("app_display_name"))); ?></a>
 					</div>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-2">
+					<ul class="list-inline">
+						<li><?php print caNavLink($this->request, "Support the Archive", "", "", "Support", "", ""); ?></a></li>
+					</ul>
+				</div>
+				<div class="col-sm-2">
 					<ul class="list-inline">
 						<li><?php print caNavLink($this->request, "Use & Takedown", "", "", "UseTakedown", "", ""); ?></a></li>
 					</ul>
-					
 				</div>
 			</div>
 			<div style="clear:both;"></div>
@@ -81,5 +86,15 @@
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
 		</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDWQ927B50"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VDWQ927B50');
+</script>
 	</body>
 </html>

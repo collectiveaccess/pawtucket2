@@ -57,6 +57,25 @@
 <?php
 				}
 ?>
+				<li class="divider"></li>
+				<li class='dropdown-header'><?= _t("Sort by:"); ?></li>
+<?php
+	print "\n";
+	foreach(['name' => _t('Name'),'set_id' => _t('Order created')] as $s => $l) {
+		if ($current_sort === $s) {
+			print "<li><a href='#'><strong><em>{$l}</em></strong></a></li>\n";
+		} else {
+			print "<li>".caNavLink($this->request, $l, '', '*', '*', '*', array('sort' => $s))."</li>\n";
+		}
+	}
+?>
+						<li class="divider"></li>
+						<li class='dropdown-header'><?= _t("Sort order:"); ?></li>
+<?php
+						print "<li>".caNavLink($this->request, (($current_sort_dir == 'asc') ? '<strong><em>' : '')._t("Ascending").(($current_sort_dir == 'asc') ? '</em></strong>' : ''), '', '*', '*', '*', array('direction' => 'asc'))."</li>";
+						print "<li>".caNavLink($this->request, (($current_sort_dir == 'desc') ? '<strong><em>' : '')._t("Descending").(($current_sort_dir == 'desc') ? '</em></strong>' : ''), '', '*', '*', '*', array('direction' => 'desc'))."</li>";
+							
+?>
 			</ul>
 		</div><!-- end btn-group -->
 	</h1>

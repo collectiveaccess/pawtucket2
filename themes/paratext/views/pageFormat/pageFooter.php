@@ -48,7 +48,7 @@
         <img class="footer_ornament" src="<?php print caGetThemeGraphicUrl($this->request, $ornaments[$rand_ornament]); ?>" alt="Footer Ornament">
     </div>
 
-    <div class="year">Nueva York. Año MMXXII</div>
+    <div class="year">Nueva York. Año MMXXIV</div>
     <!--<div class="agradecimientos"><?php print caNavLink($this->request, 'Acknowledgments', '', '', 'Section', 'Acknowledgments'); ?></div>-->
 	<div class="agradecimientos"><a href="mailto:contact@comediassueltasusa.org">Contact</a></div>
 	<a class="back_to_top" href="#top">Top <span class="arrow">➺</span></a>

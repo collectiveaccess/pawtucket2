@@ -79,6 +79,7 @@
 					{{{<ifdef code="ca_objects.descriptionWithSource.prodesc_text"><div class='unit trimText'><label>Description</label>^ca_objects.descriptionWithSource.prodesc_text</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.eventDate"><div class='unit trimText'><label>Date</label>^ca_objects.eventDate</div></ifdef>}}}
 					
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="author" min="1"><div class='unit trimText'><label>Author</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="depicts" min="1"><div class='unit trimText'><label>Depicts</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="depicts" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="described" min="1"><div class='unit trimText'><label>Describes</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="described" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifdef code="ca_objects.av_camera_angle_type"><div class='unit trimText'><label>Camera Angle</label>^ca_objects.av_camera_angle_type</div></ifdef>}}}

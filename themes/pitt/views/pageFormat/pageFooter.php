@@ -27,14 +27,7 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<div id="footer">
-			<div class='info'><small>
-				University of Pittsburgh, Henry Clay Frick Department of History of Art and Architecture<br/>
-				104 Frick Fine Arts Building, Pittsburgh, PA 15260<br/>
-				412-648-2400  Fax: 412-648-2792				
-			</small></div>
-			<div class='pull-right'><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
-		</div><!-- end footer -->
+
 <?php
 	//
 	// Output HTML for debug bar
@@ -44,6 +37,14 @@
 	}
 ?>
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		<div id="footer">
+			<div class='info'><small>
+				University of Pittsburgh, Henry Clay Frick Department of History of Art and Architecture<br/>
+				104 Frick Fine Arts Building, Pittsburgh, PA 15260<br/>
+				412-648-2400  Fax: 412-648-2792				
+			</small></div>
+			<div class='pull-right'><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
+		</div><!-- end footer -->	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">

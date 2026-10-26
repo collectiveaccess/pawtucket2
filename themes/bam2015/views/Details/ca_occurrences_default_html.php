@@ -2,6 +2,8 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$va_access_values = caGetUserAccessValues($this->request);
+	$va_children_occ = $t_item->get("ca_occurrences.children.occurrence_id", array("returnWithStructure" => true, 'checkAccess' => $va_access_values));
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -129,9 +131,46 @@
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
+<?php
+			$vb_divide = false;
+			if(sizeof($va_children_occ) > 0){
+				$vb_divide = true;
+?>
+				<hr class="divide" />
 
+				<div class="container"><div class="row" <?php print (sizeof($va_children_occ) > 12) ? 'id="occHeight"' : ''; ?>>
+				
+					<div id="browseResultsContainerOcc">
+						<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+					</div><!-- end browseResultsContainerOcc -->
+				</div><!-- end row --></div><!-- end container -->
+				<?php print (sizeof($va_children_occ) > 12) ? '<div class="text-center" id="moreOccLink"><br/><br/><a href="#" onClick="$(\'#moreOccLink\').hide(); $(\'#occHeight\').css(\'max-height\', \'none\'); $(\'#occHeight\').css(\'overflow\', \'visible\'); return false;" class="btn-default">VIEW ALL</a></div>' : ''; ?>
+			
+				<script type="text/javascript">
+					jQuery(document).ready(function() {
+						jQuery("#browseResultsContainerOcc").load("<?php print caNavUrl($this->request, '', 'Search', 'occurrences', array('detailNav' => '1', 'openResultsInOverlay' => 1, 'view' => 'list', 'search' => 'ca_occurrences.parent_id:'.$t_item->get('ca_occurrences.occurrence_id')), array('dontURLEncodeParameters' => true)); ?>", function() {
+							jQuery("#browseResultsContainerOcc").jscroll({
+								autoTrigger: true,
+								loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+								padding: 20,
+								nextSelector: "a.jscroll-next"
+							});
+						});
+					
+					
+					});
+				</script>
+<?php
+			}
+?>
 {{{<ifcount code="ca_objects" min="1">
+<?php
+		if(!$vb_divide){
+?>
 			<hr class="divide" />
+<?php
+		}
+?>
 			<div class="container"><div class="row">
 				
 				<div id="browseResultsContainer">

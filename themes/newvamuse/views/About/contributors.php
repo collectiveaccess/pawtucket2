@@ -1,17 +1,17 @@
 <?php	
- 	require_once(__CA_LIB_DIR__."/ca/Search/EntitySearch.php");
- 	$o_entity_search = new EntitySearch();
- 	$t_list = new ca_lists();
- 	$vn_member_institution_id = $t_list->getItemIDFromList('entity_types', 'member_institution');
- 	$qr_member_institutions = $o_entity_search->search("ca_entities.access:1 AND ca_entities.type_id:{$vn_member_institution_id}", array("sort" => "ca_entity_labels.displayname"));
-	# -- put in an array based on the region
-	$va_member_inst_by_region = array();
-	if($qr_member_institutions->numHits() > 0){
-		while($qr_member_institutions->nextHit()){
-			$va_member_inst_by_region[$qr_member_institutions->get("mem_inst_region", array('convertCodesToDisplayText' => true))][$qr_member_institutions->get("entity_id")] = caNavLink($this->request, join("; ", $qr_member_institutions->getDisplayLabels()), '', '', 'Detail', 'entities/'.$qr_member_institutions->get("entity_id"));
-		}
+require_once(__CA_LIB_DIR__."/ca/Search/EntitySearch.php");
+$o_entity_search = new EntitySearch();
+$t_list = new ca_lists();
+$vn_member_institution_id = $t_list->getItemIDFromList('entity_types', 'member_institution');
+$qr_member_institutions = $o_entity_search->search("ca_entities.access:1 AND ca_entities.type_id:{$vn_member_institution_id}", array("sort" => "ca_entity_labels.displayname"));
+# -- put in an array based on the region
+$va_member_inst_by_region = array();
+if($qr_member_institutions->numHits() > 0){
+	while($qr_member_institutions->nextHit()){
+		$va_member_inst_by_region[$qr_member_institutions->get("mem_inst_region", array('convertCodesToDisplayText' => true))][$qr_member_institutions->get("entity_id")] = caNavLink($this->request, join("; ", $qr_member_institutions->getDisplayLabels()), '', '', 'Detail', 'entities/'.$qr_member_institutions->get("entity_id"));
 	}
-	ksort($va_member_inst_by_region);
+}
+ksort($va_member_inst_by_region);
 
 ?>
 <div class="container">
@@ -37,10 +37,10 @@
 		</div><!-- end col -->
 		<div class="col-sm-3 col-md-3 col-lg-2">
 			<div class='sideMenu'>
-				<div class="aboutMenu"><?php print caNavLink($this->request, 'About Novamuse', '', '', 'About', 'Index');?></div>
-				<div class="aboutMenu"><?php print caNavLink($this->request, 'Support Us', '', '', 'About', 'support');?></div>
-				<div class="aboutMenu"><?php print caNavLink($this->request, 'Contributors', '', '', 'About', 'contributors');?></div>
-				<div class="aboutMenu"><?php print caNavLink($this->request, 'Site Stats', '', 'NovaMuse', 'Dashboard', 'Index');?></div>
+				<div class="aboutMenu"><?php print caNavLink($this->request, _t('About Novamuse'), '', '', 'About', 'Index');?></div>
+				<div class="aboutMenu"><?php print caNavLink($this->request, _t('Support Us'), '', '', 'About', 'support');?></div>
+				<div class="aboutMenu"><?php print caNavLink($this->request, _t('Contributors'), '', '', 'About', 'contributors');?></div>
+				<div class="aboutMenu"><?php print caNavLink($this->request, _t('Site Stats'), '', 'NovaMuse', 'Dashboard', 'Index');?></div>
 			</div>
 		</div>
 	</div><!-- end row -->	

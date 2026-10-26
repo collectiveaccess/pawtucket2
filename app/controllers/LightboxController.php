@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -121,6 +121,20 @@ class LightboxController extends FindController {
 	 */
 	function index($pa_options = null) {
 		if($this->opb_is_login_redirect) { return; }
+		
+		$sort = $this->request->getParameter('sort', pString);
+		$sort_direction = $this->request->getParameter('direction', pString);
+		
+		if($sort) {
+			Session::setVar('lightbox_list_sort', $sort);
+		} else {
+			$sort = Session::getVar('lightbox_list_sort');
+		}
+		if($sort_direction) {
+			Session::setVar('lightbox_list_sort_direction', $sort_direction);
+		} else {
+			$sort_direction = Session::getVar('lightbox_list_sort_direction');
+		}
 
 		
 		$va_lightbox_displayname = caGetLightboxDisplayName();
@@ -129,14 +143,17 @@ class LightboxController extends FindController {
 
 		# Get sets for display
 		$t_sets = new ca_sets();
-		$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
-		$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
+		$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true, 'sort' => $sort, 'sortDirection' => $sort_direction));
+		$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true, 'sort' => $sort, 'sortDirection' => $sort_direction));
 
 		# Remove write sets from the read array
 		$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
 
 		$this->view->setVar("read_sets", $va_read_sets);
 		$this->view->setVar("write_sets", $va_write_sets);
+		
+		$this->view->setVar('sort', $sort);
+		$this->view->setVar('direction', $sort_direction);
 
 		$va_set_ids = array_merge(array_keys($va_read_sets), array_keys($va_write_sets));
 		$this->view->setVar("set_ids", $va_set_ids);
@@ -1337,7 +1354,8 @@ class LightboxController extends FindController {
 	 * Download (accessible) media for all records in this set
 	 */
 	public function getLightboxMedia() {
-		set_time_limit(600); // allow a lot of time for this because the sets can be potentially large
+		$o_app_plugin_manager = new ApplicationPluginManager();
+		set_time_limit(7200); // allow a lot of time for this because the sets can be potentially large
 		$t_set = new ca_sets($this->request->getParameter('set_id', pInteger));
 		if (!$t_set->getPrimaryKey()) {
 			$this->notification->addNotification(_t('No set defined'), __NOTIFICATION_TYPE_ERROR__);
@@ -1346,6 +1364,10 @@ class LightboxController extends FindController {
 		}
 
 		$va_record_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values, 'limit' => 100000)));
+				
+		// Allow plugins to modify object_id list
+		$va_record_ids =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($va_record_ids);
+		
 		if(!is_array($va_record_ids) || !sizeof($va_record_ids)) {
 			$this->notification->addNotification(_t('No media is available for download'), __NOTIFICATION_TYPE_ERROR__);
 			$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
@@ -1382,8 +1404,8 @@ class LightboxController extends FindController {
 				
 				# -- get version to download configured in media_display.conf
 				$va_download_display_info = caGetMediaDisplayInfo('download', $va_rep["mimetype"]);
-				$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
-
+				$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info, 'original');
+			
 				$t_rep = new ca_object_representations($va_rep['representation_id']);
 				$va_rep_info = $t_rep->getMediaInfo("media", $vs_download_version);
 
@@ -1402,7 +1424,6 @@ class LightboxController extends FindController {
 			}
 			$va_paths[$qr_res->get($t_instance->primaryKey())] = $va_file_paths;
 		}	
-
 		if (sizeof($va_paths) > 0){
 			$o_zip = new ZipStream();
 
