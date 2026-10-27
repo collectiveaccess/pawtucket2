@@ -64,20 +64,22 @@
 <br/>in the distance. Giacometti&mdash;the specifics of her subtleties
 <br/>the light, the marble. Images quivering on the
 <br/>brink of becoming alive.
-<br/>I like to work within given restraints&mdash;a given 
+</p>
+<p>
+I like to work within given restraints&mdash;a given 
 <br/>shape, the wall, a given space.
-<br/>I like number systems&mdash;I have worked with a grid of four and three&mdash;
-<br/>4 representing the elements and three the Trinity.
-<br/>And I had a numerologist friend who told me my number was six. 
+<br/>I like number systems&mdash;I have worked with a grid of 4 and 3&mdash;
+<br/>4 representing the elements and 3 the Trinity.
+<br/>And I had a numerologist friend who told me my number was 6. 
 <br/>So I made a painting called <i>The Propitious Garden of Plane Image</i>
 <br/>(Plane Image is just another way I refer to myself or the studio or 
 <br/>whatever).
-<br/>The painting was made up of six panels&mdash;each with six colors, 
-<br/>they were four by six [feet]&mdash;which is twenty-four&mdash;which is six. I was beginning to feel
+<br/>The painting was made up of 6 panels&mdash;each with 6 colors, 
+<br/>they were 4 x 6 [feet]&mdash;which is 24&mdash;which is 6. I was beginning to feel
 <br/>this was some sort of ultimate self-portrait.
 <br/>I showed two of them in a show at the Modern [Museum of Modern Art] in New York<a href="#footnote2"><sup>2</sup></a>.  I
 <br/>invited my friend Jeffrey [Brennan] to come to the opening, and he said, 
-<br/>“Why was I invited?” And I said, “You said my number was six. 
+<br/>“Why was I invited?” And I said, “You said my number was 6. 
 <br/>I’ve made all these paintings!” He said, “Your number is fifteen!”
 <br/>So now I’m working on fifteen. I call them Stele Paintings.
 <br/>There was a poet named Victor Segalen; he was a very interesting 
@@ -97,16 +99,16 @@
 <br/>always keep it a little off
 <br/>acceptance of the given&mdash;my recent embrace of the square.</p>
 
-<p>I had these extra six-by-eight-foot canvases around the studio, and I’d 
+<p>I had these extra 6 x 8 foot canvases around the studio, and I’d 
 <br/>been doing these horizontal paintings, and I just turned it vertical, 
-<br/>did a six-by-six-foot square. And it didn’t look square. And that
-<br/>became part of what.…</p>
+<br/>did a 6 x 6 foot square. And it didn’t look square. And that
+<br/>became part of what. . . .</p>
  
 <p class="ms-4 mb-3">What I am doing now</p>
 <p>I am making a painting to be titled <i>The Moss 
 <br/>Sutra<a href="#footnote3"><sup>3</sup></a></i> &mdash; it consists of a large center panel 
-9' by 15'&mdash;
-<br/>4 side panels 8' by 6' each. The center panel is divided into
+9' x 15'&mdash;
+<br/>4 side panels 8' x 6' each. The center panel is divided into
 <br/>4 horizontal areas, the largest being the center, which holds a grid 
 <br/>of thirty-five vertical lines of five “characters” each. I took this 
 <br/>form from a piece of calligraphy that an expert told me
