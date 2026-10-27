@@ -101,7 +101,7 @@
 						1963
 					</H2>
 					<p>
-						In June, Marden graduated from Yale, having won the Susan Morse Hilles prize for painting. (For the text of his thesis, see "Statement for Masters of Fine Art."[ link]) With the money that came with the award, he moved with his family to New York City, taking a small apartment at 153 Avenue C, on the Lower East Side of Manhattan. It was then a gritty neighborhood, with frequent street fights and drug addicts hanging out on the streets.
+						In June, Marden graduated from Yale, having won the Susan Morse Hilles prize for painting. (For the text of his thesis, see "<?php print caNavLink($this->request, _t("Statement for Master of Fine Arts."), "", "", "Marden", "Statement", ""); ?>") With the money that came with the award, he moved with his family to New York City, taking a small apartment at 153 Avenue C, on the Lower East Side of Manhattan. It was then a gritty neighborhood, with frequent street fights and drug addicts hanging out on the streets.
 					</p>
 					<p>
 						Marden took a job as a guard at the Jewish Museum.
@@ -118,10 +118,10 @@
 					<p>
 						In the spring, Marden moved with his family to Paris, where he stayed for several months. Describing the move, Marden stated:
 					</p>
-					<p class="ms-4">
+					<p class="ms-4 no-text-indent">
 						I was married, and we had a son. My in-laws were nervous about our Avenue C existence and offered to bring us to Paris where, he, a physicist, was working for UNESCO. . . . What, was I going to turn down a chance to go to Paris? I had applied for all these grants to go to Europe and had been turned down by all of them. So I went to Paris. . . . While I was there I got to see Paris and go to the museums. It was very interesting because you could see that what was going on in Europe was not that much better than in the United States. I mean, put together all the museums in New York and you have about as many good paintings as there are in Paris—sort of.<a href="#footnote12"><sup>12</sup></a>
 					</p>
-					<p>
+					<p class="no-text-indent">
 						He had a studio in the attic of his in-laws’ apartment and worked on drawings. Alberto Giacometti is an artist he mentioned often as having caught his attention in Paris.
 					</p>
 					<p>
@@ -142,10 +142,10 @@
 					<p>
 						In December 1965 Mickey Ruskin opened Max’s Kansas City, a bar and restaurant on lower Park Avenue. It became a gathering place for artists and poets. Marden recalls meeting many artists there:&nbsp;
 					</p>
-					<p class="ms-4">
+					<p class="ms-4 no-text-indent">
 						Basically at one point, everybody I knew in New York, I knew through <i>Max’s Kansas City</i>. On Friday nights, I would take the bus and I’d come round the corner and see the <i>Max’s Kansas City</i> sign . . . and get right on in, and get pitchers of wine. I met de Kooning there. [John] Chamberlain introduced me to de Kooning. . . . [Andy] Warhol was kind of the subdivision. There was a very specific area that he hung out in. And [Robert] Smithson had his area; he was always grilling some poor young artist. . . . Guys like Neil Williams, and Larry Poons. I hung out a lot with Poons. I hung out a lot with Carl Andre, or rather, Carl Andre would let us sit at his knee and he would pontificate. And that was a big help, you know. He had a very definite attitude, and he had really thought it out and he could express it.<a href="#footnote17"><sup>17</sup></a>
 					</p>
-					<p>
+					<p class="no-text-indent">
 						At Max’s Kansas City, Marden also met Helen Harrington, a waitress and artist, who would become his wife.
 					</p>
 					<H2>
@@ -343,28 +343,13 @@
 						On September 23, <i>Brice Marden: Recent Paintings and Drawings</i> opened at Pace Gallery, New York. The exhibition included the <i>Annunciation</i> group of paintings (nos. 169–173). This exhibition began an affiliation with Pace that lasted until 1985.
 					</p>
 					<p>
-						On November 15, the Mardens’ first daughter, Maya Mirabelle Zahara, was born. Marden reflected: “Having Mirabelle was a shocking, eye-opening experience. . . . I was painting along and I got pretty involved in seeing art and the whole idea of creativity as incredibly important. In a way, Mirabelle’s birth disillusioned me about art. I realized that what I had been making were, after all, just paintings. They’re not alive; they’re not living things growing.... After Mirabelle... a different reality came into my painting because I no longer deluded myself about the possibilities of art. I still think there are great possibilities for art, but I now see those possibilities with the family as a constant reference point.”<a href="#footnote29"><sup>29</sup></a>
+						On November 15, the Mardens’ first daughter, Maya Mirabelle Zahara, was born. Marden reflected: “Having Mirabelle was a shocking, eye-opening experience. . . . I was painting along and I got pretty involved in seeing art and the whole idea of creativity as incredibly important. In a way, Mirabelle’s birth disillusioned me about art. I realized that what I had been making were, after all, just paintings. They’re not alive; they’re not living things growing. . . . After Mirabelle. . . a different reality came into my painting because I no longer deluded myself about the possibilities of art. I still think there are great possibilities for art, but I now see those possibilities with the family as a constant reference point.”<a href="#footnote29"><sup>29</sup></a>
 					</p>
 					<H2>
 						1979
 					</H2>
 					<p>
 						On September 19, Marden’s first solo museum exhibition in Europe, a retrospective exhibition of drawings, opened at the Kunstraum München, Munich, and traveled to the Institut für Moderne Kunst, Nuremberg, Germany.
-					</p>
-					<p>
-						The Mardens visited Ponape, Micronesia, as part of “Word of the Mouth,” an artists’ conference organized by the artist Tom Marioni and Kathan Brown of Crown Point Press. Twelve artists participated, sharing remarks about their work that were recorded for an LP record.
-					</p>
-					<p>
-						Marden moved his studio to 54 Bond Street.&nbsp;
-					</p>
-					<p>
-						The Mardens made their first visit to St. Barts, a French-speaking island in the Caribbean, which they would continue to visit many times over the years.
-					</p>
-					<p>
-						On June 24, the Mardens’ second daughter, Melia Io Bricia Marden, was born.
-					</p>
-					<p>
-						On September 26, <i>Brice Marden: New Paintings and Drawings</i> opened at Pace Gallery. The show included <i>Thira</i> (no. 178), among other paintings.
 					</p>
 				</div>
 				<div class="col-12 col-md-6 pt-5 pt-md-0">
@@ -393,6 +378,25 @@
 			</div>
 			<div class="row">
 				<div class="col-12 col-md-6">
+					
+					<H2>
+						1980
+					</H2>
+					<p>
+						The Mardens visited Ponape, Micronesia, as part of “Word of the Mouth,” an artists’ conference organized by the artist Tom Marioni and Kathan Brown of Crown Point Press. Twelve artists participated, sharing remarks about their work that were recorded for an LP record.
+					</p>
+					<p>
+						Marden moved his studio to 54 Bond Street.&nbsp;
+					</p>
+					<p>
+						The Mardens made their first visit to St. Barts, a French-speaking island in the Caribbean, which they would continue to visit many times over the years.
+					</p>
+					<p>
+						On June 24, the Mardens’ second daughter, Melia Io Bricia Marden, was born.
+					</p>
+					<p>
+						On September 26, <i>Brice Marden: New Paintings and Drawings</i> opened at Pace Gallery. The show included <i>Thira</i> (no. 178), among other paintings.
+					</p>
 					<H2>
 						1981
 					</H2>
@@ -539,7 +543,7 @@
 						On May 7, <i>Brice Marden: Recent Drawings and Etchings</i> opened at the Matthew Marks Gallery, New York. Marden, who had encouraged Marks to open his gallery, continued his affiliation with the dealer until the end of 2016.
 					</p>
 					<p>
-						The Mardens acquired Rainbow Farms in Eagles Mere, Pennsylvania, not far from where Helen grew up. The property there is densely forested, with natural springs running through it. He described his studio there as the most “Zen-like” of his workplaces.<a href="#footnote38"><sup>38</sup></a> It was in a barn surrounded by trees: “I’m in the forest there, and it’s really filtered light. . . . The studio’s really dark—I can barely see despite the lamps I have set up.”<a href="#footnote39"><sup>39</sup></a> He said his work there was “wet and cold.”<a href="#footnote40"><sup>40</sup></a>&nbsp;
+						The Mardens acquired Rainbow Farm in Eagles Mere, Pennsylvania, not far from where Helen grew up. The property there is densely forested, with natural springs running through it. He described his studio there as the most “Zen-like” of his workplaces.<a href="#footnote38"><sup>38</sup></a> It was in a barn surrounded by trees: “I’m in the forest there, and it’s really filtered light. . . . The studio’s really dark—I can barely see despite the lamps I have set up.”<a href="#footnote39"><sup>39</sup></a> He said his work there was “wet and cold.”<a href="#footnote40"><sup>40</sup></a>&nbsp;
 					</p>
 					<p>
 						On October 17, <i>Brice Marden: Cold Mountain</i>—an exhibition of drawings, prints, and paintings based on the writings of the Chinese poet Han Shan, or Cold Mountain—opened at the Dia Center for the Arts in New York. It traveled to the Walker Art Center, Minneapolis; the Menil Collection, Houston; the Museo Nacional Centro de Arte Reina Sofía, Madrid; and the Kunstmuseum Bonn, Germany. It was curated by Gary Garrels, and the catalogue contained a long essay by Brenda Richardson explaining Marden’s interest in Asian art.
@@ -578,7 +582,7 @@
 						1996
 					</H2>
 					<p>
-						On June 10, <i>Brice Marden</i> opened at Thomas Ammann Fine Art AG in Zurich. His first solo show with the gallery, it included <i>Suzhou</i> (no. 335), <i>China Painting</i> (no. 336), and <i>Tang Dancer</i> (no. 333), among others.
+						On June 10, <i>Brice Marden</i> opened at Thomas Ammann Fine Art in Zurich. His first solo show with the gallery, it included <i>Suzhou</i> (no. 335), <i>China Painting</i> (no. 336), and <i>Tang Dancer</i> (no. 333), among others.
 					</p>
 					<p>
 						Marden was asked by the Center for Constitutional Rights in New York to design a medal to be given to recipients of the <i>William Moses Kunstler Award for Racial Justice</i>. Kunstler (1919–1995) was a civil rights advocate and lawyer best known for having defended the Chicago Seven, a group of individuals involved in anti–Vietnam War and other countercultural protests who had been charged with conspiracy and intent to incite riot during the 1968 Democratic Convention in Chicago. Marden and Kunstler met through their daughters, who attended the same school, and became close friends. Speaking of Kunstler, Marden said: “I have this really good friend who died last year—William Kunstler, the lawyer. I thought a lot about Bill and how much I really miss him—have missed him—and how I didn’t even begin to understand the closeness of our relationship when he was still alive. . . . I made this bronze, the <i>William Moses Kunstler Award for Racial Justice</i>, and it’s my epitaph for Bill.”<a href="#footnote47"><sup>47</sup></a> The medal took the form of a Chinese <i>bi</i>, an ancient flat jade disk with a circular hole in the middle. The disks were associated with heaven or the cosmos and sometimes buried with the dead. Recipients of the award included, among others, Akil Al-Jundi and Herbert Blyden, both former prisoners turned advocates for inmates; the actor Danny Glover; and President Jean-Bertrand Aristide of Haiti.
@@ -884,7 +888,7 @@
 					<div class="mt-5 fs-6 pt-2">
 						<ol class="fs-6 footnotes">
 							<li id="footnote1">Cummings 1972.</li>
-							<li id="footnote2">Marden, [Mirabelle] 2014, 122.The Mardens established a foundation to purchase St. Sylvia’s Church, a historic deconsecrated Catholic church in Tivoli, and turn it into a community center and cultural facility. When the church was purchased, the original stained-glass windows were removed by the Archdiocese of New York. As one of his last projects, Marden designed the replacement windows, which will be posthumously installed (nos. 484–491).</li>
+							<li id="footnote2">Marden, [Mirabelle] 2014, 122.</li>
 							<li id="footnote3">Marden, [Mirabelle] 2014, 122.</li>
 							<li id="footnote1">Cummings 1972.</li>
 							<li id="footnote1">Cummings 1972.</li>
@@ -925,7 +929,7 @@
 							<li id="footnote40"> Reginato 1997, 248.</li>
 							<li id="footnote41">Rales and Nemerov 2018, 30.</li>
 							<li id="footnote42">Hay 1997, 27.</li>
-							<li id="footnote43">Katz 1998a, 29. <strong>[please confirm – no entry for Katz 1999 - YES]</strong></li>
+							<li id="footnote43">Katz 1998a, 29.</li>
 							<li id="footnote44">As quoted in Richardson,&nbsp;“Even a Stone,” in&nbsp;Garrels 2006, 94.</li>
 							<li id="footnote45">Brice Marden, “Chinese Calligraphy: A Contemporary View," lecture, China Institute, New York, 1995, unpublished transcript, Brice Marden archives, New York,&nbsp;6.</li>
 							<li id="footnote46">Hay 1997, 29.</li>

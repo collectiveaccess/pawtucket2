@@ -60,6 +60,9 @@ body{
 	padding-left: 25px; /* Indents the entire block to the right */
 	text-indent: -25px;
 }
+.no-text-indent{
+	text-indent:0px !important;
+}
 @media(min-width: 992px){
 	.text-col-2{
 		column-count: 2;
@@ -174,6 +177,16 @@ nav{
 	@media(max-width: 1119px){
 		.w-25, .w-50, .w-75 {
 			width:100% !important;
+		}
+	}
+	@media(max-width: 424px){
+		.thisIsWhatColorText{
+			font-size:15px
+		}
+	}
+	@media(min-width: 425px){
+		.thisIsWhatColorText{
+			width: 425px;
 		}
 	}
 }
