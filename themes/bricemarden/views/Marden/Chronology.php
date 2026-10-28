@@ -1,4 +1,4 @@
-	<div class="row">
+	<div class="row chronology">
 		<div class="col-12 col-xl-3">
 <?php
 			print $this->render("Marden/marden_subnav.php");
@@ -12,7 +12,7 @@
 			</div>
 			<div class="row">
 				<div class="col-12 col-md-6">
-					<H2 class="ms-4 fst-normal mt-0">
+					<H2 class="ms-4 mt-0">
 						1938–56
 					</H2>
 					<p>
@@ -27,13 +27,13 @@
 					<p>
 						Fred Sergenian, the father of a good friend, was an artist and head of the art department at the advertising agency Young &amp; Rubicam before retiring to paint full-time; he proved to be a big influence on Marden during his high school years. Sergenian gave Marden a subscription to <i>Artnews</i> and his wife, Marjorie, took her son John and Marden to art museums in New York. He remembers visiting the Museum of Modern Art in New York “and having an experience looking at a [Constantin] Brancusi. It was a moment where you figure out something more is going on here than what you’re seeing. I think it was my first real aesthetic experience.”<a href="#footnote3"><sup>3</sup></a> In his later high school years, too, Marden became interested in “an alternative lifestyle” and began hitchhiking into New York to hang out in Greenwich Village. He went to the jazz club Birdland to hear music and was captivated by the people and surroundings he observed there. He recalled, “I figured I'd become this artist and go to Greenwich Village which is where it is supposed to be going on, where it was happening then.”<a href="#footnote4"><sup>4</sup></a>
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1956–57
 					</H2>
 					<p>
 						In the fall, Marden began his freshman year at Florida Southern College, Lakeland. He said: “I went down there and just immediately hated it the second I saw it. The idea was to go there and take liberal arts for a year and take art courses to see if I was interested.”<a href="#footnote5" name="ednref5"><sup>5</sup></a> He did find one encouraging teacher in Dean Eckert, who gave him passes and sent him to the museums in New York during holidays. Over the winter break, Marden visited the retrospective of Jackson Pollock’s art at the Museum of Modern Art, New York, and was excited by it.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1958
 					</H2>
 					<p>
@@ -64,7 +64,7 @@
 			<div class="row">
 				<div class="col-12 col-md-6">
 		
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1960
 					</H2>
 					<p>
@@ -73,7 +73,7 @@
 					<p>
 						On August 20, Marden married Pauline Baez, the sister of Joan, whom he met in a coffee shop in Boston. Pauline worked as a waitress at Club 47.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1961
 					</H2>
 					<p>
@@ -91,13 +91,13 @@
 					<p>
 						His fellow students included Chuck Close, Janet Fish, Nancy Graves, Robert Mangold, and Richard Serra.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1962
 					</H2>
 					<p>
 						At the invitation of his sister-in-law Joan Baez, Marden and his family spent the summer in Carmel, California. He recounted: “They had a two-car garage with a studio on top, so I got a lot of painting done there. . . . I loved the way [California] looked; it was just great. I was really excited about it. It was beautiful country down in the Monterey Peninsula. I would paint in the morning, and I'd come down for lunch and then go up and paint a little bit afterwards and then about two o'clock Nicholas would wake up and I'd take him for a walk, put him on my shoulders and we'd walk. And we'd go down to Point Lobos all the time, really beautiful, really beautiful.”<a href="#footnote10"><sup>10</sup></a>
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1963
 					</H2>
 					<p>
@@ -109,7 +109,7 @@
 					<p>
 						On December 6, his first solo exhibition, organized by Harriet Shorr, a classmate from Yale, opened at the Wilcox Gallery, Swarthmore College, Pennsylvania.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1964
 					</H2>
 					<p>
@@ -130,7 +130,7 @@
 					<p>
 						At the end of the summer, Brice and Pauline separated, and he returned to the same Avenue C building in New York where they had lived together and took a job at a frame shop. Nick moved to California with Pauline and regularly visited his father.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1965
 					</H2>
 					<p>
@@ -148,7 +148,7 @@
 					<p class="no-text-indent">
 						At Max’s Kansas City, Marden also met Helen Harrington, a waitress and artist, who would become his wife.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1966
 					</H2>
 					<p>
@@ -166,7 +166,7 @@
 					<p>
 						In December, with help from the artist Dorothea Rockburne, Marden got a job working in Robert Rauschenberg’s studio. He recalled: “I started working at 381 Lafayette Street, helping Bob Rauschenberg adjust his new house for living and working. It was a steady part-time job—11 to 5, three days a week—doing some low-level sorting, cleaning windows, and arranging various storage space. It evolved into making coffee, answering the phone, screening calls, and generally doing everything to make it so Bob could just work.”<a href="#footnote19"><sup>19</sup></a> Marden describes his experience with Rauschenberg as being very positive. While he admired Rauschenberg greatly, he claimed not to have been influenced by his work in the same way he might have been had he worked for Jasper Johns: “We’d sit around and talk about painting and I didn’t disagree with him on that many points, you know. It’s just the pictures are much different. We’re involved with different issues. It was really good; he was very generous, and he was very helpful and it was a good experience. . . . And then eventually he said: ‘You really shouldn’t be working for me anymore.’ And he was right.”<a href="#footnote20"><sup>20</sup></a> The job lasted until the end of 1970.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1967
 					</H2>
 					<p>
@@ -175,7 +175,7 @@
 					<p>
 						Marden moved his studio to 74 Grand Street.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1968
 					</H2>
 					<p>
@@ -184,7 +184,7 @@
 					<p>
 						On November 7, Marden and Helen Harrington married in New York. Rauschenberg acted as Helen's maid of honor.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1969
 					</H2>
 					<p>
@@ -252,7 +252,7 @@
 			<div class="row">
 				<div class="col-12 col-md-6">
 
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1970
 					</H2>
 					<p>
@@ -264,13 +264,13 @@
 					<p>
 						On October 31, <i>Brice Marden</i> opened at Bykert Gallery. The exhibition included new paintings, several of which were three-panel works, including <i>Three Deliberate Greys for Jasper Johns</i> (no. 84), <i>For Pearl</i> (dedicated to Janis Joplin; no. 82), and <i>Range</i> (no. 83).
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1971
 					</H2>
 					<p>
 						Helen Marden visited Hydra, Greece, for the first time and convinced Brice to join her for a three-week stay. They purchased their first property there in 1973 and continued to visit most summers. Of Hydra, Brice said: “It’s the last big island in Greece with no cars. There are just donkeys, mules, and maybe a few golf-cart type buggies used for emergencies. The island has a kind of landmark status, so you can’t do any building that’s not in line with what’s already there. . . . Hydra is still raw. That’s what I like about it.”<a href="#footnote24"><sup>24</sup></a> He was attracted by the light: “The light—it’s almost a cliché, the light is incredible. It sort of changes your whole idea about the kind of clarity that’s possible.”<a href="#footnote25"><sup>25</sup></a>
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1972
 					</H2>
 					<p>
@@ -279,7 +279,7 @@
 					<p>
 						Marden visited Houston to see the newly opened Rothko Chapel. He said: “I went and I stayed at the Warwick Hotel, and I went back and forth between the hotel and the Chapel so I could see it. I liked the idea of seeing the Chapel at different times of the day.” Marden claimed to have been indebted to the Rothko paintings in the Chapel: “Basically, I was very involved with the idea of the wall, the wall painting, the Roman wall painting, and so was Rothko. He was a big help for me, and that’s my indebtedness—in a way, [the Chapel] was my teacher.”<a href="#footnote26"><sup>26</sup></a>
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1973
 					</H2>
 					<p>
@@ -288,7 +288,7 @@
 					<p>
 						In May, an article titled “Brice Marden’s Painting” by Roberta Smith appeared in <i>Arts Magazine</i>. It was one of the first long essays to focus on Marden’s work. Smith has continued to write about Marden’s work thoughout her career.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1974
 					</H2>
 					<p>
@@ -303,7 +303,7 @@
 					<p>
 						In October, Marden’s painting <i>Red Yellow Blue IV</i>&nbsp;(no. 146) was reproduced on the cover of <i>Artforum</i> to illustrate Jeremy Gilbert-Rolfe’s “Brice Marden’s Painting.” This article bought important attention to Marden’s work.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1975
 					</H2>
 					<p>
@@ -315,13 +315,13 @@
 					<p>
 						Bykert Gallery closed.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1976
 					</H2>
 					<p>
 						The Mardens purchased a home on West Twelfth Street in Greenwich Village.&nbsp;
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1977
 					</H2>
 					<p>
@@ -330,7 +330,7 @@
 					<p>
 						The documentary film <i>Brice Marden</i>, directed by Edgar Howard and Theodore R. Haimes and produced by Tuckernuck Productions, was released. It contains footage from 1968 of Marden painting and interviews conducted in 1975.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1978
 					</H2>
 					<p>
@@ -345,7 +345,7 @@
 					<p>
 						On November 15, the Mardens’ first daughter, Maya Mirabelle Zahara, was born. Marden reflected: “Having Mirabelle was a shocking, eye-opening experience. . . . I was painting along and I got pretty involved in seeing art and the whole idea of creativity as incredibly important. In a way, Mirabelle’s birth disillusioned me about art. I realized that what I had been making were, after all, just paintings. They’re not alive; they’re not living things growing. . . . After Mirabelle. . . a different reality came into my painting because I no longer deluded myself about the possibilities of art. I still think there are great possibilities for art, but I now see those possibilities with the family as a constant reference point.”<a href="#footnote29"><sup>29</sup></a>
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1979
 					</H2>
 					<p>
@@ -379,7 +379,7 @@
 			<div class="row">
 				<div class="col-12 col-md-6">
 					
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1980
 					</H2>
 					<p>
@@ -397,13 +397,13 @@
 					<p>
 						On September 26, <i>Brice Marden: New Paintings and Drawings</i> opened at Pace Gallery. The show included <i>Thira</i> (no. 178), among other paintings.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1981
 					</H2>
 					<p>
 						On March 12, <i>Brice Marden: Paintings, Drawings, and Etchings, 1975–1980</i> opened at the Stedelijk Museum in Amsterdam and traveled to the Whitechapel Art Gallery in London.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1982
 					</H2>
 					<p>
@@ -412,7 +412,7 @@
 					<p>
 						On October 29, <i>Brice Marden: Marbles, Paintings, and Drawings</i> opened at Pace Gallery. Besides many works done on pieces of marble made during the summer of 1981 in Hydra, the exhibition included <i>Elements I</i> and <i>Elements II</i> (nos. 204, 205), among other paintings.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1983
 					</H2>
 					<p>
@@ -421,7 +421,7 @@
 					<p>
 						In December, with Helen leading the way, the family left Greece and spent three months traveling in Thailand, Sri Lanka, and India.&nbsp;
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1984
 					</H2>
 					<p>
@@ -445,7 +445,7 @@
 					<p>
 						In October, an exhibition called <i>Masters of Japanese Calligraphy, 8th–19th Century</i> opened at the Japan House Gallery and the Asia Society in New York. With Helen’s encouragement, Brice visited the exhibition and was so impressed by it that he bought several copies of the catalogue so he could have one for reference in each of his studios. He explained that he thought of himself as a Western artist: “I didn’t want to get involved in Eastern ideologies. But that show really got me. . . . I loved the look of it—the fact that it could be so expressive and yet tied to a form, the word—whether you could understand it or not.”<a href="#footnote34"><sup>34</sup></a>&nbsp;
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1985
 					</H2>
 					<p>
@@ -457,7 +457,7 @@
 					<p>
 						Mary Boone offered Marden a $1 million advance on future sales if he would join her gallery. With the money, “I really could afford to take the time to work out something different that had much more to do with how the drawings worked.”<a href="#footnote36"><sup>36</sup></a> His association with the gallery lasted until around 1990.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1987
 					</H2>
 					<p>
@@ -466,7 +466,7 @@
 					<p>
 						On March 7, <i>Brice Marden</i> opened at the Mary Boone Gallery. This was the first showing of paintings that had evolved from his effort to bring more drawing into his painting. It included <i>Untitled #1</i> (no. 263) and <i>Diptych</i> (no. 272), among other paintings.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1988
 					</H2>
 					<p>
@@ -475,7 +475,7 @@
 					<p>
 						On April 9, <i>Brice Marden</i> opened at Mary Boone Gallery in New York. Exhibited were paintings from a numbered group, including <i>3&nbsp;</i>(no. 278), <i>4 (Bone)</i> (no. 279), and <i>11 (to Leger)</i> (no. 286).
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1989
 					</H2>
 					<p>
@@ -521,13 +521,13 @@
 			</div>
 			<div class="row">
 				<div class="col-12 col-md-6">
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1990
 					</H2>
 					<p>
 						In April, Marden delivered “Notes on Late Works of Jackson Pollock” at the National Museum of American Art, Washington, DC (now the Smithsonian American Art Museum). Marden gave a defense of Pollock’s late work, which he felt had been overlooked by scholars. Pollock’s work was a particular interest of Marden’s as he worked on a way to integrate more drawing into his own paintings.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1991
 					</H2>
 					<p>
@@ -548,13 +548,13 @@
 					<p>
 						On October 17, <i>Brice Marden: Cold Mountain</i>—an exhibition of drawings, prints, and paintings based on the writings of the Chinese poet Han Shan, or Cold Mountain—opened at the Dia Center for the Arts in New York. It traveled to the Walker Art Center, Minneapolis; the Menil Collection, Houston; the Museo Nacional Centro de Arte Reina Sofía, Madrid; and the Kunstmuseum Bonn, Germany. It was curated by Gary Garrels, and the catalogue contained a long essay by Brenda Richardson explaining Marden’s interest in Asian art.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1992
 					</H2>
 					<p>
 						On February 26, <i>Brice Marden: Prints 1961–1991</i>, opened at Tate Gallery, London. It traveled to Musée d’Art Moderne de la Ville de Paris and the Baltimore Museum of Art. The catalogue, by Jeremy Lewison, was a complete and comprehensive history of the prints Marden had made up to 1991.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1993
 					</H2>
 					<p>
@@ -563,7 +563,7 @@
 					<p>
 						On October 9, <i>Brice Marden: Paintings 1985–1993</i> opened at the Kunsthalle Bern and traveled to the Vienna Secession.&nbsp;
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1995
 					</H2>
 					<p>
@@ -578,7 +578,7 @@
 					<p>
 						Marden purchased his first scholar’s rock for what would become a small collection. He also collected “Olmec stones and things like that.”<a href="#footnote46"><sup>46</sup></a>
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1996
 					</H2>
 					<p>
@@ -587,7 +587,7 @@
 					<p>
 						Marden was asked by the Center for Constitutional Rights in New York to design a medal to be given to recipients of the <i>William Moses Kunstler Award for Racial Justice</i>. Kunstler (1919–1995) was a civil rights advocate and lawyer best known for having defended the Chicago Seven, a group of individuals involved in anti–Vietnam War and other countercultural protests who had been charged with conspiracy and intent to incite riot during the 1968 Democratic Convention in Chicago. Marden and Kunstler met through their daughters, who attended the same school, and became close friends. Speaking of Kunstler, Marden said: “I have this really good friend who died last year—William Kunstler, the lawyer. I thought a lot about Bill and how much I really miss him—have missed him—and how I didn’t even begin to understand the closeness of our relationship when he was still alive. . . . I made this bronze, the <i>William Moses Kunstler Award for Racial Justice</i>, and it’s my epitaph for Bill.”<a href="#footnote47"><sup>47</sup></a> The medal took the form of a Chinese <i>bi</i>, an ancient flat jade disk with a circular hole in the middle. The disks were associated with heaven or the cosmos and sometimes buried with the dead. Recipients of the award included, among others, Akil Al-Jundi and Herbert Blyden, both former prisoners turned advocates for inmates; the actor Danny Glover; and President Jean-Bertrand Aristide of Haiti.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1997
 					</H2>
 					<p>
@@ -596,7 +596,7 @@
 					<p>
 						On July 2, <i>Brice Marden: Work Books, 1964–1995</i>, opened at the&nbsp;Staatliche Graphische Sammlung in Munich. It traveled to the Kunst Museum Winterthur in Switzerland; the Wexner Center for the Arts at Ohio State University in Columbus; and the Harvard University Art Museums in Cambridge, Massachusetts. The show included many of the notebooks or sketchbooks that Marden carried with him when he traveled and filled with drawings and notes.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1998
 					</H2>
 					<p>
@@ -605,7 +605,7 @@
 					<p>
 						On November 20, <i>Brice Marden: Drawings</i> opened at the Whitney Museum of American Art in New York.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						1999
 					</H2>
 					<p>
@@ -645,7 +645,7 @@
 			</div>
 			<div class="row">
 				<div class="col-12 col-md-6">
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2000
 					</H2>
 					<p>
@@ -654,7 +654,7 @@
 					<p>
 						On November 17, <i>Brice Marden</i>, an exhibition of mostly recent work, opened at the Serpentine Gallery in London.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2001
 					</H2>
 					<p>
@@ -663,7 +663,7 @@
 					<p>
 						On December 12, <i>Brice Marden: Works on Paper, 1964–2001</i> opened at the Instituto Nazionale per la Grafica in Rome. It traveled to the&nbsp;Archivio di Stato in Turin, Italy, and the&nbsp;Westfälisches Landesmuseum für Kunst und Kulturgeschichte in Münster, Germany.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2002
 					</H2>
 					<p>
@@ -672,13 +672,13 @@
 					<p>
 						After the 9/11 terrorist attack in New York City, the Mardens sought a refuge closer to the city than their Pennsylvania home. They purchased Rose Hill, a somewhat dilapidated mid-nineteenth-century mansion with several outbuildings set on forty acres of land on the banks of the Hudson River in Tivoli, New York. The property had been an orphanage and a commune at points during its history; at one time, Dorothy Day, the social activist, ran the Catholic Worker Movement from the place. The Mardens renovated the house and several of the other buildings to create a living space and studios. Brice liked the location for its isolation, closeness to his childhood home, and ties to the nineteenth-century American Hudson River school painters, who painted scenes like those he could see from his studio window: Frederic Church’s (1826–1900) house, Olana, is nearby, and Thomas Cole’s (1801–1848) is across the river.<a href="#footnote49"><sup>49</sup></a> This studio provided the space for Marden to paint his largest works. The Mardens continued to acquire other properties in the area in the following years.&nbsp;
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2003
 					</H2>
 					<p>
 						Marden created the set designs for the opera <i>Orfeo ed Euridice</i> by Christoph Willibald Gluck, performed at the Teatro de San Carlo in Naples, Italy, under the direction of Karole Armitage.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2004
 					</H2>
 					<p>
@@ -687,13 +687,13 @@
 					<p>
 						The Mardens purchased their first property on Nevis, a Caribbean island.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2005
 					</H2>
 					<p>
 						The Mardens purchased Golden Rock Inn on Nevis and continued to manage the operation of the hotel. Marden made a studio there in 2006, explaining: “The studio in Nevis is much smaller [than my other studios]. My wife and I own a hotel there, and it has these units with a bedroom, bathroom, and porch. I just knocked a wall down and doubled the unit. Now it has a porch with a big table where I draw and look out across a field. And beyond that there’s the Caribbean. It’s not that I’m drawing it, but it’s a big help.”<a href="#footnote50"><sup>50</sup></a>
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2006
 					</H2>
 					<p>
@@ -705,7 +705,7 @@
 					<p>
 						In October, <i>Brice Marden: A Retrospective of Paintings and Drawings</i> opened at the Museum of Modern Art, New York. The show traveled to the San Francisco Museum of Modern Art and the&nbsp;Nationalgalerie im Hamburger Bahnhof–Museum für Gegenwart in Berlin. Speaking of the exhibition at the Museum of Modern Art, Marden said: “This is my museum, you know, I was brought up on this museum. . . . I’m a New York painter.”<a href="#footnote54"><sup>54</sup></a>
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2007
 					</H2>
 					<p>
@@ -717,7 +717,7 @@
 					<p>
 						On November 10, <i>Brice Marden: Complements</i> opened at Matthew Marks Gallery, New York.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2008
 					</H2>
 					<p>
@@ -752,7 +752,7 @@
 			</div>
 			<div class="row">
 				<div class="col-12 col-md-6">
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2010
 					</H2>
 					<p>
@@ -761,13 +761,13 @@
 					<p>
 						On October 29, <i>Brice Marden: Letters</i> opened at the Matthew Marks Gallery<i>, </i>New York.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2011
 					</H2>
 					<p>
 						On January 29, Marden delivered a lecture in Houston as part of the series <i>The Rothko Chapel and the Transformative Power of Art</i>, titled: “About Painting and What it Can Do.” Speaking of this talk, given in the chapel, Marden said, “That talk was about doubt, and there is this whole thing about how Rothko never saw the chapel hung, so there’s this doubt about it. I said this, ‘You look at these things, you know he has no doubt about this.’ I think about Rothko and the chapel situation a lot, I really do. I think he really knew what he was doing and had nothing to worry about.”<a href="#footnote56"><sup>56</sup></a>
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2012
 					</H2>
 					<p>
@@ -776,7 +776,7 @@
 					<p>
 						On May 14, Marden delivered a lecture at Tate Modern in London as part of the American Artist Lecture Series, sponsored by the Tate and the US Art in Embassies program. (See "This is what I do, this is what I try to do"[link].)
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2013
 					</H2>
 					<p>
@@ -785,7 +785,7 @@
 					<p>
 						Marden joined the board of directors for the Dia Art Foundation, serving until 2015.&nbsp;
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2015
 					</H2>
 					<p>
@@ -794,7 +794,7 @@
 					<p>
 						On November 7, <i>Brice Marden: New Paintings and Drawings</i> opened at Matthew Marks Gallery, New York; the paintings, along with five new works, traveled the following January to the gallery’s Los Angeles locations. The exhibition included the <i>Nevis Stele</i> group (nos. 420–424), <i>Eastern Moss</i> (no. 415), and <i>Uphill 4</i> (no. 407), among other paintings.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2017
 					</H2>
 					<p>
@@ -809,13 +809,13 @@
 					<p>
 						On October 4, <i>Brice Marden</i> opened at Gagosian’s Grosvenor Hill gallery in London. The show included the <i>Terre Verte</i> group of paintings (nos. 435–444).
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2018
 					</H2>
 					<p>
 						Marden provided the images for the sets of <i>Four Quartets</i>, a dance performance based on T. S. Eliot’s poem, choreographed by Pam Tanowitz, with music by Kaija Saariaho, held at the Fisher Center at Bard College. The images enlarged to provide massive sets were <i>Painting Study II</i>, a drawing from 1980, <i>Thira</i> (no. 178), <i>Uphill 4</i>, and <i>Rocks</i> (no. 464; in progress).
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2019
 					</H2>
 					<p>
@@ -836,7 +836,7 @@
 			</div>
 			<div class="row">
 				<div class="col-12 col-md-6">
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2020
 					</H2>
 					<p>
@@ -845,7 +845,7 @@
 					<p>
 						The Mardens established a foundation to purchase St. Sylvia’s Church, a historic deconsecrated Catholic church in Tivoli, and turn it into a community center and cultural facility. When the church was purchased, the original stained-glass windows were removed by the Archdiocese of New York. As one of his last projects, Marden designed the replacement windows, which will be posthumously installed (nos. 484–491).
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2021
 					</H2>
 					<p>
@@ -854,13 +854,13 @@
 					<p>
 						On November 13, <i>Brice Marden: These paintings are of themselves</i> opened at Gagosian’s 541 West Twenty-Fourth Street gallery in New York. The exhibition included <i>Rocks</i> (no. 464), <i>Rivers</i> (no. 471), and <i>Belle’s Turquoise</i> (no. 473), among other paintings.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2022
 					</H2>
 					<p>
 						In May, <i>Brice Marden: Inner Space</i> opened at the Kunstmuseum Basel. This exhibition was a revised and expanded version of <i>Think of Them as Spaces: Brice Marden’s Drawings</i>, which opened at the Menil Drawing Institute in Houston shortly before the COVID-19 pandemic.
 					</p>
-					<H2 class="ms-4 fst-normal">
+					<H2 class="ms-4">
 						2023
 					</H2>
 					<p>
