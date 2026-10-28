@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2024 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,7 +29,7 @@ require_once(__CA_APP_DIR__."/helpers/themeHelpers.php");
 require_once(__CA_MODELS_DIR__."/ca_collections.php");
 require_once(__CA_MODELS_DIR__."/ca_lists.php");
 
-class CollectionsController extends ActionController {
+class CollectionsController extends BasePawtucketController {
 	# -------------------------------------------------------
 	/**
 	 *
@@ -42,14 +42,11 @@ class CollectionsController extends ActionController {
 	# -------------------------------------------------------
 	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
 		parent::__construct($po_request, $po_response, $pa_view_paths);
-		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-		}
 		
 		$this->opo_config = caGetCollectionsConfig();
 		$this->view->setVar("collections_config", $this->opo_config);
 		$this->opa_access_values = caGetUserAccessValues($this->request);
-		$this->view->setVar("access_values", $this->opa_access_values);
+		
 		# --- what is the section called - title of page
 		if(!$vs_section_name = $this->opo_config->get('collections_section_name')){
 			$vs_section_name = _t("Collections");

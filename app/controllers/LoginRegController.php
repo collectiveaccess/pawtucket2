@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2025 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -334,23 +334,25 @@ class LoginRegController extends BasePawtucketController {
 				Session::setVar('join_user_group_id', '');
 			}
 			
-			$controller = $module_path = '';
-			
-			if ($default_action = $this->request->config->get('default_login_action')) {
-				$tmp = explode('/', $default_action);
-				$action = array_pop($tmp);
-				if (sizeof($tmp)) { $controller = array_pop($tmp); }
-				if (sizeof($tmp)) { $module_path = join('/', $tmp); }
-			} elseif ($default_action = $this->request->config->get('default_action')) {
-				$tmp = explode('/', $default_action);
-				$action = array_pop($tmp);
-				if (sizeof($tmp)) { $controller = array_pop($tmp); }
-				if (sizeof($tmp)) { $module_path = join('/', $tmp); }
-			} else {
-				$controller = 'Front';
-				$action = 'Index';
+			if(!($url = Session::getVar('redirect_after_login'))) {
+				$controller = $module_path = '';
+				
+				if ($default_action = $this->request->config->get('default_login_action')) {
+					$tmp = explode('/', $default_action);
+					$action = array_pop($tmp);
+					if (sizeof($tmp)) { $controller = array_pop($tmp); }
+					if (sizeof($tmp)) { $module_path = join('/', $tmp); }
+				} elseif ($default_action = $this->request->config->get('default_action')) {
+					$tmp = explode('/', $default_action);
+					$action = array_pop($tmp);
+					if (sizeof($tmp)) { $controller = array_pop($tmp); }
+					if (sizeof($tmp)) { $module_path = join('/', $tmp); }
+				} else {
+					$controller = 'Front';
+					$action = 'Index';
+				}
+				$url = caNavUrl($this->request, $module_path, $controller, $action);
 			}
-			$url = caNavUrl($this->request, $module_path, $controller, $action);
 			$this->notification->addNotification(_t("You have been logged in").($group_message ? "<br/>{$group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
 			$this->response->setRedirect($url);
 		}

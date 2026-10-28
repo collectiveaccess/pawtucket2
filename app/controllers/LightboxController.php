@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2024-2025 Whirl-i-Gig
+ * Copyright 2024-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -138,8 +138,6 @@ class LightboxController extends FindController {
 		$this->view->setVar('lightbox_description_element_code', $this->lightbox_description_element_code);
 				
  		$this->opa_access_values = caGetOption('checkAccess', $va_browse_info, $this->opa_access_values);
- 		
- 		$this->view->setVar('access_values', $this->opa_access_values);
  		
 		$this->view->setVar('errors', []);
 		

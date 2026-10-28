@@ -62,12 +62,6 @@ class DetailController extends FindController {
 	# -------------------------------------------------------
 	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
 		parent::__construct($po_request, $po_response, $pa_view_paths);
-		
-		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-		}
-		
-		$this->view->setVar("access_values", $this->opa_access_values);
  			
 		$this->config = caGetDetailConfig();
 		$this->opa_detail_types = $this->config->getAssoc('detailTypes');
