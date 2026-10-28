@@ -112,7 +112,7 @@ if ($start < $qr_res->numHits()) {
 		if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($cache_key,'browse_result')){
 			print ExternalCache::fetch($cache_key, 'browse_result');
 		}else{			
-			$height = intval($qr_res->getWithTemplate("<unit relativeTo='ca_objects.dimensions' length='1'>^ca_objects.dimensions.dimensions_height</unit>", array("returnAsDecimalMetric" => true)));
+			$height = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.dimensions' length='1'>^ca_objects.dimensions.dimensions_height</unit>", array("returnAsDecimalMetric" => true));
 			$scale = $height/$scale_height;
 			$caption 	= $qr_res->getWithTemplate($result_caption_template, array("checkAccess" => $va_access_values));
 			$image = "";
