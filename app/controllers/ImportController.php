@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2021 Whirl-i-Gig
+ * Copyright 2021-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -31,8 +31,6 @@ require_once(__CA_LIB_DIR__.'/Service/GraphQLServiceController.php');
 
 class ImportController extends BasePawtucketController {
 	# -------------------------------------------------------
-	
-	# -------------------------------------------------------
 	/**
 	 * @param RequestHTTP $request
 	 * @param ResponseHTTP $response
@@ -41,12 +39,6 @@ class ImportController extends BasePawtucketController {
 	 */
 	public function __construct(&$request, &$response, $view_paths=null) {
 		parent::__construct($request, $response, $view_paths);
-		
-		if (!($this->request->isLoggedIn())) {
-			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-			$this->opb_is_login_redirect = true;
-			return;
-		}
 	}
 	# -------------------------------------------------------
 	/**

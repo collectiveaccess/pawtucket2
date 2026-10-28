@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2025 Whirl-i-Gig
+ * Copyright 2014-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -57,10 +57,6 @@ class ContributeController extends BasePawtucketController {
 			$this->notification->addNotification(_t('Contribute form is not enabled'), __NOTIFICATION_TYPE_ERROR__);
 			$this->response->setRedirect(caNavUrl($this->request, "", "Front", "Index"));
 			return;
-		}
-		
-		if ($this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
-			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
 		}
 		
 		$this->completed_status_list = $this->config->get('completed_status');

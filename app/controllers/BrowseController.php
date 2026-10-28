@@ -57,9 +57,6 @@ class BrowseController extends FindController {
 	 */
 	public function __construct(&$po_request, &$po_response, $view_paths=null) {
 		parent::__construct($po_request, $po_response, $view_paths);
-		if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-		}
 	   
 		$this->opo_config = caGetBrowseConfig();
 		
