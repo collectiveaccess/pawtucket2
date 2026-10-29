@@ -58,6 +58,7 @@ if($this->request->isLoggedIn() && (!$this->request->config->get(['dontAllowRegi
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 	
+	<link rel="icon" type="image/x-icon" href="<?= caGetThemeGraphicURL($this->request, 'bm-favicon.png'); ?>">
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
 	<script>
