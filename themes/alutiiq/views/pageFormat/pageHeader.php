@@ -274,6 +274,8 @@
 							<a class="el-link" href="https://alutiiqmuseum.org/alutiiq-people/language/lessons/">Lessons</a></li>
 								<li class="el-item ">
 									<?php print caNavLink($this->request, _t("Word of the Week"), "el-link", "", "Word", "Index"); ?>
+							<li class="el-item ">
+							<a class="el-link" href="https://alutiiqmuseum.org/alutiiq-people/language/kodiak-alutiiq-place-names/">Place Names</a></li>	
 								<li class="el-item ">
 							<a class="el-link" href="https://languagearchive.alutiiqmuseum.org/home">Language Collections</a></li>
 								<li class="el-item ">

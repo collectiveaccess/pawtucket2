@@ -7,6 +7,9 @@ body{
 .uk-navbar img, .uk-logo img{
 	width:134px;
 }
+b{
+	font-family: "mr-eaves-xl-modern",sans-serif;	
+}
 /* red: #AC143A; gray blue #6C869E;*/
 .tm-navbar .tm-logo > * {
     max-height: 180px;
@@ -523,4 +526,13 @@ label.control-label{
 	font-family: mr-eaves-xl-modern,sans-serif;
 	text-transform: none;
 	font-size:19px;
+}
+footer{
+	line-height: 1.4;
+}
+footer > div svg{
+	display:none;
+}
+footer > div svg:first-of-type {
+  display: inline;
 }

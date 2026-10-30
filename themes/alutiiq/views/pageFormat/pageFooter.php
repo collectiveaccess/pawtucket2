@@ -56,10 +56,21 @@
     				</div>
 				</div>
 				<div class="uk-width-1-2@s uk-width-1-4@m">
-					<div class="uk-h5 uk-heading-divider">        Location    </div><div class="uk-panel uk-margin"><p>Alutiiq Museum<br>215 Mission Road<br>Suite 101<br>Kodiak, AK 99615</p></div>
+					<div class="uk-h5 uk-heading-divider">        Location    </div><div class="uk-panel uk-margin"><p>Alutiiq Museum<br>215 Mission Road<br>Kodiak, AK 99615</p></div>
 				</div>
 				<div class="uk-width-1-2@s uk-width-1-4@m">
-					<div class="uk-h5 uk-heading-divider">        Museum Hours    </div><div class="uk-panel uk-margin"><p>Gallery closed for renovations until 2025.</p><p>Museum Store open at the Downtown Marketplace<br>Tues—Sat: 10 am to 5 pm</p></div>
+					<div class="uk-h5 uk-heading-divider">        Museum Hours    </div><div class="uk-panel uk-margin"><p>Open to the public</p>
+						<p>
+							Tuesday – Friday: 10 am to 4 pm<br>
+							Saturday: Noon to 4 pm<br>
+							Sunday – Monday: Closed
+						</p>
+						
+						<p><b>Admission:</b><br/>
+							Adults $10, Senior or Military $8<br/>
+							Children under 18 free
+						</p>
+					</div>
 				</div>
 				<div class="uk-width-1-2@s uk-width-1-4@m">
 					<div class="uk-h5 uk-heading-divider">        Connect With Us    </div><div class="uk-panel uk-margin"><a class="uk-link-text" href="mailto:info@alutiiqmuseum.org">info@alutiiqmuseum.org</a><br>
@@ -146,10 +157,8 @@
         </div>
         <div class="uk-grid tm-grid-expand uk-grid-margin uk-grid-stack" uk-grid="">
 			<div class="uk-width-3-4@m uk-first-column">
-    			<div class="uk-panel uk-margin"><p>Supported by the<em>&nbsp;Exxon Valdez</em> Oil Spill Trustee Council through the CORaL Network.</p></div>
+    			<div class="uk-panel uk-margin"><p>Website development supported by the <em>Exxon Valdez</em> Oil Spill Trustee Council through the CORaL Network.</p></div>
 			</div>
-			<div class="uk-width-1-4@m uk-grid-margin uk-first-column">
-    		</div>
     	</div>
 	</div>
 	</div>
@@ -157,7 +166,10 @@
         <div class="uk-container uk-container-large">                
             <div class="uk-grid tm-grid-expand uk-child-width-1-1 uk-margin uk-margin-remove-bottom">
 				<div class="uk-width-1-1">
-					<div class="uk-margin-xlarge uk-text-center"><a href="#" uk-totop="" uk-scroll="" class="uk-icon uk-totop" role="button" aria-label="Back to top"><svg width="30" height="30" viewBox="0 0 30 30"><polygon points="23.3727 8.39305 14.99965 .02049 6.62758 8.39305 7.68812 9.4536 14.24965 2.89165 14.24965 29.99998 15.74965 29.99998 15.74965 2.89152 22.31215 9.4536 23.3727 8.39305"></polygon></svg></a></div>
+					<div class="uk-margin-xlarge uk-text-center">
+						<a href="#" uk-totop="" uk-scroll="" class="uk-icon uk-totop" role="button" aria-label="Back to top">
+							<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><polygon points="23.3727 8.39305 14.99965 .02049 6.62758 8.39305 7.68812 9.4536 14.24965 2.89165 14.24965 29.99998 15.74965 29.99998 15.74965 2.89152 22.31215 9.4536 23.3727 8.39305"></polygon></svg>
+						</a></div>
 				</div>
 			</div>
 			<div class="uk-grid tm-grid-expand uk-grid-small uk-margin-small" uk-grid="">
