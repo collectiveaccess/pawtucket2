@@ -1170,6 +1170,17 @@ a.readmore-js-toggle{
     color: #7f4539;
     font-family: 'Lusitana', serif;
 }
+#distribution .distributionIntro {
+    margin-bottom: 25px;
+    line-height: 1.5em;
+    font-size: 20px;
+    color: #7f4539;
+    font-family: 'Lusitana', serif;
+}
+#distribution img{
+	width:100%;
+	height:auto;
+}
 .close{
 	position: absolute;
 	top: 5px;
