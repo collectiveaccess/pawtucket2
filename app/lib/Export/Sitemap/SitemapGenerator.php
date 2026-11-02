@@ -204,7 +204,7 @@ class SitemapGenerator {
 		$site_protocol = self::$config->get('site_protocol') ?: __CA_SITE_PROTOCOL__;
 		$site_hostname = self::$config->get('site_hostname') ?: __CA_SITE_HOSTNAME__;
 		$site_url_root = self::$config->get('site_url_root') ?: __CA_URL_ROOT__;
-		$sitemap_root = self::$config->('sitemap_root') ?: '';
+		$sitemap_root = self::$config->get('sitemap_root') ?: '';
 
 		return [
 			'protocol' => $site_protocol,
