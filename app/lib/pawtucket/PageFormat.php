@@ -60,6 +60,16 @@ class PageFormat extends AppControllerPlugin {
 	# -------------------------------------------------------
 	public function postDispatch() {
 		$o_view = new View($o_request = $this->getRequest(), $o_request->config->get('views_directory'));
+			
+		// Add analytics
+		if(is_array($analytics_values = caGetAnalyticsIntegrationValues())) {
+			if(isset($analytics_values['bodyStart'])) {
+				$this->getResponse()->prependContent($analytics_values['bodyStart'], 'analyticsBodyStart');
+			}
+			if(isset($analytics_values['bodyEnd'])) {
+				$this->getResponse()->appendContent($analytics_values['bodyEnd'], 'analyticsBodyEnd');
+			}
+		}
 		
 		$o_notification = new NotificationManager($o_request);
 		if($o_notification->numNotifications()) {
