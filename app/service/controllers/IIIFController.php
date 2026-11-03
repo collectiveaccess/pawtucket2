@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2024 Whirl-i-Gig
+ * Copyright 2016-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -47,6 +47,7 @@ class IIIFController extends BaseServiceController {
 			$this->getView()->setVar('pretty_print', true);
 		}
 
+		
 		$this->getView()->setVar('content', $va_content);
 	}
 	# -------------------------------------------------------
@@ -55,8 +56,9 @@ class IIIFController extends BaseServiceController {
 	 */
 	public function manifest() {
 		$path = explode('/', $this->request->getPathInfo()); // path = /IIIF/manifest/<identifier> ; identifier index = 3
+		$options = $this->getRequest()->getParameters();
 		try {
-			$manifest = IIIFService::manifest($path[3], ['render' => $this->request->getParameter('render', pString)]);
+			$manifest = IIIFService::manifest($path[3], $options);
 		} catch(IIIFAccessException $e) {
 			$this->getView()->setVar('errors', array($e->getMessage()));
 			$this->render('json_error.php');
@@ -69,31 +71,8 @@ class IIIFController extends BaseServiceController {
 
 		$this->getView()->setVar('dontEmitOK', true);
 		$this->getView()->setVar('content', $manifest);
-		$this->render('json.php');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public function search() {
-		$path = explode('/', $this->request->getPathInfo()); // path = /IIIF/manifest/<identifier> ; identifier index = 3
-		try {
-			$search = IIIFService::search($path[3], [
-				'q' => $this->request->getParameter('q', pString),
-				'exact' => $this->request->getParameter('exact', pInteger)
-			]);
-		} catch(IIIFAccessException $e) {
-			$this->getView()->setVar('errors', array($e->getMessage()));
-			$this->render('json_error.php');
-			return;
-		}
-
-		if(intval($this->getRequest()->getParameter('pretty', pInteger))>0) {
-			$this->getView()->setVar('pretty_print', true);
-		}
-
-		$this->getView()->setVar('dontEmitOK', true);
-		$this->getView()->setVar('content', $search);
+		
+		$this->getResponse()->setContentType('application/json');
 		$this->render('json.php');
 	}
 	# -------------------------------------------------------
@@ -123,6 +102,8 @@ class IIIFController extends BaseServiceController {
 
 		$this->getView()->setVar('dontEmitOK', true);
 		$this->getView()->setVar('content', $clip_list);
+		
+		$this->getResponse()->setContentType('application/json');
 		$this->render('json.php');
 	}
 	# -------------------------------------------------------
