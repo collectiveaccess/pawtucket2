@@ -90,10 +90,12 @@ require_once(__CA_LIB_DIR__."/Cache/ExternalCache.php"); // is used in utilityHe
 require_once(__CA_LIB_DIR__."/Cache/CompositeCache.php"); // is used in utilityHelpers
 require_once(__CA_LIB_DIR__."/Cache/PersistentCache.php"); // is used in utilityHelpers
 
+require_once(__CA_APP_DIR__."/helpers/localizationHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/logHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/requestHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/themeHelpers.php");
+require_once(__CA_APP_DIR__."/helpers/informationServiceHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/initializeLocale.php");
 
 if (isset($_COOKIE['CA_'.__CA_APP_NAME__.'_ui_locale'])) {
@@ -125,7 +127,7 @@ require_once(__CA_APP_DIR__.'/lib/GarbageCollection.php');
 require_once(__CA_APP_DIR__.'/helpers/guidHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/browseHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
-require_once(__CA_APP_DIR__.'/helpers/libraryServicesHelpers.php');
+require_once(__CA_APP_DIR__.'/helpers/pawtucketHelpers.php');
 require_once(__CA_LIB_DIR__."/Process/Background.php");
 
 require_once(__CA_LIB_DIR__."/BanHammer.php");
