@@ -491,6 +491,15 @@ function caExifToolInstalled($ps_exiftool_path=null, $options=null) {
  */
 function caWhisperInstalled(array $options=null) {
 	$detect = caGetOption('returnPathToDetect', $options, false);
+	
+	$logger = caGetLogger();
+	if($python_venv_path = caGetExternalApplicationPath('python_venv_path')) {
+		$shell_path = getenv('PATH');
+		$shell_path = "{$python_venv_path}:{$shell_path}";
+		putenv("PATH=$shell_path");
+		$logger->logInfo(_t('[mediaPluginHelpers::caWhisperInstalled] Added python venv path %1 to environment PATH variable. Full path is now %2', $python_venv_path, $shell_path));	
+	}
+	
 	if (!caGetOption('noCache', $options, defined('__CA_DONT_CACHE_EXTERNAL_APPLICATION_PATHS__')) && CompositeCache::contains($detect ? "mediahelper_whisper_detect_installed" : "mediahelper_whisper_installed", "mediaPluginInfo")) { return CompositeCache::fetch($detect ? "mediahelper_whisper_detect_installed" : "mediahelper_whisper_installed", "mediaPluginInfo"); }
 	
 	$path = __CA_BASE_DIR__.($detect ? '/support/scripts/whisper_detect.py' : '/support/scripts/whisper_transcribe.py');
@@ -500,7 +509,6 @@ function caWhisperInstalled(array $options=null) {
 		CompositeCache::save($detect ? "mediahelper_whisper_detect_installed" : "mediahelper_whisper_installed", $path, "mediaPluginInfo");
 		return $path;
 	}
-	$logger = caGetLogger();
 	$logger->logError(_t('[mediaPluginHelpers::caWhisperInstalled] Whisper is not installed. Return code was %1; message was %2', $return, join("; ", $output)));	
 	return false;
 }
@@ -1167,5 +1175,28 @@ function caTranscribeAVMedia(string $mimetype) : bool {
 	// Check that Whisper is installed
 	if(!caWhisperInstalled()) { return false; }
 	return true;
+}
+# ------------------------------------------------------------------------------------------------
+/**
+ *
+ */
+function caExtractTextFromPDF(string $filepath, ?array $options=null) : ?string {
+	if(!($pdf_to_text_path = caMediaPluginPdftotextInstalled())) { return null; }
+	
+	$page_start = caGetOption('start', $options, 1);
+	if($page_start < 1) { $page_start = 1; }
+	$num_pages = caGetOption('pages', $options, 0);
+	$num_chars = caGetOption('chars', $options, 0);
+	
+	$page_limits = " -f {$page_start} ";
+	if($num_pages > 0) { $page_limits .= "-l ".($page_start + $num_pages)." "; }
+	
+	$tmp_filename = tempnam('/tmp', 'CA_PDF_TEXT');
+	caExec($pdf_to_text_path.' -q -enc UTF-8 '.$page_limits.caEscapeShellArg($filepath).' '.caEscapeShellArg($tmp_filename).(caIsPOSIX() ? " 2> /dev/null" : ""));
+	$extracted_text = file_get_contents($tmp_filename);
+	
+	if($num_chars > 0) { $extracted_text = mb_substr($extracted_text, 0, $num_chars, 'UTF-8'); }
+	@unlink($tmp_filename);
+	return $extracted_text;
 }
 # ------------------------------------------------------------------------------------------------
