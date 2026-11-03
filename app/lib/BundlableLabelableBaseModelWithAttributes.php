@@ -134,7 +134,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		$this->initLabelDefinitions();
 		
 		if ($this->isHierarchical() && $this->opo_idno_plugin_instance) {
-			$this->opo_idno_plugin_instance->isChild($this->isChild());
+			$this->isChild();
 		}
 		return $vn_rc;
 	}
@@ -1120,8 +1120,9 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			
 			if (($o_idno = $this->getIDNoPlugInInstance()) && (method_exists($o_idno, 'getSortableValue'))) {	// try to use plug-in's sort key generator if defined
 				$this->isChild();
-				$this->set($vs_idno_sort_field, $o_idno->getSortableValue($this->get($vs_idno_field)));
-				
+				$idno_sort = $o_idno->getSortableValue($this->get($vs_idno_field));
+				if(mb_strlen($idno_sort) > 768) { $idno_sort = mb_substr($idno_sort, 0, 768); }	// max sortable width is 768 characters
+				$this->set($vs_idno_sort_field, $idno_sort);
 				if($this->hasField("{$vs_idno_sort_field}_num") && (method_exists($o_idno, 'getSortableNumericValue'))) {
 					if(($n = $o_idno->getSortableNumericValue($this->get($vs_idno_field))) < 0) { return; } 
 					$this->set("{$vs_idno_sort_field}_num", $n);
@@ -1676,7 +1677,11 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		if (
 			($dictionary_entry = ca_metadata_dictionary_entries::getEntry($dict_bundle_spec = $bundle_name_proc, $this, $bundle_settings))
 			||
-			($dictionary_entry = ca_metadata_dictionary_entries::getEntry($dict_bundle_spec = $this->tableName().'.'.$bundle_name_proc, $this, $bundle_settings))
+			(
+				!Datamodel::tableExists($bundle_name_proc) 
+				&&
+				($dictionary_entry = ca_metadata_dictionary_entries::getEntry($dict_bundle_spec = $this->tableName().'.'.$bundle_name_proc, $this, $bundle_settings))
+			)
 		) {
 			# Grab definition out of dictionary entry settings: if it was created in a system with multiple locales the available definitions 
 			# will be key'ed by locale code or locale_id (argh). If it was created in an older system with only a single active locale it may
@@ -2117,6 +2122,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					case 'ca_editor_ui_screen_type_restrictions':
 					case 'ca_editor_ui_type_restrictions':
 					case 'ca_relationship_type_restrictions':
+					case 'ca_set_type_restrictions':
 						$element .= $this->getTypeRestrictionsHTMLFormBundle($options['request'], $options['formName'], $placement_code, $options);
 						break;
 					# -------------------------------
@@ -3450,8 +3456,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			}
 		}
 		
-		if ($object_collections_hierarchy_enabled) {
-			
+		if ($object_collections_hierarchy_enabled && sizeof($object_collection_rel_types ?? [])) {
 			$type_selector 	= trim($this->getTypeListAsHTMLFormElement(
 				"{$placement_code}type_id", 
 				['id' => "{$placement_code}{$form_name}typeList"], 
@@ -3463,7 +3468,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				]
 			));
 			
-			if($this->tableName() == 'ca_collections') {
+			if(($this->tableName() == 'ca_collections') && $t_rel_type) {
 				$rel_type_res = $t_rel_type->getTypeRestrictions() ?? [];
 				$restrict_to_types = [];
 				foreach($rel_type_res as $res) {
@@ -4656,6 +4661,7 @@ if (!$batch) {
 				) {
 					$this->set($this->HIERARCHY_PARENT_ID_FLD, null);
 					$this->set($this->HIERARCHY_ID_FLD, $this->getPrimaryKey());
+					$this->update();
 				
 					// Support for collection-object cross-table hierarchies
 					if ((bool)$this->getAppConfig()->get('ca_objects_x_collections_hierarchy_enabled') && ($target_table == 'ca_objects') && ($vs_coll_rel_type = $this->getAppConfig()->get('ca_objects_x_collections_hierarchy_relationship_type')) && ($vn_parent_id == -1)) {	// -1 = extract from hierarchy
@@ -6459,8 +6465,10 @@ if (!$batch) {
 		
  		$va_rel_ids_sorted = $va_rel_sort_order = explode(';',$po_request->getParameter("{$ps_placement_code}{$ps_form_prefix}BundleList", pString));
 		sort($va_rel_ids_sorted, SORT_NUMERIC);
+		$disable_sorts = caGetOption('disableSorts', $pa_settings, false);
 						
  		$va_rel_items = $this->getRelatedItems($ps_bundle_name, $pa_settings);
+ 		$rel_pk = Datamodel::primaryKey($ps_bundle_name);
  		
  		$va_rels_to_add = $va_rels_to_delete = [];
  if(!$batch) {	
@@ -6471,7 +6479,6 @@ if (!$batch) {
 			if ((($vn_rank_index = array_search($va_rel_item['relation_id'] ?? null, $va_rel_sort_order)) !== false) && (!isset($pa_settings['disableSorts']) || !$pa_settings['disableSorts'])) {
 				$vn_rank = $va_rel_ids_sorted[$vn_rank_index];
 			}
-			
 			$this->clearErrors();
 			$vn_id = $po_request->getParameter("{$ps_placement_code}{$ps_form_prefix}_id".$va_rel_item[$vs_key], pString);
 			if ($vn_id) {
@@ -6483,17 +6490,17 @@ if (!$batch) {
 				}
 				
 				//$vs_effective_daterange = $po_request->getParameter("{$ps_placement_code}{$ps_form_prefix}_effective_date".$va_rel_item[$vs_key], pString);
-				$this->editRelationship($ps_bundle_name, $va_rel_item[$vs_key], $vn_id, $vn_type_id, null, null, $vs_direction, $vn_rank);	
-					
+				$this->editRelationship($ps_bundle_name, $va_rel_item[$vs_key], $vn_id, $vn_type_id, null, null, $vs_direction, $disable_sorts ? null : $vn_rank, ['allowDuplicates' => true]);	
 				if ($this->numErrors()) {
 					$po_request->addActionErrors($this->errors(), $ps_bundle_name);
 				}
-			} else {
+			} elseif (($po_request->getParameter("{$ps_placement_code}{$ps_form_prefix}_".$va_rel_item[$vs_key].'_delete', pInteger)) > 0) {
 				// is it a delete key?
 				$this->clearErrors();
-				if (($po_request->getParameter("{$ps_placement_code}{$ps_form_prefix}_".$va_rel_item[$vs_key].'_delete', pInteger)) > 0) {
-					$va_rels_to_delete[] = array('bundle' => $ps_bundle_name, 'relation_id' => $va_rel_item[$vs_key]);
-				}
+				
+				$va_rels_to_delete[] = array('bundle' => $ps_bundle_name, 'relation_id' => $va_rel_item[$vs_key]);
+			} elseif(!$disable_sorts) {
+				$this->editRelationship($ps_bundle_name, $va_rel_item[$vs_key], $va_rel_item[$rel_pk], $va_rel_item['relationship_type_code'], null, null, $va_rel_item['direction'], $vn_rank, ['allowDuplicates' => true]);		
 			}
 		}
 }
@@ -10322,9 +10329,9 @@ side. For many self-relations the direction determines the nature and display te
 	 * @param string $bundle
 	 * @return bool
 	 */
-	public function valueDidChange(string $bundle) : ?bool {
+	public function valueDidChange(string $bundle, ?array $options=null) : ?bool {
 		// TODO: handle changes on relationship?
-		return parent::valueDidChange($bundle);
+		return parent::valueDidChange($bundle, $options );
 	}
 	# -------------------------------------------------------
 }

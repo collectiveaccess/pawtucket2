@@ -57,8 +57,7 @@ final class ConfigurationCheck {
 		$va_methods = $vo_reflection->getMethods();
 		foreach($va_methods as $vo_method){
 			if(strpos($vo_method->name,"QuickCheck")!==false){
-			    if (self::$opo_config->get('skipPathChecks') &&
-					in_array($vo_method->name, ['caUrlRootQuickCheck', 'caBaseDirQuickCheck', 'mediaDirQuickCheck'])) { continue; }
+			    if (caGetOption('skipPathChecks', $options, false) && in_array($vo_method->name, ['caUrlRootQuickCheck', 'caBaseDirQuickCheck'])) { continue; }
 				if (!$vo_method->invoke(null, "ConfigurationCheck")) {
 					return;
 				}

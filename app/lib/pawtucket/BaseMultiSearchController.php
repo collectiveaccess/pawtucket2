@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2018 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -134,6 +134,9 @@ abstract class BaseMultiSearchController extends BasePawtucketController {
 			
 			$vn_result_count += sizeof($va_results[$vs_block]['ids']);
 			
+			$va_results[$vs_block]['count'] = sizeof($va_results[$vs_block]['ids'] ?? []);
+			$va_results[$vs_block]['block'] = $vs_block;
+			
 			if ((sizeof($va_results[$vs_block]['ids']) == 1) && ($vn_result_count == 1) && (!$this->config->get('dont_redirect_to_single_search_result'))) {
 				$vs_redirect_to_only_result = caDetailUrl($this->request, $va_results[$vs_block]['table'], $va_results[$vs_block]['ids'][0], false);
 			}
@@ -149,6 +152,13 @@ abstract class BaseMultiSearchController extends BasePawtucketController {
 		
 		if (($vn_result_count == 1) && ($vs_redirect_to_only_result)) {
 			$this->response->setRedirect($vs_redirect_to_only_result);
+			return;
+		}
+		if(sizeof($b = array_filter($va_results, function($v) {
+			return ($v['count'] > 0);
+		})) === 1) { 
+			$b = array_shift($b);
+			$this->response->setRedirect(caNavUrl($this->request, '', 'Search', $b['block'], ['search' => $vs_search]));
 			return;
 		}
 		

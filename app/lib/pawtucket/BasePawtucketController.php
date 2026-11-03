@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2026 Whirl-i-Gig
+ * Copyright 2016-2025 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,6 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	
 class BasePawtucketController extends ActionController {
 	# ------------------------------------------------------- 	
 	/**
@@ -39,11 +40,7 @@ class BasePawtucketController extends ActionController {
 	# -------------------------------------------------------
 	public function __construct($request, $response, $view_paths=null) {
 		parent::__construct($request, $response, $view_paths);
-		if (!$this->dont_require_login && ($request->getController() !== 'LoginReg') && $request->config->get('pawtucket_requires_login') && !($request->isLoggedIn())) {
-			if ((!in_array($request->getController(), ['LoginReg', 'Ban', 'Cookies']) && (!$request->isAjax()) && (!$request->getParameter('dont_set_pawtucket2_last_page', pInteger)))) {	// the 'dont_set_pawtucket2_last_page' is a lame-but-effective way of suppressing recording of something we don't want to be a "last page" (and potentially redirected to)
-				Session::setVar('redirect_after_login', $request->getFullUrlPath());
-				Session::save();
-			}
+		if (!$this->dont_require_login && ($request->getController() !== 'LoginReg') && ($request->getController() !== 'Ban') && $request->config->get('pawtucket_requires_login') && !($request->isLoggedIn())) {
 			$response->setRedirect(caNavUrl($request, "", "LoginReg", "LoginForm"));
 		}
 		

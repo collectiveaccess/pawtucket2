@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2023-2025 Whirl-i-Gig
+ * Copyright 2023-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -38,7 +38,7 @@ class Elevator Extends BaseMediaUrlPlugin {
 	 *
 	 */
 	public function __construct() {
-		$this->description = _t('Parses Elevator URLs (https://it.umn.edu/services-technologies/elevator)');
+		$this->description = _t('Parses Elevator URLs (%1)', 'https://it.umn.edu/services-technologies/elevator');
 	}
 	# ------------------------------------------------
 	/**
@@ -178,6 +178,15 @@ class Elevator Extends BaseMediaUrlPlugin {
 		$size_css = $size ? "style='font-size: {$size}'" : '';
 		
 		return "<i class='fas fa-building' {$size_css}></i>";
+	}
+	# ------------------------------------------------
+	/**
+	 * Get list of formats handled. Keys are format short names, values are full names.
+	 *
+	 * @return array List of formats supported
+	 */
+	public function formats() : array {
+		return ['Elevator' => 'Elevator'];
 	}
 	# ------------------------------------------------
 	/**
@@ -407,6 +416,7 @@ class ElevatorAPI
         curl_setopt($ch, CURLOPT_URL, $this->baseURL . $targetURL);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
         // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         if (!$userId) {
             $userId = $this->userId;

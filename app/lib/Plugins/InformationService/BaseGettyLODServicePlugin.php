@@ -65,7 +65,8 @@ abstract class BaseGettyLODServicePlugin extends BaseInformationServicePlugin {
 		if ( ! is_array( $pa_options ) ) {
 			$pa_options = array();
 		}
-
+		
+		$ps_search = preg_replace("!^http://!i", "https://", $ps_search);
 		$va_service_conf = $this->opo_linked_data_conf->get( $this->getConfigName() );
 		$va_params = $this->_getParams( $pa_options, $va_service_conf );
 		if ($pa_settings) {
@@ -97,9 +98,11 @@ abstract class BaseGettyLODServicePlugin extends BaseInformationServicePlugin {
 
 		// Set default values for options
 		$pa_options[ CURLOPT_URL ]            = caGetOption( CURLOPT_URL, $pa_options,
-			"http://vocab.getty.edu/sparql.json?query={$ps_query}" );
+			"https://vocab.getty.edu/sparql.json?query={$ps_query}" );
 		$pa_options[ CURLOPT_CONNECTTIMEOUT ] = caGetOption( CURLOPT_CONNECTTIMEOUT, $pa_options, 2 );
 		$pa_options[ CURLOPT_RETURNTRANSFER ] = caGetOption( CURLOPT_RETURNTRANSFER, $pa_options, 1 );
+		$pa_options[ CURLOPT_FOLLOWLOCATION ] = caGetOption( CURLOPT_FOLLOWLOCATION, $pa_options, true );
+		$pa_options[ CURLOPT_MAXREDIRS ] = caGetOption( CURLOPT_MAXREDIRS, $pa_options, 5 );
 		$pa_options[ CURLOPT_USERAGENT ]      = caGetOption( CURLOPT_USERAGENT, $pa_options,
 			'CollectiveAccess web service lookup' );
 
@@ -267,6 +270,7 @@ abstract class BaseGettyLODServicePlugin extends BaseInformationServicePlugin {
 		$pb_recursive              = (bool) caGetOption( 'recursive', $pa_options, false );
 
 		if ( ! ( $o_graph = self::getURIAsRDFGraph( $ps_base_node ) ) ) {
+			CompositeCache::save( $vs_cache_key, null, 'GettyRDFLiterals', 60 * 60 * 2 );	// failed; wait 2 hours and hope Getty fixed it
 			return false;
 		}
 
@@ -280,6 +284,7 @@ abstract class BaseGettyLODServicePlugin extends BaseInformationServicePlugin {
 		}
 
 		if ( ! is_array( $va_pull_graphs ) ) {
+			CompositeCache::save( $vs_cache_key, null, 'GettyRDFLiterals', 60 * 60 * 2 );	// failed; wait 2 hours and hope Getty fixed it
 			return false;
 		}
 
@@ -341,9 +346,11 @@ abstract class BaseGettyLODServicePlugin extends BaseInformationServicePlugin {
 		if ( CompositeCache::contains( $ps_uri, 'GettyLinkedDataRDFGraphs' ) ) {
 			return CompositeCache::fetch( $ps_uri, 'GettyLinkedDataRDFGraphs' );
 		}
-
 		try {
-			$o_graph = \EasyRdf\Graph::newAndLoad("{$ps_uri}.rdf", "ntriples");
+			$rdf = caFetchFileFromUrl($ps_uri, null, ['headers' => ['Accept: application/n-triples']]);
+			$o_graph = new \EasyRdf\Graph();
+			$o_graph->parseFile($rdf, 'ntriples');
+			@unlink($rdf);
 		} catch ( Exception $e ) {
 			return false;
 		}
@@ -431,7 +438,7 @@ abstract class BaseGettyLODServicePlugin extends BaseInformationServicePlugin {
 	}
 
 	protected function _getServiceUrl() {
-		return 'http://vocab.getty.edu/' . $this->getConfigName();
+		return 'https://vocab.getty.edu/' . $this->getConfigName();
 	}
 
 	/**
