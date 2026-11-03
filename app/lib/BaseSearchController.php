@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2024 Whirl-i-Gig
+ * Copyright 2009-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -65,6 +65,11 @@ class BaseSearchController extends BaseRefineableSearchController {
 			$this->opo_result_context->setSearchExpression($pa_options['saved_search']['search']);
 			$this->opo_result_context->isNewSearch(true);
 		}
+
+		if ($this->opo_result_context->searchExpressionHasChanged() && ($default_display = $this->request->config->get($this->ops_tablename.'_reset_display_on_new_search'))) {
+			$this->opo_result_context->setCurrentBundleDisplay($default_display);
+		}
+
 		parent::Index($pa_options);
 		
 		AssetLoadManager::register('hierBrowser');
@@ -103,7 +108,7 @@ class BaseSearchController extends BaseRefineableSearchController {
 			$this->opo_result_context->setCurrentSort($default_sort);
 			$this->opo_result_context->setCurrentSortDirection('ASC');
 		}
-		
+
 		if (!($vs_sort 	= $this->opo_result_context->getCurrentSort())) { 
 			$va_tmp = array_keys($this->opa_sorts);
 			$vs_sort = array_shift($va_tmp);
@@ -300,7 +305,6 @@ class BaseSearchController extends BaseRefineableSearchController {
 		$t_display = $this->view->getVar('t_display');
 		if (!is_array($va_display_list = $this->view->getVar('display_list'))) { $va_display_list = array(); }
 		
-		$this->_setBottomLineValues($vo_result, $va_display_list, $t_display);
 		
 		switch($pa_options['output_format'] ?? null) {
 			# ------------------------------------
@@ -314,6 +318,8 @@ class BaseSearchController extends BaseRefineableSearchController {
 			# ------------------------------------
 			case 'HTML': 
 			default:
+				$this->_setBottomLineValues($vo_result, $va_display_list, $t_display, ['total' => $this->view->getVar('num_hits')]);
+		
 				// generate type menu and type value list
 				if (method_exists($t_model, "getTypeList")) {
 					$this->view->setVar('type_list', $t_model->getTypeList());
@@ -402,6 +408,8 @@ class BaseSearchController extends BaseRefineableSearchController {
 				} else {
 					$va_subtypes = method_exists($this, "_getSubTypeActionNav") ? $this->_getSubTypeActionNav($va_item) : [];
 				}
+				
+				if(!$va_item['is_enabled'] && !sizeof($va_subtypes)) { continue; }
 				$va_types[] = array(
 					'displayName' => $va_item['name_plural'],
 					'parameters' => array(
@@ -432,6 +440,7 @@ class BaseSearchController extends BaseRefineableSearchController {
 			if(is_array($limit_to_types) && sizeof($limit_to_types) && !in_array($va_type['idno'], $limit_to_types)) { continue; }
 			if(is_array($exclude_types) && sizeof($exclude_types) && in_array($va_type['idno'], $exclude_types)) { continue; }
 			
+			if(!$va_type['is_enabled'] && !$va_subsubtypes) { continue; }
 			$va_subtypes[$va_type['item_id']] = array(
 				'displayName' => $va_type['name_singular'],
 				'parameters' => array(

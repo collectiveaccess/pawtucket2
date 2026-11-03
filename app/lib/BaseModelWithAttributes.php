@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2024 Whirl-i-Gig
+ * Copyright 2008-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -84,6 +84,46 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 		$this->opa_attributes_to_add = array();
 		$this->opa_attributes_to_edit = array();
 		$this->opa_attributes_to_remove = array();
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Check max/min repeat counts for a metadata on the currently loaded record and post errors if counts 
+	 * are out of bounds.
+	 *
+	 * @param mixed $element_code_or_id
+	 * @param string $error_source
+	 * @param array $options Options include:
+	 *		postErrors = Post errors on currently loaded row. [Default is true[
+	 *
+	 * @return bool True if counts are in bounds, false if not.
+	 */
+	public function checkAttributeRepeatCounts($element_code_or_id, ?string $error_source=null, ?array $options=null) {
+		if (!($t_element = ca_metadata_elements::getInstance($element_code_or_id))) { return false; }
+		// check restriction min/max settings
+		$t_restriction = $t_element->getTypeRestrictionInstanceForElement($this->tableNum(), $this->getTypeID());
+		if (!$t_restriction) { return null; }		// attribute not bound to this type
+		
+		$post_errors = caGetOption('postErrors', $options, true);
+		
+		$element_id = $t_element->getPrimaryKey();
+		
+		if(!$error_source) {
+			$error_source = $this->tableName().'.'.$t_element->get('ca_metadata_elements.element_code');
+		}
+		
+		$min = $t_restriction->getSetting('minAttributesPerRow');
+		$max = $t_restriction->getSetting('maxAttributesPerRow');
+		
+		$count = $this->getAttributeCountByElement($element_id, ['includeBlanks' => true]);
+		if (($max > 0) && $count > $max) { 
+			if($post_errors) { $this->postError(1990, ($max == 1) ? _t('Too many values exist; only %1 value is allowed but %2 are set', $max, $count) : _t('Too many values exist; only %1 values are allowed but %2 are set', $max, $count), 'BaseModelWithAttributes->checkAttributeRepeatCounts()', $error_source); }
+			return false;
+		}
+		if (($min > 0) && ($count < $min)) { 
+			if($post_errors) { $this->postError(1992, ($min == 1) ? _t('A value is required') : _t('At least %1 values are required but only %2 are set', $min, $count), 'BaseModelWithAttributes->checkAttributeRepeatCounts()', $error_source); }
+			return false;
+		}
+		return true;
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -1661,11 +1701,11 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 		} else {
 			if (!($vn_type_id = $this->get($this->ATTRIBUTE_TYPE_ID_FLD))) { return null; }
 		}
-		if (MemoryCache::contains($vn_type_id, 'baseModelTypeInstances')) {
-			return MemoryCache::fetch($vn_type_id, 'baseModelTypeInstances');
+		$key = $this->tableName()."::{$vn_type_id}}";
+		if (MemoryCache::contains($key, 'baseModelTypeInstances')) {
+			return MemoryCache::fetch($key, 'baseModelTypeInstances');
 		}
-		
-		MemoryCache::save($vn_type_id, $t_list_item = new ca_list_items($vn_type_id), 'baseModelTypeInstances');
+		MemoryCache::save($key, $t_list_item = new ca_list_items($vn_type_id), 'baseModelTypeInstances');
 		return ($t_list_item->getPrimaryKey()) ? $t_list_item : null;
 	}
 	# ------------------------------------------------------------------
@@ -1737,6 +1777,46 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 		}
 		
 		return $t_list->getListAsHTMLFormElement($this->getTypeListCode(), $ps_name, $pa_attributes, array_merge($pa_options ?? [], ['value' => caGetOption('value', $pa_options, $this->get($this->getTypeFieldName()))]));
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Return list of valid child types for currently loaded row (or for the type_id specified in the first parameter).
+	 * List of child types is generated with respect to *_enforce_strict_type_hierarchy settings (strict, semi-strict and none)
+	 * and, if the "components" option is set, object component configuration.
+	 *
+	 * @param mixed $type_id
+	 * @param array $options Options include:
+	 *		components = for object types, return list including only child types that are configured as component types. [Default is false]
+	 *
+	 * @return array
+	 */ 
+	public function getValidChildTypes(mixed $type_id=null, ?array $options=null) : ?array {
+		$for_components = (bool)caGetOption('components', $options, false);
+		if(is_null($type_id)) { $type_id = $this->get('type_id'); }
+		
+		if ($t_type = $this->getTypeInstance($type_id)) {
+			$type_hierarchy_enforcement = $this->getAppConfig()->get($this->tableName().'_enforce_strict_type_hierarchy');
+						
+			switch($type_hierarchy_enforcement) {
+				case 0:
+				default:
+					$idnos = $this->getTypeList(['idnosOnly' => true]);
+					break;
+				case 1:
+					$idnos = $t_type->get('ca_list_items.children.idno', ['returnAsArray' => true]);
+					break;
+				case '~':
+					$idnos = $t_type->get('ca_list_items.descendants.idno', ['returnAsArray' => true]);
+					break;
+			}
+			
+			if($for_components && method_exists($this, 'getComponentTypes')) {
+				$component_types = $this->getComponentTypes();
+				$idnos = array_intersect($idnos, $component_types);
+			}
+			return $idnos;
+		}
+		return null;
 	}
 	# ------------------------------------------------------------------
 	// --- Forms
@@ -2043,7 +2123,14 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 		$user_values = [];
 		if($user = $po_request->getUser()) {
 			foreach(['fname', 'lname', 'email', 'user_name'] as $uf) {
-				$user_values["currentuser.{$uf}"] = $user->get($uf);
+				$user_values["currentuser.{$uf}"] = $user_values["_user.{$uf}"] = $user->get($uf);
+			}
+			if(is_array($profile_prefs = $user->getValidPreferences('profile'))) {
+				foreach($profile_prefs as $p) {
+					$pv = $user->getPreference($p);
+					$p = str_replace("user_profile_", "", $p);
+					$user_values["_user.{$p}"] = $pv;
+				}
 			}
 		}
 		
@@ -2052,7 +2139,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 		$element_id = $t_element->get('element_id');
 		$table_name = $this->tableName();
 		
-		$show_bundle_codes = $po_request->user->getPreference('show_bundle_codes_in_editor');
+		$show_bundle_codes = $user ? $user->getPreference('show_bundle_codes_in_editor') : false;
 		
 		$root_element_id = $group_key = $t_element->getPrimaryKey();
 		$group_keys = [];
@@ -2934,7 +3021,7 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 			$bundle_code = "{$vs_table}.{$vs_element_code}";
 			$dt = ca_metadata_elements::getDataTypeForElementCode($vs_element_code);
 			if($dt === __CA_ATTRIBUTE_VALUE_MEDIA__) { $bundle_code .= '.path'; }
-			$va_vals = $this->get($bundle_code, array("returnAsArray" => true, "returnWithStructure" => true, "returnAllLocales" => true, 'forDuplication' => true));
+			$va_vals = $this->get($bundle_code, array("output" => "id", "returnAsArray" => true, "returnWithStructure" => true, "returnAllLocales" => true, 'forDuplication' => true));
 			if (!is_array($va_vals)) { continue; }
 
 			foreach($va_vals as $vn_id => $va_vals_by_locale) {
@@ -3781,30 +3868,45 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 	 * We changed the name instead of overriding it so that we don't have to run
 	 * every single changed() call on a Bundlable through this function. Turns out it gets called a lot.
 	 *
-	 * @param $pm_element_code_or_id
+	 * @param mixed $element_code_or_id
 	 * @return bool
 	 */
-	public function attributeDidChange($pm_element_code_or_id) {
-		$vs_code = ca_metadata_elements::getElementCodeForId($pm_element_code_or_id);
-		$vn_id = ca_metadata_elements::getElementID($pm_element_code_or_id);
+	public function attributeDidChange(mixed $element_code_or_id, ?array $options=null) : ?bool {
+		$code = ca_metadata_elements::getElementCodeForId($element_code_or_id);
+		$id = ca_metadata_elements::getElementID($element_code_or_id);
 
 		// not an element?
-		if(!$vs_code || (!$this->hasElement($vs_code, null, true))) { return false; }
+		if(!$code || (!$this->hasElement($code, null, true))) { return null; }
 
-		return isset($this->_FIELD_VALUE_DID_CHANGE['_ca_attribute_'.$vn_id]) ? $this->_FIELD_VALUE_DID_CHANGE['_ca_attribute_'.$vn_id] : false;
+		return $this->didChange('_ca_attribute_'.$id, $options);
 	}
 	# ------------------------------------------------------------------
 	/**
 	 * Did any attributes changed on this row, even if already saved?
 	 *
-	 * @param $pm_element_code_or_id
 	 * @return bool
 	 */
 	public function attributesDidChange() {
 		if(!is_array($cf = $this->_FIELD_VALUE_DID_CHANGE)) { return false; }
 		if(sizeof($cf) === 0) { return false; }
-		if (sizeof(array_filter(array_keys($cf), function($v) { return substr($v, 0, 14) === '_ca_attribute_'; })) > 0) { return true; }
+		
+		foreach($cf as $b) {
+			if (sizeof(array_filter(array_keys($b), function($v) { return substr($v, 0, 14) === '_ca_attribute_'; })) > 0) { return true; }
+		}
 		return false;
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @param string $bundle
+	 * @return bool
+	 */
+	public function valueDidChange(string $bundle, ?array $options=null) : ?bool {
+		if(!is_null($ret = self::attributeDidChange($bundle, $options))) {
+			return $ret;
+		}
+		return parent::valueDidChange($bundle, $options);
 	}
 	# --------------------------------------------------------------------------------
 	/**
@@ -3886,6 +3988,169 @@ class BaseModelWithAttributes extends BaseModel implements ITakesAttributes {
 			}
 		}
 		return $ret;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Return simplified change history for attribute bundle of a row
+	 *
+	 * @param string $bundle Bundle (Eg. ca_objects.description)
+	 * @param array $options Options include:
+	 * 		row_id = ID of row to fetch log for. If omitted currently loaded row is used. [Default is null]
+	 *
+	 * @return array
+	 */
+	public function getLogForBundleValueHistory(string $bundle, ?array $options=null) : ?array { 
+		$bi = $this->_processBundleNameForValueHistory($bundle);
+		
+		if(!ca_metadata_elements::getElementID($bi['element'])) { 
+			return parent::getLogForBundleValueHistory($bundle, $options);
+		}
+		
+		$row_id = caGetOption('row_id', $options, $this->getPrimaryKey());
+		if(!$row_id) { return null; }
+		
+		$table_num = $this->tableNum();
+		$pk = $this->primaryKey();
+		
+		$guid = ca_guids::getForRow($this->tableNum(), $row_id);
+		$log = ca_change_log::getLog(0, null, ['forGUID' => $guid, 'telescope' => false, 'forceValuesForAllAttributeSlots' => true]);
+
+		$acc = [];
+		
+		$bundle_subelement_id = $bi['subelement'] ? ca_metadata_elements::getElementID($bi['subelement']) : null; // is subelement an actual element? Or additional log data?
+		foreach($log as $l) {
+			switch((int)$l['logged_table_num']) {
+				case 4: // ca_attributes
+					$element_id = $l['snapshot']['element_id'];
+					$element_code = ca_metadata_elements::getElementCodeForId($element_id);
+					if($element_code != $bi['element']) { continue(2); }
+					$acc[$l['snapshot']['attribute_id']] = [
+						'guid' => $l['guid'],
+						'element_id' => $element_id,
+						'element_code' => $element_code,
+						'attributeValues' => []
+					];
+					break;
+				case 3: // ca_attribute_values
+					$s = $l['snapshot'];
+					$attribute_id = $s['attribute_id'];
+					if(!isset($acc[$attribute_id])) { continue(2); }
+					$element_id = $s['element_id'];
+					$element_code = ca_metadata_elements::getElementCodeForId($element_id);
+					if(!is_null($bundle_subelement_id) && ($element_code != $bi['subelement'])) { continue(2); }
+					
+					$s['changetype'] = $l['changetype'];
+					$s['log_id'] = $l['log_id'];
+					$s['element_code'] = $element_code;
+					$s['log_datetime'] = $l['log_datetime'];
+					$s['log_datetime_display'] = caGetLocalizedDate($l['log_datetime'], ['timeOmit' => false]);
+					
+					if($u = $this->_processUserDataForValueHistory($l['user_id'])) {
+						$s = array_merge($s, $u);
+					}
+					
+					$acc[$l['snapshot']['attribute_id']]['attributeValues'][$element_code][$s['log_id']] = $s;
+					break;
+			}
+		}
+		foreach($acc as $id => $info) {
+			if(!isset($info['attributeValues']) || !sizeof($info['attributeValues'])) {
+				unset($acc[$id]);
+			}
+		}
+		return $acc;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Return history of changes to a bundle on a row.
+	 *
+	 * @string $bundle Bundle
+	 * @array $options Options include:
+	 *		row_id = ID of row to fetch history on. If omitted currently loaded row is used. [Default is null]
+	 *		returnWithStructure = Return values as array with additional date/time data. [Default is false]
+	 *
+	 * @return array
+	 */
+	public function getValueHistoryForBundle(string $bundle, ?array $options=null) : ?array {
+		$bi = $this->_processBundleNameForValueHistory($bundle);
+
+		$row_id = caGetOption('row_id', $options, $this->getPrimaryKey());
+		$return_with_structure = caGetOption('returnWithStructure', $options, false);
+		$delimiter = caGetOption('delimiter', $options, ';');
+		
+		if(!ca_metadata_elements::getElementID($bi['element'])) { 
+			return parent::getValueHistoryForBundle($bundle, $options);
+		}
+		
+		$log = $this->getLogForBundleValueHistory($bundle, $options);
+		$acc = [];
+		
+		$dt = ca_metadata_elements::getElementDatatype($bi['element']);
+		$is_container = ($dt === 0);
+		$acc[$row_id] = [];
+		
+		$deleted = [];
+		foreach($log as $attr_id => $d) {
+			if(isset($d['attributeValues'])) { 
+				$buf = $vacc = [];
+				foreach($d['attributeValues'] as $element_code => $values) {
+					$vdt = ca_metadata_elements::getElementDatatype($element_code);
+					foreach($values as $i => $snapshot) {
+						$o_val = \CA\Attributes\Attribute::getValueInstance($vdt, $snapshot);
+						$log_id = $snapshot['log_id'];
+						if(!is_array($buf[$i])) { 
+							$buf[$i] = [
+								'log_datetime' => $snapshot['log_datetime'],
+								'log_datetime_display' => $snapshot['log_datetime_display'],
+								'user_id' => $snapshot['user_id'],
+								'user_name' => $snapshot['user_name'],
+								'user_email' => $snapshot['user_email'],
+								'user_fname' => $snapshot['user_fname'],
+								'user_lname' => $snapshot['user_lname']
+							]; 
+						}
+						$buf[$log_id][$element_code] = $vacc[$log_id][] = $o_val->getDisplayValue($options);
+						
+						$buf[$log_id]['value_id'] = $snapshot['value_id'];
+					}
+				}
+				
+				foreach($buf as $log_id => $e) {
+					$buf[$log_id][$bi['element']] = join($delimiter, $vacc[$log_id] ?? []);
+				}
+				$acc[$row_id] = ($acc[$row_id] +  $buf);
+			}
+		}
+		
+		foreach($acc as $row_id => $d) {
+			ksort($acc[$row_id]);
+		}
+		if(!$return_with_structure) {
+			$facc = [];
+			foreach($acc as $row_id => $data) {
+				foreach($data as $i => $d) {
+					if($bi['modifier']) {
+						$facc[] = $d[$bi['modifier']] ?? null;
+					} else {
+						$facc[] = $d[$bi['key']] ?? null;
+					}
+				}
+			}
+			$acc = $facc;
+		}
+		
+		return $acc;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	public function getMostRecentValueForBundle(string $bundle, ?array $options=null) : mixed {
+		$values = $this->getValueHistoryForBundle($bundle, $options);
+		$values = array_filter($values, function($v) {
+			return !(!is_array($v) || !isset($v['value']) || !strlen($v['value']));
+		});
+		return array_pop($values);
 	}
 	# ------------------------------------------------------------------
 }

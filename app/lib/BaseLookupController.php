@@ -112,44 +112,32 @@ class BaseLookupController extends ActionController {
 			
 				$o_search = new $this->ops_search_class();
 			
-				$types = array();
+				$restrict_to_types = [];
 				if ($types) {
-					$types = explode(';', $types);
+					$restrict_to_types = explode(';', $types);
 				} else {
 					if ($type) {
-						$types = array($type);
+						$restrict_to_types = [$type];
 					}
 				}
 			
 				// Get type_ids
-				$va_ids = array();
-				if (sizeof($types)) {
-					$va_types = $this->opo_item_instance->getTypeList();
-					$va_types_proc = array();
-					foreach($va_types as $vn_type_id => $va_type) {
-						$va_types_proc[$vn_type_id] = $va_types_proc[$va_type['idno']] = $vn_type_id;
-					}
-					foreach($types as $type) {
-						if (isset($va_types_proc[$type])) {
-							$va_ids[$va_types_proc[$type]] = true;
-						} elseif (is_numeric($type)) {
-							$va_ids[(int)$type] = true;
-						}
-					}
-					$va_ids = array_keys($va_ids);
-				
-					if (sizeof($va_ids) > 0) {
+				$ids = [];
+				if (sizeof($restrict_to_types)) {
+					$ids = caMakeTypeIDList($this->ops_table_name, $restrict_to_types, ['dontIncludeSubtypesInTypeRestriction' => false]);
+					
+					if (sizeof($ids) > 0) {
 						$t_list = new ca_lists();
 					
 						if (!$no_subtypes) {
-							foreach($va_ids as $vn_id) {
+							foreach($ids as $vn_id) {
 								if (is_array($va_children = $t_list->getItemsForList($this->opo_item_instance->getTypeListCode(), array('item_id' => $vn_id, 'idsOnly' => true)))) {
-									$va_ids = array_merge($va_ids, $va_children);
+									$ids = array_merge($ids, $va_children);
 								}
 							}
-							$va_ids = array_flip(array_flip($va_ids));
+							$ids = array_flip(array_flip($ids));
 						}
-						$o_search->addResultFilter($this->opo_item_instance->tableName().'.'.$this->opo_item_instance->getTypeFieldName(), 'IN', join(",", $va_ids));
+						$o_search->addResultFilter($this->opo_item_instance->tableName().'.'.$this->opo_item_instance->getTypeFieldName(), 'IN', join(",", $ids));
 					}
 				}
 		
@@ -204,9 +192,11 @@ class BaseLookupController extends ActionController {
 			
 				$qr_res->setOption('prefetch', $limit);
 				$qr_res->setOption('dontPrefetchAttributes', true);
+				
+				$can_quickadd = ($this->request->user && $this->request->user->canDoAction('can_quickadd_'.$this->opo_item_instance->tableName()) && !((bool) $o_config->get($this->opo_item_instance->tableName().'_disable_quickadd')));
 			
-				$va_opts = array('exclude' => $va_excludes, 'limit' => $limit, 'request' => $this->getRequest());
-				if(!$no_inline && ($quickadd || (!strlen($quickadd) && $this->request->user && $this->request->user->canDoAction('can_quickadd_'.$this->opo_item_instance->tableName()) && !((bool) $o_config->get($this->opo_item_instance->tableName().'_disable_quickadd'))))) {
+				$va_opts = ['exclude' => $va_excludes, 'limit' => $limit, 'request' => $this->getRequest(), 'template' => caGetOption('template', $options, null)];
+				if(!$no_inline && ($quickadd || (!strlen($quickadd) && $can_quickadd))){
 					// if the lookup was restricted by search, try the lookup without the restriction
 					// so that we can notify the user that he might be about to create a duplicate
 					if((strlen($restrict_to_search) > 0)) {
@@ -523,12 +513,12 @@ class BaseLookupController extends ActionController {
 				({$field} = ?) AND ({$vs_pk} <> ?)
 				{$vs_extra_wheres}
 		", $va_params);
-		$va_ids = array();
+		$ids = array();
 		while($qr_res->nextRow()) {
-			$va_ids[] = (int)$qr_res->get($vs_pk);
+			$ids[] = (int)$qr_res->get($vs_pk);
 		}
 		
-		$this->view->setVar('id_list', $va_ids);
+		$this->view->setVar('id_list', $ids);
 		return $this->render('intrinsic_json.php');
 	}
 	# -------------------------------------------------------

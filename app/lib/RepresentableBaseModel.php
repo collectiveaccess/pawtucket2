@@ -63,6 +63,9 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 		$pn_limit = caGetOption('limit', $pa_options, null);
 		$simple = caGetOption('simple', $pa_options, false, ['castTo' => 'bool']);
 		$include_annotations = caGetOption('includeAnnotations', $pa_options, false);
+		
+		$sort = caGetOption('sort', $pa_options, null);
+		$sort_direction = caGetOption('sortDirection', $pa_options, null);
 	
 		if (caGetBundleAccessLevel($this->tableName(), 'ca_object_representations') == __CA_BUNDLE_ACCESS_NONE__) {
 			return null;
@@ -236,6 +239,17 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 		$va_labels = $t_rep->getPreferredDisplayLabelsForIDs(array_keys($reps));
 		foreach($va_labels as $vn_rep_id => $vs_label) {
 			$reps[$vn_rep_id]['label'] = $vs_label;
+		}
+		
+		if($sort) {
+			if($qr = caMakeSearchResult('ca_object_representations', array_keys($reps), ['sort' => $sort, 'sortDirection' => $sort_direction])) {
+				$sorted_rep_ids = $qr->getAllFieldValues('representation_id');	
+				$sorted_reps = [];
+				foreach($sorted_rep_ids as $id) {
+					$sorted_reps[$id] = $reps[$id];
+				}
+				$reps = $sorted_reps;
+			}
 		}
 		
 		return $reps;
@@ -857,8 +871,16 @@ class RepresentableBaseModel extends BundlableLabelableBaseModelWithAttributes {
 					} elseif($t_rep->hasField($vs_element)) {
 						$t_rep->set($vs_element, $va_value);
 					} else {
-						// scalar value (simple single value attribute)
-						if ($va_value) {
+						// scalar attribute
+						if ($va_value === '' || is_null($va_value)) {
+							// remove attribute if cleared
+							if ($t_element = ca_metadata_elements::getInstance($vs_element)) {
+								$t_rep->removeAttributes(
+									$t_element->getPrimaryKey(),
+									['force' => true]
+								);
+							}
+						} else {
 							$t_rep->replaceAttribute(array(
 								'locale_id' => $pn_locale_id,
 								$vs_element => $va_value
