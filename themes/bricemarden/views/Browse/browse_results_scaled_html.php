@@ -112,9 +112,13 @@ if ($start < $qr_res->numHits()) {
 		if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($cache_key,'browse_result')){
 			print ExternalCache::fetch($cache_key, 'browse_result');
 		}else{			
-			$height = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.dimensions' length='1'>^ca_objects.dimensions.dimensions_height</unit>", array("returnAsDecimalMetric" => true));
+			$height = null;
+			$height = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.dimensions'><if rule='^ca_objects.dimensions.dimension_types =~ /overall/'>^ca_objects.dimensions.dimensions_height</if></unit>", array("returnAsDecimalMetric" => true));
+			if(!$height){
+				$height = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.dimensions' length='1'>^ca_objects.dimensions.dimensions_height</unit>", array("returnAsDecimalMetric" => true));
+			}
 			$scale = $height/$scale_height;
-			$caption 	= $qr_res->getWithTemplate($result_caption_template, array("checkAccess" => $va_access_values));
+			$caption = $qr_res->getWithTemplate($result_caption_template, array("checkAccess" => $va_access_values));
 			$image = "";
 			$type_placeholder = "";
 			$typecode = "";

@@ -91,8 +91,8 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<div class="col">				
 			{{{<dl class="mb-0">
 				<dt class='mb-2'>Literature</dt>
-				<dd class="mb-2">
-					<H1 class="pb-4 mb-0">^ca_occurrences.lit_citation</H1>
+				<dd class="mb-0">
+					<H1 class="pb-2 mb-0">^ca_occurrences.lit_citation</H1>
 				</dd>
 				<ifdef code="ca_occurrences.url">
 					<dt class='pt-3 mb-2'><?= _t('URL'); ?></dt>
