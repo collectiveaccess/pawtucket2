@@ -45,14 +45,25 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 <?php
 	if($show_nav){
-?>
-	<div class="row mt-n3">
-		<div class="col text-center text-md-end">
-			<nav aria-label="result">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</nav>
+		$results_link = $previous_link = $next_link;
+		if($this->getVar("nextID")){
+			$next_link = "<a href='".$this->getVar("nextURL")."' class='pe-0 ".$options["detailNavLinkClass"]."'>".$options["nextLink"]."</a>";
+		}
+		if($this->getVar("previousID")){
+			$previous_link = "<a href='".$this->getVar("previousURL")."' class='pe-0 ".$options["detailNavLinkClass"]."'>".$options["previousLink"]."</a>";
+		}
+		if($this->getVar("resultsURL")){
+			$results_link = "<a href='".$this->getVar("resultsURL")."' class='".(($previous_link || $next_link) ? "pe-4 " : "").$options["detailNavLinkClass"]."'>".$options["resultsLink"]."</a>";
+		}
+		
+	?>
+		<div class="row mt-n4">
+			<div class="col text-center text-md-end">
+				<nav aria-label="result"><?= $results_link.$previous_link.$next_link; ?></nav>
+			</div>
 		</div>
-	</div>
-<?php
-	}
+	<?php
+}
 
 	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
@@ -76,14 +87,16 @@ $map_options = $this->getVar('mapOptions') ?? [];
 <?php
 	}
 ?>
-	<div class="row row-cols-1 my-3">
+	<div class="row row-cols-1 mb-3">
 		<div class="col">				
-			{{{<H1 class="pb-4 mb-0">^ca_occurrences.lit_citation</H1>
-				<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="venue"><unit relativeTo="ca_entities_x_occurrences" restrictToRelationshipTypes="venue" delimiter=""><div class="pb-4">^ca_entities.preferred_labels<if rule="^ca_entities.location_display.city_display =~ /yes/"><ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef></if><if rule="^ca_entities.location_display.state_display =~ /yes/"><ifdef code="ca_entities.address.stateprovence">, ^ca_entities.address.stateprovence</ifdef></if><if rule="^ca_entities.location_display.country_display =~ /yes/"><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></if><ifdef code="ca_entities_x_occurrences.common_date">, ^ca_entities_x_occurrences.common_date</ifdef></div></unit></ifcount>
-				<dl class="mb-0">
+			{{{<dl class="mb-0">
+				<dt class='mb-2'>Literature</dt>
+				<dd class="mb-0">
+					<H1 class="pb-4 mb-0">^ca_occurrences.lit_citation</H1>
+				</dd>
 					<ifcount code="ca_occurrences.related" min="1" restrictToTypes="exhibition">
-						<dt><?= _t('Related Exhibitions'); ?></dt>
-						<unit relativeTo="ca_occurrences.related" delimiter="" restrictToTypes="exhibition"><dd><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
+						<dt class='pt-0 mb-2'><?= _t('Related Exhibitions'); ?></dt>
+						<unit relativeTo="ca_occurrences.related" delimiter="" restrictToTypes="exhibition"><dd class='mb-2'><l><i>^ca_occurrences.preferred_labels</i><ifdef code='ca_occurrences.exhibition_year'>, ^ca_occurrences.exhibition_year</ifdef><ifcount code='ca_entities' min='1' restrictToRelationshipTypes='venue'>, <unit relativeTo='ca_entities_x_occurrences' restrictToRelationshipTypes='venue' delimiter='; '>^ca_entities.preferred_labels<if rule='^ca_entities.location_display.city_display =~ /yes/'><ifdef code='ca_entities.address.city'>, ^ca_entities.address.city</ifdef></if><if rule='^ca_entities.location_display.state_display =~ /yes/'><ifdef code='ca_entities.address.stateprovence'>, ^ca_entities.address.stateprovence</ifdef></if><if rule='^ca_entities.location_display.country_display =~ /yes/'><ifdef code='ca_entities.address.country'>, ^ca_entities.address.country</ifdef></if><ifdef code='ca_entities_x_occurrences.common_date'>, ^ca_entities_x_occurrences.common_date</ifdef></unit></ifcount></l></dd></unit>
 					</ifcount>
 				</dl>}}}
 		</div>
@@ -91,7 +104,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 {{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="references">
 	<if rule="^ca_objects.classification =~ /painting/i">
 	<div class="row">
-		<div class="col"><h2>Artworks</h2></div>
+		<div class="col"><h2 class="fw-normal fst-italic fs-5">Artworks</h2></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Browse', 'artworks', array('facet' => 'literature_facet', 'id' => $t_item->get("ca_occurrences.occurrence_id"))); ?>">

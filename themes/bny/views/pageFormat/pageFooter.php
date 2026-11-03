@@ -32,7 +32,7 @@ $lightbox_sectionHeading = ucFirst($lightboxDisplayName["section_heading"]);
 $user_links = "";
 if($this->request->isLoggedIn()){
 	$user_links .= '<div class="fw-medium text-uppercase pb-2"><i class="bi bi-person-circle" aria-label="'._t('User Options').'"></i> '.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).'</div>';
-	if(caDisplayLightbox($this->request)){
+	if(caDisplayLightbox()){
 		$user_links .= "<div>".caNavLink($this->request, $lightbox_sectionHeading, 'dropdown-item', '', 'Lightbox', 'Index', array())."</div>";
 	}
 	$user_links .= "<div>".caNavLink($this->request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array())."</div>";

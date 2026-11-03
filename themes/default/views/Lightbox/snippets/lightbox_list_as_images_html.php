@@ -10,6 +10,8 @@ $configured_modes = $this->getVar('configured_modes');
 $current_view_mode = $this->getVar('mode');
 $current_view_mode_info = $configured_modes[$current_view_mode];
 
+$tinfo = $this->getVar('lightbox_type_info');
+
 $image_format = caGetOption('image_format', $current_view_mode_info, 'cover');
 $image_class = "";
 if($image_format == "contain"){
@@ -20,10 +22,15 @@ if($image_format == "contain"){
 
 while($qr_sets->nextHit()) {
 	$set_id = $qr_sets->get('ca_sets.set_id');
-	$table = $qr_sets->get('table_num');
+	$table_num = $qr_sets->get('table_num');
+	$table = Datamodel::getTableName($table_num);
 	$caption = $qr_sets->get('ca_sets.preferred_labels.name');
-	$detail_link = caNavLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2', '*', '*', "Detail/{$set_id}", null, array("title" => _t("View %1", $lightbox_displayname_singular), "aria-label" => _t("View %1", $lightbox_displayname_singular)));
+	$detail_link = caNavLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2', '*', '*', "Detail/{$set_id}", null, ["title" => _t("View %1", $lightbox_displayname_singular), "aria-label" => _t("View %1", $lightbox_displayname_singular)]);
 	$can_delete = $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__, $set_id);
+
+	$ltype = caGetLightboxTypeForTable($table); // @TODO: wire up type restrictions
+	
+	$count = (int)$qr_sets->getWithTemplate('^ca_sets._itemCount');
 ?>
 	<div class='col-md-6 col-lg-4 d-flex'>
 		<div id='lb-<?= $set_id; ?>' class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'>
@@ -31,7 +38,7 @@ while($qr_sets->nextHit()) {
 			<div class='card-body'>
 				<div class='card-title'>
 					<div class='fw-medium lh-sm fs-5'><?= caNavLink($this->request, $caption, '', '*', '*', "Detail/{$set_id}"); ?></div>
-					<small class='text-body-secondary'><?= $qr_sets->getWithTemplate('^ca_sets._itemCount').' '.Datamodel::getTableProperty($table, 'NAME_PLURAL'); ?></small>
+					<small class='text-body-secondary'><?= $count.' '.$tinfo[$ltype][($count === 1) ? 'label_singular' : 'label_plural']; ?></small>
 				</div>
 			</div>
 			<div class='card-footer text-end bg-transparent'>
