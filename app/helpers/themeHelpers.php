@@ -921,40 +921,43 @@ function caGetPlaceholder($vs_type_code, $vs_placeholder_type = "placeholder_med
 	return $vs_placeholder;
 }
 # ---------------------------------------
-function caGetAddToSetInfo($po_request){
-	$va_link_info = array();
-	if(!$po_request->isLoggedIn() && !$po_request->config->get("disable_lightbox")){
-		$o_lightbox_config = caGetLightboxConfig();
-		$va_link_info["controller"] = "Lightbox";
-		$va_link_info["icon"] = $o_lightbox_config->get("lightbox_icon");
-		if(!$va_link_info["icon"]){
-			$va_link_info["icon"] = "<i class='fa fa-suitcase'></i>";
+/**
+ *
+ */
+function caGetAddToSetInfo($request){
+	$display_lightbox = caDisplayLightbox();
+	$o_lightbox_config = caGetLightboxConfig();
+	
+	$link_info = array();
+	if(!$request->isLoggedIn() && $display_lightbox){
+		$link_info["controller"] = "Lightbox";
+		$link_info["icon"] = $o_lightbox_config->get("lightbox_icon");
+		if(!$link_info["icon"]){
+			$link_info["icon"] = "<i class='fa fa-suitcase'></i>";
 		}
-		$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
-		$va_link_info["name_singular"] = $va_lightboxDisplayName["singular"];
-		$va_link_info["name_plural"] = $va_lightboxDisplayName["plural"];
-		$va_link_info["section_heading"] = $va_lightboxDisplayName["section_heading"];
+		$lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
+		$link_info["name_singular"] = $lightboxDisplayName["singular"];
+		$link_info["name_plural"] = $lightboxDisplayName["plural"];
+		$link_info["section_heading"] = $lightboxDisplayName["section_heading"];
 		
-		$va_link_info["link_text"] = _t("Login to add to %1", $va_link_info["name_singular"]);
-		return $va_link_info;
+		$link_info["link_text"] = _t("Login to add to %1", $link_info["name_singular"]);
+		return $link_info;
 	}
-	if(caDisplayLightbox($po_request)){
-		$o_lightbox_config = caGetLightboxConfig();
-		$va_link_info["controller"] = "Lightbox";
-		$va_link_info["icon"] = $o_lightbox_config->get("lightbox_icon");
-		if(!$va_link_info["icon"]){
-			$va_link_info["icon"] = "<i class='fa fa-suitcase'></i>";
+	if($display_lightbox){
+		$link_info["controller"] = "Lightbox";
+		$link_info["icon"] = $o_lightbox_config->get("lightbox_icon");
+		if(!$link_info["icon"]){
+			$link_info["icon"] = "<i class='fa fa-suitcase'></i>";
 		}
-		$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
-		$va_link_info["name_singular"] = $va_lightboxDisplayName["singular"];
-		$va_link_info["name_plural"] = $va_lightboxDisplayName["plural"];
-		$va_link_info["section_heading"] = $va_lightboxDisplayName["section_heading"];
-		$va_link_info["link_text"] = _t("Add to %1", $va_link_info["name_singular"]);
-		return $va_link_info;
+		$lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
+		$link_info["name_singular"] = $lightboxDisplayName["singular"];
+		$link_info["name_plural"] = $lightboxDisplayName["plural"];
+		$link_info["section_heading"] = $lightboxDisplayName["section_heading"];
+		$link_info["link_text"] = _t("Add to %1", $link_info["name_singular"]);
+		return $link_info;
 	}
 	return false;
 }
-
 # ---------------------------------------
 /**
  *

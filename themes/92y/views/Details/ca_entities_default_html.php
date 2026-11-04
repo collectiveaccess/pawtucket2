@@ -93,7 +93,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 
 {{{<ifcount code="ca_occurrences" min="1">
 	<div class="row">
-		<div class="col"><h2>Events</h2><hr></div>
+		<div class="col"><h2><unit relativeTo="ca_occurrences" limit="1">^count</unit> Event<ifcount code="ca_occurrences" min="2">s</ifcount></h2><hr></div>
 	</div>
 	<ifcount code="ca_occurrences" min="2">
 		<div class="row">

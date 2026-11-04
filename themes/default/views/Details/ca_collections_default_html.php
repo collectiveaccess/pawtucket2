@@ -84,6 +84,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				if($copy_link_enabled){
 					print $this->render('Details/snippets/copy_link_html.php');
 				}
+				print $this->render('Details/snippets/lightbox_list_html.php');
 ?>
 			</div>
 		</div>

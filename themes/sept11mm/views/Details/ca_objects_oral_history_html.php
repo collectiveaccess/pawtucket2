@@ -39,6 +39,7 @@ $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || 
 $map_options = $this->getVar('mapOptions') ?? [];
 $media_options = $this->getVar('media_options') ?? [];
 
+$display_lightbox = $this->getVar('displayLightbox');
 $lightboxes = $this->getVar('lightboxes') ?? [];
 $in_lightboxes = $this->getVar('inLightboxes') ?? [];
 
@@ -69,7 +70,7 @@ if($show_nav){
 		</div>
 	</div>
 <?php
-	if(caDisplayLightbox($this->request) || $pdf_enabled){
+	if($display_lightbox || $pdf_enabled){
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">

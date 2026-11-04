@@ -140,7 +140,7 @@ if (!$ajax) {	// !ajax
 ?>
 				</ul>
 <?php
-			if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
+			if(($table == 'ca_objects') && caDisplayLightbox()){
 ?>
 				<ul class="list-group list-group-horizontal justify-content-lg-end small">
 <?php
@@ -214,7 +214,7 @@ if (!$ajax) {	// !ajax
 
 <?php
 } //!ajax
-if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
+if(($table == 'ca_objects') && caDisplayLightbox()){
 ?>
 <script>
 if (typeof selectionListInput === 'undefined') {

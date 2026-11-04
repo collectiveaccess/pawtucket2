@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,8 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-$t_item = 		$this->getVar("item");
+$t_item = 			$this->getVar("item");
 $access_values = 	$this->getVar("access_values");
 $options = 			$this->getVar("config_options");
 $comments = 		$this->getVar("comments");
@@ -38,6 +37,10 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_item->get('ca_entities.entity_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+
+$display_lightbox = $this->getVar('displayLightbox');
+$lightboxes = $this->getVar('lightboxes') ?? [];
+$in_lightboxes = $this->getVar('inLightboxes') ?? [];
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
@@ -61,7 +64,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		</div>
 	</div>
 <?php
-	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
+	if($display_lightbox || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
@@ -76,6 +79,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 				if($copy_link_enabled){
 					print $this->render('Details/snippets/copy_link_html.php');
 				}
+				$this->render('Details/snippets/lightbox_list_html.php');
 ?>
 			</div>
 		</div>

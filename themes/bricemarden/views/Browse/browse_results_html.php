@@ -76,12 +76,12 @@ if (!$ajax) {	// !ajax
 ?>
 
 <div class="row" style="clear:both;">
-	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
+	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-9'>
 		<div class="row">
 			<div class="col-md-12 col-lg-5">
-				<H1 class="text-capitalize fs-3">
+				<H1 class="fs-3">
 <?php
-					print _t('%1 %2', $result_size, ($result_size == 1) ? (($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_PLURAL')) : (($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL')));	
+					print "<span class='text-capitalize'>".(($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL'))."</span> (".$result_size." ".(($result_size == 1) ? _t("result") : _t("results")).")";	
 ?>		
 				</H1>
 			</div>
@@ -151,7 +151,7 @@ if (!$ajax) {	// !ajax
 ?>
 				</ul>
 <?php
-			if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
+			if(($table == 'ca_objects') && caDisplayLightbox()){
 ?>
 				<ul class="list-group list-group-horizontal justify-content-lg-end small">
 <?php
@@ -195,7 +195,7 @@ if (!$ajax) {	// !ajax
 		}
 ?>
 			<a href="#filters" id="skipBrowse" class="visually-hidden">Skip to Result Filters</a>
-			<div id="browseResultsContainer" class="mt-4">
+			<div id="browseResultsContainer" class="mt-1">
 				<div class="row">
 <?php
 } // !ajax
@@ -218,7 +218,7 @@ if (!$ajax) {	// !ajax
 		</div><!-- end browseResultsContainer -->
 	</div><!-- end col-8 -->
 	
-	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 offset-xl-1"><a name="filters"></a>
+	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3"><a name="filters"></a>
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
@@ -229,7 +229,7 @@ if (!$ajax) {	// !ajax
 
 <?php
 } //!ajax
-if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
+if(($table == 'ca_objects') && caDisplayLightbox()){
 ?>
 <script>
 if (typeof selectionListInput === 'undefined') {

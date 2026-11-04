@@ -121,6 +121,7 @@ class DetailController extends FindController {
 		$this->view->setVar('table', $table);
 		$this->view->setVar('id', $id);
 		$this->view->setVar('detail', $detail_type);
+		$this->view->setVar('detailConfig', $this->opa_detail_types[$detail_type]);
 		
 		return [
 			'table' => $table,
@@ -294,6 +295,7 @@ class DetailController extends FindController {
 		$this->view->setVar('detailType', $table);
 		$this->view->setVar('item', $t_subject);
 		$this->view->setVar('itemType', $type);
+		$this->view->setVar('displayLightbox', caDisplayLightbox($t_subject));
 		
 		caAddPageCSSClasses(array($table, $function, $type));
 		

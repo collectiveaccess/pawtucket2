@@ -4,6 +4,7 @@ import * as bootstrap from 'bootstrap';
 require('bootstrap-icons/font/bootstrap-icons.css');
 
 window.htmx = require('htmx.org');
+window.bootstrap = bootstrap;
 
 const domContainer = document.querySelector("#pawtucketApp");
 if (!Object.entries)

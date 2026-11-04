@@ -38,6 +38,10 @@ $id =					$t_item->get('ca_collections.collection_id');
 $show_nav = 			($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = 			$this->getVar('mapOptions') ?? [];
 
+$display_lightbox = $this->getVar('displayLightbox');
+$lightboxes = $this->getVar('lightboxes') ?? [];
+$in_lightboxes = $this->getVar('inLightboxes') ?? [];
+
 # --- get collections configuration
 $collections_config = caGetCollectionsConfig();
 $show_hierarchy_viewer = true;
@@ -69,7 +73,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 		</div>
 	</div>
 <?php
-	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
+	if($display_lightbox || $inquire_enabled || $pdf_enabled || $copy_link_enabled){
 ?>
 	<div class="row">
 		<div class="col text-center text-md-end">
@@ -84,6 +88,7 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				if($copy_link_enabled){
 					print $this->render('Details/snippets/copy_link_html.php');
 				}
+				print $this->render('Details/snippets/lightbox_list_html.php');
 ?>
 			</div>
 		</div>
