@@ -154,7 +154,7 @@ class ExternalCache {
 
 		$pool = self::getCache();
 		$item = $pool->getItem(self::makeKey($ps_key, $ps_namespace));
-		$item->expiresAfter((!is_null($pn_ttl) ? $pn_ttl : __CA_CACHE_TTL__));
+		$item->expiresAfter((!is_null($pn_ttl) ? (int)$pn_ttl : __CA_CACHE_TTL__));
 		$item->set($pm_data);
 		$pool->save($item);
 		return true;
