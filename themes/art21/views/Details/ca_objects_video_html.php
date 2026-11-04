@@ -96,6 +96,40 @@ if($show_nav){
 		<div class="col-lg-8">
 			<div class='detailPrimaryImage object-fit-contain'>{{{media_viewer}}}</div>
 		</div>
+		<div class="col-lg-4" id="transcriptCol">
+<?php
+	# --- only display this div if there are results or a transcript
+?>
+			<div class="bg-light px-4 pt-3 pb-5 h-100 position-relative"><!-- height is to make the gray background of box same height as the containing row -->
+				<dl class="position-relative h-100">
+					<dt><?php print _t("Transcript"); ?></dt>
+					<dd class="position-relative h-100">
+						<div class="h-100 w-100 overflow-scroll position-absolute top-0 bottom-0">
+<?php
+	$resultDescWordList = $this->getVar('resultDescWordList');
+	if(is_array($resultDescWordList) && sizeof($resultDescWordList)){
+?>
+							<div id="transcriptSearchResultList" class="fw-bolder mt-1 fs-5"><?= _t("Jump to Search Terms"); ?></div>
+							<div class="list-group mb-3 mt-1" aria-labelledby="transcriptSearchResultList">		
+<?php
+		$tc = new TimecodeParser();
+		foreach($resultDescWordList ?? [] as $w) {
+			if((int)$w['start'] <= 0) { continue; }
+			$tc->parse($w['start']);
+			print "<a href='#viewerContainer' class='list-group-item list-group-item-action search-term-timecode' onclick='seek(this, {$w['representation_id']}, {$w['start']})'>".$w['text'].' ('.$tc->getText().')</a>';
+		}
+?>
+							</div>
+<?php
+	}
+?>			
+
+							<div id="transcript"></div>
+						</div>
+					</dd>
+				</dl>
+			</div>
+		</div>
 	</div>
 	<div class="row">
 		<div class="col">
@@ -193,3 +227,24 @@ if($show_nav){
 			</div>
 		</div>
 	</div>
+
+<script>
+		function seek(e, id, t) {
+			document.querySelectorAll('.search-term-timecode').forEach(el => el.setAttribute('aria-current', 'false'));
+			document.querySelectorAll('.search-term-timecode').forEach(el => el.classList.remove('active'));
+			e.classList.add('active');
+			const m = pawtucketUIApps['mediaViewerManager']['instance'];
+			
+			// Switch to video
+			m.renderByID(id);
+			if(!m) { return; }
+			const v = m.getCurrentViewer();
+			if(!v) { return; }
+			
+			// Seek to just before word
+			v.seek(t-1);
+			
+			// Make sure video is now playing
+			//v.play();
+		}
+	</script>
