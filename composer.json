@@ -60,7 +60,8 @@
     "geocoder-php/geonames-provider": "^4.5",
     "geocoder-php/chain-provider": "^4.6",
     "anthonymartin/geo-location": "^2.0",
-    "sweetrdf/easyrdf": "^1.7"
+    "sweetrdf/easyrdf": "^1.7",
+    "jaybizzle/crawler-detect": "^1.3"
   },
   "suggest": {
     "binaryoung/jieba-php": "^0.1.0",
