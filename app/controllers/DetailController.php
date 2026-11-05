@@ -1251,7 +1251,7 @@ class DetailController extends FindController {
 		
 		$version = $this->request->getParameter('version', pString);
 			
-		//if (!$this->_checkAccess($t_subject)) { return false; }
+		if (!$this->_checkAccess($t_subject)) { return false; }
 		
 		//
 		// Does user have access to bundle?
