@@ -35,7 +35,8 @@
     "online-3d-viewer": "^0.18.0",
     "openseadragon": "^4.1.0",
     "plyr": "3.7.8",
-    "webpack": "^5.89.0"
+    "webpack": "^5.89.0",
+    "@cloudimage/360-view": "^4.9.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",

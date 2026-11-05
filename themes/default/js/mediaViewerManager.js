@@ -488,6 +488,9 @@ let mediaViewerManager = function(options=null) {
 				case '3d':
 					iv = require('mediaViewers/threed.js') ;
 					break;
+				case 'panorama':
+					iv = require('mediaViewers/panorama.js') ;
+					break;
 				case 'embed':
 					iv = require('mediaViewers/embed.js') ;
 					break;

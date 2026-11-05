@@ -1715,8 +1715,10 @@ function caFileIsIncludable($ps_file) {
 					case 'model/gltf+json':
 						return $for_iiif ? '3D' : '3d';
 						break;
+					case 'application/panorama':
+					case 'application/orbitvu':
 					case 'x-world/x-qtvr':
-						return $for_iiif ? 'VR' : 'vr';
+						return $for_iiif ? 'Panorama' : 'panorama';
 						break;
 					case 'application/octet-stream':
 						return $for_iiif ? 'Binary' : 'binary';

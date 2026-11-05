@@ -516,7 +516,6 @@ class FindController extends BasePawtucketController {
 		if (!is_array($va_view_info = $va_browse_info['views'][$ps_view])) {
 			throw new ApplicationException("Invalid view");
 		}
-		//print_R($va_view_info);
 		$vs_content_template = $va_view_info['mapItemInfoTemplate'];
 		
 		$this->view->setVar('items', caProcessTemplateForIDs($vs_content_template, $va_browse_info['table'], $pa_ids, array('checkAccess' => $this->opa_access_values, 'returnAsArray' => true)));

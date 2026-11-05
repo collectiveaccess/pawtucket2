@@ -4596,12 +4596,17 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 			$rep['start'] = $trans_start;
 		}
 		
-		if(is_array($file_list = $qr->getFileList()) && sizeof($file_list)) {
+		$page_versions = ['original', 'large_preview', 'preview'];
+		if(is_array($file_list = $qr->getFileList(null, null, null, $page_versions)) && sizeof($file_list)) {
 			$pages = array_map(function($v) {
 				return $v['preview_url'];
 			}, $file_list);	
-			$rep['pages_previews'] = array_values($pages);
 			
+			$rep['pages_previews'] = array_values(array_map(function($v) { return $v['preview_url']; }, $file_list));
+				
+			foreach($page_versions as $pv) {
+				$rep['pages_'.$pv] = array_values(array_map(function($v) use ($pv) { return $v[$pv.'_url']; }, $file_list));
+			}
 			$rep['pages'] = [];
 			foreach($rep['pages_previews'] as $i => $p) {
 				$rep['pages'][] = $request->getBaseUrlPath().(caUseCleanUrls() ? '/service' : '/service.php').'/IIIF/representation:'.$rep_id.':'.($i+1).'/info.json';
