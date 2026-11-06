@@ -30,7 +30,7 @@
 						foreach ($va_media as $vn_attribute_id => $va_media_info) {
 							$t_attribute_values = new ca_attribute_values(array("attribute_id" => $vn_attribute_id));
 							$vn_value_id = $t_attribute_values->get("value_id");
-							print "<div class='exportCollection'>".caNavLink($this->request, "<span class='glyphicon glyphicon-file'></span> Download PDF", '', 'Detail', 'DownloadAttributeMedia', '', array('value_id' => $vn_value_id, "collection_id" => $vn_id, "id" => $vn_id, "subject_id" => $vn_id, "download" => 1, "version" => "original"));
+							print "<div class='exportCollection'>".caNavLink($this->request, "<span class='glyphicon glyphicon-file'></span> Download PDF", '', 'Detail', 'DownloadAttributeMedia', '', array('value_id' => $vn_value_id, "table" => "ca_collections", "collection_id" => $vn_id, "id" => $vn_id, "subject_id" => $vn_id, "download" => 1, "version" => "original"));
 							
 						}
 					} elseif ($vn_pdf_enabled) {
