@@ -70,7 +70,7 @@ class TileViewer extends BaseMediaViewer implements IMediaViewer {
 					'download_url' => caNavUrl($po_request, '*', '*', 'DownloadMedia', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'version' => 'original')),
 					'help_load_url' => caNavUrl($po_request, '*', '*', 'ViewerHelp', array()),
 					'annotationEditorPanel' => 'caRepresentationAnnotationEditor',
-					'read_only' => !$po_request->isLoggedIn(),
+					'read_only' => !$po_request->isLoggedIn() || !$show_annotations,
 					'annotationEditorUrl' => caNavUrl($po_request, 'editor/representation_annotations', 'RepresentationAnnotationQuickAdd', 'Form', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey())),
 					'captions' => $t_instance->getCaptionFileList(), 'progress_id' => 'caMediaOverlayProgress'
 				];
