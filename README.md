@@ -1,4 +1,4 @@
-# README: Pawtucket2 version 2.0.11
+# README: Pawtucket2 version 2.0.12
 
 ### About CollectiveAccess
 
@@ -21,29 +21,17 @@ Pawtucket2 is meant to be customized. The download package includes a neutral de
 All CollectiveAccess components are freely available under the open source GNU Public License version 3.
 
 
-### About Pawtucket2 2.0
+### About Pawtucket2 2.0.12
 
-This version of Pawtucket2 is compatible with PHP versions 8.2 and 8.3. We are currently testing compatibility with PHP 8.4, but it should be usable with that version as well. It can be made to work with PHP versions as old as 7.4 if need be, but it is unsupported when used with pre 8.2 versions of PHP.
+This version of CollectiveAccess is compatible with PHP versions 8.2, 8.3, 8.4 and 8.5. It cannot be run with PHP versions prior to 8.2. 
 
+Version 2.0.12 provides many bug fixes and improvements:
 
-### Updating from version 1.7 or later
+* Address potential unauthorized disclosure of media housed in Media-type metadata elements (See https://github.com/collectiveaccess/pawtucket2/security/advisories/GHSA-fjpc-8pvw-mpjq). Access control for metadata element attribute download endpoints is now uniformly enforced, and elements offering downloads must now be explicitly enumerated in the theme `detail.conf` configuration file. (Note that this is a breaking change. If your theme offers downloads and media metadata elements you will have to modify your `detail.conf` file. Most themes do not offers such downloads, however).
+* Expanded display template system now supports display of previous metadata values and value histories.
+* Annotations are now possible for HEIC and WebP format images, and for additional video types.
+* New `enableAnnotations` option in `detail.conf` provides means to disable annotation features when they are not needed. Annotations are now disabled by default. If your theme requires annotations you must modify your theme to reënable them.
 
-NOTE: The update process is relatively safe and rarely, if ever, causes data loss. That said, BACKUP YOUR EXISTING DATABASE AND CONFIGURATION prior to updating. You almost certainly will not need the backup, but if you do you'll be glad it's there.
-
-Before attempting to upgrade your Pawtucket2 installation make sure your Providence installation has been updated to 2.0. While it is often possible to run an older version of Pawtucket2 with a newer version of Providence, compatibility is not guaranteed. It is usually not possible to run an older version of Providence with a newer version of Pawtucket2.
-
-To update from a version 1.7.x installation decompress the CollectiveAccess Pawtucket2 2.0 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory, custom theme (in `themes/your_theme_name_here`) and your `setup.php` file.
-
-Once the updated files are in place navigate in your web browser to the home page of your Pawtucket2 installation. If you see the home page you're done. If you see this message:
-
-```"Your database is out-of-date. Please install all schema migrations starting with migration #xxx."```
- 
-your Providence installation has most likely not yet been updated to version 2.0. Perform the Providence update and check your Pawtucket2 installation again.
-
-
-### Updating from version 1.6 or earlier
-
-To update from a version 1.6.x or older installation, you must first update to version 1.7, then follow the 1.7 update instructions.
 
 ### Installing development versions
 
