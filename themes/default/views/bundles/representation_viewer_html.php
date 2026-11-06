@@ -28,7 +28,7 @@
 $representation_count 			= $this->getVar('representation_count');
 $representation_ids				= $this->getVar('representation_ids');
 $show_annotations_mode			= $this->getVar('display_annotations');
-$context							= $this->getVar('context');
+$context						= $this->getVar('context');
 
 $t_subject						= $this->getVar('t_subject');
 $subject_id						= $t_subject->getPrimaryKey();
