@@ -340,7 +340,7 @@ class DetailController extends FindController {
 					array_merge($options, $media_display_info, 
 						[
 							'display' => 'detail',
-							'showAnnotations' => true, 
+							'showAnnotations' => (bool)($options['enableAnnotations'] ?? false), 
 							'defaultAnnotationID' => $default_annotation_id,	// jump to specific annotation?
 							'startTimecode' => $start_timecode,				// jump to specific time?
 							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
@@ -458,9 +458,9 @@ class DetailController extends FindController {
 		//
 		// comments, tags, rank
 		//
-		$this->view->setVar('commentsEnabled', (bool)$options['enableComments']);
+		$this->view->setVar('commentsEnabled', (bool)($options['enableComments'] ?? false));
 		
-		if ((bool)$options['enableComments']) {
+		if ((bool)($options['enableComments'] ?? false)) {
 			$this->view->setVar('averageRank', $t_subject->getAverageRating(true));
 			$this->view->setVar('numRank', $t_subject->getNumRatings(true));
 		
@@ -1338,14 +1338,18 @@ class DetailController extends FindController {
 	public function GetAnnotations() {
 		$representation_id = $this->request->getParameter('representation_id', pInteger);
 		$t_rep = new ca_object_representations($representation_id);
+		$this->_checkFunctionAccess($t_rep, ['function' => 'annotations']);
+		if(!$this->_checkAccess($t_rep, [])) {
+			throw new AccessException(_t('Access denied'));
+		}
 		
+		$annotations = [];
 		$annotations_raw = array_map(function($v) { $v['locked'] = 1; return $v; }, $t_rep->getAnnotations());
 		if($this->request->isLoggedIn()) {
 			$t_rep->annotationMode('user');
 
 			$annotations_raw = array_merge($annotations_raw, $t_rep->getAnnotations(array('user_id' => $this->request->getUserID(), 'item_id' => $this->request->getParameter('item_id', pInteger))));
-		}
-		$annotations = array();
+		} 
 
 		if (is_array($annotations_raw)) {
 			foreach($annotations_raw as $vn_annotation_id => $annotation) {
@@ -1392,7 +1396,12 @@ class DetailController extends FindController {
 		$vn_item_id = $this->request->getParameter('item_id', pInteger);
 		
 		$t_rep = new ca_object_representations($pn_representation_id);
-		if (!$t_rep->getPrimaryKey()) { throw new ApplicationException(_t('Invalid representation_id')); }
+		if (!$t_rep->getPrimaryKey()) { throw new ApplicationException(_t('Invalid id')); }
+		
+		$this->_checkFunctionAccess($t_rep, ['function' => 'annotations']);
+		if(!$this->_checkAccess($t_rep, [])) {
+			throw new AccessException(_t('Access denied'));
+		}
 		
 		$t_rep->annotationMode('user');
 		$pa_annotations = $this->request->getParameter('save', pArray);
@@ -1505,7 +1514,7 @@ class DetailController extends FindController {
 			throw new ApplicationException(_t('Cannot view media'));
 		}
 		
-		$merged_options = array_merge($local_options, $options, ['noOverlay' => true, 'showAnnotations' => true, 'checkAccess' => $this->opa_access_values]);
+		$merged_options = array_merge($local_options, $options, ['noOverlay' => true, 'showAnnotations' => (bool)($local_options['enableAnnotations'] ?? false), 'checkAccess' => $this->opa_access_values]);
 		if($merged_options['inline']){
 			$merged_options['noOverlay'] = false;
 		}
@@ -1738,7 +1747,16 @@ class DetailController extends FindController {
 	 */
 	protected function _checkFunctionAccess(BaseModel $subject, ?array $options=null) : bool {
 		$function = caGetOption('function', $options, null);
-		if(!($detail_type = caGetDetailForType($subject->tableName(), $subject->getTypeID()))) {
+		
+		$tablename = $subject->tableName();
+		$type_id = $subject->getTypeID();
+		
+		if($tablename == 'ca_object_representations') {
+			$tablename = 'ca_objects';
+			$type_id = null;
+		}
+		
+		if(!($detail_type = caGetDetailForType($tablename, $type_id))) {
 			throw new ApplicationException(_t("No detail configured"));
 		}
 		if(!is_array($detail_config = caGetDetailTypeConfig($detail_type))) {
@@ -1759,6 +1777,11 @@ class DetailController extends FindController {
 			case 'pdf':
 				if(!(bool)($detail_config['options']['enablePDF'] ?? false)) {
 					throw new ApplicationException(_t("PDF export is not enabled"));
+				}
+				break;
+			case 'annotations':
+				if(!(bool)($detail_config['options']['enableAnnotations'] ?? false)) {
+					throw new ApplicationException(_t("Annotations are not enabled"));
 				}
 				break;
 		}

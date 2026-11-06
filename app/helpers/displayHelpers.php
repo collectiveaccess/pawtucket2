@@ -5192,6 +5192,7 @@ function caGetMediaViewerHTML($po_request, $ps_identifier, $pt_subject, $pa_opti
 	$pa_check_acccess 					= caGetOption('checkAccess', $pa_options, null);
 	$pb_no_overlay						= (bool)caGetOption('noOverlay', $pa_options, false);
 	$item_id							= (int)caGetOption('item_id', $pa_options, null);
+	$show_annotations					= (bool)caGetOption('showAnnotations', $pa_options, true);
 
 	$vs_caption = $vs_tool_bar = '';
 
@@ -5253,7 +5254,7 @@ function caGetMediaViewerHTML($po_request, $ps_identifier, $pt_subject, $pa_opti
 				['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
 				['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls,
 				 'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 'item_id' => $item_id,
-				 'resultList' => caGetOption('resultList', $pa_options, null), 'showRepresentationViewerNextPreviousLinks' => (bool)caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false)]
+				 'resultList' => caGetOption('resultList', $pa_options, null), 'showRepresentationViewerNextPreviousLinks' => (bool)caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false), 'showAnnotations' => $show_annotations]
 			);
 
 			if ($pb_inline) {
@@ -5291,7 +5292,7 @@ function caGetMediaViewerHTML($po_request, $ps_identifier, $pt_subject, $pa_opti
 				$po_request,
 				"attribute:{$pn_value_id}",
 				['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => caGetMediaDisplayInfo($ps_display_type, $vs_mimetype), 'display_type' => $ps_display_type],
-				['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 'checkAccess' => $pa_check_acccess, 'noOverlay' => $pb_no_overlay]
+				['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 'checkAccess' => $pa_check_acccess, 'noOverlay' => $pb_no_overlay, 'showAnnotations' => false]
 			);
 
 			if ($pb_inline) {

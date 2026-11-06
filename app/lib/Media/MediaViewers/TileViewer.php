@@ -59,13 +59,14 @@ class TileViewer extends BaseMediaViewer implements IMediaViewer {
 			
 			$o_view->setVar('id', $vs_id = 'caMediaOverlayTileViewer_'.$t_instance->getPrimaryKey().'_'.($vs_display_type = caGetOption('display_type', $pa_data, caGetOption('display_version', $pa_data['display'], ''))));
 			
+			$show_annotations = caGetOption('showAnnotations', $pa_options, true);
 			if (is_a($t_instance, "ca_object_representations")) {
 				$va_viewer_opts = [
 					'id' => $vs_id,
 					'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
 					'viewer_base_url' => $po_request->getBaseUrlPath(),
-					'annotation_load_url' => caNavUrl($po_request, '*', '*', 'GetAnnotations', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey())),
-					'annotation_save_url' => caNavUrl($po_request, '*', '*', 'SaveAnnotations', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey())),
+					'annotation_load_url' => $show_annotations ? caNavUrl($po_request, '*', '*', 'GetAnnotations', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey())) : '',
+					'annotation_save_url' => $show_annotations ? caNavUrl($po_request, '*', '*', 'SaveAnnotations', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey())) : '',
 					'download_url' => caNavUrl($po_request, '*', '*', 'DownloadMedia', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'version' => 'original')),
 					'help_load_url' => caNavUrl($po_request, '*', '*', 'ViewerHelp', array()),
 					'annotationEditorPanel' => 'caRepresentationAnnotationEditor',
