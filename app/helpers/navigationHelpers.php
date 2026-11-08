@@ -134,6 +134,7 @@ define('__CA_NAV_ICON_ICON_POS_BOTTOM__', 3);
  *		absolute = return absolute URL. [Default is to return relative URL]
  *      useQueryString = encode other parameters as query string rather than in url path [Default is false]
  *		isServiceUrl = assume URL is a web-services call (Eg. use service.php rather than index.php) [Default is false]
+ *		allowEmptyParameters = Output empty URL parameters as-is, otherwise they are stripped. [Default is false]
  *
  * @return string
  */
@@ -179,7 +180,7 @@ function caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_
 					$vs_value = join(";", $vs_value);
 				}
 				
-				if((strlen($vs_value) === 0) && ($vn_i < (sizeof($pa_other_params) - 1))) { continue; }	// Don't output null params - will break url
+				if((strlen($vs_value) === 0) && !caGetOption('allowEmptyParameters', $pa_options, false)) { continue; }	// Don't output null params - will break url
 				
 				if ($use_query_string) { 
 					$query_params[$vs_name] = $vs_value;
@@ -479,7 +480,7 @@ function caFormSubmitLink($po_request, $ps_content, $ps_classname, $ps_form_id, 
 }
 # ------------------------------------------------------------------------------------------------
 /**
- * @param array $pa_options Options are:
+ * @param array $options Options are:
  *		icon_position =
  *		class = 
  *		no_background = 
@@ -489,69 +490,87 @@ function caFormSubmitLink($po_request, $ps_content, $ps_classname, $ps_form_id, 
  *		iconMargin = 
  *		size = 
  */
-function caFormSubmitButton($po_request, $pn_type, $ps_content, $ps_id, $pa_options=null) {
-	$ps_icon_pos = isset($pa_options['icon_position']) ? $pa_options['icon_position'] : __CA_NAV_ICON_ICON_POS_LEFT__;
-	$ps_use_classname = isset($pa_options['class']) ? $pa_options['class'] : '';
-	$pb_no_background = (isset($pa_options['no_background']) && $pa_options['no_background']) ? true : false;
-	$pb_dont_show_content = (isset($pa_options['dont_show_content']) && $pa_options['dont_show_content']) ? true : false;
-	$pb_prevent_duplicate_submits = (isset($pa_options['preventDuplicateSubmits']) && $pa_options['preventDuplicateSubmits']) ? true : false;
+function caFormSubmitButton($request, $type, $content, $id, $options=null) {
+	$icon_pos = isset($options['icon_position']) ? $options['icon_position'] : __CA_NAV_ICON_ICON_POS_LEFT__;
+	$use_classname = isset($options['class']) ? $options['class'] : '';
+	$no_background = (isset($options['no_background']) && $options['no_background']) ? true : false;
+	$dont_show_content = (isset($options['dont_show_content']) && $options['dont_show_content']) ? true : false;
+	$prevent_duplicate_submits = (isset($options['preventDuplicateSubmits']) && $options['preventDuplicateSubmits']) ? true : false;
 	
-	$vs_classname = (!$pb_no_background) ? 'form-button' : '';
-	$vs_id = (string) time();
+	$classname = (!$no_background) ? 'form-button' : '';
+	$time = (string) time();
 
-	$vs_extra = '';
-	if(caGetOption('isSaveAndReturn', $pa_options)) {
-		$vs_extra = "jQuery(\"#isSaveAndReturn\").val(\"1\");";
+	$extra = '';
+	if(caGetOption('isSaveAndReturn', $options)) {
+		$extra = "jQuery(\"#isSaveAndReturn\").val(\"1\");";
 	}
 	
-	$css_id = caGetOption('id', $pa_options, null);
+	$css_id = caGetOption('id', $options, null);
 	
-	if ($pb_prevent_duplicate_submits) {
-		$vs_button = "<a href='#' onclick='$vs_extra jQuery(\".caSubmit{$ps_id}\").fadeTo(\"fast\", 0.5).attr(\"onclick\", null); jQuery(\"#{$ps_id}\").submit();' class='{$vs_classname} caSubmit{$ps_id} {$vs_id}' ".($css_id ? "id='{$css_id}'" : "")." aria-label='" . $ps_content . "'>";
-	} else {
-		$vs_button = "<a href='#' onclick='$vs_extra jQuery(\"#{$ps_id}\").submit();' class='{$vs_classname} {$vs_id}' ".($css_id ? "id='{$css_id}'" : "")." aria-label='" . $ps_content . "'>";
-	}
+	$button = "<a href='#' class='{$classname} {$time} {$id}_button' ".($css_id ? "id='{$css_id}'" : "")." aria-label='" . $content . "'>";
 	
-	if (!$pb_no_background) { 
-		$vs_button .= "<span class='form-button'>"; 
-		$vn_padding = ($ps_content) ? 5 : 0;
+	if (!$no_background) { 
+		$button .= "<span class='form-button'>"; 
+		$padding = ($content) ? 5 : 0;
 	} else {
-		$vn_padding = 0;
+		$padding = 0;
 	}	
 	
-	$va_img_attr = array(
+	$img_attr = [
 		'border' => '0',
-		'alt=' => $ps_content,
+		'alt=' => $content,
 		'class' => 'form-button-left',
-		'style' => "padding-right: {$vn_padding}px"
-	);
-	$vs_button .= caNavIcon($pn_type, caGetOption('size', $pa_options, '30px'), $va_img_attr);
+		'style' => "padding-right: {$padding}px"
+	];
+	$button .= caNavIcon($type, caGetOption('size', $options, '30px'), $img_attr);
 	
-	if (!$pb_dont_show_content) {
-		$vs_button .= $ps_content;
-	}
-	
-	
-	if (!$pb_no_background) { 
-		$vs_button .= "</span>";
-	}
-	$vs_button .= "</a>";
+	if(!$dont_show_content) { $button .= $content; }
+	if(!$no_background) {  $button .= "</span>"; }
+	$button .= "</a>";
 	
 	// Add hidden submit button... allows some browsers (like Firefox) to support submission of
 	// form when the return key is hit within a text field
 	// We don't actually display this button or use it to submit the form; the form-button output above does that.
 	// Rather, this <input> tag is only included to force browsers to support submit-on-return-key
-	$vs_button .= "<div style='position: absolute; top: 0px; left:-5000px;'><input type='submit'/></div>";
+	$button .= "<div style='position: absolute; top: 0px; left:-5000px;'><input type='submit'/></div>";
+	if($prevent_duplicate_submits) {
+		$button .= "<script>jQuery(\".{$id}_button\").on(\"click\", function(e) {
+			let form = jQuery('#{$id}');
+			e.preventDefault(); 
+			if(form.data('isSubmitted') === true) { 
+				return false; 
+			};
+			form.submit();
+			return true;
+		}); 
+		jQuery('#{$id}').on('submit', function(e) {
+			let form = jQuery('#{$id}');
+			if(form.data('isSubmitted') === true) { 
+				e.preventDefault();
+				return false; 
+			};
+			
+			jQuery('.{$id}_button').off('onclick').css('opacity', 0.5);
+			form.data('isSubmitted', true);
+			return true;
+		});</script>";
+	} else {
+		$button .= "<script>jQuery(\".{$id}_button\").on(\"click\", function(e) {
+			jQuery('#{$id}').submit();
+			e.preventDefault(); 
+			return true;
+		});</script>";
+	}
 
-	return $vs_button;
+	return $button;
 }
 # ------------------------------------------------------------------------------------------------
 /**
  *
  */
-function caFormSearchButton($po_request, $pn_type, $ps_content, $ps_id, $pa_options=null) {
-	if (!is_array($pa_options)) { $pa_options = array(); }
-	return caFormSubmitButton($po_request, $pn_type, $ps_content, $ps_id, array_merge($pa_options, array('size' => 2)));
+function caFormSearchButton($request, $type, $content, $id, $options=null) {
+	if (!is_array($options)) { $options = []; }
+	return caFormSubmitButton($request, $type, $content, $id, array_merge($options, array('size' => 2)));
 }
 # ------------------------------------------------------------------------------------------------
 /**
@@ -1025,6 +1044,7 @@ function caDetailLink($po_request, $ps_content, $ps_classname, $ps_table, $pn_id
  *		action - if set, action of returned link will be set to the supplied value
  *		actionExtra - if set, action extra of returned link will be set to the supplied value
  *      quick_add - if set to true, returned link will point to the QuickAdd controller instead
+ *		bundle = link to screen with bundle, if possible. [Default is false]
  *
  * @return array|string
  */
@@ -1147,15 +1167,30 @@ function caEditorUrl($po_request, $ps_table, $pn_id=null, $pb_return_url_as_piec
 			$vs_module = 'editor/tour_stops';
 			$vs_controller = 'TourStopEditor';
 			break;
-		case 'ca_bundle_mappings':
-		case 128:
-			$vs_module = 'administrate/setup/bundle_mapping_editor';
-			$vs_controller = 'BundleMappingEditor';
+		case 'ca_editor_uis':
+		case 101:
+			$vs_module = 'administrate/setup/interface_editor';
+			$vs_controller = 'InterfaceEditor';
 			break;
-		case 'ca_bundle_mapping_groups':
-		case 130:
-			$vs_module = 'administrate/setup/bundle_mapping_group_editor';
-			$vs_controller = 'BundleMappingGroupEditor';
+		case 'ca_editor_ui_screens':
+		case 100:
+			$vs_module = 'administrate/setup/interface_screen_editor';
+			$vs_controller = 'InterfaceScreenEditor';
+			break;
+		case 'ca_metadata_dictionary_entries':
+		case 214:
+			$vs_module = 'administrate/setup/data_dictionary_entries';
+			$vs_controller = 'DataDictionaryEntryEditor';
+			break;
+		case 'ca_metadata_alert_rules':
+		case 238:
+			$vs_module = 'manage/metadata_alert_rules';
+			$vs_controller = 'MetadataAlertRuleEditor';
+			break;
+		case 'ca_site_pages':
+		case 235:
+			$vs_module = 'manage/site_pages';
+			$vs_controller = 'SitePageEditor';
 			break;
 		default:
 			return null;
@@ -1201,7 +1236,7 @@ function caEditorUrl($po_request, $ps_table, $pn_id=null, $pb_return_url_as_piec
 	} else {
 		if (!is_array($pa_additional_parameters)) { $pa_additional_parameters = array(); }
 		$pa_additional_parameters = array_merge(array($vs_pk => $pn_id), $pa_additional_parameters);
-		return caNavUrl($po_request, $vs_module, $vs_controller, $action_extra ? "{$vs_action}/{$action_extra}" : $vs_action, $pa_additional_parameters, $pa_options);
+		return caNavUrl($po_request, $vs_module, $vs_controller, $action_extra ? "{$vs_action}/{$action_extra}" : $vs_action, $pa_additional_parameters, array_merge($pa_options ?? [], ['allowEmptyParameters' => true]));
 	}
 }
 # ------------------------------------------------------------------------------------------------

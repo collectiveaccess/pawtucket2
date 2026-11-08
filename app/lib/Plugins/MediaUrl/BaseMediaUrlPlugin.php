@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2020-2025 Whirl-i-Gig
+ * Copyright 2020-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -73,6 +73,13 @@ abstract class BaseMediaUrlPlugin extends \WLPlug  {
 	/**
 	 *
 	 */
+	public function search(string $url, ?array $options=null) {
+		return null;
+	}
+	# ------------------------------------------------
+	/**
+	 *
+	 */
 	abstract public function fetchPreview(string $url, ?array $options=null);
 	# ------------------------------------------------
 	/**
@@ -93,6 +100,11 @@ abstract class BaseMediaUrlPlugin extends \WLPlug  {
 	/**
 	 *
 	 */
+	abstract public function formats() : array;
+	# ------------------------------------------------
+	/**
+	 *
+	 */
 	protected function getConfiguredIcon(string $plugin, string $service, ?array $options=null) : ?string {
 		$icon_config = \Configuration::load()->getAssoc('fetched_media_default_icons');
 		if(!is_array($icon_config)) { return null; }
@@ -104,6 +116,13 @@ abstract class BaseMediaUrlPlugin extends \WLPlug  {
 			$icon = str_replace('^SIZE', $size, $icon);
 		}
 		return $icon;
+	}
+	# ------------------------------------------------
+	/**
+	 *
+	 */
+	public function fetchMetadata(string $url, ?array $options=null) : ?array {
+		return [];
 	}
 	# ------------------------------------------------
 }

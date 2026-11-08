@@ -85,14 +85,12 @@
 			
 			if($va_facet_info["group_mode"]== "alphabetical"){
 				$vs_first_letter = "";
-				if(is_array($va_facet_info["order_by_label_fields"]) && sizeof($va_facet_info["order_by_label_fields"])){
-					$vs_first_letter = mb_strtoupper(mb_substr($va_item[$va_facet_info["order_by_label_fields"][0]], 0, 1));
-				}
-				if(!$vs_first_letter){
-					$vs_first_letter = mb_strtoupper(mb_substr($va_item['label_sort_'], 0, 1));
-				}
+				$vs_first_letter = mb_strtoupper(mb_substr($va_item['label_sort_'] ?? '', 0, 1));
 				if(!$vs_first_letter){
 					$vs_first_letter = mb_strtoupper(mb_substr($va_item["label"], 0, 1));
+				}
+				if(!$vs_first_letter && is_array($va_facet_info["order_by_label_fields"]) && sizeof($va_facet_info["order_by_label_fields"])){
+					$vs_first_letter = mb_strtoupper(mb_substr($va_item[$va_facet_info["order_by_label_fields"][0]], 0, 1));
 				}
 				if(!in_array($vs_first_letter, $va_letter_bar)){
 					$va_letter_bar[$vs_first_letter] = $vs_first_letter;

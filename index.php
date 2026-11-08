@@ -142,7 +142,7 @@ try {
 
 	// Note url of this page as "last page"
 	// the 'dont_set_pawtucket2_last_page' is a lame-but-effective way of suppressing recording of something we don't want to be a "last page" (and potentially redirected to)
-	if (($resp->getHTTPResponseCode() == 200) && (!in_array($g_request->getController(), ['LoginReg', 'Ban']) && (!$g_request->isAjax()) && (!$g_request->getParameter('dont_set_pawtucket2_last_page', pInteger)))) {	
+	if (($resp->getHTTPResponseCode() == 200) && (!in_array($g_request->getController(), ['LoginReg', 'Ban', 'Cookies']) && (!$g_request->isAjax()) && (!$g_request->getParameter('dont_set_pawtucket2_last_page', pInteger)))) {	
 		Session::setVar('pawtucket2_last_page', $g_request->getFullUrlPath());
 	}
 	$g_request->close();

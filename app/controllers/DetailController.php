@@ -65,25 +65,6 @@ class DetailController extends FindController {
 		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
 			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
 		}
-		if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-			if (!($id = urldecode($this->request->getActionExtra()))) { $id = $this->request->getParameter('id', pInteger); }
-			
-			$t_set_list = new ca_sets();
-			$t_set = new ca_sets();
-			$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values));
-			$va_user_has_access = false;
-			if (sizeof($va_sets) > 0) {
-				foreach ($va_sets as $va_key => $va_set) {
-					if($t_set->isInSet('ca_objects', $id, $va_set['set_id'])) {
-						$va_user_has_access = true;
-					}
-				}
-			}
-			if ($va_user_has_access == false) {
-				print "You do not have access to view this page.";
-				die;
-			}
-		}
 		
 		$this->config = caGetDetailConfig();
 		$this->opa_detail_types = $this->config->getAssoc('detailTypes');
@@ -126,7 +107,10 @@ class DetailController extends FindController {
 			return $this->GetMediaData();
 		}
 		if ($this->request->getActionExtra() == 'DownloadAttributeMedia') {
-			return $this->DownloadAttributeMedia();
+			return $this->DownloadAttributeMedia($options);
+		}
+		if ($this->request->getActionExtra() == 'DownloadAttributeFile') {
+			return $this->DownloadAttributeFile($options);
 		}
 		
 		$function = strtolower($function);
@@ -134,11 +118,11 @@ class DetailController extends FindController {
 	
 		if (!isset($this->opa_detail_types[$function]) || !isset($this->opa_detail_types[$function]['table']) || (!($table = $this->opa_detail_types[$function]['table']))) {
 			// invalid detail type – throw error
-			throw new ApplicationException("Invalid detail type");
+			throw new ApplicationException(_t("Invalid detail type"));
 		}
 		
 		if (!($t_subject = Datamodel::getInstance($table, true))) {
-			throw new ApplicationException("Invalid detail table");
+			throw new ApplicationException(_t("Invalid detail table"));
 		}
 		$this->ops_tablename = $table;
 		
@@ -159,12 +143,13 @@ class DetailController extends FindController {
 		
 		if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($load_params, ['returnAs' => 'firstModelInstance'])))) {
 			// invalid id - throw error
-			throw new ApplicationException("Invalid id");
+			throw new ApplicationException(_t("Invalid id"));
 		} 
 		$t_subject->autoConvertLineBreaks(true);
 		
 		$ps_view = $this->request->getParameter('view', pString);
 		if($ps_view === 'pdf') {
+			$this->_checkFunctionAccess($t_subject, ['function' => 'pdf']);
 			if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
 			set_time_limit($vn_limit * 6);
 		
@@ -355,7 +340,7 @@ class DetailController extends FindController {
 					array_merge($options, $media_display_info, 
 						[
 							'display' => 'detail',
-							'showAnnotations' => true, 
+							'showAnnotations' => (bool)($options['enableAnnotations'] ?? false), 
 							'defaultAnnotationID' => $default_annotation_id,	// jump to specific annotation?
 							'startTimecode' => $start_timecode,				// jump to specific time?
 							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
@@ -473,9 +458,9 @@ class DetailController extends FindController {
 		//
 		// comments, tags, rank
 		//
-		$this->view->setVar('commentsEnabled', (bool)$options['enableComments']);
+		$this->view->setVar('commentsEnabled', (bool)($options['enableComments'] ?? false));
 		
-		if ((bool)$options['enableComments']) {
+		if ((bool)($options['enableComments'] ?? false)) {
 			$this->view->setVar('averageRank', $t_subject->getAverageRating(true));
 			$this->view->setVar('numRank', $t_subject->getNumRatings(true));
 		
@@ -653,10 +638,7 @@ class DetailController extends FindController {
 		
 		$pn_object_id = $this->request->getParameter('object_id', pInteger);
 		$pb_exclude_ancestors = $this->request->getParameter('exclude_ancestors', pInteger);
-		$pn_value_id = $this->request->getParameter('value_id', pInteger);
-		if ($pn_value_id) {
-			return $this->DownloadAttributeMedia();
-		}
+		
 		$t_object = new ca_objects($pn_object_id);
 		if (!($vn_object_id = $t_object->getPrimaryKey())) { return; }
 		if(sizeof($this->opa_access_values) && (!in_array($t_object->get("access"), $this->opa_access_values))){
@@ -686,8 +668,7 @@ class DetailController extends FindController {
 		}
 		
 		$vn_c = 1;
-		$va_file_names = array();
-		$va_file_paths = array();
+		$va_file_names = $va_file_paths = [];
 		
 		// Allow plugins to modify object_id list
 		$va_child_ids =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($va_child_ids);
@@ -854,8 +835,17 @@ class DetailController extends FindController {
 	 */
 	public function CommentForm(){
 		if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
-		$this->view->setVar("item_id", $this->request->getParameter('item_id', pInteger));
-		$this->view->setVar("tablename", $this->request->getParameter('tablename', pString));
+		$this->view->setVar("item_id", $item_id = $this->request->getParameter('item_id', pInteger));
+		$this->view->setVar("tablename", $tablename = $this->request->getParameter('tablename', pString));
+		
+		if(!$t_item = Datamodel::getInstance($tablename, true)) {
+			throw new ApplicationException(_t("Invalid table name %1 for saving comment", $tablename));
+		}
+		if(!$t_item->load($item_id)){
+			throw new ApplicationException(_t("ID does not exist"));		// shouldn't happen
+		}
+		$this->_checkFunctionAccess($t_item, ['function' => 'comments']);
+		
 		$this->render('Details/form_comments_html.php');
 	}
 	# -------------------------------------------------------
@@ -866,11 +856,12 @@ class DetailController extends FindController {
 		if (!caValidateCSRFToken($this->request)) {
 			throw new ApplicationException(_t("Invalid CSRF token"));
 		}
+		$tablename = $this->request->getParameter("tablename", pString);
 		
 		# --- inline is passed to indicate form appears embedded in detail page, not in overlay
 		$inline_form = $this->request->getParameter("inline", pInteger);
 		if(!$t_item = Datamodel::getInstance($this->request->getParameter("tablename", pString), true)) {
-			throw new ApplicationException("Invalid table name ".$this->request->getParameter("tablename", pString)." for saving comment");
+			throw new ApplicationException(_t("Invalid table name %1 for saving comment", $tablename));
 		}
 		$table = $this->request->getParameter("tablename", pString);
 		if(!($item_id = $this->request->getParameter("item_id", pInteger))){
@@ -894,6 +885,8 @@ class DetailController extends FindController {
 			return;
 		}
 		
+		$this->_checkFunctionAccess($t_item, ['function' => 'comments']);
+	
 		# --- get params from form
 		$comment = strip_tags($this->request->getParameter('comment', pString));
 		$rank = $this->request->getParameter('rank', pInteger);
@@ -1021,12 +1014,14 @@ class DetailController extends FindController {
 	function ShareForm() {
 		$tablename = $this->request->getParameter('tablename', pString);
 		$item_id = $this->request->getParameter('item_id', pInteger);
+		
 		if(!$t_item = Datamodel::getInstance($tablename, true)) {
-			throw new ApplicationException("Invalid table name ".$tablename." for detail");		// shouldn't happen
+			throw new ApplicationException(_t("Invalid table name %1 for detail", $tablename));		// shouldn't happen
 		}
 		if(!$t_item->load($item_id)){
-			throw new ApplicationException("ID does not exist");		// shouldn't happen
+			throw new ApplicationException(_t("ID does not exist"));		// shouldn't happen
 		}
+		$this->_checkFunctionAccess($t_item, ['function' => 'sharing']);
 		
 		$this->view->setVar('t_item', $t_item);
 		$this->view->setVar('item_id', $item_id);
@@ -1038,17 +1033,19 @@ class DetailController extends FindController {
 	 *
 	 */
 	public function SendShare() {
-		$errors = array();
+		$errors = [];
 		$tablename = $this->request->getParameter('tablename', pString);
 		$item_id = $this->request->getParameter('item_id', pInteger);
 		if(!$t_item = Datamodel::getInstance($tablename, true)) {
-			throw new ApplicationException("Invalid table name ".$tablename." for detail");		// shouldn't happen
+			throw new ApplicationException(_t("Invalid table name %1 for detail", $tablename));		// shouldn't happen
 		}
 		if(!$t_item->load($item_id)){
 			$this->view->setVar("message", _t("ID does not exist"));
 			$this->render("Form/reload_html.php");
 			return;
 		}
+		$this->_checkFunctionAccess($t_item, ['function' => 'sharing']);
+		
 		$o_purifier = caGetHTMLPurifier();
 		$to_email = $o_purifier->purify($this->request->getParameter('to_email', pString));
 		$from_email = $o_purifier->purify($this->request->getParameter('from_email', pString));
@@ -1180,7 +1177,7 @@ class DetailController extends FindController {
 	 *
 	 * @param array $pa_options Array of options passed through to _initView 
 	 */
-	public function DownloadAttributeFile($pa_options=null) {
+	public function DownloadAttributeFile($options=null) {
 		if (!($value_id = $this->request->getParameter('value_id', pInteger))) { return; }
 		$t_attr_val = new ca_attribute_values($value_id);
 		if (!$t_attr_val->getPrimaryKey()) { return; }
@@ -1191,14 +1188,14 @@ class DetailController extends FindController {
 			$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
 			return;
 		}
-		$t_element = new ca_metadata_elements($t_attr->get('element_id'));
+		$t_element = new ca_metadata_elements($element_id = $t_attr->get('element_id'));
 		$this->request->setParameter(Datamodel::primaryKey($table_num), $t_attr->get('row_id'));
 		
 		list($subject_id, $t_subject) = $this->_initView($options);
 		$ps_version = $this->request->getParameter('version', pString);
 		
 		
-		if (!$this->_checkAccess($t_subject)) { return false; }
+		if (!$this->_checkAccess($t_subject, ['element' => $element_id, 'allowDownloadForMetadataElements' => $options['allowDownloadForMetadataElements'] ?? null])) { return false; }
 		
 		//
 		// Does user have access to bundle?
@@ -1231,7 +1228,7 @@ class DetailController extends FindController {
 	 * Initiates user download of media stored in a media attribute, returning file in response to request.
 	 * Adds download output to response directly. No view is used.
 	 *
-	 * @param array $pa_options Array of options passed through to _initView 
+	 * @param array $options Array of options passed through to _initView 
 	 */
 	public function DownloadAttributeMedia($options=null) {
 		if (!($value_id = $this->request->getParameter('value_id', pInteger))) { return; }
@@ -1239,7 +1236,7 @@ class DetailController extends FindController {
 		if (!$t_attr_val->getPrimaryKey()) { return; }
 		$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
 	
-		$t_element = new ca_metadata_elements($t_attr->get('element_id'));
+		$t_element = new ca_metadata_elements($element_id = $t_attr->get('element_id'));
 		$table = $this->request->getParameter('table', pString);
 		$this->request->setParameter(Datamodel::primaryKey($table), $t_attr->get('row_id'));
 		
@@ -1251,7 +1248,7 @@ class DetailController extends FindController {
 		
 		$version = $this->request->getParameter('version', pString);
 			
-		//if (!$this->_checkAccess($t_subject)) { return false; }
+		if (!$this->_checkAccess($t_subject, ['element' => $element_id, 'allowDownloadForMetadataElements' => $options['allowDownloadForMetadataElements'] ?? null])) { return false; }
 		
 		//
 		// Does user have access to bundle?
@@ -1290,6 +1287,45 @@ class DetailController extends FindController {
 		$this->response->addContent($o_view->render('download_file_binary.php'));
 	}
 	# -------------------------------------------------------
+	/**
+	 * Initiates user download of media stored in a media attribute, returning file in response to request.
+	 * Adds download output to response directly. No view is used.
+	 *
+	 * @param array $pa_options Array of options passed through to _initView 
+	 */
+	public function DownloadVTT($options=null) {
+		if(!Datamodel::getInstance($table = $this->request->getParameter('table', pString), true)) {
+			$table = 'ca_objects';
+		}
+		$rep_id = $this->request->getParameter('representation_id', pInteger);
+		if(!($t_rep = ca_object_representations::findAsInstance($rep_id))) {
+			throw new ApplicationException(_t('Invalid representation_id'));
+		}
+		if(!in_array((int)$t_rep->get('ca_object_representations.access'), $this->opa_access_values, true)) {
+			throw new ApplicationException(_t('Access denied'));
+		}
+		if($t_rep->get('ca_object_representations.show_transcript', ['convertCodesToIdno' => true]) !== 'yes') {
+			throw new ApplicationException(_t('Access to transcript denied'));
+		}
+		$caption_files = $t_rep->getCaptionFileList();
+		if(!is_array($caption_files) || !sizeof($caption_files)) {
+			throw new ApplicationException(_t('No VTT file is available'));
+		}		
+		$o_view = new View($this->request, $this->request->getViewsDirectoryPath().'/bundles/');
+		$caption_file = array_shift($caption_files);
+		
+		$o_view->setVar('archive_path', $caption_file['path']);
+		
+		$title = $t_rep->get("{$table}.preferred_labels");
+		if(!($title_proc = mb_substr(preg_replace('![^A-Z0-9_\-\.]+!i', '_', mb_strtolower($title)), 0, 30))) {
+			$title_proc = 'transcript';
+		}
+		$o_view->setVar('archive_name', "{$title_proc}.vtt");
+		
+		// send download
+		$this->response->addContent($o_view->render('download_file_binary.php'));
+	}
+	# -------------------------------------------------------
 	# User annotations
 	# -------------------------------------------------------
 	/**
@@ -1302,14 +1338,18 @@ class DetailController extends FindController {
 	public function GetAnnotations() {
 		$representation_id = $this->request->getParameter('representation_id', pInteger);
 		$t_rep = new ca_object_representations($representation_id);
+		$this->_checkFunctionAccess($t_rep, ['function' => 'annotations']);
+		if(!$this->_checkAccess($t_rep, [])) {
+			throw new AccessException(_t('Access denied'));
+		}
 		
+		$annotations = [];
 		$annotations_raw = array_map(function($v) { $v['locked'] = 1; return $v; }, $t_rep->getAnnotations());
 		if($this->request->isLoggedIn()) {
 			$t_rep->annotationMode('user');
 
 			$annotations_raw = array_merge($annotations_raw, $t_rep->getAnnotations(array('user_id' => $this->request->getUserID(), 'item_id' => $this->request->getParameter('item_id', pInteger))));
-		}
-		$annotations = array();
+		} 
 
 		if (is_array($annotations_raw)) {
 			foreach($annotations_raw as $vn_annotation_id => $annotation) {
@@ -1356,7 +1396,12 @@ class DetailController extends FindController {
 		$vn_item_id = $this->request->getParameter('item_id', pInteger);
 		
 		$t_rep = new ca_object_representations($pn_representation_id);
-		if (!$t_rep->getPrimaryKey()) { throw new ApplicationException(_t('Invalid representation_id')); }
+		if (!$t_rep->getPrimaryKey()) { throw new ApplicationException(_t('Invalid id')); }
+		
+		$this->_checkFunctionAccess($t_rep, ['function' => 'annotations']);
+		if(!$this->_checkAccess($t_rep, [])) {
+			throw new AccessException(_t('Access denied'));
+		}
 		
 		$t_rep->annotationMode('user');
 		$pa_annotations = $this->request->getParameter('save', pArray);
@@ -1469,7 +1514,7 @@ class DetailController extends FindController {
 			throw new ApplicationException(_t('Cannot view media'));
 		}
 		
-		$merged_options = array_merge($local_options, $options, ['noOverlay' => true, 'showAnnotations' => true, 'checkAccess' => $this->opa_access_values]);
+		$merged_options = array_merge($local_options, $options, ['noOverlay' => true, 'showAnnotations' => (bool)($local_options['enableAnnotations'] ?? false), 'checkAccess' => $this->opa_access_values]);
 		if($merged_options['inline']){
 			$merged_options['noOverlay'] = false;
 		}
@@ -1604,6 +1649,143 @@ class DetailController extends FindController {
 		}
 
 		$this->response->addContent(caMediaDataAutocomplete($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Check access to record
+	 *
+	 * @param BaseModel $subject Model instance of displayed row 
+	 * @param array $options 
+	 * @return bool True to grant access, otherwise throws exception
+	 *
+	 * @throws ItemNotFoundException, AccessEception
+	 */
+	protected function _checkAccess(BaseModel $subject, ?array $options=null) : bool {
+		if($element = caGetOption('element', $options, null)) {
+			//
+			// Is metadata element tagged for download?
+			//
+			$element_list = $options['allowDownloadForMetadataElements'] ?? [];
+			if(!($element_code = ca_metadata_elements::getElementCodeForId($element)) || !in_array($element_code, $element_list, true)) {
+				throw new AccessException(_t('Field is not downloadable'));
+			}
+		}
+		
+		//
+		// Is record published for current user?
+		//
+		if(!in_array((int)$subject->get('access'), $this->opa_access_values, true)) {
+			throw new AccessException(_t('Access denied'));
+		}
+		
+		//
+		// Is record deleted?
+		//
+		if ($subject->hasField('deleted') && $subject->get('deleted')) {
+			throw new ItemNotFoundException(_t('Item was deleted'), 'DELETED');
+		}
+
+		//
+		// Is record of correct type?
+		//
+		$va_restrict_to_types = null;
+		if ($subject->getAppConfig()->get('perform_type_access_checking')) {
+			$va_restrict_to_types = caGetTypeRestrictionsForUser($subject->tableName(), array('access' => __CA_BUNDLE_ACCESS_READONLY__));
+		}
+		if (
+			is_array($va_restrict_to_types) && sizeof($va_restrict_to_types)
+			&&
+			(
+				($subject->get('type_id')) && ($subject->getPrimaryKey() && !in_array($subject->get('type_id'), $va_restrict_to_types))
+			)
+		) {
+			throw new AccessException();
+		}
+
+		//
+		// Is record from correct source?
+		//
+		$va_restrict_to_sources = null;
+		if (caSourceAccessControlIsEnabled($subject) && $subject->hasField('source_id')) {
+			if (is_array($va_restrict_to_sources = caGetSourceRestrictionsForUser($subject->tableName(), array('access' => __CA_BUNDLE_ACCESS_READONLY__)))) {
+				if (is_array($va_restrict_to_sources) && $subject->get('source_id') && !in_array($subject->get('source_id'), $va_restrict_to_sources)) {
+					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2562?r='.urlencode($this->request->getFullUrlPath()));
+					return false;
+				}
+				if (
+					(!$subject->get('source_id'))
+					||
+					($subject->get('source_id') && !in_array($subject->get('source_id'), $va_restrict_to_sources))
+					||
+					((strlen($vn_source_id = $this->request->getParameter('source_id', pInteger))) && !in_array($vn_source_id, $va_restrict_to_sources))
+				) {
+					$subject->set('source_id', $subject->getDefaultSourceID(array('request' => $this->request)));
+				}
+			}
+		}
+
+		//
+		// Does user have access to row?
+		//
+		if (caACLIsEnabled($subject) && $subject->getPrimaryKey()) {
+			if (method_exists($subject, 'checkACLAccessForUser') && $subject->checkACLAccessForUser($this->request->user) < __CA_BUNDLE_ACCESS_READONLY__) {
+				throw new AccessException();
+			}
+		}
+
+		return true;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Check access to functionality
+	 *
+	 * @param BaseModel $subject Model instance of displayed row 
+	 * @param array $options 
+	 * @return bool True for access, otherwise throws exception
+	 *
+	 * @throws AccessEception
+	 */
+	protected function _checkFunctionAccess(BaseModel $subject, ?array $options=null) : bool {
+		$function = caGetOption('function', $options, null);
+		
+		$tablename = $subject->tableName();
+		$type_id = $subject->getTypeID();
+		
+		if($tablename == 'ca_object_representations') {
+			$tablename = 'ca_objects';
+			$type_id = null;
+		}
+		
+		if(!($detail_type = caGetDetailForType($tablename, $type_id))) {
+			throw new ApplicationException(_t("No detail configured"));
+		}
+		if(!is_array($detail_config = caGetDetailTypeConfig($detail_type))) {
+			throw new ApplicationException(_t("No detail configuration available"));
+		}
+		
+		switch($function) {
+			case 'sharing':
+				if(!(bool)($detail_config['options']['enableShare'] ?? false)) {
+					throw new ApplicationException(_t("Sharing is not enabled"));
+				}
+				break;
+			case 'comments':
+				if(!(bool)($detail_config['options']['enableComments'] ?? false)) {
+					throw new ApplicationException(_t("Commenting is not enabled"));
+				}
+				break;
+			case 'pdf':
+				if(!(bool)($detail_config['options']['enablePDF'] ?? false)) {
+					throw new ApplicationException(_t("PDF export is not enabled"));
+				}
+				break;
+			case 'annotations':
+				if(!(bool)($detail_config['options']['enableAnnotations'] ?? false)) {
+					throw new ApplicationException(_t("Annotations are not enabled"));
+				}
+				break;
+		}
+		return true;
 	}
 	# -------------------------------------------------------
 	/**

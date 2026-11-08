@@ -321,9 +321,9 @@ class ApplicationChangeLog {
 						//
 						$o_tep->setUnixTimestamps($va_log_entry['log_datetime'], $va_log_entry['log_datetime']);
 						if($this->opb_dont_show_timestamp_in_change_log) {
-							$vs_datetime = $o_tep->getText(array('timeOmit' => true));
+							$vs_datetime = $o_tep->getText(['timeOmit' => true]);
 						} else {
-							$vs_datetime = $o_tep->getText();
+							$vs_datetime = $o_tep->getText(['timeOmit' => false]);
 						}
 						
 						//
@@ -702,9 +702,11 @@ class ApplicationChangeLog {
 		}
 		
 		// Add user info
-		$log_ids = array_map(function($v) { 
-			return $v['log_id'] ?? null;
-		}, $timestamps);
+	    $log_ids = array_filter(array_map(function($v) {
+		    return $v['log_id'] ?? null;
+	    }, $timestamps));
+
+	    if(empty($log_ids)) { return $timestamps; }
 		
 		$qr_res = $o_db->query("
 				SELECT wcl.log_id, wu.user_id, wu.fname, wu.lname, wu.email
@@ -1164,7 +1166,7 @@ class ApplicationChangeLog {
 			$label_cache = [];
 			foreach($ids_by_table as $table_num => $row_ids) {
 				$t = Datamodel::getInstanceByTableNum($table_num, true);
-				if (!method_exists($t, 'getLabelTableName') || !$t->getLabelTableName()) { continue; }
+				if (!$t || !method_exists($t, 'getLabelTableName') || !$t->getLabelTableName()) { continue; }
 				$label_cache[$table_num] = $t->getPreferredDisplayLabelsForIDs($row_ids);
 			}
 			
@@ -1202,9 +1204,9 @@ class ApplicationChangeLog {
 						//
 						$o_tep->setUnixTimestamps($va_log_entry['log_datetime'], $va_log_entry['log_datetime']);
 						if($dont_show_timestamp_in_change_log) {
-							$vs_datetime = $o_tep->getText(array('timeOmit' => true));
+							$vs_datetime = $o_tep->getText(['timeOmit' => true]);
 						} else {
-							$vs_datetime = $o_tep->getText();
+							$vs_datetime = $o_tep->getText(['timeOmit' => false]);
 						}
 						
 						//

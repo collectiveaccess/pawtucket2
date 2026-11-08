@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2025 Whirl-i-Gig
+ * Copyright 2007-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -47,109 +47,6 @@ if (!function_exists('array_key_first')) {
         }
         return NULL;
     }
-}
-# ----------------------------------------------------------------------
-# String localization functions (getText)
-# ----------------------------------------------------------------------
-/**
- * Translates the string in $ps_key into the current locale
- * You interpolate values into the returned string by embedding numbered placeholders in $ps_key
- * in the format %n (where n is a number). Each parameter passed after $ps_key corresponds to a
- * placeholder (ex. the first parameter replaces %1, the second %2)
- */
-
-MemoryCache::flush('translation');
-
-$g_translations = Configuration::load('translations.conf');
-
-$g_translation_strings = $g_translations->get('strings');
-$g_translation_replacements = $g_translations->get('replacements');
-$g_translation_cache = [];
-
-function _t($ps_key) {
-	if(!$ps_key) { return ''; }
-	global $_, $_locale, $g_translation_strings, $g_translation_replacements, $g_translation_cache;
-	
-	if (
-		isset($g_translation_strings[$ps_key]) && 
-		(
-			is_string($g_translation_strings[$ps_key]) || 
-			(is_array($g_translation_strings[$ps_key]) && isset($g_translation_strings[$ps_key][(string)$_locale]))
-		)
-	) { return is_array($g_translation_strings[$ps_key]) ? $g_translation_strings[$ps_key][(string)$_locale] : $g_translation_strings[$ps_key]; }
-	
-	if((defined('__CA_DONT_CACHE_TRANSLATIONS__') && __CA_DONT_CACHE_TRANSLATIONS__) || !isset($g_translation_cache[$ps_key])) {
-		if (is_array($_)) {
-			$vs_str = $ps_key;
-			foreach($_ as $o_locale) {
-				if ($o_locale->isTranslated($ps_key)) {
-					$vs_str = $o_locale->_($ps_key);
-					break;
-				}
-			}
-		} else {
-			if (!is_object($_)) {
-				$vs_str = $ps_key;
-			} else {
-				$vs_str = $_->_($ps_key);
-			}
-		}
-		
-		if(is_array($g_translation_replacements)) {
-		    $vs_str = str_replace(array_keys($g_translation_replacements), array_values($g_translation_replacements), $vs_str);
-		}
-		
-		$g_translation_cache[$ps_key] = $vs_str;
-	} else {
-		$vs_str = $g_translation_cache[$ps_key];
-	}
-
-	if (sizeof($va_args = func_get_args()) > 1) {
-		$vn_num_args = sizeof($va_args) - 1;
-		for($vn_i=$vn_num_args; $vn_i >= 1; $vn_i--) {
-			$vs_str = str_replace("%{$vn_i}", is_array($va_args[$vn_i]) ? join('; ', $va_args[$vn_i]) : $va_args[$vn_i], $vs_str);
-		}
-	}
-	return $vs_str;
-}
-
-/**
- * The same as _t(), but rather than returning the translated string, it prints it
- **/
-function _p($ps_key) {
-	if(!$ps_key) { return; }
-	global $_, $g_translation_cache;
-
-	if (!sizeof(func_get_args()) & isset($g_translation_cache[$ps_key])) {
-		print $g_translation_cache[$ps_key]; return;
-	}
-
-	if (is_array($_)) {
-		$vs_str = $ps_key;
-		foreach($_ as $o_locale) {
-			if ($o_locale->isTranslated($ps_key)) {
-				$vs_str = $o_locale->_($ps_key);
-				break;
-			}
-		}
-	} else {
-		if (!is_object($_)) {
-			$vs_str = $ps_key;
-		} else {
-			$vs_str = $_->_($ps_key);
-		}
-	}
-
-	if (sizeof($va_args = func_get_args()) > 1) {
-		$vn_num_args = sizeof($va_args) - 1;
-		for($vn_i=$vn_num_args; $vn_i >= 1; $vn_i--) {
-			$vs_str = str_replace("%{$vn_i}", $va_args[$vn_i], $vs_str);
-		}
-	}
-
-	$g_translation_cache[$ps_key] = $vs_str;
-	print $vs_str;
-	return;
 }
 # ----------------------------------------------------------------------
 # Define parameter type constants for getParameter()
@@ -363,6 +260,7 @@ function caFileIsIncludable($ps_file) {
 		if(caGetOption('includeRoot', $pa_options, false)) {
 			$va_file_list[$dir] = true;
 		}
+		$pa_options['includeRoot'] = false;
 		$limit = caGetOption('limit', $pa_options, null);
 		
 		if($va_paths = @scandir($dir, 0)) {
@@ -392,7 +290,9 @@ function caFileIsIncludable($ps_file) {
 						$va_file_list["{$dir}/{$item}"] = true;
 					}
 					if ($pb_recursive && $vb_is_dir) {
-						$va_file_list = array_merge($va_file_list, array_flip(caGetDirectoryContentsAsList("{$dir}/{$item}", true, $pb_include_hidden_files, false, $pb_include_directories)));
+						foreach(caGetDirectoryContentsAsList("{$dir}/{$item}", true, $pb_include_hidden_files, false, $pb_include_directories, $pa_options) as $path) {
+							$va_file_list[$path] = true;
+						}
 					} else {
 						if (!$vb_is_dir) {
 							$va_file_list["{$dir}/{$item}"] = true;
@@ -476,7 +376,9 @@ function caFileIsIncludable($ps_file) {
 			while (false !== ($item = readdir($handle))) {
 				if ($item != "." && $item != ".." && ($pb_include_hidden_files || (!$pb_include_hidden_files && $item[0] !== '.'))) {
 					if (is_dir("{$dir}/{$item}")) {
-						$va_dir_list = array_merge($va_dir_list, caGetSubDirectoryList("{$dir}/{$item}", true, $pb_include_hidden_files));
+						foreach(caGetSubDirectoryList("{$dir}/{$item}", true, $pb_include_hidden_files) as $path => $count) {
+							$va_dir_list[$path] = $count;
+						}
 					}  else {
 						$vn_file_count++;
 					}
@@ -1663,7 +1565,7 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
-	 * Returns the media class to which a MIME type belongs, or null if the MIME type does not belong to a class. Possible classes are 'image', 'video', 'audio', 'document', '3d', 'vr' and 'binary'.
+	 * Returns the media class to which a MIME type belongs, or null if the MIME type does not belong to a class. Possible classes are 'image', 'video', 'audio', 'document', '3d', 'panorama' and 'binary'.
 	 *
 	 * @param string $mimetype A media MIME type
 	 * @param array $options Options include:
@@ -1706,7 +1608,7 @@ function caFileIsIncludable($ps_file) {
 						return $for_iiif ? 'Video' : 'video';
 						break;
 					case 'application/dicom':
-						return $for_iiif ? 'Image' : 'image';;
+						return $for_iiif ? 'Image' : 'image';
 						break;
 					case 'application/ply':
 					case 'application/stl':
@@ -1716,7 +1618,9 @@ function caFileIsIncludable($ps_file) {
 						return $for_iiif ? '3D' : '3d';
 						break;
 					case 'x-world/x-qtvr':
-						return $for_iiif ? 'VR' : 'vr';
+					case 'application/panorama':
+					case 'application/orbitvu':
+						return $for_iiif ? 'PANORAMA' : 'panorama';
 						break;
 					case 'application/octet-stream':
 						return $for_iiif ? 'Binary' : 'binary';
@@ -3078,11 +2982,32 @@ function caFileIsIncludable($ps_file) {
 	 * @param string $ps_date_expression
 	 * @return bool
 	 */
-	function caDateEndsInFuture($ps_date_expression) {
-		if ($va_date = caDateToHistoricTimestamps($ps_date_expression)) {
-			$va_now = caDateToHistoricTimestamps(_t('now'));
+	function caDateEndsInFuture(?string $date_expression) {
+		if(!trim($date_expression)) { return false; }
+		if ($date = caDateToHistoricTimestamps($date_expression)) {
+			$now = caDateToHistoricTimestamps(_t('now'));
 			if (
-				($va_date['end'] >= $va_now['end'])
+				($date['end'] >= $now['end'])
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
+	# ----------------------------------------
+	/**
+	 * Returns true if the date expression starts before the current date/time.
+	 * Only the start point of the expression is considered.
+	 *
+	 * @param string $date_expression
+	 * @return bool
+	 */
+	function caDateStartsInPast(?string $date_expression) {
+		if(!trim($date_expression)) { return false; }
+		if ($date = caDateToHistoricTimestamps($date_expression)) {
+			$now = caDateToHistoricTimestamps(_t('now'));
+			if (
+				($date['start'] <= $now['start'])
 			) {
 				return true;
 			}
@@ -3394,31 +3319,31 @@ function caFileIsIncludable($ps_file) {
 	}
 	function caQueryExternalWebservice($ps_url) {
 		if(!isURL($ps_url)) { return false; }
-		$o_conf = Configuration::load();
+		$config = Configuration::load();
 
-		$vo_curl = curl_init();
-		curl_setopt($vo_curl, CURLOPT_URL, $ps_url);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $ps_url);
 
-		if($vs_proxy = $o_conf->get('web_services_proxy_url')){ /* proxy server is configured */
-			curl_setopt($vo_curl, CURLOPT_PROXY, $vs_proxy);
+		if($vs_proxy = $config->get('web_services_proxy_url')){ /* proxy server is configured */
+			curl_setopt($ch, CURLOPT_PROXY, $vs_proxy);
 		}
 
-		curl_setopt($vo_curl, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt($vo_curl, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($vo_curl, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($vo_curl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($vo_curl, CURLOPT_AUTOREFERER, true);
-		curl_setopt($vo_curl, CURLOPT_CONNECTTIMEOUT, 120);
-		curl_setopt($vo_curl, CURLOPT_TIMEOUT, 120);
-		curl_setopt($vo_curl, CURLOPT_MAXREDIRS, 10);
-		curl_setopt($vo_curl, CURLOPT_USERAGENT, 'CollectiveAccess web service lookup');
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 120);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+		curl_setopt($ch, CURLOPT_USERAGENT, $config->get('external_webservice_useragent'));
 
-		$vs_content = curl_exec($vo_curl);
+		$vs_content = curl_exec($ch);
 
-		if(($code = curl_getinfo($vo_curl, CURLINFO_HTTP_CODE)) !== 200) {
-			throw new WebServiceError(_t('An error occurred while querying an external webservice'). _t(" at %1 [HTTP code was %2]", $ps_url, $code). " ". print_r(curl_getinfo($vo_curl), true));
+		if(($code = curl_getinfo($ch, CURLINFO_HTTP_CODE)) !== 200) {
+			throw new WebServiceError(_t('An error occurred while querying an external webservice'). _t(" at %1 [HTTP code was %2]", $ps_url, $code). " ". print_r(curl_getinfo($ch), true));
 		}
-		curl_close($vo_curl);
+		curl_close($ch);
 		return $vs_content;
 	}
 	# ----------------------------------------
@@ -4475,11 +4400,14 @@ function caFileIsIncludable($ps_file) {
 		$vb_in_tag = $vb_in_single_quote = $vb_in_double_quote = $vb_have_seen_param_delimiter = $vb_is_ca_get_ref = false;
 		$vs_tag = '';
 		$vs_last_char = null;
+		
+		$chars = preg_split('//u', $ps_template, -1, PREG_SPLIT_NO_EMPTY);
 
-		for($i=0; $i < mb_strlen($ps_template); $i++) {
-			switch($vs_char = mb_substr($ps_template, $i, 1)) {
+		for($i=0; $i < sizeof($chars); $i++) {
+			$vs_char = $chars[$i];
+			switch($vs_char) {
 				case '{':
-				    if (!$vb_in_tag && !$vb_in_single_quote && (mb_substr($ps_template, $i+1, 1) === '^')) {
+				    if (!$vb_in_tag && !$vb_in_single_quote && (($chars[$i + 1] ?? null) === '^')) {
 				        continue(2);
 				    }
 				    break;
@@ -4544,7 +4472,7 @@ function caFileIsIncludable($ps_file) {
 						if (
 							($vb_is_ca_get_ref && !$vb_have_seen_param_delimiter && (!preg_match("![A-Za-z0-9_\-\.~:]!", $vs_char)))
 							||
-							(($vs_char === ':') && !preg_match("!^[:]*[A-Za-z0-9]+!", mb_substr($ps_template, $i + 1)))	// colon not followed by letters, numbers or another colon is not part of tag
+							(($vs_char === ':') && !preg_match("!^[:]*[A-Za-z0-9]+!", ($chars[$i + 1] ?? null)))	// colon not followed by letters, numbers or another colon is not part of tag
 						) {
 							if ($vs_tag = trim($vs_tag)) { $va_tags[] = $vs_tag; }
 							$vs_tag = '';
@@ -4557,7 +4485,6 @@ function caFileIsIncludable($ps_file) {
 			}
 			$vs_last_char = $vs_char;
 		}
-
 		if ($vb_in_tag) {
 			if ($vs_tag = trim($vs_tag)) { $va_tags[] = $vs_tag; }
 		}
@@ -4577,6 +4504,7 @@ function caFileIsIncludable($ps_file) {
 
 			$va_tags[$vn_i] = rtrim($vs_tag, ")/.,%");	// remove trailing slashes, periods and percent signs as they're potentially valid tag characters that are never meant to be at the end
 		}
+		
 		return array_filter($va_tags, "strlen");
 	}
 	# ----------------------------------------
@@ -4782,14 +4710,17 @@ function caFileIsIncludable($ps_file) {
 	 * @param int $length Length of generated password
 	 * @param array $options Options include:
 	 *		uppercase = force password to use all uppercase characters. [Default is false]
+	 *		policies = password policy configuration, overriding that set in authentication.conf [Default is null - use authentication.conf settings]
 	 *
 	 * @return string
 	 */
 	function caGenerateRandomPassword($length=6, $options=null) {
 		$auth_config = Configuration::load('authentication.conf');
+		
+		$policies = caGetOption('policies', $options, $auth_config->get('password_policies'));
 
 		if(strtolower($auth_config->get('auth_adapter')) === 'causers') { // password policies only apply to integral auth system
-			if (is_array($policies = $auth_config->get('password_policies')) && sizeof($policies)) {
+			if (is_array($policies) && sizeof($policies)) {
 				$limits = [];
 				foreach($policies as $k => $psettings) {
 					if(isset($psettings['rules']) && is_array($psettings['rules'])) {
@@ -4867,12 +4798,14 @@ function caFileIsIncludable($ps_file) {
 	 * @param string $dest File path to write data to. If omitted a temporary file will be created. [Default is null]
 	 * @param array $options Options include:
 	 *		mimetypes = MIME type, or list of MIME types expected in response to URL. If content type of response does ot match the MIME type(s) specified here a UrlFetchException is thrown.
-	 * 
+	 * 		headers = Array of HTTP headers to set in request. [Default is null]
 	 * @throws UrlFetchException
 	 * @return string Path to file
 	 */
 	function caFetchFileFromUrl($url, $dest=null, array $options=null) {
 		$tmp_file = $dest ? $dest : tempnam(__CA_TEMP_DIR__, 'caUrlCopy');
+		$headers = caGetOption('headers', $options, null);
+		$config = Configuration::load();
 		
 		$r_outgoing_fp = @fopen($tmp_file, 'w');
 		if(!$r_outgoing_fp) {
@@ -4885,6 +4818,9 @@ function caFileIsIncludable($ps_file) {
 			$ch->setopt(CURLCMDOPT_METHOD, 'GET');
 			$ch->setopt(CURLCMDOPT_HEADER, false);
 			$ch->setopt(CURLCMDOPT_ENGINE, $curl_path);
+			$ch->setopt(CURLCMDOPT_USERAGENT, $config->get('external_webservice_useragent'));
+			
+			if(is_array($headers) && sizeof($headers)) { $ch->setopt(CURLCMDOPT_HTTPHEADER, $headers); }
 			
 			$ch->execStream();
 			
@@ -4894,12 +4830,13 @@ function caFileIsIncludable($ps_file) {
 			fclose($r_outgoing_fp);
 			return $tmp_file;
 		}
-
-
+		
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_FILE, $r_outgoing_fp);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 240);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_USERAGENT, $config->get('external_webservice_useragent'));
+		if(is_array($headers) && sizeof($headers)) { curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); }
 		curl_exec($ch);	
  
 		if(curl_errno($ch)){
@@ -5061,7 +4998,9 @@ function caFileIsIncludable($ps_file) {
 	 *
 	 */
 	function caGetHTMLPurifier(?array $options=null) : HTMLPurifier {
-		$config = HTMLPurifier_Config::createDefault();
+		#$config = HTMLPurifier_Config::createDefault();
+		# Swapping out config with html5 compatiable config
+		$config = HTMLPurifier_HTML5Config::createDefault();
 		$config->set('URI.DisableExternalResources', !Configuration::load()->get('purify_allow_external_references'));
 		$config->set('Cache.SerializerPath', Configuration::load()->get('purify_serializer_path'));
 		return new HTMLPurifier($config); 
@@ -5124,12 +5063,16 @@ function caFileIsIncludable($ps_file) {
 	 * @param array $options Options include:
 	 *		convertOldStyleNamesOnly = only convert old style 'ca_attribute_' prefixed names. [Default is false]
 	 *		includeTablePrefix = Include table in returned value when converting new-style names .[Default is false]
+	 *		table = Table name to prefix old style names with when 'includeTablePrefix' is set. [Default is null]
 	 *
 	 * @return string
 	 */
 	function caConvertBundleNameToCode(string $name, ?array $options=null) : string {
 		if(substr($name, 0, 13) === 'ca_attribute_') {
-			return str_replace('ca_attribute_', '', $name);
+			$name = str_replace('ca_attribute_', '', $name);
+			if(($options['includeTablePrefix'] ?? false) && $options['table'] ?? false) {
+				return $options['table'].".{$name}";
+			}
 		}
 		if(!($options['convertOldStyleNamesOnly'] ?? false)) {
 			$tmp = explode('.', $name);
@@ -5290,6 +5233,7 @@ function caFileIsIncludable($ps_file) {
 	 */
 	function caUrlExists(string $url, ?array $options=null) : bool { 
 		$allow_redirects = caGetOption('allowRedirects', $options, true);
+		$config = Configuration::load();
 		
 		if($curl_path = caCurlImpersonateInstalled()) {
 			$ch = new CurlImpersonate\CurlImpersonate();
@@ -5297,6 +5241,7 @@ function caFileIsIncludable($ps_file) {
 			$ch->setopt(CURLCMDOPT_METHOD, 'GET');
 			$ch->setopt(CURLCMDOPT_HEADER, false);
 			$ch->setopt(CURLCMDOPT_ENGINE, $curl_path);
+			$ch->setopt(CURLCMDOPT_USERAGENT, $config->get('external_webservice_useragent'));
 			
 			$headers = explode("\n", $ch->execStandard(['head' => true]));
 		} else {
@@ -5345,7 +5290,7 @@ function caFileIsIncludable($ps_file) {
 	/**
 	 *
 	 */
-	 function caGetObjectCollectionHierarchyRelationshipTypes() {
+	function caGetObjectCollectionHierarchyRelationshipTypes() {
 	 	$config = Configuration::load();
 	 	
 	 	if($type = $config->get('ca_objects_x_collections_hierarchy_relationship_type')) {
@@ -5357,4 +5302,14 @@ function caFileIsIncludable($ps_file) {
 	 	}
 	 	return null;
 	 }
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	function caGetExcelCellFromSheet($sheet, mixed $coordinate) {
+			if (is_array($coordinate)) {
+				$coordinate = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($coordinate[0]) . $coordinate[1];
+			}
+			return $sheet->getCell($coordinate);
+		};
 	# ----------------------------------------

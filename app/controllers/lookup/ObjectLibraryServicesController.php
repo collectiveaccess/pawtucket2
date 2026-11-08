@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2016-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -48,6 +48,19 @@ class ObjectLibraryServicesController extends BaseLookupController {
 			}
 
 			$pa_options['filters'][] = array("ca_objects.circulation_status_id", "IN", join(',', $va_status_ids));
+		}
+		
+		$types = ca_object_checkouts::getObjectCheckoutTypes();
+		if(!in_array('__default__', $types)) {
+			$type_ids = caMakeTypeIDList('ca_objects', $types);
+			if(is_array($type_ids) && sizeof($type_ids)) {
+				$pa_options['filters'][] = array("ca_objects.type_id", "IN", join(',', $type_ids));
+			}
+		}
+		
+		$access_values = caGetUserAccessValues($this->request);
+		if(is_array($access_values) && sizeof($access_values)) {
+			$pa_options['filters'][] = array("ca_objects.access", "IN", join(',', $access_values));
 		}
 
 		return parent::Get($pa_additional_query_params, $pa_options);

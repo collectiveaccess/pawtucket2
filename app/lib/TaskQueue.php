@@ -51,8 +51,8 @@ class TaskQueue extends BaseObject {
 	function __construct(?array $options=null) {
 		parent::__construct();
 		$this->config = Configuration::load();
-		if ($vs_default_dir = trim($this->config->get('taskqueue_handler_plugins'))) {
- 			$this->handler_plugin_dirs[] = $vs_default_dir;
+		if ($default_dir = trim($this->config->get('taskqueue_handler_plugins'))) {
+ 			$this->handler_plugin_dirs[] = $default_dir;
 		}
 		
 		$this->log = caGetLogger();
@@ -61,8 +61,8 @@ class TaskQueue extends BaseObject {
  		$this->transaction = caGetOption('transaction', $options, null);
  		
  		// Let application plugins add their own task queue plugin directories
- 		$va_tmp = $this->app_plugin_manager->hookRegisterTaskQueuePluginDirectories(array('handler_plugin_directories' => $this->handler_plugin_dirs, 'instance' => $this));
-		$this->handler_plugin_dirs = $va_tmp['handler_plugin_directories'];
+ 		$tmp = $this->app_plugin_manager->hookRegisterTaskQueuePluginDirectories(array('handler_plugin_directories' => $this->handler_plugin_dirs, 'instance' => $this));
+		$this->handler_plugin_dirs = $tmp['handler_plugin_directories'];
 	}
 	# --------------------------------------------------------------------------
 	/**
@@ -101,7 +101,7 @@ class TaskQueue extends BaseObject {
 	 */
 	function getParametersForDisplay($pm_task_rec) {
 		if(is_array($pm_task_rec)) {
-			$va_rec = $pm_task_rec;
+			$rec = $pm_task_rec;
 		} else {
 			$task_id = intval($pm_task_rec);
 			$o_db = $this->getDb();
@@ -113,16 +113,16 @@ class TaskQueue extends BaseObject {
 					task_id = ?
 			', [$task_id]);
 			if ($qr_tasks->nextRow()) {
-				$va_rec = $qr_tasks->getRow();
+				$rec = $qr_tasks->getRow();
 			} else {
 				return false;
 			}
 		}
 		
-		$vs_handler = $va_rec['handler'];
+		$handler = $rec['handler'];
 		
-		if($h = $this->getHandler($vs_handler)) {
-			return $h->getParametersForDisplay($va_rec);
+		if($h = $this->getHandler($handler)) {
+			return $h->getParametersForDisplay($rec);
 		}
 		return false;
 	}
@@ -178,10 +178,10 @@ class TaskQueue extends BaseObject {
 	}
 	# ---------------------------------------------------------------------------
 	/**
-	 * Copies file at $ps_source to temporary file in application TaskQueue tmp directory
+	 * Copies file at $source to temporary file in application TaskQueue tmp directory
 	 * Returns empty string on failure, path to new tmp file on success
 	 */
-	function copyFileToQueueTmp($handler, $ps_source) {
+	function copyFileToQueueTmp($handler, $source) {
 		if ($tmpdir = $this->config->get('taskqueue_tmp_directory')) {
 			if (!file_exists($tmpdir.'/'.$handler)) {
 				if(!mkdir($tmpdir.'/'.$handler)) {		
@@ -190,8 +190,8 @@ class TaskQueue extends BaseObject {
 				}
 			}
 			$dest = tempnam($tmpdir.'/'.$handler, $handler);
-			if (!copy($ps_source, $dest)) {
-				$this->postError(505, _t('Could not copy "%1"', $ps_source), 'TaskQueue->copyFileToQueueTmp()');
+			if (!copy($source, $dest)) {
+				$this->postError(505, _t('Could not copy "%1"', $source), 'TaskQueue->copyFileToQueueTmp()');
 				return '';
 			}
 			return $dest;
@@ -209,10 +209,10 @@ class TaskQueue extends BaseObject {
 	public function resetUnfinishedTasks() {
 		// verify registered processes
 		$o_appvars = new ApplicationVars();
-		$va_processes = $o_appvars->getVar('taskqueue_processes');
-		if (!is_array($va_processes)) { $va_processes = []; }
-		$va_verified_processes = $this->verifyProcesses($va_processes);
-		$o_appvars->setVar('taskqueue_processes', $va_verified_processes);
+		$_processes = $o_appvars->getVar('taskqueue_processes');
+		if (!is_array($_processes)) { $_processes = []; }
+		$_verified_processes = $this->verifyProcesses($_processes);
+		$o_appvars->setVar('taskqueue_processes', $_verified_processes);
 		$o_appvars->save();
 
 		$o_db = $this->getDb();
@@ -250,10 +250,10 @@ class TaskQueue extends BaseObject {
 		}
 		// verify registered processes
 		$o_appvars = new ApplicationVars();
-		$va_processes = $o_appvars->getVar('taskqueue_processes');
-		if (!is_array($va_processes)) { $va_processes = []; }
-		$va_verified_processes = $this->verifyProcesses($va_processes);
-		$o_appvars->setVar('taskqueue_processes', $va_verified_processes);
+		$_processes = $o_appvars->getVar('taskqueue_processes');
+		if (!is_array($_processes)) { $_processes = []; }
+		$_verified_processes = $this->verifyProcesses($_processes);
+		$o_appvars->setVar('taskqueue_processes', $_verified_processes);
 		$o_appvars->save();
 
 		$o_db = $this->getDb();
@@ -301,7 +301,7 @@ class TaskQueue extends BaseObject {
 		}
 		
 		if (!sizeof($this->handler_plugin_dirs)) {
-			$this->log->logError(_t('[TaskQueu] Queue processing failed because no handler directories are configured; queue was halted'));
+			$this->log->logError(_t('[TaskQueue] Queue processing failed because no handler directories are configured; queue was halted'));
 			$this->postError(510, _t('No handler directories are configured!'), 'TaskQueue->processQueue()');
 			$this->unregisterProcess($proc_id);
 			return false;
@@ -361,15 +361,15 @@ class TaskQueue extends BaseObject {
 				}
 				
 				$start_time = $this->_microtime2float();
-				if ($va_report = $h->process($proc_parameters)) {
+				if ($report = $h->process($proc_parameters)) {
 					$processed_count++;
-					$va_report['processing_time'] = sprintf('%6.3f', $this->_microtime2float() - $start_time);
+					$report['processing_time'] = sprintf('%6.3f', $this->_microtime2float() - $start_time);
 					
 					$o_db->query('
 						UPDATE ca_task_queue 
 						SET completed_on = ?, error_code = 0, notes = ?
 						WHERE task_id = ?'
-					, [time(), caSerializeForDatabase($va_report), (int)$qr_tasks->get('task_id')]);
+					, [time(), caSerializeForDatabase($report), (int)$qr_tasks->get('task_id')]);
 					
 					
 				} else {
@@ -405,13 +405,13 @@ class TaskQueue extends BaseObject {
 	/**
 	 * Cancels any pending tasks for given entity (entity key is set by caller)
 	 */
-	function cancelPendingTasksForEntity($ps_entity_key, $handler='') {
-		if ($this->entityKeyIsBeingProcessed($ps_entity_key)) {
-			$this->log->logError(_t('[TaskQueue] Can\'t cancel pending tasks for entity key "%1" because an item associated with the entity is being processed', $ps_entity_key));
+	function cancelPendingTasksForEntity($entity_key, $handler='') {
+		if ($this->entityKeyIsBeingProcessed($entity_key)) {
+			$this->log->logError(_t('[TaskQueue] Can\'t cancel pending tasks for entity key "%1" because an item associated with the entity is being processed', $entity_key));
 			return false;
 		}
 		$sql_handler_criteria = '';
-		$sql_params = [md5($ps_entity_key)];
+		$sql_params = [md5($entity_key)];
 		if ($handler) { 
 			$sql_handler_criteria = ' AND (handler = ?)'; 
 			$sql_params[] = $handler;
@@ -482,7 +482,6 @@ class TaskQueue extends BaseObject {
 		if (!$t_task->getPrimaryKey()) { return false; }
 		if ((int)$t_task->get('error_code') === 0) { return false; }
 		
-		$t_task->setMode(ACCESS_WRITE);
 		$t_task->set('error_code', 0);
 		$t_task->set('completed_on', null);
 		$t_task->update();
@@ -497,14 +496,14 @@ class TaskQueue extends BaseObject {
 	/**
 	 * Cancels any pending tasks for given row (row key is set by caller)
 	 */
-	function cancelPendingTasksForRow($ps_row_key, $handler='') {
-		if ($this->rowKeyIsBeingProcessed($ps_row_key)) {
-			$this->log->logError(_t('[TaskQueue] Can\'t cancel pending tasks for row key "%1" because the row is being processed', $ps_row_key));
-			$this->postError(510, _t('Can\'t cancel pending tasks for row key "%1" because the queue is being processed', $ps_row_key), 'TaskQueue->cancelPendingTasks()');
+	function cancelPendingTasksForRow($row_key, $handler='') {
+		if ($this->rowKeyIsBeingProcessed($row_key)) {
+			$this->log->logError(_t('[TaskQueue] Can\'t cancel pending tasks for row key "%1" because the row is being processed', $row_key));
+			$this->postError(510, _t('Can\'t cancel pending tasks for row key "%1" because the queue is being processed', $row_key), 'TaskQueue->cancelPendingTasks()');
 			return false;
 		}
 		$sql_handler_criteria = '';
-		$sql_params = [md5($ps_row_key)];
+		$sql_params = [md5($row_key)];
 		if ($handler) { 
 			$sql_handler_criteria = ' AND (handler = ?)'; 
 			$sql_params[] = $handler;
@@ -585,26 +584,26 @@ class TaskQueue extends BaseObject {
 		
 		if ($max_processes < 1) { $max_processes = 1; }
 		$o_appvars = new ApplicationVars();
-		$va_processes = $o_appvars->getVar('taskqueue_processes');
+		$_processes = $o_appvars->getVar('taskqueue_processes');
 	
-		if (!is_array($va_processes)) { $va_processes = []; }
-		$va_processes = $this->verifyProcesses($va_processes);
+		if (!is_array($_processes)) { $_processes = []; }
+		$_processes = $this->verifyProcesses($_processes);
 		
-		if (sizeof($va_processes) >= $max_processes) {
+		if (sizeof($_processes) >= $max_processes) {
 			// too many processes running
 			return false;
 		}
 		
 		$proc_id = $this->processes->getProcessID();
 		if ($proc_id) {
-			$va_processes[$proc_id] = array('time' => time(), 'entity_key' => '', 'row_key' => '');
+			$_processes[$proc_id] = array('time' => time(), 'entity_key' => '', 'row_key' => '');
 		} else {
 			// will use fallback timeout method to manage processes since
 			// we cannot detect running processes
-			$proc_id = sizeof($va_processes) + 1;
-			$va_processes[$proc_id] = array('time' => time(), 'entity_key' => '', 'row_key' => '');
+			$proc_id = sizeof($_processes) + 1;
+			$_processes[$proc_id] = array('time' => time(), 'entity_key' => '', 'row_key' => '');
 		}
-		$o_appvars->setVar('taskqueue_processes', $va_processes);
+		$o_appvars->setVar('taskqueue_processes', $_processes);
 		$o_appvars->save();
 		
 		return $proc_id;
@@ -613,17 +612,17 @@ class TaskQueue extends BaseObject {
 	/**
 	 *
 	 */
-	function updateRegisteredProcess($pn_proc_id, $ps_row_key='', $ps_entity_key='') {
+	function updateRegisteredProcess($pn_proc_id, $row_key='', $entity_key='') {
 		$o_appvars = new ApplicationVars();
-		$va_processes = $o_appvars->getVar('taskqueue_processes');
+		$_processes = $o_appvars->getVar('taskqueue_processes');
 		
-		if (is_array($va_processes[$pn_proc_id])) {
-			$va_proc_info = $va_processes[$pn_proc_id];
-			$va_proc_info['row_key'] = $ps_row_key;
-			$va_proc_info['entity_key'] = $ps_entity_key;
+		if (is_array($_processes[$pn_proc_id])) {
+			$_proc_info = $_processes[$pn_proc_id];
+			$_proc_info['row_key'] = $row_key;
+			$_proc_info['entity_key'] = $entity_key;
 			
-			$va_processes[$pn_proc_id] = $va_proc_info;
-			$o_appvars->setVar('taskqueue_processes', $va_processes);
+			$_processes[$pn_proc_id] = $_proc_info;
+			$o_appvars->setVar('taskqueue_processes', $_processes);
 			$o_appvars->save();
 		}
 	}
@@ -631,13 +630,13 @@ class TaskQueue extends BaseObject {
 	/**
 	 *
 	 */
-	function rowKeyIsBeingProcessed($ps_row_key) {
+	function rowKeyIsBeingProcessed($row_key) {
 		$o_appvars = new ApplicationVars();
-		$va_processes = $o_appvars->getVar('taskqueue_processes');
+		$_processes = $o_appvars->getVar('taskqueue_processes');
 		
-		if (is_array($va_processes)) {
-			foreach($va_processes as $va_proc_info) {
-				if ($va_proc_info['row_key'] == $ps_row_key) {
+		if (is_array($_processes)) {
+			foreach($_processes as $_proc_info) {
+				if ($_proc_info['row_key'] == $row_key) {
 					return true;
 				} 
 			}
@@ -648,13 +647,13 @@ class TaskQueue extends BaseObject {
 	/**
 	 *
 	 */
-	function entityKeyIsBeingProcessed($ps_row_key) {
+	function entityKeyIsBeingProcessed($row_key) {
 		$o_appvars = new ApplicationVars();
-		$va_processes = $o_appvars->getVar('taskqueue_processes');
+		$_processes = $o_appvars->getVar('taskqueue_processes');
 		
-		if (is_array($va_processes)) {
-			foreach($va_processes as $va_proc_info) {
-				if ($va_proc_info['entity_key'] == $ps_row_key) {
+		if (is_array($_processes)) {
+			foreach($_processes as $_proc_info) {
+				if ($_proc_info['entity_key'] == $row_key) {
 					return true;
 				} 
 			}
@@ -667,36 +666,147 @@ class TaskQueue extends BaseObject {
 	 */
 	function unregisterProcess($pn_proc_id) {
 		$o_appvars = new ApplicationVars();
-		$va_processes = $o_appvars->getVar('taskqueue_processes');
-		unset($va_processes[$pn_proc_id]);
-		$o_appvars->setVar('taskqueue_processes', $va_processes);
+		$_processes = $o_appvars->getVar('taskqueue_processes');
+		unset($_processes[$pn_proc_id]);
+		$o_appvars->setVar('taskqueue_processes', $_processes);
 		$o_appvars->save();
 	}
 	# ---------------------------------------------------------------------------
 	/**
 	 *
 	 */
-	function &verifyProcesses($pa_processes) {
-		if (!is_array($pa_processes)) { return []; }
-		$va_verified_processes = [];
+	function &verifyProcesses($processes) {
+		if (!is_array($processes)) { return []; }
+		$_verified_processes = [];
 		
 		if ($this->processes->canDetectProcesses()) {
-			foreach($pa_processes as $proc_id => $va_proc_info) {
+			foreach($processes as $proc_id => $_proc_info) {
 				if ($this->processes->processExists($proc_id)) {
-					$va_verified_processes[$proc_id] = $va_proc_info;
+					$_verified_processes[$proc_id] = $_proc_info;
 				}
 			}
 		} else {
 			// use fallback timeout method
 			$timeout = intval($this->config->get('taskqueue_process_timeout'));
 			if ($timeout < 60) { $timeout = 3600; } 	// default is 1 hour
-			foreach($pa_processes as $proc_id => $va_proc_info) {
-				if ((time() - $va_proc_info['time']) < $timeout) {
-					$va_verified_processes[$proc_id] = $va_proc_info;
+			foreach($processes as $proc_id => $_proc_info) {
+				if ((time() - $_proc_info['time']) < $timeout) {
+					$_verified_processes[$proc_id] = $_proc_info;
 				}
 			}
 		}
-		return $va_verified_processes;	
+		return $_verified_processes;	
+	}
+	# ---------------------------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function getTasksForUser(int $user_id, ?array $options=null) : ?array {
+		$o_db = $this->getDb();
+		
+		$params = [$user_id];
+		
+		$handler_sql = null;
+		if($h = caGetOption('handlers', $options, null)) {
+			if(!is_array($h)) { $h = [$h]; }
+			if(!sizeof($h)) { return []; }
+			$handler_sql = " AND (handler IN (?))";
+			$params[] = $h;
+		}
+		$qr_tasks = $o_db->query("
+			SELECT *
+			FROM ca_task_queue
+			WHERE
+				user_id = ? {$handler_sql}
+		", $params);
+		$tasks = [];
+		while($qr_tasks->nextRow()) {
+			$task_id = $qr_tasks->get('task_id');
+			$started_on = $qr_tasks->get('started_on');
+			$completed_on = $qr_tasks->get('completed_on');
+			$error_code = $qr_tasks->get('error_code');
+			$entity_key = $qr_tasks->get('entity_key');
+			$parameters = caUnserializeForDatabase($qr_tasks->get('parameters'));
+			
+			$ti = [
+				'task_id' => $task_id,
+				'entity_key' => $entity_key,
+				'started_on' => caGetLocalizedDate($started_on, ['timeOmit' => false]),
+				'completed_on' => caGetLocalizedDate($completed_on, ['timeOmit' => false]),
+				'error_code' => $error_code,
+				'parameters' => $parameters
+			];
+			
+			if($error_code > 0) {
+				$tasks['errors'][] = $ti;
+			} elseif(($started_on > 0) && ($completed_on > 0)) {
+				$tasks['completed'][] = $ti;
+			} elseif($started_on > 0) {
+				$tasks['processing'][] = $ti;
+			} else {
+				$tasks['not_started'][] = $ti;
+			}
+		}
+		return $tasks;
+	}
+	# ---------------------------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function getTaskInfo(?array $options=null) : ?array {
+		$o_db = $this->getDb();
+		$params = [];
+		
+		$select_sql = null;
+		if($task_id = caGetOption('task_id', $options, null)) {
+			$select_sql = "(task_id = ?)";
+			$params[] = $task_id;
+		} elseif($entity_key = caGetOption('entity_key', $options, null)) {
+			$select_sql = "(entity_key = ?)";
+			$params[] = $entity_key;
+		} else {
+			return null;
+		}
+		
+		$user_sql = null;
+		if($user_id = caGetOption('user_id', $options, null)) {
+			$user_sql = " AND (user_id = ?)";
+			$params[] = $user_id;
+		}
+		
+		$handler_sql = null;
+		if($h = caGetOption('handlers', $options, null)) {
+			if(!is_array($h)) { $h = [$h]; }
+			if(!sizeof($h)) { return []; }
+			$handler_sql = " AND (handler IN (?))";
+			$params[] = $h;
+		}
+		$qr_tasks = $o_db->query($z="
+			SELECT *
+			FROM ca_task_queue
+			WHERE
+				{$select_sql} {$user_sql} {$handler_sql}
+		", $params);
+		$ti = null;
+		if($qr_tasks->nextRow()) {
+			$task_id = $qr_tasks->get('task_id');
+			$started_on = $qr_tasks->get('started_on');
+			$completed_on = $qr_tasks->get('completed_on');
+			$error_code = $qr_tasks->get('error_code');
+			$entity_key = $qr_tasks->get('entity_key');
+			$parameters = caUnserializeForDatabase($qr_tasks->get('parameters'));
+			
+			$ti = [
+				'task_id' => $task_id,
+				'entity_key' => $entity_key,
+				'started_on' => caGetLocalizedDate($started_on, ['timeOmit' => false]),
+				'completed_on' => caGetLocalizedDate($completed_on, ['timeOmit' => false]),
+				'error_code' => $error_code,
+				'parameters' => $parameters
+			];
+			
+		}
+		return $ti;
 	}
 	# ---------------------------------------------------------------------------
 	# Utilities
