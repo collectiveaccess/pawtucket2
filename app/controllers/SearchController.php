@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2025 Whirl-i-Gig
+ * Copyright 2014-2026 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -514,7 +514,11 @@ class SearchController extends FindController {
 			case 'xlsx':
 			case 'pptx':
 			case 'pdf':
-				$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $vs_search_expression)), $this->getCriteriaForDisplay($o_browse));
+				if(!is_null($vs_search_expression) && strlen($vs_search_expression)) {
+					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $vs_search_expression)), $this->getCriteriaForDisplay($o_browse));
+				} else {
+					return;
+				}
 				break;
 			case 'timelineData':
 				$this->view->setVar('view', 'timeline');
