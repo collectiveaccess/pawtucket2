@@ -908,19 +908,22 @@ class LightboxController extends FindController {
 	 *
 	 */
 	private function _getSetsForUser(int $user_id, array $configured_tables) : ?array {
+		$access = $this->request->config->get('lightbox_default_access');
+		$show_only_public = $this->request->config->get('lightbox_show_only_public');
+	
 		$t_sets = new ca_sets();
 		$read_sets = $t_sets->getSetsForUser([
 			'tables' => $configured_tables, 
 			"user_id" => $user_id, 
-			//"checkAccess" => $this->opa_access_values,
-			"access" => (!is_null($access = $this->request->config->get('lightbox_default_access'))) ? $access : 1, 
+			"checkAccess" => $show_only_public ? $this->opa_access_values : null,
+			"access" => (!is_null($access)) ? $access : 1, 
 			"parents_only" => true
 		]) ?? [];
 
 		$write_sets = $t_sets->getSetsForUser([
 			'tables' => $configured_tables, 
 			"user_id" => $user_id, 
-			//"checkAccess" => $this->opa_access_values, 
+			"checkAccess" => $show_only_public ? $this->opa_access_values : null, 
 			"parents_only" => true
 		]) ?? [];
 		
