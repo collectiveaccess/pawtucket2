@@ -254,8 +254,9 @@ class LightboxController extends FindController {
 		$table = Datamodel::getTableName($table_num);
 		
 		$type_restrictions = $t_set->getTypeRestrictions() ?? [];
-		$type = caGetLightboxTypeForTable($table, ['restrictToTypes' => array_map(function($v) { return $v['type_id']; }, $type_restrictions)]);
-
+		$type = caGetLightboxTypeForTable($table, ['returnFirstMatch' => true, 'restrictToTypes' => array_map(function($v) { return $v['type_id']; }, $type_restrictions)]);
+		if(is_array($type)) { $type = array_shift($type); }
+		
 		$o_context = new ResultContext($this->request, $table, 'lightbox');
 		$o_context->setAsLastFind();
 		
@@ -347,8 +348,7 @@ class LightboxController extends FindController {
 				$downloads[$dcode] = array_merge($dinfo, [
 					'url' => caNavUrl($this->request, '*', '*', "Download/{$set_id}", [
 						'dcode' => $dcode,
-						'type' => $dinfo['type'], 
-						//'version' => $dinfo['version'] ?? 'original'
+						'type' => $dinfo['type']
 					]),
 				]);
 			}
@@ -359,7 +359,7 @@ class LightboxController extends FindController {
 		$exports = [];
 		foreach($tconfig['exports'] ?? [] as $dcode => $dinfo) {
 			$exports[] = array_merge($dinfo, [
-				'url' => caNavUrl($this->request, '*', '*', "Export/{$set_id}", ['dcode' => $dinfo['code'], 'type' => $dinfo['type'], 'display' => $dinfo['display']]),
+				'url' => caNavUrl($this->request, '*', '*', "Export/{$set_id}", ['dcode' => $dcode, 'type' => $dinfo['type'], 'display' => $dinfo['display']]),
 			]);
 		}
 		$pdf_exports = caGetAvailablePrintTemplates('results', ['table' => $table]);
@@ -400,7 +400,7 @@ class LightboxController extends FindController {
 		$name = $this->request->getParameter('name', pString);
 		$description = $this->request->getParameter('description', pString);
 		$row_id = $this->request->getParameter('row_id', pString);
-		$mode = $this->request->getParameter('mode', pString); # --- set to addFromResults to indicate need to redirect to addItemsToSet after ligthbox set is created
+		$mode = $this->request->getParameter('mode', pString); // set to addFromResults to indicate need to redirect to addItemsToSet after ligthbox set is created
 		
 		$errors = [];
 		$preserve_model_values = false;
@@ -426,7 +426,7 @@ class LightboxController extends FindController {
 			$t_set->delete(true);
 		}
 		if(is_array($restrict_to_types) && sizeof($restrict_to_types)) {
-			$t_set->setTypeRestrictions(caMakeTypeIDList($table, $restrict_to_types));
+			$t_set->setTypeRestrictions(caMakeTypeIDList($table, $restrict_to_types, ['dontIncludeSubtypesInTypeRestriction' => true]));
 		}
 		$this->view->setVar('modalValues', [
 			'name' => $name, 'description' => $description, 'row_id' => $row_id, 'table' => $table
@@ -448,12 +448,14 @@ class LightboxController extends FindController {
 			$t_item->load($row_id);
 			$this->view->setVar('item', $t_item);
 			
-			$lightboxes = caGetLightboxesForUser($this->request->getUserID(), null, ['tables' => [$table]]);
+			$lightboxes = caGetLightboxesForUser($this->request->getUserID(), null, ['tables' => [$table], 'restrictToTypesByTable' => [$table => $restrict_to_types]]);
+			
+			$this->view->setVar('displayLightbox', caDisplayLightbox($t_subject));
 			$this->view->setVar('lightboxes', ($lightboxes && ($lightboxes->numHits() > 0)) ? $lightboxes : null);
 			$this->view->setVar('in_lightboxes', caGetLightboxesForItem($t_item));
 			$this->view->setVar('lightbox_conf', $lightbox_conf);
 			
-			$this->render("Details/snippets/lightbox_list_html.php");
+			$this->render('Details/snippets/lightbox_list_html.php');
 		} elseif($mode === "addFromResults"){
 			$this->addItemsToSet($t_set->get("set_id"));
 		} else{
@@ -606,11 +608,12 @@ class LightboxController extends FindController {
 		$omit_item_ids = $select_all ? $this->_getItemIDs($this->request->getParameter('omit_item_id', pString)) : null;
 		
 		$loptions = $this->config->getAssoc('lightbox_options');
-
-		$tconfig = $loptions[$table] ?? [];
+		
+		$ltype = caGetLightboxTypeForTable($table, ['restrictToTypes' => array_map(function($v) { return $v['type_id']; }, $t_set->getTypeRestrictions()), 'returnFirstMatch' => true]);
+		$tconfig = $loptions[$ltype] ?? [];
 		
 		if(!isset($tconfig['downloads'][$dcode])) {
-			throw new ApplicationException(_t('Invalid dcode'));
+			throw new ApplicationException(_t('Invalid dcode: %1', $dcode));
 		}
 		
 		// Verify user can download specified version
@@ -703,7 +706,7 @@ class LightboxController extends FindController {
 		// Lightbox options
 		$loptions = $this->config->getAssoc('lightbox_options');
 		$tconfig = $loptions[$table] ?? [];
-			
+			$select_all = true;
 		$set_items = caExtractValuesByUserLocale($t_set->getItems(['thumbnailVersions' => [$version], 'row_ids' => $select_all ? null : $item_ids]));
 		
 		$file_paths = $row_ids = [];
@@ -728,14 +731,18 @@ class LightboxController extends FindController {
 					$row_ids = array_values(array_map(function($v) { return $v['row_id']; }, $set_items));
 					$qr = caMakeSearchResult($table, $row_ids);
 					
+					$display = null;
 					if($export_config = $tconfig['exports'][$format] ?? null) {
 						$t = "_{$export_config['type']}_{$export_config['display']}";
 						$ext = $export_config['type'];
+						
+						$display = $export_config['display'];
 					} else {
 						$t = $format;
 						$ext = 'pdf';
 					}
-					caExportResult($this->request, $qr, $t, "report.{$ext}", []);
+					$d = new ca_bundle_displays(['display_code' => $display]);
+					caExportResult($this->request, $qr, $t, "report.{$ext}", ['display' => $d]);
 					break;
 			}
 		}	

@@ -13,10 +13,19 @@ if(!$incremental) {
 }
 while($qr_sets->nextHit()) {
 	$set_id = $qr_sets->get('ca_sets.set_id');
-	$table = $qr_sets->get('table_num');
+	$table_num = $qr_sets->get('table_num');
+	$table = Datamodel::getTableName($table_num);
 	$caption = $qr_sets->get('ca_sets.preferred_labels.name');
 	$detail_link = caNavLink($this->request,"<i class='bi bi-arrow-right-square'></i>", 'btn btn-sm btn-white ms-3', '*', '*', "Detail/{$set_id}");
 	$can_delete = $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__, $set_id);
+	
+	$t_set = $qr_sets->getInstance();
+	$types = caMakeTypeList($table, array_map(function($v) {
+		return $v['type_id'];
+	}, $t_set->getTypeRestrictions() ?? []), ['dontIncludeSubtypesInTypeRestriction' => true]);
+	$ltypes = caLightboxGetConfiguredTypes();
+	$ltype = caGetLightboxTypeForTable($table, ['restrictToTypes' => $types, 'returnFirstMatch' => true]);
+	$ltype_info = $ltypes[$ltype];
 ?>
 		<div class='list-group-item border-0 border-bottom px-0'>
 			<div id='row{$vn_id}' class='row row-cols-2'>
@@ -27,7 +36,7 @@ while($qr_sets->nextHit()) {
 				</div>
 	
 				<div class='col-auto ms-auto'>
-					<?= $qr_sets->getWithTemplate('^ca_sets._itemCount').' '.Datamodel::getTableProperty($table, 'NAME_PLURAL'); ?>
+					<?= $qr_sets->getWithTemplate('^ca_sets._itemCount').' '.$ltype_info['label_plural']; ?>
 					<?= $detail_link; ?>
 <?php if($can_delete) { ?>
 					<button

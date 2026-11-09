@@ -139,7 +139,7 @@
 						}
 						$rep_detail_link 	= caDetailLink($this->request, $image, '', $table, $id);	
 				
-						if(($table == 'ca_objects') && caDisplayLightbox($this->request)){
+						if(($table == 'ca_objects') && caDisplayLightbox($t_item)){
 							$select_button = "<button type='button' 
 									id='result-select-btn-{$id}'
 									onclick='toggleSelection({$id})'

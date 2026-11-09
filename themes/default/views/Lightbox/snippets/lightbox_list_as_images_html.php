@@ -28,7 +28,7 @@ while($qr_sets->nextHit()) {
 	$detail_link = caNavLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2', '*', '*', "Detail/{$set_id}", null, ["title" => _t("View %1", $lightbox_displayname_singular), "aria-label" => _t("View %1", $lightbox_displayname_singular)]);
 	$can_delete = $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__, $set_id);
 
-	$ltype = caGetLightboxTypeForTable($table); // @TODO: wire up type restrictions
+	$ltype = caGetLightboxTypeForTable($table, ['returnFirstMatch' => true]); // @TODO: wire up type restrictions
 	
 	$count = (int)$qr_sets->getWithTemplate('^ca_sets._itemCount');
 ?>

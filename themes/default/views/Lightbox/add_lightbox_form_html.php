@@ -33,10 +33,11 @@ $lightbox_displayname_singular 	= $lightbox_conf->get('lightbox_displayname_sing
 $lightbox_displayname_plural 	= $lightbox_conf->get('lightbox_displayname_plural');
 
 # When used on detail pages need row id and table to add record to new lightbox
-$id = $table = null;
+$id = $table = $type = null;
 if($t_item = $this->getVar("item")){
 	$id = $t_item->getPrimaryKey();
-	$table = $t_item->TableName();
+	$table = $t_item->tableName();
+	$type = $t_item->getTypeCode();
 }
 $target = $this->getVar('target') ?: "#lightboxContent";
 ?>
@@ -52,13 +53,14 @@ $target = $this->getVar('target') ?: "#lightboxContent";
 		<?= caHTMLTextInput('name', ['value' => $preserve ? $mv['name'] ?? null : null, 'class' => 'form-control lightboxAddFormControl', 'id' => 'lightboxName'], ['width' => '100%']); ?>
 <?php
 		if($id){
-			# When used on detail page include the row_id and table
+			$ltype = caGetLightboxTypeForTable($table ? $table : $this->getVar('detailConfig')['table'], ['returnFirstMatch' => true, 'restrictToTypes' => ($type ? [$type] : null)]);
+			// When used on detail page include the row_id and table
 			print caHTMLHiddenInput('row_id', ['value' => $preserve ? $mv['row_id'] ?? null : $id, 'class' => 'lightboxAddFormControl', 'id' => 'rowId']);
 			print caHTMLHiddenInput('table', ['value' => $preserve ? $mv['table'] ?? null : $table, 'class' => 'lightboxAddFormControl', 'id' => 'table']);
-			print caHTMLHiddenInput('ltype', ['value' => caGetLightboxTypeForTable($this->getVar('detailConfig')['table'], ['restrictToTypes' => $this->getVar('detailConfig')['restrictToTypes'] ?? null]), 'class' => 'lightboxAddFormControl', 'id' => 'ltype']);
+			print caHTMLHiddenInput('ltype', ['value' => $ltype, 'class' => 'lightboxAddFormControl', 'id' => 'ltype']);
 		} elseif($this->getVar('table')) { 
-			# When used on browse browse table is set in view var
-			print caHTMLHiddenInput('ltype', ['value' => caGetLightboxTypeForTable($this->getVar('table')), 'class' => 'lightboxAddFormControl', 'id' => 'table']);
+			// When used on browse browse table is set in view var
+			print caHTMLHiddenInput('ltype', ['value' => caGetLightboxTypeForTable($this->getVar('table'), ['returnFirstMatch' => true, 'restrictToTypes' => ($type ? [$type] : null), 'class' => 'lightboxAddFormControl', 'id' => 'table'])]);
 		} else {
 			# Show list of potential lightbox "types" (tables + optional type restriction) in general contexts such as the lightbox list
 ?>

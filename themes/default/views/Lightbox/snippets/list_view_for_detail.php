@@ -36,7 +36,7 @@ if(!($default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
 		
 		$detail_button_link = $this->request->isLoggedIn() ? caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2', $table, $id, null, array("title" => _t("View record"), "aria-label" => _t("View record"))) : '';
 		$caption 	= $qr_items->getWithTemplate($result_caption_template, array("checkAccess" => $item_is_in_users_lightbox ? null : $access_values));
-		$image = ($table === 'ca_objects') ? $qr_items->get('ca_object_representations.media.medium', ["checkAccess" => $access_values, "class" => $image_class]) : $images[$id];
+		$image = $qr_items->get('ca_object_representations.media.medium', ["checkAccess" => $access_values, "class" => $image_class]);
 			
 		if(!$image){
 			if ($table == 'ca_objects') {

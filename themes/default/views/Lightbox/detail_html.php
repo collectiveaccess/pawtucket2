@@ -51,9 +51,7 @@ $current_sort_direction = $this->getVar('current_sort_direction');
 
 $t_list_item = new ca_list_items();
 
-// $user_id = $this->request->getUserID();
-// $can_delete = $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__);
-
+$is_anonymous = $this->getVar('access_is_anonymous');
 $user_id = $is_anonymous ? null : $this->request->getUserID();
 $can_edit = !$is_anonymous;
 $can_delete = $is_anonymous ? false : $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__);
@@ -67,16 +65,19 @@ if(!$incremental) {
 ?>
 <div id="lightboxContent">
 	<!-- BEGIN Modals -->	
+<?php if($can_edit) { ?>	
 		<!-- Edit lightbox modal -->
 		<?= $this->render("Lightbox/edit_lightbox_form_html.php"); ?>
 		<!-- Lightbox access modal -->
 		<?= $this->render("Lightbox/lightbox_access_form_html.php"); ?>
-		
+<?php } ?>
+<?php if($can_delete) { ?>		
 		<!-- Confirm lightbox delete modal -->
 		<?= $this->render("Lightbox/confirm_delete_lightbox_form_html.php"); ?>
 		
 		<!-- Confirm lightbox item(s) delete modal -->
 		<?= $this->render("Lightbox/confirm_delete_lightbox_item_form_html.php"); ?>
+<?php } ?>
 	<!-- END Modals -->
 		<div class="row">
 			<div class="col-md-12 col-lg-4">
@@ -109,21 +110,26 @@ if(!$incremental) {
 						<i class="bi bi-check-circle-fill"></i> <?= _t("Select All"); ?>
 					</button>
 
-					<!--<button type="button" class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#lightboxAccessModal"><i class="bi bi-people-fill"></i> <?= _t("Access"); ?></button>-->
+<?php if(sizeof(array_merge($downloads, $exports)) > 0) { ?>
 					<div class="btn-group" role="group">
 						<button id="btnGroupDownload" type="button" class="btn btn-white btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
 						  <i class="bi bi-download"></i> <?= _t("Download"); ?>
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="btnGroupDownload">
-<?php foreach(array_merge($downloads, $exports) as $d) { ?>
+<?php 		foreach(array_merge($downloads, $exports) as $d) { ?>
 									<li><button 
 										onclick="downloadSelected('<?= $d['type'] ?>', '<?= $d['version']; ?>', '<?= $d['url']; ?>');"
 										class="dropdown-item"><?= $d['label']; ?></button></li>
-<?php } ?>
+<?php 		} ?>
 						</ul>
 					</div>
-					<button type="button" class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#editLightboxModal"><i class="bi bi-pencil-square"></i> <?= _t("Edit"); ?></button>
+<?php 
+		}
+					if($can_edit) { 
+?>
+						<button type="button" class="btn btn-white btn-sm" data-bs-toggle="modal" data-bs-target="#editLightboxModal"><i class="bi bi-pencil-square"></i> <?= _t("Edit"); ?></button>
 <?php
+					}
 					if($can_delete) {
 ?>
 						<button 
@@ -265,7 +271,7 @@ if(!$incremental) {
 <?php } ?>			
 			<div class="row mt-2">
 <?php } ?> <!-- end !if incremental -->
-<?= $this->render($configured_modes[$current_view_mode]['view']);   ?>
+<?= isset($configured_modes[$current_view_mode]['view']) ? $this->render($configured_modes[$current_view_mode]['view']) : _t('ERROR: invalid type restriction?');   ?>
 <?php if(!$incremental) { ?>
 			</div>
 </div><!-- end lightboxContent -->

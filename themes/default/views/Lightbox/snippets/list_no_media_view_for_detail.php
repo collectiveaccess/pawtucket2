@@ -1,0 +1,81 @@
+<?php
+$qr_items 	= $this->getVar('items');
+$table 		= $this->getVar('table');
+$t_list_item = new ca_list_items();
+$access_values 	= $this->getVar('access_values');
+$result_caption_template = $this->getVar('caption_template'); 
+
+$o_lightbox_config 					= $this->getVar("set_config");
+$lightbox_displayname_singular 		= $this->getVar("lightbox_displayname_singular");
+$lightbox_displayname_plural 		= $this->getVar("lightbox_displayname_plural");
+
+$t_set 								= $this->getVar('t_set');
+$user_id 							= $this->request->getUserID();
+$can_delete 						= $t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__);
+
+// View modes
+$configured_modes = $this->getVar('configured_modes');
+$current_view_mode = $this->getVar('mode');
+$current_view_mode_info = $configured_modes[$current_view_mode];
+
+$image_format = caGetOption('image_format', $current_view_mode_info, 'cover');
+$image_class = "";
+if($image_format == "contain"){
+	$image_class = "object-fit-contain py-3 ps-3 rounded-0";
+}else{
+	$image_class = "card-img-top object-fit-cover rounded-0";
+}
+$o_icons_conf = caGetIconsConfig();
+if(!($default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+	$default_placeholder = "<div class='display-1 text-center d-flex bg-light ca-placeholder' aria-label='media placeholder image' aria-role='img'><i class='bi bi-card-image align-self-center w-100'></i></div>";
+}
+if(!$incremental) {
+?>
+	<div class="cols-sm-12">
+		<div class="list-group my-3">
+<?php
+}
+	while($qr_items->nexthit()) {
+		$item_is_in_users_lightbox = caItemIsInUserLightbox($qr_items, $this->request->getUserID());
+		$id = $qr_items->getPrimaryKey();
+		
+		$detail_button_link = $this->request->isLoggedIn() ? caDetailLink($this->request, "<i class='bi bi-arrow-right-square'></i>", 'btn btn-white px-2', $table, $id, null, array("title" => _t("View record"), "aria-label" => _t("View record"))) : '';
+		$caption 	= $qr_items->getWithTemplate($result_caption_template, array("checkAccess" => $item_is_in_users_lightbox ? null : $access_values));		
+?>
+
+		<div class='list-group-item border-0 border-bottom px-0'>
+			<div id='lb-item-<?= $id; ?>' class='row row-cols-2 align-items-center'>
+				<div class='col flex-grow-1 text-wrap fw-bold'>
+					<?= $caption; ?>
+				</div>
+				<div class='col-auto ms-auto'>
+					<button type="button" 
+						id='lb-select-btn-<?= $id; ?>'
+						onclick='toggleSelection(<?= $id; ?>)'
+						class="btn btn-white btn-select px-2" 
+						title="<?= _t("Select record"); ?>"
+						aria-label="<?= _t("Select record"); ?>"><i class="bi bi-check-circle"></i></button>
+					<?= $detail_button_link; ?>
+<?php if($can_delete) { ?>
+					<button class="btn btn-white px-2" 
+						title="<?= _t('Remove from %1', $lightbox_displayname_plural); ?>" 
+						aria-label="<?= _t('Remove from %1', $lightbox_displayname_plural); ?>"
+						data-bs-toggle="modal" 
+						data-bs-target="#deleteLightboxItemModal"
+						hx-on:click="document.getElementById('deleteLightboxItemId').value = '<?= $id;?>';"><i class='bi bi-x-square'></i></button>
+<?php } ?>
+				</div>
+			 </div>	
+		</div><!-- end list-group-item -->
+
+<?php } ?>
+
+<?= $this->render("Lightbox/snippets/lightbox_list_incremental_load_html.php"); ?>
+<?php
+if(!$incremental) {
+?>
+		</div>
+	</div>
+<?php
+}
+?>

@@ -564,6 +564,7 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 		$view->setVar('display_list', $display_list);
 	} elseif(!in_array($format, ['pdf', 'xlsx', 'tab', 'csv', 'docx']) || !is_null($template_file)) {
 		// custom non-PDF/delimited data display
+		
 		$template_info = caGetPrintTemplateDetails($template_type, $template);
 		$template_dir = pathinfo($template_info['path'], PATHINFO_DIRNAME);
 		$content = $view->render($template_file ? "{$template_dir}/{$template_file}.php" : "{$template_dir}/{$display_id}.php");

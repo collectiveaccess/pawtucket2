@@ -2805,6 +2805,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	*			owner - if set, returns only sets owned by the passed user_id
 	*			table - if set, list is restricted to sets that can contain the specified item. You can pass a table name or number. If omitted sets containing any content will be returned.
 	*			tables = 
+	*			restrictToTypes = 
+	*			restrictToTypesByTable = 
 	*			setType - Restricts returned sets to those of the specified type. You can pass a type_id or list item code for the set type. If omitted sets are returned regardless of type.
 	*			access - read = 1, write = 2; Restricts returned sets to those with at least the specified access level for the specified user. If "owner" is true then this option has no effect.
 	*			checkAccess - Restricts returned sets to those with an access level of the specified values. If omitted sets are returned regardless of public access (ca_sets.access) value. Can be a single value or array if you wish to filter on multiple public access values.
@@ -2823,6 +2825,25 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			$tables = array_map(function($v) { return Datamodel::getTableNum($v); }, array_filter($tables, function($v) { return Datamodel::getInstance($v, true); }));
 		}
 		
+		$restrict_to_types = null;
+		if($pm_table_name_or_num) {
+			$restrict_to_types = caGetOption('restrictToTypes', $pa_options, null);
+			if(is_array($restrict_to_types) && sizeof($restrict_to_types)) { 
+				$restrict_to_types = caMakeTypeIDList($pm_table_name_or_num, $restrict_to_types, ['dontIncludeSubtypesInTypeRestriction' => true]);
+			}
+		}
+		
+		if(is_array($tables) && sizeof($tables)) { 
+			$restrict_to_types_by_table = caGetOption('restrictToTypesByTable', $pa_options, null);
+			if(is_array($restrict_to_types_by_table) && sizeof($restrict_to_types_by_table)) {
+				$restrict_to_types = [];
+				foreach($tables as $table_num) {
+					if(is_array($rtypes = $restrict_to_types_by_table[Datamodel::getTableName($table_num)])) {
+						$restrict_to_types = array_merge($restrict_to_types, caMakeTypeIDList($table_num, $rtypes, ['dontIncludeSubtypesInTypeRestriction' => true]));
+					}
+				}
+			}
+		}
 		$pm_type = isset($pa_options['setType']) ? $pa_options['setType'] : null;
 		$pn_access = isset($pa_options['access']) ? $pa_options['access'] : null;
 		$pa_public_access = isset($pa_options['checkAccess']) ? $pa_options['checkAccess'] : null;
@@ -2919,6 +2940,11 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				$va_sql_wheres[] = "cs.parent_id IS NULL";
 			}
 			
+			if(is_array($restrict_to_types) && sizeof($restrict_to_types)) {
+				$va_sql_wheres[] = "(cstr.type_id IN (?) OR cstr.type_id IS NULL)";
+				$va_sql_params[] = $restrict_to_types;
+			}
+			
 			$sort_sql = '';
 			if($sort = caGetOption('sort', $pa_options, null)) {
 				$sort_direction = caGetOption('sortDirection', $pa_options, 'ASC', ['validValues' => ['ASC', 'DESC']]);
@@ -2945,6 +2971,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 									FROM ca_sets cs
 									INNER JOIN ca_users AS cu ON cs.user_id = cu.user_id
 									INNER JOIN ca_set_labels AS csl ON csl.set_id = cs.set_id
+									LEFT JOIN ca_set_type_restrictions AS cstr ON cs.set_id = cstr.set_id
 									".(sizeof($va_sql_wheres) ? "WHERE " : "")." ".join(" AND ", $va_sql_wheres)."
 									{$sort_sql}
 									", $va_sql_params);

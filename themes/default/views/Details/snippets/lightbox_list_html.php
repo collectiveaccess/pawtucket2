@@ -67,7 +67,7 @@ $id = $t_item->getPrimaryKey();
 <?php
 		}
 	}
-				# --- always include a link to make a new lightbox
+				// Always include a link to make a new lightbox
 ?>
 				<li><hr class="dropdown-divider"></li>
 				<li class="dropdown-item">
