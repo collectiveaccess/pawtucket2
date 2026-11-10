@@ -25,6 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
+require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
 require_once(__CA_APP_DIR__."/helpers/themeHelpers.php");
 require_once(__CA_MODELS_DIR__."/ca_collections.php");
 require_once(__CA_MODELS_DIR__."/ca_lists.php");
@@ -36,7 +37,6 @@ class CollectionsController extends BasePawtucketController {
 	 */
 	private $ops_find_type = "collections";
 	private $opo_result_context = null;
-	private $opa_access_values = null;
 	private $opo_config = null;
 	
 	# -------------------------------------------------------
