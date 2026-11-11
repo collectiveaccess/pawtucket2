@@ -127,6 +127,13 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 						</dd>
 					</unit>
 				</ifdef>
+				<ifdef code="ca_collections.RAD_date">
+					<dt><?= _t('RAD Date'); ?></dt>
+					<dd>
+						^ca_collections.RAD_date
+					</dd>
+				</ifdef>
+				ca_objects.RAD_date
 				<ifdef code="ca_collections.phys_desc">
 					<dt><?= _t('Physical Description'); ?></dt>
 					<dd>
