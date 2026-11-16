@@ -162,10 +162,10 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 				<ifdef code="ca_collections.biblio">
 					<dt><?= _t('Bibliographic Information'); ?></dt>
 					<dd>
-						<ifdef code="ca_collections.biblio.pub">^ca_collections.biblio.pub<ifdef code="ca_collections.biblio.volume|ca_collections.biblio.issue|ca_collections.biblio.standard">, </ifdef></ifdef>
-						<ifdef code="ca_collections.biblio.volume">^ca_collections.biblio.volume<ifdef code="ca_collections.biblio.issue|ca_collections.biblio.standard">, </ifdef></ifdef>
-						<ifdef code="ca_collections.biblio.issue">^ca_collections.biblio.issue<ifdef code="ca_collections.biblio.standard">, </ifdef></ifdef>
-						<ifdef code="ca_collections.biblio.standard">^ca_collections.biblio.standard</ifdef>
+						<ifdef code="ca_collections.biblio.pub">Publication: ^ca_collections.biblio.pub<ifdef code="ca_collections.biblio.volume|ca_collections.biblio.issue|ca_collections.biblio.standard">, </ifdef></ifdef>
+						<ifdef code="ca_collections.biblio.volume">Volume: ^ca_collections.biblio.volume<ifdef code="ca_collections.biblio.issue|ca_collections.biblio.standard">, </ifdef></ifdef>
+						<ifdef code="ca_collections.biblio.issue">Issue: ^ca_collections.biblio.issue<ifdef code="ca_collections.biblio.standard">, </ifdef></ifdef>
+						<ifdef code="ca_collections.biblio.standard">Standard Number: ^ca_collections.biblio.standard</ifdef>
 					</dd>
 				</ifdef>
 				<ifdef code="ca_collections.rights.statement">
