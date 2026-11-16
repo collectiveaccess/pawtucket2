@@ -84,7 +84,7 @@ if($this->request->isLoggedIn()){
 ?>
 				</ul>
 <?php
-				if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
+				if($this->request->isLoggedIn() && ($this->request->user->hasRole("admin")|| $this->request->user->hasRole("frontend_staff"))){
 ?>
 				<form action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>" role="search">
 					<div class="input-group">
