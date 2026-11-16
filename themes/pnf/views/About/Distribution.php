@@ -68,13 +68,13 @@ while($institions->nextHit()){
 <?php
 			print caGetThemeGraphic($this->request, 'InstitutionsPieChart.png');
 ?>
-				<br/>
+				<br/><br/>
 <?php
 			print caGetThemeGraphic($this->request, 'InstitutionsBarChart.png');
 ?>
 				</div>
 				<div class="col-sm-4">
-					<H2>Institutions holding:</H2>
+					<H2>Institutional holdings:</H2>
 <?php
 				$i = 1;
 				foreach($sueltas_dist as $cat => $inst_by_sueltas){
