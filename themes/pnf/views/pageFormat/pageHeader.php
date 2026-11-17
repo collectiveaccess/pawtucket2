@@ -151,6 +151,7 @@ $( document ).ready(function() {
 						<ul class="sub-menu">
 							<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news current-menu-item menu-item-207"><a href="/news/">News &amp; Updates</a></li>
 							<li id="menu-item-ca1" class="menu-item menu-item-type-post_type menu-item-object-news menu-item-ca1"><?php print caNavLink($this->request, _t('Statistical Table'), '', '', 'About', 'Statistics');?></a></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-news"><?php print caNavLink($this->request, _t('Distribution of Sueltas'), '', '', 'About', 'Distribution');?></a></li>
 							
 						</ul>
 					</li>
@@ -198,6 +199,7 @@ $( document ).ready(function() {
 						<ul class="sub-menu">
 							<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news current-menu-item menu-item-207"><a href="/news/">Novedades</a></li>
 							<li id="menu-item-ca1" class="menu-item menu-item-type-post_type menu-item-object-news menu-item-ca1"><?php print caNavLink($this->request, 'Tabla de Estadistica', '', '', 'About', 'Statistics');?></a></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-news"><?php print caNavLink($this->request, _t('Distribucion de Sueltas'), '', '', 'About', 'Distribution');?></a></li>
 							
 						</ul>
 					</li>
