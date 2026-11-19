@@ -656,3 +656,15 @@ div.caMediaOverlayControlsMinimal .close{
 .form-control:focus {
   border-color: #000;
 }
+
+#regCaptchaSubmit span a {
+	border: 1px solid #000;
+	padding: 10px;
+}
+#banContinueButton {
+	color: #000 !important;
+}
+
+#banContinueButton {
+	color: #333 !important;
+}
