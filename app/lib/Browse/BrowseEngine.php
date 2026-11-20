@@ -48,6 +48,8 @@ require_once(__CA_LIB_DIR__.'/Browse/BrowseCache.php');
 require_once(__CA_LIB_DIR__.'/Parsers/TimeExpressionParser.php');
 require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
+require_once(__CA_APP_DIR__.'/helpers/libraryServicesHelpers.php');
+
 
 class BrowseEngine extends BaseFindEngine {
 	# ------------------------------------------------------
