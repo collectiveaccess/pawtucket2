@@ -632,7 +632,9 @@ class BrowseEngine extends BaseFindEngine {
 			case 'authority':
 				if (!($t_table = Datamodel::getInstanceByTableName($va_facet_info['table'], true))) { break; }
 				if (!$t_table->load($pn_row_id)) { return '???'; }
-
+				if($t_table->get('parent_id')) { 
+					return $t_table->get(($va_facet_info['template'] ?? null) ? $va_facet_info['template'] : $t_table->tableName().".hierarchy.preferred_labels", ($va_facet_info['template'] ?? null) ? [] : ['delimiter' => ' ➜ ']);
+				}
 				return $t_table->getLabelForDisplay();
 				break;
 			# -----------------------------------------------------
